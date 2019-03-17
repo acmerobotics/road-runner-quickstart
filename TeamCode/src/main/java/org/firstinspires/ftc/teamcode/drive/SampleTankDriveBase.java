@@ -4,9 +4,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.TankDrive;
-import com.acmerobotics.roadrunner.followers.TankPIDVAFollower;
-import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.followers.GVFFollower;
+import com.acmerobotics.roadrunner.path.Path;
+import com.acmerobotics.roadrunner.path.PathBuilder;
+import com.acmerobotics.roadrunner.profile.SimpleMotionConstraints;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.TankConstraints;
@@ -18,31 +19,62 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  */
 @Config
 public abstract class SampleTankDriveBase extends TankDrive {
-    public static PIDCoefficients DISPLACEMENT_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients CROSS_TRACK_PID = new PIDCoefficients(0, 0, 0);
+    // these coefficients are used for point turns only
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients();
+    // these coefficients are used for all other paths
+    public static double kN = 0.0;
+    public static double kOmega = 0.0;
 
+    private Pose2d lastError = new Pose2d();
 
     private DriveConstraints constraints;
-    private TrajectoryFollower follower;
+    private TankTurnFollower turnFollower;
+    private GVFFollower pathFollower;
 
     public SampleTankDriveBase() {
         super(DriveConstants.TRACK_WIDTH);
 
         constraints = new TankConstraints(DriveConstants.BASE_CONSTRAINTS, DriveConstants.TRACK_WIDTH);
-        follower = new TankPIDVAFollower(this, DISPLACEMENT_PID, CROSS_TRACK_PID,
-                DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic);
+
+        turnFollower = new TankTurnFollower(this, HEADING_PID,
+                DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic,
+                new Pose2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Math.toRadians(2)), 0.5);
+        pathFollower = new GVFFollower(this,
+                new SimpleMotionConstraints(constraints.maximumVelocity, constraints.maximumAcceleration),
+                new Pose2d(0.5, 0.5, Math.toRadians(5)),
+                kN, kOmega, DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic);
     }
 
-    public TrajectoryBuilder trajectoryBuilder() {
-        return new TrajectoryBuilder(getPoseEstimate(), constraints);
+    public PathBuilder pathBuilder() {
+        return new PathBuilder(getPoseEstimate());
     }
 
-    public void followTrajectory(Trajectory trajectory) {
-        follower.followTrajectory(trajectory);
+    public void turn(double angle) {
+        turnFollower.followTrajectory(new TrajectoryBuilder(getPoseEstimate(), constraints)
+            .turn(angle)
+            .build());
+    }
+
+    public void turnTo(double heading) {
+        turnFollower.followTrajectory(new TrajectoryBuilder(getPoseEstimate(), constraints)
+            .turnTo(heading)
+            .build());
+    }
+
+    public void followPath(Path path) {
+        pathFollower.followPath(path);
     }
 
     public void updateFollower() {
-        follower.update(getPoseEstimate());
+        if (turnFollower.isFollowing()) {
+            turnFollower.update(getPoseEstimate());
+            lastError = turnFollower.getLastError();
+        } else if (pathFollower.isFollowing()) {
+            pathFollower.update(getPoseEstimate());
+            lastError = pathFollower.getLastError();
+        } else {
+            setVelocity(new Pose2d());
+        }
     }
 
     public void update() {
@@ -50,12 +82,12 @@ public abstract class SampleTankDriveBase extends TankDrive {
         updateFollower();
     }
 
-    public boolean isFollowingTrajectory() {
-        return follower.isFollowing();
+    public boolean isFollowing() {
+        return turnFollower.isFollowing() || pathFollower.isFollowing();
     }
 
     public Pose2d getFollowingError() {
-        return follower.getLastError();
+        return lastError;
     }
 
     public abstract PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode);
