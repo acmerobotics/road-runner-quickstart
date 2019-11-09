@@ -92,6 +92,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
                 constraints.maxAngAccel,
                 constraints.maxAngJerk
         );
+        turnController.setTargetPosition(angle);
         turnStart = clock.seconds();
         mode = Mode.TURN;
     }
