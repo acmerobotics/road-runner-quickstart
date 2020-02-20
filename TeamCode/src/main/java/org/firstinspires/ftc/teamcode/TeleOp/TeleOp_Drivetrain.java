@@ -15,15 +15,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
-@TeleOp(name="TeleOp", group="Iterative TeamCode")
+@TeleOp(name="TeleOp Drivetrain", group="Iterative TeamCode")
 //@Disabled
-public class TeleOp_Final extends OpMode {
+public class TeleOp_Drivetrain extends OpMode {
 
     //defining all of the variables needed for the code
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor armMotor, armMotor2, clawMotor, LFMotor, LBMotor, RFMotor, RBMotor;
-    private Servo rotateServo, clawServo, foundServo, foundServo2, skystoneServo, skystoneClamp;
-    private BNO055IMU imu;
+    private DcMotor LFMotor, LBMotor, RFMotor, RBMotor;//, armMotor, armMotor2, clawMotor;
+    //private Servo rotateServo, clawServo, foundServo, foundServo2, skystoneServo, skystoneClamp;
+    //private BNO055IMU imu;
     private Orientation lastAngles = new Orientation();
     private boolean fieldRelativeMode = false;
     private double globalAngle, speed = 0.5;
@@ -37,7 +37,7 @@ public class TeleOp_Final extends OpMode {
         LBMotor  = hardwareMap.get(DcMotor.class, "LB Motor");
         RFMotor  = hardwareMap.get(DcMotor.class, "RF Motor");
         RBMotor  = hardwareMap.get(DcMotor.class, "RB Motor");
-        armMotor = hardwareMap.get(DcMotor.class, "Arm Motor 1");
+        /*armMotor = hardwareMap.get(DcMotor.class, "Arm Motor 1");
         armMotor2 = hardwareMap.get(DcMotor.class, "Arm Motor 2");
         clawMotor = hardwareMap.get(DcMotor.class,"Claw Up Motor");
 
@@ -48,14 +48,14 @@ public class TeleOp_Final extends OpMode {
         skystoneServo = hardwareMap.get(Servo.class, "Skystone servo");
         skystoneClamp = hardwareMap.get(Servo.class, "Skystone Clamp");
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");*/
 
         //reversing the motors that need to be reversed, otherwise it sets it as forward
         LFMotor.setDirection(DcMotor.Direction.FORWARD);
         LBMotor.setDirection(DcMotor.Direction.FORWARD);
         RFMotor.setDirection(DcMotor.Direction.REVERSE);
         RBMotor.setDirection(DcMotor.Direction.REVERSE);
-        armMotor.setDirection(DcMotor.Direction.REVERSE);
+        /*armMotor.setDirection(DcMotor.Direction.REVERSE);
         armMotor2.setDirection(DcMotor.Direction.REVERSE);
         clawMotor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -64,7 +64,7 @@ public class TeleOp_Final extends OpMode {
         foundServo2.setDirection(Servo.Direction.REVERSE);
         foundServo.setDirection(Servo.Direction.FORWARD);
         skystoneServo.setDirection(Servo.Direction.FORWARD);
-        skystoneClamp.setDirection(Servo.Direction.FORWARD);
+        skystoneClamp.setDirection(Servo.Direction.FORWARD);*/
 
         //setting up the IMU on the expansion hubs, for our use
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -74,7 +74,7 @@ public class TeleOp_Final extends OpMode {
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
 
-        imu.initialize(parameters);
+        //imu.initialize(parameters);
 
         telemetry.addData("Status", "Initialized");
     }
@@ -98,10 +98,10 @@ public class TeleOp_Final extends OpMode {
         float slidesValue;
 
         //checking to see if field relative mode is on
-        if (gamepad1.back) {
+        /*if (gamepad1.back) {
             resetAngle();
             fieldRelativeMode = !fieldRelativeMode;
-        }
+        }*/
 
         telemetry.addData("FieldRelative?", fieldRelativeMode);
 
@@ -111,12 +111,12 @@ public class TeleOp_Final extends OpMode {
         xValue = gamepad1.left_stick_x;
 
         //changing the values for the field relative mode
-        if (fieldRelativeMode){
+        /*if (fieldRelativeMode){
             double angle = getAngle();
             double tempX = (xValue * Math.cos(Math.toRadians(angle))) - (yValue * Math.sin(Math.toRadians(angle)));
             yValue = (xValue * Math.sin(Math.toRadians(angle))) + (yValue * Math.cos(Math.toRadians(angle)));
             xValue = tempX;
-        }
+        }*/
 
         //getting the values for the powers for each motor
         LFPower = Range.clip(-yValue + turnValue + xValue,-1,1);
@@ -163,7 +163,7 @@ public class TeleOp_Final extends OpMode {
         RFMotor.setPower(Range.clip(RFPower, -speed, speed));
         RBMotor.setPower(Range.clip(RBPower, -speed, speed));
 
-        //getting the double reverse 4 bar linkage to move up and down
+        /*//getting the double reverse 4 bar linkage to move up and down
         if (slidesValue == 0){
             clawMotor.setPower(-0.2);
         } else {//if (slidesValue >= 0)
@@ -220,8 +220,8 @@ public class TeleOp_Final extends OpMode {
             telemetry.addData("b", "pressed");
             skystoneClamp.setPosition(0.85);
             skystoneServo.setPosition(0.49);
-        }
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+        }*/
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
 
     }
 
@@ -231,7 +231,7 @@ public class TeleOp_Final extends OpMode {
     }
 
     //reseting the IMU
-    private void resetAngle()
+    /*private void resetAngle()
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -239,7 +239,7 @@ public class TeleOp_Final extends OpMode {
     }
 
     //getting the angle from the IMU
-    private double getAngle()
+    /*private double getAngle()
     {
 
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -256,6 +256,6 @@ public class TeleOp_Final extends OpMode {
         lastAngles = angles;
 
         return globalAngle;
-    }
+    }*/
 
 }
