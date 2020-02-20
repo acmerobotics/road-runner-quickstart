@@ -26,7 +26,7 @@ public class TeleOp_Drivetrain extends OpMode {
     //private BNO055IMU imu;
     private Orientation lastAngles = new Orientation();
     private boolean fieldRelativeMode = false;
-    private double globalAngle, speed = 0.5;
+    private double globalAngle, speed = 0.5;//hello
 
 
     @Override
