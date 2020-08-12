@@ -219,6 +219,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         switch (mode) {
             case IDLE:
                 // do nothing
+
+                fieldOverlay.setStrokeWidth(1);
+                fieldOverlay.setStroke("#DF3003");
+                DashboardUtil.drawRobot(fieldOverlay, currentPose);
                 break;
             case TURN: {
                 double t = clock.seconds() - turnStart;
@@ -241,6 +245,10 @@ public class SampleMecanumDrive extends MecanumDrive {
                     mode = Mode.IDLE;
                     setDriveSignal(new DriveSignal());
                 }
+
+                fieldOverlay.setStrokeWidth(1);
+                fieldOverlay.setStroke("#47B04B");
+                DashboardUtil.drawRobot(fieldOverlay, currentPose);
 
                 break;
             }
