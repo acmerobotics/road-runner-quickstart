@@ -23,13 +23,13 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 
 /*
- * This routine is designed to tune the open-loop feed forward coefficients. Although it may seem unnecessary,
+ * This routine is designed to tune the open-loop feedforward coefficients. Although it may seem unnecessary,
  * tuning these coefficients is just as important as the positional parameters. Like the other
  * manual tuning routines, this op mode relies heavily upon the dashboard. To access the dashboard,
  * connect your computer to the RC's WiFi network and navigate to https://192.168.49.1:8080/dash in
  * your browser. Once you've successfully connected, start the program, and your robot will begin
  * moving forward and backward according to a motion profile. Your job is to graph the velocity
- * errors over time and adjust the feed forward coefficients. Once you've found a satisfactory set
+ * errors over time and adjust the feedforward coefficients. Once you've found a satisfactory set
  * of gains, add them to your drive class.
  */
 @Config
