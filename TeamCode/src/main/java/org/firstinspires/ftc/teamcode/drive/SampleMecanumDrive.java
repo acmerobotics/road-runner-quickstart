@@ -79,6 +79,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
+    private Pose2d lastPoseOnTurn;
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
@@ -157,6 +159,9 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void turnAsync(double angle) {
         double heading = getPoseEstimate().getHeading();
+
+        lastPoseOnTurn = getPoseEstimate();
+
         turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(heading, 0, 0, 0),
                 new MotionState(heading + angle, 0, 0, 0),
@@ -164,6 +169,7 @@ public class SampleMecanumDrive extends MecanumDrive {
                 constraints.maxAngAccel,
                 constraints.maxAngJerk
         );
+
         turnStart = clock.seconds();
         mode = Mode.TURN;
     }
@@ -237,11 +243,7 @@ public class SampleMecanumDrive extends MecanumDrive {
                         0, 0, targetAlpha
                 )));
 
-                Pose2d newPose = new Pose2d();
-                if(poseHistory.size() != 0)  {
-                    Pose2d lastPose = poseHistory.get(poseHistory.size() - 1);
-                    newPose = newPose.copy(lastPose.getX(), lastPose.getY(), targetState.getX());
-                }
+                Pose2d newPose = lastPoseOnTurn.copy(lastPoseOnTurn.getX(), lastPoseOnTurn.getY(), targetState.getX());
 
                 fieldOverlay.setStroke("#4CAF50");
                 DashboardUtil.drawRobot(fieldOverlay, newPose);
