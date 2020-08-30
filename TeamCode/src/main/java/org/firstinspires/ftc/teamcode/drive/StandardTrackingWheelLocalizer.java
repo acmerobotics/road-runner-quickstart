@@ -67,10 +67,13 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @NonNull
     @Override
     public List<Double> getWheelVelocities() {
+        // TODO: If your encoder velocity can exceed 32767 counts / second, change Encoder.getRawVelocity() to
+        // Encoder.getCorrectedVelocity() to enable a compensation method
+
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getVelocity()),
-                encoderTicksToInches(rightEncoder.getVelocity()),
-                encoderTicksToInches(frontEncoder.getVelocity())
+                encoderTicksToInches(leftEncoder.getRawVelocity()),
+                encoderTicksToInches(rightEncoder.getRawVelocity()),
+                encoderTicksToInches(frontEncoder.getRawVelocity())
         );
     }
 }

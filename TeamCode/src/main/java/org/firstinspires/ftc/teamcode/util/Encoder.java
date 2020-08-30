@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
  * slot's motor direction
  */
 public class Encoder {
-    public static int CPS_STEP = 0x10000;
+    private final static int CPS_STEP = 0x10000;
 
-    public static double inverseOverflow(double input, double estimate) {
+    private static double inverseOverflow(double input, double estimate) {
         double real = input;
         while (Math.abs(estimate - real) > CPS_STEP / 2.0) {
             real += Math.signum(estimate - real) * CPS_STEP;
@@ -82,7 +82,12 @@ public class Encoder {
         return currentPosition;
     }
 
-    public double getVelocity() {
+    public double getRawVelocity() {
+        int multiplier = direction.getMultiplier();
+        return motor.getVelocity() * multiplier;
+    }
+
+    public double getCorrectedVelocity() {
         int multiplier = direction.getMultiplier();
         double rawVelocity = motor.getVelocity() * multiplier;
         return inverseOverflow(rawVelocity, velocityEstimate);
