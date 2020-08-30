@@ -88,8 +88,6 @@ public class Encoder {
     }
 
     public double getCorrectedVelocity() {
-        int multiplier = direction.getMultiplier();
-        double rawVelocity = motor.getVelocity() * multiplier;
-        return inverseOverflow(rawVelocity, velocityEstimate);
+        return inverseOverflow(getRawVelocity(), velocityEstimate);
     }
 }
