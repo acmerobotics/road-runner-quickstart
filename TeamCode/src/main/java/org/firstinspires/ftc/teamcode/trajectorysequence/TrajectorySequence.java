@@ -24,8 +24,8 @@ public class TrajectorySequence {
     public Pose2d get(Double time) {
         SequenceState currentState = getCurrentState(time);
 
-        SequenceSegment currentSegment = currentState.currentSegment;
-        double segmentTime = currentState.currentTime;
+        SequenceSegment currentSegment = currentState.getCurrentSegment();
+        double segmentTime = currentState.getCurrentTime();
 
         if (currentSegment instanceof TrajectorySegment) {
             return ((TrajectorySegment) currentSegment).getTrajectory().get(segmentTime);
@@ -45,8 +45,8 @@ public class TrajectorySequence {
     public Pose2d velocity(Double time) {
         SequenceState currentState = getCurrentState(time);
 
-        SequenceSegment currentSegment = currentState.currentSegment;
-        double segmentTime = currentState.currentTime;
+        SequenceSegment currentSegment = currentState.getCurrentSegment();
+        double segmentTime = currentState.getCurrentTime();
 
         if (currentSegment instanceof TrajectorySegment) {
             return ((TrajectorySegment) currentSegment).getTrajectory().velocity(segmentTime);
@@ -66,8 +66,8 @@ public class TrajectorySequence {
     public Pose2d acceleration(Double time) {
         SequenceState currentState = getCurrentState(time);
 
-        SequenceSegment currentSegment = currentState.currentSegment;
-        double segmentTime = currentState.currentTime;
+        SequenceSegment currentSegment = currentState.getCurrentSegment();
+        double segmentTime = currentState.getCurrentTime();
 
         if (currentSegment instanceof TrajectorySegment) {
             return ((TrajectorySegment) currentSegment).getTrajectory().acceleration(segmentTime);
@@ -104,29 +104,22 @@ public class TrajectorySequence {
         return markers;
     }
 
-    private SequenceState getCurrentState(double time) {
+    public SequenceState getCurrentState(double time) {
         double currentTime = 0.0;
 
+        int index = 0;
         for (SequenceSegment segment : sequenceSegments) {
             if (currentTime + segment.getDuration() > time) {
                 double segmentTime = time - currentTime;
 
-                return new SequenceState(segment, segmentTime);
+                return new SequenceState(segment, segmentTime, index);
             } else {
                 currentTime += segment.getDuration();
             }
+
+            index++;
         }
 
-        return new SequenceState(null, 0.0);
-    }
-
-    private final class SequenceState {
-        public final SequenceSegment currentSegment;
-        public final double currentTime;
-
-        public SequenceState(SequenceSegment segment, double time) {
-            currentSegment = segment;
-            currentTime = time;
-        }
+        return new SequenceState(null, 0.0, -1);
     }
 }
