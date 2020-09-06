@@ -29,6 +29,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.trajectorysequence.SequenceState;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
+import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
+import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
@@ -56,7 +62,13 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public static double LATERAL_MULTIPLIER = 1;
 
-    public enum Mode {
+    public enum FollowType {
+        IDLE,
+        TRAJECTORY,
+        TRAJECTORY_SEQUENCE
+    }
+
+    public enum CurrentFollowSegment {
         IDLE,
         TURN,
         FOLLOW_TRAJECTORY
@@ -65,7 +77,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     private FtcDashboard dashboard;
     private NanoClock clock;
 
-    private Mode mode;
+    private FollowType currentlyFollowing;
+    private CurrentFollowSegment currentFollowSegment;
 
     private PIDFController turnController;
     private MotionProfile turnProfile;
@@ -82,6 +95,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private Pose2d lastPoseOnTurn;
 
+    private double trajectorySequenceFollowingStart;
+    private TrajectorySequence currentTrajectorySequence;
+    private int lastSequenceStateIndex;
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -90,7 +107,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         clock = NanoClock.system();
 
-        mode = Mode.IDLE;
+        currentlyFollowing = FollowType.IDLE;
+        currentFollowSegment = CurrentFollowSegment.IDLE;
 
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
@@ -158,6 +176,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         return new TrajectoryBuilder(startPose, startHeading, constraints);
     }
 
+    public TrajectorySequenceBuilder trajectorySequenceBuilder(Pose2d startPose) {
+        return new TrajectorySequenceBuilder(startPose, constraints);
+    }
+
     public void turnAsync(double angle) {
         double heading = getPoseEstimate().getHeading();
 
@@ -172,7 +194,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         );
 
         turnStart = clock.seconds();
-        mode = Mode.TURN;
+
+        currentlyFollowing = FollowType.TRAJECTORY;
+        currentFollowSegment = CurrentFollowSegment.TURN;
     }
 
     public void turn(double angle) {
@@ -182,7 +206,9 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void followTrajectoryAsync(Trajectory trajectory) {
         follower.followTrajectory(trajectory);
-        mode = Mode.FOLLOW_TRAJECTORY;
+
+        currentlyFollowing = FollowType.TRAJECTORY;
+        currentFollowSegment = CurrentFollowSegment.FOLLOW_TRAJECTORY;
     }
 
     public void followTrajectory(Trajectory trajectory) {
@@ -190,8 +216,22 @@ public class SampleMecanumDrive extends MecanumDrive {
         waitForIdle();
     }
 
+    public void followTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
+        currentTrajectorySequence = trajectorySequence;
+        trajectorySequenceFollowingStart = clock.seconds();
+        lastSequenceStateIndex = -1;
+
+        currentlyFollowing = FollowType.TRAJECTORY_SEQUENCE;
+        currentFollowSegment = CurrentFollowSegment.IDLE;
+    }
+
+    public void followTrajectorySequence(TrajectorySequence trajectorySequence) {
+        followTrajectorySequenceAsync(trajectorySequence);
+        waitForIdle();
+    }
+
     public Pose2d getLastError() {
-        switch (mode) {
+        switch (currentFollowSegment) {
             case FOLLOW_TRAJECTORY:
                 return follower.getLastError();
             case TURN:
@@ -203,6 +243,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void update() {
+        double now = clock.seconds();
+
         updatePoseEstimate();
 
         Pose2d currentPose = getPoseEstimate();
@@ -213,7 +255,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
 
-        packet.put("mode", mode);
+        packet.put("followType", currentlyFollowing);
+        packet.put("segmentMode", currentFollowSegment);
 
         packet.put("x", currentPose.getX());
         packet.put("y", currentPose.getY());
@@ -223,12 +266,42 @@ public class SampleMecanumDrive extends MecanumDrive {
         packet.put("yError", lastError.getY());
         packet.put("headingError", lastError.getHeading());
 
-        switch (mode) {
+        if (currentlyFollowing == FollowType.TRAJECTORY_SEQUENCE && currentTrajectorySequence != null) {
+            SequenceState currentSequence;
+
+            if (now - trajectorySequenceFollowingStart > currentTrajectorySequence.getDuration()) {
+                currentlyFollowing = FollowType.IDLE;
+                currentFollowSegment = CurrentFollowSegment.IDLE;
+            }
+
+            currentSequence = currentTrajectorySequence.getCurrentState(now - trajectorySequenceFollowingStart);
+
+            if (lastSequenceStateIndex != currentSequence.getIndex()) {
+                if (currentSequence.getCurrentSegment() instanceof WaitSegment) {
+                    currentFollowSegment = CurrentFollowSegment.IDLE;
+                } else if (currentSequence.getCurrentSegment() instanceof TurnSegment) {
+                    currentFollowSegment = CurrentFollowSegment.TURN;
+
+                    lastPoseOnTurn = getPoseEstimate();
+
+                    turnStart = now;
+                    turnProfile = ((TurnSegment) currentSequence.getCurrentSegment()).getMotionProfile();
+                } else if (currentSequence.getCurrentSegment() instanceof TrajectorySegment) {
+                    currentFollowSegment = CurrentFollowSegment.FOLLOW_TRAJECTORY;
+
+                    follower.followTrajectory(((TrajectorySegment) currentSequence.getCurrentSegment()).getTrajectory());
+                }
+            }
+            
+            lastSequenceStateIndex = currentSequence.getIndex();
+        }
+
+        switch (currentFollowSegment) {
             case IDLE:
                 // do nothing
                 break;
             case TURN: {
-                double t = clock.seconds() - turnStart;
+                double t = now - turnStart;
 
                 MotionState targetState = turnProfile.get(t);
 
@@ -250,8 +323,12 @@ public class SampleMecanumDrive extends MecanumDrive {
                 DashboardUtil.drawRobot(fieldOverlay, newPose);
 
                 if (t >= turnProfile.duration()) {
-                    mode = Mode.IDLE;
-                    setDriveSignal(new DriveSignal());
+                    currentFollowSegment = CurrentFollowSegment.IDLE;
+
+                    if (currentlyFollowing == FollowType.TRAJECTORY) {
+                        currentlyFollowing = FollowType.IDLE;
+                        setDriveSignal(new DriveSignal());
+                    }
                 }
 
                 break;
@@ -271,8 +348,12 @@ public class SampleMecanumDrive extends MecanumDrive {
                 DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
 
                 if (!follower.isFollowing()) {
-                    mode = Mode.IDLE;
-                    setDriveSignal(new DriveSignal());
+                    currentFollowSegment = CurrentFollowSegment.IDLE;
+
+                    if (currentlyFollowing == FollowType.TRAJECTORY) {
+                        currentlyFollowing = FollowType.IDLE;
+                        setDriveSignal(new DriveSignal());
+                    }
                 }
 
                 break;
@@ -292,7 +373,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public boolean isBusy() {
-        return mode != Mode.IDLE;
+        return currentFollowSegment != CurrentFollowSegment.IDLE && currentlyFollowing != FollowType.IDLE;
     }
 
     public void setMode(DcMotor.RunMode runMode) {

@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.Traject
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
