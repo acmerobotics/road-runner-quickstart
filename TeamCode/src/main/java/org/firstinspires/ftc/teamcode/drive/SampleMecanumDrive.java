@@ -32,6 +32,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.teamcode.trajectorysequence.SequenceState;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
@@ -56,48 +57,22 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
+public final class SampleMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
 
-    public enum FollowType {
-        IDLE,
-        TRAJECTORY,
-        TRAJECTORY_SEQUENCE
-    }
-
-    public enum CurrentFollowSegment {
-        IDLE,
-        TURN,
-        FOLLOW_TRAJECTORY
-    }
-
     private FtcDashboard dashboard;
-    private NanoClock clock;
-
-    private FollowType currentlyFollowing;
-    private CurrentFollowSegment currentFollowSegment;
-
-    private PIDFController turnController;
-    private MotionProfile turnProfile;
-    private double turnStart;
 
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
-
-    private List<Pose2d> poseHistory;
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
-    private Pose2d lastPoseOnTurn;
-
-    private double trajectorySequenceFollowingStart;
-    private TrajectorySequence currentTrajectorySequence;
-    private int lastSequenceStateIndex;
+    private TrajectorySequenceRunner trajectorySequenceRunner;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -105,19 +80,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
-        clock = NanoClock.system();
-
-        currentlyFollowing = FollowType.IDLE;
-        currentFollowSegment = CurrentFollowSegment.IDLE;
-
-        turnController = new PIDFController(HEADING_PID);
-        turnController.setInputBounds(0, 2 * Math.PI);
-
         constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
-
-        poseHistory = new ArrayList<>();
+        
+        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -181,199 +148,31 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void turnAsync(double angle) {
-        double heading = getPoseEstimate().getHeading();
-
-        lastPoseOnTurn = getPoseEstimate();
-
-        turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
-                new MotionState(heading, 0, 0, 0),
-                new MotionState(heading + angle, 0, 0, 0),
-                constraints.maxAngVel,
-                constraints.maxAngAccel,
-                constraints.maxAngJerk
-        );
-
-        turnStart = clock.seconds();
-
-        currentlyFollowing = FollowType.TRAJECTORY;
-        currentFollowSegment = CurrentFollowSegment.TURN;
+        trajectorySequenceRunner.turnAsync(angle, getPoseEstimate(), constraints);
     }
 
     public void turn(double angle) {
-        turnAsync(angle);
-        waitForIdle();
+        trajectorySequenceRunner.turn(angle, getPoseEstimate(), constraints, this::getPoseEstimate);
     }
 
     public void followTrajectoryAsync(Trajectory trajectory) {
-        follower.followTrajectory(trajectory);
-
-        currentlyFollowing = FollowType.TRAJECTORY;
-        currentFollowSegment = CurrentFollowSegment.FOLLOW_TRAJECTORY;
+        trajectorySequenceRunner.followTrajectoryAsync(trajectory);
     }
 
     public void followTrajectory(Trajectory trajectory) {
-        followTrajectoryAsync(trajectory);
-        waitForIdle();
+        trajectorySequenceRunner.followTrajectory(trajectory, this::getPoseEstimate);
     }
 
     public void followTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
-        currentTrajectorySequence = trajectorySequence;
-        trajectorySequenceFollowingStart = clock.seconds();
-        lastSequenceStateIndex = -1;
-
-        currentlyFollowing = FollowType.TRAJECTORY_SEQUENCE;
-        currentFollowSegment = CurrentFollowSegment.IDLE;
+        trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
     }
 
     public void followTrajectorySequence(TrajectorySequence trajectorySequence) {
-        followTrajectorySequenceAsync(trajectorySequence);
-        waitForIdle();
-    }
-
-    public Pose2d getLastError() {
-        switch (currentFollowSegment) {
-            case FOLLOW_TRAJECTORY:
-                return follower.getLastError();
-            case TURN:
-                return new Pose2d(0, 0, turnController.getLastError());
-            case IDLE:
-                return new Pose2d();
-        }
-        throw new AssertionError();
+        trajectorySequenceRunner.followTrajectorySequence(trajectorySequence, this::getPoseEstimate);
     }
 
     public void update() {
-        double now = clock.seconds();
-
-        updatePoseEstimate();
-
-        Pose2d currentPose = getPoseEstimate();
-        Pose2d lastError = getLastError();
-
-        poseHistory.add(currentPose);
-
-        TelemetryPacket packet = new TelemetryPacket();
-        Canvas fieldOverlay = packet.fieldOverlay();
-
-        packet.put("followType", currentlyFollowing);
-        packet.put("segmentMode", currentFollowSegment);
-
-        packet.put("x", currentPose.getX());
-        packet.put("y", currentPose.getY());
-        packet.put("heading", currentPose.getHeading());
-
-        packet.put("xError", lastError.getX());
-        packet.put("yError", lastError.getY());
-        packet.put("headingError", lastError.getHeading());
-
-        if (currentlyFollowing == FollowType.TRAJECTORY_SEQUENCE && currentTrajectorySequence != null) {
-            SequenceState currentSequence;
-
-            if (now - trajectorySequenceFollowingStart > currentTrajectorySequence.getDuration()) {
-                currentlyFollowing = FollowType.IDLE;
-                currentFollowSegment = CurrentFollowSegment.IDLE;
-            }
-
-            currentSequence = currentTrajectorySequence.getCurrentState(now - trajectorySequenceFollowingStart);
-
-            if (lastSequenceStateIndex != currentSequence.getIndex()) {
-                if (currentSequence.getCurrentSegment() instanceof WaitSegment) {
-                    currentFollowSegment = CurrentFollowSegment.IDLE;
-                } else if (currentSequence.getCurrentSegment() instanceof TurnSegment) {
-                    currentFollowSegment = CurrentFollowSegment.TURN;
-
-                    lastPoseOnTurn = getPoseEstimate();
-
-                    turnStart = now;
-                    turnProfile = ((TurnSegment) currentSequence.getCurrentSegment()).getMotionProfile();
-                } else if (currentSequence.getCurrentSegment() instanceof TrajectorySegment) {
-                    currentFollowSegment = CurrentFollowSegment.FOLLOW_TRAJECTORY;
-
-                    follower.followTrajectory(((TrajectorySegment) currentSequence.getCurrentSegment()).getTrajectory());
-                }
-            }
-            
-            lastSequenceStateIndex = currentSequence.getIndex();
-        }
-
-        switch (currentFollowSegment) {
-            case IDLE:
-                // do nothing
-                break;
-            case TURN: {
-                double t = now - turnStart;
-
-                MotionState targetState = turnProfile.get(t);
-
-                turnController.setTargetPosition(targetState.getX());
-
-                double correction = turnController.update(currentPose.getHeading());
-
-                double targetOmega = targetState.getV();
-                double targetAlpha = targetState.getA();
-                setDriveSignal(new DriveSignal(new Pose2d(
-                        0, 0, targetOmega + correction
-                ), new Pose2d(
-                        0, 0, targetAlpha
-                )));
-
-                Pose2d newPose = lastPoseOnTurn.copy(lastPoseOnTurn.getX(), lastPoseOnTurn.getY(), targetState.getX());
-
-                fieldOverlay.setStroke("#4CAF50");
-                DashboardUtil.drawRobot(fieldOverlay, newPose);
-
-                if (t >= turnProfile.duration()) {
-                    currentFollowSegment = CurrentFollowSegment.IDLE;
-
-                    if (currentlyFollowing == FollowType.TRAJECTORY) {
-                        currentlyFollowing = FollowType.IDLE;
-                        setDriveSignal(new DriveSignal());
-                    }
-                }
-
-                break;
-            }
-            case FOLLOW_TRAJECTORY: {
-                setDriveSignal(follower.update(currentPose));
-
-                Trajectory trajectory = follower.getTrajectory();
-
-                fieldOverlay.setStrokeWidth(1);
-                fieldOverlay.setStroke("#4CAF50");
-                DashboardUtil.drawSampledPath(fieldOverlay, trajectory.getPath());
-                double t = follower.elapsedTime();
-                DashboardUtil.drawRobot(fieldOverlay, trajectory.get(t));
-
-                fieldOverlay.setStroke("#3F51B5");
-                DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
-
-                if (!follower.isFollowing()) {
-                    currentFollowSegment = CurrentFollowSegment.IDLE;
-
-                    if (currentlyFollowing == FollowType.TRAJECTORY) {
-                        currentlyFollowing = FollowType.IDLE;
-                        setDriveSignal(new DriveSignal());
-                    }
-                }
-
-                break;
-            }
-        }
-
-        fieldOverlay.setStroke("#3F51B5");
-        DashboardUtil.drawRobot(fieldOverlay, currentPose);
-
-        dashboard.sendTelemetryPacket(packet);
-    }
-
-    public void waitForIdle() {
-        while (!Thread.currentThread().isInterrupted() && isBusy()) {
-            update();
-        }
-    }
-
-    public boolean isBusy() {
-        return currentFollowSegment != CurrentFollowSegment.IDLE && currentlyFollowing != FollowType.IDLE;
+        setDriveSignal(trajectorySequenceRunner.update(getPoseEstimate()));
     }
 
     public void setMode(DcMotor.RunMode runMode) {
