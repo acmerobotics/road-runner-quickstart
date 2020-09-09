@@ -46,13 +46,13 @@ public class TrajectorySequenceRunner {
     private double trajectorySequenceFollowingStart = -1.0;
     private int trajectorySequenceLastSegmentIndex = -1;
 
-    public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients, NanoClock clock) {
+    public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
         this.follower = follower;
 
         turnController = new PIDFController(headingPIDCoefficients);
         turnController.setInputBounds(0, 2 * Math.PI);
 
-        this.clock = clock;
+        this.clock = NanoClock.system();
     }
 
     private void turnInternalAsync(Pose2d poseOnStart, MotionProfile turnProfile) {
