@@ -387,10 +387,17 @@ public class TrajectorySequenceBuilder {
         return this;
     }
 
+    public TrajectorySequenceBuilder addTrajectory(Trajectory trajectory) {
+        pushPath();
+
+        sequenceSegments.add(new TrajectorySegment(trajectory));
+        return this;
+    }
+
     private void pushPath() {
         if (currentTrajectoryBuilder != null) {
             Trajectory builtTraj = currentTrajectoryBuilder.build();
-            sequenceSegments.add(new TrajectorySegment(builtTraj, builtTraj.duration()));
+            sequenceSegments.add(new TrajectorySegment(builtTraj));
         }
 
         currentTrajectoryBuilder = null;
