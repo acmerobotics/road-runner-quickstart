@@ -5,8 +5,8 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 public final class TrajectorySegment extends SequenceSegment {
     private final Trajectory trajectory;
 
-    public TrajectorySegment(Trajectory trajectory, double duration) {
-        super(duration);
+    public TrajectorySegment(Trajectory trajectory) {
+        super(trajectory.duration());
         this.trajectory = trajectory;
     }
 
