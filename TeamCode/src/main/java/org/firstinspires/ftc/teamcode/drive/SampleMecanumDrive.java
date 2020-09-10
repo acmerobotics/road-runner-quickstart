@@ -3,24 +3,16 @@ package org.firstinspires.ftc.teamcode.drive;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.control.PIDFController;
-import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.profile.MotionProfile;
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
-import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
-import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -29,14 +21,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.trajectorysequence.SequenceState;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
-import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
-import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
-import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -83,8 +70,6 @@ public final class SampleMecanumDrive extends MecanumDrive {
         constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
-        
-        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -129,6 +114,10 @@ public final class SampleMecanumDrive extends MecanumDrive {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+
+        // Ensure that you set your localizer above the following `trajectorySequenceRunner` initialization
+
+        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -148,19 +137,37 @@ public final class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void turnAsync(double angle) {
-        trajectorySequenceRunner.turnAsync(angle, getPoseEstimate(), constraints);
+        trajectorySequenceRunner.followTrajectorySequenceAsync(
+                trajectorySequenceBuilder(new Pose2d())
+                        .turn(angle)
+                        .build()
+        );
     }
 
     public void turn(double angle) {
-        trajectorySequenceRunner.turn(angle, getPoseEstimate(), constraints, this::getPoseEstimate);
+        trajectorySequenceRunner.followTrajectorySequenceAsync(
+                trajectorySequenceBuilder(new Pose2d())
+                        .turn(angle)
+                        .build()
+        );
+        waitForRunnerIdle();
     }
 
     public void followTrajectoryAsync(Trajectory trajectory) {
-        trajectorySequenceRunner.followTrajectoryAsync(trajectory);
+        trajectorySequenceRunner.followTrajectorySequenceAsync(
+                trajectorySequenceBuilder(trajectory.start())
+                        .addTrajectory(trajectory)
+                        .build()
+        );
     }
 
     public void followTrajectory(Trajectory trajectory) {
-        trajectorySequenceRunner.followTrajectory(trajectory, this::getPoseEstimate);
+        trajectorySequenceRunner.followTrajectorySequenceAsync(
+                trajectorySequenceBuilder(trajectory.start())
+                        .addTrajectory(trajectory)
+                        .build()
+        );
+        waitForRunnerIdle();
     }
 
     public void followTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
@@ -168,11 +175,17 @@ public final class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void followTrajectorySequence(TrajectorySequence trajectorySequence) {
-        trajectorySequenceRunner.followTrajectorySequence(trajectorySequence, this::getPoseEstimate);
+        trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
+        waitForRunnerIdle();
     }
 
     public void update() {
         setDriveSignal(trajectorySequenceRunner.update(getPoseEstimate()));
+    }
+
+    public void waitForRunnerIdle() {
+        while (!Thread.currentThread().isInterrupted() && trajectorySequenceRunner.isBusy())
+            this.update();
     }
 
     public void setMode(DcMotor.RunMode runMode) {
