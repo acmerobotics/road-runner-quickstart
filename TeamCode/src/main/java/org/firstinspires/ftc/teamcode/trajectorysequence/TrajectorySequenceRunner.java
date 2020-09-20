@@ -5,10 +5,10 @@ import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
 
+import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.SequenceSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
@@ -18,10 +18,6 @@ public class TrajectorySequenceRunner {
 
     private final PIDFController turnController;
     private final NanoClock clock;
-
-    private Pose2d lastPoseOnTurn = new Pose2d();
-    private double turnStart = -1.0;
-    private MotionProfile turnProfile;
 
     private TrajectorySequence currentTrajectorySequence = null;
     private double trajectorySequenceFollowingStart = -1.0;
@@ -46,31 +42,40 @@ public class TrajectorySequenceRunner {
         double now = clock.seconds();
         double deltaTime = now - trajectorySequenceFollowingStart;
 
-        if (deltaTime >= currentTrajectorySequence.getDuration())
+        if (deltaTime >= currentTrajectorySequence.duration())
             currentTrajectorySequence = null;
 
         if (currentTrajectorySequence == null)
             return new DriveSignal();
 
-        SequenceState currentSegment = currentTrajectorySequence.getCurrentState(deltaTime);
+        SequenceSegment segment = null;
+        double segmentOffsetTime = 0;
+        int currentSegmentIndex = -1;
 
-        boolean newTransition = trajectorySequenceLastSegmentIndex != currentSegment.getIndex();
+        double currentAccumulatedTime = 0;
+        for (int i = 0; i < currentTrajectorySequence.size(); i++) {
+            SequenceSegment seg = currentTrajectorySequence.get(i);
 
-        trajectorySequenceLastSegmentIndex = currentSegment.getIndex();
+            if (currentAccumulatedTime + seg.getDuration() > deltaTime) {
+                segmentOffsetTime = deltaTime - currentAccumulatedTime;
+                segment = seg;
 
-        if (currentSegment.getCurrentSegment() instanceof WaitSegment) {
-            return new DriveSignal();
-        } else if (currentSegment.getCurrentSegment() instanceof TurnSegment) {
-            if (newTransition) {
-                lastPoseOnTurn = poseEstimate;
-                turnStart = now;
+                currentSegmentIndex = i;
 
-                turnProfile = ((TurnSegment) currentSegment.getCurrentSegment()).getMotionProfile();
+                break;
+            } else {
+                currentAccumulatedTime += seg.getDuration();
             }
+        }
 
-            double turnDeltaTime = now - turnStart;
+        boolean newTransition = trajectorySequenceLastSegmentIndex != currentSegmentIndex;
 
-            MotionState targetState = turnProfile.get(turnDeltaTime);
+        trajectorySequenceLastSegmentIndex = currentSegmentIndex;
+
+        if (segment instanceof WaitSegment) {
+            return new DriveSignal();
+        } else if (segment instanceof TurnSegment) {
+            MotionState targetState = ((TurnSegment) segment).getMotionProfile().get(segmentOffsetTime);
 
             turnController.setTargetPosition(targetState.getX());
 
@@ -83,9 +88,9 @@ public class TrajectorySequenceRunner {
                     new Pose2d(0, 0, targetOmega + correction),
                     new Pose2d(0, 0, targetAlpha)
             );
-        } else if (currentSegment.getCurrentSegment() instanceof TrajectorySegment) {
+        } else if (segment instanceof TrajectorySegment) {
             if (newTransition)
-                follower.followTrajectory(((TrajectorySegment) currentSegment.getCurrentSegment()).getTrajectory());
+                follower.followTrajectory(((TrajectorySegment) segment).getTrajectory());
 
             return follower.update(poseEstimate);
         }

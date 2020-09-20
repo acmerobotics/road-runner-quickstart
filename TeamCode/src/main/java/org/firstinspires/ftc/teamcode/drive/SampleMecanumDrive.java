@@ -180,7 +180,10 @@ public final class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void update() {
-        setDriveSignal(trajectorySequenceRunner.update(getPoseEstimate()));
+        updatePoseEstimate();
+
+        if(trajectorySequenceRunner.isBusy())
+            setDriveSignal(trajectorySequenceRunner.update(getPoseEstimate()));
     }
 
     public void waitForRunnerIdle() {
