@@ -6,12 +6,16 @@ import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.profile.MotionState;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker;
 import com.acmerobotics.roadrunner.util.NanoClock;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.SequenceSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class TrajectorySequenceRunner {
     private TrajectoryFollower follower;
@@ -22,6 +26,8 @@ public class TrajectorySequenceRunner {
     private TrajectorySequence currentTrajectorySequence = null;
     private double trajectorySequenceFollowingStart = -1.0;
     private int trajectorySequenceLastSegmentIndex = -1;
+
+    ArrayList<TrajectoryMarker> remainingMarkers = new ArrayList<>();
 
     public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
         this.follower = follower;
@@ -42,8 +48,13 @@ public class TrajectorySequenceRunner {
         double now = clock.seconds();
         double deltaTime = now - trajectorySequenceFollowingStart;
 
-        if (deltaTime >= currentTrajectorySequence.duration())
+        if (deltaTime >= currentTrajectorySequence.duration()) {
             currentTrajectorySequence = null;
+
+            for (TrajectoryMarker marker : remainingMarkers) {
+                marker.getCallback().onMarkerReached();
+            }
+        }
 
         if (currentTrajectorySequence == null)
             return new DriveSignal();
@@ -72,6 +83,16 @@ public class TrajectorySequenceRunner {
 
         trajectorySequenceLastSegmentIndex = currentSegmentIndex;
 
+        if (newTransition) {
+            for (TrajectoryMarker marker : remainingMarkers) {
+                marker.getCallback().onMarkerReached();
+            }
+
+            remainingMarkers.clear();
+            remainingMarkers.addAll(segment.getMarkers());
+            Collections.sort(remainingMarkers, (trajectoryMarker, t1) -> Double.compare(trajectoryMarker.getTime(), t1.getTime()));
+        }
+
         if (segment instanceof WaitSegment) {
             return new DriveSignal();
         } else if (segment instanceof TurnSegment) {
@@ -93,6 +114,11 @@ public class TrajectorySequenceRunner {
                 follower.followTrajectory(((TrajectorySegment) segment).getTrajectory());
 
             return follower.update(poseEstimate);
+        }
+
+        while (remainingMarkers.size() > 0 && segmentOffsetTime > remainingMarkers.get(0).getTime()) {
+            remainingMarkers.get(0).getCallback().onMarkerReached();
+            remainingMarkers.remove(0);
         }
 
         return new DriveSignal();
