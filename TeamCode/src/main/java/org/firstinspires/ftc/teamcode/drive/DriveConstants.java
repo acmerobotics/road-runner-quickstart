@@ -25,10 +25,9 @@ public class DriveConstants {
     public static final double MAX_RPM = 1;
 
     /*
-     * RUN_USING_ENCODER should be set to `true` if you wish to use the Rev Hub's velocity
-     * controller. If your bot utilizes drive encoders, this should be `true`. If you are not
-     * utilizing drive encoders and are instead using feedforward with a dead wheel configuration,
-     * set this to `false`.
+     * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
+     * Set this flag to false if drive encoders are not present and an alternative localization
+     * method is in use (e.g., tracking wheels).
      *
      * If using the built-in motor velocity PID, update
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
