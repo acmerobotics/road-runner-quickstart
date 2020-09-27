@@ -25,8 +25,14 @@ public class DriveConstants {
     public static final double MAX_RPM = 1;
 
     /*
-     * Set the first flag appropriately. If using the built-in motor velocity PID, update
+     * RUN_USING_ENCODER should be set to `true` if you wish to use the Rev Hub's velocity
+     * controller. If your bot utilizes drive encoders, this should be `true`. If you are not
+     * utilizing drive encoders and are instead using feedforward with a dead wheel configuration,
+     * set this to `false`.
+     *
+     * If using the built-in motor velocity PID, update
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
+     * Set the value of MOTOR_VELO_PID to `new PIDCoefficients(kP, kI, kD);`
      */
     public static final boolean RUN_USING_ENCODER = true;
     public static final PIDCoefficients MOTOR_VELO_PID = null;
