@@ -180,6 +180,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                 case TUNING_MODE:
                     if(gamepad1.x) {
                         mode = Mode.DRIVER_MODE;
+                        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     }
 
                     // calculate and set the motor power
@@ -207,6 +208,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                     break;
                 case DRIVER_MODE:
                     if(gamepad1.a) {
+                        drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
                         mode = Mode.TUNING_MODE;
                         movingForwards = true;
                         activeProfile = generateProfile(movingForwards);
