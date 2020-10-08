@@ -36,6 +36,12 @@ public class DriveConstants {
     public static final boolean RUN_USING_ENCODER = true;
     public static final PIDCoefficients MOTOR_VELO_PID = null;
 
+    public static double kP = 35;
+    public static double kI = 0;
+    public static double kD = 15;
+
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
+
     /*
      * These are physical constants that can be determined from your robot (including the track
      * width; it will be tune empirically later although a rough estimate is important). Users are
