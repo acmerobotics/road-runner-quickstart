@@ -50,6 +50,10 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 public class DriveVelocityPIDTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
+    public static double VX_WEIGHT = 1;
+    public static double VY_WEIGHT = 1;
+    public static double OMEGA_WEIGHT = 1;
+
     private static final String PID_VAR_NAME = "VELO_PID";
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -57,6 +61,13 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     private CustomVariable catVar;
 
     private SampleMecanumDrive drive;
+
+    enum Mode {
+        DRIVER_MODE,
+        TUNING_MODE
+    }
+
+    private Mode mode;
 
     private static MotionProfile generateProfile(boolean movingForward) {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
@@ -143,6 +154,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
         drive = new SampleMecanumDrive(hardwareMap);
 
+        mode = Mode.TUNING_MODE;
+
         addPidVariable();
 
         NanoClock clock = NanoClock.system();
@@ -161,28 +174,70 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
 
         while (!isStopRequested()) {
-            // calculate and set the motor power
-            double profileTime = clock.seconds() - profileStart;
+            telemetry.addData("Mode", mode);
 
-            if (profileTime > activeProfile.duration()) {
-                // generate a new profile
-                movingForwards = !movingForwards;
-                activeProfile = generateProfile(movingForwards);
-                profileStart = clock.seconds();
+            switch(mode) {
+                case TUNING_MODE:
+                    if(gamepad1.x) {
+                        mode = Mode.DRIVER_MODE;
+                    }
+
+                    // calculate and set the motor power
+                    double profileTime = clock.seconds() - profileStart;
+
+                    if (profileTime > activeProfile.duration()) {
+                        // generate a new profile
+                        movingForwards = !movingForwards;
+                        activeProfile = generateProfile(movingForwards);
+                        profileStart = clock.seconds();
+                    }
+
+                    MotionState motionState = activeProfile.get(profileTime);
+                    double targetPower = kV * motionState.getV();
+                    drive.setDrivePower(new Pose2d(targetPower, 0, 0));
+
+                    List<Double> velocities = drive.getWheelVelocities();
+
+                    // update telemetry
+                    telemetry.addData("targetVelocity", motionState.getV());
+                    for (int i = 0; i < velocities.size(); i++) {
+                        telemetry.addData("velocity" + i, velocities.get(i));
+                        telemetry.addData("error" + i, motionState.getV() - velocities.get(i));
+                    }
+                    break;
+                case DRIVER_MODE:
+                    if(gamepad1.a) {
+                        mode = Mode.TUNING_MODE;
+                        movingForwards = true;
+                        activeProfile = generateProfile(movingForwards);
+                        profileStart = clock.seconds();
+                    }
+
+                    Pose2d baseVel = new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    );
+
+                    Pose2d vel;
+                    if (Math.abs(baseVel.getX()) + Math.abs(baseVel.getY()) + Math.abs(baseVel.getHeading()) > 1) {
+                        // re-normalize the powers according to the weights
+                        double denom = VX_WEIGHT * Math.abs(baseVel.getX())
+                                + VY_WEIGHT * Math.abs(baseVel.getY())
+                                + OMEGA_WEIGHT * Math.abs(baseVel.getHeading());
+                        vel = new Pose2d(
+                                VX_WEIGHT * baseVel.getX(),
+                                VY_WEIGHT * baseVel.getY(),
+                                OMEGA_WEIGHT * baseVel.getHeading()
+                        ).div(denom);
+                    } else {
+                        vel = baseVel;
+                    }
+
+                    drive.setDrivePower(vel);
+                    break;
             }
 
-            MotionState motionState = activeProfile.get(profileTime);
-            double targetPower = kV * motionState.getV();
-            drive.setDrivePower(new Pose2d(targetPower, 0, 0));
-
-            List<Double> velocities = drive.getWheelVelocities();
-
-            // update telemetry
-            telemetry.addData("targetVelocity", motionState.getV());
-            for (int i = 0; i < velocities.size(); i++) {
-                telemetry.addData("velocity" + i, velocities.get(i));
-                telemetry.addData("error" + i, motionState.getV() - velocities.get(i));
-            }
             telemetry.update();
         }
 
