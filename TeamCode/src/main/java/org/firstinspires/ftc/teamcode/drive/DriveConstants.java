@@ -34,11 +34,10 @@ public class DriveConstants {
      * Set the value of MOTOR_VELO_PID to `new PIDCoefficients(kP, kI, kD);`
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static final PIDCoefficients MOTOR_VELO_PID = null;
 
-    public static double kP = 35;
+    public static double kP = 0;
     public static double kI = 0;
-    public static double kD = 15;
+    public static double kD = 0;
 
     public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
 
