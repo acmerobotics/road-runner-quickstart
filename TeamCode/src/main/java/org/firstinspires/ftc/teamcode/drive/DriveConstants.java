@@ -34,12 +34,7 @@ public class DriveConstants {
      * Set the value of MOTOR_VELO_PID to `new PIDCoefficients(kP, kI, kD);`
      */
     public static final boolean RUN_USING_ENCODER = true;
-
-    public static double kP = 0;
-    public static double kI = 0;
-    public static double kD = 0;
-
-    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
+    public static PIDCoefficients MOTOR_VELO_PID = null;
 
     /*
      * These are physical constants that can be determined from your robot (including the track
