@@ -53,10 +53,6 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 public class DriveVelocityPIDTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
-    public static double VX_WEIGHT = 1;
-    public static double VY_WEIGHT = 1;
-    public static double OMEGA_WEIGHT = 1;
-
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private SampleMecanumDrive drive;
@@ -168,19 +164,15 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                     if (Math.abs(baseVel.getX()) + Math.abs(baseVel.getY())
                             + Math.abs(baseVel.getHeading()) > 1) {
                         // re-normalize the powers according to the weights
-                        double denom = VX_WEIGHT * Math.abs(baseVel.getX())
-                                + VY_WEIGHT * Math.abs(baseVel.getY())
-                                + OMEGA_WEIGHT * Math.abs(baseVel.getHeading());
-                        vel = new Pose2d(
-                                VX_WEIGHT * baseVel.getX(),
-                                VY_WEIGHT * baseVel.getY(),
-                                OMEGA_WEIGHT * baseVel.getHeading()
-                        ).div(denom);
+                        double denom = Math.abs(baseVel.getX())
+                                + Math.abs(baseVel.getY())
+                                + Math.abs(baseVel.getHeading());
+                        vel = baseVel.div(denom);
                     } else {
                         vel = baseVel;
                     }
 
-                    drive.setDrivePower(vel);
+                    drive.setWeightedDrivePower(vel);
                     break;
             }
 

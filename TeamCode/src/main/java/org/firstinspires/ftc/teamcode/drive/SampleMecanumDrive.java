@@ -56,6 +56,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public static double LATERAL_MULTIPLIER = 1;
 
+    public static double VX_WEIGHT = 1;
+    public static double VY_WEIGHT = 1;
+    public static double OMEGA_WEIGHT = 1;
+
     public enum Mode {
         IDLE,
         TURN,
@@ -320,6 +324,16 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
     }
 
+    public void setWeightedDrivePower(Pose2d drivePower) {
+        setDrivePower(
+                new Pose2d(
+                        VX_WEIGHT * drivePower.getX(),
+                        VY_WEIGHT * drivePower.getY(),
+                        OMEGA_WEIGHT * drivePower.getHeading()
+                )
+        );
+    }
+
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
@@ -330,6 +344,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         return wheelPositions;
     }
 
+    @Override
     public List<Double> getWheelVelocities() {
         List<Double> wheelVelocities = new ArrayList<>();
         for (DcMotorEx motor : motors) {
