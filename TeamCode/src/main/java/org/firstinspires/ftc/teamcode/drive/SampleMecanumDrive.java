@@ -325,13 +325,23 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void setWeightedDrivePower(Pose2d drivePower) {
-        setDrivePower(
-                new Pose2d(
-                        VX_WEIGHT * drivePower.getX(),
-                        VY_WEIGHT * drivePower.getY(),
-                        OMEGA_WEIGHT * drivePower.getHeading()
-                )
-        );
+        Pose2d vel = drivePower;
+
+        if (Math.abs(drivePower.getX()) + Math.abs(drivePower.getY())
+                + Math.abs(drivePower.getHeading()) > 1) {
+            // re-normalize the powers according to the weights
+            double denom = VX_WEIGHT * Math.abs(drivePower.getX())
+                    + VY_WEIGHT * Math.abs(drivePower.getY())
+                    + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
+
+            vel = new Pose2d(
+                    VX_WEIGHT * drivePower.getX(),
+                    VY_WEIGHT * drivePower.getY(),
+                    OMEGA_WEIGHT * drivePower.getHeading()
+            ).div(denom);
+        }
+
+        setDrivePower(vel);
     }
 
     @NonNull

@@ -153,25 +153,13 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                         profileStart = clock.seconds();
                     }
 
-                    Pose2d baseVel = new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
+                    drive.setWeightedDrivePower(
+                            new Pose2d(
+                                    -gamepad1.left_stick_y,
+                                    -gamepad1.left_stick_x,
+                                    -gamepad1.right_stick_x
+                            )
                     );
-
-                    Pose2d vel;
-                    if (Math.abs(baseVel.getX()) + Math.abs(baseVel.getY())
-                            + Math.abs(baseVel.getHeading()) > 1) {
-                        // re-normalize the powers according to the weights
-                        double denom = Math.abs(baseVel.getX())
-                                + Math.abs(baseVel.getY())
-                                + Math.abs(baseVel.getHeading());
-                        vel = baseVel.div(denom);
-                    } else {
-                        vel = baseVel;
-                    }
-
-                    drive.setWeightedDrivePower(vel);
                     break;
             }
 
