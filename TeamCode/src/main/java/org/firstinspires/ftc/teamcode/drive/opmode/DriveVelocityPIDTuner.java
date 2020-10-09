@@ -113,7 +113,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
 
         while (!isStopRequested()) {
-            telemetry.addData("Mode", mode);
+            telemetry.addData("mode", mode);
 
             switch (mode) {
                 case TUNING_MODE:
