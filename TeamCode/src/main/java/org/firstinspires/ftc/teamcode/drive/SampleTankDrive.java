@@ -303,7 +303,7 @@ public class SampleTankDrive extends TankDrive {
     public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients, HardwareMap hardwareMap) {
         PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
                 coefficients.p, coefficients.i, coefficients.d,
-                coefficients.f * 13 / getBatteryVoltage(hardwareMap)
+                coefficients.f * 14 / getBatteryVoltage(hardwareMap)
         );
         for (DcMotorEx motor : motors) {
             motor.setPIDFCoefficients(runMode, compensatedCoefficients);
