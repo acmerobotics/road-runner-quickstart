@@ -91,7 +91,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
         mode = Mode.TUNING_MODE;
 
-        drive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID, hardwareMap);
+        drive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID,12 / hardwareMap.voltageSensor.iterator().next().getVoltage() );
 
         NanoClock clock = NanoClock.system();
 
@@ -166,7 +166,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
             if (lastKp != MOTOR_VELO_PID.p || lastKd != MOTOR_VELO_PID.d
                     || lastKi != MOTOR_VELO_PID.i || lastKf != MOTOR_VELO_PID.f) {
-                drive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID, hardwareMap);
+                drive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID, 12 / hardwareMap.voltageSensor.iterator().next().getVoltage());
 
                 lastKp = MOTOR_VELO_PID.p;
                 lastKi = MOTOR_VELO_PID.i;
