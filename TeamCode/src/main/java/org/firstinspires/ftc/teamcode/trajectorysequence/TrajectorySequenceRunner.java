@@ -21,11 +21,13 @@ public class TrajectorySequenceRunner {
     private TrajectoryFollower follower;
 
     private final PIDFController turnController;
+
     private final NanoClock clock;
 
-    private TrajectorySequence currentTrajectorySequence = null;
-    private double trajectorySequenceFollowingStart = -1.0;
-    private int trajectorySequenceLastSegmentIndex = -1;
+    private TrajectorySequence currentTrajectorySequence;
+    private double currentSegmentStartTime;
+    private int currentSegmentIndex;
+    private int lastSegmentIndex;
 
     ArrayList<TrajectoryMarker> remainingMarkers = new ArrayList<>();
 
@@ -40,63 +42,54 @@ public class TrajectorySequenceRunner {
 
     public void followTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
         currentTrajectorySequence = trajectorySequence;
-        trajectorySequenceFollowingStart = clock.seconds();
-        trajectorySequenceLastSegmentIndex = -1;
+        currentSegmentStartTime = clock.seconds();
+        currentSegmentIndex = 0;
+        lastSegmentIndex = -1;
     }
 
     public DriveSignal update(Pose2d poseEstimate) {
-        double now = clock.seconds();
-        double deltaTime = now - trajectorySequenceFollowingStart;
-
-        if (deltaTime >= currentTrajectorySequence.duration()) {
+        if (currentSegmentIndex > currentTrajectorySequence.size()) {
             currentTrajectorySequence = null;
-
-            for (TrajectoryMarker marker : remainingMarkers) {
-                marker.getCallback().onMarkerReached();
-            }
-        }
-
-        if (currentTrajectorySequence == null)
             return new DriveSignal();
-
-        SequenceSegment segment = null;
-        double segmentOffsetTime = 0;
-        int currentSegmentIndex = -1;
-
-        double currentAccumulatedTime = 0;
-        for (int i = 0; i < currentTrajectorySequence.size(); i++) {
-            SequenceSegment seg = currentTrajectorySequence.get(i);
-
-            if (currentAccumulatedTime + seg.getDuration() > deltaTime) {
-                segmentOffsetTime = deltaTime - currentAccumulatedTime;
-                segment = seg;
-
-                currentSegmentIndex = i;
-
-                break;
-            } else {
-                currentAccumulatedTime += seg.getDuration();
-            }
         }
 
-        boolean newTransition = trajectorySequenceLastSegmentIndex != currentSegmentIndex;
+        double now = clock.seconds();
+        boolean newTransition = currentSegmentIndex != lastSegmentIndex;
+        double deltaTime = now - currentSegmentStartTime;
 
-        trajectorySequenceLastSegmentIndex = currentSegmentIndex;
+        SequenceSegment segment = currentTrajectorySequence.get(currentSegmentIndex);
 
         if (newTransition) {
-            for (TrajectoryMarker marker : remainingMarkers) {
-                marker.getCallback().onMarkerReached();
-            }
+            currentSegmentStartTime = now;
+            lastSegmentIndex = currentSegmentIndex;
 
-            remainingMarkers.clear();
             remainingMarkers.addAll(segment.getMarkers());
             Collections.sort(remainingMarkers, (trajectoryMarker, t1) -> Double.compare(trajectoryMarker.getTime(), t1.getTime()));
+        }
+
+        if (segment instanceof WaitSegment || segment instanceof TurnSegment) {
+            if (deltaTime >= segment.getDuration()) {
+                currentSegmentIndex++;
+
+                for (TrajectoryMarker marker : remainingMarkers) {
+                    marker.getCallback().onMarkerReached();
+                }
+
+                remainingMarkers.clear();
+
+                return new DriveSignal();
+            }
+
+            while (remainingMarkers.size() > 0 && deltaTime > remainingMarkers.get(0).getTime()) {
+                remainingMarkers.get(0).getCallback().onMarkerReached();
+                remainingMarkers.remove(0);
+            }
         }
 
         if (segment instanceof WaitSegment) {
             return new DriveSignal();
         } else if (segment instanceof TurnSegment) {
-            MotionState targetState = ((TurnSegment) segment).getMotionProfile().get(segmentOffsetTime);
+            MotionState targetState = ((TurnSegment) segment).getMotionProfile().get(deltaTime);
 
             turnController.setTargetPosition(targetState.getX());
 
@@ -110,15 +103,17 @@ public class TrajectorySequenceRunner {
                     new Pose2d(0, 0, targetAlpha)
             );
         } else if (segment instanceof TrajectorySegment) {
-            if (newTransition)
+            if (newTransition) {
                 follower.followTrajectory(((TrajectorySegment) segment).getTrajectory());
+            }
+
+            if (!follower.isFollowing()) {
+                currentSegmentIndex++;
+
+                return new DriveSignal();
+            }
 
             return follower.update(poseEstimate);
-        }
-
-        while (remainingMarkers.size() > 0 && segmentOffsetTime > remainingMarkers.get(0).getTime()) {
-            remainingMarkers.get(0).getCallback().onMarkerReached();
-            remainingMarkers.remove(0);
         }
 
         return new DriveSignal();
