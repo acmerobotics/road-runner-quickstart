@@ -28,6 +28,7 @@ import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.BASE_CONSTRAINTS;
@@ -50,10 +51,16 @@ public final class SampleMecanumDrive extends MecanumDrive {
 
     public static double LATERAL_MULTIPLIER = 1;
 
+    public static double VX_WEIGHT = 1;
+    public static double VY_WEIGHT = 1;
+    public static double OMEGA_WEIGHT = 1;
+
     private FtcDashboard dashboard;
 
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
+
+    private List<Pose2d> poseHistory;
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
@@ -70,6 +77,8 @@ public final class SampleMecanumDrive extends MecanumDrive {
         constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+
+        poseHistory = new ArrayList<>();
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -216,6 +225,26 @@ public final class SampleMecanumDrive extends MecanumDrive {
         }
     }
 
+    public void setWeightedDrivePower(Pose2d drivePower) {
+        Pose2d vel = drivePower;
+
+        if (Math.abs(drivePower.getX()) + Math.abs(drivePower.getY())
+                + Math.abs(drivePower.getHeading()) > 1) {
+            // re-normalize the powers according to the weights
+            double denom = VX_WEIGHT * Math.abs(drivePower.getX())
+                    + VY_WEIGHT * Math.abs(drivePower.getY())
+                    + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
+
+            vel = new Pose2d(
+                    VX_WEIGHT * drivePower.getX(),
+                    VY_WEIGHT * drivePower.getY(),
+                    OMEGA_WEIGHT * drivePower.getHeading()
+            ).div(denom);
+        }
+
+        setDrivePower(vel);
+    }
+
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
@@ -226,6 +255,7 @@ public final class SampleMecanumDrive extends MecanumDrive {
         return wheelPositions;
     }
 
+    @Override
     public List<Double> getWheelVelocities() {
         List<Double> wheelVelocities = new ArrayList<>();
         for (DcMotorEx motor : motors) {

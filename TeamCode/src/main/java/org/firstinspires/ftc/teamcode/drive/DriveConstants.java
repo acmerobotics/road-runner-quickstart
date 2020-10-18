@@ -25,11 +25,15 @@ public class DriveConstants {
     public static final double MAX_RPM = 1;
 
     /*
-     * Set the first flag appropriately. If using the built-in motor velocity PID, update
+     * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
+     * Set this flag to false if drive encoders are not present and an alternative localization
+     * method is in use (e.g., tracking wheels).
+     *
+     * If using the built-in motor velocity PID, update
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static final PIDCoefficients MOTOR_VELO_PID = null;
+    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0, 0, 0);
 
     /*
      * These are physical constants that can be determined from your robot (including the track
