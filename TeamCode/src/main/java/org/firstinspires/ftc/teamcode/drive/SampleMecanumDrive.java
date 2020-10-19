@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -29,6 +27,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
@@ -85,6 +84,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
+    private VoltageSensor batteryVoltageSensor;
+
     private Pose2d lastPoseOnTurn;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
@@ -107,6 +108,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         poseHistory = new ArrayList<>();
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -142,12 +145,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            Log.i("voltage", Double.toString(hardwareMap.voltageSensor.iterator().next().getVoltage()));
-
-            setPIDFCoefficients(
-                    DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID,
-                    12 / hardwareMap.voltageSensor.iterator().next().getVoltage()
-            );
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
@@ -318,13 +316,9 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
-        setPIDFCoefficients(runMode, coefficients, 1);
-    }
-
-    public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients, double feedforwardCompensation) {
         PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
                 coefficients.p, coefficients.i, coefficients.d,
-                coefficients.f * feedforwardCompensation
+                coefficients.f * 12 / batteryVoltageSensor.getVoltage()
         );
         for (DcMotorEx motor : motors) {
             motor.setPIDFCoefficients(runMode, compensatedCoefficients);

@@ -82,6 +82,8 @@ public class SampleTankDrive extends TankDrive {
     private List<DcMotorEx> motors, leftMotors, rightMotors;
     private BNO055IMU imu;
 
+    private VoltageSensor batteryVoltageSensor;
+
     public SampleTankDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
@@ -102,6 +104,8 @@ public class SampleTankDrive extends TankDrive {
         poseHistory = new ArrayList<>();
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -140,7 +144,7 @@ public class SampleTankDrive extends TankDrive {
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID, hardwareMap);
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
@@ -300,10 +304,10 @@ public class SampleTankDrive extends TankDrive {
         }
     }
 
-    public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients, HardwareMap hardwareMap) {
+    public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
         PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
                 coefficients.p, coefficients.i, coefficients.d,
-                coefficients.f * 14 / getBatteryVoltage(hardwareMap)
+                coefficients.f * 12 / batteryVoltageSensor.getVoltage()
         );
         for (DcMotorEx motor : motors) {
             motor.setPIDFCoefficients(runMode, compensatedCoefficients);
@@ -367,17 +371,5 @@ public class SampleTankDrive extends TankDrive {
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
-    }
-
-
-    double getBatteryVoltage(HardwareMap hardwareMap) {
-        double result = Double.POSITIVE_INFINITY;
-        for (VoltageSensor sensor : hardwareMap.voltageSensor) {
-            double voltage = sensor.getVoltage();
-            if (voltage > 0) {
-                result = Math.min(result, voltage);
-            }
-        }
-        return result;
     }
 }
