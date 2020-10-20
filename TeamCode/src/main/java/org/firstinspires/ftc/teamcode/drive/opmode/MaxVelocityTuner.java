@@ -19,8 +19,7 @@ import java.util.Objects;
  * <p>
  * Upon pressing start, your bot will run at max power for RUNTIME seconds.
  * <p>
- * Ensure that you use the "Voltage Compensated kF" value for your own kF value in DriveConstants.java.
- * Further fine tuning may be desired.
+ * Further fine tuning of kF may be desired.
  */
 @Config
 @Autonomous(group = "drive")
@@ -59,16 +58,14 @@ public class MaxVelocityTuner extends LinearOpMode {
 
             Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
 
-            maxVelocity = Math.max(poseVelo.getX(), maxVelocity);
+            maxVelocity = Math.max(poseVelo.vec().norm(), maxVelocity);
         }
 
         drive.setDrivePower(new Pose2d());
 
         double effectiveKf = 32767 / veloInchesToTicks(maxVelocity);
 
-        telemetry.addData("Max Velocity", Double.toString(maxVelocity));
-        telemetry.addData("Effective kF", effectiveKf);
-        // Invert the voltage compensation applied in the sample drive class
+        telemetry.addData("Max Velocity", maxVelocity);
         telemetry.addData("Voltage Compensated kF", effectiveKf * batteryVoltageSensor.getVoltage() / 12);
         telemetry.update();
 
