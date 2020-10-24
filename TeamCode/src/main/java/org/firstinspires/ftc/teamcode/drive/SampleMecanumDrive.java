@@ -28,6 +28,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
@@ -35,6 +36,7 @@ import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.BASE_CONSTRAINTS;
@@ -42,7 +44,6 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.getMotorVelocityF;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
@@ -56,6 +57,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
+
+    public static double VX_WEIGHT = 1;
+    public static double VY_WEIGHT = 1;
+    public static double OMEGA_WEIGHT = 1;
+
+    public static int POSE_HISTORY_LIMIT = 100;
 
     public enum Mode {
         IDLE,
@@ -75,11 +82,13 @@ public class SampleMecanumDrive extends MecanumDrive {
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
 
-    private List<Pose2d> poseHistory;
+    private LinkedList<Pose2d> poseHistory;
 
     private DcMotorEx fL, bL, bR, fR;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
+
+    private VoltageSensor batteryVoltageSensor;
 
     private Pose2d lastPoseOnTurn;
 
@@ -100,9 +109,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
-        poseHistory = new ArrayList<>();
+        poseHistory = new LinkedList<>();
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -138,7 +149,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
@@ -213,6 +224,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         Pose2d lastError = getLastError();
 
         poseHistory.add(currentPose);
+
+        if (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
+            poseHistory.removeFirst();
+        }
 
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
@@ -311,17 +326,35 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
     }
 
-    public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
-        PIDFCoefficients coefficients = fL.getPIDFCoefficients(runMode);
-        return new PIDCoefficients(coefficients.p, coefficients.i, coefficients.d);
+
+    public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
+        PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
+                coefficients.p, coefficients.i, coefficients.d,
+                coefficients.f * 12 / batteryVoltageSensor.getVoltage()
+        );
+        for (DcMotorEx motor : motors) {
+            motor.setPIDFCoefficients(runMode, compensatedCoefficients);
+        }
     }
 
-    public void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients) {
-        for (DcMotorEx motor : motors) {
-            motor.setPIDFCoefficients(runMode, new PIDFCoefficients(
-                    coefficients.kP, coefficients.kI, coefficients.kD, getMotorVelocityF()
-            ));
+    public void setWeightedDrivePower(Pose2d drivePower) {
+        Pose2d vel = drivePower;
+
+        if (Math.abs(drivePower.getX()) + Math.abs(drivePower.getY())
+                + Math.abs(drivePower.getHeading()) > 1) {
+            // re-normalize the powers according to the weights
+            double denom = VX_WEIGHT * Math.abs(drivePower.getX())
+                    + VY_WEIGHT * Math.abs(drivePower.getY())
+                    + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
+
+            vel = new Pose2d(
+                    VX_WEIGHT * drivePower.getX(),
+                    VY_WEIGHT * drivePower.getY(),
+                    OMEGA_WEIGHT * drivePower.getHeading()
+            ).div(denom);
         }
+
+        setDrivePower(vel);
     }
 
     @NonNull
@@ -334,6 +367,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         return wheelPositions;
     }
 
+    @Override
     public List<Double> getWheelVelocities() {
         List<Double> wheelVelocities = new ArrayList<>();
         for (DcMotorEx motor : motors) {
