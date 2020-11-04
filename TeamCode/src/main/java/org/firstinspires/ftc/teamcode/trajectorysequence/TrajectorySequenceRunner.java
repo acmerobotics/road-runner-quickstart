@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.trajectorysequence;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
@@ -48,14 +50,15 @@ public class TrajectorySequenceRunner {
     }
 
     public DriveSignal update(Pose2d poseEstimate) {
-        if (currentSegmentIndex > currentTrajectorySequence.size()) {
+        if (currentSegmentIndex >= currentTrajectorySequence.size()) {
+            Log.i("trajectorysequence", "finished");
+
             currentTrajectorySequence = null;
             return new DriveSignal();
         }
 
         double now = clock.seconds();
         boolean newTransition = currentSegmentIndex != lastSegmentIndex;
-        double deltaTime = now - currentSegmentStartTime;
 
         SequenceSegment segment = currentTrajectorySequence.get(currentSegmentIndex);
 
@@ -66,6 +69,10 @@ public class TrajectorySequenceRunner {
             remainingMarkers.addAll(segment.getMarkers());
             Collections.sort(remainingMarkers, (trajectoryMarker, t1) -> Double.compare(trajectoryMarker.getTime(), t1.getTime()));
         }
+
+        double deltaTime = now - currentSegmentStartTime;
+        Log.i("trajectorysequence", segment instanceof WaitSegment ? "waitsegment" : segment instanceof TurnSegment ? "turnsegment" : "trajectorysegment");
+        Log.i("trajectorysequence", Integer.toString(currentSegmentIndex));
 
         if (segment instanceof WaitSegment || segment instanceof TurnSegment) {
             if (deltaTime >= segment.getDuration()) {
@@ -98,13 +105,17 @@ public class TrajectorySequenceRunner {
             double targetOmega = targetState.getV();
             double targetAlpha = targetState.getA();
 
+            Log.i("trajectorysequence", "turn update");
+
             return new DriveSignal(
                     new Pose2d(0, 0, targetOmega + correction),
                     new Pose2d(0, 0, targetAlpha)
             );
         } else if (segment instanceof TrajectorySegment) {
             if (newTransition) {
+                Log.i("trajectorysequence", "trajectory transition");
                 follower.followTrajectory(((TrajectorySegment) segment).getTrajectory());
+                Log.i("trajectorysequence", Double.toString(((TrajectorySegment) segment).getTrajectory().getProfile().duration()));
             }
 
             if (!follower.isFollowing()) {
@@ -112,6 +123,10 @@ public class TrajectorySequenceRunner {
 
                 return new DriveSignal();
             }
+
+            Log.i("trajectorysequence", "trajectory update");
+            DriveSignal f = follower.update(poseEstimate);
+            Log.i("trajectorysequence", f.component1().toString());
 
             return follower.update(poseEstimate);
         }
