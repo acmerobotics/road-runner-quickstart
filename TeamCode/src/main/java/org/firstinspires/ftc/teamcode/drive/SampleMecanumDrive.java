@@ -17,6 +17,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -29,7 +30,6 @@ import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.BASE_CONSTRAINTS;
@@ -46,10 +46,10 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public final class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0.001);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
 
-    public static double LATERAL_MULTIPLIER = 1;
+    public static double LATERAL_MULTIPLIER = 1.08045977;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -125,6 +125,8 @@ public final class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
@@ -209,6 +211,10 @@ public final class SampleMecanumDrive extends MecanumDrive {
         for (DcMotorEx motor : motors) {
             motor.setMode(runMode);
         }
+    }
+
+    public boolean isBusy() {
+        return trajectorySequenceRunner.isBusy();
     }
 
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
