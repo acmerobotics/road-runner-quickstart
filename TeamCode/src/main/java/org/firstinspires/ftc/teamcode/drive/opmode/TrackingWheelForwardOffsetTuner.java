@@ -68,17 +68,17 @@ public class TrackingWheelForwardOffsetTuner extends LinearOpMode {
             forwardOffsetStats.add(forwardOffset);
 
             sleep(DELAY);
+        }
 
-            telemetry.clearAll();
-            telemetry.addLine("Tuning complete");
-            telemetry.addLine(Misc.formatInvariant("Effective forward offset = %.2f (SE = %.3f)",
-                    forwardOffsetStats.getMean(),
-                    forwardOffsetStats.getStandardDeviation() / Math.sqrt(NUM_TRIALS)));
-            telemetry.update();
+        telemetry.clearAll();
+        telemetry.addLine("Tuning complete");
+        telemetry.addLine(Misc.formatInvariant("Effective forward offset = %.2f (SE = %.3f)",
+                forwardOffsetStats.getMean(),
+                forwardOffsetStats.getStandardDeviation() / Math.sqrt(NUM_TRIALS)));
+        telemetry.update();
 
-            while (!isStopRequested()) {
-                idle();
-            }
+        while (!isStopRequested()) {
+            idle();
         }
     }
 }
