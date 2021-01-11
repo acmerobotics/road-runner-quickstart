@@ -7,13 +7,16 @@ import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.trajectory.DisplacementMarker;
+import com.acmerobotics.roadrunner.trajectory.DisplacementProducer;
 import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
 import com.acmerobotics.roadrunner.trajectory.SpatialMarker;
 import com.acmerobotics.roadrunner.trajectory.TemporalMarker;
+import com.acmerobotics.roadrunner.trajectory.TimeProducer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.Angle;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.SequenceSegment;
@@ -24,12 +27,14 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSeg
 import java.util.ArrayList;
 import java.util.List;
 
-import kotlin.jvm.functions.Function1;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
 
 public class TrajectorySequenceBuilder {
     private final double resolution;
 
-    private DriveConstraints constraints;
+    private TrajectoryVelocityConstraint velConstraint;
+    private TrajectoryAccelerationConstraint accelConstraint;
 
     private final TrajectorySequence sequenceSegments;
 
@@ -55,10 +60,13 @@ public class TrajectorySequenceBuilder {
     public TrajectorySequenceBuilder(
             Pose2d startPose,
             Double startTangent,
-            DriveConstraints constraints,
+            TrajectoryVelocityConstraint baseVelConstraint,
+            TrajectoryAccelerationConstraint baseAccelConstraint,
             double resolution
     ) {
-        this.constraints = constraints;
+        this.velConstraint = baseVelConstraint;
+        this.accelConstraint = baseAccelConstraint;
+
         this.resolution = resolution;
 
         sequenceSegments = new TrajectorySequence();
@@ -86,179 +94,238 @@ public class TrajectorySequenceBuilder {
     public TrajectorySequenceBuilder(
             Pose2d startPose,
             double startTangent,
-            DriveConstraints constraints
+            TrajectoryVelocityConstraint baseVelConstraint,
+            TrajectoryAccelerationConstraint baseAccelConstraint
     ) {
-        this(startPose, startTangent, constraints, 0.25);
+        this(startPose, startTangent, baseVelConstraint, baseAccelConstraint, 0.25);
     }
 
     public TrajectorySequenceBuilder(
             Pose2d startPose,
-            DriveConstraints constraints,
+            TrajectoryVelocityConstraint baseVelConstraint,
+            TrajectoryAccelerationConstraint baseAccelConstraint,
             double resolution
     ) {
-        this(startPose, null, constraints, resolution);
+        this(startPose, null, baseVelConstraint, baseAccelConstraint, resolution);
     }
 
     public TrajectorySequenceBuilder(
             Pose2d startPose,
-            DriveConstraints constraints
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
     ) {
-        this(startPose, null, constraints, 0.25);
+        this(startPose, null, velConstraint, accelConstraint, 0.25);
     }
 
     public TrajectorySequenceBuilder lineTo(Vector2d endPosition) {
         return addPath(() -> {
-            currentTrajectoryBuilder.lineTo(endPosition, constraints);
+            currentTrajectoryBuilder.lineTo(endPosition, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder lineTo(Vector2d endPosition, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder lineTo(
+            Vector2d endPosition,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.lineTo(endPosition, constraintsOverride);
+            currentTrajectoryBuilder.lineTo(endPosition, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder lineToConstantHeading(Vector2d endPosition) {
         return addPath(() -> {
-            currentTrajectoryBuilder.lineToConstantHeading(endPosition, constraints);
+            currentTrajectoryBuilder.lineToConstantHeading(endPosition, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder lineToConstantHeading(Vector2d endPosition, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder lineToConstantHeading(
+            Vector2d endPosition,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.lineToConstantHeading(endPosition, constraintsOverride);
+            currentTrajectoryBuilder.lineToConstantHeading(endPosition, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder lineToLinearHeading(Pose2d endPose) {
         return addPath(() -> {
-            currentTrajectoryBuilder.lineToLinearHeading(endPose, constraints);
+            currentTrajectoryBuilder.lineToLinearHeading(endPose, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder lineToLinearHeading(Pose2d endPose, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder lineToLinearHeading(
+            Pose2d endPose,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.lineToLinearHeading(endPose, constraintsOverride);
+            currentTrajectoryBuilder.lineToLinearHeading(endPose, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder lineToSplineHeading(Pose2d endPose) {
         return addPath(() -> {
-            currentTrajectoryBuilder.lineToSplineHeading(endPose, constraints);
+            currentTrajectoryBuilder.lineToSplineHeading(endPose, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder lineToSplineHeading(Pose2d endPose, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder lineToSplineHeading(
+            Pose2d endPose,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.lineToSplineHeading(endPose, constraintsOverride);
+            currentTrajectoryBuilder.lineToSplineHeading(endPose, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder strafeTo(Vector2d endPosition) {
         return addPath(() -> {
-            currentTrajectoryBuilder.strafeTo(endPosition, constraints);
+            currentTrajectoryBuilder.strafeTo(endPosition, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder strafeTo(Vector2d endPosition, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder strafeTo(
+            Vector2d endPosition,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.strafeTo(endPosition, constraintsOverride);
+            currentTrajectoryBuilder.strafeTo(endPosition, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder forward(double distance) {
         return addPath(() -> {
-            currentTrajectoryBuilder.forward(distance, constraints);
+            currentTrajectoryBuilder.forward(distance, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder forward(double distance, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder forward(
+            double distance,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.forward(distance, constraintsOverride);
+            currentTrajectoryBuilder.forward(distance, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder back(double distance) {
         return addPath(() -> {
-            currentTrajectoryBuilder.back(distance, constraints);
+            currentTrajectoryBuilder.back(distance, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder back(double distance, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder back(
+            double distance,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.back(distance, constraintsOverride);
+            currentTrajectoryBuilder.back(distance, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder strafeLeft(double distance) {
         return addPath(() -> {
-            currentTrajectoryBuilder.strafeLeft(distance, constraints);
+            currentTrajectoryBuilder.strafeLeft(distance, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder strafeLeft(double distance, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder strafeLeft(
+            double distance,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.strafeLeft(distance, constraintsOverride);
+            currentTrajectoryBuilder.strafeLeft(distance, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder strafeRight(double distance) {
         return addPath(() -> {
-            currentTrajectoryBuilder.strafeRight(distance, constraints);
+            currentTrajectoryBuilder.strafeRight(distance, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder strafeRight(double distance, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder strafeRight(
+            double distance,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.strafeRight(distance, constraintsOverride);
+            currentTrajectoryBuilder.strafeRight(distance, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder splineTo(Vector2d endPosition, double endHeading) {
         return addPath(() -> {
-            currentTrajectoryBuilder.splineTo(endPosition, endHeading, constraints);
+            currentTrajectoryBuilder.splineTo(endPosition, endHeading, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder splineTo(Vector2d endPosition, double endHeading, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder splineTo(
+            Vector2d endPosition,
+            double endHeading,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.splineTo(endPosition, endHeading, constraintsOverride);
+            currentTrajectoryBuilder.splineTo(endPosition, endHeading, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder splineToConstantHeading(Vector2d endPosition, double endHeading) {
         return addPath(() -> {
-            currentTrajectoryBuilder.splineToConstantHeading(endPosition, endHeading, constraints);
+            currentTrajectoryBuilder.splineToConstantHeading(endPosition, endHeading, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder splineToConstantHeading(Vector2d endPosition, double endHeading, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder splineToConstantHeading(
+            Vector2d endPosition,
+            double endHeading,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.splineToConstantHeading(endPosition, endHeading, constraintsOverride);
+            currentTrajectoryBuilder.splineToConstantHeading(endPosition, endHeading, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder splineToLinearHeading(Pose2d endPose, double endHeading) {
         return addPath(() -> {
-            currentTrajectoryBuilder.splineToLinearHeading(endPose, endHeading, constraints);
+            currentTrajectoryBuilder.splineToLinearHeading(endPose, endHeading, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder splineToLinearHeading(Pose2d endPose, double endHeading, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder splineToLinearHeading(
+            Pose2d endPose,
+            double endHeading,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.splineToLinearHeading(endPose, endHeading, constraintsOverride);
+            currentTrajectoryBuilder.splineToLinearHeading(endPose, endHeading, velConstraint, accelConstraint);
         });
     }
 
     public TrajectorySequenceBuilder splineToSplineHeading(Pose2d endPose, double endHeading) {
         return addPath(() -> {
-            currentTrajectoryBuilder.splineToSplineHeading(endPose, endHeading, constraints);
+            currentTrajectoryBuilder.splineToSplineHeading(endPose, endHeading, velConstraint, accelConstraint);
         });
     }
 
-    public TrajectorySequenceBuilder splineToSplineHeading(Pose2d endPose, double endHeading, DriveConstraints constraintsOverride) {
+    public TrajectorySequenceBuilder splineToSplineHeading(
+            Pose2d endPose,
+            double endHeading,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
         return addPath(() -> {
-            currentTrajectoryBuilder.splineToSplineHeading(endPose, endHeading, constraintsOverride);
+            currentTrajectoryBuilder.splineToSplineHeading(endPose, endHeading, velConstraint, accelConstraint);
         });
     }
 
@@ -309,8 +376,12 @@ public class TrajectorySequenceBuilder {
         return reversed ? this.setTangentOffset(Math.toRadians(180.0)) : this.setTangentOffset(0.0);
     }
 
-    public final TrajectorySequenceBuilder setConstraints(DriveConstraints constraints) {
-        this.constraints = constraints;
+    public final TrajectorySequenceBuilder setConstraints(
+            TrajectoryVelocityConstraint velConstraint,
+                                                          TrajectoryAccelerationConstraint accelConstraint
+    ) {
+        this.velConstraint = velConstraint;
+        this.accelConstraint = accelConstraint;
 
         return this;
     }
@@ -319,27 +390,19 @@ public class TrajectorySequenceBuilder {
         return this.addTemporalMarker(currentDuration, callback);
     }
 
+    public final TrajectorySequenceBuilder addTemporalMarkerOffset(double offset, MarkerCallback callback) {
+        return this.addTemporalMarker(currentDuration + offset, callback);
+    }
+
     public final TrajectorySequenceBuilder addTemporalMarker(double time, MarkerCallback callback) {
         return this.addTemporalMarker(0.0, time, callback);
     }
 
     public final TrajectorySequenceBuilder addTemporalMarker(double scale, double offset, MarkerCallback callback) {
-        return addDisplacementMarker(new Function1() {
-            // Decompiled kotlin
-
-            // $FF: synthetic method
-            // $FF: bridge method
-            public Object invoke(Object var1) {
-                return this.invoke(((Number) var1).doubleValue());
-            }
-
-            public final double invoke(double it) {
-                return scale * it + offset;
-            }
-        }, callback);
+        return this.addTemporalMarker(time -> scale * time + offset, callback);
     }
 
-    public final TrajectorySequenceBuilder addTemporalMarker(Function1<? super Double, Double> time, MarkerCallback callback) {
+    public final TrajectorySequenceBuilder addTemporalMarker(TimeProducer time, MarkerCallback callback) {
         this.temporalMarkers.add(new TemporalMarker(time, callback));
         return this;
     }
@@ -358,22 +421,10 @@ public class TrajectorySequenceBuilder {
     }
 
     public TrajectorySequenceBuilder addDisplacementMarker(double scale, double offset, MarkerCallback callback) {
-        return addDisplacementMarker(new Function1() {
-            // Decompiled kotlin
-
-            // $FF: synthetic method
-            // $FF: bridge method
-            public Object invoke(Object var1) {
-                return this.invoke(((Number) var1).doubleValue());
-            }
-
-            public final double invoke(double it) {
-                return scale * it + offset;
-            }
-        }, callback);
+        return addDisplacementMarker((displacement -> scale * displacement + offset), callback);
     }
 
-    public TrajectorySequenceBuilder addDisplacementMarker(Function1<? super Double, Double> displacement, MarkerCallback callback) {
+    public TrajectorySequenceBuilder addDisplacementMarker(DisplacementProducer displacement, MarkerCallback callback) {
         displacementMarkers.add(new DisplacementMarker(displacement, callback));
 
         return this;
@@ -385,9 +436,8 @@ public class TrajectorySequenceBuilder {
         MotionProfile turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(lastPose.getHeading(), 0.0, 0.0, 0.0),
                 new MotionState(lastPose.getHeading() + angle, 0.0, 0.0, 0.0),
-                constraints.maxAngVel,
-                constraints.maxAngAccel,
-                constraints.maxAngJerk
+                MAX_VEL,
+                MAX_ANG_VEL
         );
 
         sequenceSegments.add(new TurnSegment(lastPose, angle, turnProfile, new ArrayList<>()));
@@ -432,7 +482,7 @@ public class TrajectorySequenceBuilder {
 
         double tangent = setAbsoluteTangent ? absoluteTangent : Angle.norm(lastPose.getHeading() + tangentOffset);
 
-        currentTrajectoryBuilder = new TrajectoryBuilder(lastPose, tangent, constraints, resolution);
+        currentTrajectoryBuilder = new TrajectoryBuilder(lastPose, tangent, velConstraint, accelConstraint, resolution);
     }
 
     public TrajectorySequence build() {
@@ -457,7 +507,7 @@ public class TrajectorySequenceBuilder {
         // Convert temporal markers
         for (TemporalMarker marker : temporalMarkers) {
             trajectoryMarkers.add(
-                    new TrajectoryMarker(marker.getTime().invoke(currentDuration), marker.getCallback())
+                    new TrajectoryMarker(marker.getProducer().produce(currentDuration), marker.getCallback())
             );
         }
 
@@ -466,7 +516,7 @@ public class TrajectorySequenceBuilder {
             double time =
                     displacementToTime(
                             sequenceSegments,
-                            marker.getDisplacement().invoke(
+                            marker.getProducer().produce(
                                     sequenceTotalDisplacement(sequenceSegments)
                             )
                     );
@@ -614,18 +664,6 @@ public class TrajectorySequenceBuilder {
                 this.distanceToPoint = distanceToPoint;
                 this.totalDisplacement = totalDisplacement;
                 this.thisPathDisplacement = thisPathDisplacement;
-            }
-
-            public final double getDistanceToPoint() {
-                return this.distanceToPoint;
-            }
-
-            public final double getTotalDisplacement() {
-                return this.totalDisplacement;
-            }
-
-            public final double getThisPathDisplacement() {
-                return this.thisPathDisplacement;
             }
         }
 

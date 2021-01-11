@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.trajectorysequence;
 
-import android.util.Log;
-
+import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
@@ -15,6 +14,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.Sequenc
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
+import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +30,10 @@ public class TrajectorySequenceRunner {
     private double currentSegmentStartTime;
     private int currentSegmentIndex;
     private int lastSegmentIndex;
+
+    private Pose2d lastPoseEstimate = new Pose2d();
+    private Pose2d lastPoseError = new Pose2d();
+    private Pose2d lastPoseDesired = new Pose2d();
 
     ArrayList<TrajectoryMarker> remainingMarkers = new ArrayList<>();
 
@@ -49,11 +53,14 @@ public class TrajectorySequenceRunner {
         lastSegmentIndex = -1;
     }
 
-    public DriveSignal update(Pose2d poseEstimate) {
+    public DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity) {
+        lastPoseEstimate = poseEstimate;
+
         if (currentSegmentIndex >= currentTrajectorySequence.size()) {
-            Log.i("trajectorysequence", "finished");
+//            Log.i("trajectorysequence", "finished");
 
             currentTrajectorySequence = null;
+
             return new DriveSignal();
         }
 
@@ -71,8 +78,8 @@ public class TrajectorySequenceRunner {
         }
 
         double deltaTime = now - currentSegmentStartTime;
-        Log.i("trajectorysequence", segment instanceof WaitSegment ? "waitsegment" : segment instanceof TurnSegment ? "turnsegment" : "trajectorysegment");
-        Log.i("trajectorysequence", Integer.toString(currentSegmentIndex));
+//        Log.i("trajectorysequence", segment instanceof WaitSegment ? "waitsegment" : segment instanceof TurnSegment ? "turnsegment" : "trajectorysegment");
+//        Log.i("trajectorysequence", Integer.toString(currentSegmentIndex));
 
         if (segment instanceof WaitSegment || segment instanceof TurnSegment) {
             if (deltaTime >= segment.getDuration()) {
@@ -94,6 +101,9 @@ public class TrajectorySequenceRunner {
         }
 
         if (segment instanceof WaitSegment) {
+            lastPoseError = new Pose2d();
+            lastPoseDesired = segment.getStartPose();
+
             return new DriveSignal();
         } else if (segment instanceof TurnSegment) {
             MotionState targetState = ((TurnSegment) segment).getMotionProfile().get(deltaTime);
@@ -105,7 +115,12 @@ public class TrajectorySequenceRunner {
             double targetOmega = targetState.getV();
             double targetAlpha = targetState.getA();
 
-            Log.i("trajectorysequence", "turn update");
+//            Log.i("trajectorysequence", "turn update");
+
+            lastPoseError = new Pose2d(0, 0, turnController.getLastError());
+
+            Pose2d startPose = segment.getStartPose();
+            lastPoseDesired = startPose.copy(startPose.getX(), startPose.getY(), targetState.getX());
 
             return new DriveSignal(
                     new Pose2d(0, 0, targetOmega + correction),
@@ -113,9 +128,9 @@ public class TrajectorySequenceRunner {
             );
         } else if (segment instanceof TrajectorySegment) {
             if (newTransition) {
-                Log.i("trajectorysequence", "trajectory transition");
+//                Log.i("trajectorysequence", "trajectory transition");
                 follower.followTrajectory(((TrajectorySegment) segment).getTrajectory());
-                Log.i("trajectorysequence", Double.toString(((TrajectorySegment) segment).getTrajectory().getProfile().duration()));
+//                Log.i("trajectorysequence", Double.toString(((TrajectorySegment) segment).getTrajectory().getProfile().duration()));
             }
 
             if (!follower.isFollowing()) {
@@ -124,14 +139,40 @@ public class TrajectorySequenceRunner {
                 return new DriveSignal();
             }
 
-            Log.i("trajectorysequence", "trajectory update");
-            DriveSignal f = follower.update(poseEstimate);
-            Log.i("trajectorysequence", f.component1().toString());
+//            Log.i("trajectorysequence", "trajectory update");
+//            Log.i("trajectorysequence", f.component1().toString());
+            DriveSignal signal = follower.update(poseEstimate, poseVelocity);
+            lastPoseError = follower.getLastError();
+            lastPoseDesired = ((TrajectorySegment) segment).getTrajectory().get(deltaTime);
 
-            return follower.update(poseEstimate);
+            return signal;
         }
 
         return new DriveSignal();
+    }
+
+    public Pose2d getLastPoseError() {
+        return lastPoseError;
+    }
+
+    public void drawCurrentSequence(Canvas fieldOverlay) {
+        if (currentTrajectorySequence == null) return;
+
+        for (SequenceSegment segment : currentTrajectorySequence) {
+            if (segment instanceof TrajectorySegment) {
+                fieldOverlay.setStrokeWidth(1);
+                fieldOverlay.setStroke("#4CAF50");
+
+                DashboardUtil.drawSampledPath(fieldOverlay, ((TrajectorySegment) segment).getTrajectory().getPath());
+            }
+        }
+
+        fieldOverlay.setStrokeWidth(1);
+        fieldOverlay.setStroke("#4CAF50");
+        DashboardUtil.drawRobot(fieldOverlay, lastPoseDesired);
+
+        fieldOverlay.setStroke("#3F51B5");
+        DashboardUtil.drawRobot(fieldOverlay, lastPoseEstimate);
     }
 
     public boolean isBusy() {
