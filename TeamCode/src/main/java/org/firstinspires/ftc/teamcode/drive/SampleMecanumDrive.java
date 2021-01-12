@@ -218,8 +218,8 @@ public final class SampleMecanumDrive extends MecanumDrive {
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
 
-        if(trajectorySequenceRunner.isBusy())
-            setDriveSignal(trajectorySequenceRunner.update(currentPose, getPoseVelocity()));
+        if (trajectorySequenceRunner.isBusy())
+            setDriveSignal(trajectorySequenceRunner.update(currentPose, getPoseVelocity(), fieldOverlay));
 
         Pose2d lastError = trajectorySequenceRunner.getLastPoseError();
 
@@ -230,8 +230,6 @@ public final class SampleMecanumDrive extends MecanumDrive {
         packet.put("xError", lastError.getX());
         packet.put("yError", lastError.getY());
         packet.put("headingError (deg)", Math.toDegrees(lastError.getHeading()));
-
-        trajectorySequenceRunner.drawCurrentSequence(fieldOverlay);
 
         fieldOverlay.setStroke("#3F51B5");
         DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
