@@ -32,10 +32,12 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
@@ -63,6 +65,8 @@ public final class SampleMecanumDrive extends MecanumDrive {
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
+    public static int POSE_HISTORY_LIMIT = 100;
+
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
     private TrajectoryVelocityConstraint velConstraint;
@@ -77,6 +81,7 @@ public final class SampleMecanumDrive extends MecanumDrive {
 
     private FtcDashboard dashboard;
 
+    private LinkedList<Pose2d> poseHistory;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -91,6 +96,8 @@ public final class SampleMecanumDrive extends MecanumDrive {
         accelConstraint = new ProfileAccelerationConstraint(MAX_ACCEL);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+
+        poseHistory = new LinkedList<>();
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -202,6 +209,12 @@ public final class SampleMecanumDrive extends MecanumDrive {
 
         Pose2d currentPose = getPoseEstimate();
 
+        poseHistory.add(currentPose);
+
+        if (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
+            poseHistory.removeFirst();
+        }
+
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
 
@@ -219,6 +232,12 @@ public final class SampleMecanumDrive extends MecanumDrive {
         packet.put("headingError (deg)", Math.toDegrees(lastError.getHeading()));
 
         trajectorySequenceRunner.drawCurrentSequence(fieldOverlay);
+
+        fieldOverlay.setStroke("#3F51B5");
+        DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
+
+        fieldOverlay.setStroke("#3F51B5");
+        DashboardUtil.drawRobot(fieldOverlay, currentPose);
 
         dashboard.sendTelemetryPacket(packet);
     }
@@ -301,7 +320,7 @@ public final class SampleMecanumDrive extends MecanumDrive {
         rightRear.setPower(v2);
         rightFront.setPower(v3);
     }
-
+    
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;

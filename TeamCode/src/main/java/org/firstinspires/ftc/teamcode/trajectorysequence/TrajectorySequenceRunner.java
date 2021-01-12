@@ -31,7 +31,6 @@ public class TrajectorySequenceRunner {
     private int currentSegmentIndex;
     private int lastSegmentIndex;
 
-    private Pose2d lastPoseEstimate = new Pose2d();
     private Pose2d lastPoseError = new Pose2d();
     private Pose2d lastPoseDesired = new Pose2d();
 
@@ -54,8 +53,6 @@ public class TrajectorySequenceRunner {
     }
 
     public DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity) {
-        lastPoseEstimate = poseEstimate;
-
         if (currentSegmentIndex >= currentTrajectorySequence.size()) {
 //            Log.i("trajectorysequence", "finished");
 
@@ -170,9 +167,6 @@ public class TrajectorySequenceRunner {
         fieldOverlay.setStrokeWidth(1);
         fieldOverlay.setStroke("#4CAF50");
         DashboardUtil.drawRobot(fieldOverlay, lastPoseDesired);
-
-        fieldOverlay.setStroke("#3F51B5");
-        DashboardUtil.drawRobot(fieldOverlay, lastPoseEstimate);
     }
 
     public boolean isBusy() {
