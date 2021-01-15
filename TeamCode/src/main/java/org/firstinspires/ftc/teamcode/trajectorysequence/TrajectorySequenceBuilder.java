@@ -390,7 +390,7 @@ public class TrajectorySequenceBuilder {
         return this.addTemporalMarker(currentDuration, callback);
     }
 
-    public final TrajectorySequenceBuilder addTemporalMarkerOffset(double offset, MarkerCallback callback) {
+    public final TrajectorySequenceBuilder UNSTABLE_addTemporalMarkerOffset(double offset, MarkerCallback callback) {
         return this.addTemporalMarker(currentDuration + offset, callback);
     }
 
@@ -413,7 +413,11 @@ public class TrajectorySequenceBuilder {
     }
 
     public final TrajectorySequenceBuilder addDisplacementMarker(MarkerCallback callback) {
-        return this.addDisplacementMarker(this.currentDisplacement, callback);
+        return this.addDisplacementMarker(currentDisplacement, callback);
+    }
+
+    public final TrajectorySequenceBuilder UNSTABLE_addDisplacementMarkerOffset(double offset, MarkerCallback callback) {
+        return this.addDisplacementMarker(currentDisplacement + offset, callback);
     }
 
     public final TrajectorySequenceBuilder addDisplacementMarker(double displacement, MarkerCallback callback) {
