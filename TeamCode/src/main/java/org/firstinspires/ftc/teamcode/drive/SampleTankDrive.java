@@ -403,5 +403,5 @@ public class SampleTankDrive extends TankDrive {
         // flat on a surface
 
         return (double) imu.getAngularVelocity().zRotationRate;
-}
+    }
 }
