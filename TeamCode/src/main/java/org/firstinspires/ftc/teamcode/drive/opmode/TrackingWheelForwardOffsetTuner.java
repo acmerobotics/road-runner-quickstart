@@ -14,6 +14,25 @@ import org.firstinspires.ftc.robotcore.internal.system.Misc;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
+/**
+ * This routine determines the effective forward offset for the lateral tracking wheel.
+ * The procedure executes a point turn at a given angle for a certain number of trials,
+ * along with a specified delay in milliseconds. The purpose of this is to track the
+ * change in the y position during the turn. The offset, or distance, of the lateral tracking
+ * wheel from the center or rotation allows the wheel to spin during a point turn, leading
+ * to an incorrect measurement for the y position. This creates an arc around around
+ * the center of rotation with an arc length of change in y and a radius equal to the forward
+ * offset. We can compute this offset by calculating (change in y position) / (change in heading)
+ * which returns the radius if the angle (change in heading) is in radians. This is based
+ * on the arc length formula of length = theta * radius.
+ *
+ * To run this routine, simply adjust the desired angle and specify the number of trials
+ * and the desired delay. Then, run the procedure. Once it finishes, it will print the
+ * average of all the calculated forward offsets derived from the calculation. This calculated
+ * forward offset is then added onto the current forward offset to produce an overall estimate
+ * for the forward offset. You can run this procedure as many times as necessary until a
+ * satisfactory result is produced.
+ */
 @Config
 @Autonomous(group="drive")
 public class TrackingWheelForwardOffsetTuner extends LinearOpMode {
