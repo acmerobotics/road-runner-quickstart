@@ -32,7 +32,7 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
 
 public class TrajectorySequenceBuilder {
-    private final double resolution;
+    private final double resolution = 0.25;
 
     private TrajectoryVelocityConstraint velConstraint;
     private TrajectoryAccelerationConstraint accelConstraint;
@@ -62,13 +62,10 @@ public class TrajectorySequenceBuilder {
             Pose2d startPose,
             Double startTangent,
             TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint,
-            double resolution
+            TrajectoryAccelerationConstraint accelConstraint
     ) {
         this.velConstraint = velConstraint;
         this.accelConstraint = accelConstraint;
-
-        this.resolution = resolution;
 
         sequenceSegments = new ArrayList<>();
 
@@ -94,28 +91,10 @@ public class TrajectorySequenceBuilder {
 
     public TrajectorySequenceBuilder(
             Pose2d startPose,
-            double startTangent,
             TrajectoryVelocityConstraint velConstraint,
             TrajectoryAccelerationConstraint accelConstraint
     ) {
-        this(startPose, startTangent, velConstraint, accelConstraint, 0.25);
-    }
-
-    public TrajectorySequenceBuilder(
-            Pose2d startPose,
-            TrajectoryVelocityConstraint baseVelConstraint,
-            TrajectoryAccelerationConstraint baseAccelConstraint,
-            double resolution
-    ) {
-        this(startPose, null, baseVelConstraint, baseAccelConstraint, resolution);
-    }
-
-    public TrajectorySequenceBuilder(
-            Pose2d startPose,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
-        this(startPose, null, velConstraint, accelConstraint, 0.25);
+        this(startPose, null, velConstraint, accelConstraint);
     }
 
     public TrajectorySequenceBuilder lineTo(Vector2d endPosition) {
