@@ -60,12 +60,12 @@ public class TrajectorySequenceBuilder {
     public TrajectorySequenceBuilder(
             Pose2d startPose,
             Double startTangent,
-            TrajectoryVelocityConstraint baseVelConstraint,
-            TrajectoryAccelerationConstraint baseAccelConstraint,
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint,
             double resolution
     ) {
-        this.velConstraint = baseVelConstraint;
-        this.accelConstraint = baseAccelConstraint;
+        this.velConstraint = velConstraint;
+        this.accelConstraint = accelConstraint;
 
         this.resolution = resolution;
 
@@ -94,10 +94,10 @@ public class TrajectorySequenceBuilder {
     public TrajectorySequenceBuilder(
             Pose2d startPose,
             double startTangent,
-            TrajectoryVelocityConstraint baseVelConstraint,
-            TrajectoryAccelerationConstraint baseAccelConstraint
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
     ) {
-        this(startPose, startTangent, baseVelConstraint, baseAccelConstraint, 0.25);
+        this(startPose, startTangent, velConstraint, accelConstraint, 0.25);
     }
 
     public TrajectorySequenceBuilder(
@@ -378,7 +378,7 @@ public class TrajectorySequenceBuilder {
 
     public final TrajectorySequenceBuilder setConstraints(
             TrajectoryVelocityConstraint velConstraint,
-                                                          TrajectoryAccelerationConstraint accelConstraint
+            TrajectoryAccelerationConstraint accelConstraint
     ) {
         this.velConstraint = velConstraint;
         this.accelConstraint = accelConstraint;

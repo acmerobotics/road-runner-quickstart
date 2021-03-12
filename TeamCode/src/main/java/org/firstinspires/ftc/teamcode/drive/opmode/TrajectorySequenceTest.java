@@ -22,7 +22,7 @@ public class TrajectorySequenceTest extends LinearOpMode {
                 .addTemporalMarker(() -> Log.i("temporal marker", "temporal marker 0 called"))
                 .turn(Math.toRadians(90))
                 .addTemporalMarker(() -> Log.i("temporal marker", "temporal marker 1 called"))
-                .addTemporalMarkerOffset(1, () -> Log.i("temporal marker", "temporal marker 2 called"))
+                .UNSTABLE_addTemporalMarkerOffset(1, () -> Log.i("temporal marker", "temporal marker 2 called"))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> Log.i("temporal marker", "temporal marker 3 called"))
                 .splineTo(new Vector2d(60, 30), 0)
