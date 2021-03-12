@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Config
 public class TrajectorySequenceRunner {
@@ -44,7 +45,7 @@ public class TrajectorySequenceRunner {
 
     private Pose2d lastPoseError = new Pose2d();
 
-    ArrayList<TrajectoryMarker> remainingMarkers = new ArrayList<>();
+    List<TrajectoryMarker> remainingMarkers = new ArrayList<>();
 
     public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
         this.follower = follower;
@@ -67,7 +68,8 @@ public class TrajectorySequenceRunner {
         DriveSignal driveSignal = new DriveSignal();
 
         if (currentTrajectorySequence != null) {
-            for (SequenceSegment segment : currentTrajectorySequence) {
+            for (int i = 0; i < currentTrajectorySequence.size(); i++) {
+                SequenceSegment segment = currentTrajectorySequence.get(i);
                 if (segment instanceof TrajectorySegment) {
                     fieldOverlay.setStrokeWidth(1);
                     fieldOverlay.setStroke(COLOR_INACTIVE_TRAJECTORY);
@@ -88,7 +90,7 @@ public class TrajectorySequenceRunner {
             }
 
             if (currentSegmentIndex >= currentTrajectorySequence.size()) {
-                targetPose = currentTrajectorySequence.getLast().getEndPose();
+                targetPose = currentTrajectorySequence.end();
                 driveSignal = new DriveSignal();
 
                 currentTrajectorySequence = null;

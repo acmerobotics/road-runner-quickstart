@@ -174,7 +174,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void turn(double angle) {
         turnAsync(angle);
-        waitForRunnerIdle();
+        waitForIdle();
     }
 
     public void followTrajectoryAsync(Trajectory trajectory) {
@@ -187,7 +187,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void followTrajectory(Trajectory trajectory) {
         followTrajectoryAsync(trajectory);
-        waitForRunnerIdle();
+        waitForIdle();
     }
 
     public void followTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
@@ -195,8 +195,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void followTrajectorySequence(TrajectorySequence trajectorySequence) {
-        trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
-        waitForRunnerIdle();
+        followTrajectorySequenceAsync(trajectorySequence);
+        waitForIdle();
+    }
+
+    public Pose2d getLastError() {
+        return trajectorySequenceRunner.getLastPoseError();
     }
 
     public void update() {
@@ -235,7 +239,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         dashboard.sendTelemetryPacket(packet);
     }
 
-    public void waitForRunnerIdle() {
+    public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && trajectorySequenceRunner.isBusy())
             this.update();
     }

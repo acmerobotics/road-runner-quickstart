@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSeg
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
@@ -36,7 +37,7 @@ public class TrajectorySequenceBuilder {
     private TrajectoryVelocityConstraint velConstraint;
     private TrajectoryAccelerationConstraint accelConstraint;
 
-    private final TrajectorySequence sequenceSegments;
+    private final List<SequenceSegment> sequenceSegments;
 
     private final List<TemporalMarker> temporalMarkers;
     private final List<DisplacementMarker> displacementMarkers;
@@ -69,7 +70,7 @@ public class TrajectorySequenceBuilder {
 
         this.resolution = resolution;
 
-        sequenceSegments = new TrajectorySequence();
+        sequenceSegments = new ArrayList<>();
 
         temporalMarkers = new ArrayList<>();
         displacementMarkers = new ArrayList<>();
@@ -354,7 +355,7 @@ public class TrajectorySequenceBuilder {
         return this;
     }
 
-    public final TrajectorySequenceBuilder setTangent(double tangent) {
+    public TrajectorySequenceBuilder setTangent(double tangent) {
         setAbsoluteTangent = true;
         absoluteTangent = tangent;
 
@@ -363,7 +364,7 @@ public class TrajectorySequenceBuilder {
         return this;
     }
 
-    public final TrajectorySequenceBuilder setTangentOffset(double offset) {
+    private TrajectorySequenceBuilder setTangentOffset(double offset) {
         setAbsoluteTangent = false;
 
         this.tangentOffset = offset;
@@ -372,11 +373,11 @@ public class TrajectorySequenceBuilder {
         return this;
     }
 
-    public final TrajectorySequenceBuilder setReversed(boolean reversed) {
+    public TrajectorySequenceBuilder setReversed(boolean reversed) {
         return reversed ? this.setTangentOffset(Math.toRadians(180.0)) : this.setTangentOffset(0.0);
     }
 
-    public final TrajectorySequenceBuilder setConstraints(
+    public TrajectorySequenceBuilder setConstraints(
             TrajectoryVelocityConstraint velConstraint,
             TrajectoryAccelerationConstraint accelConstraint
     ) {
@@ -386,41 +387,41 @@ public class TrajectorySequenceBuilder {
         return this;
     }
 
-    public final TrajectorySequenceBuilder addTemporalMarker(MarkerCallback callback) {
+    public TrajectorySequenceBuilder addTemporalMarker(MarkerCallback callback) {
         return this.addTemporalMarker(currentDuration, callback);
     }
 
-    public final TrajectorySequenceBuilder UNSTABLE_addTemporalMarkerOffset(double offset, MarkerCallback callback) {
+    public TrajectorySequenceBuilder UNSTABLE_addTemporalMarkerOffset(double offset, MarkerCallback callback) {
         return this.addTemporalMarker(currentDuration + offset, callback);
     }
 
-    public final TrajectorySequenceBuilder addTemporalMarker(double time, MarkerCallback callback) {
+    public TrajectorySequenceBuilder addTemporalMarker(double time, MarkerCallback callback) {
         return this.addTemporalMarker(0.0, time, callback);
     }
 
-    public final TrajectorySequenceBuilder addTemporalMarker(double scale, double offset, MarkerCallback callback) {
+    public TrajectorySequenceBuilder addTemporalMarker(double scale, double offset, MarkerCallback callback) {
         return this.addTemporalMarker(time -> scale * time + offset, callback);
     }
 
-    public final TrajectorySequenceBuilder addTemporalMarker(TimeProducer time, MarkerCallback callback) {
+    public TrajectorySequenceBuilder addTemporalMarker(TimeProducer time, MarkerCallback callback) {
         this.temporalMarkers.add(new TemporalMarker(time, callback));
         return this;
     }
 
-    public final TrajectorySequenceBuilder addSpatialMarker(Vector2d point, MarkerCallback callback) {
+    public TrajectorySequenceBuilder addSpatialMarker(Vector2d point, MarkerCallback callback) {
         this.spatialMarkers.add(new SpatialMarker(point, callback));
         return this;
     }
 
-    public final TrajectorySequenceBuilder addDisplacementMarker(MarkerCallback callback) {
+    public TrajectorySequenceBuilder addDisplacementMarker(MarkerCallback callback) {
         return this.addDisplacementMarker(currentDisplacement, callback);
     }
 
-    public final TrajectorySequenceBuilder UNSTABLE_addDisplacementMarkerOffset(double offset, MarkerCallback callback) {
+    public TrajectorySequenceBuilder UNSTABLE_addDisplacementMarkerOffset(double offset, MarkerCallback callback) {
         return this.addDisplacementMarker(currentDisplacement + offset, callback);
     }
 
-    public final TrajectorySequenceBuilder addDisplacementMarker(double displacement, MarkerCallback callback) {
+    public TrajectorySequenceBuilder addDisplacementMarker(double displacement, MarkerCallback callback) {
         return this.addDisplacementMarker(0.0, displacement, callback);
     }
 
@@ -444,7 +445,7 @@ public class TrajectorySequenceBuilder {
                 MAX_ANG_VEL
         );
 
-        sequenceSegments.add(new TurnSegment(lastPose, angle, turnProfile, new ArrayList<>()));
+        sequenceSegments.add(new TurnSegment(lastPose, angle, turnProfile, Collections.emptyList()));
 
         lastPose = lastPose.plus(new Pose2d(0, 0, angle));
 
@@ -455,7 +456,7 @@ public class TrajectorySequenceBuilder {
 
     public TrajectorySequenceBuilder waitSeconds(double seconds) {
         pushPath();
-        sequenceSegments.add(new WaitSegment(lastPose, seconds, new ArrayList<>()));
+        sequenceSegments.add(new WaitSegment(lastPose, seconds, Collections.emptyList()));
 
         currentDuration += seconds;
         return this;
@@ -497,11 +498,11 @@ public class TrajectorySequenceBuilder {
                 temporalMarkers, displacementMarkers, spatialMarkers
         );
 
-        return projectGlobalMarkersToLocalSegments(globalMarkers, sequenceSegments);
+        return new TrajectorySequence(projectGlobalMarkersToLocalSegments(globalMarkers, sequenceSegments));
     }
 
     private List<TrajectoryMarker> convertMarkersToGlobal(
-            TrajectorySequence sequenceSegments,
+            List<SequenceSegment> sequenceSegments,
             List<TemporalMarker> temporalMarkers,
             List<DisplacementMarker> displacementMarkers,
             List<SpatialMarker> spatialMarkers
@@ -517,13 +518,10 @@ public class TrajectorySequenceBuilder {
 
         // Convert displacement markers
         for (DisplacementMarker marker : displacementMarkers) {
-            double time =
-                    displacementToTime(
-                            sequenceSegments,
-                            marker.getProducer().produce(
-                                    sequenceTotalDisplacement(sequenceSegments)
-                            )
-                    );
+            double time = displacementToTime(
+                    sequenceSegments,
+                    marker.getProducer().produce(currentDisplacement)
+            );
 
             trajectoryMarkers.add(
                     new TrajectoryMarker(
@@ -546,8 +544,13 @@ public class TrajectorySequenceBuilder {
         return trajectoryMarkers;
     }
 
-    private TrajectorySequence projectGlobalMarkersToLocalSegments(List<TrajectoryMarker> markers, TrajectorySequence sequenceSegments) {
-        if (sequenceSegments.isEmpty()) return new TrajectorySequence();
+    private List<SequenceSegment> projectGlobalMarkersToLocalSegments(List<TrajectoryMarker> markers, List<SequenceSegment> sequenceSegments) {
+        if (sequenceSegments.isEmpty()) return Collections.emptyList();
+
+        double totalSequenceDuration = 0;
+        for (SequenceSegment segment : sequenceSegments) {
+            totalSequenceDuration += segment.getDuration();
+        }
 
         for (TrajectoryMarker marker : markers) {
             SequenceSegment segment = null;
@@ -558,7 +561,7 @@ public class TrajectorySequenceBuilder {
             for (int i = 0; i < sequenceSegments.size(); i++) {
                 SequenceSegment seg = sequenceSegments.get(i);
 
-                double markerTime = Math.min(marker.getTime(), sequenceSegments.duration());
+                double markerTime = Math.min(marker.getTime(), totalSequenceDuration);
 
                 if (currentTime + seg.getDuration() >= markerTime) {
                     segment = seg;
@@ -598,18 +601,6 @@ public class TrajectorySequenceBuilder {
         }
 
         return sequenceSegments;
-    }
-
-    private Double sequenceTotalDisplacement(List<SequenceSegment> sequenceSegments) {
-        double total = 0.0;
-
-        for (SequenceSegment segment : sequenceSegments) {
-            if (segment instanceof TrajectorySegment) {
-                total += ((TrajectorySegment) segment).getTrajectory().getPath().length();
-            }
-        }
-
-        return total;
     }
 
     // Taken from Road Runner's TrajectoryGenerator.displacementToTime() since it's private
@@ -659,7 +650,7 @@ public class TrajectorySequenceBuilder {
     }
 
     private Double pointToTime(List<SequenceSegment> sequenceSegments, Vector2d point) {
-        final class ComparingPoints {
+        class ComparingPoints {
             private final double distanceToPoint;
             private final double totalDisplacement;
             private final double thisPathDisplacement;
@@ -708,8 +699,6 @@ public class TrajectorySequenceBuilder {
         return displacementToTime(sequenceSegments, closestPoint.thisPathDisplacement);
     }
 
-    // Required for kotlin translation
-    // No java equivalent
     private interface AddPathCallback {
         void run();
     }
