@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 /**
- * Wraps a motor instance to provide corrected velocity counts and allow reversing without changing the corresponding
+ * Wraps a motor instance to provide corrected velocity counts and allow reversing independently of the corresponding
  * slot's motor direction
  */
 public class Encoder {
@@ -29,7 +29,7 @@ public class Encoder {
         }
 
         public int getMultiplier() {
-            return multiplier;
+            return multiplier * (motor.getDirection().inverted() ? -1 : 1);
         }
     }
 
