@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
 
 public class TrajectorySequenceBuilder {
     private final double resolution = 0.25;
@@ -420,8 +420,8 @@ public class TrajectorySequenceBuilder {
         MotionProfile turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(lastPose.getHeading(), 0.0, 0.0, 0.0),
                 new MotionState(lastPose.getHeading() + angle, 0.0, 0.0, 0.0),
-                MAX_VEL,
-                MAX_ANG_VEL
+                MAX_ANG_VEL,
+                MAX_ANG_ACCEL
         );
 
         sequenceSegments.add(new TurnSegment(lastPose, angle, turnProfile, Collections.emptyList()));
