@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 /**
  * Wraps a motor instance to provide corrected velocity counts and allow reversing independently of the corresponding
@@ -29,7 +30,7 @@ public class Encoder {
         }
 
         public int getMultiplier() {
-            return multiplier * (motor.getDirection().inverted() ? -1 : 1);
+            return multiplier;
         }
     }
 
@@ -61,6 +62,10 @@ public class Encoder {
         return direction;
     }
 
+    private int getMultiplier() {
+        return getDirection().getMultiplier() * (motor.getDirection() == DcMotorSimple.Direction.FORWARD ? 1 : -1);
+    }
+
     /**
      * Allows you to set the direction of the counts and velocity without modifying the motor's direction state
      * @param direction either reverse or forward depending on if encoder counts should be negated
@@ -70,7 +75,7 @@ public class Encoder {
     }
 
     public int getCurrentPosition() {
-        int multiplier = direction.getMultiplier();
+        int multiplier = getMultiplier();
         int currentPosition = motor.getCurrentPosition() * multiplier;
         if (currentPosition != lastPosition) {
             double currentTime = clock.seconds();
@@ -83,7 +88,7 @@ public class Encoder {
     }
 
     public double getRawVelocity() {
-        int multiplier = direction.getMultiplier();
+        int multiplier = getMultiplier();
         return motor.getVelocity() * multiplier;
     }
 
