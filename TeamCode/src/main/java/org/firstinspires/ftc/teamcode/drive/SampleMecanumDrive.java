@@ -112,11 +112,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
 
-        velConstraint = new MinVelocityConstraint(Arrays.asList(
-                new AngularVelocityConstraint(MAX_ANG_VEL),
-                new MecanumVelocityConstraint(MAX_VEL, TRACK_WIDTH)
-        ));
-        accelConstraint = new ProfileAccelerationConstraint(MAX_ACCEL);
+        velConstraint = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
+        accelConstraint = getAccelerationConstraint(MAX_ACCEL);
+
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
@@ -416,5 +414,16 @@ public class SampleMecanumDrive extends MecanumDrive {
         // flat on a surface
 
         return (double) imu.getAngularVelocity().zRotationRate;
+    }
+
+    public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
+        return new MinVelocityConstraint(Arrays.asList(
+                new AngularVelocityConstraint(maxAngularVel),
+                new MecanumVelocityConstraint(maxVel, trackWidth)
+        ));
+    }
+
+    public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
+        return new ProfileAccelerationConstraint(maxAccel);
     }
 }
