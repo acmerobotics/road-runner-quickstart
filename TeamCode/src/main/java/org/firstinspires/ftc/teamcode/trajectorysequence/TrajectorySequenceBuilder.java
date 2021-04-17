@@ -486,7 +486,7 @@ public class TrajectorySequenceBuilder {
 
         double tangent = setAbsoluteTangent ? absoluteTangent : Angle.norm(lastPose.getHeading() + tangentOffset);
 
-        currentTrajectoryBuilder = new TrajectoryBuilder(lastPose, tangent, baseVelConstraint, baseAccelConstraint, resolution);
+        currentTrajectoryBuilder = new TrajectoryBuilder(lastPose, tangent, currentVelConstraint, currentAccelConstraint, resolution);
     }
 
     public TrajectorySequence build() {
