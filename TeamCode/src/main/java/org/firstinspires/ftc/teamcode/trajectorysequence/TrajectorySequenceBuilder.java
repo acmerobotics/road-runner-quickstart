@@ -28,14 +28,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
-
 public class TrajectorySequenceBuilder {
     private final double resolution = 0.25;
 
     private TrajectoryVelocityConstraint velConstraint;
     private TrajectoryAccelerationConstraint accelConstraint;
+
+    private final double baseTurnConstraintMaxAngVel;
+    private final double baseTurnConstraintMaxAngAccel;
 
     private final List<SequenceSegment> sequenceSegments;
 
@@ -62,10 +62,15 @@ public class TrajectorySequenceBuilder {
             Pose2d startPose,
             Double startTangent,
             TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
+            TrajectoryAccelerationConstraint accelConstraint,
+            double baseTurnConstraintMaxAngVel,
+            double baseTurnConstraintMaxAngAccel
     ) {
         this.velConstraint = velConstraint;
         this.accelConstraint = accelConstraint;
+
+        this.baseTurnConstraintMaxAngVel = baseTurnConstraintMaxAngVel;
+        this.baseTurnConstraintMaxAngAccel = baseTurnConstraintMaxAngAccel;
 
         sequenceSegments = new ArrayList<>();
 
@@ -92,9 +97,15 @@ public class TrajectorySequenceBuilder {
     public TrajectorySequenceBuilder(
             Pose2d startPose,
             TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
+            TrajectoryAccelerationConstraint accelConstraint,
+            double baseTurnConstraintMaxAngVel,
+            double baseTurnConstraintMaxAngAccel
     ) {
-        this(startPose, null, velConstraint, accelConstraint);
+        this(
+                startPose, null,
+                velConstraint, accelConstraint,
+                baseTurnConstraintMaxAngVel, baseTurnConstraintMaxAngAccel
+        );
     }
 
     public TrajectorySequenceBuilder lineTo(Vector2d endPosition) {
@@ -415,13 +426,17 @@ public class TrajectorySequenceBuilder {
     }
 
     public TrajectorySequenceBuilder turn(double angle) {
+        return turn(angle, baseTurnConstraintMaxAngVel, baseTurnConstraintMaxAngAccel);
+    }
+
+    public TrajectorySequenceBuilder turn(double angle, double maxAngVel, double maxAngAccel) {
         pushPath();
 
         MotionProfile turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(lastPose.getHeading(), 0.0, 0.0, 0.0),
                 new MotionState(lastPose.getHeading() + angle, 0.0, 0.0, 0.0),
-                MAX_ANG_VEL,
-                MAX_ANG_ACCEL
+                maxAngVel,
+                maxAngAccel
         );
 
         sequenceSegments.add(new TurnSegment(lastPose, angle, turnProfile, Collections.emptyList()));
