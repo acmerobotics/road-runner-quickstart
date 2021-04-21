@@ -118,6 +118,12 @@ public class TrajectorySequenceRunner {
                     currentSegmentStartTime = now;
                     lastSegmentIndex = currentSegmentIndex;
 
+                    for (TrajectoryMarker marker : remainingMarkers) {
+                        marker.getCallback().onMarkerReached();
+                    }
+
+                    remainingMarkers.clear();
+
                     remainingMarkers.addAll(currentSegment.getMarkers());
                     Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
                 }
@@ -182,24 +188,23 @@ public class TrajectorySequenceRunner {
                     DashboardUtil.drawSampledPath(fieldOverlay, currentTrajectory.getPath());
                 }
 
-                if (currentSegment instanceof WaitSegment || currentSegment instanceof TurnSegment) {
-                    if (deltaTime >= currentSegment.getDuration()) {
-                        currentSegmentIndex++;
+                if (deltaTime >= currentSegment.getDuration()) {
+                    currentSegmentIndex++;
 
-                        for (TrajectoryMarker marker : remainingMarkers) {
-                            marker.getCallback().onMarkerReached();
-                        }
-
-                        remainingMarkers.clear();
-
-                        driveSignal = new DriveSignal();
+                    for (TrajectoryMarker marker : remainingMarkers) {
+                        marker.getCallback().onMarkerReached();
                     }
 
-                    while (remainingMarkers.size() > 0 && deltaTime > remainingMarkers.get(0).getTime()) {
-                        remainingMarkers.get(0).getCallback().onMarkerReached();
-                        remainingMarkers.remove(0);
-                    }
+                    remainingMarkers.clear();
+
+                    driveSignal = new DriveSignal();
                 }
+
+                while (remainingMarkers.size() > 0 && deltaTime > remainingMarkers.get(0).getTime()) {
+                    remainingMarkers.get(0).getCallback().onMarkerReached();
+                    remainingMarkers.remove(0);
+                }
+
             }
         }
 
