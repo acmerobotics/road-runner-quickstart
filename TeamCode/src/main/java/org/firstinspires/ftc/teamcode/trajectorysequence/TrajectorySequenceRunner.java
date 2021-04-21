@@ -177,15 +177,13 @@ public class TrajectorySequenceRunner {
             poseHistory.removeFirst();
         }
 
-        Pose2d lastError = getLastPoseError();
-
         packet.put("x", poseEstimate.getX());
         packet.put("y", poseEstimate.getY());
         packet.put("heading (deg)", Math.toDegrees(poseEstimate.getHeading()));
 
-        packet.put("xError", lastError.getX());
-        packet.put("yError", lastError.getY());
-        packet.put("headingError (deg)", Math.toDegrees(lastError.getHeading()));
+        packet.put("xError", getLastPoseError().getX());
+        packet.put("yError", getLastPoseError().getY());
+        packet.put("headingError (deg)", Math.toDegrees(getLastPoseError().getHeading()));
 
         for (int i = 0; i < currentTrajectorySequence.size(); i++) {
             SequenceSegment segment = currentTrajectorySequence.get(i);
