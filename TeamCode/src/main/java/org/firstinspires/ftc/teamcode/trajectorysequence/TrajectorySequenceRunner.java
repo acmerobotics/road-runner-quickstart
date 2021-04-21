@@ -81,8 +81,15 @@ public class TrajectorySequenceRunner {
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
 
-        if (currentSegmentIndex >= currentTrajectorySequence.size())
+        if (currentSegmentIndex >= currentTrajectorySequence.size()) {
+            for (TrajectoryMarker marker : remainingMarkers) {
+                marker.getCallback().onMarkerReached();
+            }
+
+            remainingMarkers.clear();
+
             currentTrajectorySequence = null;
+        }
 
         if (currentTrajectorySequence == null)
             return new DriveSignal();
@@ -124,18 +131,6 @@ public class TrajectorySequenceRunner {
             }
 
             targetPose = currentTrajectory.get(deltaTime);
-        }
-
-        if (deltaTime >= currentSegment.getDuration()) {
-            currentSegmentIndex++;
-
-            for (TrajectoryMarker marker : remainingMarkers) {
-                marker.getCallback().onMarkerReached();
-            }
-
-            remainingMarkers.clear();
-
-            driveSignal = new DriveSignal();
         } else if (currentSegment instanceof TurnSegment) {
             MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
 
@@ -155,11 +150,20 @@ public class TrajectorySequenceRunner {
                     new Pose2d(0, 0, targetOmega + correction),
                     new Pose2d(0, 0, targetAlpha)
             );
+
+            if (deltaTime >= currentSegment.getDuration()) {
+                currentSegmentIndex++;
+                driveSignal = new DriveSignal();
+            }
         } else if (currentSegment instanceof WaitSegment) {
             lastPoseError = new Pose2d();
 
             targetPose = currentSegment.getStartPose();
             driveSignal = new DriveSignal();
+
+            if (deltaTime >= currentSegment.getDuration()) {
+                currentSegmentIndex++;
+            }
         }
 
         while (remainingMarkers.size() > 0 && deltaTime > remainingMarkers.get(0).getTime()) {
