@@ -108,31 +108,7 @@ public class TrajectorySequenceRunner {
 
         double deltaTime = now - currentSegmentStartTime;
 
-        if (currentSegment instanceof WaitSegment) {
-            lastPoseError = new Pose2d();
-
-            targetPose = currentSegment.getStartPose();
-            driveSignal = new DriveSignal();
-        } else if (currentSegment instanceof TurnSegment) {
-            MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
-
-            turnController.setTargetPosition(targetState.getX());
-
-            double correction = turnController.update(poseEstimate.getHeading());
-
-            double targetOmega = targetState.getV();
-            double targetAlpha = targetState.getA();
-
-            lastPoseError = new Pose2d(0, 0, turnController.getLastError());
-
-            Pose2d startPose = currentSegment.getStartPose();
-            targetPose = startPose.copy(startPose.getX(), startPose.getY(), targetState.getX());
-
-            driveSignal = new DriveSignal(
-                    new Pose2d(0, 0, targetOmega + correction),
-                    new Pose2d(0, 0, targetAlpha)
-            );
-        } else if (currentSegment instanceof TrajectorySegment) {
+        if (currentSegment instanceof TrajectorySegment) {
             Trajectory currentTrajectory = ((TrajectorySegment) currentSegment).getTrajectory();
 
             if (isNewTransition)
@@ -159,6 +135,30 @@ public class TrajectorySequenceRunner {
 
             remainingMarkers.clear();
 
+            driveSignal = new DriveSignal();
+        } else if (currentSegment instanceof TurnSegment) {
+            MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
+
+            turnController.setTargetPosition(targetState.getX());
+
+            double correction = turnController.update(poseEstimate.getHeading());
+
+            double targetOmega = targetState.getV();
+            double targetAlpha = targetState.getA();
+
+            lastPoseError = new Pose2d(0, 0, turnController.getLastError());
+
+            Pose2d startPose = currentSegment.getStartPose();
+            targetPose = startPose.copy(startPose.getX(), startPose.getY(), targetState.getX());
+
+            driveSignal = new DriveSignal(
+                    new Pose2d(0, 0, targetOmega + correction),
+                    new Pose2d(0, 0, targetAlpha)
+            );
+        } else if (currentSegment instanceof WaitSegment) {
+            lastPoseError = new Pose2d();
+
+            targetPose = currentSegment.getStartPose();
             driveSignal = new DriveSignal();
         }
 
