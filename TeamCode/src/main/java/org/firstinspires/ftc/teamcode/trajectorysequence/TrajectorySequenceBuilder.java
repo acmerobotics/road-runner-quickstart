@@ -446,7 +446,10 @@ public class TrajectorySequenceBuilder {
 
         sequenceSegments.add(new TurnSegment(lastPose, angle, turnProfile, Collections.emptyList()));
 
-        lastPose = lastPose.plus(new Pose2d(0, 0, angle));
+        lastPose = new Pose2d(
+                lastPose.getX(), lastPose.getY(),
+                Angle.norm(lastPose.getHeading() + angle)
+        );
 
         currentDuration += turnProfile.duration();
 
