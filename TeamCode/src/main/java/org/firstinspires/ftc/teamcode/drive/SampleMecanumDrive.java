@@ -31,6 +31,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -59,8 +60,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5.5, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1.5, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1.1;
 
@@ -98,6 +99,11 @@ public class SampleMecanumDrive extends MecanumDrive {
     private VoltageSensor batteryVoltageSensor;
 
     private Pose2d lastPoseOnTurn;
+
+    /**
+     * Servo on Wobble Arm to grip Wobble Goal.
+     */
+    private Servo mDropperServo;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -169,6 +175,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+
+        mDropperServo = hardwareMap.get(Servo.class, "wobbleDropper");
+        mDropperServo.setDirection(Servo.Direction.FORWARD);
+        mDropperServo.setPosition(0.0);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
