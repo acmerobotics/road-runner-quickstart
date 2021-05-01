@@ -175,8 +175,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
         mDropperServo = hardwareMap.get(Servo.class, "wobbleDropper");
-        mDropperServo.setDirection(Servo.Direction.FORWARD);
-        mDropperServo.setPosition(0.0);
+//        mDropperServo.setDirection(Servo.Direction.FORWARD);
+//        mDropperServo.setPosition(0.0);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -437,5 +437,9 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
+    }
+
+    public void wobbleDrop() {
+        mDropperServo.setPosition(1.0);
     }
 }
