@@ -579,21 +579,21 @@ public class TrajectorySequenceBuilder {
             SequenceSegment newSegment = null;
 
             if (segment instanceof WaitSegment) {
-                List<TrajectoryMarker> newMarkers = segment.getMarkers();
+                List<TrajectoryMarker> newMarkers = new ArrayList<>(segment.getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
 
                 WaitSegment thisSegment = (WaitSegment) segment;
-                newSegment = new WaitSegment(thisSegment.getStartPose(), thisSegment.getDuration(), thisSegment.getMarkers());
+                newSegment = new WaitSegment(thisSegment.getStartPose(), thisSegment.getDuration(), newMarkers);
             } else if (segment instanceof TurnSegment) {
-                List<TrajectoryMarker> newMarkers = segment.getMarkers();
+                List<TrajectoryMarker> newMarkers = new ArrayList<>(segment.getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
 
                 TurnSegment thisSegment = (TurnSegment) segment;
-                newSegment = new TurnSegment(thisSegment.getStartPose(), thisSegment.getTotalRotation(), thisSegment.getMotionProfile(), thisSegment.getMarkers());
+                newSegment = new TurnSegment(thisSegment.getStartPose(), thisSegment.getTotalRotation(), thisSegment.getMotionProfile(), newMarkers);
             } else if (segment instanceof TrajectorySegment) {
                 TrajectorySegment thisSegment = (TrajectorySegment) segment;
 
-                List<TrajectoryMarker> newMarkers = thisSegment.getTrajectory().getMarkers();
+                List<TrajectoryMarker> newMarkers = new ArrayList<>(thisSegment.getTrajectory().getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
 
                 newSegment = new TrajectorySegment(new Trajectory(thisSegment.getTrajectory().getPath(), thisSegment.getTrajectory().getProfile(), newMarkers));
