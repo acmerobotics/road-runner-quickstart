@@ -75,100 +75,104 @@ public class TrajectorySequenceRunner {
     }
 
     public DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity) {
-        Pose2d targetPose = new Pose2d();
-        DriveSignal driveSignal = new DriveSignal();
+        Pose2d targetPose = null;
+        DriveSignal driveSignal = null;
 
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
 
-        if (currentSegmentIndex >= currentTrajectorySequence.size()) {
-            for (TrajectoryMarker marker : remainingMarkers) {
-                marker.getCallback().onMarkerReached();
+        SequenceSegment currentSegment = null;
+
+        if (currentTrajectorySequence != null) {
+            if (currentSegmentIndex >= currentTrajectorySequence.size()) {
+                for (TrajectoryMarker marker : remainingMarkers) {
+                    marker.getCallback().onMarkerReached();
+                }
+
+                remainingMarkers.clear();
+
+                currentTrajectorySequence = null;
             }
 
-            remainingMarkers.clear();
+            if (currentTrajectorySequence == null)
+                return new DriveSignal();
 
-            currentTrajectorySequence = null;
-        }
+            double now = clock.seconds();
+            boolean isNewTransition = currentSegmentIndex != lastSegmentIndex;
 
-        if (currentTrajectorySequence == null)
-            return new DriveSignal();
+            currentSegment = currentTrajectorySequence.get(currentSegmentIndex);
 
-        double now = clock.seconds();
-        boolean isNewTransition = currentSegmentIndex != lastSegmentIndex;
+            if (isNewTransition) {
+                currentSegmentStartTime = now;
+                lastSegmentIndex = currentSegmentIndex;
 
-        SequenceSegment currentSegment = currentTrajectorySequence.get(currentSegmentIndex);
+                for (TrajectoryMarker marker : remainingMarkers) {
+                    marker.getCallback().onMarkerReached();
+                }
 
-        if (isNewTransition) {
-            currentSegmentStartTime = now;
-            lastSegmentIndex = currentSegmentIndex;
+                remainingMarkers.clear();
 
-            for (TrajectoryMarker marker : remainingMarkers) {
-                marker.getCallback().onMarkerReached();
+                remainingMarkers.addAll(currentSegment.getMarkers());
+                Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
             }
 
-            remainingMarkers.clear();
+            double deltaTime = now - currentSegmentStartTime;
 
-            remainingMarkers.addAll(currentSegment.getMarkers());
-            Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
-        }
+            if (currentSegment instanceof TrajectorySegment) {
+                Trajectory currentTrajectory = ((TrajectorySegment) currentSegment).getTrajectory();
 
-        double deltaTime = now - currentSegmentStartTime;
+                if (isNewTransition)
+                    follower.followTrajectory(currentTrajectory);
 
-        if (currentSegment instanceof TrajectorySegment) {
-            Trajectory currentTrajectory = ((TrajectorySegment) currentSegment).getTrajectory();
+                if (!follower.isFollowing()) {
+                    currentSegmentIndex++;
 
-            if (isNewTransition)
-                follower.followTrajectory(currentTrajectory);
+                    driveSignal = new DriveSignal();
+                } else {
+                    driveSignal = follower.update(poseEstimate, poseVelocity);
+                    lastPoseError = follower.getLastError();
+                }
 
-            if (!follower.isFollowing()) {
-                currentSegmentIndex++;
+                targetPose = currentTrajectory.get(deltaTime);
+            } else if (currentSegment instanceof TurnSegment) {
+                MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
 
+                turnController.setTargetPosition(targetState.getX());
+
+                double correction = turnController.update(poseEstimate.getHeading());
+
+                double targetOmega = targetState.getV();
+                double targetAlpha = targetState.getA();
+
+                lastPoseError = new Pose2d(0, 0, turnController.getLastError());
+
+                Pose2d startPose = currentSegment.getStartPose();
+                targetPose = startPose.copy(startPose.getX(), startPose.getY(), targetState.getX());
+
+                driveSignal = new DriveSignal(
+                        new Pose2d(0, 0, targetOmega + correction),
+                        new Pose2d(0, 0, targetAlpha)
+                );
+
+                if (deltaTime >= currentSegment.getDuration()) {
+                    currentSegmentIndex++;
+                    driveSignal = new DriveSignal();
+                }
+            } else if (currentSegment instanceof WaitSegment) {
+                lastPoseError = new Pose2d();
+
+                targetPose = currentSegment.getStartPose();
                 driveSignal = new DriveSignal();
-            } else {
-                driveSignal = follower.update(poseEstimate, poseVelocity);
-                lastPoseError = follower.getLastError();
+
+                if (deltaTime >= currentSegment.getDuration()) {
+                    currentSegmentIndex++;
+                }
             }
 
-            targetPose = currentTrajectory.get(deltaTime);
-        } else if (currentSegment instanceof TurnSegment) {
-            MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
-
-            turnController.setTargetPosition(targetState.getX());
-
-            double correction = turnController.update(poseEstimate.getHeading());
-
-            double targetOmega = targetState.getV();
-            double targetAlpha = targetState.getA();
-
-            lastPoseError = new Pose2d(0, 0, turnController.getLastError());
-
-            Pose2d startPose = currentSegment.getStartPose();
-            targetPose = startPose.copy(startPose.getX(), startPose.getY(), targetState.getX());
-
-            driveSignal = new DriveSignal(
-                    new Pose2d(0, 0, targetOmega + correction),
-                    new Pose2d(0, 0, targetAlpha)
-            );
-
-            if (deltaTime >= currentSegment.getDuration()) {
-                currentSegmentIndex++;
-                driveSignal = new DriveSignal();
+            while (remainingMarkers.size() > 0 && deltaTime > remainingMarkers.get(0).getTime()) {
+                remainingMarkers.get(0).getCallback().onMarkerReached();
+                remainingMarkers.remove(0);
             }
-        } else if (currentSegment instanceof WaitSegment) {
-            lastPoseError = new Pose2d();
-
-            targetPose = currentSegment.getStartPose();
-            driveSignal = new DriveSignal();
-
-            if (deltaTime >= currentSegment.getDuration()) {
-                currentSegmentIndex++;
-            }
-        }
-
-        while (remainingMarkers.size() > 0 && deltaTime > remainingMarkers.get(0).getTime()) {
-            remainingMarkers.get(0).getCallback().onMarkerReached();
-            remainingMarkers.remove(0);
         }
 
         poseHistory.add(poseEstimate);
@@ -185,44 +189,46 @@ public class TrajectorySequenceRunner {
         packet.put("yError", getLastPoseError().getY());
         packet.put("headingError (deg)", Math.toDegrees(getLastPoseError().getHeading()));
 
-        for (int i = 0; i < currentTrajectorySequence.size(); i++) {
-            SequenceSegment segment = currentTrajectorySequence.get(i);
-            if (segment instanceof TrajectorySegment) {
-                fieldOverlay.setStrokeWidth(1);
-                fieldOverlay.setStroke(COLOR_INACTIVE_TRAJECTORY);
+        if (currentSegment != null) {
+            for (int i = 0; i < currentTrajectorySequence.size(); i++) {
+                SequenceSegment segment = currentTrajectorySequence.get(i);
+                if (segment instanceof TrajectorySegment) {
+                    fieldOverlay.setStrokeWidth(1);
+                    fieldOverlay.setStroke(COLOR_INACTIVE_TRAJECTORY);
 
-                DashboardUtil.drawSampledPath(fieldOverlay, ((TrajectorySegment) segment).getTrajectory().getPath());
-            } else if (segment instanceof TurnSegment) {
-                Pose2d pose = segment.getStartPose();
+                    DashboardUtil.drawSampledPath(fieldOverlay, ((TrajectorySegment) segment).getTrajectory().getPath());
+                } else if (segment instanceof TurnSegment) {
+                    Pose2d pose = segment.getStartPose();
 
-                fieldOverlay.setFill(COLOR_INACTIVE_TURN);
-                fieldOverlay.fillCircle(pose.getX(), pose.getY(), 2);
-            } else if (segment instanceof WaitSegment) {
-                Pose2d pose = segment.getStartPose();
+                    fieldOverlay.setFill(COLOR_INACTIVE_TURN);
+                    fieldOverlay.fillCircle(pose.getX(), pose.getY(), 2);
+                } else if (segment instanceof WaitSegment) {
+                    Pose2d pose = segment.getStartPose();
 
-                fieldOverlay.setStrokeWidth(1);
-                fieldOverlay.setStroke(COLOR_INACTIVE_WAIT);
-                fieldOverlay.strokeCircle(pose.getX(), pose.getY(), 3);
-            }
+                    fieldOverlay.setStrokeWidth(1);
+                    fieldOverlay.setStroke(COLOR_INACTIVE_WAIT);
+                    fieldOverlay.strokeCircle(pose.getX(), pose.getY(), 3);
+                }
 
-            if (currentSegment instanceof TrajectorySegment) {
-                Trajectory currentTrajectory = ((TrajectorySegment) currentSegment).getTrajectory();
+                if (currentSegment instanceof TrajectorySegment) {
+                    Trajectory currentTrajectory = ((TrajectorySegment) currentSegment).getTrajectory();
 
-                fieldOverlay.setStrokeWidth(1);
-                fieldOverlay.setStroke(COLOR_ACTIVE_TRAJECTORY);
+                    fieldOverlay.setStrokeWidth(1);
+                    fieldOverlay.setStroke(COLOR_ACTIVE_TRAJECTORY);
 
-                DashboardUtil.drawSampledPath(fieldOverlay, currentTrajectory.getPath());
-            } else if (currentSegment instanceof TurnSegment) {
-                Pose2d pose = currentSegment.getStartPose();
+                    DashboardUtil.drawSampledPath(fieldOverlay, currentTrajectory.getPath());
+                } else if (currentSegment instanceof TurnSegment) {
+                    Pose2d pose = currentSegment.getStartPose();
 
-                fieldOverlay.setFill(COLOR_ACTIVE_TURN);
-                fieldOverlay.fillCircle(pose.getX(), pose.getY(), 3);
-            } else if (currentSegment instanceof WaitSegment) {
-                Pose2d pose = currentSegment.getStartPose();
+                    fieldOverlay.setFill(COLOR_ACTIVE_TURN);
+                    fieldOverlay.fillCircle(pose.getX(), pose.getY(), 3);
+                } else if (currentSegment instanceof WaitSegment) {
+                    Pose2d pose = currentSegment.getStartPose();
 
-                fieldOverlay.setStrokeWidth(1);
-                fieldOverlay.setStroke(COLOR_ACTIVE_WAIT);
-                fieldOverlay.strokeCircle(pose.getX(), pose.getY(), 3);
+                    fieldOverlay.setStrokeWidth(1);
+                    fieldOverlay.setStroke(COLOR_ACTIVE_WAIT);
+                    fieldOverlay.strokeCircle(pose.getX(), pose.getY(), 3);
+                }
             }
         }
 
@@ -232,9 +238,11 @@ public class TrajectorySequenceRunner {
         fieldOverlay.setStroke("#3F51B5");
         DashboardUtil.drawRobot(fieldOverlay, poseEstimate);
 
-        fieldOverlay.setStrokeWidth(1);
-        fieldOverlay.setStroke("#4CAF50");
-        DashboardUtil.drawRobot(fieldOverlay, targetPose);
+        if (targetPose != null) {
+            fieldOverlay.setStrokeWidth(1);
+            fieldOverlay.setStroke("#4CAF50");
+            DashboardUtil.drawRobot(fieldOverlay, targetPose);
+        }
 
         dashboard.sendTelemetryPacket(packet);
 

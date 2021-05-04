@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.TankDrive;
 import com.acmerobotics.roadrunner.followers.TankPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
@@ -189,7 +190,8 @@ public class SampleTankDrive extends TankDrive {
 
     public void update() {
         updatePoseEstimate();
-        setDriveSignal(trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity()));
+        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
+        if (signal != null) setDriveSignal(signal);
     }
 
     public void waitForIdle() {
