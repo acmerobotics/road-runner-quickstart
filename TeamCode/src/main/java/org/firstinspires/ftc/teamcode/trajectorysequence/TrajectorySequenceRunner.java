@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.trajectorysequence;
 
+import androidx.annotation.Nullable;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
@@ -74,7 +76,8 @@ public class TrajectorySequenceRunner {
         lastSegmentIndex = -1;
     }
 
-    public DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity) {
+    public @Nullable
+    DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity) {
         Pose2d targetPose = null;
         DriveSignal driveSignal = null;
 
