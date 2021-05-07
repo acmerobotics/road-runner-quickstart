@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -11,12 +12,12 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 
 /*
- * This is an example of a more complex path to really test the tuning.
+ * This is a complex autonomous that will score 2 wobble goals in a complex path on square B
  */
 
-
 @Autonomous(group = "drive")
-public class FirstMovementTest extends LinearOpMode {
+public class Auton_B2_Red_Blue extends LinearOpMode {
+    //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
     private double slowerVelocity = 3;
     @Override
