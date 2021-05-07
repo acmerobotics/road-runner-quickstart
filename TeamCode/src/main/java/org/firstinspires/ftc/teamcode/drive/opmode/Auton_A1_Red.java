@@ -4,19 +4,19 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+
+//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /*
  * This is a straight line autonomous that will drop 1 wobble goal at square A on both sides of the field
  */
 
 @Autonomous(group = "drive")
-public class Auton_A1_Red_Blue extends LinearOpMode {
+public class Auton_A1_Red extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
     private double slowerVelocity = 3;
@@ -42,6 +42,7 @@ public class Auton_A1_Red_Blue extends LinearOpMode {
                 .build();
 
         drive.followTrajectory(traj1);
+        drive.turn(Math.toRadians(180));
         drive.wobbleDrop();
         sleep(2000);
         drive.followTrajectory(traj2);

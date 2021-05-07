@@ -35,6 +35,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
@@ -43,6 +48,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
@@ -106,6 +112,51 @@ public class SampleMecanumDrive extends MecanumDrive {
     private Servo mDropperServo;
 
     private DcMotor wobbleArm;
+
+    // Tensorflo
+    private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Quad";
+    private static final String LABEL_SECOND_ELEMENT = "Single";
+    /**
+     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+     * localization engine.
+     */
+    private VuforiaLocalizer vuforia;
+
+    /**
+     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
+     * Detection engine.
+     */
+    private TFObjectDetector tfod;
+    // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final String VUFORIA_KEY =
+            "AYyrYgn/////AAABmfoVAabL9068k4+3G7BnkUsn3CiCAh0CExHOl7JMywbgqm+E6EGnvUJu4GmpbxVoJT9fzwRQVJtOg0/0UM8utTn6W+zUBcMxW/pVpPa5yaL3dhcgq8z58hV0f1dbDYJxcBlikT49wSdyoZlG/Cs3HSpplIuK/3xAqBUUYjqFfQ754AYtY2eCz2HWjnAB9IHcHE3MX9TRmEsJMGI6ZMkbMp7N5kxlZDX3yL+36sekpn3NdYfuvDPrQD7DEbGYEYHg8FERjE6vpx1OhU6sLAfUVN3o40Qrct/G3pKndmMJ1MnvAVXPE2llAmXvdQwTNMYRq/BXj446ICd3eCCXj9kozasAra6fJRkn9jFk1FOE4OVS";
+
+    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
+    // We will define some constants and conversions here
+    private static final float mmPerInch        = 25.4f;
+    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+
+    // Constants for perimeter targets
+    private static final float halfField = 72 * mmPerInch;
+    private static final float quadField  = 36 * mmPerInch;
+
+    // Class Members
+    private OpenGLMatrix lastLocation = null;
+
+    /**
+     * This is the webcam we are to use. As with other hardware devices such as motors and
+     * servos, this device is identified using the robot configuration tool in the FTC application.
+     */
+    WebcamName webcamName = null;
+
+    private boolean targetVisible = false;
+    private float phoneXRotate    = 0;
+    private float phoneYRotate    = 0;
+    private float phoneZRotate    = 0;
+
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -183,7 +234,35 @@ public class SampleMecanumDrive extends MecanumDrive {
         wobbleArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wobbleArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wobbleArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
+        /*
+         * Initialize the Vuforia localization engine.
+         */
+
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters vuParameters = new VuforiaLocalizer.Parameters();
+
+        vuParameters.vuforiaLicenseKey = VUFORIA_KEY;
+        vuParameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(vuParameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minResultConfidence = 0.8f;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+
+}
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, velConstraint, accelConstraint);
@@ -447,5 +526,9 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void wobbleDrop() {
         mDropperServo.setPosition(1.0);
+    }
+
+    public TFObjectDetector getTfod() {
+        return tfod;
     }
 }
