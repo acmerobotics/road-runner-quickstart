@@ -105,6 +105,8 @@ public class SampleMecanumDrive extends MecanumDrive {
      */
     private Servo mDropperServo;
 
+    private DcMotor wobbleArm;
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -177,6 +179,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         mDropperServo = hardwareMap.get(Servo.class, "wobbleDropper");
 //        mDropperServo.setDirection(Servo.Direction.FORWARD);
 //        mDropperServo.setPosition(0.0);
+        wobbleArm = hardwareMap.get(DcMotor.class, "wobbleArm");
+        wobbleArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wobbleArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wobbleArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
