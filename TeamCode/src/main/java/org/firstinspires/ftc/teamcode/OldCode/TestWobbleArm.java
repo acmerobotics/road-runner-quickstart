@@ -46,7 +46,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Disabled
 @TeleOp(name = "Test Wobble Arm", group = "Test")
 
 public class TestWobbleArm extends LinearOpMode {
@@ -119,14 +118,14 @@ public class TestWobbleArm extends LinearOpMode {
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
 
-            if (gamepad2.left_stick_y < 0)
-            {
-                motor.setDirection(DcMotor.Direction.REVERSE);
-            }
-            else if (gamepad2.left_stick_y > 0)
-            {
-                motor.setDirection(DcMotor.Direction.FORWARD);
-            }
+//            if (gamepad2.left_stick_y < 0)
+//            {
+//                motor.setDirection(DcMotor.Direction.REVERSE);
+//            }
+//            else if (gamepad2.left_stick_y > 0)
+//            {
+//                motor.setDirection(DcMotor.Direction.FORWARD);
+//            }
             // Set the motor to the new power and pause;
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(power);

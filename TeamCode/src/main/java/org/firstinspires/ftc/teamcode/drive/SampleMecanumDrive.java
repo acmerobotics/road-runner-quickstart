@@ -111,7 +111,16 @@ public class SampleMecanumDrive extends MecanumDrive {
      */
     private Servo mDropperServo;
 
+    private Servo wobbleGrip;
+    public static final double MAX_POS     =  0.5;     // Maximum rotational position
+    public static final double MIN_POS     =  0.05;     // Minimum rotational position
+
     private DcMotor wobbleArm;
+    public static int away = 125;
+    public static int down = 625;
+    public static int carry = 575;
+    public static int wall = 460;
+    public static double armPower = .8;
 
     // Tensorflo
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -230,6 +239,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         mDropperServo = hardwareMap.get(Servo.class, "wobbleDropper");
 //        mDropperServo.setDirection(Servo.Direction.FORWARD);
 //        mDropperServo.setPosition(0.0);
+        wobbleGrip = hardwareMap.get(Servo.class, "wobbleArmGrip");
+
         wobbleArm = hardwareMap.get(DcMotor.class, "wobbleArm");
         wobbleArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wobbleArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -530,5 +541,37 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public TFObjectDetector getTfod() {
         return tfod;
+    }
+
+    public DcMotor getWobbleArm() {
+        return wobbleArm;
+    }
+
+    public void moveTo(String position){
+        switch(position){
+        case "Away":
+            wobbleArm.setTargetPosition(away);
+            break;
+        case "Down":
+            wobbleArm.setTargetPosition(down);
+            break;
+        case "Carry":
+            wobbleArm.setTargetPosition(carry);
+            break;
+        case "Wall":
+            wobbleArm.setTargetPosition(wall);
+            break;
+        default: break;
+        }
+        wobbleArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wobbleArm.setPower(armPower);
+    }
+
+    public void wobbleGrab() {
+        wobbleGrip.setPosition(MIN_POS);
+    }
+
+    public void wobbleRelease() {
+        wobbleGrip.setPosition(MAX_POS);
     }
 }

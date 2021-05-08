@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -23,14 +24,14 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 public class Auton_B2_Red_Blue extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
-    private double slowerVelocity = 3;
-
+    private double slowerVelocity = 5;
+    private DcMotor wobbleArm;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 //        wobbleDropper = hardwareMap.get(Servo.class, "wobbleDropper");
         TFObjectDetector tfod = drive.getTfod();
-
+        wobbleArm = drive.getWobbleArm();
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -50,7 +51,7 @@ public class Auton_B2_Red_Blue extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-
+//        drive.moveTo("Away");
         // We want to start the bot at x: 10, y: -8, heading: 90 degrees
         Pose2d startPose = new Pose2d(-60, 48, Math.toRadians(0));
 
@@ -72,22 +73,35 @@ public class Auton_B2_Red_Blue extends LinearOpMode {
                 )
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineTo(new Vector2d(12, 19))
+                .lineTo(new Vector2d(20, 24))
                 .build();
-        Trajectory traj5 = drive.trajectoryBuilder(traj4.end().plus(new Pose2d(0, 0, Math.toRadians(-135))))
-                .forward(2)
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end().plus(new Pose2d(0, 0, Math.toRadians(-135))), false)
+                .forward(15)
                 .build();
-
+//      Move to block b
         drive.followTrajectory(traj1);
+        drive.moveTo("Down");
         drive.wobbleDrop();
-        sleep(2000);
+//        drive.moveTo("Away");
+        sleep(1500);
+        //Go get second wobble
         drive.followTrajectory(traj2);
+        //Move to second wobble
         drive.followTrajectory(traj3);
+        // Grab
+        drive.wobbleGrab();
         sleep(2000);
+        drive.moveTo("Carry");
         drive.followTrajectory(traj4);
         drive.turn(Math.toRadians(-135));
-        sleep(2000);
+        drive.moveTo("Down");
+        // Drop Wobble from arm
+        drive.wobbleRelease();
+        sleep(1000);
+        // Go Park
         drive.followTrajectory(traj5);
+//        drive.moveTo("Away");
+//        sleep(2000);
 
 //        wobbleDropper.setPosition(1);
 //        drive.followTrajectory(
