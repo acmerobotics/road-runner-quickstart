@@ -88,7 +88,7 @@ public class UltimateGoalHardwareTest
     /**
      * Wobble Goal Arm of the robot.
      */
-    private DcMotor         mWobbleArmMotor;
+    public DcMotor         mWobbleArmMotor;
 
     /**
      * Upper arm of the robot.
@@ -103,7 +103,7 @@ public class UltimateGoalHardwareTest
     /**
      * Servo on Wobble Arm to grip Wobble Goal.
      */
-    private Servo           mWobbleArmServo;
+    public Servo           mWobbleArmServo;
 
     /**
      * Gripper alignment servo.

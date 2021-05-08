@@ -68,7 +68,11 @@
          */
         RobotDrive               mDrive;
 
-        double velocity;
+        double targetVel = 1300;
+
+        int tolerance = 100;
+
+        boolean atSpeed = false;
 
         private TelemetryLogger  mLogger;
 
@@ -103,7 +107,7 @@
             mRobot.getShooterServo().setPosition(0.0);
     
             mShooterMotorEx =(DcMotorEx)mRobot.mShooterMotor;
-            if (mShooterMotorEx instanceof DcMotorEx){
+            if (mShooterMotorEx != null){
                 telemetry.addLine("It works!");
             }
             
@@ -125,7 +129,7 @@
         public void init_loop() {
             telemetry.clear();
             telemetry.addData("Velocity of mShooterMotorEx", mShooterMotorEx.getVelocity());
-            if (mShooterMotorEx instanceof DcMotorEx){
+            if (mShooterMotorEx != null){
                 telemetry.addLine("It works!");
             }
         }
@@ -141,8 +145,6 @@
             telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
             // We can control the number of lines shown in the log
             telemetry.log().setCapacity(6);
-            //variables
-            double velocity = 1000;
         }
         
         /*
@@ -155,6 +157,8 @@
             loopTrolley();
             // Intake and Shooter:
             loopIntakeShooter();
+            // Wobble Arm and Servo:
+            loopWobble();
 
             // Show the elapsed game time and wheel power.
             //telemetry.addData("Status", "Run Time: " + mTimer.toString());
@@ -229,7 +233,7 @@
             //intake on and Shooter off by default
             intakePower = 1.0;
             shooterPower = 0.0;
-            //Reverses intake for uncongesting
+            //Reverses intake for decongesting
             if(gamepad1.left_trigger==1)
             {
                 intakePower = -1.0;
@@ -249,8 +253,12 @@
 //Loader Arm Logic
             //Default loader arm position
             loaderPos = 0.0;
-            //When button held, arm loads ring
-            if (gamepad1.b && gamepad1.right_trigger==1)
+
+            //Detects if shooter is at speed
+            atSpeed = (mShooterMotorEx.getVelocity() < (targetVel + tolerance * 1.5)) && (mShooterMotorEx.getVelocity() > (targetVel - tolerance * 0.5));
+
+            //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
+            if (gamepad1.b && gamepad1.right_trigger==1 && atSpeed)
             {
                 mLogger.info("Firing");
                 loaderPos = (1.0);
@@ -258,14 +266,14 @@
 //Sets Power and Position
             //Sets the intake motor power
             mRobot.mIntakeMotor.setPower(intakePower);
-            double p = 50.0;
-            double change = 100;
             //Coefficients
             // mShooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
-            mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
+            // mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
+            mShooterMotorEx.setVelocityPIDFCoefficients(0.0, 0.5, 0.0, 5.0); // effective values from testing
             //Sets the shooter motor power
             // mShooterMotorEx.setPower(.7);
-            mShooterMotorEx.setVelocity(1240);
+//            mShooterMotorEx.setVelocity(1240);          //during Aledo qual, this caused the rings to skim the bottom of the goal most shots
+            mShooterMotorEx.setVelocity(targetVel);
             //mShooterMotorEx.setPower(shooterPower);
                 /*
                 if (gamepad2.a && velocity > 999){
@@ -285,6 +293,25 @@
             //mRobot.mShooterMotor.setPower(shooterPower);
             //Sets the loader arm servo position
             mRobot.getShooterServo().setPosition(loaderPos);
+        }
+        static final double MAX_POS     =  0.5;     // Maximum rotational position
+        static final double MIN_POS     =  0.05;     // Minimum rotational position
+        double gripPos = MAX_POS;
+        boolean gripWobble = false;
+        private void loopWobble()
+        {
+            mRobot.mWobbleArmMotor.setPower(-(gamepad2.left_stick_y));
+            if(!gripWobble && gamepad2.a)
+            {
+                gripPos = MIN_POS; //closing wobble grip
+                gripWobble = true;
+            }
+            else if (gripWobble && gamepad2.a)
+            {
+                gripPos = MAX_POS; //open wobble grip
+                gripWobble = false;
+            }
+            mRobot.mWobbleArmServo.setPosition(gripPos);
         }
 
 
