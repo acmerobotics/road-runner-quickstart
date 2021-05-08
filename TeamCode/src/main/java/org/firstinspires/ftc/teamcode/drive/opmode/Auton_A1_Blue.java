@@ -37,14 +37,14 @@ public class Auton_A1_Blue extends LinearOpMode {
                 .lineTo(new Vector2d(18,48))
                 .build();
 
-        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToConstantHeading(new Vector2d(-18, 48))
-                .build();
+//        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
+//                .lineToConstantHeading(new Vector2d(-18, 48))
+//                .build();
 
         drive.followTrajectory(traj1);
         drive.wobbleDrop();
         sleep(2000);
-        drive.followTrajectory(traj2);
+//        drive.followTrajectory(traj2);
 
 //        wobbleDropper.setPosition(1);
 //        drive.followTrajectory(

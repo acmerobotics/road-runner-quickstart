@@ -16,10 +16,10 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 
 @Autonomous(group = "drive")
-public class Auton_A1_Red extends LinearOpMode {
+public class Auton_WallShoot extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
-    private double slowerVelocity = 3;
+
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -41,11 +41,12 @@ public class Auton_A1_Red extends LinearOpMode {
 //                .lineToConstantHeading(new Vector2d(-18, 48))
 //                .build();
 
-        drive.followTrajectory(traj1);
-        drive.turn(Math.toRadians(180));
-        drive.wobbleDrop();
-        sleep(2000);
+//        drive.followTrajectory(traj1);
+//        drive.wobbleDrop();
+//        sleep(2000);
 //        drive.followTrajectory(traj2);
+        sleep(20000);
+        drive.followTrajectory(traj1);
 
 //        wobbleDropper.setPosition(1);
 //        drive.followTrajectory(

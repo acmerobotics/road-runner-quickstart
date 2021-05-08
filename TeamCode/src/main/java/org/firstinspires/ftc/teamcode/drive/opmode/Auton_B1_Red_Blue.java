@@ -1,27 +1,22 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
  * This is a complex autonomous that will score 2 wobble goals in a complex path on square B
  */
 @Autonomous(group = "drive")
-public class Auton_B2_Red_Blue extends LinearOpMode {
+public class Auton_B1_Red_Blue extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
     private double slowerVelocity = 5;
@@ -61,22 +56,23 @@ public class Auton_B2_Red_Blue extends LinearOpMode {
                 .lineTo(new Vector2d(-24, 48))
                 .splineTo(new Vector2d(36, 19), Math.toRadians(0))
                 .build();
+
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToConstantHeading(new Vector2d(-18, 19))
+                .lineToConstantHeading(new Vector2d(12, 19))
                 .build();
-        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(
-                new Vector2d(-27, 19),
-                SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-                )
-                .build();
-        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(28, 24, Math.toRadians(-135)))
-                .build();
-        Trajectory traj5 = drive.trajectoryBuilder(traj4.end(), false)
-                .forward(6)
-                .build();
+//        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+//                .lineTo(
+//                new Vector2d(-27, 19),
+//                SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+//                )
+//                .build();
+//        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
+//                .lineTo(new Vector2d(20, 24))
+//                .build();
+//        Trajectory traj5 = drive.trajectoryBuilder(traj4.end().plus(new Pose2d(0, 0, Math.toRadians(-135))), false)
+//                .forward(15)
+//                .build();
 //      Move to block b
         drive.followTrajectory(traj1);
         drive.moveTo("Down");
@@ -86,19 +82,19 @@ public class Auton_B2_Red_Blue extends LinearOpMode {
         //Go get second wobble
         drive.followTrajectory(traj2);
         //Move to second wobble
-        drive.followTrajectory(traj3);
+//        drive.followTrajectory(traj3);
         // Grab
-        drive.wobbleGrab();
-        sleep(2000);
-        drive.moveTo("Carry");
-        drive.followTrajectory(traj4);
+//        drive.wobbleGrab();
+//        sleep(2000);
+//        drive.moveTo("Carry");
+//        drive.followTrajectory(traj4);
 //        drive.turn(Math.toRadians(-135));
-        drive.moveTo("Down");
+//        drive.moveTo("Down");
         // Drop Wobble from arm
-        drive.wobbleRelease();
-        sleep(1000);
+//        drive.wobbleRelease();
+//        sleep(1000);
         // Go Park
-        drive.followTrajectory(traj5);
+//        drive.followTrajectory(traj5);
 //        drive.moveTo("Away");
 //        sleep(2000);
 

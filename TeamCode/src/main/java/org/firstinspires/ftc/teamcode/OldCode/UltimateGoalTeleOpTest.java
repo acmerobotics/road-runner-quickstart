@@ -68,7 +68,7 @@
          */
         RobotDrive               mDrive;
 
-        double targetVel = 1300;
+        double targetVel;
 
         int tolerance = 100;
 
@@ -232,7 +232,7 @@
 //Intake and Shooter Logic
             //intake on and Shooter off by default
             intakePower = 1.0;
-            shooterPower = 0.0;
+            targetVel = 0.0;
             //Reverses intake for decongesting
             if(gamepad1.left_trigger==1)
             {
@@ -244,7 +244,7 @@
             else if(gamepad1.right_trigger==1)
             {
                 intakePower = 0.0;
-                shooterPower = 1.0;
+                targetVel = 2400;
                 
                 telemetry.addData("Intake", "OFF");
                 telemetry.addData("Shooter", "ON");
@@ -255,7 +255,7 @@
             loaderPos = 0.0;
 
             //Detects if shooter is at speed
-            atSpeed = (mShooterMotorEx.getVelocity() < (targetVel + tolerance * 1.5)) && (mShooterMotorEx.getVelocity() > (targetVel - tolerance * 0.5));
+            atSpeed = (mShooterMotorEx.getVelocity() < (targetVel + tolerance)) && (mShooterMotorEx.getVelocity() > (targetVel - tolerance * 0.5));
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
             if (gamepad1.b && gamepad1.right_trigger==1 && atSpeed)
@@ -268,7 +268,7 @@
             mRobot.mIntakeMotor.setPower(intakePower);
             //Coefficients
             // mShooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
-            // mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
+//             mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
             mShooterMotorEx.setVelocityPIDFCoefficients(0.0, 0.5, 0.0, 5.0); // effective values from testing
             //Sets the shooter motor power
             // mShooterMotorEx.setPower(.7);
