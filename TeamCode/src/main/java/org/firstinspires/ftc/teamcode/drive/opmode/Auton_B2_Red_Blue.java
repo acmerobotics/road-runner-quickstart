@@ -72,7 +72,7 @@ public class Auton_B2_Red_Blue extends LinearOpMode {
                 )
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(28, 24, Math.toRadians(-135)))
+                .lineToSplineHeading(new Pose2d(20, 19, Math.toRadians(-135)))
                 .build();
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end(), false)
                 .forward(6)

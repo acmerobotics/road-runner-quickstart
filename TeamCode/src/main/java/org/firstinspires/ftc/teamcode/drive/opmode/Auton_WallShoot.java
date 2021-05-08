@@ -45,7 +45,7 @@ public class Auton_WallShoot extends LinearOpMode {
 //        drive.wobbleDrop();
 //        sleep(2000);
 //        drive.followTrajectory(traj2);
-        sleep(20000);
+        sleep(25000);
         drive.followTrajectory(traj1);
 
 //        wobbleDropper.setPosition(1);
