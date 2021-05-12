@@ -23,6 +23,11 @@ public class Auton_Blue_Wall extends LinearOpMode {
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
     //Trajectories
     Trajectory trajA1;
+    Trajectory trajB1;
+    Trajectory trajB2;
+    Trajectory trajB3;
+    Trajectory trajB4;
+    Trajectory trajB5;
     Trajectory trajC1;
     Trajectory trajC2;
     @Override
@@ -38,6 +43,29 @@ public class Auton_Blue_Wall extends LinearOpMode {
         //Case A:
         trajA1 = drive.trajectoryBuilder(startPose)
                 .lineTo(new Vector2d(-9,48))
+                .build();
+
+        //Case B:
+        trajB1 = drive.trajectoryBuilder(startPose)
+                .lineTo(new Vector2d(-24, 48))
+                .splineTo(new Vector2d(36, 19), Math.toRadians(0))
+                .build();
+
+        trajB2 = drive.trajectoryBuilder(trajB1.end())
+                .lineToConstantHeading(new Vector2d(-18, 19))
+                .build();
+        trajB3 = drive.trajectoryBuilder(trajB2.end())
+                .lineTo(
+                        new Vector2d(-27, 19),
+                        SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                )
+                .build();
+        trajB4 = drive.trajectoryBuilder(trajB3.end())
+                .lineTo(new Vector2d(12, 19))
+                .build();
+        trajB5 = drive.trajectoryBuilder(trajB4.end().plus(new Pose2d(0, 0, Math.toRadians(-135))))
+                .forward(2)
                 .build();
 
         //Case C:
@@ -67,6 +95,19 @@ public class Auton_Blue_Wall extends LinearOpMode {
         drive.followTrajectory(trajA1);
         drive.wobbleDrop();
         sleep(2000);
+    }
+
+    private void pathB() {
+        drive.followTrajectory(trajB1);
+        drive.wobbleDrop();
+        sleep(2000);
+        drive.followTrajectory(trajB2);
+        drive.followTrajectory(trajB3);
+        sleep(2000);
+        drive.followTrajectory(trajB4);
+        drive.turn(Math.toRadians(-135));
+        sleep(2000);
+        drive.followTrajectory(trajB5);
     }
 
     private void pathC() {
