@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
@@ -32,6 +33,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
@@ -137,7 +139,7 @@ public class SampleMecanumDrive extends MecanumDrive {
      * This is the webcam we are to use. As with other hardware devices such as motors and
      * servos, this device is identified using the robot configuration tool in the FTC application.
      */
-    WebcamName webcamName = null;
+//    WebcamName webcamName = null;
 
     private boolean targetVisible = false;
     private float phoneXRotate    = 0;
@@ -215,7 +217,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
-        VuforiaLocalizer.Parameters vuParameters = new VuforiaLocalizer.Parameters();
+        VuforiaLocalizer.Parameters vuParameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
 
         vuParameters.vuforiaLicenseKey = VUFORIA_KEY;
         vuParameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
@@ -237,6 +239,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+        //Update Dashboard Camera
+        FtcDashboard.getInstance().startCameraStream(vuforia, 0);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

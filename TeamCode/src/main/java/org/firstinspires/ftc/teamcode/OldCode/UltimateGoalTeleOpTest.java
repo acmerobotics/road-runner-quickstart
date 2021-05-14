@@ -91,7 +91,7 @@
 
             mTimer = new ElapsedTime();
             mRobot = new UltimateGoalHardwareTest(this, mLogger);
-            mRobot.init();
+            mRobot.initMotors();
             //mRobot.initGyro();
 
             mDrive = mRobot.getRobotDrive();
@@ -103,8 +103,6 @@
 
             // In teleop mode, the drive will not be operated using encoders - set it to non-encoder mode.
             mDrive.prepareToRotate();
-            
-            mRobot.getShooterServo().setPosition(0.0);
     
             mShooterMotorEx =(DcMotorEx)mRobot.mShooterMotor;
             if (mShooterMotorEx != null){
@@ -145,6 +143,9 @@
             telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
             // We can control the number of lines shown in the log
             telemetry.log().setCapacity(6);
+
+            mRobot.initServos();
+            mRobot.getShooterServo().setPosition(0.0);
         }
         
         /*
@@ -298,18 +299,25 @@
         static final double MIN_POS     =  0.05;     // Minimum rotational position
         double gripPos = MAX_POS;
         boolean gripWobble = false;
+        boolean wasPressed = false;
         private void loopWobble()
         {
             mRobot.mWobbleArmMotor.setPower(-(gamepad2.left_stick_y));
-            if(!gripWobble && gamepad2.a)
+            if(!gripWobble && !wasPressed && gamepad2.a)
             {
                 gripPos = MIN_POS; //closing wobble grip
                 gripWobble = true;
+                wasPressed = true;
             }
-            else if (gripWobble && gamepad2.a)
+            else if (gripWobble && !wasPressed && gamepad2.a)
             {
                 gripPos = MAX_POS; //open wobble grip
                 gripWobble = false;
+                wasPressed = true;
+            }
+            else if (wasPressed && !gamepad2.a)
+            {
+                wasPressed = false;
             }
             mRobot.mWobbleArmServo.setPosition(gripPos);
         }

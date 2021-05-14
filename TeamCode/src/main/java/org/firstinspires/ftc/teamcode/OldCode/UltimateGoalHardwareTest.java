@@ -181,7 +181,7 @@ public class UltimateGoalHardwareTest
     /**
      * Define and initialize Drive Motors
      */
-    private void initMotors()
+    public void initMotors()
     {
         // First prepare the chassis drive motors.
 
@@ -312,7 +312,7 @@ public class UltimateGoalHardwareTest
     /**
      * Define and initialize servos.
      */
-    private void initServos()
+    public void initServos()
     {
         if (mLogger.isInfoEnabled())
         {
