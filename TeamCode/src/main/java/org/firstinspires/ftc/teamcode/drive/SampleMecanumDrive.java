@@ -58,6 +58,14 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
+
+/*
+ * Need to add shooterMotor
+ * Need to add shooterServo
+ * Need intakeMotor
+ *
+ */
+
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5.5, 0, 0);
@@ -316,6 +324,17 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void setMode(DcMotor.RunMode runMode) {
         for (DcMotorEx motor : motors) {
             motor.setMode(runMode);
+        }
+    }
+
+    public void stopMotors()
+    {
+        for (DcMotorEx motor : motors) {
+            DcMotor.RunMode currMode = motor.getMode();
+            motor.setPower(0);
+            if (currMode == DcMotor.RunMode.RUN_TO_POSITION) {
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
         }
     }
 
