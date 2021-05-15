@@ -232,7 +232,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         mWobbleArmServo = hardwareMap.get(Servo.class, "wobbleArmGrip");
         mWobbleArmServo.setDirection(Servo.Direction.FORWARD);
-        mWobbleArmServo.setPosition(0.0);
+        mWobbleArmServo.setPosition(1.0);
 
 
 
@@ -271,7 +271,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
+        tfodParameters.minResultConfidence = 0.87f;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
 
@@ -480,7 +480,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public TFObjectDetector getTfod() {
-        return tfod;
+            return tfod;
     }
 
     public DcMotor getWobbleArm() {
