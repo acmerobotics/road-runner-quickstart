@@ -60,6 +60,14 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
+
+/*
+ * Need to add shooterMotor
+ * Need to add shooterServo
+ * Need intakeMotor
+ *
+ */
+
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5.5, 0, 0);
@@ -101,6 +109,14 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static int carry = 575;
     public static int wall = 460;
     public static double armPower = .8;
+
+    public DcMotorEx shooterMotor;
+
+    public Servo mShooterServo;
+
+    public DcMotor mIntakeMotor;
+
+    public Servo mWobbleArmServo;
 
     // Tensorflo
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -201,6 +217,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
+        //Initializing other mechanisms
+
+        // Wobble Goal mechanisms
         mDropperServo = hardwareMap.get(Servo.class, "wobbleDropper");
 //        mDropperServo.setDirection(Servo.Direction.FORWARD);
 //        mDropperServo.setPosition(0.0);
@@ -210,6 +229,24 @@ public class SampleMecanumDrive extends MecanumDrive {
         wobbleArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wobbleArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wobbleArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        mWobbleArmServo = hardwareMap.get(Servo.class, "wobbleArmGrip");
+        mWobbleArmServo.setDirection(Servo.Direction.FORWARD);
+        mWobbleArmServo.setPosition(0.0);
+
+
+
+        //Shooter Wheel Mechanisms
+        shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
+        shooterMotor.setDirection(DcMotor.Direction.REVERSE);
+        shooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        mShooterServo = hardwareMap.get(Servo.class, "shooterServo");
+        mShooterServo.setDirection(Servo.Direction.FORWARD);
+        mShooterServo.setPosition(0.0);
+
         /*
          * Initialize the Vuforia localization engine.
          */
@@ -321,6 +358,17 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void setMode(DcMotor.RunMode runMode) {
         for (DcMotorEx motor : motors) {
             motor.setMode(runMode);
+        }
+    }
+
+    public void stopMotors()
+    {
+        for (DcMotorEx motor : motors) {
+            DcMotor.RunMode currMode = motor.getMode();
+            motor.setPower(0);
+            if (currMode == DcMotor.RunMode.RUN_TO_POSITION) {
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
         }
     }
 
@@ -466,4 +514,9 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void wobbleRelease() {
         wobbleGrip.setPosition(MAX_POS);
     }
+
+    public Servo getWobbleGrip() {
+        return wobbleGrip;
+    }
+
 }
