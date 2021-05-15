@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,15 +22,24 @@ public class Auton_Blue_Wall extends LinearOpMode {
     private Servo wobbleDropper;
     private double slowerVelocity = 3;
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-    //Trajectories
+
+    //TODO: Make an Interface to make these repeated portions of code inheritable
+    //Initializing Trajectories
     Trajectory trajA1;
+    Trajectory trajA2;
+    Trajectory trajA3;
+    Trajectory trajA4;
+
     Trajectory trajB1;
     Trajectory trajB2;
     Trajectory trajB3;
     Trajectory trajB4;
     Trajectory trajB5;
+
     Trajectory trajC1;
     Trajectory trajC2;
+    Trajectory trajC3;
+    Trajectory trajC4;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -45,6 +55,23 @@ public class Auton_Blue_Wall extends LinearOpMode {
                 .lineTo(new Vector2d(-9,48))
                 .build();
 
+        trajA2 = drive.trajectoryBuilder(trajA1.end())
+                .lineToConstantHeading(new Vector2d(-9, 19))
+                .lineToConstantHeading(new Vector2d(-18,19))
+                .build();
+
+        trajA3 = drive.trajectoryBuilder(trajA2.end())
+                .lineTo(
+                        new Vector2d(-27, 19),
+                        SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                )
+                .build();
+
+        trajA4 = drive.trajectoryBuilder(trajA3.end())
+                .lineToConstantHeading(new Vector2d(-9, 19))
+                .build();
+
         //Case B:
         trajB1 = drive.trajectoryBuilder(startPose)
                 .lineTo(new Vector2d(-24, 48))
@@ -54,6 +81,7 @@ public class Auton_Blue_Wall extends LinearOpMode {
         trajB2 = drive.trajectoryBuilder(trajB1.end())
                 .lineToConstantHeading(new Vector2d(-18, 19))
                 .build();
+
         trajB3 = drive.trajectoryBuilder(trajB2.end())
                 .lineTo(
                         new Vector2d(-27, 19),
@@ -61,11 +89,13 @@ public class Auton_Blue_Wall extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
                 .build();
+
         trajB4 = drive.trajectoryBuilder(trajB3.end())
-                .lineTo(new Vector2d(12, 19))
+                .lineToSplineHeading(new Pose2d(20, 19, Math.toRadians(-135)))
                 .build();
-        trajB5 = drive.trajectoryBuilder(trajB4.end().plus(new Pose2d(0, 0, Math.toRadians(-135))))
-                .forward(2)
+
+        trajB5 = drive.trajectoryBuilder(trajB4.end(), false)
+                .forward(6)
                 .build();
 
         //Case C:
@@ -74,12 +104,30 @@ public class Auton_Blue_Wall extends LinearOpMode {
                 .build();
 
         trajC2 = drive.trajectoryBuilder(trajC1.end())
-                .lineToConstantHeading(new Vector2d(-9, 48))
+                .lineToConstantHeading(new Vector2d(58, 19))
+                .lineToConstantHeading(new Vector2d(-18,19))
                 .build();
+
+        trajC3 = drive.trajectoryBuilder(trajC2.end())
+                .lineTo(new Vector2d(-27, 19),
+                SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+        )
+                .build();
+
+        trajC4 = drive.trajectoryBuilder(trajC3.end())
+                .lineToConstantHeading(new Vector2d(-9, 19))
+                .build();
+
 
         waitForStart();
         if (isStopRequested()) return;
-        pathC();
+        //Use Tensorflo to figure out which path to use
+        //Test all the paths.
+
+        pathA();
+//        pathB();
+//        pathC();
 
 //        wobbleDropper.setPosition(1);
 //        drive.followTrajectory(
@@ -95,6 +143,10 @@ public class Auton_Blue_Wall extends LinearOpMode {
         drive.followTrajectory(trajA1);
         drive.wobbleDrop();
         sleep(2000);
+        drive.followTrajectory(trajA2);
+        drive.followTrajectory(trajA3);
+        //grab wobbleGoal
+        drive.followTrajectory(trajA4);
     }
 
     private void pathB() {
@@ -103,10 +155,9 @@ public class Auton_Blue_Wall extends LinearOpMode {
         sleep(2000);
         drive.followTrajectory(trajB2);
         drive.followTrajectory(trajB3);
+        //grab wobbleGoal
         sleep(2000);
         drive.followTrajectory(trajB4);
-        drive.turn(Math.toRadians(-135));
-        sleep(2000);
         drive.followTrajectory(trajB5);
     }
 
@@ -115,6 +166,9 @@ public class Auton_Blue_Wall extends LinearOpMode {
         drive.wobbleDrop();
         sleep(2000);
         drive.followTrajectory(trajC2);
+        drive.followTrajectory(trajC3);
+        //grab wobbleGoal
+        drive.followTrajectory(trajC4);
     }
 
 }
