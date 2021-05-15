@@ -21,17 +21,20 @@ public class MeepMeepTest {
                 .setConstraints(99, 30, Math.toRadians(37.74), Math.toRadians(60), 37)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-60, 48, 0))
-                                .lineTo(new Vector2d(-24,48))
+                                .lineTo(new Vector2d(56,48))
                                 .addTemporalMarker(15.0,() -> {
                                     // do stuff
                                 })
-                                .splineTo(new Vector2d(36, 19), Math.toRadians(0))
+//                                .lineToConstantHeading(new Vector2d(56, 48))
+                                //drop wobble
+//                                .lineToConstantHeading(new Vector2d(56, 19))
                                 .addDisplacementMarker(() -> {
                                     // drop wobble goal
                                     //return Unit.INSTANCE;
                                 })
                                 .waitSeconds(1.5)
-                                .lineToConstantHeading(new Vector2d(-18, 19))
+                                // Get to wobble goal
+                            .lineToConstantHeading(new Vector2d(-18, 19))
                                 // slowly approach wobble goal
                                 .lineTo(new Vector2d(-27, 19),new TranslationalVelocityConstraint(5))
                                 // grab wobble goal
@@ -40,15 +43,32 @@ public class MeepMeepTest {
                                     //return Unit.INSTANCE;
                                 })
                                 .waitSeconds(2.0)
-                                .lineToSplineHeading(new Pose2d(20, 19, Math.toRadians(-135)))
+                                .lineToConstantHeading(new Vector2d(56, 19))
+                                .lineToLinearHeading(new Pose2d(56, 36, Math.toRadians(-90)))
                                 .addDisplacementMarker(() -> {
                                     // drop wobble goal
                                     //return Unit.INSTANCE;
                                 })
+                                .lineToConstantHeading(new Vector2d(56, 30))
+                                .lineToConstantHeading(new Vector2d(12, 30))
                                 .waitSeconds(1.0)
-                                .forward(6)
                                 .build()
                 )
                 .start();
+
+/*
+
+                        .lineTo(new Vector2d(12, 48))
+                        .splineToConstantHeading(new Vector2d(12, 19), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(-18, 19), Math.toRadians(0))
+                        .lineTo(
+                        new Vector2d(-27, 19)
+//                        SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                )
+                .splineToConstantHeading(new Vector2d(12, 19), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(12, 36, Math.toRadians(-90)), Math.toRadians(0))
+                .start()
+ */
     }
 }
