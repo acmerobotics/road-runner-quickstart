@@ -40,6 +40,7 @@
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
     import com.qualcomm.robotcore.hardware.DcMotor;
     import com.qualcomm.robotcore.hardware.DigitalChannel;
+    import com.qualcomm.robotcore.hardware.Servo;
     import com.qualcomm.robotcore.util.ElapsedTime;
     import com.qualcomm.robotcore.util.Range;
 
@@ -61,7 +62,7 @@
 
     @TeleOp(name="TeleOpV2", group="UltimateGoal")
 
-    public class UltimateGoalTeleOpTest extends OpMode
+    public class TeleOpV2 extends OpMode
     {
         /**
          * Hardware class implementation
@@ -85,7 +86,15 @@
          */
         private ElapsedTime         mTimer;
 
-        private DcMotorEx  mShooterMotorEx;
+        private DcMotorEx  shooterMotorEx;
+
+        private Servo shooterServo;
+
+        private DcMotor intakeMotor;
+
+        private DcMotor wobbleArmMotor;
+
+        private Servo wobbleArmServo;
 
         @Override
         public void init()
@@ -102,12 +111,13 @@
             // In teleop mode, the drive will not be operated using encoders - set it to non-encoder mode.
             drive.setMode(RUN_WITHOUT_ENCODER);
 
-            robot.getShooterServo().setPosition(0.0);
+            shooterMotorEx =(DcMotorEx)drive.shooterMotor;
+            shooterServo = drive.mShooterServo;
+            intakeMotor = drive.mIntakeMotor;
+            wobbleArmMotor = drive.getWobbleArm();
+            wobbleArmServo = drive.getWobbleGrip();
 
-            mShooterMotorEx =(DcMotorEx)robot.mShooterMotor;
-            if (mShooterMotorEx != null){
-                telemetry.addLine("It works!");
-            }
+            shooterServo.setPosition(0.0);
 
         }
 
@@ -126,10 +136,7 @@
         @Override
         public void init_loop() {
             telemetry.clear();
-            telemetry.addData("Velocity of mShooterMotorEx", mShooterMotorEx.getVelocity());
-            if (mShooterMotorEx != null){
-                telemetry.addLine("It works!");
-            }
+            telemetry.addData("Velocity of shooterMotorEx",shooterMotorEx.getVelocity());
         }
 
         /*
@@ -253,7 +260,7 @@
             loaderPos = 0.0;
 
             //Detects if shooter is at speed
-            atSpeed = (mShooterMotorEx.getVelocity() < (targetVel + tolerance)) && (mShooterMotorEx.getVelocity() > (targetVel - tolerance * 0.5));
+            atSpeed = (shooterMotorEx.getVelocity() < (targetVel + tolerance)) && (shooterMotorEx.getVelocity() > (targetVel - tolerance * 0.5));
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
             if (gamepad1.b && gamepad1.right_trigger==1 && atSpeed)
@@ -263,15 +270,15 @@
             }
 //Sets Power and Position
             //Sets the intake motor power
-            robot.mIntakeMotor.setPower(intakePower);
+            intakeMotor.setPower(intakePower);
             //Coefficients
             // mShooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
 //             mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
-            mShooterMotorEx.setVelocityPIDFCoefficients(0.0, 0.5, 0.0, 5.0); // effective values from testing
+            shooterMotorEx.setVelocityPIDFCoefficients(0.0, 0.5, 0.0, 5.0); // effective values from testing
             //Sets the shooter motor power
             // mShooterMotorEx.setPower(.7);
 //            mShooterMotorEx.setVelocity(1240);          //during Aledo qual, this caused the rings to skim the bottom of the goal most shots
-            mShooterMotorEx.setVelocity(targetVel);
+            shooterMotorEx.setVelocity(targetVel);
             //mShooterMotorEx.setPower(shooterPower);
                 /*
                 if (gamepad2.a && velocity > 999){
@@ -283,14 +290,14 @@
                 */
             telemetry.clear();
             telemetry.addLine()
-                    .addData("Velocity of Shooter Motor", mShooterMotorEx.getVelocity());
+                    .addData("Velocity of Shooter Motor", shooterMotorEx.getVelocity());
             telemetry.addLine()
-                    .addData("Power of Shooter Motor", mShooterMotorEx.getPower());
+                    .addData("Power of Shooter Motor", shooterMotorEx.getPower());
             telemetry.update();
             //
             //mRobot.mShooterMotor.setPower(shooterPower);
             //Sets the loader arm servo position
-            robot.getShooterServo().setPosition(loaderPos);
+            shooterServo.setPosition(loaderPos);
         }
         static final double MAX_POS     =  0.5;     // Maximum rotational position
         static final double MIN_POS     =  0.05;     // Minimum rotational position
@@ -298,7 +305,7 @@
         boolean gripWobble = false;
         private void loopWobble()
         {
-            robot.mWobbleArmMotor.setPower(-(gamepad2.left_stick_y));
+            wobbleArmMotor.setPower(-(gamepad2.left_stick_y));
             if(!gripWobble && gamepad2.a)
             {
                 gripPos = MIN_POS; //closing wobble grip
@@ -309,7 +316,7 @@
                 gripPos = MAX_POS; //open wobble grip
                 gripWobble = false;
             }
-            robot.mWobbleArmServo.setPosition(gripPos);
+            wobbleArmServo.setPosition(gripPos);
         }
 
 
