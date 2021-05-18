@@ -93,6 +93,9 @@ public class Auton_Blue_Wall extends LinearOpMode {
                     }
                     telemetry.update();
                 }
+                else {
+                    ringsDetected = "None";
+                }
             }
         }
 
@@ -209,7 +212,7 @@ switch (ringsDetected) {
         switch(ringsDetected) {
             case "Quad": pathC(); break;
             case "Single": pathB(); break;
-            case "None": pathA(); break;
+            default: pathA(); break;
         }
 
 //        wobbleDropper.setPosition(1);
