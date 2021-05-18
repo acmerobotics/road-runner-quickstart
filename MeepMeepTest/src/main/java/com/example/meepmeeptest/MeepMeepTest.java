@@ -21,7 +21,7 @@ public class MeepMeepTest {
                 .setConstraints(99, 30, Math.toRadians(37.74), Math.toRadians(60), 37)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-60, 48, 0))
-                                .lineTo(new Vector2d(56,48))
+                                .lineTo(new Vector2d(56, 48))
                                 .addTemporalMarker(15.0,() -> {
                                     // do stuff
                                 })
@@ -34,23 +34,23 @@ public class MeepMeepTest {
                                 })
                                 .waitSeconds(1.5)
                                 // Get to wobble goal
-                            .lineToConstantHeading(new Vector2d(-18, 19))
+                                .lineToSplineHeading(new Pose2d(-12, 19, Math.toRadians(0)))
                                 // slowly approach wobble goal
-                                .lineTo(new Vector2d(-27, 19),new TranslationalVelocityConstraint(5))
+                                .lineTo(new Vector2d(-27, 19), new TranslationalVelocityConstraint(5))
                                 // grab wobble goal
                                 .addDisplacementMarker(() -> {
                                     // grab wobble goal
                                     //return Unit.INSTANCE;
                                 })
                                 .waitSeconds(2.0)
-                                .lineToConstantHeading(new Vector2d(56, 19))
+                                .strafeTo(new Vector2d(56, 19))
                                 .lineToLinearHeading(new Pose2d(56, 36, Math.toRadians(-90)))
                                 .addDisplacementMarker(() -> {
                                     // drop wobble goal
                                     //return Unit.INSTANCE;
                                 })
-                                .lineToConstantHeading(new Vector2d(56, 30))
-                                .lineToConstantHeading(new Vector2d(12, 30))
+                                .strafeTo(new Vector2d(56, 30))
+                                .strafeTo(new Vector2d(12, 30))
                                 .waitSeconds(1.0)
                                 .build()
                 )

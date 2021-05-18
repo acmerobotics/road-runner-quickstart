@@ -31,7 +31,7 @@
 
     import com.qualcomm.robotcore.hardware.MotorControlAlgorithm;
     import org.firstinspires.ftc.robotcore.external.Telemetry;
-    import org.firstinspires.ftc.teamcode.OldCode.TelemetryLogger;
+    import org.firstinspires.ftc.teamcode.drive.DriveTelemetryLogger;
     import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
     import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -79,7 +79,7 @@
 
         boolean atSpeed = false;
 
-        private TelemetryLogger mLogger;
+        private DriveTelemetryLogger mLogger;
 
         /**
          * Timer to monitor duration of the calibrated operations.
@@ -123,8 +123,8 @@
 
         private void initLogging()
         {
-            TelemetryLogger.initLoggingSubsystem(this);
-            mLogger = new TelemetryLogger(this, "Op");
+            DriveTelemetryLogger.initLoggingSubsystem(this);
+            mLogger = new DriveTelemetryLogger(this, "Op");
 
             mLogger.info("Started logging");
         }

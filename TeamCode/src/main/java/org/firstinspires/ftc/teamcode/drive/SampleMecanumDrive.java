@@ -27,7 +27,9 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.robocol.TelemetryMessage;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -111,12 +113,25 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static double armPower = .8;
 
     public DcMotorEx shooterMotor;
+    double targetVel = 2400;
+//    targetVel = 1240;
+//    During the Aledo qualifier, this caused the rings to skim the bottom of the goal most shots.
+    boolean atSpeed;
+    double shooterP;
+    double shooterI;
+    double shooterD;
+    double shooterF;
 
     public Servo mShooterServo;
+    double loaderPos;
+    double tolerance;
+    int ringsShot;
 
     public DcMotor mIntakeMotor;
 
     public Servo mWobbleArmServo;
+
+    private static TelemetryMessage telemetry;
 
     // Tensorflo
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -161,7 +176,6 @@ public class SampleMecanumDrive extends MecanumDrive {
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
-
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -517,6 +531,36 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public Servo getWobbleGrip() {
         return wobbleGrip;
+    }
+
+    public void shootRings(int ringCount)
+    {
+        ringsShot = 0;
+        while (ringsShot < ringCount) {
+            //Loader Arm Logic
+            //Default loader arm position
+            loaderPos = 0.0;
+
+            //Detects if shooter is at speed
+            atSpeed = (shooterMotor.getVelocity() < (targetVel + tolerance)) && (shooterMotor.getVelocity() > (targetVel - tolerance * 0.5));
+
+            //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
+            if (atSpeed)
+            {
+                loaderPos = (1.0);
+                ringsShot++;
+            }
+            // PIDF
+            //Coefficients (Need Retuning
+            // Old Tuning presets
+            // mShooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
+            // mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
+            // shooterMotor.setVelocityPIDFCoefficients(0.0, 0.5, 0.0, 5.0); // effective values from previous testing
+
+            shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+            shooterMotor.setVelocity(targetVel);
+            mShooterServo.setPosition(loaderPos);
+        }
     }
 
 }
