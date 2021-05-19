@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -59,6 +61,10 @@ public class Auton_Blue_Wall extends LinearOpMode {
 
         drive = new SampleMecanumDrive(hardwareMap);
         TFObjectDetector tfod = drive.getTfod();
+
+        // Send telemetry to both the Drivers station and the Dashboard
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
 
         if (tfod != null) {
             tfod.activate();
