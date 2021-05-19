@@ -99,7 +99,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     /**
      * Servo on Wobble Arm to grip Wobble Goal.
      */
-    private Servo mDropperServo;
+    private Servo dropperServo;
 
     private Servo wobbleGrip;
     public static final double MAX_POS     =  0.5;     // Maximum rotational position
@@ -122,14 +122,14 @@ public class SampleMecanumDrive extends MecanumDrive {
     double shooterD;
     double shooterF;
 
-    public Servo mShooterServo;
+    public Servo shooterServo;
     double loaderPos;
     double tolerance;
     int ringsShot;
 
-    public DcMotor mIntakeMotor;
+    public DcMotor intakeMotor;
 
-    public Servo mWobbleArmServo;
+    public Servo wobbleArmServo;
 
     private static TelemetryMessage telemetry;
 
@@ -234,9 +234,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         //Initializing other mechanisms
 
         // Wobble Goal mechanisms
-        mDropperServo = hardwareMap.get(Servo.class, "wobbleDropper");
-//        mDropperServo.setDirection(Servo.Direction.FORWARD);
-//        mDropperServo.setPosition(0.0);
+        dropperServo = hardwareMap.get(Servo.class, "wobbleDropper");
+//        dropperServo.setDirection(Servo.Direction.FORWARD);
+//        dropperServo.setPosition(0.0);
         wobbleGrip = hardwareMap.get(Servo.class, "wobbleArmGrip");
 
         wobbleArm = hardwareMap.get(DcMotor.class, "wobbleArm");
@@ -244,9 +244,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         wobbleArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wobbleArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        mWobbleArmServo = hardwareMap.get(Servo.class, "wobbleArmGrip");
-        mWobbleArmServo.setDirection(Servo.Direction.FORWARD);
-        mWobbleArmServo.setPosition(1.0);
+        wobbleArmServo = hardwareMap.get(Servo.class, "wobbleArmGrip");
+        wobbleArmServo.setDirection(Servo.Direction.FORWARD);
+        wobbleArmServo.setPosition(1.0);
 
 
 
@@ -257,9 +257,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        mShooterServo = hardwareMap.get(Servo.class, "shooterServo");
-        mShooterServo.setDirection(Servo.Direction.FORWARD);
-        mShooterServo.setPosition(0.0);
+        shooterServo = hardwareMap.get(Servo.class, "shooterServo");
+        shooterServo.setDirection(Servo.Direction.FORWARD);
+        shooterServo.setPosition(0.0);
 
         /*
          * Initialize the Vuforia localization engine.
@@ -285,7 +285,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.87f;
+        tfodParameters.minResultConfidence = 0.65f;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
 
@@ -490,7 +490,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void wobbleDrop() {
-        mDropperServo.setPosition(1.0);
+        dropperServo.setPosition(1.0);
     }
 
     public TFObjectDetector getTfod() {
@@ -535,31 +535,42 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void shootRings(int ringCount)
     {
+        boolean wasAtSpeed = false;
         ringsShot = 0;
         while (ringsShot < ringCount) {
             //Loader Arm Logic
             //Default loader arm position
             loaderPos = 0.0;
 
+            //Shooter PIDF
+            shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+            shooterMotor.setVelocity(targetVel);
+
             //Detects if shooter is at speed
             atSpeed = (shooterMotor.getVelocity() < (targetVel + tolerance)) && (shooterMotor.getVelocity() > (targetVel - tolerance * 0.5));
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
+
             if (atSpeed)
             {
+                wasAtSpeed = true;
                 loaderPos = (1.0);
-                ringsShot++;
             }
+            else if (wasAtSpeed == true)
+            {
+                wasAtSpeed = false;
+                ringsShot ++;
+            }
+
+
             // PIDF
             //Coefficients (Need Retuning
             // Old Tuning presets
-            // mShooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
-            // mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
+            // shooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
+            // shooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
             // shooterMotor.setVelocityPIDFCoefficients(0.0, 0.5, 0.0, 5.0); // effective values from previous testing
 
-            shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
-            shooterMotor.setVelocity(targetVel);
-            mShooterServo.setPosition(loaderPos);
+            shooterServo.setPosition(loaderPos);
         }
     }
 

@@ -79,12 +79,12 @@
 
         boolean atSpeed = false;
 
-        private DriveTelemetryLogger mLogger;
+        private DriveTelemetryLogger logger;
 
         /**
          * Timer to monitor duration of the calibrated operations.
          */
-        private ElapsedTime         mTimer;
+        private ElapsedTime         timer;
 
         private DcMotorEx  shooterMotorEx;
 
@@ -100,9 +100,9 @@
         public void init()
         {
             initLogging();
-            mLogger.info("Initializing");
+            logger.info("Initializing");
 
-            mTimer = new ElapsedTime();
+            timer = new ElapsedTime();
             drive = new SampleMecanumDrive(hardwareMap);
 
             //Drive Train (Rest is taken care of in SampleMecanumDrive
@@ -112,8 +112,8 @@
             drive.setMode(RUN_WITHOUT_ENCODER);
 
             shooterMotorEx =(DcMotorEx)drive.shooterMotor;
-            shooterServo = drive.mShooterServo;
-            intakeMotor = drive.mIntakeMotor;
+            shooterServo = drive.shooterServo;
+            intakeMotor = drive.intakeMotor;
             wobbleArmMotor = drive.getWobbleArm();
             wobbleArmServo = drive.getWobbleGrip();
 
@@ -124,9 +124,9 @@
         private void initLogging()
         {
             DriveTelemetryLogger.initLoggingSubsystem(this);
-            mLogger = new DriveTelemetryLogger(this, "Op");
+            logger = new DriveTelemetryLogger(this, "Op");
 
-            mLogger.info("Started logging");
+            logger.info("Started logging");
         }
 
 
@@ -144,7 +144,7 @@
          */
         @Override
         public void start() {
-            mTimer.reset();
+            timer.reset();
             //shooterPower = 1.0;
             // We show the log in oldest-newest order
             telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
@@ -166,7 +166,7 @@
             loopWobble();
 
             // Show the elapsed game time and wheel power.
-            //telemetry.addData("Status", "Run Time: " + mTimer.toString());
+            //telemetry.addData("Status", "Run Time: " + timer.toString());
         }
 
         private void loopTrolley()
@@ -204,7 +204,7 @@
 
             if (trolleyDrive != 0 || trolleyTurn != 0 || trolleyStrafe != 0)
             {
-                mLogger.trace("Drive state: drive=" + trolleyDrive + ", turn=" + trolleyTurn + ", strafe=" + trolleyStrafe +
+                logger.trace("Drive state: drive=" + trolleyDrive + ", turn=" + trolleyTurn + ", strafe=" + trolleyStrafe +
                         ", LF=" + leftFrontPower + ", LB=" + leftBackPower +  ", RF=" + rightFrontPower + ", RB=" + rightBackPower);
             }
 
@@ -265,7 +265,7 @@
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
             if (gamepad1.b && gamepad1.right_trigger==1 && atSpeed)
             {
-                mLogger.info("Firing");
+                logger.info("Firing");
                 loaderPos = (1.0);
             }
 //Sets Power and Position

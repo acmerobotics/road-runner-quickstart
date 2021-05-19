@@ -69,9 +69,10 @@ public class Auton_Blue_Wall extends LinearOpMode {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(1.0, 16.0/9.0);
+            tfod.setZoom(2.0, 16.0/9.0);
             telemetry.addLine("TFod Activated!");
             telemetry.update();
+            tfod.setClippingMargins(0,0,0,0);
         }
 
         while (!opModeIsActive()) {
@@ -85,13 +86,20 @@ public class Auton_Blue_Wall extends LinearOpMode {
                     int i = 0;
                     for (Recognition recognition : updatedRecognitions) {
                         ringsDetected = (String)recognition.getLabel();
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        telemetry.addData(String.format("label (%d)", i), (String)recognition.getLabel());
                         telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
                                 recognition.getLeft(), recognition.getTop());
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
                     }
                     telemetry.update();
+                    if(updatedRecognitions.size() != 0)
+                    {
+                        if (tfod != null)
+                            tfod.shutdown();
+                        break;
+                    }
+
                 }
                 else {
                     ringsDetected = "None";
@@ -103,6 +111,7 @@ public class Auton_Blue_Wall extends LinearOpMode {
         Pose2d startPose = new Pose2d(-63, 48, Math.toRadians(0));
 
         drive.setPoseEstimate(startPose);
+
 
         //Init trajectories
 switch (ringsDetected) {
@@ -170,7 +179,7 @@ switch (ringsDetected) {
         break;
 
     //Case A:
-    default:
+    case "None":
         trajA1 = drive.trajectoryBuilder(startPose)
                 .lineTo(new Vector2d(12, 48))
                 .build();
@@ -203,17 +212,30 @@ switch (ringsDetected) {
                 .build();
 
         break;
+
+    default:
+        break;
 }
         waitForStart();
         if (isStopRequested()) return;
         //Use Tensorflo to figure out which path to use
         //Test all the paths.
+        telemetry.clear();
 
         switch(ringsDetected) {
             case "Quad": pathC(); break;
             case "Single": pathB(); break;
-            default: pathA(); break;
+            case "None": pathA(); break;
+            default: telemetry.addData("Default", "Default");
         }
+        telemetry.update();
+
+
+        sleep(5000);
+
+//        if (tfod != null)
+//            tfod.shutdown();
+
 
 //        wobbleDropper.setPosition(1);
 //        drive.followTrajectory(
