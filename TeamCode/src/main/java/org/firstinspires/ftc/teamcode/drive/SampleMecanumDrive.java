@@ -111,18 +111,18 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static double armPower = .8;
 
     public DcMotorEx shooterMotor;
-    double targetVel = 2400;
+    double targetVel = 2450;
 //    targetVel = 1240;
 //    During the Aledo qualifier, this caused the rings to skim the bottom of the goal most shots.
     boolean atSpeed;
-    double shooterP = 80;
+    double shooterP = 50;
     double shooterI = 0;
-    double shooterD = 16;
+    double shooterD = 20;
     double shooterF = 12.73;
 
     public Servo shooterServo;
     double loaderPos;
-    double tolerance;
+    double tolerance = 100;
     int ringsShot;
 
     public DcMotor intakeMotor;
@@ -545,20 +545,24 @@ public class SampleMecanumDrive extends MecanumDrive {
             shooterMotor.setVelocity(targetVel);
 
             //Detects if shooter is at speed
-            atSpeed = (shooterMotor.getVelocity() < (targetVel + tolerance)) && (shooterMotor.getVelocity() > (targetVel - tolerance * 0.5));
+            atSpeed = (shooterMotor.getVelocity() < (targetVel + tolerance)) && (shooterMotor.getVelocity() > (targetVel - tolerance));
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
 
             if (atSpeed)
             {
                 wasAtSpeed = true;
-                loaderPos = (1.0);
+                loaderPos = 1.0;
+                telemetry.addData("atSpeed", "atSpeed");
             }
-            else if (wasAtSpeed == true)
+            else if (wasAtSpeed && shooterServo.getPosition() > 0.5)
             {
                 wasAtSpeed = false;
                 ringsShot ++;
+                telemetry.addData("wasAtSpeed", "wasAtSpeed");
             }
+
+//            telemetry.update();
 
 
             // PIDF

@@ -32,28 +32,11 @@ public class Auton_Blue_Wall extends LinearOpMode {
 
     //TODO: Make an Interface to make these repeated portions of code inheritable
     //Initializing Trajectories
-    Trajectory trajA1;
-    Trajectory trajA2;
-    Trajectory trajA3;
-    Trajectory trajA4;
-    Trajectory trajA5;
-    Trajectory trajA6;
-    Trajectory trajA7;
+    Trajectory trajA0, trajA1, trajA2, trajA3, trajA4, trajA5, trajA6, trajA7;
 
-    Trajectory trajB1;
-    Trajectory trajB2;
-    Trajectory trajB3;
-    Trajectory trajB4;
-    Trajectory trajB5;
+    Trajectory trajB1, trajB2, trajB3, trajB4, trajB5;
 
-    Trajectory trajC1;
-    Trajectory trajC2;
-    Trajectory trajC2a;
-    Trajectory trajC3;
-    Trajectory trajC4;
-    Trajectory trajC5;
-    Trajectory trajC6;
-    Trajectory trajC7;
+    Trajectory trajC1, trajC2, trajC2a, trajC3, trajC4, trajC5, trajC6, trajC7;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -194,7 +177,11 @@ switch (ringsDetected) {
 
     //Case A:
     case "None":
-        trajA1 = drive.trajectoryBuilder(startPose)
+        trajA0 = drive.trajectoryBuilder(startPose)
+                .lineTo(new Vector2d(-5, 48))
+                .build();
+
+        trajA1 = drive.trajectoryBuilder(trajA0.end())
                 .lineTo(new Vector2d(12, 48))
                 .build();
 
@@ -261,6 +248,10 @@ switch (ringsDetected) {
     }
 
     private void pathA() {
+        drive.moveTo("Away");
+        drive.followTrajectory(trajA0);
+        drive.shootRings(3);
+        drive.shooterMotor.isBusy();
         drive.followTrajectory(trajA1);
         drive.wobbleDrop();
         drive.moveTo("Down");
