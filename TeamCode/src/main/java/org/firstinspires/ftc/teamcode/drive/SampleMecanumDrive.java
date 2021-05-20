@@ -64,8 +64,6 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 
 /*
- * Need to add shooterMotor
- * Need to add shooterServo
  * Need intakeMotor
  *
  */
@@ -117,10 +115,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 //    targetVel = 1240;
 //    During the Aledo qualifier, this caused the rings to skim the bottom of the goal most shots.
     boolean atSpeed;
-    double shooterP;
-    double shooterI;
-    double shooterD;
-    double shooterF;
+    double shooterP = 80;
+    double shooterI = 0;
+    double shooterD = 16;
+    double shooterF = 12.73;
 
     public Servo shooterServo;
     double loaderPos;
@@ -259,7 +257,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         shooterServo.setDirection(Servo.Direction.FORWARD);
-        shooterServo.setPosition(0.0);
+        shooterServo.setPosition(1.0);
 
         /*
          * Initialize the Vuforia localization engine.

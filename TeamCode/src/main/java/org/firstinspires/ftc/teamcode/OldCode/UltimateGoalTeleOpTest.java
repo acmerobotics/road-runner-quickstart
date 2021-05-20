@@ -70,7 +70,7 @@
 
         double targetVel;
 
-        int tolerance = 100;
+        int tolerance = 30;
 
         boolean atSpeed = false;
 
@@ -245,7 +245,7 @@
             else if(gamepad1.right_trigger==1)
             {
                 intakePower = 0.0;
-                targetVel = 2400;
+                targetVel = 2430;
                 
                 telemetry.addData("Intake", "OFF");
                 telemetry.addData("Shooter", "ON");
@@ -256,7 +256,7 @@
             loaderPos = 0.0;
 
             //Detects if shooter is at speed
-            atSpeed = (mShooterMotorEx.getVelocity() < (targetVel + tolerance)) && (mShooterMotorEx.getVelocity() > (targetVel - tolerance * 0.5));
+            atSpeed = (mShooterMotorEx.getVelocity() < (targetVel + tolerance)) && (mShooterMotorEx.getVelocity() > (targetVel - tolerance));
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
             if (gamepad1.b && gamepad1.right_trigger==1 && atSpeed)
@@ -270,7 +270,7 @@
             //Coefficients
             // mShooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
 //             mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
-            mShooterMotorEx.setVelocityPIDFCoefficients(0.0, 0.5, 0.0, 5.0); // effective values from testing
+            mShooterMotorEx.setVelocityPIDFCoefficients(50, 0, 20, 12.73); // effective values from testing
             //Sets the shooter motor power
             // mShooterMotorEx.setPower(.7);
 //            mShooterMotorEx.setVelocity(1240);          //during Aledo qual, this caused the rings to skim the bottom of the goal most shots

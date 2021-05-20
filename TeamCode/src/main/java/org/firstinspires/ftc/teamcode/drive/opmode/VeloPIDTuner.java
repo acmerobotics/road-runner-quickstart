@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -16,9 +15,11 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 @Config
 @TeleOp
 public class VeloPIDTuner extends LinearOpMode {
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0, 0);
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(80, 0, 16, 12.73);
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
+
+    public static double targetVelocity = 2400;
 
     private VoltageSensor batteryVoltageSensor;
 
@@ -28,7 +29,7 @@ public class VeloPIDTuner extends LinearOpMode {
         DcMotorEx myMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
 
         // Reverse as appropriate
-        // myMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+         myMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -42,6 +43,8 @@ public class VeloPIDTuner extends LinearOpMode {
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
         setPIDFCoefficients(myMotor, MOTOR_VELO_PID);
+
+
 
         TuningController tuningController = new TuningController();
 
@@ -57,16 +60,15 @@ public class VeloPIDTuner extends LinearOpMode {
         telemetry.clearAll();
 
         waitForStart();
-
         if (isStopRequested()) return;
 
         tuningController.start();
 
         while (!isStopRequested() && opModeIsActive()) {
             double targetVelo = tuningController.update();
-            myMotor.setVelocity(targetVelo);
+            myMotor.setVelocity(targetVelocity);
 
-            telemetry.addData("targetVelocity", targetVelo);
+            telemetry.addData("targetVelocity", targetVelocity);
 
             double motorVelo = myMotor.getVelocity();
             telemetry.addData("velocity", motorVelo);

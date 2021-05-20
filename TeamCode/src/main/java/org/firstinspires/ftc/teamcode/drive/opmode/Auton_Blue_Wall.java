@@ -48,6 +48,7 @@ public class Auton_Blue_Wall extends LinearOpMode {
 
     Trajectory trajC1;
     Trajectory trajC2;
+    Trajectory trajC2a;
     Trajectory trajC3;
     Trajectory trajC4;
     Trajectory trajC5;
@@ -85,12 +86,12 @@ public class Auton_Blue_Wall extends LinearOpMode {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
-                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
-                    telemetry.addData("# Object Detected", updatedRecognitions.size());
+                List<Recognition> recognitions = tfod.getRecognitions();
+                if (recognitions != null) {
+                    telemetry.addData("# Object Detected", recognitions.size());
                     // step through the list of recognitions and display boundary info.
                     int i = 0;
-                    for (Recognition recognition : updatedRecognitions) {
+                    for (Recognition recognition : recognitions) {
                         ringsDetected = (String)recognition.getLabel();
                         telemetry.addData(String.format("label (%d)", i), (String)recognition.getLabel());
                         telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
@@ -99,17 +100,19 @@ public class Auton_Blue_Wall extends LinearOpMode {
                                 recognition.getRight(), recognition.getBottom());
                     }
                     telemetry.update();
-                    if(updatedRecognitions.size() != 0)
-                    {
-                        if (tfod != null)
-                            tfod.shutdown();
-                        break;
-                    }
+                    if (recognitions.size() == 0)
+                        ringsDetected = "None";
+//                    if(recognitions.size() != 0)
+//                    {
+//                        if (tfod != null)
+//                            tfod.shutdown();
+//                        break;
+//                    }
 
                 }
-                else {
-                    ringsDetected = "None";
-                }
+//                else {
+//                    ringsDetected = "None";
+//                }
             }
         }
 
@@ -118,7 +121,8 @@ public class Auton_Blue_Wall extends LinearOpMode {
 
         drive.setPoseEstimate(startPose);
 
-
+if (ringsDetected == null)
+    ringsDetected = "None";
         //Init trajectories
 switch (ringsDetected) {
     //Case C:
@@ -127,12 +131,16 @@ switch (ringsDetected) {
                 .lineTo(new Vector2d(56, 48))
                 .build();
 
-        trajC2 = drive.trajectoryBuilder(trajC1.end(), true)
-                .splineTo(new Vector2d(-12, 19), Math.toRadians(180))
+        trajC2 = drive.trajectoryBuilder(trajC1.end())
+                .strafeTo(new Vector2d(56, 19))
                 .build();
 
-        trajC3 = drive.trajectoryBuilder(trajC2.end())
-                .lineTo(new Vector2d(-27, 19),
+        trajC2a = drive.trajectoryBuilder(trajC2.end())
+                .strafeTo(new Vector2d(-20, 19))
+                .build();
+
+        trajC3 = drive.trajectoryBuilder(trajC2a.end())
+                .lineTo(new Vector2d(-29, 19),
                         SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
@@ -164,12 +172,12 @@ switch (ringsDetected) {
                 .build();
 
         trajB2 = drive.trajectoryBuilder(trajB1.end())
-                .strafeTo(new Vector2d(-18, 19))
+                .strafeTo(new Vector2d(-20, 19))
                 .build();
 
         trajB3 = drive.trajectoryBuilder(trajB2.end())
                 .lineTo(
-                        new Vector2d(-27, 19),
+                        new Vector2d(-29, 19),
                         SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
@@ -195,11 +203,11 @@ switch (ringsDetected) {
                 .build();
 
         trajA3 = drive.trajectoryBuilder(trajA2.end())
-                .lineToConstantHeading(new Vector2d(-18, 19))
+                .lineToConstantHeading(new Vector2d(-20, 19))
                 .build();
 
         trajA4 = drive.trajectoryBuilder(trajA3.end())
-                .lineTo(new Vector2d(-27, 19),
+                .lineTo(new Vector2d(-29, 19),
                         SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
@@ -237,7 +245,7 @@ switch (ringsDetected) {
         telemetry.update();
 
 
-        sleep(5000);
+//        sleep(5000);
 
 //        if (tfod != null)
 //            tfod.shutdown();
@@ -269,8 +277,8 @@ switch (ringsDetected) {
         drive.wobbleRelease();
         sleep(2000);
         drive.followTrajectory(trajA7);
-        sleep(2000);
-        drive.moveTo("Away");
+//        sleep(2000);
+//        drive.moveTo("Away");
     }
 
     private void pathB() {
@@ -287,8 +295,8 @@ switch (ringsDetected) {
         drive.moveTo("Down");
         drive.wobbleRelease();
         sleep(2000);
-        drive.moveTo("Away");
-        sleep(2000);
+//        drive.moveTo("Away");
+//        sleep(2000);
         drive.followTrajectory(trajB5);
     }
 
@@ -297,6 +305,7 @@ switch (ringsDetected) {
         drive.wobbleDrop();
         drive.moveTo("Down");
         drive.followTrajectory(trajC2);
+        drive.followTrajectory(trajC2a);
         drive.followTrajectory(trajC3);
         drive.wobbleGrab();
         sleep(2000);
