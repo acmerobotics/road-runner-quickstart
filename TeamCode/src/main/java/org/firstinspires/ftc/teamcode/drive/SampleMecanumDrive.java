@@ -115,14 +115,14 @@ public class SampleMecanumDrive extends MecanumDrive {
 //    targetVel = 1240;
 //    During the Aledo qualifier, this caused the rings to skim the bottom of the goal most shots.
     boolean atSpeed;
-    double shooterP = 80;
+    double shooterP = 50;
     double shooterI = 0;
-    double shooterD = 16;
+    double shooterD = 20;
     double shooterF = 12.73;
 
     public Servo shooterServo;
     double loaderPos;
-    double tolerance;
+    double tolerance = 100;
     int ringsShot;
 
     public DcMotor intakeMotor;
@@ -257,7 +257,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         shooterServo.setDirection(Servo.Direction.FORWARD);
-        shooterServo.setPosition(1.0);
+//        shooterServo.setPosition(0);
 
         /*
          * Initialize the Vuforia localization engine.
@@ -534,6 +534,9 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void shootRings(int ringCount)
     {
         boolean wasAtSpeed = false;
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(targetVel);
+
         ringsShot = 0;
         while (ringsShot < ringCount) {
             //Loader Arm Logic
@@ -541,11 +544,9 @@ public class SampleMecanumDrive extends MecanumDrive {
             loaderPos = 0.0;
 
             //Shooter PIDF
-            shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
-            shooterMotor.setVelocity(targetVel);
 
             //Detects if shooter is at speed
-            atSpeed = (shooterMotor.getVelocity() < (targetVel + tolerance)) && (shooterMotor.getVelocity() > (targetVel - tolerance * 0.5));
+            atSpeed = (shooterMotor.getVelocity() < (targetVel + tolerance)) && (shooterMotor.getVelocity() > (targetVel - tolerance));
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
 
@@ -554,13 +555,11 @@ public class SampleMecanumDrive extends MecanumDrive {
                 wasAtSpeed = true;
                 loaderPos = (1.0);
             }
-            else if (wasAtSpeed == true)
+            else if (wasAtSpeed)
             {
                 wasAtSpeed = false;
                 ringsShot ++;
             }
-
-
             // PIDF
             //Coefficients (Need Retuning
             // Old Tuning presets
@@ -570,6 +569,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
             shooterServo.setPosition(loaderPos);
         }
+        shooterMotor.setVelocity(0);
     }
 
 }
