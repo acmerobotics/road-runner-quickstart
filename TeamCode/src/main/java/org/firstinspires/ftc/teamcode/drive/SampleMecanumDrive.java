@@ -125,7 +125,6 @@ public class SampleMecanumDrive extends MecanumDrive {
     public Servo shooterServo;
     public double loaderPos;
     double tolerance = 120;
-    int ringsShot;
 
     public DcMotor intakeMotor;
 
@@ -260,7 +259,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         shooterServo.setDirection(Servo.Direction.FORWARD);
-//        shooterServo.setPosition(1.0);
 
         /*
          * Initialize the Vuforia localization engine.
@@ -547,6 +545,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
         shooterMotor.setVelocity(targetVel);
         boolean wasAtSpeed = false;
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(targetVel);
+
         ringsShot = 0;
         while (ringsShot < ringCount) {
             //Loader Arm Logic
@@ -566,20 +567,6 @@ public class SampleMecanumDrive extends MecanumDrive {
                 wasAtSpeed = false;
                 ringsShot++;
             }
-
-//            double velocity = shooterMotor.getVelocity();
-//            while (velocity < targetVel) {
-//                velocity = shooterMotor.getVelocity();
-//                }
-//            }
-
-//            loaderPos = 1.0;
-//            ringsShot++;
-
-            //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
-
-
-
             shooterServo.setPosition(loaderPos);
         }
         shooterMotor.setVelocity(0);

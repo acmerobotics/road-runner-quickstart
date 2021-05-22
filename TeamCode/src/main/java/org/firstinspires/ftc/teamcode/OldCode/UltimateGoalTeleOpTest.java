@@ -245,7 +245,7 @@
             else if(gamepad1.right_trigger==1)
             {
                 intakePower = 0.0;
-                targetVel = 2430;
+                targetVel = 2400;
                 
                 telemetry.addData("Intake", "OFF");
                 telemetry.addData("Shooter", "ON");
@@ -270,7 +270,7 @@
             //Coefficients
             // mShooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
 //             mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
-            mShooterMotorEx.setVelocityPIDFCoefficients(50, 0, 20, 12.73); // effective values from testing
+            mShooterMotorEx.setVelocityPIDFCoefficients(50, 0,20, 12.73); // effective values from testing
             //Sets the shooter motor power
             // mShooterMotorEx.setPower(.7);
 //            mShooterMotorEx.setVelocity(1240);          //during Aledo qual, this caused the rings to skim the bottom of the goal most shots
@@ -322,7 +322,9 @@
             mRobot.mWobbleArmServo.setPosition(gripPos);
         }
 
-
+        public void shootServo() {
+            loaderPos = (1.0);
+        }
 
         @Override
         public void stop()
