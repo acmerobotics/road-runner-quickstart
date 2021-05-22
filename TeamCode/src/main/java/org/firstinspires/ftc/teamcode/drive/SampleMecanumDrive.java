@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
@@ -111,18 +112,19 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static double armPower = .8;
 
     public DcMotorEx shooterMotor;
-    double targetVel = 2450;
+    public static double targetVel = 2550;
 //    targetVel = 1240;
 //    During the Aledo qualifier, this caused the rings to skim the bottom of the goal most shots.
     boolean atSpeed;
-    double shooterP = 50;
-    double shooterI = 0;
-    double shooterD = 20;
-    double shooterF = 12.73;
+    boolean belowSpeed;
+    public double shooterP = 50;
+    public double shooterI = 0;
+    public double shooterD = 20;
+    public double shooterF = 12.73;
 
     public Servo shooterServo;
-    double loaderPos;
-    double tolerance = 100;
+    public double loaderPos;
+    double tolerance = 120;
     int ringsShot;
 
     public DcMotor intakeMotor;
@@ -244,7 +246,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         wobbleArmServo = hardwareMap.get(Servo.class, "wobbleArmGrip");
         wobbleArmServo.setDirection(Servo.Direction.FORWARD);
-        wobbleArmServo.setPosition(1.0);
+        wobbleArmServo.setPosition(MAX_POS);
 
 
 
@@ -254,10 +256,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         shooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
 
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         shooterServo.setDirection(Servo.Direction.FORWARD);
-        shooterServo.setPosition(1.0);
+//        shooterServo.setPosition(1.0);
 
         /*
          * Initialize the Vuforia localization engine.
@@ -531,8 +534,18 @@ public class SampleMecanumDrive extends MecanumDrive {
         return wobbleGrip;
     }
 
+    public void prepShooter() {
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(targetVel);
+
+        loaderPos = 0.0;
+    }
+
     public void shootRings(int ringCount)
     {
+        //Shooter PIDF
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(targetVel);
         boolean wasAtSpeed = false;
         ringsShot = 0;
         while (ringsShot < ringCount) {
@@ -540,40 +553,36 @@ public class SampleMecanumDrive extends MecanumDrive {
             //Default loader arm position
             loaderPos = 0.0;
 
-            //Shooter PIDF
-            shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
-            shooterMotor.setVelocity(targetVel);
-
             //Detects if shooter is at speed
-            atSpeed = (shooterMotor.getVelocity() < (targetVel + tolerance)) && (shooterMotor.getVelocity() > (targetVel - tolerance));
+            if (shooterMotor.getVelocity() >= targetVel)
+                atSpeed = true;
+            if (shooterMotor.getVelocity() < (targetVel - tolerance))
+                atSpeed = false;
+
+            if (atSpeed) {
+                wasAtSpeed = true;
+                loaderPos = 1.0;
+            } else if (wasAtSpeed) {
+                wasAtSpeed = false;
+                ringsShot++;
+            }
+
+//            double velocity = shooterMotor.getVelocity();
+//            while (velocity < targetVel) {
+//                velocity = shooterMotor.getVelocity();
+//                }
+//            }
+
+//            loaderPos = 1.0;
+//            ringsShot++;
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
 
-            if (atSpeed)
-            {
-                wasAtSpeed = true;
-                loaderPos = 1.0;
-                telemetry.addData("atSpeed", "atSpeed");
-            }
-            else if (wasAtSpeed && shooterServo.getPosition() > 0.5)
-            {
-                wasAtSpeed = false;
-                ringsShot ++;
-                telemetry.addData("wasAtSpeed", "wasAtSpeed");
-            }
 
-//            telemetry.update();
-
-
-            // PIDF
-            //Coefficients (Need Retuning
-            // Old Tuning presets
-            // shooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
-            // shooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
-            // shooterMotor.setVelocityPIDFCoefficients(0.0, 0.5, 0.0, 5.0); // effective values from previous testing
 
             shooterServo.setPosition(loaderPos);
         }
+        shooterMotor.setVelocity(0);
     }
 
 }

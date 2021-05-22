@@ -26,7 +26,7 @@ import java.util.List;
 @Autonomous(group = "drive")
 public class Auton_Blue_Wall extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
-    private double slowerVelocity = 5;
+    private double slowerVelocity = 8;
     String ringsDetected;
     SampleMecanumDrive drive;
 
@@ -178,11 +178,11 @@ switch (ringsDetected) {
     //Case A:
     case "None":
         trajA0 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-5, 48))
+                .lineToSplineHeading(new Pose2d(-10, 46, Math.toRadians(0)))
                 .build();
 
         trajA1 = drive.trajectoryBuilder(trajA0.end())
-                .lineTo(new Vector2d(12, 48))
+                .lineToSplineHeading(new Pose2d(12, 48, Math.toRadians(0)))
                 .build();
 
         trajA2 = drive.trajectoryBuilder(trajA1.end())
@@ -190,7 +190,7 @@ switch (ringsDetected) {
                 .build();
 
         trajA3 = drive.trajectoryBuilder(trajA2.end())
-                .lineToConstantHeading(new Vector2d(-20, 19))
+                .lineToConstantHeading(new Vector2d(-25, 19))
                 .build();
 
         trajA4 = drive.trajectoryBuilder(trajA3.end())
@@ -248,6 +248,8 @@ switch (ringsDetected) {
     }
 
     private void pathA() {
+        drive.shooterMotor.setVelocity(drive.targetVel);
+        drive.loaderPos = 0.0;
         drive.moveTo("Away");
         drive.followTrajectory(trajA0);
         drive.shootRings(3);
@@ -260,7 +262,7 @@ switch (ringsDetected) {
         drive.followTrajectory(trajA3);
         drive.followTrajectory(trajA4);
         drive.wobbleGrab();
-        sleep(2000);
+        sleep(1000);
         drive.moveTo("Carry");
         drive.followTrajectory(trajA5);
         drive.followTrajectory(trajA6);
