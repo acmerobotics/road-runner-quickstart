@@ -26,34 +26,17 @@ import java.util.List;
 @Autonomous(group = "drive")
 public class Auton_Blue_Wall extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
-    private double slowerVelocity = 5;
+    private double slowerVelocity = 8;
     String ringsDetected;
     SampleMecanumDrive drive;
 
     //TODO: Make an Interface to make these repeated portions of code inheritable
     //Initializing Trajectories
-    Trajectory trajA1;
-    Trajectory trajA2;
-    Trajectory trajA3;
-    Trajectory trajA4;
-    Trajectory trajA5;
-    Trajectory trajA6;
-    Trajectory trajA7;
+    Trajectory traj0, trajA1, trajA2, trajA3, trajA4, trajA5, trajA6, trajA7;
 
-    Trajectory trajB1;
-    Trajectory trajB2;
-    Trajectory trajB3;
-    Trajectory trajB4;
-    Trajectory trajB5;
+    Trajectory trajB1, trajB2, trajB3, trajB4, trajB5;
 
-    Trajectory trajC1;
-    Trajectory trajC2;
-    Trajectory trajC2a;
-    Trajectory trajC3;
-    Trajectory trajC4;
-    Trajectory trajC5;
-    Trajectory trajC6;
-    Trajectory trajC7;
+    Trajectory trajC1, trajC2, trajC2a, trajC3, trajC4, trajC5, trajC6, trajC7;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -127,21 +110,26 @@ if (ringsDetected == null)
 switch (ringsDetected) {
     //Case C:
     case "Quad":
-        trajC1 = drive.trajectoryBuilder(startPose)
+        traj0 = drive.trajectoryBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(-10, 46, Math.toRadians(0)))
+                .build();
+        trajC1 = drive.trajectoryBuilder(traj0.end())
                 .lineTo(new Vector2d(56, 48))
                 .build();
 
-        trajC2 = drive.trajectoryBuilder(trajC1.end())
-                .strafeTo(new Vector2d(56, 19))
+        trajC2 = drive.trajectoryBuilder(trajC1.end(), true)
+                .splineToConstantHeading(new Vector2d(-18, 21), Math.toRadians(180))
+//                .strafeTo(new Vector2d(12, 19))
+//                .lineTo(new Vector2d(-20, 19))
                 .build();
 
-        trajC2a = drive.trajectoryBuilder(trajC2.end())
-                .strafeTo(new Vector2d(-20, 19))
-                .build();
+//        trajC2a = drive.trajectoryBuilder(trajC2.end())
+//                .strafeTo(new Vector2d(-20, 19))
+//                .build();
 
-        trajC3 = drive.trajectoryBuilder(trajC2a.end())
-                .lineTo(new Vector2d(-29, 19),
-                        SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+        trajC3 = drive.trajectoryBuilder(trajC2.end())
+                .lineTo(new Vector2d(-28, 19),
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
                 .build();
@@ -151,33 +139,36 @@ switch (ringsDetected) {
                 .build();
 
         trajC5 = drive.trajectoryBuilder(trajC4.end())
-                .lineToLinearHeading(new Pose2d(56, 36, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(56, 37, Math.toRadians(-90)))
                 .build();
 
         trajC6 = drive.trajectoryBuilder(trajC5.end(), false)
                 .strafeTo(new Vector2d(56, 30))
                 .build();
 
-        trajC7 = drive.trajectoryBuilder(trajC6.end(), false)
-                .strafeTo(new Vector2d(12, 30))
-                .build();
+//        trajC7 = drive.trajectoryBuilder(trajC6.end(), false)
+//                .strafeTo(new Vector2d(12, 30))
+//                .build();
 
         break;
 
     //Case B:
         case "Single":
-        trajB1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-24, 48))
-                .splineTo(new Vector2d(36, 19), Math.toRadians(0))
+        traj0 = drive.trajectoryBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(-10, 46, Math.toRadians(0)))
+                .build();
+        trajB1 = drive.trajectoryBuilder(traj0.end())
+//                .lineTo(new Vector2d(-24, 48))
+                .lineTo(new Vector2d(36, 19))
                 .build();
 
         trajB2 = drive.trajectoryBuilder(trajB1.end())
-                .strafeTo(new Vector2d(-20, 19))
+                .strafeTo(new Vector2d(-25, 19))
                 .build();
 
         trajB3 = drive.trajectoryBuilder(trajB2.end())
                 .lineTo(
-                        new Vector2d(-29, 19),
+                        new Vector2d(-27, 19),
                         SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
@@ -194,8 +185,12 @@ switch (ringsDetected) {
 
     //Case A:
     case "None":
-        trajA1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(12, 48))
+        traj0 = drive.trajectoryBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(-10, 46, Math.toRadians(0)))
+                .build();
+
+        trajA1 = drive.trajectoryBuilder(traj0.end())
+                .lineToSplineHeading(new Pose2d(12, 48, Math.toRadians(0)))
                 .build();
 
         trajA2 = drive.trajectoryBuilder(trajA1.end())
@@ -203,7 +198,7 @@ switch (ringsDetected) {
                 .build();
 
         trajA3 = drive.trajectoryBuilder(trajA2.end())
-                .lineToConstantHeading(new Vector2d(-20, 19))
+                .lineToConstantHeading(new Vector2d(-25, 19))
                 .build();
 
         trajA4 = drive.trajectoryBuilder(trajA3.end())
@@ -214,11 +209,11 @@ switch (ringsDetected) {
                 .build();
 
         trajA5 = drive.trajectoryBuilder(trajA4.end())
-                .lineToConstantHeading(new Vector2d(12, 19))
+                .lineToConstantHeading(new Vector2d(10, 19))
                 .build();
 
         trajA6 = drive.trajectoryBuilder(trajA5.end())
-                .lineToLinearHeading(new Pose2d(12, 36, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(10, 36, Math.toRadians(-90)))
                 .build();
 
         trajA7 = drive.trajectoryBuilder(trajA6.end(), false)
@@ -261,31 +256,33 @@ switch (ringsDetected) {
     }
 
     private void pathA() {
+        pathShoot();
         drive.followTrajectory(trajA1);
         drive.wobbleDrop();
         drive.moveTo("Down");
-        sleep(2000);
+        sleep(1000);
         drive.followTrajectory(trajA2);
         drive.followTrajectory(trajA3);
         drive.followTrajectory(trajA4);
         drive.wobbleGrab();
-        sleep(2000);
+        sleep(1000);
         drive.moveTo("Carry");
         drive.followTrajectory(trajA5);
         drive.followTrajectory(trajA6);
         drive.moveTo("Down");
         drive.wobbleRelease();
-        sleep(2000);
+        sleep(1000);
         drive.followTrajectory(trajA7);
 //        sleep(2000);
 //        drive.moveTo("Away");
     }
 
     private void pathB() {
+        pathShoot();
         drive.followTrajectory(trajB1);
         drive.wobbleDrop();
         drive.moveTo("Down");
-        sleep(2000);
+        sleep(1000);
         drive.followTrajectory(trajB2);
         drive.followTrajectory(trajB3);
         drive.wobbleGrab();
@@ -295,29 +292,36 @@ switch (ringsDetected) {
         drive.moveTo("Down");
         drive.wobbleRelease();
         sleep(2000);
-//        drive.moveTo("Away");
-//        sleep(2000);
         drive.followTrajectory(trajB5);
     }
 
     private void pathC() {
+        pathShoot();
         drive.followTrajectory(trajC1);
         drive.wobbleDrop();
         drive.moveTo("Down");
+        sleep(1000);
         drive.followTrajectory(trajC2);
-        drive.followTrajectory(trajC2a);
+//        drive.followTrajectory(trajC2a);
         drive.followTrajectory(trajC3);
         drive.wobbleGrab();
-        sleep(2000);
+        sleep(1000);
         drive.moveTo("Carry");
         drive.followTrajectory(trajC4);
         drive.followTrajectory(trajC5);
         drive.moveTo("Down");
         drive.wobbleRelease();
-        sleep(2000);
-//        drive.moveTo("Away");
+        sleep(1000);
         drive.followTrajectory(trajC6);
-        drive.followTrajectory(trajC7);
+//        drive.followTrajectory(trajC7);
+    }
+
+    private void pathShoot() {
+        drive.shooterMotor.setVelocity(drive.targetVel);
+        drive.loaderPos = 0.0;
+        drive.moveTo("Away");
+        drive.followTrajectory(traj0);
+        drive.shootRings(3);
     }
 
 }
