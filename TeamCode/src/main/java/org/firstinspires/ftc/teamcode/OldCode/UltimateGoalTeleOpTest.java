@@ -70,7 +70,7 @@
 
         double targetVel;
 
-        int tolerance = 30;
+        int tolerance = 100;
 
         boolean atSpeed = false;
 
