@@ -116,7 +116,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 //    targetVel = 1240;
 //    During the Aledo qualifier, this caused the rings to skim the bottom of the goal most shots.
     boolean atSpeed;
-    boolean belowSpeed;
+    int ringsShot;
     public double shooterP = 50;
     public double shooterI = 0;
     public double shooterD = 20;
