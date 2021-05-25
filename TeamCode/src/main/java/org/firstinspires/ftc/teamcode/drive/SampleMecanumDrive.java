@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
@@ -26,12 +27,15 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.robocol.TelemetryMessage;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
@@ -42,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
@@ -60,8 +65,6 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 
 /*
- * Need to add shooterMotor
- * Need to add shooterServo
  * Need intakeMotor
  *
  */
@@ -95,7 +98,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     /**
      * Servo on Wobble Arm to grip Wobble Goal.
      */
-    private Servo mDropperServo;
+    private Servo dropperServo;
 
     private Servo wobbleGrip;
     public static final double MAX_POS     =  0.5;     // Maximum rotational position
@@ -109,12 +112,25 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static double armPower = .8;
 
     public DcMotorEx shooterMotor;
+    public static double targetVel = 2500;
+//    targetVel = 1240;
+//    During the Aledo qualifier, this caused the rings to skim the bottom of the goal most shots.
+    boolean atSpeed;
+    int ringsShot;
+    public double shooterP = 50;
+    public double shooterI = 0;
+    public double shooterD = 20;
+    public double shooterF = 12.73;
 
-    public Servo mShooterServo;
+    public Servo shooterServo;
+    public double loaderPos;
+    double tolerance = 120;
 
-    public DcMotor mIntakeMotor;
+    public DcMotor intakeMotor;
 
-    public Servo mWobbleArmServo;
+    public Servo wobbleArmServo;
+
+    private static TelemetryMessage telemetry;
 
     // Tensorflo
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -153,13 +169,12 @@ public class SampleMecanumDrive extends MecanumDrive {
      * This is the webcam we are to use. As with other hardware devices such as motors and
      * servos, this device is identified using the robot configuration tool in the FTC application.
      */
-    WebcamName webcamName = null;
+//    WebcamName webcamName = null;
 
     private boolean targetVisible = false;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
-
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -218,9 +233,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         //Initializing other mechanisms
 
         // Wobble Goal mechanisms
-        mDropperServo = hardwareMap.get(Servo.class, "wobbleDropper");
-//        mDropperServo.setDirection(Servo.Direction.FORWARD);
-//        mDropperServo.setPosition(0.0);
+        dropperServo = hardwareMap.get(Servo.class, "wobbleDropper");
+//        dropperServo.setDirection(Servo.Direction.FORWARD);
+//        dropperServo.setPosition(0.0);
         wobbleGrip = hardwareMap.get(Servo.class, "wobbleArmGrip");
 
         wobbleArm = hardwareMap.get(DcMotor.class, "wobbleArm");
@@ -228,9 +243,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         wobbleArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wobbleArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        mWobbleArmServo = hardwareMap.get(Servo.class, "wobbleArmGrip");
-        mWobbleArmServo.setDirection(Servo.Direction.FORWARD);
-        mWobbleArmServo.setPosition(0.0);
+        wobbleArmServo = hardwareMap.get(Servo.class, "wobbleArmGrip");
+        wobbleArmServo.setDirection(Servo.Direction.FORWARD);
+        wobbleArmServo.setPosition(MAX_POS);
 
 
 
@@ -240,10 +255,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         shooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
 
-        mShooterServo = hardwareMap.get(Servo.class, "shooterServo");
-        mShooterServo.setDirection(Servo.Direction.FORWARD);
-        mShooterServo.setPosition(0.0);
+        shooterServo = hardwareMap.get(Servo.class, "shooterServo");
+        shooterServo.setDirection(Servo.Direction.FORWARD);
 
         /*
          * Initialize the Vuforia localization engine.
@@ -252,7 +267,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
-        VuforiaLocalizer.Parameters vuParameters = new VuforiaLocalizer.Parameters();
+        VuforiaLocalizer.Parameters vuParameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
 
         vuParameters.vuforiaLicenseKey = VUFORIA_KEY;
         vuParameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
@@ -269,11 +284,14 @@ public class SampleMecanumDrive extends MecanumDrive {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
+        tfodParameters.minResultConfidence = 0.65f;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+        //Update Dashboard Camera
+        FtcDashboard.getInstance().startCameraStream(vuforia, 0);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -471,11 +489,11 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void wobbleDrop() {
-        mDropperServo.setPosition(1.0);
+        dropperServo.setPosition(1.0);
     }
 
     public TFObjectDetector getTfod() {
-        return tfod;
+            return tfod;
     }
 
     public DcMotor getWobbleArm() {
@@ -512,6 +530,46 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public Servo getWobbleGrip() {
         return wobbleGrip;
+    }
+
+    public void prepShooter() {
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(targetVel);
+
+        loaderPos = 0.0;
+    }
+
+    public void shootRings(int ringCount)
+    {
+        //Shooter PIDF
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(targetVel);
+        boolean wasAtSpeed = false;
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(targetVel);
+
+        ringsShot = 0;
+        while (ringsShot < ringCount) {
+            //Loader Arm Logic
+            //Default loader arm position
+            loaderPos = 0.0;
+
+            //Detects if shooter is at speed
+            if (shooterMotor.getVelocity() >= targetVel)
+                atSpeed = true;
+            if (shooterMotor.getVelocity() < (targetVel - tolerance))
+                atSpeed = false;
+
+            if (atSpeed) {
+                wasAtSpeed = true;
+                loaderPos = 1.0;
+            } else if (wasAtSpeed) {
+                wasAtSpeed = false;
+                ringsShot++;
+            }
+            shooterServo.setPosition(loaderPos);
+        }
+        shooterMotor.setVelocity(0);
     }
 
 }

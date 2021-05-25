@@ -27,15 +27,15 @@ public class Auton_WallShoot extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-
+        drive.shootRings(3);
         // We want to start the bot at x: 10, y: -8, heading: 90 degrees
-        Pose2d startPose = new Pose2d(-60, 48, Math.toRadians(0));
+//        Pose2d startPose = new Pose2d(-60, 48, Math.toRadians(0));
 
-        drive.setPoseEstimate(startPose);
-
-        Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(18,48))
-                .build();
+//        drive.setPoseEstimate(startPose);
+//
+//        Trajectory traj1 = drive.trajectoryBuilder(startPose)
+//                .lineTo(new Vector2d(18,48))
+//                .build();
 
 //        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
 //                .lineToConstantHeading(new Vector2d(-18, 48))
@@ -45,8 +45,8 @@ public class Auton_WallShoot extends LinearOpMode {
 //        drive.wobbleDrop();
 //        sleep(2000);
 //        drive.followTrajectory(traj2);
-        sleep(25000);
-        drive.followTrajectory(traj1);
+//        sleep(25000);
+//        drive.followTrajectory(traj1);
 
 //        wobbleDropper.setPosition(1);
 //        drive.followTrajectory(
