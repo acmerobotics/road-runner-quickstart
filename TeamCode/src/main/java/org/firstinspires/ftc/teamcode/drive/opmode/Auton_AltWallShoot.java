@@ -34,6 +34,7 @@ public class Auton_AltWallShoot extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
+        drive.moveTo("Away");
         drive.followTrajectory(strafe);
         drive.shootRings(3);
         // We want to start the bot at x: 10, y: -8, heading: 90 degrees

@@ -28,6 +28,8 @@ public class Auton_WallShoot extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
+        drive.moveTo("Away");
+        sleep(2000);
         drive.shootRings(3);
         // We want to start the bot at x: 10, y: -8, heading: 90 degrees
 //        Pose2d startPose = new Pose2d(-60, 48, Math.toRadians(0));

@@ -548,7 +548,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
         shooterMotor.setVelocity(targetVel);
 
-        ringsShot = 0;
+
+        int ringsShot = 0;
         while (ringsShot < ringCount) {
             //Loader Arm Logic
             //Default loader arm position
