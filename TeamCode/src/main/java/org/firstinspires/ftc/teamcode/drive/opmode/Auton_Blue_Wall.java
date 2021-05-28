@@ -146,10 +146,6 @@ switch (ringsDetected) {
                 .strafeTo(new Vector2d(56, 30))
                 .build();
 
-//        trajC7 = drive.trajectoryBuilder(trajC6.end(), false)
-//                .strafeTo(new Vector2d(12, 30))
-//                .build();
-
         break;
 
     //Case B:
