@@ -26,7 +26,7 @@ import java.util.List;
 @Autonomous(group = "drive")
 public class Auton_Blue_Wall extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
-    private double slowerVelocity = 8;
+    private final double slowerVelocity = 8;
     String ringsDetected;
     SampleMecanumDrive drive;
 
