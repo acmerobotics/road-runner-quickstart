@@ -36,7 +36,7 @@ public class Auton_Blue_Wall extends LinearOpMode {
 
     Trajectory trajB1, trajB2, trajB3, trajB4, trajB5;
 
-    Trajectory trajC1, trajC2, trajC2a, trajC3, trajC4, trajC5, trajC6, trajC7;
+    Trajectory trajC1, trajC2, trajC3, trajC4, trajC5, trajC6;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -145,10 +145,6 @@ switch (ringsDetected) {
         trajC6 = drive.trajectoryBuilder(trajC5.end(), false)
                 .strafeTo(new Vector2d(56, 30))
                 .build();
-
-//        trajC7 = drive.trajectoryBuilder(trajC6.end(), false)
-//                .strafeTo(new Vector2d(12, 30))
-//                .build();
 
         break;
 
