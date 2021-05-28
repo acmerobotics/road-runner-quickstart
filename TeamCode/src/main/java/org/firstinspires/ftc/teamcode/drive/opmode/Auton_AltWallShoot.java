@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -24,9 +25,16 @@ public class Auton_AltWallShoot extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
 //        wobbleDropper = hardwareMap.get(Servo.class, "wobbleDropper");
+        Pose2d startPose = new Pose2d(-63, 48, Math.toRadians(0));
+        drive.setPoseEstimate(startPose);
+        strafe = drive.trajectoryBuilder(startPose)
+                .strafeLeft(24)
+                .build();
+
         waitForStart();
 
         if (isStopRequested()) return;
+        drive.followTrajectory(strafe);
         drive.shootRings(3);
         // We want to start the bot at x: 10, y: -8, heading: 90 degrees
 //        Pose2d startPose = new Pose2d(-60, 48, Math.toRadians(0));
