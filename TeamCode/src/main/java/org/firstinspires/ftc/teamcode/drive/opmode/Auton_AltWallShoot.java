@@ -24,6 +24,7 @@ public class Auton_AltWallShoot extends LinearOpMode {
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
     long waitOffset = 10000;
+    int targetVel = 2350;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -45,6 +46,6 @@ public class Auton_AltWallShoot extends LinearOpMode {
         drive.moveTo("Away");
         sleep(waitOffset);
         drive.followTrajectory(traj0);
-        drive.shootRings(3);
+        drive.shootRings(3, targetVel);
     }
 }

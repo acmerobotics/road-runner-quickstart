@@ -105,7 +105,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static final double MIN_POS     =  0.05;     // Minimum rotational position
 
     private DcMotor wobbleArm;
-    public static int away = 125;
+    public static int away = 150;
     public static int down = 625;
     public static int carry = 575;
     public static int wall = 460;
@@ -247,7 +247,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         wobbleArmServo.setDirection(Servo.Direction.FORWARD);
         wobbleArmServo.setPosition(MAX_POS);
 
-
+        //Intake Mechanisms
+        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
 
         //Shooter Wheel Mechanisms
         shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
@@ -532,11 +533,52 @@ public class SampleMecanumDrive extends MecanumDrive {
         return wobbleGrip;
     }
 
+    public void prepShooter(int targetVel) {
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(this.targetVel);
+
+        loaderPos = 0.0;
+    }
+
     public void prepShooter() {
         shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
         shooterMotor.setVelocity(targetVel);
 
         loaderPos = 0.0;
+    }
+
+    public void shootRings(int ringCount, int targetVel)
+    {
+        //Shooter PIDF
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(this.targetVel);
+        boolean wasAtSpeed = false;
+        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+        shooterMotor.setVelocity(this.targetVel);
+
+
+        int ringsShot = 0;
+        while (ringsShot < ringCount) {
+            //Loader Arm Logic
+            //Default loader arm position
+            loaderPos = 0.0;
+
+            //Detects if shooter is at speed
+            if (shooterMotor.getVelocity() >= this.targetVel)
+                atSpeed = true;
+            if (shooterMotor.getVelocity() < (this.targetVel - tolerance))
+                atSpeed = false;
+
+            if (atSpeed) {
+                wasAtSpeed = true;
+                loaderPos = 1.0;
+            } else if (wasAtSpeed) {
+                wasAtSpeed = false;
+                ringsShot++;
+            }
+            shooterServo.setPosition(loaderPos);
+        }
+        shooterMotor.setVelocity(0);
     }
 
     public void shootRings(int ringCount)
@@ -571,6 +613,15 @@ public class SampleMecanumDrive extends MecanumDrive {
             shooterServo.setPosition(loaderPos);
         }
         shooterMotor.setVelocity(0);
+    }
+
+    public void spinIntake(){
+        intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + 250);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        intakeMotor.setPower(1.0);
+        for (int i = 0; i < 4; i++) {
+            intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + 250);
+        }
     }
 
 }

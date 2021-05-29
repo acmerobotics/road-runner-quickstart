@@ -20,12 +20,13 @@ public class Auton_RedField_ShootPark extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
     SampleMecanumDrive drive;
-    Trajectory trajShoot, trajParkA, trajParkB;
+    Trajectory traj1, traj2, trajShoot, trajParkA, trajParkB;
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
     long waitOffset = 1000;
+    int targetVel = 2300;
 
-    Vector2d shootPosition = new Vector2d(-10, -26);
+    Vector2d shootPosition = new Vector2d(-63, -13);
     Vector2d parkPosition = new Vector2d(12, 12);
     @Override
     public void runOpMode() throws InterruptedException {
@@ -35,6 +36,14 @@ public class Auton_RedField_ShootPark extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         //Trajectories
+//        traj1 = drive.trajectoryBuilder(startPose)
+//                .forward(6)
+//                .build();
+//
+//        traj2 = drive.trajectoryBuilder(traj1.end())
+//                .back(6)
+//                .build();
+
         trajShoot = drive.trajectoryBuilder(startPose)
                 .strafeTo(shootPosition)
                 .build();
@@ -54,9 +63,13 @@ public class Auton_RedField_ShootPark extends LinearOpMode {
         //Actual Movement
         drive.moveTo("Away");
         sleep(waitOffset);
-        drive.prepShooter();
+        drive.prepShooter(targetVel);
+//        drive.followTrajectory(traj1);
+//        sleep(100);
+//        drive.followTrajectory(traj2);
+        drive.spinIntake();
         drive.followTrajectory(trajShoot);
-        drive.shootRings(3);
+        drive.shootRings(3, targetVel);
         drive.followTrajectory(trajParkA);
         drive.followTrajectory(trajParkB);
     }
