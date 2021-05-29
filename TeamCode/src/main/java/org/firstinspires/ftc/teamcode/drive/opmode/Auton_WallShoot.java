@@ -24,12 +24,12 @@ public class Auton_WallShoot extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
-//        wobbleDropper = hardwareMap.get(Servo.class, "wobbleDropper");
+        long waitOffset = 10000;
         waitForStart();
 
         if (isStopRequested()) return;
         drive.moveTo("Away");
-        sleep(2000);
+        sleep(waitOffset);
         drive.shootRings(3);
         // We want to start the bot at x: 10, y: -8, heading: 90 degrees
 //        Pose2d startPose = new Pose2d(-60, 48, Math.toRadians(0));

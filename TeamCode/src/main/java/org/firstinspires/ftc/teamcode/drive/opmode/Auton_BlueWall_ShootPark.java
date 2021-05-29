@@ -16,14 +16,17 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 
 @Autonomous(group = "drive")
-public class Auton_AltWallShoot extends LinearOpMode {
+public class Auton_BlueWall_ShootPark extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
     SampleMecanumDrive drive;
-    Trajectory traj0, traj1, traj2, traj3;
+    Trajectory trajShoot, trajParkA, trajParkB;
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
-    long waitOffset = 10000;
+    long waitOffset = 1000;
+
+    Vector2d shootPosition = new Vector2d(-10, 46);
+    Vector2d parkPosition = new Vector2d(12, 12);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -33,9 +36,21 @@ public class Auton_AltWallShoot extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         //Trajectories
-        traj0 = drive.trajectoryBuilder(startPose)
-                //.strafeTo(new Vector2d(, ));
+        trajShoot = drive.trajectoryBuilder(startPose)
+                .strafeTo(shootPosition)
                 .build();
+
+        trajParkA = drive.trajectoryBuilder(trajShoot.end())
+                .strafeTo(new Vector2d(shootPosition.getX(), parkPosition.getY()))
+                .build();
+
+        trajParkB = drive.trajectoryBuilder(trajParkA.end())
+                .strafeTo(new Vector2d(parkPosition.getX(), parkPosition.getY()))
+                .build();
+
+//        trajParkA = drive.trajectoryBuilder(traj2.end())
+//                .strafeTo(new Vector2d(, ))
+//                .build();
 
         waitForStart();
 
@@ -44,7 +59,10 @@ public class Auton_AltWallShoot extends LinearOpMode {
         //Actual Movement
         drive.moveTo("Away");
         sleep(waitOffset);
-        drive.followTrajectory(traj0);
+        drive.prepShooter();
+        drive.followTrajectory(trajShoot);
         drive.shootRings(3);
+        drive.followTrajectory(trajParkA);
+        drive.followTrajectory(trajParkB);
     }
 }

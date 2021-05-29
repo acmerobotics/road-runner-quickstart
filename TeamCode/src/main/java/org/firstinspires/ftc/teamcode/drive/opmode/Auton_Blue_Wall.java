@@ -107,12 +107,15 @@ public class Auton_Blue_Wall extends LinearOpMode {
 if (ringsDetected == null)
     ringsDetected = "None";
         //Init trajectories
-switch (ringsDetected) {
-    //Case C:
-    case "Quad":
+        //shootPosition
         traj0 = drive.trajectoryBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(-10, 46, Math.toRadians(0)))
                 .build();
+
+switch (ringsDetected) {
+    //Case C:
+    case "Quad":
+
         trajC1 = drive.trajectoryBuilder(traj0.end())
                 .lineTo(new Vector2d(56, 48))
                 .build();
@@ -150,9 +153,7 @@ switch (ringsDetected) {
 
     //Case B:
         case "Single":
-        traj0 = drive.trajectoryBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-10, 46, Math.toRadians(0)))
-                .build();
+
         trajB1 = drive.trajectoryBuilder(traj0.end())
 //                .lineTo(new Vector2d(-24, 48))
                 .lineTo(new Vector2d(36, 19))
@@ -181,9 +182,6 @@ switch (ringsDetected) {
 
     //Case A:
     case "None":
-        traj0 = drive.trajectoryBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-10, 46, Math.toRadians(0)))
-                .build();
 
         trajA1 = drive.trajectoryBuilder(traj0.end())
                 .lineToSplineHeading(new Pose2d(12, 48, Math.toRadians(0)))
@@ -313,8 +311,7 @@ switch (ringsDetected) {
     }
 
     private void pathShoot() {
-        drive.shooterMotor.setVelocity(drive.targetVel);
-        drive.loaderPos = 0.0;
+        drive.prepShooter();
         drive.moveTo("Away");
         drive.followTrajectory(traj0);
         drive.shootRings(3);
