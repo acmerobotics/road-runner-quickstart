@@ -70,10 +70,9 @@ public class Auton_BlueWall_ShootPark extends LinearOpMode {
         sleep(waitOffset);
         drive.prepShooter(targetVel);
 //        drive.followTrajectory(traj1);
-//        sleep(100);
 //        drive.followTrajectory(traj2);
-        drive.spinIntake();
         drive.followTrajectory(trajShoot);
+        drive.spinIntake();
         drive.shootRings(3, targetVel);
         drive.followTrajectory(trajParkA);
         drive.followTrajectory(trajParkB);

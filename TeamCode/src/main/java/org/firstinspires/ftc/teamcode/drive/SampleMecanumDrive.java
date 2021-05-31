@@ -22,12 +22,14 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.robocol.TelemetryMessage;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -230,6 +232,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
+//        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+
+
         //Initializing other mechanisms
 
         // Wobble Goal mechanisms
@@ -249,6 +254,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         //Intake Mechanisms
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Shooter Wheel Mechanisms
         shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
@@ -615,13 +621,14 @@ public class SampleMecanumDrive extends MecanumDrive {
         shooterMotor.setVelocity(0);
     }
 
-    public void spinIntake(){
-        intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + 250);
-        intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        intakeMotor.setPower(1.0);
-        for (int i = 0; i < 4; i++) {
-            intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + 250);
+    public void spinIntake() {
+        ElapsedTime spintakeTimer = new ElapsedTime();
+        double time = 0;
+        while (time < 1000) {
+            intakeMotor.setPower(1.0);
+            time = spintakeTimer.milliseconds();
         }
+        intakeMotor.setPower(0);
     }
 
 }

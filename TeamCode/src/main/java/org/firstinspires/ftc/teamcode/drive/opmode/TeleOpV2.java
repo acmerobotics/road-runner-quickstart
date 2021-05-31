@@ -29,6 +29,7 @@
 
     package org.firstinspires.ftc.teamcode.drive.opmode;
 
+    import com.acmerobotics.roadrunner.geometry.Pose2d;
     import com.qualcomm.robotcore.hardware.MotorControlAlgorithm;
     import org.firstinspires.ftc.robotcore.external.Telemetry;
     import org.firstinspires.ftc.teamcode.drive.DriveTelemetryLogger;
@@ -75,7 +76,7 @@
 
         double targetVel;
 
-        int tolerance = 100;
+        int tolerance = 120;
 
         boolean atSpeed = false;
 
@@ -84,7 +85,7 @@
         /**
          * Timer to monitor duration of the calibrated operations.
          */
-        private ElapsedTime         timer;
+        private ElapsedTime  timer;
 
         private DcMotorEx  shooterMotorEx;
 
@@ -111,7 +112,7 @@
             // In teleop mode, the drive will not be operated using encoders - set it to non-encoder mode.
             drive.setMode(RUN_WITHOUT_ENCODER);
 
-            shooterMotorEx =(DcMotorEx)drive.shooterMotor;
+            shooterMotorEx = drive.shooterMotor;
             shooterServo = drive.shooterServo;
             intakeMotor = drive.intakeMotor;
             wobbleArmMotor = drive.getWobbleArm();
@@ -159,7 +160,7 @@
         public void loop()
         {
             // Chassis control:
-            loopTrolley();
+            loopDriveV2();
             // Intake and Shooter:
             loopIntakeShooter();
             // Wobble Arm and Servo:
@@ -169,7 +170,25 @@
             //telemetry.addData("Status", "Run Time: " + timer.toString());
         }
 
-        private void loopTrolley()
+        private void loopDriveV2() {
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    )
+            );
+
+            drive.update();
+
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.update();
+        }
+
+        private void loopDrive()
         {
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
@@ -224,10 +243,9 @@
 
             drive.setMotorPowers(leftFrontPower, leftBackPower, rightBackPower, rightFrontPower);
         }
+
         //creates variable that will set the intake motor power
         double intakePower;
-        //creates variable that will set the shooter motor power
-        double shooterPower;
         //creates variable that will assign loader arm position
         double loaderPos;
 
@@ -238,7 +256,7 @@
             //intake on and Shooter off by default
             intakePower = 1.0;
             targetVel = 0.0;
-            //Reverses intake for decongesting
+            //Reverses intake for decongestion
             if(gamepad1.left_trigger==1)
             {
                 intakePower = -1.0;
@@ -249,7 +267,7 @@
             else if(gamepad1.right_trigger==1)
             {
                 intakePower = 0.0;
-                targetVel = 2400;
+                targetVel = drive.targetVel;
 
                 telemetry.addData("Intake", "OFF");
                 telemetry.addData("Shooter", "ON");
@@ -260,10 +278,13 @@
             loaderPos = 0.0;
 
             //Detects if shooter is at speed
-            atSpeed = (shooterMotorEx.getVelocity() < (targetVel + tolerance)) && (shooterMotorEx.getVelocity() > (targetVel - tolerance * 0.5));
+            if (shooterMotorEx.getVelocity() >= this.targetVel)
+                atSpeed = true;
+            if (shooterMotorEx.getVelocity() < (this.targetVel - tolerance))
+                atSpeed = false;
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
-            if (gamepad1.b && gamepad1.right_trigger==1 && atSpeed)
+            if (gamepad1.b && gamepad1.right_trigger == 1 && atSpeed)
             {
                 logger.info("Firing");
                 loaderPos = (1.0);
@@ -272,30 +293,14 @@
             //Sets the intake motor power
             intakeMotor.setPower(intakePower);
             //Coefficients
-            // mShooterMotorEx.setVelocityPIDFCoefficients(1.37, 0.14, 0.0, 13.65);
-//             mShooterMotorEx.setVelocityPIDFCoefficients(1.32, 0.132, 0.0, 13.2);
-            shooterMotorEx.setVelocityPIDFCoefficients(0.0, 0.5, 0.0, 5.0); // effective values from testing
-            //Sets the shooter motor power
-            // mShooterMotorEx.setPower(.7);
-//            mShooterMotorEx.setVelocity(1240);          //during Aledo qual, this caused the rings to skim the bottom of the goal most shots
+            shooterMotorEx.setVelocityPIDFCoefficients(drive.shooterP, drive.shooterI, drive.shooterD, drive.shooterF); // effective values from testing
             shooterMotorEx.setVelocity(targetVel);
-            //mShooterMotorEx.setPower(shooterPower);
-                /*
-                if (gamepad2.a && velocity > 999){
-                    velocity -= change;
-                }
-                else if (gamepad2.b && velocity < 2300){
-                    velocity += change;
-                }
-                */
             telemetry.clear();
             telemetry.addLine()
                     .addData("Velocity of Shooter Motor", shooterMotorEx.getVelocity());
             telemetry.addLine()
                     .addData("Power of Shooter Motor", shooterMotorEx.getPower());
             telemetry.update();
-            //
-            //mRobot.mShooterMotor.setPower(shooterPower);
             //Sets the loader arm servo position
             shooterServo.setPosition(loaderPos);
         }

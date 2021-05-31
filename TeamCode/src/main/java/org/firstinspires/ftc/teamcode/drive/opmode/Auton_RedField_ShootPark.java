@@ -67,8 +67,8 @@ public class Auton_RedField_ShootPark extends LinearOpMode {
 //        drive.followTrajectory(traj1);
 //        sleep(100);
 //        drive.followTrajectory(traj2);
-        drive.spinIntake();
         drive.followTrajectory(trajShoot);
+        drive.spinIntake();
         drive.shootRings(3, targetVel);
         drive.followTrajectory(trajParkA);
         drive.followTrajectory(trajParkB);
