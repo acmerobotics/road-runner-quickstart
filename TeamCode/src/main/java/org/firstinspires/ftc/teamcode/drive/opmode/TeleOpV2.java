@@ -137,7 +137,7 @@
         @Override
         public void init_loop() {
             telemetry.clear();
-            telemetry.addData("Velocity of shooterMotorEx",shooterMotorEx.getVelocity());
+//            telemetry.addData("Velocity of shooterMotorEx",shooterMotorEx.getVelocity());
         }
 
         /*

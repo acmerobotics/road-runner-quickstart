@@ -105,10 +105,6 @@
             mDrive.prepareToRotate();
     
             mShooterMotorEx =(DcMotorEx)mRobot.mShooterMotor;
-            if (mShooterMotorEx != null){
-                telemetry.addLine("It works!");
-            }
-            
         }
 
         private void initLogging()
@@ -126,10 +122,6 @@
         @Override
         public void init_loop() {
             telemetry.clear();
-            telemetry.addData("Velocity of mShooterMotorEx", mShooterMotorEx.getVelocity());
-            if (mShooterMotorEx != null){
-                telemetry.addLine("It works!");
-            }
         }
 
         /*
@@ -245,7 +237,7 @@
             else if(gamepad1.right_trigger==1)
             {
                 intakePower = 0.0;
-                targetVel = 2400;
+                targetVel = 2500;
                 
                 telemetry.addData("Intake", "OFF");
                 telemetry.addData("Shooter", "ON");
