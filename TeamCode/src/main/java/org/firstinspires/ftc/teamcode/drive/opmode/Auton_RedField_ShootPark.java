@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-
 /*
  * This is a straight line autonomous that will drop 1 wobble goal at square A on both sides of the field
  */
@@ -20,14 +19,14 @@ public class Auton_RedField_ShootPark extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
     SampleMecanumDrive drive;
-    Trajectory traj1, traj2, trajShoot, trajParkA, trajParkB;
+    Trajectory trajShoot, trajParkA, trajParkB;
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
     long waitOffset = 1000;
     int targetVel = 2300;
 
     Vector2d shootPosition = new Vector2d(-63, -13);
-    Vector2d parkPosition = new Vector2d(12, 12);
+    Vector2d parkPosition = new Vector2d(12, -12);
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
@@ -36,13 +35,6 @@ public class Auton_RedField_ShootPark extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         //Trajectories
-//        traj1 = drive.trajectoryBuilder(startPose)
-//                .forward(6)
-//                .build();
-//
-//        traj2 = drive.trajectoryBuilder(traj1.end())
-//                .back(6)
-//                .build();
 
         trajShoot = drive.trajectoryBuilder(startPose)
                 .strafeTo(shootPosition)
@@ -64,9 +56,6 @@ public class Auton_RedField_ShootPark extends LinearOpMode {
         drive.moveTo("Away");
         sleep(waitOffset);
         drive.prepShooter(targetVel);
-//        drive.followTrajectory(traj1);
-//        sleep(100);
-//        drive.followTrajectory(traj2);
         drive.followTrajectory(trajShoot);
         drive.spinIntake();
         drive.shootRings(3, targetVel);

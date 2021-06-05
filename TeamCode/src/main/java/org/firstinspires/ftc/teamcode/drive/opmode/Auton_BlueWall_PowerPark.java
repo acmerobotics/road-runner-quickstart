@@ -16,17 +16,19 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 
 @Autonomous(group = "drive")
-public class Auton_BlueWall_ShootPark extends LinearOpMode {
+public class Auton_BlueWall_PowerPark extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
     SampleMecanumDrive drive;
-    Trajectory trajShoot, trajParkA, trajParkB;
+    Trajectory trajPower1, trajPower2, trajPower3, trajShoot, trajParkA, trajParkB;
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
     long waitOffset = 1000;
     int targetVel = 2300;
 
-    Vector2d shootPosition = new Vector2d(-63, 59);
+    Vector2d power1Position = new Vector2d(-63, 29);
+    Vector2d power2Position = new Vector2d(-63, 23);
+    Vector2d power3Position = new Vector2d(-63, 17);
     Vector2d parkPosition = new Vector2d(12, 12);
 
     @Override
@@ -38,12 +40,20 @@ public class Auton_BlueWall_ShootPark extends LinearOpMode {
 
         //Trajectories
 
-        trajShoot = drive.trajectoryBuilder(startPose)
-                .strafeTo(shootPosition)
+        trajPower1 = drive.trajectoryBuilder(startPose)
+                .strafeTo(power1Position)
+                .build();
+
+        trajPower2 = drive.trajectoryBuilder(trajPower1.end())
+                .strafeTo(power2Position)
+                .build();
+
+        trajPower3 = drive.trajectoryBuilder((trajPower2.end()))
+                .strafeTo(power3Position)
                 .build();
 
         trajParkA = drive.trajectoryBuilder(trajShoot.end())
-                .strafeTo(new Vector2d(shootPosition.getX(), parkPosition.getY()))
+                .strafeTo(new Vector2d(trajPower3.end().getX(), parkPosition.getY()))
                 .build();
 
         trajParkB = drive.trajectoryBuilder(trajParkA.end())
@@ -58,9 +68,17 @@ public class Auton_BlueWall_ShootPark extends LinearOpMode {
         drive.moveTo("Away");
         sleep(waitOffset);
         drive.prepShooter(targetVel);
-        drive.followTrajectory(trajShoot);
+        //Line up for first PowerShot
+        drive.followTrajectory(trajPower1);
         drive.spinIntake();
-        drive.shootRings(3, targetVel);
+        drive.shootRings(1, targetVel);
+        //Line up for second PowerShot
+        drive.followTrajectory(trajPower2);
+        drive.shootRings(1, targetVel);
+        //Line up for third PowerShot
+        drive.followTrajectory(trajPower3);
+        drive.shootRings(1, targetVel);
+        //Park
         drive.followTrajectory(trajParkA);
         drive.followTrajectory(trajParkB);
     }

@@ -555,13 +555,13 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void shootRings(int ringCount, int targetVel)
     {
-        //Shooter PIDF
-        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
-        shooterMotor.setVelocity(this.targetVel);
-        boolean wasAtSpeed = false;
-        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
-        shooterMotor.setVelocity(this.targetVel);
+        //Check if PrepShooter was called, and run it if it wasn't
+        if (shooterMotor.getVelocity() == 0) {
+            shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+            shooterMotor.setVelocity(this.targetVel);
+        }
 
+        boolean wasAtSpeed = false;
 
         int ringsShot = 0;
         while (ringsShot < ringCount) {
@@ -589,13 +589,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void shootRings(int ringCount)
     {
-        //Shooter PIDF
-        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
-        shooterMotor.setVelocity(targetVel);
+        //Check if PrepShooter was called, and run it if it wasn't
+        if (shooterMotor.getVelocity() == 0) {
+            shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
+            shooterMotor.setVelocity(targetVel);
+        }
         boolean wasAtSpeed = false;
-        shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
-        shooterMotor.setVelocity(targetVel);
-
 
         int ringsShot = 0;
         while (ringsShot < ringCount) {
