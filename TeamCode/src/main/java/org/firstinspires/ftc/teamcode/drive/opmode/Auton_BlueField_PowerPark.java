@@ -20,16 +20,20 @@ public class Auton_BlueField_PowerPark extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
     SampleMecanumDrive drive;
-    Trajectory trajPower1, trajPower2, trajPower3, trajShoot, trajParkA, trajParkB;
+    Trajectory wallOffset, trajPower1, trajPower2, trajPower3, trajShoot, trajParkA, trajParkB;
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
     long waitOffset = 1000;
     int targetVel = 2300;
 
+    Vector2d wallOffPosition = new Vector2d(-58, 21);
     Vector2d power1Position = new Vector2d(-63, 29);
     Vector2d power2Position = new Vector2d(-63, 23);
     Vector2d power3Position = new Vector2d(-63, 17);
     Vector2d parkPosition = new Vector2d(12, 12);
+
+    Pose2d power1Pose = new Pose2d(power1Position.getX(), power1Position.getY(), Math.toRadians(5));
+    Pose2d parkPose = new Pose2d(parkPosition.getX(), parkPosition.getY(), Math.toRadians(0));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -40,7 +44,11 @@ public class Auton_BlueField_PowerPark extends LinearOpMode {
 
         //Trajectories
 
-        trajPower1 = drive.trajectoryBuilder(startPose)
+        wallOffset = drive.trajectoryBuilder(startPose)
+                .lineTo(wallOffPosition)
+                .build();
+
+        trajPower1 = drive.trajectoryBuilder(wallOffset.end())
                 .strafeTo(power1Position)
                 .build();
 
