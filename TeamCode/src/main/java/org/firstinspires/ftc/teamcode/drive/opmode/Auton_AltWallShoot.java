@@ -46,6 +46,6 @@ public class Auton_AltWallShoot extends LinearOpMode {
         drive.moveTo("Away");
         sleep(waitOffset);
         drive.followTrajectory(traj0);
-        drive.shootRings(3, targetVel);
+        drive.shootRings(3, targetVel, false);
     }
 }

@@ -115,6 +115,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public DcMotorEx shooterMotor;
     public static double targetVel = 2500;
+    public static double powerVel = 2250;
 //    targetVel = 1240;
 //    During the Aledo qualifier, this caused the rings to skim the bottom of the goal most shots.
     boolean atSpeed;
@@ -264,6 +265,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
 
+        //Shooter Servo Mechanisms
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         shooterServo.setDirection(Servo.Direction.FORWARD);
 
@@ -541,7 +543,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void prepShooter(int targetVel) {
         shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
-        shooterMotor.setVelocity(this.targetVel);
+        shooterMotor.setVelocity(targetVel);
 
         loaderPos = 0.0;
     }
@@ -553,13 +555,12 @@ public class SampleMecanumDrive extends MecanumDrive {
         loaderPos = 0.0;
     }
 
-    public void shootRings(int ringCount, int targetVel)
+    public void shootRings(int ringCount, int targetVel, boolean keepVel)
     {
         //Check if PrepShooter was called, and run it if it wasn't
-        if (shooterMotor.getVelocity() == 0) {
-            shooterMotor.setVelocityPIDFCoefficients(shooterP, shooterI, shooterD, shooterF);
-            shooterMotor.setVelocity(this.targetVel);
-        }
+//        if (shooterMotor.getVelocity() < 100) {
+//            prepShooter((int)this.targetVel);
+//        }
 
         boolean wasAtSpeed = false;
 
@@ -570,9 +571,9 @@ public class SampleMecanumDrive extends MecanumDrive {
             loaderPos = 0.0;
 
             //Detects if shooter is at speed
-            if (shooterMotor.getVelocity() >= this.targetVel)
+            if (shooterMotor.getVelocity() >= targetVel)
                 atSpeed = true;
-            if (shooterMotor.getVelocity() < (this.targetVel - tolerance))
+            if (shooterMotor.getVelocity() < (targetVel - tolerance))
                 atSpeed = false;
 
             if (atSpeed) {
@@ -584,7 +585,8 @@ public class SampleMecanumDrive extends MecanumDrive {
             }
             shooterServo.setPosition(loaderPos);
         }
-        shooterMotor.setVelocity(0);
+        if (!keepVel)
+            shooterMotor.setVelocity(0);
     }
 
     public void shootRings(int ringCount)

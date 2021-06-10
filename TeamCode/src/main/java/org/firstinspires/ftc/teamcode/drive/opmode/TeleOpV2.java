@@ -76,6 +76,8 @@
 
         double targetVel;
 
+        double powerVel;
+
         int tolerance = 120;
 
         boolean atSpeed = false;
@@ -119,6 +121,7 @@
             wobbleArmServo = drive.getWobbleGrip();
 
             shooterServo.setPosition(0.0);
+            drive.wobbleDrop();
 
         }
 
@@ -161,8 +164,12 @@
         {
             // Chassis control:
             loopDriveV2();
+
             // Intake and Shooter:
-            loopIntakeShooter();
+            //This allows us to stop the intake and shooter by pressing x on gamepad1
+            if(!gamepad1.x)
+                loopIntakeShooter();
+
             // Wobble Arm and Servo:
             loopWobble();
 
@@ -256,6 +263,7 @@
             //intake on and Shooter off by default
             intakePower = 1.0;
             targetVel = 0.0;
+            powerVel = 0.0;
             //Reverses intake for decongestion
             if(gamepad1.left_trigger==1)
             {
@@ -268,6 +276,7 @@
             {
                 intakePower = 0.0;
                 targetVel = drive.targetVel;
+                powerVel = drive.powerVel;
 
                 telemetry.addData("Intake", "OFF");
                 telemetry.addData("Shooter", "ON");
@@ -292,9 +301,13 @@
 //Sets Power and Position
             //Sets the intake motor power
             intakeMotor.setPower(intakePower);
-            //Coefficients
-            shooterMotorEx.setVelocityPIDFCoefficients(drive.shooterP, drive.shooterI, drive.shooterD, drive.shooterF); // effective values from testing
-            shooterMotorEx.setVelocity(targetVel);
+            //This should allow us to shoot at a lower velocity to better hit PowerShots
+            //Defaults to regular targetVel, and if "a" is pressed allows for powerVel to take over
+            if (!gamepad1.a)
+                shooterMotorEx.setVelocity(targetVel);
+            else
+                shooterMotorEx.setVelocity(powerVel);
+
             telemetry.clear();
             telemetry.addLine()
                     .addData("Velocity of Shooter Motor", shooterMotorEx.getVelocity());
@@ -308,6 +321,7 @@
         static final double MIN_POS     =  0.05;     // Minimum rotational position
         double gripPos = MAX_POS;
         boolean gripWobble = false;
+
         private void loopWobble()
         {
             wobbleArmMotor.setPower(-(gamepad2.left_stick_y));

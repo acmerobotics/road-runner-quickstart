@@ -71,13 +71,13 @@ public class Auton_BlueWall_PowerPark extends LinearOpMode {
         //Line up for first PowerShot
         drive.followTrajectory(trajPower1);
         drive.spinIntake();
-        drive.shootRings(1, targetVel);
+        drive.shootRings(1, targetVel, true);
         //Line up for second PowerShot
         drive.followTrajectory(trajPower2);
-        drive.shootRings(1, targetVel);
+        drive.shootRings(1, targetVel, true);
         //Line up for third PowerShot
         drive.followTrajectory(trajPower3);
-        drive.shootRings(1, targetVel);
+        drive.shootRings(1, targetVel, false);
         //Park
         drive.followTrajectory(trajParkA);
         drive.followTrajectory(trajParkB);
