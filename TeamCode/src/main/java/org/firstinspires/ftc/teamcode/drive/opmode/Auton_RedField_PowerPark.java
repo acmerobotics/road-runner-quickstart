@@ -27,11 +27,11 @@ public class Auton_RedField_PowerPark extends LinearOpMode {
     //shooterVelocity
     int powerVel = (int)drive.powerVel;
 
-    Vector2d wallOffPosition = new Vector2d();
-    Vector2d power1Position = new Vector2d(-63, 29);
-    Vector2d power2Position = new Vector2d(-63, 23);
-    Vector2d power3Position = new Vector2d(-63, 17);
-    Vector2d parkPosition = new Vector2d(12, 12);
+    Vector2d wallOffPosition = new Vector2d(-58, -15);
+    Vector2d power1Position = new Vector2d(-58, -7);
+    Vector2d power2Position = new Vector2d(-58, -1);
+    Vector2d power3Position = new Vector2d(-58, 5);
+    Vector2d parkPosition = new Vector2d(12, -12);
 
     Pose2d power1Pose = new Pose2d(power1Position.getX(), power1Position.getY(), Math.toRadians(5));
     Pose2d parkPose = new Pose2d(parkPosition.getX(), parkPosition.getY(), Math.toRadians(0));

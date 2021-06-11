@@ -24,12 +24,13 @@ public class Auton_BlueField_PowerPark extends LinearOpMode {
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
     long waitOffset = 1000;
-    int targetVel = 2300;
+    //shooterVelocity
+    int powerVel = (int)drive.powerVel;
 
     Vector2d wallOffPosition = new Vector2d(-58, 21);
-    Vector2d power1Position = new Vector2d(-63, 29);
-    Vector2d power2Position = new Vector2d(-63, 23);
-    Vector2d power3Position = new Vector2d(-63, 17);
+    Vector2d power1Position = new Vector2d(-58, 29);
+    Vector2d power2Position = new Vector2d(-58, 20);
+    Vector2d power3Position = new Vector2d(-58, 17);
     Vector2d parkPosition = new Vector2d(12, 12);
 
     Pose2d power1Pose = new Pose2d(power1Position.getX(), power1Position.getY(), Math.toRadians(5));
@@ -39,7 +40,7 @@ public class Auton_BlueField_PowerPark extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
         //Start Position
-        Pose2d startPose = new Pose2d(-63, 48, Math.toRadians(0));
+        Pose2d startPose = new Pose2d(-63, 24, Math.toRadians(0));
         drive.setPoseEstimate(startPose);
 
         //Trajectories
@@ -49,7 +50,7 @@ public class Auton_BlueField_PowerPark extends LinearOpMode {
                 .build();
 
         trajPower1 = drive.trajectoryBuilder(wallOffset.end())
-                .strafeTo(power1Position)
+                .lineToSplineHeading(power1Pose)
                 .build();
 
         trajPower2 = drive.trajectoryBuilder(trajPower1.end())
@@ -60,8 +61,8 @@ public class Auton_BlueField_PowerPark extends LinearOpMode {
                 .strafeTo(power3Position)
                 .build();
 
-        trajParkA = drive.trajectoryBuilder(trajShoot.end())
-                .strafeTo(new Vector2d(trajPower3.end().getX(), parkPosition.getY()))
+        trajParkA = drive.trajectoryBuilder(trajPower3.end())
+                .lineToSplineHeading(new Pose2d(trajPower3.end().getX(), parkPose.getY(), parkPose.getHeading()))
                 .build();
 
         trajParkB = drive.trajectoryBuilder(trajParkA.end())
@@ -75,17 +76,22 @@ public class Auton_BlueField_PowerPark extends LinearOpMode {
         //Actual Movement
         drive.moveTo("Away");
         sleep(waitOffset);
-        drive.prepShooter(targetVel);
+        drive.prepShooter(powerVel);
+        drive.spinIntake();
+        //Move off the wall
+        drive.followTrajectory(wallOffset);
         //Line up for first PowerShot
         drive.followTrajectory(trajPower1);
-        drive.spinIntake();
-        drive.shootRings(1, targetVel, true);
+        drive.shootRings(1, powerVel, true);
+        sleep(100);
         //Line up for second PowerShot
         drive.followTrajectory(trajPower2);
-        drive.shootRings(1, targetVel, true);
+        sleep(100);
+        drive.shootRings(1, powerVel, true);
         //Line up for third PowerShot
         drive.followTrajectory(trajPower3);
-        drive.shootRings(1, targetVel, false);
+        sleep(100);
+        drive.shootRings(1, powerVel, false);
         //Park
         drive.followTrajectory(trajParkA);
         drive.followTrajectory(trajParkB);

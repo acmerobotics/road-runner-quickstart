@@ -276,7 +276,6 @@
             {
                 intakePower = 0.0;
                 targetVel = drive.targetVel;
-                powerVel = drive.powerVel;
 
                 telemetry.addData("Intake", "OFF");
                 telemetry.addData("Shooter", "ON");
@@ -285,6 +284,13 @@
 //Loader Arm Logic
             //Default loader arm position
             loaderPos = 0.0;
+
+            //This should allow us to shoot at a lower velocity to better hit PowerShots
+            //Defaults to regular targetVel, and if "a" is pressed allows for powerVel to take over
+            if (!gamepad1.a)
+                shooterMotorEx.setVelocity(targetVel);
+            else
+                shooterMotorEx.setVelocity(powerVel);
 
             //Detects if shooter is at speed
             if (shooterMotorEx.getVelocity() >= this.targetVel)
@@ -301,12 +307,6 @@
 //Sets Power and Position
             //Sets the intake motor power
             intakeMotor.setPower(intakePower);
-            //This should allow us to shoot at a lower velocity to better hit PowerShots
-            //Defaults to regular targetVel, and if "a" is pressed allows for powerVel to take over
-            if (!gamepad1.a)
-                shooterMotorEx.setVelocity(targetVel);
-            else
-                shooterMotorEx.setVelocity(powerVel);
 
             telemetry.clear();
             telemetry.addLine()
