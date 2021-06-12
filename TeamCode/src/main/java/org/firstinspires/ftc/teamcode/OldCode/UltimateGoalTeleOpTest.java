@@ -68,9 +68,10 @@
          */
         RobotDrive               mDrive;
 
-        double targetVel;
+        double targetVel = 2500;
+        double slowVel = 2280;
 
-        int tolerance = 100;
+        int tolerance = 80;
 
         boolean atSpeed = false;
 
@@ -215,40 +216,59 @@
         //creates variable that will set the intake motor power
         double intakePower;
         //creates variable that will set the shooter motor power
-        double shooterPower;
+        double shooterVel;
         //creates variable that will assign loader arm position
         double loaderPos;
+
+        boolean slowMode = false;
+        boolean slowWasPressed = false;
         
         private void loopIntakeShooter()
         {
             
 //Intake and Shooter Logic
+
+            if (gamepad1.a && slowMode && !slowWasPressed) {
+                slowMode = false;
+                slowWasPressed = true;
+
+            }
+            else if (gamepad1.a && !slowMode && !slowWasPressed) {
+                slowMode = true;
+                slowWasPressed = true;
+            }
+            else if (!gamepad1.a && slowWasPressed)
+                slowWasPressed = false;
+
             //intake on and Shooter off by default
             intakePower = 1.0;
-            targetVel = 0.0;
+            shooterVel = 0;
             //Reverses intake for decongesting
             if(gamepad1.left_trigger==1)
             {
                 intakePower = -1.0;
-                
+
                 telemetry.addData("Intake", "REVERSE");
             }
             //Turns off intake and enables the Shooter if button pressed
             else if(gamepad1.right_trigger==1)
             {
                 intakePower = 0.0;
-                targetVel = 2500;
-                
+                if (slowMode)
+                    shooterVel = slowVel;
+                else
+                    shooterVel = targetVel;
+
                 telemetry.addData("Intake", "OFF");
                 telemetry.addData("Shooter", "ON");
             }
-            
+
 //Loader Arm Logic
             //Default loader arm position
             loaderPos = 0.0;
 
             //Detects if shooter is at speed
-            atSpeed = (mShooterMotorEx.getVelocity() < (targetVel + tolerance)) && (mShooterMotorEx.getVelocity() > (targetVel - tolerance));
+            atSpeed = (mShooterMotorEx.getVelocity() < (shooterVel + tolerance)) && (mShooterMotorEx.getVelocity() > (shooterVel - tolerance));
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
             if (gamepad1.b && gamepad1.right_trigger==1 && atSpeed)
@@ -266,7 +286,7 @@
             //Sets the shooter motor power
             // mShooterMotorEx.setPower(.7);
 //            mShooterMotorEx.setVelocity(1240);          //during Aledo qual, this caused the rings to skim the bottom of the goal most shots
-            mShooterMotorEx.setVelocity(targetVel);
+            mShooterMotorEx.setVelocity(shooterVel);
             //mShooterMotorEx.setPower(shooterPower);
                 /*
                 if (gamepad2.a && velocity > 999){

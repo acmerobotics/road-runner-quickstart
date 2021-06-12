@@ -127,7 +127,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public Servo shooterServo;
     public double loaderPos;
-    double tolerance = 120;
+    double tolerance = 80;
 
     public DcMotor intakeMotor;
 

@@ -76,7 +76,7 @@
 
         double targetVel;
 
-        double powerVel;
+        double shooterVel;
 
         int tolerance = 120;
 
@@ -98,6 +98,8 @@
         private DcMotor wobbleArmMotor;
 
         private Servo wobbleArmServo;
+
+        boolean slowMode;
 
         @Override
         public void init()
@@ -166,9 +168,7 @@
             loopDriveV2();
 
             // Intake and Shooter:
-            //This allows us to stop the intake and shooter by pressing x on gamepad1
-            if(!gamepad1.x)
-                loopIntakeShooter();
+            loopIntakeShooter();
 
             // Wobble Arm and Servo:
             loopWobble();
@@ -256,14 +256,36 @@
         //creates variable that will assign loader arm position
         double loaderPos;
 
+        boolean slowWasPressed = false;
+
+        static final double MAX_POS     =  0.5;     // Maximum rotational position
         private void loopIntakeShooter()
         {
 
 //Intake and Shooter Logic
+
+            //This should allow us to shoot at a lower velocity to better hit PowerShots
+            //Defaults to regular targetVel, and if "a" is pressed allows for powerVel to take over
+
+            //gamepad.a press logic
+
+
+            //slowMode logic
+            if (gamepad1.a && slowMode && !slowWasPressed) {
+                slowMode = false;
+                slowWasPressed = true;
+
+            }
+            else if (gamepad1.a && !slowMode && !slowWasPressed) {
+                slowMode = true;
+                slowWasPressed = true;
+            }
+            else if (!gamepad1.a && slowWasPressed)
+                slowWasPressed = false;
+
             //intake on and Shooter off by default
             intakePower = 1.0;
-            targetVel = 0.0;
-            powerVel = 0.0;
+            shooterVel = 0.0;
             //Reverses intake for decongestion
             if(gamepad1.left_trigger==1)
             {
@@ -275,7 +297,11 @@
             else if(gamepad1.right_trigger==1)
             {
                 intakePower = 0.0;
-                targetVel = drive.targetVel;
+                //Shooter Speed logic
+                if (slowMode)
+                    shooterVel = drive.powerVel;
+                else
+                    shooterVel = drive.targetVel;
 
                 telemetry.addData("Intake", "OFF");
                 telemetry.addData("Shooter", "ON");
@@ -285,17 +311,10 @@
             //Default loader arm position
             loaderPos = 0.0;
 
-            //This should allow us to shoot at a lower velocity to better hit PowerShots
-            //Defaults to regular targetVel, and if "a" is pressed allows for powerVel to take over
-            if (!gamepad1.a)
-                shooterMotorEx.setVelocity(targetVel);
-            else
-                shooterMotorEx.setVelocity(powerVel);
-
             //Detects if shooter is at speed
-            if (shooterMotorEx.getVelocity() >= this.targetVel)
+            if (shooterMotorEx.getVelocity() >= shooterVel)
                 atSpeed = true;
-            if (shooterMotorEx.getVelocity() < (this.targetVel - tolerance))
+            if (shooterMotorEx.getVelocity() < (shooterVel - tolerance))
                 atSpeed = false;
 
             //When button held and at speed, arm loads ring (speed drops with fire, resetting arm. when it speeds up again, arm can go back, making it automatic)
@@ -308,6 +327,9 @@
             //Sets the intake motor power
             intakeMotor.setPower(intakePower);
 
+            shooterMotorEx.setVelocityPIDFCoefficients(50, 0,20, 12.73);
+            shooterMotorEx.setVelocity(shooterVel);
+
             telemetry.clear();
             telemetry.addLine()
                     .addData("Velocity of Shooter Motor", shooterMotorEx.getVelocity());
@@ -317,23 +339,28 @@
             //Sets the loader arm servo position
             shooterServo.setPosition(loaderPos);
         }
-        static final double MAX_POS     =  0.5;     // Maximum rotational position
         static final double MIN_POS     =  0.05;     // Minimum rotational position
         double gripPos = MAX_POS;
         boolean gripWobble = false;
-
+        boolean wasPressed = false;
         private void loopWobble()
         {
             wobbleArmMotor.setPower(-(gamepad2.left_stick_y));
-            if(!gripWobble && gamepad2.a)
+            if(!gripWobble && !wasPressed && gamepad2.a)
             {
                 gripPos = MIN_POS; //closing wobble grip
                 gripWobble = true;
+                wasPressed = true;
             }
-            else if (gripWobble && gamepad2.a)
+            else if (gripWobble && !wasPressed && gamepad2.a)
             {
                 gripPos = MAX_POS; //open wobble grip
                 gripWobble = false;
+                wasPressed = true;
+            }
+            else if (wasPressed && !gamepad2.a)
+            {
+                wasPressed = false;
             }
             wobbleArmServo.setPosition(gripPos);
         }

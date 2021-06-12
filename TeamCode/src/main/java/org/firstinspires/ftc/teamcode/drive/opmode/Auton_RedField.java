@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Autonomous(group = "drive")
-public class Auton_Red_Field extends LinearOpMode {
+public class Auton_RedField extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private double slowerVelocity = 8;
     String ringsDetected;
@@ -107,7 +107,7 @@ if (ringsDetected == null)
         //Init trajectories
         //Shooting Position
         traj0 = drive.trajectoryBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-10, -24, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-17, -24, Math.toRadians(0)))
                 .build();
 
 switch (ringsDetected) {
@@ -152,16 +152,16 @@ switch (ringsDetected) {
 
         trajB1 = drive.trajectoryBuilder(traj0.end())
 //                .lineTo(new Vector2d(-24, 48))
-                .lineTo(new Vector2d(36, -53))
+                .lineTo(new Vector2d(36, -56))
                 .build();
 
         trajB2 = drive.trajectoryBuilder(trajB1.end())
-                .strafeTo(new Vector2d(-25, -53))
+                .strafeTo(new Vector2d(-31, -56))
                 .build();
 
         trajB3 = drive.trajectoryBuilder(trajB2.end())
                 .lineTo(
-                        new Vector2d(-27,-53),
+                        new Vector2d(-33,-56),
                         SampleMecanumDrive.getVelocityConstraint(slowerVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
