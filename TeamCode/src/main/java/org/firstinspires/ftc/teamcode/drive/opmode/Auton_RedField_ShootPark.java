@@ -23,7 +23,7 @@ public class Auton_RedField_ShootPark extends LinearOpMode {
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
     long waitOffset = 1000;
-    int targetVel = 2300;
+    int targetVel = 2470;
 
     Vector2d shootPosition = new Vector2d(-63, -13);
     Vector2d parkPosition = new Vector2d(12, -12);

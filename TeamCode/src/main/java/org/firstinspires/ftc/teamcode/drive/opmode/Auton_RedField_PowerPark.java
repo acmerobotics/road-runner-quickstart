@@ -23,13 +23,13 @@ public class Auton_RedField_PowerPark extends LinearOpMode {
     Trajectory wallOffset, trajPower1, trajPower2, trajPower3, trajShoot, trajParkA, trajParkB;
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
-    long waitOffset = 1000;
+    long waitOffset = 10000;
     //shooterVelocity
     int powerVel = (int)drive.powerVel;
 
     Vector2d wallOffPosition = new Vector2d(-58, -15);
-    Vector2d power1Position = new Vector2d(-58, -7);
-    Vector2d power2Position = new Vector2d(-58, -1);
+    Vector2d power1Position = new Vector2d(-58, -11);
+    Vector2d power2Position = new Vector2d(-58, -4);
     Vector2d power3Position = new Vector2d(-58, 5);
     Vector2d parkPosition = new Vector2d(12, -12);
 
@@ -83,11 +83,14 @@ public class Auton_RedField_PowerPark extends LinearOpMode {
         //Line up for first PowerShot
         drive.followTrajectory(trajPower1);
         drive.shootRings(1, powerVel, true);
+        sleep(100);
         //Line up for second PowerShot
         drive.followTrajectory(trajPower2);
+        sleep(100);
         drive.shootRings(1, powerVel, true);
         //Line up for third PowerShot
         drive.followTrajectory(trajPower3);
+        sleep(100);
         drive.shootRings(1, powerVel, false);
         //Park
         drive.followTrajectory(trajParkA);

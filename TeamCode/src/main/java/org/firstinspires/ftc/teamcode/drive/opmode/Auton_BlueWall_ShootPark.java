@@ -24,7 +24,7 @@ public class Auton_BlueWall_ShootPark extends LinearOpMode {
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
     long waitOffset = 1000;
-    int targetVel = 2300;
+    int targetVel = 2500;
 
     Vector2d shootPosition = new Vector2d(-63, 59);
     Vector2d parkPosition = new Vector2d(12, 12);

@@ -16,11 +16,12 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 
 @Autonomous(group = "drive")
-public class Auton_BlueWall_PowerPark extends LinearOpMode {
+public class Auton_BlueWall_Power extends LinearOpMode {
     //We have an issue with using the same auton for both sides. The start positions are different, and that could lead to potential issues.
     private Servo wobbleDropper;
     SampleMecanumDrive drive;
-    Trajectory wallOffset, trajPower1, trajPower2, trajPower3, trajShoot, trajParkA, trajParkB;
+    Trajectory wallOffset, trajPower1, trajPower2, trajPower3;
+//            trajShoot, trajParkA, trajParkB;
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
     long waitOffset = 10000;
@@ -31,10 +32,10 @@ public class Auton_BlueWall_PowerPark extends LinearOpMode {
     Vector2d power1Position = new Vector2d(-58, 29);
     Vector2d power2Position = new Vector2d(-58, 20);
     Vector2d power3Position = new Vector2d(-58, 17);
-    Vector2d parkPosition = new Vector2d(12, 12);
+//    Vector2d parkPosition = new Vector2d(12, 12);
 
     Pose2d power1Pose = new Pose2d(power1Position.getX(), power1Position.getY(), Math.toRadians(5));
-    Pose2d parkPose = new Pose2d(parkPosition.getX(), parkPosition.getY(), Math.toRadians(0));
+//    Pose2d parkPose = new Pose2d(parkPosition.getX(), parkPosition.getY(), Math.toRadians(0));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -61,13 +62,13 @@ public class Auton_BlueWall_PowerPark extends LinearOpMode {
                 .strafeTo(power3Position)
                 .build();
 
-        trajParkA = drive.trajectoryBuilder(trajPower3.end())
-                .lineToSplineHeading(new Pose2d(trajPower3.end().getX(), parkPose.getY(), parkPose.getHeading()))
-                .build();
-
-        trajParkB = drive.trajectoryBuilder(trajParkA.end())
-                .strafeTo(new Vector2d(parkPosition.getX(), parkPosition.getY()))
-                .build();
+//        trajParkA = drive.trajectoryBuilder(trajPower3.end())
+//                .lineToSplineHeading(new Pose2d(trajPower3.end().getX(), parkPose.getY(), parkPose.getHeading()))
+//                .build();
+//
+//        trajParkB = drive.trajectoryBuilder(trajParkA.end())
+//                .strafeTo(new Vector2d(parkPosition.getX(), parkPosition.getY()))
+//                .build();
 
         waitForStart();
 
@@ -93,7 +94,7 @@ public class Auton_BlueWall_PowerPark extends LinearOpMode {
         sleep(100);
         drive.shootRings(1, powerVel, false);
         //Park
-        drive.followTrajectory(trajParkA);
-        drive.followTrajectory(trajParkB);
+//        drive.followTrajectory(trajParkA);
+//        drive.followTrajectory(trajParkB);
     }
 }

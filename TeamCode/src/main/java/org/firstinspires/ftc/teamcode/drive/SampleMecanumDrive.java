@@ -115,7 +115,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public DcMotorEx shooterMotor;
     public static double targetVel = 2500;
-    public static double powerVel = 2300;
+    public static double powerVel = 2280;
 //    targetVel = 1240;
 //    During the Aledo qualifier, this caused the rings to skim the bottom of the goal most shots.
     boolean atSpeed;

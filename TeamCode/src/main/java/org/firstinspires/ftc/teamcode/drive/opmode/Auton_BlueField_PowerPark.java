@@ -23,7 +23,7 @@ public class Auton_BlueField_PowerPark extends LinearOpMode {
     Trajectory wallOffset, trajPower1, trajPower2, trajPower3, trajShoot, trajParkA, trajParkB;
     //milliseconds of time to offset instructions
     // 1 second = 1000 milliseconds
-    long waitOffset = 1000;
+    long waitOffset = 10000;
     //shooterVelocity
     int powerVel = (int)drive.powerVel;
 
