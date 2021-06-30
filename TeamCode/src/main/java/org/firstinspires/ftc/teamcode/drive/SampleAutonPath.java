@@ -24,19 +24,27 @@ public class SampleAutonPath extends LinearOpMode {
                 .splineTo(new Vector2d(-12, -36), 0)
                 .build();
 
-        Trajectory traj2 = drive.trajectoryBuilder(traj.end())
+        Trajectory traj0ring = drive.trajectoryBuilder(traj.end())
                 .splineTo(new Vector2d(6 , -40),  Math.toRadians(90))
                 .build();
-
-        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .splineTo(new Vector2d(-12 , -36), Math.toRadians(45))
-                .splineTo(new Vector2d(-39 , -12),  Math.toRadians(0))
+        
+        Trajectory traj1ring = drive.trajectoryBuilder(traj.end())
+                .splineTo(new Vector2d(6 , -40),  Math.toRadians(180))
                 .build();
+        
+        Trajectory traj4ring = drive.trajectoryBuilder(traj.end())
+                .splineTo(new Vector2d(30 , -40),  Math.toRadians(90))
+                .build();
+        
         waitForStart();
 
         if (isStopRequested()) return;
         drive.followTrajectory(traj);
-        drive.followTrajectory(traj2);
-        drive.followTrajectory(traj3);
+        //0 ring
+        drive.followTrajectory(traj0ring);
+        //1 ring
+        drive.followTrajectory(traj1ring);
+        //4 ring
+        drive.followTrajectory(traj4ring);
     }
 }
