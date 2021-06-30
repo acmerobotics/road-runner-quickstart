@@ -580,12 +580,16 @@ public class TrajectorySequenceBuilder {
 
             if (segment instanceof WaitSegment) {
                 List<TrajectoryMarker> newMarkers = new ArrayList<>(segment.getMarkers());
+
+                newMarkers.addAll(sequenceSegments.get(segmentIndex).getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
 
                 WaitSegment thisSegment = (WaitSegment) segment;
                 newSegment = new WaitSegment(thisSegment.getStartPose(), thisSegment.getDuration(), newMarkers);
             } else if (segment instanceof TurnSegment) {
                 List<TrajectoryMarker> newMarkers = new ArrayList<>(segment.getMarkers());
+
+                newMarkers.addAll(sequenceSegments.get(segmentIndex).getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
 
                 TurnSegment thisSegment = (TurnSegment) segment;
