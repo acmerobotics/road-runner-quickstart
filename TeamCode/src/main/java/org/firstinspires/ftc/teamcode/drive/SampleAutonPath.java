@@ -29,8 +29,8 @@ public class SampleAutonPath extends LinearOpMode {
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .splineTo(new Vector2d(-12 , -36), 0)
-                .splineTo(new Vector2d(-39 , -12),  0)
+                .splineTo(new Vector2d(-12 , -36), Math.toRadians(45))
+                .splineTo(new Vector2d(-39 , -12),  Math.toRadians(0))
                 .build();
         waitForStart();
 
