@@ -1,42 +1,35 @@
-package org.firstinspires.ftc.teamcode.drive.Hardware;
-import java.lang.*;
-
+package org.firstinspires.ftc.teamcode.drive.SampleAutonPaths;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-public class Robot {
+public class HardwareFile {
     private LinearOpMode linearOpMode;
-    public DcMotor intakeR, intakeL;
+    public DcMotor intakeR, intakeL, shooter;
 
     public CRServo in1, in2;
     public Servo arm1, arm2;
-    public Servo grabber, grabber2;
+    public Servo grabber, grabber2, slapper;
     public Servo rightIntakeHolder, leftIntakeHolder;
     HardwareMap map;
     public SampleMecanumDrive driveTrain;
     public static Pose2d robotPose = new Pose2d();
 
-    public Robot(HardwareMap imported, double x, double y, double robotOrientation) {
-        robotPose = new Pose2d(x - 70.4725, y - 70.4725, robotOrientation);
+    public HardwareFile(HardwareMap imported) {
+        //robotPose = new Pose2d(x - 70.4725, y - 70.4725, robotOrientation);
         construct(imported);
     }
     private void construct(HardwareMap imported){
         map = imported;
         intakeR = map.get(DcMotor.class, "intakeR");
         intakeL = map.get(DcMotor.class, "intakeL");
+        shooter = map.get(DcMotor.class, "fw");
         in1 = map.crservo.get("in1");
         in2 = map.crservo.get("in2");
         in1.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -45,6 +38,7 @@ public class Robot {
         arm2 = map.get(Servo.class, "wobbleArm2");
         grabber = map.get(Servo.class, "wobbleGrabber1");
         grabber2 = map.get(Servo.class, "wobbleGrabber2");
+        slapper = map.get(Servo.class, "mag");
         leftIntakeHolder = map.get(Servo.class,"wallL");
         rightIntakeHolder = map.get(Servo.class,"wallR");
         intakeL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -76,6 +70,14 @@ public class Robot {
         intakeR.setPower(-intakeSpeed);
         in1.setPower(intakeSpeed);
         in2.setPower(intakeSpeed);
+    }
+
+    public void shooter(double shooterpower){
+        shooter.setPower(-shooterpower);
+    }
+    public void pusher(){
+        slapper.setPosition(0.35);
+        slapper.setPosition(0.65);
     }
 
 }
