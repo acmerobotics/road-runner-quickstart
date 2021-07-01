@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * This is an example of a more complex path to really test the tuning.
  */
 @Autonomous(group = "drive")
-public class SampleAutonPath extends LinearOpMode {
+public class SampleAutonPathFar0 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -27,24 +27,20 @@ public class SampleAutonPath extends LinearOpMode {
         Trajectory traj0ring = drive.trajectoryBuilder(traj.end())
                 .splineTo(new Vector2d(6 , -40),  Math.toRadians(90))
                 .build();
-        
-        Trajectory traj1ring = drive.trajectoryBuilder(traj.end())
+
+       /* Trajectory traj1ring = drive.trajectoryBuilder(traj.end())
                 .splineTo(new Vector2d(6 , -40),  Math.toRadians(180))
                 .build();
-        
-        Trajectory traj4ring = drive.trajectoryBuilder(traj.end())
-                .splineTo(new Vector2d(30 , -40),  Math.toRadians(90))
+*/
+       /* Trajectory traj4ring = drive.trajectoryBuilder(traj.end())
+                .splineTo(new Vector2d(42 , -40),  Math.toRadians(90))
                 .build();
-        
+*/
         waitForStart();
 
         if (isStopRequested()) return;
         drive.followTrajectory(traj);
         //0 ring
         drive.followTrajectory(traj0ring);
-        //1 ring
-        drive.followTrajectory(traj1ring);
-        //4 ring
-        drive.followTrajectory(traj4ring);
     }
 }
