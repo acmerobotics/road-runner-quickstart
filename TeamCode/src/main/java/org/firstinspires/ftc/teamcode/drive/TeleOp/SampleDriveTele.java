@@ -11,9 +11,7 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
     public void runOpMode() throws InterruptedException {
         robot = new HardwareFile(hardwareMap);
         waitForStart();
-        while(opModeIsActive()) {
-         run();
-        }
+        run();
     }
 
     double lxMult = 1;
