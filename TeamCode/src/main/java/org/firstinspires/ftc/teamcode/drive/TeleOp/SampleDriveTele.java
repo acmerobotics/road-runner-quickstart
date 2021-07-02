@@ -1,34 +1,49 @@
-package org.firstinspires.ftc.teamcode.drive.SampleAutonPaths;
+package org.firstinspires.ftc.teamcode.drive.TeleOp;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.drive.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Blinker;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Gyroscope;
+import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name="TwoDrivers", group="Linear Opmode")
-public class SampleDriveTele extends LinearOpMode implements Runnable{
-    HardwareFile robot;
+public class MainTele extends LinearOpMode implements Runnable{
+    Robot robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new HardwareFile(hardwareMap);
+        robot = new Robot(hardwareMap);
         waitForStart();
-        run();
+        while (opModeIsActive()) {
+            run();
+        }
     }
 
     double lxMult = 1;
     double lyMult = 1;
     double rxMult = 1;
     public void run() {
-        while(opModeIsActive()) {
-            robot.driveTrain.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y * lyMult,
-                            -gamepad1.left_stick_x * lxMult,
-                            -gamepad1.right_stick_x * 0.92 * rxMult
-                    )
-            );
-            setMultiplier();
-            robot.driveTrain.update();
-        }
+        robot.driveTrain.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad1.left_stick_y * lyMult,
+                        -gamepad1.left_stick_x * lxMult,
+                        -gamepad1.right_stick_x * 0.92 * rxMult
+                )
+        );
+        setMultiplier();
+        robot.driveTrain.update();
     }
 
     private void setMultiplier() {
