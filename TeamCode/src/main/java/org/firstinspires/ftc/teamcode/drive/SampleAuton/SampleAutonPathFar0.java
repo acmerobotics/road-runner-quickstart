@@ -16,31 +16,57 @@ public class SampleAutonPathFar0 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-        Pose2d startPose = new Pose2d(-63, -48, 0);
+        drive2 = new HardwareFile(hardwareMap);
+        Pose2d startPose = new Pose2d(-63, 48, 0);
 
         drive.setPoseEstimate(startPose);
         Trajectory traj = drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-12, -36), 0)
+                .splineTo(new Vector2d(-12, 36), 0)
                 .build();
 
         Trajectory traj0ring = drive.trajectoryBuilder(traj.end())
-                .splineTo(new Vector2d(6 , -40),  Math.toRadians(90))
+                .splineTo(new Vector2d(12 , 40),  Math.toRadians(-90))
                 .build();
 
        /* Trajectory traj1ring = drive.trajectoryBuilder(traj.end())
                 .splineTo(new Vector2d(6 , -40),  Math.toRadians(180))
                 .build();
 */
-       /* Trajectory traj4ring = drive.trajectoryBuilder(traj.end())
-                .splineTo(new Vector2d(42 , -40),  Math.toRadians(90))
+        Trajectory trajline = drive.trajectoryBuilder(traj0ring.end())
+                .splineTo(new Vector2d(0 , 24),  Math.toRadians(90))
                 .build();
-*/
+
         waitForStart();
 
         if (isStopRequested()) return;
         drive.followTrajectory(traj);
+        shooter();
         //0 ring
         drive.followTrajectory(traj0ring);
+        drive2.magdown();
+        wobbledrop();
+        drive.followTrajectory(trajline);
+    }
+    public static  HardwareFile drive2;
+    public void wobbledrop(){
+        drive2.grab();
+        sleep(100);
+        drive2.wobbleArmDown();
+        sleep(1000);
+        drive2.release();
+        sleep(100);
+    }
+    public void shooter(){
+        drive2.shooter(1);
+        sleep(2000);
+        for(int i=0;i<=3;++i){
+            drive2.magup();
+            drive2.magup();
+            drive2.slapper.setPosition(0);
+            sleep(100);
+            drive2.slapper.setPosition(0.5);
+            sleep(1000);
+        }
+        drive2.shooter(0);
     }
 }
