@@ -1,91 +1,51 @@
 package org.firstinspires.ftc.teamcode.drive.SampleAutonPaths;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+//import org.firstinspires.ftc.teamcode.drive.Hardware.Robot;
+@TeleOp(name="TwoDrivers", group="Linear Opmode")
+public class SampleDriveTele extends LinearOpMode implements Runnable{
+    HardwareFile robot;
 
-public class HardwareFile {
-    private LinearOpMode linearOpMode;
-    public DcMotor intakeR, intakeL, shooter;
-
-    public CRServo in1, in2;
-    public Servo arm1, arm2;
-    public Servo grabber, grabber2, slapper, tilter;
-    public Servo rightIntakeHolder, leftIntakeHolder;
-    HardwareMap map;
-    public SampleMecanumDrive driveTrain;
-    public static Pose2d robotPose = new Pose2d();
-
-    public HardwareFile(HardwareMap imported) {
-        //robotPose = new Pose2d(x - 70.4725, y - 70.4725, robotOrientation);
-        construct(imported);
-    }
-    private void construct(HardwareMap imported){
-        map = imported;
-        intakeR = map.get(DcMotor.class, "intakeR");
-        intakeL = map.get(DcMotor.class, "intakeL");
-        shooter = map.get(DcMotor.class, "fw");
-        in1 = map.crservo.get("in1");
-        in2 = map.crservo.get("in2");
-        in1.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        arm1 = map.get(Servo.class, "wobbleArm1");
-        arm2 = map.get(Servo.class, "wobbleArm2");
-        grabber = map.get(Servo.class, "wobbleGrabber1");
-        grabber2 = map.get(Servo.class, "wobbleGrabber2");
-        slapper = map.get(Servo.class, "mag");
-        tilter = map.get(Servo.class, "tilt");
-        leftIntakeHolder = map.get(Servo.class,"wallL");
-        rightIntakeHolder = map.get(Servo.class,"wallR");
-        intakeL.setDirection(DcMotorSimple.Direction.REVERSE);
-
-    }
-    public void wobbleArmUp() {
-        arm1.setPosition(0.1);
-        arm2.setPosition (0.88);
-    }
-    public void wobbleArmDown() {
-        arm1.setPosition(0.93);
-        arm2.setPosition (0.07);
-
-    }
-    public void wobbleArmVertical(){
-        arm1.setPosition(0.5);
-        arm2.setPosition (0.5);
-    }
-    public void grab(){
-        grabber.setPosition(0.13);
-        grabber2.setPosition(0.83);
-    }
-    public void release(){
-        grabber.setPosition(0.63);
-        grabber2.setPosition(0.29);
-    }
-    public void intake(double intakeSpeed){
-        intakeL.setPower(-intakeSpeed);
-        intakeR.setPower(-intakeSpeed);
-        in1.setPower(intakeSpeed);
-        in2.setPower(intakeSpeed);
+    @Override
+    public void runOpMode() throws InterruptedException {
+        robot = new HardwareFile(hardwareMap);
+        waitForStart();
+        while (opModeIsActive()) {
+            run();
+        }
     }
 
-    public void shooter(double shooterpower){
-        shooter.setPower(shooterpower);
+    double lxMult = 1;
+    double lyMult = 1;
+    double rxMult = 1;
+    public void run() {
+        robot.driveTrain.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad1.left_stick_y * lyMult,
+                        -gamepad1.left_stick_x * lxMult,
+                        -gamepad1.right_stick_x * 0.92 * rxMult
+                )
+        );
+        setMultiplier();
+        robot.driveTrain.update();
     }
-    public void pusher(){
-        slapper.setPosition(0.35);
-        slapper.setPosition(0.65);
-    }
-    public void magup(){
-        tilter.setPosition(1);
-    }
-    public void magdown(){
-        tilter.setPosition(0.5);
 
+    private void setMultiplier() {
+        if (gamepad1.left_trigger >= 0.3) {
+            lxMult = 0.5;
+            rxMult = 0.5;
+            lyMult = 0.5;
+        } else {
+            lxMult = 1;
+            rxMult = 1;
+            lyMult = 1;
+        }
+        if (gamepad1.right_bumper) {
+            lxMult = -lxMult;
+            lyMult = -lyMult;
+        }
     }
-
 }
