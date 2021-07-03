@@ -4,14 +4,17 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
 //import org.firstinspires.ftc.teamcode.drive.Hardware.Robot;
 @TeleOp(name="TwoDrivers", group="Linear Opmode")
 public class SampleDriveTele extends LinearOpMode implements Runnable{
-    HardwareFile robot;
+    public static HardwareFile robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new HardwareFile(hardwareMap);
+        robot.driveTrain=new SampleMecanumDrive(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
             run();
