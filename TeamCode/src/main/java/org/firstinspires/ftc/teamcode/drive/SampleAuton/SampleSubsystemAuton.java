@@ -14,12 +14,9 @@ public class SampleSubsystemAuton extends LinearOpMode {
 
         waitForStart();
         if (isStopRequested()) return;
-        drive.grab();
-        sleep(100);
-        drive.wobbleArmDown();
-        sleep(1000);
-        drive.release();
-        sleep(100);
+        drive.leftIntakeHolder.setPosition(1);
+        drive.rightIntakeHolder.setPosition(0);
+        sleep(2000);
     }
 
 }
