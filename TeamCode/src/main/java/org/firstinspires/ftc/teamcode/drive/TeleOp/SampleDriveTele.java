@@ -33,6 +33,44 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
                 )
         );
         setMultiplier();
+        if(gamepad2.right_bumper){
+            robot.intakeL.setPower(-1);
+            robot.intakeR.setPower(-1);
+            robot.in1.setPower(1);
+            robot.in2.setPower(1);
+        }else{
+            robot.intakeL.setPower(0);
+            robot.intakeR.setPower(0);
+            robot.in1.setPower(0);
+            robot.in2.setPower(0);
+        }
+        if(gamepad2.y){
+            robot.arm1.setPosition(0.93);
+            robot.arm2.setPosition (0.07);
+            sleep(500);
+            robot.grabber.setPosition(0.63);
+            robot.grabber2.setPosition(0.29);
+        }else if(gamepad2.a){
+            robot.grabber.setPosition(0.13);
+            robot.grabber2.setPosition(0.83);
+            sleep(500);
+            robot. arm1.setPosition(0.1);
+            robot.arm2.setPosition (0.88);
+        }
+        if(gamepad2.left_bumper){
+            robot.shooter.setPower(1);
+            sleep(500);
+            for(int i=0;i<=3;++i){
+                robot.magup();
+                robot.magup();
+                robot.slapper.setPosition(0.35);
+                sleep(100);
+                robot.slapper.setPosition(0.5);
+                sleep(1500);
+            }
+            robot.shooter.setPower(0);
+            robot.magdown();
+        }
         robot.driveTrain.update();
     }
 
