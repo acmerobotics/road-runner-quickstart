@@ -18,25 +18,32 @@ public class SampleAutonPathFar1 extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive2 = new HardwareFile(hardwareMap);
 
-        Pose2d startPose = new Pose2d(-63, 48, 0);
+        Pose2d startPose = new Pose2d(-63, -48, 0);
 
         drive.setPoseEstimate(startPose);
         Trajectory traj = drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-12, 36), 0)
+                .splineTo(new Vector2d(-15, -24), 0)
                 .build();
 
         Trajectory traj1ring = drive.trajectoryBuilder(traj.end())
-                .splineTo(new Vector2d(18 , 23),  Math.toRadians(180))
+                .splineTo(new Vector2d(18 , -23),  Math.toRadians(180))
                 .build();
 
         Trajectory trajline = drive.trajectoryBuilder(traj1ring.end())
-                .splineTo(new Vector2d(0 , 24),  Math.toRadians(90))
+                .splineTo(new Vector2d(0 , -24),  Math.toRadians(90))
                 .build();
 
         waitForStart();
 
         if (isStopRequested()) return;
+        drive2.leftIntakeHolder.setPosition(1);
+        drive2.rightIntakeHolder.setPosition(0);
+        sleep(2500);
+        drive2.leftIntakeHolder.setPosition(0);
+        drive2.rightIntakeHolder.setPosition(1);
         drive.followTrajectory(traj);
+        drive2.leftIntakeHolder.setPosition(0.8);
+        drive2.rightIntakeHolder.setPosition(0.8);
         shooter();
         //0 ring
         drive2.magdown();
@@ -60,7 +67,7 @@ public class SampleAutonPathFar1 extends LinearOpMode {
         for(int i=0;i<=3;++i){
             drive2.magup();
             drive2.magup();
-            drive2.slapper.setPosition(0);
+            drive2.slapper.setPosition(0.35);
             sleep(100);
             drive2.slapper.setPosition(0.5);
             sleep(1000);
