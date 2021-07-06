@@ -15,7 +15,7 @@ public class HardwareFile {
 
     public CRServo in1, in2;
     public Servo arm1, arm2;
-    public Servo grabber, grabber2, slapper, tilter, flipout;
+    public Servo grabber, grabber2, slapper, tilter, shooterflap;
     public Servo rightIntakeHolder, leftIntakeHolder;
     HardwareMap map;
     public SampleMecanumDrive driveTrain;
@@ -40,7 +40,7 @@ public class HardwareFile {
         grabber2 = map.get(Servo.class, "wobbleGrabber2");
         slapper = map.get(Servo.class, "mag");
         tilter = map.get(Servo.class, "tilt");
-        //flipout=map.get(Servo.class,"");
+        shooterflap = map.get(Servo.class, "flap");
         leftIntakeHolder = map.get(Servo.class,"wallL");
         rightIntakeHolder = map.get(Servo.class,"wallR");
         intakeL.setDirection(DcMotorSimple.Direction.REVERSE);
