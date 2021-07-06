@@ -22,11 +22,11 @@ public class SampleAutonPathFar1 extends LinearOpMode {
 
         drive.setPoseEstimate(startPose);
         Trajectory traj = drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-15, -24), 0)
+                .splineTo(new Vector2d(-20, -27), 0)
                 .build();
 
         Trajectory traj1ring = drive.trajectoryBuilder(traj.end())
-                .splineTo(new Vector2d(18 , -23),  Math.toRadians(180))
+                .splineTo(new Vector2d(18 , -30),  Math.toRadians(180))
                 .build();
 
         Trajectory trajline = drive.trajectoryBuilder(traj1ring.end())
@@ -41,6 +41,7 @@ public class SampleAutonPathFar1 extends LinearOpMode {
         sleep(2500);
         drive2.leftIntakeHolder.setPosition(0);
         drive2.rightIntakeHolder.setPosition(1);
+        drive2.shooterflap.setPosition(0.4);
         drive.followTrajectory(traj);
         drive2.leftIntakeHolder.setPosition(0.8);
         drive2.rightIntakeHolder.setPosition(0.8);
