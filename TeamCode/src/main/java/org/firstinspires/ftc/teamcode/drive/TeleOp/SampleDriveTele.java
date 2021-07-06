@@ -16,6 +16,7 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
         robot = new HardwareFile(hardwareMap);
         robot.driveTrain=new SampleMecanumDrive(hardwareMap);
         waitForStart();
+        guardpos=false;
         while (opModeIsActive()) {
             run();
         }
@@ -58,6 +59,8 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
             robot.arm2.setPosition (0.88);
         }
         if(gamepad2.left_bumper){
+            robot.leftIntakeHolder.setPosition(1);
+            robot.rightIntakeHolder.setPosition(0);
             robot.shooter.setPower(1);
             sleep(500);
             for(int i=0;i<=3;++i){
@@ -71,9 +74,20 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
             robot.shooter.setPower(0);
             robot.magdown();
         }
+        if(gamepad2.x){
+            robot.leftIntakeHolder.setPosition(1);
+            robot.rightIntakeHolder.setPosition(0);
+            guardpos=false;
+        }else if(gamepad2.b){
+            robot.leftIntakeHolder.setPosition(0.5);
+            robot.rightIntakeHolder.setPosition(0.5);
+            guardpos=true;
+        }
+        telemetry.addData("Protect:",guardpos);
+        telemetry.update();
         robot.driveTrain.update();
     }
-
+    public static boolean guardpos;
     private void setMultiplier() {
         if (gamepad1.left_trigger >= 0.3) {
             lxMult = 0.5;
