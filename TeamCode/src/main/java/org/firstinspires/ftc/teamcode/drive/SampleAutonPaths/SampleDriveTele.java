@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-//import org.firstinspires.ftc.teamcode.drive.Hardware.Robot;
 @TeleOp(name="TwoDrivers", group="Linear Opmode")
 public class SampleDriveTele extends LinearOpMode implements Runnable{
     public static HardwareFile robot;
@@ -45,13 +44,13 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
             robot.in1.setPower(0);
             robot.in2.setPower(0);
         }
-        if(gamepad2.y){
+        if(gamepad2.a){
             robot.arm1.setPosition(0.93);
             robot.arm2.setPosition (0.07);
             sleep(500);
             robot.grabber.setPosition(0.63);
             robot.grabber2.setPosition(0.29);
-        }else if(gamepad2.a){
+        }else if(gamepad2.y){
             robot.grabber.setPosition(0.13);
             robot.grabber2.setPosition(0.83);
             sleep(500);
@@ -93,11 +92,13 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
             lxMult = 0.5;
             rxMult = 0.5;
             lyMult = 0.5;
-        } else {
-            lxMult = 1;
-            rxMult = 1;
-            lyMult = 1;
-        }
+        } 
+            else {
+                lxMult = 1;
+                rxMult = 1;
+                lyMult = 1;
+            }
+
         if (gamepad1.right_bumper) {
             lxMult = -lxMult;
             lyMult = -lyMult;
