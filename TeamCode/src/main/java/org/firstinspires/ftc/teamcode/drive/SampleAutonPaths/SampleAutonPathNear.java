@@ -19,7 +19,7 @@ import java.util.List;
  * This is an example of a more complex path to really test the tuning.
  */
 @Autonomous(group = "drive")
-public class SampleAutonPathNear0 extends LinearOpMode {
+public class SampleAutonPathNear extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
@@ -78,47 +78,100 @@ public class SampleAutonPathNear0 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
         drive2 = new HardwareFile(hardwareMap);
-        Pose2d startPose = new Pose2d(-63, -24, 0);
+        Pose2d startPose = new Pose2d(-63, -48, Math.toRadians(10));
 
         drive.setPoseEstimate(startPose);
-        Trajectory traj = drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-20, -27), 0)
+        /*Trajectory trajoutpow = drive.trajectoryBuilder(startPose)
+                .splineTo(new Vector2d(-25, -24), Math.toRadians(5))
                 .build();
 
-        Trajectory traj0ring = drive.trajectoryBuilder(traj.end())
+        Trajectory trajmidpow = drive.trajectoryBuilder(trajoutpow.end())
+                .splineTo(new Vector2d(-25, -14), Math.toRadians(5))
+                .build();
+
+        Trajectory trajinpow = drive.trajectoryBuilder(trajmidpow.end())
+                .splineTo(new Vector2d(-25, -4), Math.toRadians(5))
+                .build();
+*/
+        Trajectory trajpickup = drive.trajectoryBuilder(startPose)
+                /*.splineTo(new Vector2d(-20 , -40),  Math.toRadians(0))
+                .splineTo(new Vector2d(-50,-48), 0)*/
+                .splineTo(new Vector2d(-12,-30), Math.toRadians(5))
+                .build();
+
+        Trajectory traj0ring = drive.trajectoryBuilder(trajpickup.end())
                 .splineTo(new Vector2d(12 , -40),  Math.toRadians(90))
                 .build();
 
-        Trajectory trajline = drive.trajectoryBuilder(traj0ring.end())
+        Trajectory traj0line = drive.trajectoryBuilder(traj0ring.end())
                 .splineTo(new Vector2d(0 , -24),  Math.toRadians(90))
                 .build();
-        waitForStart();
+
+        Trajectory traj1ring = drive.trajectoryBuilder(trajpickup.end())
+                .splineTo(new Vector2d(18 , -30),  Math.toRadians(180))
+                .build();
+
+        Trajectory traj1line = drive.trajectoryBuilder(traj1ring.end())
+                .splineTo(new Vector2d(0 , -24),  Math.toRadians(90))
+                .build();
+
+        Trajectory traj4ring = drive.trajectoryBuilder(trajpickup.end())
+                .splineTo(new Vector2d(48 , -36),  Math.toRadians(135))
+                .build();
+
+        Trajectory traj4line = drive.trajectoryBuilder(traj4ring.end())
+                .splineTo(new Vector2d(0 , -24),  Math.toRadians(90))
+                .build();
+
         initVuforia();
         initTfod();
+        camera();
+        waitForStart();
         if (isStopRequested()) return;
         camera();
-        telemetry.update();
         drive2.leftIntakeHolder.setPosition(1);
         drive2.rightIntakeHolder.setPosition(0);
         sleep(2500);
-        //sleep(1000);
         drive2.leftIntakeHolder.setPosition(0);
         drive2.rightIntakeHolder.setPosition(1);
-        drive2.shooterflap.setPosition(0.4) ;
-        sleep(10000);
-        drive.followTrajectory(traj);
+        /*drive2.shooterflap.setPosition(0.4) ;*/
+        drive.followTrajectory(trajpickup);
         drive2.leftIntakeHolder.setPosition(0.8);
         drive2.rightIntakeHolder.setPosition(0.8);
-        shooter();
+        shooter(3);
+        sleep(5000);
+        //drive.followTrajectory(trajmidpow);
+        //shooter(1);
+        //drive.followTrajectory(trajinpow);
+       // shooter(1);
         //0 ring
-        drive.followTrajectory(traj0ring);
-        drive2.magdown();
-        wobbledrop();
-        drive.followTrajectory(trajline);
-        drive2.leftIntakeHolder.setPosition(1);
-        drive2.rightIntakeHolder.setPosition(0);
+        drive2.intake(1);
+        if(height==0) {
+            drive2.magdown();
+            drive.followTrajectory(traj0ring);
+            wobbledrop();
+            drive.followTrajectory(traj0line);
+            drive2.leftIntakeHolder.setPosition(1);
+            drive2.rightIntakeHolder.setPosition(0);
+        }else if(height==1){
+            drive2.magdown();
+            /*drive.followTrajectory(trajpickup);
+            shooter(3);*/
+            drive2.magdown();
+            drive.followTrajectory(traj1ring);
+            wobbledrop();
+            drive.followTrajectory(traj1line);
+            drive2.leftIntakeHolder.setPosition(1);
+            drive2.rightIntakeHolder.setPosition(0);
+        }else if(height==4){
+            drive2.magdown();
+            drive.followTrajectory(traj4ring);
+            wobbledrop();
+            drive.followTrajectory(traj4line);
+            drive2.leftIntakeHolder.setPosition(1);
+            drive2.rightIntakeHolder.setPosition(0);
+        }
     }
     public static  HardwareFile drive2;
     public static int height;
@@ -145,13 +198,20 @@ public class SampleAutonPathNear0 extends LinearOpMode {
                 int i = 0;
                 for (Recognition recognition : updatedRecognitions) {
                     telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                            recognition.getLeft(), recognition.getTop());
-                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                            recognition.getRight(), recognition.getBottom());
-
+                    //telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                    // recognition.getLeft(), recognition.getTop());
+                    //telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                    // recognition.getRight(), recognition.getBottom());
+                    telemetry.addData("",recognition.getLabel()=="Quad");
+                    if (recognition.getLabel().equals("Quad")){
+                        height=4;
+                    }else if(recognition.getLabel().equals("Single")){
+                        height=1;
+                    }else{
+                        height=0;
+                    }
                 }
-                height=updatedRecognitions.size();
+                //height=updatedRecognitions.size();
                 telemetry.addData("Height: ", height);
                 telemetry.update();
             }
@@ -166,10 +226,10 @@ public class SampleAutonPathNear0 extends LinearOpMode {
         drive2.release();
         sleep(100);
     }
-    public void shooter(){
+    public void shooter(int rounds){
         drive2.shooter(1);
         sleep(2000);
-        for(int i=0;i<=3;++i){
+        for(int i=0;i<=rounds;++i){
             drive2.magup();
             drive2.magup();
             drive2.slapper.setPosition(0.35);
@@ -178,5 +238,6 @@ public class SampleAutonPathNear0 extends LinearOpMode {
             sleep(1000);
         }
         drive2.shooter(0);
+        drive2.magdown();
     }
 }
