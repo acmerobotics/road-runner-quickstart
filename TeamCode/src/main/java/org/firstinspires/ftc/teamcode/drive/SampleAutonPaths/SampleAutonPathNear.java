@@ -127,6 +127,7 @@ public class SampleAutonPathNear extends LinearOpMode {
         initVuforia();
         initTfod();
         camera();
+        drive2.grab();
         waitForStart();
         if (isStopRequested()) return;
         camera();
@@ -140,7 +141,8 @@ public class SampleAutonPathNear extends LinearOpMode {
         drive2.leftIntakeHolder.setPosition(0.8);
         drive2.rightIntakeHolder.setPosition(0.8);
         shooter(3);
-        sleep(5000);
+        //
+        // sleep(5000);
         //drive.followTrajectory(trajmidpow);
         //shooter(1);
         //drive.followTrajectory(trajinpow);
