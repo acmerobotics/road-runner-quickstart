@@ -33,11 +33,16 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
                 )
         );
         setMultiplier();
-        if(gamepad2.right_bumper){
+        if(gamepad2.right_bumper) {
             robot.intakeL.setPower(-1);
             robot.intakeR.setPower(-1);
             robot.in1.setPower(1);
             robot.in2.setPower(1);
+        }else if(gamepad2.right_trigger==1){
+            robot.intakeL.setPower(1);
+            robot.intakeR.setPower(1);
+            robot.in1.setPower(-1);
+            robot.in2.setPower(-1);
         }else{
             robot.intakeL.setPower(0);
             robot.intakeR.setPower(0);
@@ -73,6 +78,23 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
             robot.shooter.setPower(0);
             robot.magdown();
         }
+        if(gamepad2.dpad_up){
+            robot.leftIntakeHolder.setPosition(1);
+            robot.rightIntakeHolder.setPosition(0);
+            robot.shooter.setPower(0.4);
+            sleep(500);
+            for(int i=0;i<1;++i){
+                robot.magup();
+                robot.magup();
+                sleep(2500);
+                robot.slapper.setPosition(0.35);
+                sleep(100);
+                robot.slapper.setPosition(0.5);
+                sleep(1500);
+            }
+            robot.shooter.setPower(0);
+            robot.magdown();
+        }
         if(gamepad2.x){
             robot.leftIntakeHolder.setPosition(1);
             robot.rightIntakeHolder.setPosition(0);
@@ -92,12 +114,12 @@ public class SampleDriveTele extends LinearOpMode implements Runnable{
             lxMult = 0.5;
             rxMult = 0.5;
             lyMult = 0.5;
-        } 
-            else {
-                lxMult = 1;
-                rxMult = 1;
-                lyMult = 1;
-            }
+        }
+        else {
+            lxMult = 1;
+            rxMult = 1;
+            lyMult = 1;
+        }
 
         if (gamepad1.right_bumper) {
             lxMult = -lxMult;
