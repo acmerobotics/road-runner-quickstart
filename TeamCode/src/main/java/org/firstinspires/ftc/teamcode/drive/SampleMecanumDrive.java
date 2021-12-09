@@ -298,19 +298,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         // Rotate about the z axis is the default assuming your REV Hub/Control Hub is laying
         // flat on a surface
 
-        /*TODO: IMPORTANT!
-        If you are using the X axis from the above diagram,
-        ensure that you use the negative Z axis for angular velocity ONLY.
-        Likewise, if you are using the Z axis from above, ensure that you use the
-        negative X axis for angular velocity ONLY (this does NOT affect orientation).
-
-        //For angular velocity around the X axis:
-        return (double) -imu.getAngularVelocity().zRotationRate;
-
-        The Y axis is not affected.
-         */
-
-        //See comment above, following is for angular velocity around the Z axis
+        // To work around an SDK bug, use -zRotationRate in place of xRotationRate 
+        // and -xRotationRate in place of zRotationRate (yRotationRate behaves as 
+        // expected). This bug does NOT affect orientation. 
+        //
+        // See https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/251 for details.
         return (double) -imu.getAngularVelocity().xRotationRate;
     }
 
