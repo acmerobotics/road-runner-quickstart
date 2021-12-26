@@ -42,12 +42,10 @@ public class LinearRegression {
         b = Arrays.stream(y).sum() - m * Arrays.stream(x).sum();
         b /= n;
 
-        System.out.println("in run least squares, n is " + n + " x arr is" + Arrays.toString(x) + " y arr is" + Arrays.toString(y) + "xySum is " + xySum + " m1 is " + m1 + " m2 is " + m2 + " m is " + m + " b is " + b);
     }
 
 
     public double predictNextValue() {
-        System.out.println("in predict value, length is " + x.length + " m is " + m + " and b is " + b);
         return x.length * m + b;
     }
 
