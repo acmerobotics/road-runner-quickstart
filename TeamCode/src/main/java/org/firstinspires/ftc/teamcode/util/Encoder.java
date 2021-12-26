@@ -1,8 +1,14 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.teamcode.util.KalmanFilter.LeastSquaresKalmanFilter;
 
 /**
  * Wraps a motor instance to provide corrected velocity counts and allow reversing independently of the corresponding
@@ -43,6 +49,8 @@ public class Encoder {
     private double velocityEstimate;
     private double lastUpdateTime;
 
+    private LeastSquaresKalmanFilter kalmanFilter;
+
     public Encoder(DcMotorEx motor, NanoClock clock) {
         this.motor = motor;
         this.clock = clock;
@@ -52,6 +60,30 @@ public class Encoder {
         this.lastPosition = 0;
         this.velocityEstimate = 0.0;
         this.lastUpdateTime = clock.seconds();
+
+        this.kalmanFilter = new LeastSquaresKalmanFilter(0.9,20,3);
+    }
+
+    /**
+     * Initialize encoder and kalman filter with custom parameters
+     * @param motor motor we want to access the encoder from
+     * @param clock nanoclock instance
+     * @param Q Sensor Noise Covariance, higher values put more "trust" in the sensor
+     * @param R Model Covariance, higher values put more "trust" in the model (linear regression)
+     * @param N The number of elements in our Linear Regression.
+     */
+    public Encoder(DcMotorEx motor, NanoClock clock, double Q, double R, int N) {
+        this.motor = motor;
+        this.clock = clock;
+
+        this.direction = Direction.FORWARD;
+
+        this.lastPosition = 0;
+        this.velocityEstimate = 0.0;
+        this.lastUpdateTime = clock.seconds();
+
+        this.kalmanFilter = new LeastSquaresKalmanFilter(Q,R,N);
+
     }
 
     public Encoder(DcMotorEx motor) {
@@ -95,4 +127,19 @@ public class Encoder {
     public double getCorrectedVelocity() {
         return inverseOverflow(getRawVelocity(), velocityEstimate);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public double getKalmanVelocity() {
+        return kalmanFilter.update(getRawVelocity());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public double getCorrectedKalmanVelocity() {
+        return kalmanFilter.update(getCorrectedVelocity());
+    }
+
+
+
+
+
 }
