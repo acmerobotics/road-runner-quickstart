@@ -34,18 +34,6 @@ public class LeastSquaresKalmanFilter {
     }
 
     /**
-     * set the state estimate.
-     * @param x state estimate
-     */
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    /**
      * update the kalman filter for traditional; continous values.
      * @param measurement the current measurement
      * @return the optimal state estimate.
