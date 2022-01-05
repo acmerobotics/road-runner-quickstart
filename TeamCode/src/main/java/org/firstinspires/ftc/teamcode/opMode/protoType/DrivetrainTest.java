@@ -11,25 +11,26 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @TeleOp(name="DrivetrainTest",group="TeleOp")
 public class DrivetrainTest extends LinearOpMode{
 
-     @Override
-        public void runOpMode() throws InterruptedException {
-            Pose2d controls = new Pose2d(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x,
-                    -gamepad1.right_stick_x
-            );
+    @Override
+    public void runOpMode() throws InterruptedException {
+        Pose2d controls = new Pose2d(
+                -gamepad1.left_stick_y,
+                -gamepad1.left_stick_x,
+                -gamepad1.right_stick_x
+        );
 
-            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-            drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            while(!opModeIsActive() && !isStopRequested()){
-                telemetry.addData("Status", "Waiting in init");
-                telemetry.update();
-            }
-            if(!drive.isBusy()) drive.setWeightedDrivePower(controls);
-
+        while(!opModeIsActive() && !isStopRequested()){
+            telemetry.addData("Status", "Waiting in init");
+            telemetry.update();
         }
+        if(!drive.isBusy()) drive.setWeightedDrivePower(controls);
+
+    }
+
 }
 
 
