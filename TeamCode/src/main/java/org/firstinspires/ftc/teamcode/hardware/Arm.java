@@ -7,8 +7,8 @@ public class Arm extends Mechanism{
     //This class is meant to be a universal class for implementing arm like structures
     private Servo arm;
     private String hwMapName;
-    private static double armStart;
-    private static double armEnd;
+    private double armStart;
+    private double armEnd;
 
     //store the ROM and desired name of servo
 

@@ -22,8 +22,8 @@ public class ServoTest extends LinearOpMode {
     //Clamp Servo: START: 0.1; END: 0.6
     public void init(HardwareMap hwMap){
 
-        testServoMain = hwMap.servo.get("1");
-        testServoSupp = hwMap.servo.get("2");
+        testServoMain = hwMap.servo.get("armServoL");
+        testServoSupp = hwMap.servo.get("armServoR");
     }
     @Override
     public void runOpMode() throws InterruptedException{

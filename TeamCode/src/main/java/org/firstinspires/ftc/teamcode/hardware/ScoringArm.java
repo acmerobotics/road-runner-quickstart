@@ -12,13 +12,13 @@ public class ScoringArm extends Mechanism{
      * If it works, you're good to go
      ****/
 
-    private static double armServoLStart = 0.0;
-    private static double armServoLEnd = 0.0;
+    private static double armServoLStart = 1.0;
+    private static double armServoLEnd = 0.6;
     private Arm portSide = new Arm("armServoL", armServoLStart, armServoLEnd) {
     };
 
     private static double armServoRStart = 0.0;
-    private static double armServoREnd = 0.0;
+    private static double armServoREnd = 0.4;
     private Arm starBoard = new Arm("armServoR", armServoRStart, armServoREnd) {
     };
 
@@ -49,6 +49,16 @@ public class ScoringArm extends Mechanism{
     public void goTo(double desiredPosition){
         starBoard.setPosRatio(desiredPosition);
         portSide.setPosRatio(desiredPosition);
+    }
+
+    public void goToEnd(){
+        starBoard.endPos();
+        portSide.endPos();
+    }
+
+    public void goToStart(){
+        starBoard.startPos();
+        portSide.startPos();
     }
 
 }
