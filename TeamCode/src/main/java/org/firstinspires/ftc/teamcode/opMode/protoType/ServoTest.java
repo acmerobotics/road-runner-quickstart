@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@Autonomous(group = "drive")
+@TeleOp(name = "ServoTest",group = "Teleop")
 public class ServoTest extends LinearOpMode {
     private Servo testServoMain;
     private Servo testServoSupp;
