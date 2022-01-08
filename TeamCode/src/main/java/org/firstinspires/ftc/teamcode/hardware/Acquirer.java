@@ -26,7 +26,8 @@ public class Acquirer extends Mechanism {
 
     public void run(boolean left, boolean right){
         if(left) outake(outake);
-        if (right) intake(intake);
+        else if (right) intake(intake);
+        else intake(0);
     }
 
 }
