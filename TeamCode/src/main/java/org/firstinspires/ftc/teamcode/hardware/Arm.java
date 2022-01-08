@@ -71,6 +71,7 @@ public class Arm extends ServoMechanism{
     public void toggle(){
         if(atEnd()) startPos();
         else if (atStart()) endPos();
+        else atEnd();
     }
 
     public double getPos() {return arm.getPosition();}

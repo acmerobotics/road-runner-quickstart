@@ -30,6 +30,8 @@ public class GearedServos extends ServoMechanism{
     public void init(HardwareMap hwMap) {
         portSide.init(hwMap);
         starBoard.init(hwMap);
+        portSide.atStart();
+        starBoard.atStart();
     }
 
 

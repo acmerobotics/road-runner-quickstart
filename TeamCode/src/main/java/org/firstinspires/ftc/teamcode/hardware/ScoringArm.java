@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class ScoringArm extends Mechanism{
+public class ScoringArm extends ServoMechanism{
     /****
      * WHAT TO DO HERE:
      * Figure out the DESIRED endpoints using ServoTest OpMode
@@ -11,6 +11,8 @@ public class ScoringArm extends Mechanism{
      * Test it out, with low commitment
      * If it works, you're good to go
      ****/
+
+    //pivot arm setup
     private static double armServoLStart = 1.0;
     private static double armServoLEnd = 0.6;
 
@@ -21,6 +23,7 @@ public class ScoringArm extends Mechanism{
             "armServoR", armServoRStart, armServoREnd
             );
 
+    //deposit setup
     private static double depositStart = 0.0;
     private static double depositEnd = 0.0;
     private Arm deposit = new Arm("deposit",depositStart,depositEnd);
@@ -54,6 +57,10 @@ public class ScoringArm extends Mechanism{
 
     public void goToStart(){
         pivotArm.goToStart();
+    }
+
+    public void run(boolean bool){
+        pivotArm.run(bool);
     }
 
 }
