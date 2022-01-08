@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 //Code for acquirer mech
 public class Acquirer extends Mechanism {
     private DcMotor acquirerM;
-
+    public static double outake = 1.0;
+    public static double intake = 1.0;
     //Goal in init is to just initialize the motors
     public void init(HardwareMap hwMap) {
         acquirerM = hwMap.dcMotor.get("intake");
@@ -15,19 +16,17 @@ public class Acquirer extends Mechanism {
     }
 
     //Simple intake and outake code, directing the motors to power and rotate in a certain direction.
-    public void intake(float power){
+    public void intake(double power){
         acquirerM.setPower(power);
     }
 
-    public void outake(float power){
+    public void outake(double power){
         acquirerM.setPower(-power);
     }
 
-    public void run(float left_trigger, float right_trigger){
-        if (left_trigger > 0.3) outake(left_trigger);
-        else if (right_trigger > 0.3) intake(right_trigger);
-        else{
-            intake(0);
-        }
+    public void run(boolean left, boolean right){
+        if(left) outake(outake);
+        if (right) intake(intake);
     }
+
 }

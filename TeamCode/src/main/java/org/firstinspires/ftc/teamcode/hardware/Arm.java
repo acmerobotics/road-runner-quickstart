@@ -3,12 +3,13 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Arm extends Mechanism{
+public class Arm extends ServoMechanism{
     //This class is meant to be a universal class for implementing arm like structures
     private Servo arm;
     private String hwMapName;
     private double armStart;
     private double armEnd;
+    private boolean formerBool;
 
     //store the ROM and desired name of servo
 
@@ -67,6 +68,11 @@ public class Arm extends Mechanism{
 
     }
 
+    public void toggle(){
+        if(atEnd()) startPos();
+        else if (atStart()) endPos();
+    }
+
     public double getPos() {return arm.getPosition();}
 
     /**
@@ -85,4 +91,16 @@ public class Arm extends Mechanism{
         return arm.getPosition() == armStart;
     }
 
+
+    public void run(boolean bool) {
+
+        if (bool) formerBool = true;
+        if (formerBool) {
+            if (!bool){
+                toggle();
+                formerBool = false;
+            }
+        }
+
+    }
 }

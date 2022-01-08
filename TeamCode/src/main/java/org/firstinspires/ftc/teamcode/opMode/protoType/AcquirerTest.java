@@ -23,7 +23,7 @@ public class AcquirerTest extends LinearOpMode {
         }
 //why doesnt my code work
         while(opModeIsActive()){
-            acquirer.run(gamepad1.left_trigger, gamepad1.right_trigger);
+            acquirer.run(gamepad1.left_trigger > 0.2, gamepad1.right_trigger > 0.2);
             telemetry.addData("Left_trigger",gamepad1.left_trigger);
             telemetry.addData("Right_trigger",gamepad1.right_trigger);
             telemetry.update();

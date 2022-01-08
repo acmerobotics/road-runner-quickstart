@@ -11,16 +11,15 @@ public class ScoringArm extends Mechanism{
      * Test it out, with low commitment
      * If it works, you're good to go
      ****/
-
     private static double armServoLStart = 1.0;
     private static double armServoLEnd = 0.6;
-    private Arm portSide = new Arm("armServoL", armServoLStart, armServoLEnd) {
-    };
 
     private static double armServoRStart = 0.0;
     private static double armServoREnd = 0.4;
-    private Arm starBoard = new Arm("armServoR", armServoRStart, armServoREnd) {
-    };
+    private GearedServos pivotArm = new GearedServos(
+            "armServoL", armServoLStart, armServoLEnd,
+            "armServoR", armServoRStart, armServoREnd
+            );
 
     private static double depositStart = 0.0;
     private static double depositEnd = 0.0;
@@ -28,8 +27,7 @@ public class ScoringArm extends Mechanism{
 
     @Override
     public void init(HardwareMap hwMap) {
-        portSide.init(hwMap);
-        starBoard.init(hwMap);
+        pivotArm.init(hwMap );
         deposit.init(hwMap);
     }
 
@@ -47,18 +45,15 @@ public class ScoringArm extends Mechanism{
     }
 
     public void goTo(double desiredPosition){
-        starBoard.setPosRatio(desiredPosition);
-        portSide.setPosRatio(desiredPosition);
+        pivotArm.goTo(desiredPosition);
     }
 
     public void goToEnd(){
-        starBoard.endPos();
-        portSide.endPos();
+        pivotArm.goToEnd();
     }
 
     public void goToStart(){
-        starBoard.startPos();
-        portSide.startPos();
+        pivotArm.goToStart();
     }
 
 }

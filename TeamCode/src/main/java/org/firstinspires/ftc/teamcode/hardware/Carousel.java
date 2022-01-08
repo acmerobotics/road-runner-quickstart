@@ -29,7 +29,10 @@ public class Carousel extends Mechanism {
 
     public boolean forwards() {return carousel.getDirection() == properDirection;}
 
+
     public void run(boolean run){
         if(run) carousel.setPower(speed);
     }
+
+
 }
