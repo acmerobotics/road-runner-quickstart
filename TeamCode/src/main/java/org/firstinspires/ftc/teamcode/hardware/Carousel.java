@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Carousel extends Mechanism {
     private DcMotor carousel;
     private DcMotorSimple.Direction properDirection = DcMotorSimple.Direction.FORWARD;
-    private static Double speed = 1.0;
+    public static Double speed = 0.75;
 
     //Goal in init is to just initialize the motors
     public void init(HardwareMap hwMap) {
