@@ -30,7 +30,6 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Status", "Waiting in init");
             telemetry.update();
         }
-//why doesnt my code work
         while(opModeIsActive()){
             Pose2d controls = new Pose2d(
                     -gamepad1.left_stick_y,
