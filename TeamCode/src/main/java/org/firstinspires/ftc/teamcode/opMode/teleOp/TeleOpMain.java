@@ -39,7 +39,7 @@ public class TeleOpMain extends LinearOpMode {
 
             if(!drive.isBusy()) drive.setWeightedDrivePower(controls);
             acquirer.run(gamepad1.left_trigger > 0.3, gamepad1.right_trigger > 0.3);
-            carousel.run(gamepad1.a);
+            carousel.run(gamepad1.right_bumper);
             scoringArm.run(gamepad1.b);
 
             telemetry.update();
