@@ -13,11 +13,12 @@ public class ScoringArm extends ServoMechanism{
      ****/
 
     //pivot arm setup
-    private static double armServoLStart = 1.0;
+    private static double armServoLStart = 0.1;
     private static double armServoLEnd = 0.6;
-
-    private static double armServoRStart = 0.0;
-    private static double armServoREnd = 0.4;
+    //0.8
+    private static double armServoRStart = 0.98;
+    private static double armServoREnd = 0.5;
+    //0.3
     private GearedServos pivotArm = new GearedServos(
             "armServoL", armServoLStart, armServoLEnd,
             "armServoR", armServoRStart, armServoREnd

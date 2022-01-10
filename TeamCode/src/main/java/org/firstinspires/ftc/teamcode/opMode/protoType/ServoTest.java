@@ -13,10 +13,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoTest extends LinearOpMode {
     private Servo testServoMain;
     private Servo testServoSupp;
-    public static double START = 0.45;
-    public static double END = 0.95;
-    public static double START2 = 0.6;
-    public static double END2 = 0.1;
+    public static double START = 0.1;
+    public static double END = 0.6;
+    public static double START2 = 0.98;
+    public static double END2 = 0.5;
+            ;
     //Servo Main: START: 0.45; END: 0.95
     //Servo Supp: START: 0.6; END: 0.1
     //Clamp Servo: START: 0.1; END: 0.6
