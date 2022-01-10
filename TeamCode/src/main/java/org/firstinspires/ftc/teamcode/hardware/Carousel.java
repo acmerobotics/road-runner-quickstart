@@ -11,7 +11,6 @@ public class Carousel extends Mechanism {
     private DcMotorSimple.Direction properDirection = DcMotorSimple.Direction.FORWARD;
     public static Double speed = 0.75;
 
-    //Goal in init is to just initialize the motors
     public void init(HardwareMap hwMap) {
         carousel = hwMap.dcMotor.get("carousel");
         carousel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
