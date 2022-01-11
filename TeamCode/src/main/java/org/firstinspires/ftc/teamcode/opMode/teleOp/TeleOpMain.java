@@ -44,7 +44,6 @@ public class TeleOpMain extends LinearOpMode {
             acquirer.run(gamepad1.left_trigger > 0.3, gamepad1.right_trigger > 0.3);
             carousel.run(gamepad1.right_bumper);
             scoringArm.run(gamepad1.y);
-//            scoringArm.runDeposit(gamepad1.b);
 
             //LIFT CONTROLS
             if(gamepad1.dpad_left){
@@ -62,6 +61,14 @@ public class TeleOpMain extends LinearOpMode {
                 //Increment down
             }
             lift.update();
+
+            //These are the RATIO positions of the servos
+            telemetry.addData("Deposit Ratio Position",scoringArm.getPosDeposit());
+            telemetry.addData("PivotArm Ratio Position",scoringArm.getPosPivotArm());
+            telemetry.update();
+
+
+
             telemetry.update();
         }
     }

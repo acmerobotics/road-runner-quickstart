@@ -68,6 +68,12 @@ public class Arm extends ServoMechanism{
 
     }
 
+    public double getPosRatio(){
+        double servoAbsolutePos = arm.getPosition();
+
+        return (servoAbsolutePos - armStart)/(armEnd-armStart);
+    }
+
     public void toggle(){
         if(atEnd()) startPos();
         else if (atStart()) endPos();
