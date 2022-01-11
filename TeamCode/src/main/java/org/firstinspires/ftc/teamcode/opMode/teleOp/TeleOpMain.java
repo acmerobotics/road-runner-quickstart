@@ -45,6 +45,8 @@ public class TeleOpMain extends LinearOpMode {
             carousel.run(gamepad1.right_bumper);
             scoringArm.run(gamepad1.y);
 //            scoringArm.runDeposit(gamepad1.b);
+
+            //LIFT CONTROLS
             if(gamepad1.dpad_left){
                 //units in inches
                 //HOME LIFT
