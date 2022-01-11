@@ -10,14 +10,16 @@ import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 import org.firstinspires.ftc.teamcode.hardware.Lift;
+import com.acmerobotics.dashboard.config.Config;
 
+@Config
 @TeleOp(name="TeleOpMain",group="TeleOp")
 public class TeleOpMain extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
     private ScoringArm scoringArm = new ScoringArm();
     public Lift lift = new Lift();
-    public static double height;
+    public static double height = 5.0;
     @Override
     public void runOpMode() throws InterruptedException{
 
@@ -60,9 +62,11 @@ public class TeleOpMain extends LinearOpMode {
             if(gamepad1.dpad_left){
                 //units in inches
                 //HOME LIFT
+                telemetry.addData("Homing LIFT:", "yes");
                 lift.targetPosition = 0.0;
             } else if (gamepad1.dpad_right){
-                lift.targetPosition = 0.5;
+                lift.targetPosition = height;
+                telemetry.addData("Extending LIFT:", "yes");
                 //HIGH GOAL EXTENSION LIFT
             } else if (gamepad1.dpad_up){
                 lift.targetPosition+=0.1;
@@ -77,6 +81,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Arm homed status:",scoringArm.homed());
             telemetry.addData("Deposit Ratio Position",scoringArm.getPosDeposit());
             telemetry.addData("PivotArm Ratio Position",scoringArm.getPosPivotArm());
+            telemetry.addData("Lift home status", lift.targetPosition);
             telemetry.update();
         }
     }

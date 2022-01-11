@@ -18,8 +18,8 @@ public class Lift extends Mechanism{
     public static double midPos = 10;
     public static double lowPos = 0;
 
-    public static PIDCoefficients coeffs = new PIDCoefficients(0, 0, 0);
-    public static double kF = 0; //min power to go against g
+    public static PIDCoefficients coeffs = new PIDCoefficients(0.005, 0, 0);
+    public static double kF = 0.063; //min power to go against g
 
     PIDFController controller;
 
@@ -38,7 +38,7 @@ public class Lift extends Mechanism{
         // if you need to make sure to reverse as necessary
 
 //        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-//        liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //makes sure the motors don't move at zero power
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -61,6 +61,7 @@ public class Lift extends Mechanism{
     }
 
     public void updatePID(double target) {
+
         controller.setTargetPosition(target);
         //find the error
         double leftPow = controller.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
