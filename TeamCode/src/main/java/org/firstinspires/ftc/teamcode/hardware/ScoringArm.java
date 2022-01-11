@@ -12,62 +12,50 @@ public class ScoringArm extends ServoMechanism{
      * If it works, you're good to go
      ****/
 
-    //pivot arm setup
+    //arm servo positions
     private static double armServoLStart = 0.1;
-    private static double armServoLEnd = 0.6;
-    //0.8
+    private static double armServoLMid = 5/7;
+    private static double armServoLEnd = 0.8;
+
     private static double armServoRStart = 0.98;
-    private static double armServoREnd = 0.5;
-    //0.3
+    private static double armServoRMid = 5/7;
+    private static double armServoREnd = 0.3;
+
     private GearedServos pivotArm = new GearedServos(
-            "armServoL", armServoLStart, armServoLEnd,
-            "armServoR", armServoRStart, armServoREnd
+            "armServoR", armServoRStart, armServoREnd,
+            "armServoL", armServoLStart, armServoLEnd
             );
 
-    //deposit setup
+    //deposit servo positions
     public static double depositStart = 0.1;
     public static double depositEnd = 0.5;
-//    private Arm deposit = new Arm("deposit",depositStart,depositEnd);
-    private Servo armServoL;
-    private Servo armServoR;
-    private Servo deposit;
-    private boolean raised;
+    private Arm deposit = new Arm("deposit",depositStart,depositEnd);
+    private boolean homed;
     @Override
     public void init(HardwareMap hwMap) {
-        armServoL = hwMap.servo.get("armServoL");
-        armServoR = hwMap.servo.get("armServoR");
-        deposit = hwMap.servo.get("deposit");
-        goToStart();
+        pivotArm.init(hwMap);
+        deposit.init(hwMap);
+        homed = true;
     }
-
-//    public void open(){
-//        deposit.startPos();
-//    }
-//
-//    public void close(){
-//        deposit.endPos();
-//    }
-//
-//    public void toggle(){
-//        if (deposit.atEnd()) deposit.startPos();
-//        else if (deposit.atStart()) deposit.startPos();
-//    }
-
+    //GO TO POS RATIO
     public void goTo(double desiredPosition){
+        pivotArm.goTo(desiredPosition);
+        homed = false;
     }
-
+    // MAX
     public void goToEnd(){
-        armServoL.setPosition(armServoLEnd);
-        armServoR.setPosition(armServoREnd);
-        raised = true;
+        pivotArm.goToEnd();
+        homed = false;
     }
-
+    //RESET
     public void goToStart(){
-        armServoL.setPosition(armServoLStart);
-        armServoR.setPosition(armServoRStart);
-        raised = false;
+        pivotArm.goToStart();
+        homed = true;
     }
 
+    public void dump(){
+        //DUMP ONLY IF HOMED = FALSE
+    }
     public void run(boolean bool){
         if(bool){
             goToStart();
@@ -77,18 +65,5 @@ public class ScoringArm extends ServoMechanism{
         }
     }
 
-    public void toggleDeposit(boolean bool){
-        if(raised){
-            if(bool) {
-                deposit.setPosition(depositStart);
-            } else{
-                deposit.setPosition(depositEnd);
-            }
-        }
-    }
-
-    public void runDeposit(boolean bool){
-
-    }
 
 }
