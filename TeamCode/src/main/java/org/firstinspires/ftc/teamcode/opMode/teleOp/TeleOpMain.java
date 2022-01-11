@@ -27,6 +27,7 @@ public class TeleOpMain extends LinearOpMode {
         carousel.init(hardwareMap);
         scoringArm.init(hardwareMap);
         lift.init(hardwareMap);
+        lift.targetPosition = 0.0;
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -63,8 +64,11 @@ public class TeleOpMain extends LinearOpMode {
                 //units in inches
                 //HOME LIFT
                 telemetry.addData("Homing LIFT:", "yes");
+                lift.retracting(true);
                 lift.targetPosition = 0.0;
+
             } else if (gamepad1.dpad_right){
+                lift.retracting(false);
                 lift.targetPosition = height;
                 telemetry.addData("Extending LIFT:", "yes");
                 //HIGH GOAL EXTENSION LIFT
@@ -82,6 +86,9 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Deposit Ratio Position",scoringArm.getPosDeposit());
             telemetry.addData("PivotArm Ratio Position",scoringArm.getPosPivotArm());
             telemetry.addData("Lift home status", lift.targetPosition);
+            telemetry.addData("Retracting:", lift.getRetract());
+            telemetry.addData("kF: ",lift.kF);
+            telemetry.addData("kP: ", lift.coeffs.kP);
             telemetry.update();
         }
     }
