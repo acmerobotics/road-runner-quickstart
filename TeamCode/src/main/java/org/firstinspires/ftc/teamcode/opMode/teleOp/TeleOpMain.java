@@ -9,19 +9,22 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
+import org.firstinspires.ftc.teamcode.hardware.Lift;
 
 @TeleOp(name="TeleOpMain",group="TeleOp")
 public class TeleOpMain extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
     private ScoringArm scoringArm = new ScoringArm();
-
+    public Lift lift = new Lift();
+    public static double height;
     @Override
     public void runOpMode() throws InterruptedException{
 
         acquirer.init(hardwareMap);
         carousel.init(hardwareMap);
         scoringArm.init(hardwareMap);
+        lift.init(hardwareMap);
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -41,10 +44,23 @@ public class TeleOpMain extends LinearOpMode {
             acquirer.run(gamepad1.left_trigger > 0.3, gamepad1.right_trigger > 0.3);
             carousel.run(gamepad1.right_bumper);
             scoringArm.run(gamepad1.y);
-            scoringArm.runDeposit(gamepad1.b);
+//            scoringArm.runDeposit(gamepad1.b);
+            if(gamepad1.dpad_left){
+                //units in inches
+                //HOME LIFT
+                lift.targetPosition = 0.0;
+            } else if (gamepad1.dpad_right){
+                lift.targetPosition = 0.5;
+                //HIGH GOAL EXTENSION LIFT
+            } else if (gamepad1.dpad_up){
+                lift.targetPosition+=0.1;
+                //Increment up
+            } else if (gamepad1.dpad_down){
+                lift.targetPosition-=0.1;
+                //Increment down
+            }
+            lift.update();
             telemetry.update();
-
-
         }
     }
 
