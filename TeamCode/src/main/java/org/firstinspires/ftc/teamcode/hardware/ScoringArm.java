@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.acmerobotics.dashboard.config.Config;
 
+@Config
 public class ScoringArm extends ServoMechanism{
     DelayCommand delay = new DelayCommand();
 
@@ -14,27 +16,33 @@ public class ScoringArm extends ServoMechanism{
      * If it works, you're good to go
      ****/
 
-    //arm servo positions
-    public static double armServoLStart = 0.1;
-    public static double armServoLEnd = 0.8;
+    /////////////ARM SERVO LIMITS
+    public static double LIMIT_L_START = 0.1;
+    public static double LIMIT_L_END = 0.8;
 
-    public static double armServoRStart = 0.98;
-    public static double armServoREnd = 0.3;
+    public static double LIMIT_R_START = 0.98;
+    public static double LIMIT_R_END = 0.3;
 
-    public static double armServoTarget = 5/7.0;
+    ////////////DEPO SERVO LIMITS
+    public static double LIMIT_DEPO_START = 0.1;
+    public static double LIMIT_DEPO_END = 0.8;
 
     private GearedServos pivotArm = new GearedServos(
-            "armServoR", armServoRStart, armServoREnd,
-            "armServoL", armServoLStart, armServoLEnd
+            "armServoR", LIMIT_R_START, LIMIT_R_END,
+            "armServoL", LIMIT_L_START, LIMIT_L_END
             );
 
-    //deposit servo positions
-    public static double depositStart = 0.1;
-    public static double depositEnd = 0.5;
+    private Arm deposit = new Arm("deposit",LIMIT_DEPO_START,LIMIT_DEPO_END);
 
-    public static double depositTarget = 0.5;
+    /////ARM SERVO POSITIONS
+    public static double armStartPos = 0.06;
+    public static double armEndPos = 0.8;
+    public static double armMidPos = 5.0/7.0;
 
-    private Arm deposit = new Arm("deposit",depositStart,depositEnd);
+    /////DEPO SERVO POSITIONS
+    public static double depoStartPos = 0.35;
+    public static double depoEndPos = 0.5;
+    public static double depoTuckPos= 0;
 
     private boolean formerBoolArm;
     private boolean formerBoolDeposit;
@@ -43,6 +51,8 @@ public class ScoringArm extends ServoMechanism{
     public void init(HardwareMap hwMap) {
         pivotArm.init(hwMap);
         deposit.init(hwMap);
+        goToStart();
+        depositReset();
         homed = true;
     }
     //GO TO POS RATIO
@@ -52,12 +62,12 @@ public class ScoringArm extends ServoMechanism{
     }
     // MAX
     public void goToEnd(){
-        pivotArm.goToEnd();
+        pivotArm.goTo(armEndPos);
         homed = false;
     }
     //RESET
     public void goToStart(){
-        pivotArm.goToStart();
+        pivotArm.goTo(armStartPos);
         homed = true;
     }
 
@@ -68,22 +78,26 @@ public class ScoringArm extends ServoMechanism{
     public double getPosDeposit(){
         return deposit.getPosRatio();
     }
+    public void tuck(){
+        pivotArm.goTo(armMidPos);
+        deposit.setPosRatio(depoTuckPos);
+    }
 
+    public void dump() {
+        if (!homed) {
+            deposit.setPosRatio(depoEndPos);
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    deposit.setPosRatio(depoEndPos);
+                }
 
-
-    public void dump(){
-        //DUMP ONLY IF HOMED = FALSE
-
-         deposit.setPosRatio(depositTarget);
-         Runnable run = new Runnable(){
-             @Override
-            public void run(){
-                 deposit.startPos();
-             }
-
-        };
-
-         delay.delay(run, 500);
+            };
+            delay.delay(run, 500);
+        }
+    }
+    public void depositReset() {
+        deposit.setPosRatio(depoStartPos);
     }
     public void run(boolean bool){
         if(bool){
