@@ -25,43 +25,70 @@ public class ScoringArm extends ServoMechanism{
             );
 
     //deposit setup
-    private static double depositStart = 0.0;
-    private static double depositEnd = 0.0;
-    private Arm deposit = new Arm("deposit",depositStart,depositEnd);
-
+    public static double depositStart = 0.1;
+    public static double depositEnd = 0.5;
+//    private Arm deposit = new Arm("deposit",depositStart,depositEnd);
+    private Servo armServoL;
+    private Servo armServoR;
+    private Servo deposit;
+    private boolean raised;
     @Override
     public void init(HardwareMap hwMap) {
-        pivotArm.init(hwMap );
-        deposit.init(hwMap);
+        armServoL = hwMap.servo.get("armServoL");
+        armServoR = hwMap.servo.get("armServoR");
+        deposit = hwMap.servo.get("deposit");
+        goToStart();
     }
 
-    public void open(){
-        deposit.startPos();
-    }
-
-    public void close(){
-        deposit.endPos();
-    }
-
-    public void toggle(){
-        if (deposit.atEnd()) deposit.startPos();
-        else if (deposit.atStart()) deposit.startPos();
-    }
+//    public void open(){
+//        deposit.startPos();
+//    }
+//
+//    public void close(){
+//        deposit.endPos();
+//    }
+//
+//    public void toggle(){
+//        if (deposit.atEnd()) deposit.startPos();
+//        else if (deposit.atStart()) deposit.startPos();
+//    }
 
     public void goTo(double desiredPosition){
-        pivotArm.goTo(desiredPosition);
     }
 
     public void goToEnd(){
-        pivotArm.goToEnd();
+        armServoL.setPosition(armServoLEnd);
+        armServoR.setPosition(armServoREnd);
+        raised = true;
     }
 
     public void goToStart(){
-        pivotArm.goToStart();
+        armServoL.setPosition(armServoLStart);
+        armServoR.setPosition(armServoRStart);
+        raised = false;
     }
 
     public void run(boolean bool){
-        pivotArm.run(bool);
+        if(bool){
+            goToStart();
+        }
+        else{
+            goToEnd();
+        }
+    }
+
+    public void toggleDeposit(boolean bool){
+        if(raised){
+            if(bool) {
+                deposit.setPosition(depositStart);
+            } else{
+                deposit.setPosition(depositEnd);
+            }
+        }
+    }
+
+    public void runDeposit(boolean bool){
+
     }
 
 }
