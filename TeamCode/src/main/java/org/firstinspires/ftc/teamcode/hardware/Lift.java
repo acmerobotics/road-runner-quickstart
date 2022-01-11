@@ -12,14 +12,16 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class Lift extends Mechanism{
     DcMotor liftLeft;
     DcMotor liftRight;
+    public static boolean retract;
+    public static double retMult;
 
     // lift positions
     public static double highPos = 20;
     public static double midPos = 10;
     public static double lowPos = 0;
 
-    public static PIDCoefficients coeffs = new PIDCoefficients(0.005, 0, 0);
-    public static double kF = 0.063; //min power to go against g
+    public static PIDCoefficients coeffs = new PIDCoefficients(0.0275, 0, 0);
+    public static double kF = 0; //min power to go against g
 
     PIDFController controller;
 
@@ -54,6 +56,10 @@ public class Lift extends Mechanism{
 
         //PID controller
         controller = new PIDFController(coeffs, 0, 0, kF);
+
+        //damp
+        retract = false;
+        retMult = 0.000005;
     }
 
     public void update() {
@@ -67,11 +73,22 @@ public class Lift extends Mechanism{
         double leftPow = controller.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
         double rightPow = controller.update(encoderTicksToInches(liftRight.getCurrentPosition()));
         //compensate error
-        liftLeft.setPower(leftPow);
-        liftRight.setPower(rightPow);
+        if(!retract) {
+            liftLeft.setPower(leftPow);
+            liftRight.setPower(rightPow);
+        }else {
+            liftLeft.setPower(leftPow * retMult);
+            liftRight.setPower(rightPow * retMult);
+        }
     }
 
     public static double encoderTicksToInches(double ticks) {
         return SPOOL_SIZE_IN * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+    }
+    public boolean getRetract() {
+        return retract;
+    }
+    public void retracting(boolean status) {
+        retract = status;
     }
 }
