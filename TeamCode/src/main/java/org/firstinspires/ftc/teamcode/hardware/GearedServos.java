@@ -100,4 +100,8 @@ public class GearedServos extends ServoMechanism{
         }
 
     }
+
+    public double getPos(){
+        return portSide.getPos();
+    }
 }
