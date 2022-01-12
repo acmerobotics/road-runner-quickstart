@@ -22,6 +22,7 @@ public class TeleOpMain extends LinearOpMode {
     private ScoringArm scoringArm = new ScoringArm();
     public Lift lift = new Lift();
     public static double height = 15.0;
+    public static double heightIncrement = 0.75;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     @Override
     public void runOpMode() throws InterruptedException{
@@ -41,6 +42,7 @@ public class TeleOpMain extends LinearOpMode {
         }
         while(opModeIsActive()){
             Pose2d controls = new Pose2d(
+                    //Going to test if maybe negative)
                     gamepad1.left_stick_y,
                     gamepad1.left_stick_x,
                     gamepad1.right_stick_x
@@ -68,18 +70,20 @@ public class TeleOpMain extends LinearOpMode {
                 //HOME LIFT
                 telemetry.addData("Homing LIFT:", "yes");
                 lift.retracting(true);
-                lift.targetPosition = 0.0;
+                lift.targetPosition = lift.lowPos;
 
             } else if (gamepad1.dpad_right){
                 lift.retracting(false);
-                lift.targetPosition = height;
+                lift.targetPosition = lift.midPos;
                 telemetry.addData("Extending LIFT:", "yes");
                 //HIGH GOAL EXTENSION LIFT
             } else if (gamepad1.dpad_up){
-                lift.targetPosition+=0.1;
+                lift.retracting((false));
+                lift.targetPosition+=heightIncrement;
                 //Increment up
             } else if (gamepad1.dpad_down){
-                lift.targetPosition-=0.1;
+                lift.retracting((true));
+                lift.targetPosition-=heightIncrement;
                 //Increment down
             }
             lift.update();
@@ -88,10 +92,14 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Arm homed status:",scoringArm.homed());
             telemetry.addData("Deposit Ratio Position",scoringArm.getPosDeposit());
             telemetry.addData("PivotArm Ratio Position",scoringArm.getPosPivotArm());
-            telemetry.addData("Lift home status", lift.targetPosition);
+            telemetry.addData("Lift target position", lift.targetPosition);
             telemetry.addData("Retracting:", lift.getRetract());
             telemetry.addData("kF: ",lift.kF);
             telemetry.addData("kP: ", lift.coeffs.kP);
+            telemetry.addData("liftL: ", lift.liftLeft.getCurrentPosition());
+            telemetry.addData("liftR: ", lift.liftRight.getCurrentPosition());
+
+
             telemetry.update();
         }
     }

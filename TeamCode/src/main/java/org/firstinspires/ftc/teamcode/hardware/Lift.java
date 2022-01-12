@@ -10,23 +10,22 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 @Config
 public class Lift extends Mechanism{
-    DcMotor liftLeft;
-    DcMotor liftRight;
+    public DcMotor liftLeft;
+    public DcMotor liftRight;
     public static boolean retract;
     public static double retMult;
 
     // lift positions
-    public static double highPos = 20;
-    public static double midPos = 10;
+    public static double maxPos = 15;
+    public static double midPos = 7.5;
     public static double lowPos = 0;
 
     public static PIDCoefficients coeffs = new PIDCoefficients(0.08, 0, 0);
     public static double kF = 0; //min power to go against g
-
     PIDFController controller;
 
     // lift constants
-    public static double SPOOL_SIZE_IN = 1.81102;
+    public static double SPOOL_DIAMETER_IN = 1.81102;
     public static double MOTOR_RATIO = 5.2;
     public static double TICKS_PER_REV = MOTOR_RATIO * 28.0;
     public static double GEAR_RATIO = 1.0;
@@ -67,7 +66,8 @@ public class Lift extends Mechanism{
     }
 
     public void updatePID(double target) {
-
+        if(target > maxPos){target = maxPos;}
+        if(target < lowPos){target = lowPos;}
         controller.setTargetPosition(target);
         //find the error
         double leftPow = controller.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
@@ -83,7 +83,7 @@ public class Lift extends Mechanism{
     }
 
     public static double encoderTicksToInches(double ticks) {
-        return SPOOL_SIZE_IN * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+        return SPOOL_DIAMETER_IN  * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
     public boolean getRetract() {
         return retract;
