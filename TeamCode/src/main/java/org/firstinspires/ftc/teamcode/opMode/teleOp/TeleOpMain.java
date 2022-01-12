@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 import org.firstinspires.ftc.teamcode.hardware.Lift;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.FtcDashboard;
 
 @Config
 @TeleOp(name="TeleOpMain",group="TeleOp")
@@ -19,10 +21,11 @@ public class TeleOpMain extends LinearOpMode {
     private Carousel carousel = new Carousel();
     private ScoringArm scoringArm = new ScoringArm();
     public Lift lift = new Lift();
-    public static double height = 5.0;
+    public static double height = 15.0;
+    private final FtcDashboard dashboard = FtcDashboard.getInstance();
     @Override
     public void runOpMode() throws InterruptedException{
-
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         acquirer.init(hardwareMap);
         carousel.init(hardwareMap);
         scoringArm.init(hardwareMap);
