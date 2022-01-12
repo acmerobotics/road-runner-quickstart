@@ -21,8 +21,6 @@ public class TeleOpMain extends LinearOpMode {
     private Carousel carousel = new Carousel();
     private ScoringArm scoringArm = new ScoringArm();
     public Lift lift = new Lift();
-    public static double height = 15.0;
-    public static double heightIncrement = 0.75;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     @Override
     public void runOpMode() throws InterruptedException{
@@ -31,7 +29,7 @@ public class TeleOpMain extends LinearOpMode {
         carousel.init(hardwareMap);
         scoringArm.init(hardwareMap);
         lift.init(hardwareMap);
-        lift.targetPosition = 0.0;
+        lift.setTargetPosition(0.0);
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -68,22 +66,20 @@ public class TeleOpMain extends LinearOpMode {
             if(gamepad1.dpad_left){
                 //units in inches
                 //HOME LIFT
-                telemetry.addData("Homing LIFT:", "yes");
                 lift.retracting(true);
-                lift.targetPosition = lift.lowPos;
+                lift.setTargetPosition(lift.minPos);
 
             } else if (gamepad1.dpad_right){
                 lift.retracting(false);
-                lift.targetPosition = lift.midPos;
-                telemetry.addData("Extending LIFT:", "yes");
+                lift.setTargetPosition(lift.midPos);
                 //HIGH GOAL EXTENSION LIFT
             } else if (gamepad1.dpad_up){
-                lift.retracting((false));
-                lift.targetPosition+=heightIncrement;
+                lift.retracting(false);
+                lift.extend();
                 //Increment up
             } else if (gamepad1.dpad_down){
-                lift.retracting((true));
-                lift.targetPosition-=heightIncrement;
+//                lift.retracting(true);
+                lift.retract();
                 //Increment down
             }
             lift.update();
@@ -92,13 +88,13 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Arm homed status:",scoringArm.homed());
             telemetry.addData("Deposit Ratio Position",scoringArm.getPosDeposit());
             telemetry.addData("PivotArm Ratio Position",scoringArm.getPosPivotArm());
-            telemetry.addData("Lift target position", lift.targetPosition);
+            telemetry.addData("Lift target position", lift.getTargetPosition());
             telemetry.addData("Retracting:", lift.getRetract());
             telemetry.addData("kF: ",lift.kF);
             telemetry.addData("kP: ", lift.coeffs.kP);
             telemetry.addData("liftL: ", lift.liftLeft.getCurrentPosition());
             telemetry.addData("liftR: ", lift.liftRight.getCurrentPosition());
-
+            telemetry.addData("Target position", lift.getTargetPosition());
 
             telemetry.update();
         }

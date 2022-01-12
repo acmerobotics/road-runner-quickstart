@@ -14,13 +14,13 @@ public class Lift extends Mechanism{
     public DcMotor liftRight;
     public static boolean retract;
     public static double retMult;
-
+    public static double HEIGHT_INCREMENT = 0.35;
     // lift positions
     public static double maxPos = 15;
-    public static double midPos = 7.5;
-    public static double lowPos = 0;
+    public static double midPos = 8;
+    public static double minPos = 0;
 
-    public static PIDCoefficients coeffs = new PIDCoefficients(0.08, 0, 0);
+    public static PIDCoefficients coeffs = new PIDCoefficients(0.3, 0, 0);
     public static double kF = 0; //min power to go against g
     PIDFController controller;
 
@@ -30,7 +30,7 @@ public class Lift extends Mechanism{
     public static double TICKS_PER_REV = MOTOR_RATIO * 28.0;
     public static double GEAR_RATIO = 1.0;
 
-    public static double targetPosition = 0;
+    private double targetPosition = 0;
 
     public void init(HardwareMap hardwareMap) {
         liftLeft = hardwareMap.get(DcMotor.class, "liftLeft");
@@ -58,7 +58,7 @@ public class Lift extends Mechanism{
 
         //damp
         retract = false;
-        retMult = 0.00005;
+        retMult = 0.000035;
     }
 
     public void update() {
@@ -66,8 +66,8 @@ public class Lift extends Mechanism{
     }
 
     public void updatePID(double target) {
-        if(target > maxPos){target = maxPos;}
-        if(target < lowPos){target = lowPos;}
+        if(target >= maxPos){target = maxPos;}
+        if(target <= minPos){target = minPos;}
         controller.setTargetPosition(target);
         //find the error
         double leftPow = controller.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
@@ -81,7 +81,24 @@ public class Lift extends Mechanism{
             liftRight.setPower(rightPow * retMult);
         }
     }
+    public double getTargetPosition(){ return targetPosition;}
 
+    public void setTargetPosition(double target){targetPosition = target;}
+
+    public void extend(){
+        if(this.getTargetPosition()+HEIGHT_INCREMENT >= maxPos){
+            setTargetPosition(maxPos);
+        } else {
+            setTargetPosition(this.getTargetPosition()+HEIGHT_INCREMENT);
+        }
+    }
+    public void retract(){
+        if(this.getTargetPosition()-HEIGHT_INCREMENT <= minPos) {
+            setTargetPosition(minPos);
+        } else {
+            setTargetPosition(this.getTargetPosition()-HEIGHT_INCREMENT);
+        }
+    }
     public static double encoderTicksToInches(double ticks) {
         return SPOOL_DIAMETER_IN  * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
