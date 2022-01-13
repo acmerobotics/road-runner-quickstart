@@ -1,22 +1,23 @@
 package org.firstinspires.ftc.teamcode.opMode.teleOp;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
-import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 import org.firstinspires.ftc.teamcode.hardware.Lift;
-import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.FtcDashboard;
+import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 
 @Config
 @TeleOp(name="TeleOpMain",group="TeleOp")
-public class TeleOpMain extends LinearOpMode {
+public class TeleOpTestingTank extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
     private ScoringArm scoringArm = new ScoringArm();
@@ -31,7 +32,7 @@ public class TeleOpMain extends LinearOpMode {
         lift.init(hardwareMap);
         lift.setTargetPosition(0.0);
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleTankDrive drive = new SampleTankDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         while(!opModeIsActive() && !isStopRequested()){
