@@ -8,9 +8,8 @@ import com.acmerobotics.dashboard.config.Config;
 //Code for acquirer mech
 public class Acquirer extends Mechanism {
     private DcMotor acquirerM;
-    public static double max_pow = 0.5;
-    public static double outake = 1.0 * max_pow;
-    public static double intake = 1.0 * max_pow;
+    public static double outake = 0.8;
+    public static double intake = 0.6;
     //Goal in init is to just initialize the motors
     public void init(HardwareMap hwMap) {
         acquirerM = hwMap.dcMotor.get("intake");

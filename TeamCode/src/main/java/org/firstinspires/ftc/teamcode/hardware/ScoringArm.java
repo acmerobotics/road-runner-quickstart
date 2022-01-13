@@ -35,14 +35,14 @@ public class ScoringArm extends ServoMechanism{
     private Arm deposit = new Arm("deposit",LIMIT_DEPO_START,LIMIT_DEPO_END);
 
     /////ARM SERVO POSITIONS
-    public static double armStartPos = 0.06;
-    public static double armEndPos = 0.8;
-    public static double armMidPos = 0.8;
+    public static double armStartPos = 0.04;
+    public static double armEndPos = 0.9;
+    public static double armMidPos = 0.6;
 
     /////DEPO SERVO POSITIONS
-    public static double depoStartPos = 0.35;
-    public static double depoEndPos = 0.5;
-    public static double depoTuckPos= 0.08;
+    public static double depoStartPos = 0.45;
+    public static double depoEndPos = 0.9;
+    public static double depoTuckPos= 0.1;
 
     private boolean formerBoolArm;
     private boolean formerBoolDeposit;
@@ -78,6 +78,7 @@ public class ScoringArm extends ServoMechanism{
     public double getPosDeposit(){
         return deposit.getPosRatio();
     }
+
     public void tuck(){
         pivotArm.goTo(armMidPos);
         deposit.setPosRatio(depoTuckPos);
@@ -90,11 +91,11 @@ public class ScoringArm extends ServoMechanism{
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
-                    deposit.setPosRatio(depoEndPos);
+                    deposit.setPosRatio(depoTuckPos);
                 }
 
             };
-            delay.delay(run, 500);
+            delay.delay(run, 200);
         }
     }
     public void depositReset() {
@@ -115,17 +116,5 @@ public class ScoringArm extends ServoMechanism{
     }
 
     public boolean homed(){return homed;}
-
-    public void deposit(boolean bool){
-        if(bool) formerBoolDeposit = true;
-
-        if(formerBoolDeposit){
-            if(!bool){
-                if(!homed) dump();
-                formerBoolDeposit = false;
-            }
-        }
-
-    }
 
 }

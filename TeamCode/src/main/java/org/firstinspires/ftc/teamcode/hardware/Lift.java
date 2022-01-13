@@ -12,12 +12,12 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class Lift extends Mechanism{
     public DcMotor liftLeft;
     public DcMotor liftRight;
-    public static boolean retract;
+    private boolean retract;
     public static double retMult;
     public static double HEIGHT_INCREMENT = 0.35;
     // lift positions
-    public static double maxPos = 15;
-    public static double midPos = 8;
+    public static double maxPos = 18;
+    public static double midPos = 14;
     public static double minPos = 0;
 
     public static PIDCoefficients coeffs = new PIDCoefficients(0.3, 0, 0);

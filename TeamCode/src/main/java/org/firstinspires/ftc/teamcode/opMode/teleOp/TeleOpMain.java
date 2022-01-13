@@ -47,55 +47,62 @@ public class TeleOpMain extends LinearOpMode {
             );
 
             if(!drive.isBusy()) drive.setWeightedDrivePower(controls);
+            //-----------INTAKE---------//
+
             acquirer.run(gamepad1.left_trigger > 0.3, gamepad1.right_trigger > 0.3);
-            carousel.run(gamepad1.right_bumper);
-//            scoringArm.run(gamepad1.y);
-//            scoringArm.deposit(gamepad1.a);
+
+            //-----------CAROUSEL---------//
+            carousel.run(gamepad1.left_bumper, gamepad1.right_bumper);
+
+            //-----------SCORING ARM---------//
             if(gamepad1.x){
+                //RESET SCORING ARM
                 scoringArm.goToStart();
+                scoringArm.depositReset();
             } else if (gamepad1.y){
+                //DUMP
                 scoringArm.dump();
             } else if (gamepad1.b){
+                //TUCK POSITION
 //                scoringArm.goTo(scoringArm.armMidPos);
                 scoringArm.tuck();
             }
             if(gamepad1.a){
                 scoringArm.depositReset();
             }
-            //LIFT CONTROLS
+            //-----------LIFT---------//
             if(gamepad1.dpad_left){
-                //units in inches
                 //HOME LIFT
                 lift.retracting(true);
                 lift.setTargetPosition(lift.minPos);
 
             } else if (gamepad1.dpad_right){
+
+                // extend to high goal position
                 lift.retracting(false);
                 lift.setTargetPosition(lift.midPos);
-                //HIGH GOAL EXTENSION LIFT
+                scoringArm.tuck();
+
             } else if (gamepad1.dpad_up){
+                //increment extension
                 lift.retracting(false);
                 lift.extend();
-                //Increment up
             } else if (gamepad1.dpad_down){
+                //increment retracting
 //                lift.retracting(true);
                 lift.retract();
-                //Increment down
+
             }
             lift.update();
 
             //These are the RATIO positions of the servos
             telemetry.addData("Arm homed status:",scoringArm.homed());
-            telemetry.addData("Deposit Ratio Position",scoringArm.getPosDeposit());
-            telemetry.addData("PivotArm Ratio Position",scoringArm.getPosPivotArm());
             telemetry.addData("Lift target position", lift.getTargetPosition());
-            telemetry.addData("Retracting:", lift.getRetract());
-            telemetry.addData("kF: ",lift.kF);
-            telemetry.addData("kP: ", lift.coeffs.kP);
-            telemetry.addData("liftL: ", lift.liftLeft.getCurrentPosition());
-            telemetry.addData("liftR: ", lift.liftRight.getCurrentPosition());
-            telemetry.addData("Target position", lift.getTargetPosition());
-
+            telemetry.addData("Lift retract status:", lift.getRetract());
+//            telemetry.addData("kF: ",lift.kF);
+//            telemetry.addData("kP: ", lift.coeffs.kP);
+//            telemetry.addData("liftL: ", lift.liftLeft.getCurrentPosition());
+//            telemetry.addData("liftR: ", lift.liftRight.getCurrentPosition());
             telemetry.update();
         }
     }
