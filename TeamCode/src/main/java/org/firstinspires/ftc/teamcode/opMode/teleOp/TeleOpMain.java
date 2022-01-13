@@ -54,7 +54,7 @@ public class TeleOpMain extends LinearOpMode {
             if(gamepad1.x){
                 scoringArm.goToStart();
             } else if (gamepad1.y){
-                scoringArm.goToEnd();
+                scoringArm.dump();
             } else if (gamepad1.b){
 //                scoringArm.goTo(scoringArm.armMidPos);
                 scoringArm.tuck();
