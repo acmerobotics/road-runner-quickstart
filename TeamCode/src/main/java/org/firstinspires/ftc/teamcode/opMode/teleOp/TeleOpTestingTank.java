@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.hardware.Lift;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 
 @Config
-@TeleOp(name="TeleOpMain",group="TeleOp")
+@TeleOp(name="TeleOpTestingTank",group="TeleOp")
 public class TeleOpTestingTank extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
@@ -43,7 +43,7 @@ public class TeleOpTestingTank extends LinearOpMode {
             Pose2d controls = new Pose2d(
                     //Going to test if maybe negative)
                     gamepad1.left_stick_y,
-                    gamepad1.left_stick_x,
+                    0,
                     gamepad1.right_stick_x
             );
 

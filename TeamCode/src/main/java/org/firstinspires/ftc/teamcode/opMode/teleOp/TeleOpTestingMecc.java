@@ -15,7 +15,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.FtcDashboard;
 
 @Config
-@TeleOp(name="TeleOpMecc",group="TeleOp")
+@TeleOp(name="TeleOpTestingMecc",group="TeleOp")
 public class TeleOpTestingMecc extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
@@ -27,9 +27,9 @@ public class TeleOpTestingMecc extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         acquirer.init(hardwareMap);
         carousel.init(hardwareMap);
-        scoringArm.init(hardwareMap);
-        lift.init(hardwareMap);
-        lift.setTargetPosition(0.0);
+        scoringArm.init(hardwareMap); //adas
+        lift.init(hardwareMap); //asd
+        lift.setTargetPosition(0.0); //asdsad
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

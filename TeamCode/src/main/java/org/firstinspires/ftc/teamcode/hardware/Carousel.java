@@ -22,5 +22,10 @@ public class Carousel extends Mechanism {
         else carousel.setPower(0);
     }
 
+    public void run(boolean run){
+        if (run) carousel.setPower(speed);
+        else carousel.setPower(0);
+    }
+
 
 }
