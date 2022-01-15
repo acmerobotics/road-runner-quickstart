@@ -15,7 +15,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.FtcDashboard;
 
 @Config
-@TeleOp(name="TeleOpMain",group="TeleOp")
+@TeleOp(name="TeleOpMecc",group="TeleOp")
 public class TeleOpTestingMecc extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
