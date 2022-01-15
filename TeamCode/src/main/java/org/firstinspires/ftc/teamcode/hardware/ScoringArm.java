@@ -61,8 +61,13 @@ public class ScoringArm extends ServoMechanism{
         homed = false;
     }
     // MAX
+
+    public void goToLowGoal(){
+        goTo(armEndPos);
+        
+    }
     public void goToEnd(){
-        pivotArm.goTo(armEndPos);
+        pivotArm.goTo(armMidPos);
         homed = false;
     }
     //RESET
@@ -79,6 +84,10 @@ public class ScoringArm extends ServoMechanism{
         return deposit.getPosRatio();
     }
 
+    public void tuckPos(){
+        deposit.setPosRatio(depoTuckPos);
+    }
+
     public void tuck(){
         pivotArm.goTo(armMidPos);
         deposit.setPosRatio(depoTuckPos);
@@ -86,17 +95,16 @@ public class ScoringArm extends ServoMechanism{
     }
 
     public void dump() {
-        if (!homed) {
-            deposit.setPosRatio(depoEndPos);
-            Runnable run = new Runnable() {
-                @Override
-                public void run() {
-                    deposit.setPosRatio(depoTuckPos);
-                }
+        deposit.setPosRatio(depoEndPos);
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                deposit.setPosRatio(depoTuckPos);
+            }
 
-            };
-            delay.delay(run, 200);
-        }
+        };
+        delay.delay(run, 350);
+
     }
     public void depositReset() {
         deposit.setPosRatio(depoStartPos);

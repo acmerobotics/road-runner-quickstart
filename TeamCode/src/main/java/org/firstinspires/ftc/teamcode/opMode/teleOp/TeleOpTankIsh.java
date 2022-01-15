@@ -8,30 +8,28 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.Lift;
+import org.firstinspires.ftc.teamcode.hardware.LiftAndScoring;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 
 @Config
-@TeleOp(name="TeleOpTestingTank",group="TeleOp")
-public class TeleOpTestingTank extends LinearOpMode {
+@TeleOp(name="TeleOpIsh",group="TeleOp")
+public class TeleOpTankIsh extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
-    private ScoringArm scoringArm = new ScoringArm();
-    public Lift lift = new Lift();
-    public static double omega_multiplier = 1.3;
+    private LiftAndScoring scoring = new LiftAndScoring();
+    public static double omega_multiplier = 1.6;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     @Override
     public void runOpMode() throws InterruptedException{
+        boolean formerY = false;
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         acquirer.init(hardwareMap);
         carousel.init(hardwareMap);
-        scoringArm.init(hardwareMap);
-        lift.init(hardwareMap);
-        lift.setTargetPosition(0.0);
+        scoring.init(hardwareMap);
 
         SampleTankDrive drive = new SampleTankDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -55,53 +53,19 @@ public class TeleOpTestingTank extends LinearOpMode {
             acquirer.run(gamepad1.left_trigger > 0.3, gamepad1.right_trigger > 0.3);
 
             //-----------CAROUSEL---------//
-            carousel.run(gamepad1.left_bumper, gamepad1.right_bumper);
-
+            carousel.run(gamepad1.dpad_left,gamepad1.dpad_right);
             //-----------SCORING ARM---------//
-            if(gamepad1.x){
-                //RESET SCORING ARM
-                scoringArm.goToStart();
-                scoringArm.depositReset();
-            } else if (gamepad1.y){
-                //DUMP
-                scoringArm.dump();
-            } else if (gamepad1.b){
-                //TUCK POSITION
-//                scoringArm.goTo(scoringArm.armMidPos);
-                scoringArm.tuck();
-            }
-            if(gamepad1.a){
-                scoringArm.depositReset();
-            }
-            //-----------LIFT---------//
-            if(gamepad1.dpad_left){
-                //HOME LIFT
-                lift.retracting(true);
-                lift.setTargetPosition(lift.minPos);
+            //toggle scoring arm raising
 
-            } else if (gamepad1.dpad_right){
+            scoring.toggleSlides(gamepad1.right_bumper);
+            scoring.lowGoal(gamepad1.x);
+            scoring.toggleDepo(gamepad1.y);
 
-                // extend to high goal position
-                lift.retracting(false);
-                lift.setTargetPosition(lift.midPos);
-                scoringArm.tuck();
-
-            } else if (gamepad1.dpad_up){
-                //increment extension
-                lift.retracting(false);
-                lift.extend();
-            } else if (gamepad1.dpad_down){
-                //increment retracting
-//                lift.retracting(true);
-                lift.retract();
-
-            }
-            lift.update();
+            scoring.update();
+            //
 
             //These are the RATIO positions of the servos
-            telemetry.addData("Arm homed status:",scoringArm.homed());
-            telemetry.addData("Lift target position", lift.getTargetPosition());
-            telemetry.addData("Lift retract status:", lift.getRetract());
+
 //            telemetry.addData("kF: ",lift.kF);
 //            telemetry.addData("kP: ", lift.coeffs.kP);
 //            telemetry.addData("liftL: ", lift.liftLeft.getCurrentPosition());

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public class Carousel extends Mechanism {
     private DcMotor carousel;
-    public static Double speed = 0.75;
+    public static Double speed = 0.5;
 
     public void init(HardwareMap hwMap) {
         carousel = hwMap.dcMotor.get("carousel");

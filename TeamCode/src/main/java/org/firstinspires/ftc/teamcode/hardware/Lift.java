@@ -17,7 +17,7 @@ public class Lift extends Mechanism{
     public static double HEIGHT_INCREMENT = 0.35;
     // lift positions
     public static double maxPos = 18;
-    public static double midPos = 14;
+    public static double midPos = 5;
     public static double minPos = 0;
 
     public static PIDCoefficients coeffs = new PIDCoefficients(0.3, 0, 0);
@@ -32,6 +32,8 @@ public class Lift extends Mechanism{
 
     private double targetPosition = 0;
 
+    private boolean formerBool = false;
+    private boolean inAir = false;
     public void init(HardwareMap hardwareMap) {
         liftLeft = hardwareMap.get(DcMotor.class, "liftLeft");
         liftRight = hardwareMap.get(DcMotor.class, "liftRight");
@@ -84,6 +86,41 @@ public class Lift extends Mechanism{
     public double getTargetPosition(){ return targetPosition;}
 
     public void setTargetPosition(double target){targetPosition = target;}
+
+    public void raise(){
+        setTargetPosition(midPos);
+        inAir = true;
+    }
+
+    public void lower(){
+        setTargetPosition(minPos);
+        inAir = false;
+
+    }
+
+    public void toggle(){
+        if(inAir){
+            lower();
+        }
+        else{
+            raise();
+        }
+    }
+
+
+    public void keyPress(boolean bool){
+        if(bool){
+            formerBool = true;
+        }
+        if(formerBool){
+            if(!bool){
+                toggle();
+                formerBool = false;
+            }
+        }
+    }
+
+    public boolean inAir(){return inAir;}
 
     public void extend(){
         if(this.getTargetPosition()+HEIGHT_INCREMENT >= maxPos){

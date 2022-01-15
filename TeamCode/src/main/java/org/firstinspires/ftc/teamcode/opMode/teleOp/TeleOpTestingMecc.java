@@ -27,9 +27,9 @@ public class TeleOpTestingMecc extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         acquirer.init(hardwareMap);
         carousel.init(hardwareMap);
-        scoringArm.init(hardwareMap); //adas
-        lift.init(hardwareMap); //asd
-        lift.setTargetPosition(0.0); //asdsad
+        scoringArm.init(hardwareMap);
+        lift.init(hardwareMap);
+        lift.setTargetPosition(0.0);
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
