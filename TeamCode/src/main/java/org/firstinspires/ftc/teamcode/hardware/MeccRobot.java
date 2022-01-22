@@ -42,6 +42,9 @@ public class MeccRobot extends Mechanism{
     public void run(Gamepad gamepad){
         drive(gamepad);
         acquirerControls(gamepad);
+        carouselRun(gamepad);
+        lift(gamepad);
+        lift.update();
         telemetry.update();
     }
 
@@ -68,6 +71,29 @@ public class MeccRobot extends Mechanism{
         boolean outaking = outake > 0.5;
         boolean intaking = intake > 0.5;
         acquirer.run(outaking,intaking);
+    }
+
+    public void carouselRun(Gamepad gamepad){
+        if(gamepad.dpad_left) carousel.run(false,true);
+        else if (gamepad.dpad_right) carousel.run(true,false);
+        else carousel.run(false,false);
+    }
+
+    public void lift(Gamepad gamepad){
+        //lift code here
+        if(gamepad.left_bumper) lift.retract();
+        else if(gamepad.right_bumper) lift.extend();
+        else lift.retracting(false);
+
+
+
+        //scoring.run((int)lift.getCurrentPosition() == 3);
+
+        telemetry.addData("Stage",lift.getStageLevel());
+        telemetry.addData("StageHeight",lift.getCurrentPosition());
+        telemetry.addData("StageTarget",lift.getTargetPosition());
+        telemetry.addData("Lift Status", lift.movementState());
+
     }
 
 

@@ -14,10 +14,11 @@ public class Lift extends Mechanism{
     public DcMotor liftRight;
     private boolean retract;
     public static double retMult;
-    public static double HEIGHT_INCREMENT = 0.35;
+    public static double HEIGHT_INCREMENT = 1.5;
     // lift positions
-    public static double maxPos = 18;
+    public static double maxPos = 15;
     public static double midPos = 5;
+    public static double carriageMarker = 3;
     public static double minPos = 0;
 
     public static PIDCoefficients coeffs = new PIDCoefficients(0.3, 0, 0);
@@ -83,7 +84,32 @@ public class Lift extends Mechanism{
             liftRight.setPower(rightPow * retMult);
         }
     }
+
     public double getTargetPosition(){ return targetPosition;}
+
+    public double getCurrentPosition(){
+        return (
+                  encoderTicksToInches(liftLeft.getCurrentPosition())
+                + encoderTicksToInches(liftRight.getCurrentPosition())
+        ) / 2.0;
+    }
+    public String getStageLevel(){
+        if (getCurrentPosition() >= maxPos - 1) return "maxPos";
+        else if(getCurrentPosition() >= midPos -1) return "midPos";
+        else if (getCurrentPosition() >= carriageMarker) return "carriageMarker";
+        else if (getCurrentPosition() >= minPos) return "grounded";
+        else return "IDK";
+    }
+
+    public String movementState(){
+        int diff = (int)(getCurrentPosition()*10) - (int)(getTargetPosition()*10);
+        int marginOffError = 7;
+
+        if(diff > marginOffError) return "RETRACT";
+        else if(diff < -marginOffError) return "EXTEND";
+        else return "STILL";
+
+    }
 
     public void setTargetPosition(double target){targetPosition = target;}
 
@@ -123,6 +149,7 @@ public class Lift extends Mechanism{
     public boolean inAir(){return inAir;}
 
     public void extend(){
+        retracting(false);
         if(this.getTargetPosition()+HEIGHT_INCREMENT >= maxPos){
             setTargetPosition(maxPos);
         } else {
@@ -130,6 +157,7 @@ public class Lift extends Mechanism{
         }
     }
     public void retract(){
+        retracting(true);
         if(this.getTargetPosition()-HEIGHT_INCREMENT <= minPos) {
             setTargetPosition(minPos);
         } else {
@@ -145,4 +173,5 @@ public class Lift extends Mechanism{
     public void retracting(boolean status) {
         retract = status;
     }
+
 }

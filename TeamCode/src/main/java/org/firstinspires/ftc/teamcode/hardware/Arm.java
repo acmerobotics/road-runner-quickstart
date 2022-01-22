@@ -10,7 +10,10 @@ public class Arm extends ServoMechanism{
     private double armStart;
     private double armEnd;
     private boolean formerBool;
-
+    private boolean setTimeTracking = false;
+    private double period = 0;
+    private double[] positionHistory = new double[]{0,0};
+    private double commandTimeStamp = 0;
     //store the ROM and desired name of servo
 
     /**
@@ -25,6 +28,32 @@ public class Arm extends ServoMechanism{
         this.armEnd = armEnd;
     }
 
+    public void setTimeTracking(boolean setTimeTracking, double timeOfPeriod){
+        //period in milliseconds
+        this.setTimeTracking = setTimeTracking;
+        this.period = timeOfPeriod;
+    }
+
+    public double getEstimatedPos() throws NullPointerException{
+        if (!setTimeTracking){
+            throw new NullPointerException("Arm object, " + this.hwMapName + " has no access to estimated time." +
+                    "Please set estiamted time using Arm.setTimeTracking method");
+        }
+
+        //time calculations
+        double currentTime = System.currentTimeMillis();
+        double timePassed = currentTime - commandTimeStamp;
+
+        double estimatedMovement = timePassed / period;
+
+        double estimatedCurrentPos = positionHistory[0] + estimatedMovement;
+
+        if(estimatedCurrentPos > positionHistory[1]) estimatedCurrentPos = positionHistory[1];
+
+        return estimatedCurrentPos;
+
+    }
+
     /**
      * initializes stuff yk
      * @param hwMap robot's hardware map
@@ -37,14 +66,14 @@ public class Arm extends ServoMechanism{
      * moves arm to armEnd
      */
     public void endPos(){
-        arm.setPosition(armEnd);
+        setPosRatio(1);
     }
 
     /**
      * moves arm to armStart
      */
     public void startPos(){
-        arm.setPosition(armStart);
+        setPosRatio(0);
     }
 
     /**
@@ -65,6 +94,10 @@ public class Arm extends ServoMechanism{
          */
         double adjusted = (armEnd - armStart) * ratio + armStart;
         arm.setPosition(adjusted);
+
+        positionHistory[0] = positionHistory[1];
+        positionHistory[1] = ratio;
+        commandTimeStamp = System.currentTimeMillis();
 
     }
 
@@ -98,7 +131,6 @@ public class Arm extends ServoMechanism{
         return arm.getPosition() == armStart;
     }
 
-
     public void run(boolean bool) {
 
         if (bool) formerBool = true;
@@ -110,4 +142,5 @@ public class Arm extends ServoMechanism{
         }
 
     }
+
 }

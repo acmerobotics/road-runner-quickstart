@@ -64,6 +64,7 @@ public class ScoringArm extends ServoMechanism{
 
     public void goToLowGoal(){
         goTo(armEndPos);
+        homed = false;
         
     }
     public void goToEnd(){

@@ -34,7 +34,7 @@ public class MeccRobotTeleOp extends LinearOpMode{
             telemetry.update();
         }
         while(opModeIsActive()){
-            robot.drive(gamepad1);
+            robot.run(gamepad1);
 
             //These are the RATIO positions of the servos
 //            telemetry.addData("kF: ",lift.kF);
