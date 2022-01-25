@@ -199,7 +199,9 @@ public class WebcamExample extends LinearOpMode
 
         private double regionValue;
 
-        private Rect ROI = new Rect(new Point(0,0), new Point(320, 180));
+        private Rect RO1;
+        private Rect RO2;
+        private Rect RO3;
 
         @Override
         public final Mat processFrame(Mat input){
@@ -213,9 +215,8 @@ public class WebcamExample extends LinearOpMode
         All of this is also technically BGR to HSV, so take the absolute value of your Hue minus 180 to get the right number
         */
             Scalar lowHSV = new Scalar(40, 50, 50);
-            Scalar highHSV = new Scalar(60, 255, 255);
-            //This creates our mask, and filters out all colors except for whats within our defined bounds
-            Core.inRange(workingMatrix, lowHSV, highHSV, workingMatrix);
+            Scalar highHSV = new Scalar(75, 255, 255);
+            //This creates our mask, and filters out all colors except for whats within our defined bound
             /* IGNORE ALL OF THIS FOR NOW, but essentially we'll use this to tell where our capstone is by counting pixels
 
             creates the submat that we want to work with
@@ -228,6 +229,53 @@ public class WebcamExample extends LinearOpMode
             Scalar lines = new Scalar(25,255,255);
             //Create the rectangle so that when testing we can see the ROI that we are working with
             Imgproc.rectangle(workingMatrix,ROI,lines);*/
+            RO1 = new Rect(
+                    new Point(
+                            input.cols()/8,
+                            input.rows()/4),
+                    new Point(
+                            input.cols()*(3f/8f),
+                            input.rows()*(3f/4f))
+            );
+            RO2 = new Rect(
+                    new Point(
+                            input.cols()*(3f/8f),
+                            input.rows()/4),
+                    new Point(
+                            input.cols()*(5f/8f),
+                            input.rows()*(3f/4f))
+            );
+            RO3 = new Rect(
+                    new Point(
+                            input.cols()*(5f/8f),
+                            input.rows()/4),
+                    new Point(
+                            input.cols()*(7f/8f),
+                            input.rows()*(3f/4f))
+            );
+            Imgproc.rectangle(workingMatrix, RO1, new Scalar(60, 255, 255), 10);
+            Imgproc.rectangle(workingMatrix, RO2, new Scalar(60, 255, 255), 10);
+            Imgproc.rectangle(workingMatrix, RO3, new Scalar(60, 255, 255), 10);
+            Core.inRange(workingMatrix, lowHSV, highHSV, workingMatrix);
+
+            //Submats for boxes, these are the regions that'll detect the color
+
+            Mat box1 = workingMatrix.submat(RO1);
+            Mat box2 = workingMatrix.submat(RO2);
+            Mat box3 = workingMatrix.submat(RO3);
+            //How much in each region is white aka the color we filtered
+            double b1p = Core.sumElems(box1).val[0] / RO1.area()/255;
+            double b2p = Core.sumElems(box2).val[0] / RO2.area()/255;
+            double b3p = Core.sumElems(box3).val[0] / RO3.area()/255;
+            //Compare amount of color in each region
+            if(b1p > b2p && b1p > b3p) {
+                Imgproc.rectangle(workingMatrix, RO1, new Scalar(60, 255, 255), 10);
+            }else if(b2p > b1p && b2p > b3p) {
+                Imgproc.rectangle(workingMatrix, RO2, new Scalar(60, 255, 255), 10);
+            }else if(b3p > b2p & b3p > b1p) {
+                Imgproc.rectangle(workingMatrix, RO3, new Scalar(60, 255, 255), 10);
+            }
+            //return the frame
             return workingMatrix;
         }
         @Override
