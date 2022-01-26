@@ -62,7 +62,8 @@ public class WebcamExample extends LinearOpMode
          * of a frame from the camera. Note that switching pipelines on-the-fly
          * (while a streaming session is in flight) *IS* supported.
          */
-        webcam.setPipeline(new kellen());
+        kellen regions = new kellen();
+        webcam.setPipeline(regions);
 
         /*
          * Open the connection to the camera device. New in v1.4.0 is the ability
@@ -126,6 +127,9 @@ public class WebcamExample extends LinearOpMode
             telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
             telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
             telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+            telemetry.addData("b1p", regions.region1percent());
+            telemetry.addData("b2p", regions.region2percent());
+            telemetry.addData("b3p", regions.region3percent());
             telemetry.update();
             FtcDashboard.getInstance().startCameraStream(webcam, 0);
             /*

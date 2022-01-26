@@ -18,7 +18,7 @@ public class kellen extends OpenCvPipeline
 
     private Mat workingMatrix = new Mat();
 
-    private double regionValue;
+    private double b1p, b2p, b3p;
 
     private Rect RO1;
     private Rect RO2;
@@ -85,9 +85,9 @@ public class kellen extends OpenCvPipeline
         Mat box2 = workingMatrix.submat(RO2);
         Mat box3 = workingMatrix.submat(RO3);
         //How much in each region is white aka the color we filtered
-        double b1p = Core.sumElems(box1).val[0] / RO1.area()/255;
-        double b2p = Core.sumElems(box2).val[0] / RO2.area()/255;
-        double b3p = Core.sumElems(box3).val[0] / RO3.area()/255;
+        b1p = Core.sumElems(box1).val[0] / RO1.area()/255;
+        b2p = Core.sumElems(box2).val[0] / RO2.area()/255;
+        b3p = Core.sumElems(box3).val[0] / RO3.area()/255;
         //Compare amount of color in each region
         if(b1p > b2p && b1p > b3p) {
             Imgproc.rectangle(workingMatrix, RO1, new Scalar(60, 255, 255), 10);
@@ -98,5 +98,17 @@ public class kellen extends OpenCvPipeline
         }
         //return the frame
         return workingMatrix;
+    }
+
+    public double region1percent() {
+        return b1p * 100;
+    }
+
+    public double region2percent() {
+        return b2p * 100;
+    }
+
+    public double region3percent() {
+        return b3p * 100;
     }
 }
