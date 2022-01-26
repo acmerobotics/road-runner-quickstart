@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.kellen;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -47,7 +48,9 @@ public class InternalWebcam2 extends LinearOpMode
          * of a frame from the camera. Note that switching pipelines on-the-fly
          * (while a streaming session is in flight) *IS* supported.
          */
-        phoneCam.setPipeline(new SamplePipeline());
+
+        kellen regions = new kellen();
+        phoneCam.setPipeline(regions);
 
         /*
          * Open the connection to the camera device. New in v1.4.0 is the ability
@@ -162,85 +165,4 @@ public class InternalWebcam2 extends LinearOpMode
      * if you're doing something weird where you do need it synchronized with your OpMode thread,
      * then you will need to account for that accordingly.
      */
-    class SamplePipeline extends OpenCvPipeline
-    {
-        boolean viewportPaused = false;
-
-        /*
-         * NOTE: if you wish to use additional Mat objects in your processing pipeline, it is
-         * highly recommended to declare them here as instance variables and re-use them for
-         * each invocation of processFrame(), rather than declaring them as new local variables
-         * each time through processFrame(). This removes the danger of causing a memory leak
-         * by forgetting to call mat.release(), and it also reduces memory pressure by not
-         * constantly allocating and freeing large chunks of memory.
-         */
-
-        private Mat workingMatrix = new Mat();
-        private Rect RO1;
-        private Rect RO2;
-        private Rect RO3;
-        @Override
-        public Mat processFrame(Mat input)
-        {
-            Imgproc.cvtColor(input, workingMatrix, Imgproc.COLOR_RGB2HSV);
-            Scalar low = new Scalar(40, 50, 50);
-            Scalar high = new Scalar(60, 255, 255);
-            RO1 = new Rect(
-                    new Point(
-                            input.cols()/4,
-                            input.rows()/8),
-                    new Point(
-                            input.cols()*(3f/4f),
-                            input.rows()*(3f/8f))
-            );
-            RO2 = new Rect(
-                    new Point(
-                            input.cols()/4,
-                            input.rows()*(3f/8f)),
-                    new Point(
-                            input.cols()*(3f/4f),
-                            input.rows()*(5f/8f))
-                    );
-            RO3 = new Rect(
-                    new Point(
-                            input.cols()/4,
-                            input.rows()*(5f/8f)),
-                    new Point(
-                            input.cols()*(3f/4f),
-                            input.rows())
-                    );
-            Core.inRange(workingMatrix, low, high, workingMatrix);
-            Imgproc.rectangle(workingMatrix, RO1, new Scalar(60, 255, 255), 10);
-            Imgproc.rectangle(workingMatrix, RO2, new Scalar(60, 255, 255), 10);
-            Imgproc.rectangle(workingMatrix, RO3, new Scalar(60, 255, 255), 10);
-            return workingMatrix;
-        }
-
-        @Override
-        public void onViewportTapped()
-        {
-            /*
-             * The viewport (if one was specified in the constructor) can also be dynamically "paused"
-             * and "resumed". The primary use case of this is to reduce CPU, memory, and power load
-             * when you need your vision pipeline running, but do not require a live preview on the
-             * robot controller screen. For instance, this could be useful if you wish to see the live
-             * camera preview as you are initializing your robot, but you no longer require the live
-             * preview after you have finished your initialization process; pausing the viewport does
-             * not stop running your pipeline.
-             *
-             * Here we demonstrate dynamically pausing/resuming the viewport when the user taps it
-             */
-
-            viewportPaused = !viewportPaused;
-
-            if(viewportPaused)
-            {
-                phoneCam.pauseViewport();
-            }
-            else
-            {
-                phoneCam.resumeViewport();
-            }
-        }
-    }
 }

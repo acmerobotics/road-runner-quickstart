@@ -74,9 +74,9 @@ public class kellen extends OpenCvPipeline
                         input.cols()*(7f/8f),
                         input.rows()*(3f/4f))
         );
-        Imgproc.rectangle(workingMatrix, RO1, new Scalar(60, 255, 255), 10);
+        /*Imgproc.rectangle(workingMatrix, RO1, new Scalar(60, 255, 255), 10);
         Imgproc.rectangle(workingMatrix, RO2, new Scalar(60, 255, 255), 10);
-        Imgproc.rectangle(workingMatrix, RO3, new Scalar(60, 255, 255), 10);
+        Imgproc.rectangle(workingMatrix, RO3, new Scalar(60, 255, 255), 10);*/
         Core.inRange(workingMatrix, lowHSV, highHSV, workingMatrix);
 
         //Submats for boxes, these are the regions that'll detect the color
