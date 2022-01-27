@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opMode.teleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -9,7 +9,7 @@ public class ColorTest extends LinearOpMode {
     // Define a variable for our color sensor
     ColorSensor color;
     public boolean isBlock() {
-        return ((color.red() + color.green()) / 2 > color.blue()+ && (color.red()+color.green()) / 2 >= 100);
+        return ((color.red() + color.green()) / 2 > color.blue() && (color.red()+color.green()) / 2 >= 100);
     }
     @Override
     public void runOpMode() {
