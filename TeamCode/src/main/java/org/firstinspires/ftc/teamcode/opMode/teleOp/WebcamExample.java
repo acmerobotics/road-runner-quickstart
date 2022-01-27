@@ -130,6 +130,7 @@ public class WebcamExample extends LinearOpMode
             telemetry.addData("b1p", regions.region1percent());
             telemetry.addData("b2p", regions.region2percent());
             telemetry.addData("b3p", regions.region3percent());
+            telemetry.addData("what region?", regions.whichRegion());
             telemetry.update();
             FtcDashboard.getInstance().startCameraStream(webcam, 0);
             /*

@@ -111,4 +111,16 @@ public class kellen extends OpenCvPipeline
     public double region3percent() {
         return b3p * 100;
     }
+
+    public int whichRegion() {
+        int region = 0;
+        if(b1p > b2p && b1p > b3p) {
+            region = 1;
+        }else if(b2p > b1p && b2p > b3p) {
+            region = 2;
+        }else if(b3p > b2p & b3p > b1p) {
+            region = 3;
+        }
+        return region;
+    }
 }
