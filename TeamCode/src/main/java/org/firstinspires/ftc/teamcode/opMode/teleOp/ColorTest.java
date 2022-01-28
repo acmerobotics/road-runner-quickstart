@@ -11,7 +11,7 @@ public class ColorTest extends LinearOpMode {
     FreightSensor color = new FreightSensor();
     @Override
     public void runOpMode() {
-
+        color.init(hardwareMap);
         // Wait for the Play button to be pressed
         waitForStart();
 

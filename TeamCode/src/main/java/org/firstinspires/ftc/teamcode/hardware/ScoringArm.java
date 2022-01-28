@@ -68,7 +68,7 @@ public class ScoringArm extends ServoMechanism{
         
     }
     public void goToEnd(){
-        pivotArm.goTo(armMidPos);
+        pivotArm.goTo(armEndPos);
         homed = false;
     }
     //RESET

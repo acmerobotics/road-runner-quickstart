@@ -31,6 +31,8 @@ public class Lift extends Mechanism{
     public static double TICKS_PER_REV = MOTOR_RATIO * 28.0;
     public static double GEAR_RATIO = 1.0;
 
+    public static double[] positionHistory = new double[]{10};
+
     private double targetPosition = 0;
 
     private boolean formerBool = false;
@@ -66,7 +68,27 @@ public class Lift extends Mechanism{
 
     public void update() {
         updatePID(targetPosition);
+        positionHistory[0] = getCurrentPosition();
+
+        for (int i = 1; i < positionHistory.length - 1; i ++) {
+            positionHistory[i] = positionHistory[i+1];
+        }
     }
+
+    public boolean estimatedEqual(double one, double two){
+        return Math.abs(one - two) < 0.5;
+    }
+
+    public boolean still(){
+        boolean still = true;
+
+        for(int i = 0; i < positionHistory.length-1; i++){
+            still = still && estimatedEqual(positionHistory[i],positionHistory[i+1]);
+        }
+
+        return still;
+    }
+
 
     public void updatePID(double target) {
         if(target >= maxPos){target = maxPos;}
@@ -131,6 +153,10 @@ public class Lift extends Mechanism{
         else{
             raise();
         }
+    }
+
+    public void toggleLiftHighGoal(){
+
     }
 
 

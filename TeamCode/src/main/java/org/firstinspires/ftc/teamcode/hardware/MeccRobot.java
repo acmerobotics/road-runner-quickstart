@@ -12,14 +12,16 @@ public class MeccRobot extends Mechanism{
     private SampleMecanumDrive drive;
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
-    private Lift lift = new Lift();
-    private ScoringArm scoring = new ScoringArm();
-
+    private LiftScoringV2 scoringV2 = new LiftScoringV2();
+    private FreightSensor blockSense = new FreightSensor();
 
     private boolean formerB = false;
     private boolean formerA = false;
     private boolean formerX = false;
     private boolean formerY = false;
+
+    private boolean formerLeftBumper = false;
+    private boolean formerRightBumper = false;
 
 
     Telemetry telemetry;
@@ -27,11 +29,10 @@ public class MeccRobot extends Mechanism{
     public void init(HardwareMap hwMap){
         drive = new SampleMecanumDrive(hwMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        blockSense.init(hwMap);
         acquirer.init(hwMap);
         carousel.init(hwMap);
-        lift.init(hwMap);
-        scoring.init(hwMap);
+        scoringV2.init(hwMap);
     }
 
     public void init(HardwareMap hwmap, Telemetry telemetry){
@@ -44,16 +45,16 @@ public class MeccRobot extends Mechanism{
         acquirerControls(gamepad);
         carouselRun(gamepad);
         lift(gamepad);
-        lift.update();
+        scoringV2.update();
         telemetry.update();
     }
 
     public void drive(Gamepad gamepad){
         Pose2d controls = new Pose2d(
                 //Going to test if maybe negative)
-                gamepad.left_stick_y,
-                gamepad.left_stick_x,
-                gamepad.right_stick_x
+                -gamepad.left_stick_y,
+                -gamepad.left_stick_x,
+                -gamepad.right_stick_x
         );
         telemetry.addData("Left_stick_y",gamepad.left_stick_y);
         telemetry.addData("Left_stick_X",gamepad.left_stick_x);
@@ -64,12 +65,17 @@ public class MeccRobot extends Mechanism{
     }
 
     public void acquirerControls(Gamepad gamepad){
-        acquirerRun(gamepad.left_trigger,gamepad.right_trigger);
+        acquirerRun(gamepad.right_trigger,gamepad.left_trigger);
     }
 
     public void acquirerRun(double intake, double outake){
         boolean outaking = outake > 0.5;
         boolean intaking = intake > 0.5;
+
+        if(intaking && blockSense.hasFreight()){
+            outaking = true;
+            intaking = false;
+        }
         acquirer.run(outaking,intaking);
     }
 
@@ -81,18 +87,49 @@ public class MeccRobot extends Mechanism{
 
     public void lift(Gamepad gamepad){
         //lift code here
-        if(gamepad.left_bumper) lift.retract();
-        else if(gamepad.right_bumper) lift.extend();
-        else lift.retracting(false);
+        if(gamepad.left_bumper){
+            formerLeftBumper = true;
+        }
+
+        if(formerLeftBumper){
+            if(!gamepad.left_bumper){
+                scoringV2.toggle("highgoal");
+                formerLeftBumper = false;
+            }
+        }
+
+        if(gamepad.y){
+            formerY = true;
+        }
+
+        if(formerY){
+            if(!gamepad.y){
+                scoringV2.release();
+
+                formerY = false;
+            }
+        }
+
+//        if(gamepad.right_bumper){
+//            formerRightBumper = true;
+//        }
+//
+//        if(formerRightBumper){
+//            if(!gamepad.right_bumper){
+//                scoringV2.lower();
+//
+//                formerRightBumper = false;
+//            }
+//        }
+
 
 
 
         //scoring.run((int)lift.getCurrentPosition() == 3);
 
-        telemetry.addData("Stage",lift.getStageLevel());
-        telemetry.addData("StageHeight",lift.getCurrentPosition());
-        telemetry.addData("StageTarget",lift.getTargetPosition());
-        telemetry.addData("Lift Status", lift.movementState());
+
+        telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
+        telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
 
     }
 
