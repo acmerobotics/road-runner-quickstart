@@ -45,6 +45,7 @@ public class MeccRobot extends Mechanism{
         acquirerControls(gamepad);
         carouselRun(gamepad);
         lift(gamepad);
+        colorRumble(gamepad);
         scoringV2.update();
         telemetry.update();
     }
@@ -84,7 +85,11 @@ public class MeccRobot extends Mechanism{
         else if (gamepad.dpad_right) carousel.run(true,false);
         else carousel.run(false,false);
     }
-
+    public void colorRumble(Gamepad gamepad) {
+        if(blockSense.hasFreight()) {
+            gamepad.rumble(50, 50, 50);
+        }
+    }
     public void lift(Gamepad gamepad){
         //lift code here
         if(gamepad.left_bumper){
