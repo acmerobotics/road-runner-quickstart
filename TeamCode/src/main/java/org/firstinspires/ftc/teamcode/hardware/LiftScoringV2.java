@@ -18,30 +18,35 @@ public class LiftScoringV2 extends Mechanism{
 
     public void raise(String goal){
         if(goal.equals("highgoal")){
-            Runnable extendOut = new Runnable() {
+            Runnable run = new Runnable() {
                 @Override
                 public void run() {
                     scoring.goToEnd();
                 }
             };
-            lift.setTargetPosition(7);
-            delay.delay(extendOut,100);
+            scoring.tuckPos();
+            lift.raise();
+            lift.retracting(false);
+            delay.delay(run,150);
             movementState = "EXTEND";
         }
     }
 
 
     public void lower(){
-        Runnable detract = new Runnable() {
+        scoring.goToStart();
+        scoring.tuckPos();
+        Runnable run = new Runnable() {
             @Override
             public void run() {
-                lift.setTargetPosition(0);
                 lift.retracting(true);
+                lift.lower();
+                scoring.depositReset();
             }
         };
 
-        scoring.goToStart();
-        delay.delay(detract,testingInt);
+        delay.delay(run,400);
+
         movementState = "DETRACT";
     }
 
@@ -56,15 +61,15 @@ public class LiftScoringV2 extends Mechanism{
     }
     public void release(){
         if(!movementState.equals("DETRACT")){
+            scoring.goToEnd();
             scoring.dump();
-            Runnable toggle = new Runnable() {
+            Runnable run = new Runnable() {
                 @Override
                 public void run() {
-                    toggle("highgoal");
+                    lower();
                 }
             };
-
-            delay.delay(toggle,350);
+            delay.delay(run,700);
         }
     }
 

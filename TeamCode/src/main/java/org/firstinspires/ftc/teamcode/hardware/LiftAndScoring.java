@@ -73,7 +73,8 @@ public class LiftAndScoring extends Mechanism{
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                scoring.goToEnd();            }
+                scoring.goToEnd();
+            }
         };
         scoring.tuckPos();
         lift.raise();
