@@ -19,6 +19,9 @@ public class ColorTest extends LinearOpMode {
         while (opModeIsActive()) { ;
             telemetry.addData("blocc", color.hasFreight());
             telemetry.update();
+            if(color.hasFreight()) {
+                gamepad1.rumble(2);
+            }
         }
     }
 }
