@@ -35,7 +35,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     //272 mm w2w (wheel to wheel)
     // ~30 mm odo2fwheel (odo to front wheel)
     // w2w/w - odo2fwheel
-    public static double FORWARD_OFFSET = 4.40945; // in; offset of the lateral wheel
+    public static double FORWARD_OFFSET = -5.1; // in; offset of the lateral wheel
 
     public static double X_MULTIPLIER = 1.01085867006; // Multiplier in the X direction
     public static double Y_MULTIPLIER = 1.00627343748; // Multiplier in the Y direction
