@@ -132,7 +132,8 @@ public class MeccRobot extends Mechanism{
 
         //scoring.run((int)lift.getCurrentPosition() == 3);
 
-
+        telemetry.addData("liftpos: ", scoringV2.getPos());
+        telemetry.addData("targetlift: ", scoringV2.getTargetPos());
         telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
         telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
 

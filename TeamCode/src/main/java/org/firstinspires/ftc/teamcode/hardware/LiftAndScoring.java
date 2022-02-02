@@ -91,11 +91,18 @@ public class LiftAndScoring extends Mechanism{
             public void run() {
                 lift.retracting(true);
                 lift.lower();
-                scoring.depositReset();
             }
         };
 
-        delay.delay(run,400);
+        Runnable beeeep = new Runnable() {
+            @Override
+            public void run() {
+                scoring.depositReset();
+
+            }
+        };
+        delay.delay(run,600);
+        delay.delay(beeeep,1500);
 
     }
     public void update(){

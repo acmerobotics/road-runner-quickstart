@@ -63,7 +63,7 @@ public class Lift extends Mechanism{
 
         //damp
         retract = false;
-        retMult = 0.000035;
+        retMult = 0.1;
     }
 
     public void update() {

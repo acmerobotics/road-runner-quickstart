@@ -42,10 +42,11 @@ public class LiftScoringV2 extends Mechanism{
                 lift.retracting(true);
                 lift.lower();
                 scoring.depositReset();
+
             }
         };
 
-        delay.delay(run,400);
+        delay.delay(run,600);
 
         movementState = "DETRACT";
     }
@@ -91,5 +92,12 @@ public class LiftScoringV2 extends Mechanism{
 
     }
 
+    public double getPos() {
+        return lift.getCurrentPosition();
+    }
+
+    public double getTargetPos() {
+        return lift.getTargetPosition();
+    }
 
 }
