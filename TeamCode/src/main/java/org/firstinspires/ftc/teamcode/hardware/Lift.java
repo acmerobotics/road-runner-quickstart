@@ -17,18 +17,18 @@ public class Lift extends Mechanism{
     public static double HEIGHT_INCREMENT = 1.5;
     // lift positions
     public static double maxPos = 15;
-    public static double midPos = 5;
+    public static double midPos = 9;
     public static double carriageMarker = 3;
     public static double minPos = 0;
 
-    public static PIDCoefficients coeffs = new PIDCoefficients(0.3, 0, 0);
+    public static PIDCoefficients coeffs = new PIDCoefficients(0.2, 0, 0);
     public static double kF = 0; //min power to go against g
     PIDFController controller;
 
     // lift constants
     public static double SPOOL_DIAMETER_IN = 1.81102;
     public static double MOTOR_RATIO = 5.2;
-    public static double TICKS_PER_REV = MOTOR_RATIO * 28.0;
+    public static double TICKS_PER_REV = 145.1;
     public static double GEAR_RATIO = 1.0;
 
     public static double[] positionHistory = new double[]{10};
