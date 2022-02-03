@@ -46,6 +46,7 @@ public class MeccRobot extends Mechanism{
         carouselRun(gamepad);
         lift(gamepad);
         colorRumble(gamepad);
+        telemetry.addData("has freight",blockSense.hasFreight());
         scoringV2.update();
         telemetry.update();
     }

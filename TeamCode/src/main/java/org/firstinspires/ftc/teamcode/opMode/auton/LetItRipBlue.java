@@ -7,10 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
+import org.firstinspires.ftc.teamcode.hardware.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.Lift;
+import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
 import org.firstinspires.ftc.teamcode.hardware.MeccRobot;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -19,14 +22,15 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 public class LetItRipBlue extends LinearOpMode {
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
+    private DelayCommand delay = new DelayCommand();
 
+    public static double tuningNumber = 18;
     @Override
     public void runOpMode() throws InterruptedException {
-        MeccRobot robot = new MeccRobot();
-        robot.init(hardwareMap);
-
-        SampleTankDrive drive = new SampleTankDrive(hardwareMap);
-        drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LiftScoringV2 scoringMech = new LiftScoringV2();
+        scoringMech.init(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //Initialize Mechs
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -39,13 +43,34 @@ public class LetItRipBlue extends LinearOpMode {
         double carouselX = -52;
         double parkX = 56;
 
+        Runnable releaseBox = new Runnable() {
+            @Override
+            public void run() {
+                scoringMech.release();
+            }
+        };
+
         Pose2d startPos = new Pose2d(startx,starty, Math.toRadians(180));
 
-        TrajectorySequence mashallah = drive.trajectorySequenceBuilder(startPos)
-                .back(5)
+        TrajectorySequence taahkbeer = drive.trajectorySequenceBuilder(startPos)
+                .addDisplacementMarker(()->{
+                    scoringMech.toggle("highgoal");
 
+                })
+                .back(tuningNumber)
+                .addDisplacementMarker(()->{
+                    scoringMech.release();
+                })
 
                 .build();
+
+        while (!opModeIsActive() && !isStopRequested()) {
+            telemetry.addData("Status", "Waiting in init");
+            telemetry.update();
+        }
+
+        drive.followTrajectorySequence(taahkbeer);
+
 
 
     }
