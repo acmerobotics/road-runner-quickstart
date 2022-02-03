@@ -27,7 +27,7 @@ public class stevenMode extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
-
+    private
     public LiftScoringV2 scoringMech= new LiftScoringV2();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -35,8 +35,11 @@ public class stevenMode extends LinearOpMode {
     public static double tuningTimer = 1;
 
 
-    public static double bankcurveX = 0;
-    public static double bankcurveY = 0;
+    public static double startx = 0;
+    public static double starty = -72;
+
+    public static double bankcurveX = -3;
+    public static double bankcurveY = starty + 22;
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -54,8 +57,7 @@ public class stevenMode extends LinearOpMode {
             }
         };
 
-        double startx = 0;
-        double starty = -72;
+
 
 
 
@@ -71,7 +73,8 @@ public class stevenMode extends LinearOpMode {
                     scoringMech.release();
                 })
                 .waitSeconds(5)
-
+                .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
+                .forward(10)
                 .build();
 
 //        TrajectorySequence taahkbeer = drive.trajectorySequenceBuilder(startPos)
