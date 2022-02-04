@@ -60,10 +60,6 @@ public class stevenMode extends LinearOpMode {
             }
         };
 
-
-
-
-
         Pose2d startPos = new Pose2d(startx,starty, Math.toRadians(180));
         drive.setPoseEstimate(startPos);
         TrajectorySequence allahuackbar = drive.trajectorySequenceBuilder(startPos)

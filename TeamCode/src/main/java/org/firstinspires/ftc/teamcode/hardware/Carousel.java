@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Carousel extends Mechanism {
     private DcMotor carousel;
     public static Double speed = 0.5;
+    public static Double phase0Speed = 0.5;
+    public static Double phase1Speed = 1.0;
+    private DelayCommand delay = new DelayCommand();
 
     public void init(HardwareMap hwMap) {
         carousel = hwMap.dcMotor.get("carousel");
@@ -27,5 +30,33 @@ public class Carousel extends Mechanism {
         else carousel.setPower(0);
     }
 
+    public void autoRun(int direction) {
+
+        Runnable phase0 = new Runnable() {
+            @Override
+            public void run() {
+                carousel.setPower(direction * phase0Speed);
+            }
+        };
+
+        Runnable phase1 = new Runnable() {
+            @Override
+            public void run() {
+                carousel.setPower(direction * phase1Speed);
+            }
+        };
+
+        Runnable phase2 = new Runnable() {
+            @Override
+            public void run() {
+                carousel.setPower(0);
+            }
+        };
+
+        delay.delay(phase0,0);
+        delay.delay(phase1, 250);
+        delay.delay(phase2,300);
+
+    }
 
 }
