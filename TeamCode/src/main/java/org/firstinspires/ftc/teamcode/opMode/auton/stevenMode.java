@@ -32,7 +32,7 @@ public class stevenMode extends LinearOpMode {
     private LiftScoringV2 scoringMech= new LiftScoringV2();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    public static double tuningNumber = 18;
+    public static double tuningNumber = 40;
     public static double tuningTimer = 1;
 
 
@@ -67,7 +67,7 @@ public class stevenMode extends LinearOpMode {
                     scoringMech.toggle("highgoal");
 
                 })
-                .back(tuningNumber)
+                .back(18)
                 .addTemporalMarker(tuningTimer,()->{
                     scoringMech.release();
                 })
@@ -76,7 +76,17 @@ public class stevenMode extends LinearOpMode {
                 .addDisplacementMarker(()->{
                     drive.acquirerRuns = true;
                 })
-                .forward(48)
+                .forward(tuningNumber)
+                .waitSeconds(2)
+                .back(tuningNumber)
+                .addTemporalMarker(tuningTimer, () -> {
+                    scoringMech.toggle("highgoal");
+                    drive.acquirerRuns = false;
+                })
+                .setReversed(true)
+                .splineTo(new Vector2d(18, starty), Math.toRadians(0))
+                .addDisplacementMarker(() -> scoringMech.release())
+                .waitSeconds(3)
                 .build();
 
 //        TrajectorySequence taahkbeer = drive.trajectorySequenceBuilder(startPos)
