@@ -42,6 +42,7 @@ public class stevenMode extends LinearOpMode {
 
     public static double bankcurveX = -3;
     public static double bankcurveY = starty + 22;
+    public int cycles = 2;
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -88,8 +89,6 @@ public class stevenMode extends LinearOpMode {
 //                .UNSTABLE_addTemporalMarkerOffset(0,()->{
 //                    scoringMech.release();
 //                });
-
-        int cycles = 1;
         for(int i = 0; i < cycles; i++){
             alFatihah = alFatihah
                     //start of taahkbeer
@@ -109,7 +108,9 @@ public class stevenMode extends LinearOpMode {
                     .splineTo(new Vector2d(18, starty), Math.toRadians(0))
                     .UNSTABLE_addTemporalMarkerOffset(0,()->{
                         scoringMech.release();
-                    });
+                    })
+                    .waitSeconds(3)
+                    .setReversed(false);
         }
 
         //mashallah
