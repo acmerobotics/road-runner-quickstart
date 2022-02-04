@@ -27,6 +27,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.hardware.Acquirer;
+import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
@@ -76,6 +78,10 @@ public class SampleMecanumDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
     private LiftScoringV2 scoringMech;
+    private FreightSensor sensor;
+    private Acquirer acquirer;
+    public boolean acquirerRuns = false;
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -218,6 +224,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         if(scoringMech != null){
             scoringMech.update();
         }
+        if(acquirer != null) {
+            if(sensor != null){
+                acquirer.run(acquirerRuns && !sensor.hasFreight(),acquirerRuns);
+            }
+        }
     }
 
     public void waitForIdle() {
@@ -328,5 +339,10 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void setSlides(LiftScoringV2 scoringMech){
         this.scoringMech = scoringMech;
 
+    }
+
+    public void setAcquirer(Acquirer acquirer, FreightSensor sensor){
+        this.sensor = sensor;
+        this.acquirer = acquirer;
     }
 }

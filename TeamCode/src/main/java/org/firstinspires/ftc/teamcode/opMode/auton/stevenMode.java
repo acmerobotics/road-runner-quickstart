@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.DelayCommand;
+import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 import org.firstinspires.ftc.teamcode.hardware.Lift;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
@@ -27,8 +28,8 @@ public class stevenMode extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
-    private
-    public LiftScoringV2 scoringMech= new LiftScoringV2();
+    private FreightSensor sensor = new FreightSensor();
+    private LiftScoringV2 scoringMech= new LiftScoringV2();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public static double tuningNumber = 18;
@@ -46,9 +47,11 @@ public class stevenMode extends LinearOpMode {
         acquirer.init(hardwareMap);
         carousel.init(hardwareMap);
         scoringMech.init(hardwareMap);
+        sensor.init(hardwareMap);
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setSlides(scoringMech);
+        drive.setAcquirer(acquirer,sensor);
 
         Runnable toggleSlides = new Runnable() {
             @Override
@@ -72,9 +75,12 @@ public class stevenMode extends LinearOpMode {
                 .addTemporalMarker(tuningTimer,()->{
                     scoringMech.release();
                 })
-                .waitSeconds(5)
+                .waitSeconds(3)
                 .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
-                .forward(10)
+                .addDisplacementMarker(()->{
+                    drive.acquirerRuns = true;
+                })
+                .forward(48)
                 .build();
 
 //        TrajectorySequence taahkbeer = drive.trajectorySequenceBuilder(startPos)
