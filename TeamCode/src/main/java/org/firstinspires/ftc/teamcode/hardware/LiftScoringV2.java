@@ -67,7 +67,7 @@ public class LiftScoringV2 extends Mechanism{
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
-                    lower();
+                    toggle("highgoal");
                 }
             };
             delay.delay(run,700);

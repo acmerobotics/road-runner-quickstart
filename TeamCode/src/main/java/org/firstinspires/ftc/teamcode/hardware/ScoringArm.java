@@ -42,7 +42,7 @@ public class ScoringArm extends ServoMechanism{
     /////DEPO SERVO POSITIONS
     public static double depoStartPos = 0.45;
     public static double depoEndPos = 0.9;
-    public static double depoTuckPos= 0.1;
+    public static double depoTuckPos= 0.3;
 
     private boolean formerBoolArm;
     private boolean formerBoolDeposit;
