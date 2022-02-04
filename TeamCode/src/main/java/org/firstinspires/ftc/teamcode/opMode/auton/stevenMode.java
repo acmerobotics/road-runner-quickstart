@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 
 @Config
 @Autonomous
@@ -53,41 +54,101 @@ public class stevenMode extends LinearOpMode {
         drive.setSlides(scoringMech);
         drive.setAcquirer(acquirer,sensor);
 
-        Runnable toggleSlides = new Runnable() {
-            @Override
-            public void run() {
-                scoringMech.toggle("highgoal");
-            }
-        };
 
         Pose2d startPos = new Pose2d(startx,starty, Math.toRadians(180));
         drive.setPoseEstimate(startPos);
-        TrajectorySequence allahuackbar = drive.trajectorySequenceBuilder(startPos)
+
+        TrajectorySequenceBuilder alFatihah = drive.trajectorySequenceBuilder(startPos)
+                .setReversed(false)
                 .addDisplacementMarker(()->{
                     scoringMech.toggle("highgoal");
-
                 })
-                .back(18)
-                .addTemporalMarker(tuningTimer,()->{
+                .UNSTABLE_addTemporalMarkerOffset(tuningTimer,()->{
                     scoringMech.release();
                 })
-                .waitSeconds(3)
-                .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
-                .addDisplacementMarker(()->{
-                    drive.acquirerRuns = true;
-                })
-                .forward(tuningNumber)
-                .waitSeconds(2)
-                .back(tuningNumber)
-                .addTemporalMarker(tuningTimer, () -> {
-                    scoringMech.toggle("highgoal");
-                    drive.acquirerRuns = false;
-                })
-                .setReversed(true)
-                .splineTo(new Vector2d(18, starty), Math.toRadians(0))
-                .addDisplacementMarker(() -> scoringMech.release())
-                .waitSeconds(3)
-                .build();
+                .back(18)
+                .waitSeconds(3);
+
+//        TrajectorySequenceBuilder taahkbeer = drive.trajectorySequenceBuilder(alFatihah.build().end())
+//                .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
+//                .addDisplacementMarker(()->{
+//                    drive.acquirerRuns = true;
+//                })
+//                .forward(tuningNumber)
+//                .waitSeconds(2);
+
+//        TrajectorySequenceBuilder allahhuackbar = drive.trajectorySequenceBuilder(taahkbeer.build().end())
+//                .back(tuningNumber)
+//                .addDisplacementMarker(() -> {
+//                    scoringMech.toggle("highgoal");
+//                    drive.acquirerRuns = false;
+//                })
+//                .setReversed(true)
+//                .splineTo(new Vector2d(18, starty), Math.toRadians(0))
+//                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+//                    scoringMech.release();
+//                });
+
+        int cycles = 1;
+        for(int i = 0; i < cycles; i++){
+            alFatihah = alFatihah
+                    //start of taahkbeer
+                    .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
+                    .addDisplacementMarker(()->{
+                        drive.acquirerRuns = true;
+                    })
+                    .forward(tuningNumber)
+                    .waitSeconds(2)
+                    //start of allahhuackbar
+                    .back(tuningNumber)
+                    .addDisplacementMarker(() -> {
+                        scoringMech.toggle("highgoal");
+                        drive.acquirerRuns = false;
+                    })
+                    .setReversed(true)
+                    .splineTo(new Vector2d(18, starty), Math.toRadians(0))
+                    .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                        scoringMech.release();
+                    });
+        }
+
+        //mashallah
+        alFatihah = alFatihah
+                    .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
+                    .forward(tuningNumber);
+
+        TrajectorySequence mashallah = alFatihah.build();
+//        TrajectorySequenceBuilder taahkbeers = drive.trajectorySequenceBuilder(startPos)
+//                .setReversed(false)
+//                .addDisplacementMarker(()->{
+//                    scoringMech.toggle("highgoal");
+//                })
+//                .UNSTABLE_addTemporalMarkerOffset(tuningTimer,()->{
+//                    scoringMech.release();
+//                })
+//                .back(18)
+//                .waitSeconds(3)
+//                .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
+//                .addDisplacementMarker(()->{
+//                    drive.acquirerRuns = true;
+//                })
+//                .forward(tuningNumber)
+//                .waitSeconds(2)
+//                .back(tuningNumber)
+//                .addDisplacementMarker(() -> {
+//                    scoringMech.toggle("highgoal");
+//                    drive.acquirerRuns = false;
+//                })
+//                .setReversed(true)
+//                .splineTo(new Vector2d(18, starty), Math.toRadians(0))
+//                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+//                    scoringMech.release();
+//                })
+//                .waitSeconds(3);
+
+
+//                .addDisplacementMarker(() -> scoringMech.release())
+//                .waitSeconds(3)
 
 //        TrajectorySequence taahkbeer = drive.trajectorySequenceBuilder(startPos)
 //                .addDisplacementMarker(()->{
@@ -106,10 +167,6 @@ public class stevenMode extends LinearOpMode {
             telemetry.update();
         }
 
-        drive.followTrajectorySequence(allahuackbar);
-        while(!isStopRequested()){
-            telemetry.addData("Status","doing other stuff");
-            telemetry.update();
-        }
+       drive.followTrajectorySequence(mashallah);
     }
 }
