@@ -20,7 +20,10 @@ public class BluePark extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         LiftScoringV2 scoringMech = new LiftScoringV2();
         scoringMech.init(hardwareMap);
-        Pose2d startPos = new Pose2d(startx,starty,0);
+
+        drive.setSlides(scoringMech);
+
+        Pose2d startPos = new Pose2d(startx,starty,Math.toRadians(0));
         drive.setPoseEstimate(startPos);
         TrajectorySequence alFatihah = drive.trajectorySequenceBuilder(startPos)
                 .setReversed(false)
@@ -32,8 +35,8 @@ public class BluePark extends LinearOpMode {
                 })
                 .back(18)
                 .waitSeconds(0.1)
-                .lineToSplineHeading(new Pose2d(-3,0,270))
-                .forward(40)
+                .lineToLinearHeading(new Pose2d(3,0,Math.toRadians(270)))
+                .forward(52)
                 .build();
 
         while (!opModeIsActive() && !isStopRequested()) {

@@ -23,6 +23,9 @@ public class RedPark extends LinearOpMode {
         scoringMech.init(hardwareMap);
         Pose2d startPos = new Pose2d(startx,starty,0);
         drive.setPoseEstimate(startPos);
+
+        drive.setSlides(scoringMech);
+
         TrajectorySequence alFatihah = drive.trajectorySequenceBuilder(startPos)
                 .setReversed(false)
                 .addDisplacementMarker(()->{
@@ -33,8 +36,8 @@ public class RedPark extends LinearOpMode {
                 })
                 .back(18)
                 .waitSeconds(0.1)
-                .lineToSplineHeading(new Pose2d(-3,0,90))
-                .forward(40)
+                .lineToLinearHeading(new Pose2d(3,0,Math.toRadians(90)))
+                .forward(52)
                 .build();
 
         while (!opModeIsActive() && !isStopRequested()) {
