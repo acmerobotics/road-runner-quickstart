@@ -40,9 +40,9 @@ public class stevensBalls extends LinearOpMode {
     public static double startx = 0;
     public static double starty = 72;
 
-    public static double bankcurveX = 5;
+    public static double bankcurveX = -3.5;
     public static double bankcurveY = starty - 22;
-    public static int cycles = 4;
+    public static int cycles = 3;
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -92,14 +92,14 @@ public class stevensBalls extends LinearOpMode {
         for(int i = 0; i < cycles; i++){
             alFatihah = alFatihah
                     //start of taahkbeer
-                    .splineTo(new Vector2d(bankcurveX-2*i,bankcurveY),Math.toRadians(90))
+                    .splineTo(new Vector2d(bankcurveX-2*i,bankcurveY),Math.toRadians(270))
                     .addDisplacementMarker(()->{
                         drive.acquirerRuns = true;
                     })
-                    .lineToLinearHeading(new Pose2d(bankcurveX-2*i,bankcurveY+tuningNumber,Math.toRadians(90)))
+                    .lineToLinearHeading(new Pose2d(bankcurveX-2*i,bankcurveY-tuningNumber,Math.toRadians(270)))
                     .waitSeconds(0.1)
                     //start of allahhuackbar
-                    .lineToLinearHeading(new Pose2d(bankcurveX-2*i,bankcurveY,Math.toRadians(90)))
+                    .lineToLinearHeading(new Pose2d(bankcurveX-2*i,bankcurveY,Math.toRadians(270)))
                     .addDisplacementMarker(() -> {
                         scoringMech.toggle("highgoal");
                         drive.acquirerRuns = false;
@@ -115,7 +115,7 @@ public class stevensBalls extends LinearOpMode {
 
         //mashallah
         alFatihah = alFatihah
-                .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
+                .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(270))
                 .forward(tuningNumber);
 
         TrajectorySequence mashallah = alFatihah.build();

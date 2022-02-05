@@ -45,7 +45,7 @@ public class stevenMode extends LinearOpMode {
 
     public static double bankcurveX = -5;
     public static double bankcurveY = starty + 22;
-    public static int cycles = 4;
+    public static int cycles = 3;
 
     public static double maxVel = 40;
 
