@@ -33,7 +33,7 @@ public class stevensBalls extends LinearOpMode {
     private LiftScoringV2 scoringMech= new LiftScoringV2();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    public static double tuningNumber = 40;
+    public static double tuningNumber = 36;
     public static double tuningTimer = 1;
 
 
@@ -42,7 +42,7 @@ public class stevensBalls extends LinearOpMode {
 
     public static double bankcurveX = -3.5;
     public static double bankcurveY = starty - 22;
-    public static int cycles = 3;
+    public static int cycles = 2;
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -92,20 +92,20 @@ public class stevensBalls extends LinearOpMode {
         for(int i = 0; i < cycles; i++){
             alFatihah = alFatihah
                     //start of taahkbeer
-                    .splineTo(new Vector2d(bankcurveX-2*i,bankcurveY),Math.toRadians(270))
+                    .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(270))
                     .addDisplacementMarker(()->{
                         drive.acquirerRuns = true;
                     })
-                    .lineToLinearHeading(new Pose2d(bankcurveX-2*i,bankcurveY-tuningNumber,Math.toRadians(270)))
+                    .lineToLinearHeading(new Pose2d(bankcurveX-.5*i,bankcurveY-tuningNumber-i,Math.toRadians(270)))
                     .waitSeconds(0.1)
                     //start of allahhuackbar
-                    .lineToLinearHeading(new Pose2d(bankcurveX-2*i,bankcurveY,Math.toRadians(270)))
+                    .lineToLinearHeading(new Pose2d(bankcurveX-.5*i,bankcurveY-.5*i,Math.toRadians(270)))
                     .addDisplacementMarker(() -> {
                         scoringMech.toggle("highgoal");
                         drive.acquirerRuns = false;
                     })
                     .setReversed(true)
-                    .splineTo(new Vector2d(18, starty), Math.toRadians(0))
+                    .splineTo(new Vector2d(20+i, starty), Math.toRadians(0))
                     .UNSTABLE_addTemporalMarkerOffset(0,()->{
                         scoringMech.release();
                     })
