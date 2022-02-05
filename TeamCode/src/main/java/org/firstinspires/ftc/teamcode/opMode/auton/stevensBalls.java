@@ -104,13 +104,11 @@ public class stevensBalls extends LinearOpMode {
                         scoringMech.toggle("highgoal");
                         drive.acquirerRuns = false;
                     })
-                    .setReversed(true)
                     .splineTo(new Vector2d(20+i, starty), Math.toRadians(0))
                     .UNSTABLE_addTemporalMarkerOffset(0,()->{
                         scoringMech.release();
                     })
-                    .waitSeconds(0.1)
-                    .setReversed(false);
+                    .waitSeconds(0.1);
         }
 
         //mashallah

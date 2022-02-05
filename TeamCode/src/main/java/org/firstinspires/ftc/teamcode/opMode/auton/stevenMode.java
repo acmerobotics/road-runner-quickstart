@@ -36,14 +36,14 @@ public class stevenMode extends LinearOpMode {
     private LiftScoringV2 scoringMech= new LiftScoringV2();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    public static double tuningNumber = 36;
+    public static double tuningNumber = 40;
     public static double tuningTimer = 1;
 
 
     public static double startx = 0;
     public static double starty = -72;
 
-    public static double bankcurveX = -5;
+    public static double bankcurveX = -3.5;
     public static double bankcurveY = starty + 22;
     public static int cycles = 3;
 
@@ -102,20 +102,20 @@ public class stevenMode extends LinearOpMode {
         for(int i = 0; i < cycles; i++){
             alFatihah = alFatihah
                     //start of taahkbeer
-                    .splineTo(new Vector2d(bankcurveX-2*i,bankcurveY),Math.toRadians(90))
+                    .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
                     .addDisplacementMarker(()->{
                         drive.acquirerRuns = true;
                     })
-                    .lineToSplineHeading(new Pose2d(bankcurveX-2*i,bankcurveY+tuningNumber+i*2,Math.toRadians(90)))
+                    .lineToSplineHeading(new Pose2d(bankcurveX-.5*i,bankcurveY+tuningNumber+i*2+3,Math.toRadians(90)))
                     .waitSeconds(0.1)
                     //start of allahhuackbar
-                    .lineToSplineHeading(new Pose2d(bankcurveX-2*i,bankcurveY,Math.toRadians(90)))
+                    .lineToSplineHeading(new Pose2d(bankcurveX-.5*i,bankcurveY,Math.toRadians(90)))
                     .addDisplacementMarker(() -> {
                         scoringMech.toggle("highgoal");
                         drive.acquirerRuns = false;
                     })
                     .setReversed(true)
-                    .splineTo(new Vector2d(18, starty), Math.toRadians(0))
+                    .splineTo(new Vector2d(20+i, starty), Math.toRadians(0))
                     .UNSTABLE_addTemporalMarkerOffset(0,()->{
                         scoringMech.release();
                     })
