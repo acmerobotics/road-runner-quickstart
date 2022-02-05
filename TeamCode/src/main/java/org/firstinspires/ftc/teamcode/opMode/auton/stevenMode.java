@@ -33,7 +33,7 @@ public class stevenMode extends LinearOpMode {
     private LiftScoringV2 scoringMech= new LiftScoringV2();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    public static double tuningNumber = 40;
+    public static double tuningNumber = 30;
     public static double tuningTimer = 1;
 
 
