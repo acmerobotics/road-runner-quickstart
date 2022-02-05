@@ -5,12 +5,15 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
@@ -33,7 +36,7 @@ public class stevenMode extends LinearOpMode {
     private LiftScoringV2 scoringMech= new LiftScoringV2();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    public static double tuningNumber = 30;
+    public static double tuningNumber = 36;
     public static double tuningTimer = 1;
 
 
@@ -43,6 +46,12 @@ public class stevenMode extends LinearOpMode {
     public static double bankcurveX = -5;
     public static double bankcurveY = starty + 22;
     public static int cycles = 4;
+
+    public static double maxVel = 40;
+
+    TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(maxVel, DriveConstants.MAX_ANG_VEL,
+            DriveConstants.TRACK_WIDTH);
+
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -67,6 +76,7 @@ public class stevenMode extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(tuningTimer,()->{
                     scoringMech.release();
                 })
+                .setVelConstraint(velocityConstraint)
                 .back(18)
                 .waitSeconds(0.1);
 
@@ -96,10 +106,10 @@ public class stevenMode extends LinearOpMode {
                     .addDisplacementMarker(()->{
                         drive.acquirerRuns = true;
                     })
-                    .lineToLinearHeading(new Pose2d(bankcurveX-2*i,bankcurveY+tuningNumber,Math.toRadians(90)))
+                    .lineToSplineHeading(new Pose2d(bankcurveX-2*i,bankcurveY+tuningNumber+i*2,Math.toRadians(90)))
                     .waitSeconds(0.1)
                     //start of allahhuackbar
-                    .lineToLinearHeading(new Pose2d(bankcurveX-2*i,bankcurveY,Math.toRadians(90)))
+                    .lineToSplineHeading(new Pose2d(bankcurveX-2*i,bankcurveY,Math.toRadians(90)))
                     .addDisplacementMarker(() -> {
                         scoringMech.toggle("highgoal");
                         drive.acquirerRuns = false;
