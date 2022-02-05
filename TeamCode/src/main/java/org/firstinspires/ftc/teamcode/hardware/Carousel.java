@@ -54,8 +54,8 @@ public class Carousel extends Mechanism {
         };
 
         delay.delay(phase0,0);
-        delay.delay(phase1, 250);
-        delay.delay(phase2,300);
+        delay.delay(phase1, 700);
+        delay.delay(phase2,800);
 
     }
 
