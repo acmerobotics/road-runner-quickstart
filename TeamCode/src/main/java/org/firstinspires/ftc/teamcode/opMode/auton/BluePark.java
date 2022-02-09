@@ -30,20 +30,22 @@ public class BluePark extends LinearOpMode {
                 .addDisplacementMarker(()->{
                     scoringMech.toggle("highgoal");
                 })
-                .UNSTABLE_addTemporalMarkerOffset(1,()->{
+                .UNSTABLE_addTemporalMarkerOffset(2,()->{
                     scoringMech.release();
                 })
-                .back(18)
-                .waitSeconds(0.1)
-                .lineToLinearHeading(new Pose2d(3,0,Math.toRadians(270)))
-                .forward(52)
+                .lineToLinearHeading(new Pose2d(-18,24,Math.toRadians(0)))
+//                .back(18)
+//                .waitSeconds(0.1)
+//                .lineToLinearHeading(new Pose2d(5,0,Math.toRadians(270)))
+//                .lineToSplineHeading(new Pose2d(3,52,Math.toRadians(270)))
+                .waitSeconds(5)
                 .build();
 
         while (!opModeIsActive() && !isStopRequested()) {
             telemetry.addData("Status", "Waiting in init");
             telemetry.update();
         }
-
+        sleep(13000);
         drive.followTrajectorySequence(alFatihah);
 
 

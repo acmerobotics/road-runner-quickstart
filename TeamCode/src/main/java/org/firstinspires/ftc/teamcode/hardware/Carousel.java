@@ -8,9 +8,18 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public class Carousel extends Mechanism {
     private DcMotor carousel;
-    public static Double speed = 0.5;
-    public static Double phase0Speed = 0.5;
+
+    public static Double speed = 0.25;
+
+    public static Double phase0Speed = 0.55;
     public static Double phase1Speed = 1.0;
+
+    public static int phase0Timer = 1000;
+    public static int phase1Timer = 1100;
+
+    public static double coastingValue = 0.0;
+    public static double coastingDefinition = 0.0;
+
     private DelayCommand delay = new DelayCommand();
 
     public void init(HardwareMap hwMap) {
@@ -54,9 +63,13 @@ public class Carousel extends Mechanism {
         };
 
         delay.delay(phase0,0);
-        delay.delay(phase1, 700);
-        delay.delay(phase2,800);
+        delay.delay(phase1, phase0Timer);
+        delay.delay(phase2,phase1Timer);
 
+    }
+
+    public void run(){
+        
     }
 
 }

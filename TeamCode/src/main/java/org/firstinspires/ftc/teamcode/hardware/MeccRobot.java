@@ -43,9 +43,12 @@ public class MeccRobot extends Mechanism{
     public void run(Gamepad gamepad){
         drive(gamepad);
         acquirerControls(gamepad);
-        carouselRun(gamepad);
+        //carouselRun(gamepad);
         lift(gamepad);
         colorRumble(gamepad);
+        //ducks
+        runA(gamepad);
+        runB(gamepad);
         telemetry.addData("has freight",blockSense.hasFreight());
         scoringV2.update();
         telemetry.update();
@@ -86,6 +89,30 @@ public class MeccRobot extends Mechanism{
         else if (gamepad.dpad_right) carousel.run(true,false);
         else carousel.run(false,false);
     }
+
+    public void runA(Gamepad gamepad){
+        if(gamepad.a){
+            formerA = true;
+        }
+        if(formerA){
+            if(!gamepad.a){
+                carousel.autoRun(-1);
+                formerA = false;
+            }
+        }
+    }
+    public void runB(Gamepad gamepad){
+        if(gamepad.b){
+            formerB = true;
+        }
+        if(formerB){
+            if(!gamepad.b){
+                carousel.autoRun(1);
+                formerB = false;
+            }
+        }
+    }
+
     public void colorRumble(Gamepad gamepad) {
         if(blockSense.hasFreight()) {
             gamepad.rumble(50, 50, 50);

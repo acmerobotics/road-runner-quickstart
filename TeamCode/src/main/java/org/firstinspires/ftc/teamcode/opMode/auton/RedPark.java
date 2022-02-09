@@ -31,13 +31,11 @@ public class RedPark extends LinearOpMode {
                 .addDisplacementMarker(()->{
                     scoringMech.toggle("highgoal");
                 })
-                .UNSTABLE_addTemporalMarkerOffset(1,()->{
+                .UNSTABLE_addTemporalMarkerOffset(2,()->{
                     scoringMech.release();
                 })
-                .back(18)
-                .waitSeconds(0.1)
-                .lineToLinearHeading(new Pose2d(3,0,Math.toRadians(90)))
-                .forward(52)
+                .lineToLinearHeading(new Pose2d(-19,-24,Math.toRadians(0)))
+                .waitSeconds(3)
                 .build();
 
         while (!opModeIsActive() && !isStopRequested()) {
@@ -45,6 +43,7 @@ public class RedPark extends LinearOpMode {
             telemetry.update();
         }
 
+        sleep(13000);
         drive.followTrajectorySequence(alFatihah);
 
 

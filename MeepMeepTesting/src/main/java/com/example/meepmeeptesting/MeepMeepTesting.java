@@ -9,16 +9,17 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
-        double startx = 0;
+        double startx = -12;
         double starty = -72;
+        double heading = 270;
 
 
-
-        Pose2d startPos = new Pose2d(startx,starty, Math.toRadians(180));
+        Pose2d startPos = new Pose2d(startx,starty, Math.toRadians(heading));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .setStartPose(startPos)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPos)
                                 /*.back(10)
@@ -33,25 +34,16 @@ public class MeepMeepTesting {
                                 .splineTo(new Vector2d(25, -65), Math.toRadians(200))
                                 .splineTo(new Vector2d(-12, -36), Math.toRadians(90))
                                 .waitSeconds(1)*/
-                                .back(5)
+                                .lineTo(new Vector2d(-12,-42))
+
+                                .splineTo(new Vector2d(-48,-48),Math.toRadians(90))
+                                //do stuff with high goal
+
                                 .build()
 
                 );
 
-        RoadRunnerBotEntity a = new DefaultBotBuilder(meepMeep)
-                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder((new Pose2d(-47, -62, Math.toRadians(0))))
-                                .back(5)
-                                .waitSeconds(2)
-                                //.turn(Math.toRadians(180))
 
-
-                                .splineTo(new Vector2d(-12, -36), Math.toRadians(-90))
-                                .build()
-
-                );
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
