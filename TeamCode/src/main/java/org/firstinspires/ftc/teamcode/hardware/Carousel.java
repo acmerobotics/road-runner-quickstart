@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.profile.MotionProfile;
+import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
+import com.acmerobotics.roadrunner.profile.MotionState;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class Carousel extends Mechanism {
@@ -12,6 +16,13 @@ public class Carousel extends Mechanism {
     public static Double phase0Speed = 0.5;
     public static Double phase1Speed = 1.0;
     private DelayCommand delay = new DelayCommand();
+
+    private MotionProfile b = MotionProfileGenerator.generateSimpleMotionProfile(
+            new MotionState(0, 0, 0),
+            new MotionState(60, 1, 0),
+            1,
+            40
+    );
 
     public void init(HardwareMap hwMap) {
         carousel = hwMap.dcMotor.get("carousel");
@@ -57,6 +68,9 @@ public class Carousel extends Mechanism {
         delay.delay(phase1, 700);
         delay.delay(phase2,800);
 
+    }
+    public void rrrun(MotionProfile profile, ElapsedTime timer, int direction) {
+        carousel.setPower(direction*profile.get(timer.seconds()).getV());
     }
 
 }
