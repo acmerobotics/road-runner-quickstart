@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Arm extends ServoMechanism{
+public class ServoManager extends ServoMechanism{
     //This class is meant to be a universal class for implementing arm like structures
     private Servo arm;
     private String hwMapName;
@@ -22,7 +22,7 @@ public class Arm extends ServoMechanism{
      * @param armStart start of range of servo
      * @param armEnd end of range of servo
      */
-    public Arm(String hwMapName,double armStart, double armEnd){
+    public ServoManager(String hwMapName, double armStart, double armEnd){
         this.hwMapName = hwMapName;
         this.armStart = armStart;
         this.armEnd = armEnd;

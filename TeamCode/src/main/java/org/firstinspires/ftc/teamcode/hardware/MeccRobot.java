@@ -34,6 +34,7 @@ public class MeccRobot extends Mechanism{
         acquirer.init(hwMap);
         carousel.init(hwMap);
         scoringV2.init(hwMap);
+        senseHub.init(hwMap);
     }
 
     public void init(HardwareMap hwmap, Telemetry telemetry){

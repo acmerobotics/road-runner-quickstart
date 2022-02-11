@@ -15,8 +15,8 @@ public class GearedServos extends ServoMechanism{
      ****/
 
 
-    private Arm portSide;
-    private Arm starBoard;
+    private ServoManager portSide;
+    private ServoManager starBoard;
     private boolean formerBool = false;
 
     /**
@@ -30,9 +30,9 @@ public class GearedServos extends ServoMechanism{
      */
     public GearedServos(String armServoRName, double armServoRStart, double armServoREnd,
                         String armServoLName, double armServoLStart, double armServoLEnd){
-        portSide = new Arm(armServoLName, armServoLStart, armServoLEnd) {
+        portSide = new ServoManager(armServoLName, armServoLStart, armServoLEnd) {
         };
-        starBoard = new Arm(armServoRName, armServoRStart, armServoREnd) {
+        starBoard = new ServoManager(armServoRName, armServoRStart, armServoREnd) {
         };
 
     }
