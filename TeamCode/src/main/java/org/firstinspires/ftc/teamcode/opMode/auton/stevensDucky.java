@@ -41,6 +41,7 @@ public class stevensDucky extends LinearOpMode {
     public static double bankcurveX = -5;
     public static double bankcurveY = starty + 22;
     public static int cycles = 4;
+
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -51,22 +52,28 @@ public class stevensDucky extends LinearOpMode {
 
         DelayCommand delay = new DelayCommand();
 
-        Pose2d startPos = new Pose2d(startx,starty, Math.toRadians(180));
+        Pose2d startPos = new Pose2d(0,0, Math.toRadians(0));
         drive.setPoseEstimate(startPos);
 
         TrajectorySequenceBuilder alFatihah = drive.trajectorySequenceBuilder(startPos)
-                .forward(16)
+                .lineToSplineHeading(new Pose2d(32,-5,45))
+                //.forward(32)
                 .addDisplacementMarker(() -> {
-                    Runnable car = new Runnable() {
-                        public void run() {
-                            carousel.run(true, false);
-                        }
-                    };
-                    delay.delay(car, 500);
+                    carousel.run(true,false);
                 })
                 .waitSeconds(5)
+                .addDisplacementMarker(()->{
+                    carousel.run(false,false);
+
+                })
                 .setReversed(true)
-                .splineTo(new Vector2d(25, -30), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(25,-2, Math.toRadians(0)), Math.toRadians(0))
+                .setReversed(false)
+                .splineTo(new Vector2d(35, -5), Math.toRadians(90));
+
+               // .splineTo(new Vector2d());
+
+        //3ftx3ftmovement
 
 //        TrajectorySequenceBuilder taahkbeer = drive.trajectorySequenceBuilder(alFatihah.build().end())
 //                .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
