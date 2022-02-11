@@ -14,6 +14,7 @@ public class MeccRobot extends Mechanism{
     private Carousel carousel = new Carousel();
     private LiftScoringV2 scoringV2 = new LiftScoringV2();
     private FreightSensor blockSense = new FreightSensor();
+    private SenseHub senseHub = new SenseHub();
 
     private boolean formerB = false;
     private boolean formerA = false;
@@ -114,8 +115,11 @@ public class MeccRobot extends Mechanism{
     }
 
     public void colorRumble(Gamepad gamepad) {
-        if(blockSense.hasFreight()) {
+        if(blockSense.hasFreight() && scoringV2.getMovementState()=="DETRACT") {
             gamepad.rumble(50, 50, 50);
+        }
+        else if(senseHub.inRange() && scoringV2.getMovementState()=="EXTEND"){
+            gamepad.rumble(100, 100, 50);
         }
     }
     public void lift(Gamepad gamepad){
