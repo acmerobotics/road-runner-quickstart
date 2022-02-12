@@ -9,10 +9,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.concurrent.TimeUnit;
+
+
 @Config
 public class Carousel extends Mechanism {
     private DcMotor carousel;
-
+    ElapsedTime time = new ElapsedTime();
     public static Double speed = 0.25;
 
     public static Double phase0Speed = 0.55;
@@ -23,6 +26,11 @@ public class Carousel extends Mechanism {
 
     public static double coastingValue = 0.0;
     public static double coastingDefinition = 0.0;
+
+    public static double timeRun = 1.0;
+    public static double rate = 0.1;
+    public static double refreshRate = 0.1;
+    public static double currentPower = 0;
 
     private DelayCommand delay = new DelayCommand();
 
@@ -80,7 +88,14 @@ public class Carousel extends Mechanism {
     }
 
     public void run(){
-        
+        if(time.time(TimeUnit.SECONDS) >= timeRun){
+            carousel.setPower(0);
+        }
+        else{
+            if(time.time(TimeUnit.SECONDS) % 0.1 == 0){
+
+            }
+        }
     }
     public void rrrun(MotionProfile profile, ElapsedTime timer, int direction) {
         carousel.setPower(direction*profile.get(timer.seconds()).getV());

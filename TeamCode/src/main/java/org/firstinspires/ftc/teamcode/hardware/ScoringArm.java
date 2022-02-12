@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
@@ -32,7 +31,7 @@ public class ScoringArm extends ServoMechanism{
             "armServoL", LIMIT_L_START, LIMIT_L_END
             );
 
-    private Arm deposit = new Arm("deposit",LIMIT_DEPO_START,LIMIT_DEPO_END);
+    private ServoManager deposit = new ServoManager("deposit",LIMIT_DEPO_START,LIMIT_DEPO_END);
 
     /////ARM SERVO POSITIONS
     public static double armStartPos = 0.04;
