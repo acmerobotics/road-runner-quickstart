@@ -34,6 +34,7 @@ public class MeccRobot extends Mechanism{
         acquirer.init(hwMap);
         carousel.init(hwMap);
         scoringV2.init(hwMap);
+        senseHub.init(hwMap);
     }
 
     public void init(HardwareMap hwmap, Telemetry telemetry){
@@ -58,8 +59,8 @@ public class MeccRobot extends Mechanism{
     public void drive(Gamepad gamepad){
         Pose2d controls = new Pose2d(
                 //Going to test if maybe negative)
-                -gamepad.left_stick_y,
-                -gamepad.left_stick_x,
+                gamepad.left_stick_y,
+                gamepad.left_stick_x,
                 -gamepad.right_stick_x
         );
         telemetry.addData("Left_stick_y",gamepad.left_stick_y);
@@ -121,6 +122,9 @@ public class MeccRobot extends Mechanism{
         else if(senseHub.inRange() && scoringV2.getMovementState()=="EXTEND"){
             gamepad.rumble(100, 100, 50);
         }
+        telemetry.addData("Distance", senseHub.distance());
+        telemetry.addData("InRange", senseHub.inRange());
+
     }
     public void lift(Gamepad gamepad){
         //lift code here
