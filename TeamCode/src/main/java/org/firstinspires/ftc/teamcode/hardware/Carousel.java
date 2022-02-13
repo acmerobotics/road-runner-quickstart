@@ -40,13 +40,14 @@ public class Carousel extends Mechanism {
             1,
             40
     );
-
+    // single r run is first iteration; autorun is second; triple rrrun is third
     public void init(HardwareMap hwMap) {
         carousel = hwMap.dcMotor.get("carousel");
         carousel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         carousel.setDirection(DcMotorSimple.Direction.FORWARD);
         carousel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
+
     public void run(boolean left, boolean right){
         if(left) carousel.setPower(speed);
         else if(right) carousel.setPower(-speed);
@@ -97,6 +98,7 @@ public class Carousel extends Mechanism {
             }
         }
     }
+
     public void rrrun(MotionProfile profile, ElapsedTime timer, int direction) {
         carousel.setPower(direction*profile.get(timer.seconds()).getV());
     }

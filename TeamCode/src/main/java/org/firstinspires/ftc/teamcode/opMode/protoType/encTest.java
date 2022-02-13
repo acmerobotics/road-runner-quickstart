@@ -19,7 +19,7 @@ public class encTest extends LinearOpMode {
     public static double maxV = 1;
     public static double maxA = 0.1;
 
-    public static double startV = 0;
+    public static double startV = 0.5;
     public static double startA = 0;
 
     MotionProfile profile = MotionProfileGenerator.generateSimpleMotionProfile(

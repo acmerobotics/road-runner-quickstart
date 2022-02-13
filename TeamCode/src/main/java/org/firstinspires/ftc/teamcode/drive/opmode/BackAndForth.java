@@ -3,10 +3,13 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.util.AxisDirection;
+import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -27,8 +30,14 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Config
 @Autonomous(group = "drive")
 public class BackAndForth extends LinearOpMode {
-
+    BNO055IMU imu;
     public static double DISTANCE = 50;
+
+    public double getLessRawExternalHeading() {
+        double lessraw = imu.getAngularOrientation().firstAngle;
+        if(lessraw < 0) lessraw = lessraw + Math.toRadians(360);
+        return lessraw;
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -44,9 +53,19 @@ public class BackAndForth extends LinearOpMode {
 
         waitForStart();
 
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+        BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
+
+
         while (opModeIsActive() && !isStopRequested()) {
+            telemetry.addData("Heading", getLessRawExternalHeading());
             drive.followTrajectory(trajectoryForward);
             drive.followTrajectory(trajectoryBackward);
+            telemetry.update();
+
         }
     }
 }

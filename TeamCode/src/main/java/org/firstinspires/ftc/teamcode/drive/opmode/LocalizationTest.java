@@ -21,7 +21,6 @@ public class LocalizationTest extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         waitForStart();
 
         while (!isStopRequested()) {
@@ -38,8 +37,18 @@ public class LocalizationTest extends LinearOpMode {
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
+            double formattedheading = drive.getRawExternalHeading();
+            if(formattedheading < 0) formattedheading = formattedheading + Math.toRadians(360);
+
+            telemetry.addData("heading2",Math.toDegrees(formattedheading));
             telemetry.update();
         }
     }
+    public double getLessRawExternalHeading(double rawHeading) {
+        double lessraw = rawHeading;
+        if(lessraw < 0) lessraw *= -1 + 180;
+        return lessraw;
+    }
+
 }

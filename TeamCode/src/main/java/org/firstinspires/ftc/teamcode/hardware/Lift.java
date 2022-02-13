@@ -21,7 +21,7 @@ public class Lift extends Mechanism{
     public static double carriageMarker = 3;
     public static double minPos = 0;
 
-    public static PIDCoefficients coeffs = new PIDCoefficients(0.2, 0, 0);
+    public static PIDCoefficients coeffs = new PIDCoefficients(0.1, 0, 0);
     public static double kF = 0; //min power to go against g
     PIDFController controller;
 
@@ -63,7 +63,7 @@ public class Lift extends Mechanism{
 
         //damp
         retract = false;
-        retMult = 0.1;
+        retMult = 0.2;
     }
 
     public void update() {

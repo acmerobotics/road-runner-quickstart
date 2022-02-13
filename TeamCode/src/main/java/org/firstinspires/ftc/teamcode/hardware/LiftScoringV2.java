@@ -26,10 +26,17 @@ public class LiftScoringV2 extends Mechanism{
             };
             scoring.tuckPos();
             lift.raise();
-            lift.retracting(false);
+            //lift.retracting(false);
             delay.delay(run,150);
             movementState = "EXTEND";
         }
+    }
+
+    public void lowGoal(){
+        scoring.tuckPos();
+        scoring.goToLowGoal();
+
+
     }
 
 
@@ -39,14 +46,14 @@ public class LiftScoringV2 extends Mechanism{
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                lift.retracting(true);
+                //lift.retracting(true);
                 lift.lower();
                 scoring.depositReset();
 
             }
         };
 
-        delay.delay(run,600);
+        delay.delay(run,450);
 
         movementState = "DETRACT";
     }

@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.profile.MotionProfile;
+import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
+import com.acmerobotics.roadrunner.profile.MotionState;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -11,7 +15,25 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 public class MeccRobot extends Mechanism{
     private SampleMecanumDrive drive;
     private Acquirer acquirer = new Acquirer();
+
     private Carousel carousel = new Carousel();
+    public static double maxV = 1;
+    public static double maxA = 0.1;
+
+    public static double startV = 0.5;
+    public static double startA = 0;
+
+    MotionProfile profile = MotionProfileGenerator.generateSimpleMotionProfile(
+            new MotionState(0, startV, startA),
+            new MotionState(60, maxV, 0),
+            maxV,
+            maxA
+    );
+
+    ElapsedTime timer;
+    private static int cDir = -1;
+
+
     private LiftScoringV2 scoringV2 = new LiftScoringV2();
     private FreightSensor blockSense = new FreightSensor();
     private SenseHub senseHub = new SenseHub();
@@ -20,10 +42,14 @@ public class MeccRobot extends Mechanism{
     private boolean formerA = false;
     private boolean formerX = false;
     private boolean formerY = false;
+    private boolean formerDpadL = false;
+    private boolean formerDpadR = false;
 
     private boolean formerLeftBumper = false;
     private boolean formerRightBumper = false;
 
+    private boolean formerLeftStick = false;
+    int left_stick_inverted;
 
     Telemetry telemetry;
 
@@ -42,6 +68,12 @@ public class MeccRobot extends Mechanism{
         this.telemetry = telemetry;
     }
 
+    public void init(HardwareMap hwmap, Telemetry telemetry, ElapsedTime timer){
+        init(hwmap);
+        this.telemetry = telemetry;
+        this.timer = timer;
+    }
+
     public void run(Gamepad gamepad){
         drive(gamepad);
         acquirerControls(gamepad);
@@ -49,20 +81,34 @@ public class MeccRobot extends Mechanism{
         lift(gamepad);
         colorRumble(gamepad);
         //ducks
-        runA(gamepad);
-        runB(gamepad);
+        mpCR(gamepad);
         telemetry.addData("has freight",blockSense.hasFreight());
         scoringV2.update();
         telemetry.update();
     }
 
     public void drive(Gamepad gamepad){
+
+        if(gamepad.left_stick_button){
+            formerLeftStick = true;
+        }
+
+        if(formerLeftStick){
+            if(!gamepad.left_stick_button){
+                formerLeftStick = false;
+
+                left_stick_inverted *= -1;
+
+            }
+        }
+
         Pose2d controls = new Pose2d(
                 //Going to test if maybe negative)
-                gamepad.left_stick_y,
-                gamepad.left_stick_x,
-                -gamepad.right_stick_x
+                left_stick_inverted*gamepad.left_stick_y,
+                left_stick_inverted*gamepad.left_stick_x,
+                -1 * (Math.pow(gamepad.right_stick_x,0.5))
         );
+
         telemetry.addData("Left_stick_y",gamepad.left_stick_y);
         telemetry.addData("Left_stick_X",gamepad.left_stick_x);
         telemetry.addData("right_stick_x",gamepad.right_stick_x);
@@ -92,28 +138,6 @@ public class MeccRobot extends Mechanism{
         else carousel.run(false,false);
     }
 
-    public void runA(Gamepad gamepad){
-        if(gamepad.a){
-            formerA = true;
-        }
-        if(formerA){
-            if(!gamepad.a){
-                carousel.autoRun(-1);
-                formerA = false;
-            }
-        }
-    }
-    public void runB(Gamepad gamepad){
-        if(gamepad.b){
-            formerB = true;
-        }
-        if(formerB){
-            if(!gamepad.b){
-                carousel.autoRun(1);
-                formerB = false;
-            }
-        }
-    }
 
     public void colorRumble(Gamepad gamepad) {
         if(blockSense.hasFreight() && scoringV2.getMovementState()=="DETRACT") {
@@ -139,15 +163,15 @@ public class MeccRobot extends Mechanism{
             }
         }
 
-        if(gamepad.y){
-            formerY = true;
+        if(gamepad.right_bumper){
+            formerRightBumper = true;
         }
 
-        if(formerY){
-            if(!gamepad.y){
+        if(formerRightBumper){
+            if(!gamepad.right_bumper){
                 scoringV2.release();
 
-                formerY = false;
+                formerRightBumper = false;
             }
         }
 
@@ -172,6 +196,35 @@ public class MeccRobot extends Mechanism{
         telemetry.addData("targetlift: ", scoringV2.getTargetPos());
         telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
         telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
+
+    }
+
+    public void mpCR(Gamepad gamepad1){
+        if(!formerDpadL){
+            if(gamepad1.dpad_left){
+                timer.reset();
+            }
+        }
+
+        if(gamepad1.dpad_left) {
+            carousel.rrrun(profile, timer,cDir);
+            formerDpadL = true;
+        }else {
+            carousel.run(false);
+            formerDpadL = false;
+        }
+
+        if(gamepad1.dpad_right){
+            formerDpadR = true;
+        }
+
+        if(formerDpadR){
+            if(!gamepad1.dpad_right){
+                formerDpadR = false;
+
+                cDir *= -1;
+            }
+        }
 
     }
 
