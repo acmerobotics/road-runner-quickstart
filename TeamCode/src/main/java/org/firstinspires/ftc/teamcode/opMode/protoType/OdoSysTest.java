@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
 
 @Config
-@TeleOp(name = "ServoTest",group = "Teleop")
+@TeleOp(name = "OdoSysTest",group = "Teleop")
 public class OdoSysTest extends LinearOpMode {
     RetractableOdoSys odoSys = new RetractableOdoSys();
             ;
