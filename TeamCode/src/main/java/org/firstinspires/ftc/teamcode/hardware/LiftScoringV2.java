@@ -7,6 +7,7 @@ public class LiftScoringV2 extends Mechanism{
     private ScoringArm scoring = new ScoringArm();
     private DelayCommand delay = new DelayCommand();
     private String movementState; //STILL, EXTEND, RETRACT
+    private String goalReach;
     private boolean formerExtend = false;
     public static int testingInt = 300;
 
@@ -17,44 +18,85 @@ public class LiftScoringV2 extends Mechanism{
     }
 
     public void raise(String goal){
-        if(goal.equals("highgoal")){
-            Runnable run = new Runnable() {
-                @Override
-                public void run() {
-                    scoring.goToEnd();
-                }
-            };
-            scoring.tuckPos();
-            lift.raise();
-            //lift.retracting(false);
-            delay.delay(run,150);
-            movementState = "EXTEND";
+        //FOR MIDDLE GOAL GO 9
+        switch (goal) {
+            case "highgoal": {
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        scoring.goToLowGoal();
+                    }
+                };
+                scoring.tuckPos();
+                lift.raise();
+                //lift.retracting(false);
+                delay.delay(run, 150);
+                movementState = "EXTEND";
+                break;
+            }
+            case "midgoal": {
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        scoring.goToLowGoal();
+                    }
+                };
+
+                scoring.tuckPos();
+
+                //CHANGE THIS LINE TO WHATEVER HEIGHT YOU NEED
+                lift.raise();
+                delay.delay(run, 150);
+                movementState = "EXTEND";
+                break;
+            }
+            case "lowgoal": {
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        scoring.goToLowGoal();
+                    }
+                };
+                scoring.tuckPos();
+                delay.delay(run, 100);
+                movementState = "EXTEND";
+                break;
+            }
         }
     }
 
-    public void lowGoal(){
-        scoring.tuckPos();
-        scoring.goToLowGoal();
 
+    public void lower(String goal){
+        if(!goal.equals("lowgoal")) {
+            scoring.goToStart();
+            scoring.tuckPos();
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    //lift.retracting(true);
+                    lift.lower();
+                    scoring.depositReset();
 
-    }
+                }
+            };
 
+            delay.delay(run, 700);
 
-    public void lower(){
-        scoring.goToStart();
-        scoring.tuckPos();
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                //lift.retracting(true);
-                lift.lower();
-                scoring.depositReset();
+        }
+        else{
+            scoring.goToStart();
+            scoring.lowGoalTuck();
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    //lift.retracting(true);
+                    scoring.depositReset();
 
-            }
-        };
+                }
+            };
 
-        delay.delay(run,450);
-
+            delay.delay(run, 700);
+        }
         movementState = "DETRACT";
     }
 
@@ -64,20 +106,20 @@ public class LiftScoringV2 extends Mechanism{
         }
 
         else{
-            lower();
+            lower(goal);
         }
+        goalReach = goal;
     }
     public void release(){
         if(!movementState.equals("DETRACT")){
-            scoring.goToEnd();
             scoring.dump();
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
-                    toggle("highgoal");
+                    toggle(goalReach);
                 }
             };
-            delay.delay(run,700);
+            delay.delay(run,300);
         }
     }
 
@@ -92,8 +134,7 @@ public class LiftScoringV2 extends Mechanism{
 //            lift.retracting(false);
 //        }
 
-        if(movementState.equals("DETRACT")) lift.retracting(true);
-        else lift.retracting(false);
+        lift.retracting(movementState.equals("DETRACT"));
 
         lift.update();
 

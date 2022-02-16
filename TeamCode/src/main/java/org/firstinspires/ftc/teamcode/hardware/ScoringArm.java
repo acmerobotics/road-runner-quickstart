@@ -36,12 +36,15 @@ public class ScoringArm extends ServoMechanism{
     /////ARM SERVO POSITIONS
     public static double armStartPos = 0.04;
     public static double armEndPos = 0.7;
+    public static double armLowGoalPos = 1.0;
     public static double armMidPos = 0.6;
 
     /////DEPO SERVO POSITIONS
     public static double depoStartPos = 0.45;
     public static double depoEndPos = 0.9;
-    public static double depoTuckPos= 0.25;
+    public static double depoTuckPos= 0.3;
+    public static double depoDumpPos = 0.5;
+    public static double depoLowGoalPos = 0;
 
     private boolean formerBoolArm;
     private boolean formerBoolDeposit;
@@ -62,9 +65,15 @@ public class ScoringArm extends ServoMechanism{
     // MAX
 
     public void goToLowGoal(){
-        goTo(armEndPos);
+
+        pivotArm.goTo(armLowGoalPos);
+        deposit.setPosRatio(depoLowGoalPos);
         homed = false;
         
+    }
+
+    public void lowGoalTuck(){
+        deposit.setPosRatio(depoLowGoalPos);
     }
     public void goToEnd(){
         pivotArm.goTo(armEndPos);
@@ -95,7 +104,7 @@ public class ScoringArm extends ServoMechanism{
     }
 
     public void dump() {
-        deposit.setPosRatio(depoEndPos);
+        deposit.setPosRatio(depoDumpPos);
         Runnable run = new Runnable() {
             @Override
             public void run() {
@@ -103,7 +112,7 @@ public class ScoringArm extends ServoMechanism{
             }
 
         };
-        delay.delay(run, 350);
+        //delay.delay(run, 350);
 
     }
     public void depositReset() {

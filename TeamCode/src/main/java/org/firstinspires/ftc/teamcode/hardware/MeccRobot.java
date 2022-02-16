@@ -13,13 +13,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 public class MeccRobot extends Mechanism{
+    private boolean debug = true;
+
+
     private SampleMecanumDrive drive;
     private Acquirer acquirer = new Acquirer();
 
     private Carousel carousel = new Carousel();
     public static double maxV = 1;
     public static double maxA = 0.1;
-
     public static double startV = 0.5;
     public static double startA = 0;
 
@@ -49,7 +51,7 @@ public class MeccRobot extends Mechanism{
     private boolean formerRightBumper = false;
 
     private boolean formerLeftStick = false;
-    int left_stick_inverted;
+    int left_stick_inverted =  1;
 
     Telemetry telemetry;
 
@@ -79,12 +81,15 @@ public class MeccRobot extends Mechanism{
         acquirerControls(gamepad);
         //carouselRun(gamepad);
         lift(gamepad);
-        colorRumble(gamepad);
+        //colorRumble(gamepad);
         //ducks
-        mpCR(gamepad);
-        telemetry.addData("has freight",blockSense.hasFreight());
-        scoringV2.update();
-        telemetry.update();
+        //mpCR(gamepad);
+        if(debug){
+            telemetry.addData("has freight",blockSense.hasFreight());
+            scoringV2.update();
+            telemetry.update();
+        }
+
     }
 
     public void drive(Gamepad gamepad){
@@ -106,15 +111,15 @@ public class MeccRobot extends Mechanism{
                 //Going to test if maybe negative)
                 left_stick_inverted*gamepad.left_stick_y,
                 left_stick_inverted*gamepad.left_stick_x,
-                -1 * (Math.pow(gamepad.right_stick_x,0.5))
+                -gamepad.right_stick_x 
         );
+        if(debug){
+            telemetry.addData("Left_stick_y",gamepad.left_stick_y);
+            telemetry.addData("Left_stick_X",gamepad.left_stick_x);
+            telemetry.addData("right_stick_x",gamepad.right_stick_x);
+        }
 
-        telemetry.addData("Left_stick_y",gamepad.left_stick_y);
-        telemetry.addData("Left_stick_X",gamepad.left_stick_x);
-        telemetry.addData("right_stick_x",gamepad.right_stick_x);
-
-
-        if(!drive.isBusy()) drive.setWeightedDrivePower(controls);
+        drive.setWeightedDrivePower(controls);
     }
 
     public void acquirerControls(Gamepad gamepad){
@@ -143,11 +148,15 @@ public class MeccRobot extends Mechanism{
         if(blockSense.hasFreight() && scoringV2.getMovementState()=="DETRACT") {
             gamepad.rumble(50, 50, 50);
         }
-        else if(senseHub.inRange() && scoringV2.getMovementState()=="EXTEND"){
-            gamepad.rumble(100, 100, 50);
+//        else if(senseHub.inRange() && scoringV2.getMovementState()=="EXTEND"){
+//            gamepad.rumble(100, 100, 50);
+//        }
+
+        if(debug){
+            telemetry.addData("Distance", senseHub.distance());
+            telemetry.addData("InRange", senseHub.inRange());
         }
-        telemetry.addData("Distance", senseHub.distance());
-        telemetry.addData("InRange", senseHub.inRange());
+
 
     }
     public void lift(Gamepad gamepad){
@@ -160,6 +169,19 @@ public class MeccRobot extends Mechanism{
             if(!gamepad.left_bumper){
                 scoringV2.toggle("highgoal");
                 formerLeftBumper = false;
+            }
+        }
+
+        if(gamepad.x){
+            formerX = true;
+        }
+
+        if(formerX){
+            if(!gamepad.x){
+                formerX = false;
+
+                scoringV2.toggle("lowgoal");
+
             }
         }
 
@@ -191,11 +213,13 @@ public class MeccRobot extends Mechanism{
 
 
         //scoring.run((int)lift.getCurrentPosition() == 3);
+        if(debug){
+            telemetry.addData("liftpos: ", scoringV2.getPos());
+            telemetry.addData("targetlift: ", scoringV2.getTargetPos());
+            telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
+            telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
+        }
 
-        telemetry.addData("liftpos: ", scoringV2.getPos());
-        telemetry.addData("targetlift: ", scoringV2.getTargetPos());
-        telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
-        telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
 
     }
 
