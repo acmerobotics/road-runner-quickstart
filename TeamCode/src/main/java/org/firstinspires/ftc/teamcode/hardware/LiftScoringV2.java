@@ -28,7 +28,7 @@ public class LiftScoringV2 extends Mechanism{
                     }
                 };
                 scoring.tuckPos();
-                lift.raise();
+                lift.raiseHigh();
                 //lift.retracting(false);
                 delay.delay(run, 150);
                 movementState = "EXTEND";
@@ -45,7 +45,7 @@ public class LiftScoringV2 extends Mechanism{
                 scoring.tuckPos();
 
                 //CHANGE THIS LINE TO WHATEVER HEIGHT YOU NEED
-                lift.raise();
+                lift.raiseMid();
                 delay.delay(run, 150);
                 movementState = "EXTEND";
                 break;

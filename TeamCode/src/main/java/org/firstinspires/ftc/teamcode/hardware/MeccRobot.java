@@ -51,7 +51,9 @@ public class MeccRobot extends Mechanism{
     private boolean formerRightBumper = false;
 
     private boolean formerLeftStick = false;
+
     int left_stick_inverted =  1;
+    private boolean motionProfiling = false;
 
     Telemetry telemetry;
 
@@ -79,11 +81,15 @@ public class MeccRobot extends Mechanism{
     public void run(Gamepad gamepad){
         drive(gamepad);
         acquirerControls(gamepad);
-        //carouselRun(gamepad);
         lift(gamepad);
         //colorRumble(gamepad);
         //ducks
-        //mpCR(gamepad);
+        if(motionProfiling){
+            mpCR(gamepad);
+        }
+        else{
+            carouselRun(gamepad);
+        }
         if(debug){
             telemetry.addData("has freight",blockSense.hasFreight());
             scoringV2.update();
@@ -138,8 +144,8 @@ public class MeccRobot extends Mechanism{
     }
 
     public void carouselRun(Gamepad gamepad){
-        if(gamepad.dpad_left) carousel.run(false,true);
-        else if (gamepad.dpad_right) carousel.run(true,false);
+        if(gamepad.dpad_up) carousel.run(false,true);
+        else if (gamepad.dpad_down) carousel.run(true,false);
         else carousel.run(false,false);
     }
 
@@ -172,6 +178,16 @@ public class MeccRobot extends Mechanism{
             }
         }
 
+        if(gamepad.a){
+            formerA = true;
+        }
+
+        if(formerA & !gamepad.a){
+            formerA = false;
+
+            scoringV2.toggle("middlegoal");
+        }
+
         if(gamepad.x){
             formerX = true;
         }
@@ -184,6 +200,8 @@ public class MeccRobot extends Mechanism{
 
             }
         }
+
+
 
         if(gamepad.right_bumper){
             formerRightBumper = true;

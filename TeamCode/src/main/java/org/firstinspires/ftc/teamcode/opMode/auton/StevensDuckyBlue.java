@@ -25,52 +25,99 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
 
 @Config
 @Autonomous
-public class stevensDucky extends LinearOpMode {
-    private Acquirer acquirer = new Acquirer();
+public class StevensDuckyBlue extends LinearOpMode {
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
+    private FreightSensor sensor = new FreightSensor();
+    private LiftScoringV2 scoringMech= new LiftScoringV2();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    public static double tuningNumber = 40;
-    public static double tuningTimer = 1;
 
+    public static double startx = -35.0;
+    public static double starty = 70.0;
+    public static double startAng = Math.toRadians(90);
 
-    public static double startx = 0;
-    public static double starty = -72;
+    public static double scoreHubPosx = -34;
+    public static double scoreHubPosy = 40;
+    public static double scoreHubPosAng = -25;
 
-    public static double bankcurveX = -5;
-    public static double bankcurveY = starty + 22;
-    public static int cycles = 4;
+    public static double carouselPosx = -62;
+    public static double carouselPosy = 62;
+    public static double carouselPosAng = Math.toRadians(180);
+
+    public static double parkX = -60;
+    public static double parkY = 40;
+    public static double parkAng = Math.toRadians(180);
+
+    public static String goal = "highgoal";
+
+    Pose2d startPos = new Pose2d(startx,starty, startAng);
+    Vector2d scoreHubPos = new Vector2d(scoreHubPosx,scoreHubPosy);
+    Pose2d carouselPos = new Pose2d(carouselPosx,carouselPosy,carouselPosAng);
+    Pose2d park = new Pose2d(parkX,parkY,parkAng);
+
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-        acquirer.init(hardwareMap);
+        //initialize mechanisms
         carousel.init(hardwareMap);
+        scoringMech.init(hardwareMap);
+        sensor.init(hardwareMap);
 
+        //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.setSlides(scoringMech);
 
-        DelayCommand delay = new DelayCommand();
+        //important coordinates here
+        Pose2d startPos = new Pose2d(startx,starty, startAng);
+        Vector2d scoreHubPos = new Vector2d(scoreHubPosx,scoreHubPosy);
+        Pose2d carouselPos = new Pose2d(carouselPosx,carouselPosy,carouselPosAng);
+        Pose2d park = new Pose2d(parkX,parkY,parkAng);
 
-        Pose2d startPos = new Pose2d(0,0, Math.toRadians(0));
+        //set startPose
         drive.setPoseEstimate(startPos);
 
-        TrajectorySequenceBuilder alFatihah = drive.trajectorySequenceBuilder(startPos)
-                .lineToSplineHeading(new Pose2d(32,-5,45))
-                //.forward(32)
-                .addDisplacementMarker(() -> {
+        //trajectory
+        TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPos)
+                .setReversed(true)
+                .splineTo(scoreHubPos,Math.toRadians(scoreHubPosAng))
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                    scoringMech.release();
+                })
+                .waitSeconds(1)
+                //slides
+                .lineToSplineHeading(carouselPos)
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(true,false);
                 })
-                .waitSeconds(5)
-                .addDisplacementMarker(()->{
+                .waitSeconds(7)
+                //carousel
+                .lineToSplineHeading(park)
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(false,false);
-
                 })
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(25,-2, Math.toRadians(0)), Math.toRadians(0))
-                .setReversed(false)
-                .splineTo(new Vector2d(35, -5), Math.toRadians(90));
+                .build();
 
+        TrajectorySequence duckyPathHighGoal = drive.trajectorySequenceBuilder(startPos)
+                .setReversed(true)
+                .splineTo(scoreHubPos,Math.toRadians(-25))
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                    scoringMech.release();
+                })
+                .waitSeconds(1)
+                //slides
+                .lineToSplineHeading(carouselPos)
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                    carousel.run(true,false);
+                })
+                .waitSeconds(7)
+                //carousel
+                .lineToSplineHeading(park)
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                    carousel.run(false,false);
+                })
+                .build();
                // .splineTo(new Vector2d());
 
         //3ftx3ftmovement
@@ -98,12 +145,11 @@ public class stevensDucky extends LinearOpMode {
 
         //mashallah
 
-        TrajectorySequence mashallah = alFatihah.build();
         while (!opModeIsActive() && !isStopRequested()) {
             telemetry.addData("Status", "Waiting in init");
             telemetry.update();
         }
-
-        drive.followTrajectorySequence(mashallah);
+        scoringMech.toggle(goal);
+        drive.followTrajectorySequence(duckyPath);
     }
 }

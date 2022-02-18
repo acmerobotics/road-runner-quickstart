@@ -77,7 +77,7 @@ public class LiftAndScoring extends Mechanism{
             }
         };
         scoring.tuckPos();
-        lift.raise();
+        lift.raiseHigh();
         lift.retracting(false);
         delay.delay(run,150);
 

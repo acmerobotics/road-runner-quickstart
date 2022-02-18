@@ -15,8 +15,8 @@ public class GearedServos extends ServoMechanism{
      ****/
 
 
-    private ServoManager portSide;
-    private ServoManager starBoard;
+    private ServoManager portSide; //left side
+    private ServoManager starBoard; //right side
     private boolean formerBool = false;
 
     /**

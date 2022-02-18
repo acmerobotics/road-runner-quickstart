@@ -135,8 +135,13 @@ public class Lift extends Mechanism{
 
     public void setTargetPosition(double target){targetPosition = target;}
 
-    public void raise(){
+    public void raiseMid(){
         setTargetPosition(midPos);
+        inAir = true;
+    }
+
+    public void raiseHigh(){
+        setTargetPosition(maxPos);
         inAir = true;
     }
 
@@ -151,7 +156,7 @@ public class Lift extends Mechanism{
             lower();
         }
         else{
-            raise();
+            raiseHigh();
         }
     }
 

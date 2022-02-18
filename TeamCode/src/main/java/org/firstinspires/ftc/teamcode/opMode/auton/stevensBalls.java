@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
 
 @Config
 @Autonomous
-public class stevensBalls extends LinearOpMode {
+public class    stevensBalls extends LinearOpMode {
     private Acquirer acquirer = new Acquirer();
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
@@ -70,25 +70,25 @@ public class stevensBalls extends LinearOpMode {
                 .back(18)
                 .waitSeconds(0.1);
 
-//        TrajectorySequenceBuilder taahkbeer = drive.trajectorySequenceBuilder(alFatihah.build().end())
-//                .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
-//                .addDisplacementMarker(()->{
-//                    drive.acquirerRuns = true;
-//                })
-//                .forward(tuningNumber)
-//                .waitSeconds(2);
+        TrajectorySequenceBuilder taahkbeer = drive.trajectorySequenceBuilder(alFatihah.build().end())
+                .splineTo(new Vector2d(bankcurveX,bankcurveY),Math.toRadians(90))
+                .addDisplacementMarker(()->{
+                    drive.acquirerRuns = true;
+                })
+                .forward(tuningNumber)
+                .waitSeconds(2);
 
-//        TrajectorySequenceBuilder allahhuackbar = drive.trajectorySequenceBuilder(taahkbeer.build().end())
-//                .back(tuningNumber)
-//                .addDisplacementMarker(() -> {
-//                    scoringMech.toggle("highgoal");
-//                    drive.acquirerRuns = false;
-//                })
-//                .setReversed(true)
-//                .splineTo(new Vector2d(18, starty), Math.toRadians(0))
-//                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-//                    scoringMech.release();
-//                });
+        TrajectorySequenceBuilder allahhuackbar = drive.trajectorySequenceBuilder(taahkbeer.build().end())
+                .back(tuningNumber)
+                .addDisplacementMarker(() -> {
+                    scoringMech.toggle("highgoal");
+                    drive.acquirerRuns = false;
+                })
+                .setReversed(true)
+                .splineTo(new Vector2d(18, starty), Math.toRadians(0))
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                    scoringMech.release();
+                });
         for(int i = 0; i < cycles; i++){
             alFatihah = alFatihah
                     //start of taahkbeer
