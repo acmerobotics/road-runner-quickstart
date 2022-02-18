@@ -5,27 +5,19 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
-import org.firstinspires.ftc.teamcode.hardware.Lift;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
-import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 
 @Config
 @Autonomous
-public class StevensDuckyBlue extends LinearOpMode {
+public class StevensDuckyRed extends LinearOpMode {
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
     private FreightSensor sensor = new FreightSensor();
@@ -41,22 +33,22 @@ public class StevensDuckyBlue extends LinearOpMode {
     public static double scoreHubPosy = 40;
 
     public static double scoreHubPosAngB = -25;
-    public static double scoreHubPosAngR = 25;
+    public static double scoreHubPosAngR = 15;
 
     public static double carouselPosx = -62;
-    public static double carouselPosy = 62;
-    public static double carouselPosAng = Math.toRadians(180);
+    public static double carouselPosy = 64;
+    public static double carouselPosAng = Math.toRadians(270);
 
     public static double parkX = -60;
-    public static double parkY = 40;
+    public static double parkY = 42;
     public static double parkAng = Math.toRadians(180);
 
     public static String goal = "highgoal";
 
-    Pose2d startPosB = new Pose2d(startx, starty, startAng);
-    Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
-    Pose2d carouselPosB = new Pose2d(carouselPosx, carouselPosy, carouselPosAng);
-    Pose2d parkB = new Pose2d(parkX, parkY, parkAng);
+    Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
+    Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
+    Pose2d carouselPosR = new Pose2d(carouselPosx, -carouselPosy, carouselPosAng);
+    Pose2d parkR = new Pose2d(parkX, -parkY, parkAng);
 
 
     @Override
@@ -72,35 +64,30 @@ public class StevensDuckyBlue extends LinearOpMode {
         drive.setSlides(scoringMech);
 
         //important coordinates here
-        Pose2d startPos = new Pose2d(startx,starty, startAng);
-        Vector2d scoreHubPos = new Vector2d(scoreHubPosx,scoreHubPosy);
-        Pose2d carouselPos = new Pose2d(carouselPosx,carouselPosy,carouselPosAng);
-        Pose2d park = new Pose2d(parkX,parkY,parkAng);
 
         //set startPose
-        drive.setPoseEstimate(startPos);
+        drive.setPoseEstimate(startPosR);
 
         //trajectory
-        TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPos)
+        TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPosR)
                 .setReversed(true)
-                .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    //scoringMech.release();
+                .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.release();
                 })
                 .waitSeconds(1)
-                //slides
-                .lineToSplineHeading(carouselPosB)
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    //carousel.run(true,false);
+                // slides
+                .lineToSplineHeading(carouselPosR)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    carousel.run(false,true);
                 })
                 .waitSeconds(7)
-                //carousel
-                .lineToSplineHeading(parkB)
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    // carousel.run(false,false);
+                // carousel
+                .lineToSplineHeading(parkR)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    carousel.run(false,false);
                 })
                 .build();
-               // .splineTo(new Vector2d());
 
         //3ftx3ftmovement
 

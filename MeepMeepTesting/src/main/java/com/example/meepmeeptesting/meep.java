@@ -13,16 +13,18 @@ public class meep {
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = -25.0;
-    public static double scoreHubPosy = 38.0;
-    public static double scoreHubPosAng = Math.toRadians(-40);
+    public static double scoreHubPosx = -34;
+    public static double scoreHubPosy = 40;
 
-    public static double carouselPosx = -60.0;
-    public static double carouselPosy = 56.0;
+    public static double scoreHubPosAngB = -25;
+    public static double scoreHubPosAngR = 25;
+
+    public static double carouselPosx = -62;
+    public static double carouselPosy = 62;
     public static double carouselPosAng = Math.toRadians(180);
 
-    public static double parkX = -60.0;
-    public static double parkY = 35.0;
+    public static double parkX = -60;
+    public static double parkY = 40;
     public static double parkAng = Math.toRadians(180);
 
     public static void main(String[] args) {
@@ -30,32 +32,78 @@ public class meep {
 
 
 
-        Pose2d startPos = new Pose2d(startx,starty, startAng);
-        Vector2d scoreHubPos = new Vector2d(scoreHubPosx,scoreHubPosy);
-        Pose2d carouselPos = new Pose2d(carouselPosx,carouselPosy,carouselPosAng);
-        Pose2d park = new Pose2d(parkX,parkY,parkAng);
+        Pose2d startPosB = new Pose2d(startx, starty, startAng);
+        Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
+        Pose2d carouselPosB = new Pose2d(carouselPosx, carouselPosy, carouselPosAng);
+        Pose2d parkB = new Pose2d(parkX, parkY, parkAng);
 
-        RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
+        Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
+        Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
+        Pose2d carouselPosR = new Pose2d(carouselPosx, -carouselPosy, carouselPosAng);
+        Pose2d parkR = new Pose2d(parkX, -parkY, parkAng);
+
+        RoadRunnerBotEntity myBotBlue = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
                 //.setStartPose(startPos)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(startPos)
+                        drive.trajectorySequenceBuilder(startPosB)
                             .setReversed(true)
-                            .splineTo(scoreHubPos,scoreHubPosAng)
+                            .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
+                            .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                                //scoringMech.release();
+                            })
+                            .waitSeconds(1)
                             //slides
-                            .lineToSplineHeading(carouselPos)
+                            .lineToSplineHeading(carouselPosB)
+                            .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                                //carousel.run(true,false);
+                            })
+                            .waitSeconds(7)
                             //carousel
-                            .lineToSplineHeading(park)
+                            .lineToSplineHeading(parkB)
+                            .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                               // carousel.run(false,false);
+                            })
                             .build()
 
                 );
+
+        RoadRunnerBotEntity myBotRed = new DefaultBotBuilder(meepMeep)
+                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
+                // .setStartPose(startPos)
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPosR)
+                        .setReversed(true)
+                        .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            // scoringMech.release();
+                        })
+                        .waitSeconds(1)
+                        // slides
+                        .lineToSplineHeading(carouselPosR)
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            // carousel.run(true,false);
+                        })
+                        .waitSeconds(7)
+                        // carousel
+                        .lineToSplineHeading(parkR)
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            // carousel.run(false,false);
+                        })
+                        .build()
+
+                );
+
+
+        
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(myBot)
+                .addEntity(myBotBlue)
+                .addEntity(myBotRed)
                 .start();
     }
 }
