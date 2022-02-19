@@ -7,7 +7,9 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class meep {
+import kotlin.math.MathKt;
+
+public class MeepMeepTesting {
 
     public static double startx = -35.0;
     public static double starty = 70.0;
@@ -61,10 +63,10 @@ public class meep {
                             })
                             .waitSeconds(7)
                             //carousel
-                            .lineToSplineHeading(parkB)
+                            /*.lineToSplineHeading(parkB)
                             .UNSTABLE_addTemporalMarkerOffset(0,()->{
                                // carousel.run(false,false);
-                            })
+                            })*/
                             .build()
 
                 );
@@ -79,18 +81,23 @@ public class meep {
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // scoringMech.release();
                         })
-                        .waitSeconds(1)
+                        //.waitSeconds(1)
                         // slides
                         .lineToSplineHeading(carouselPosR)
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // carousel.run(true,false);
                         })
-                        .waitSeconds(7)
+                        //.waitSeconds(7)
                         // carousel
-                        .lineToSplineHeading(parkR)
+                        /*.lineToSplineHeading(parkR)
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // carousel.run(false,false);
-                        })
+                        })*/
+                        .lineToSplineHeading(new Pose2d(-34, -40, Math.toRadians(270)))
+                        .lineTo(new Vector2d( -34, -45))
+                        .splineTo(new Vector2d(-55, -58), Math.toRadians(180))
+                        .setReversed(true)
+                        .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                         .build()
 
                 );

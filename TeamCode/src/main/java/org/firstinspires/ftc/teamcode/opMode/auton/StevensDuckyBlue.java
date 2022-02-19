@@ -13,19 +13,23 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
+import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 import org.firstinspires.ftc.teamcode.hardware.Lift;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
+import org.firstinspires.ftc.teamcode.hardware.kellen;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.openftc.easyopencv.OpenCvCamera;
 
 @Config
 @Autonomous
 public class StevensDuckyBlue extends LinearOpMode {
+    private CapVision cv = new CapVision();
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
     private FreightSensor sensor = new FreightSensor();
@@ -33,7 +37,7 @@ public class StevensDuckyBlue extends LinearOpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
 
-    public static double startx = -35.0;
+    public static double startx = -36.0;
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
@@ -51,7 +55,7 @@ public class StevensDuckyBlue extends LinearOpMode {
     public static double parkY = 40;
     public static double parkAng = Math.toRadians(180);
 
-    public static String goal = "highgoal";
+    public static String goal = "";
 
     Pose2d startPosB = new Pose2d(startx, starty, startAng);
     Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
@@ -66,6 +70,7 @@ public class StevensDuckyBlue extends LinearOpMode {
         carousel.init(hardwareMap);
         scoringMech.init(hardwareMap);
         sensor.init(hardwareMap);
+        cv.init(hardwareMap);
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -82,25 +87,25 @@ public class StevensDuckyBlue extends LinearOpMode {
 
         //trajectory
         TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPos)
+                .waitSeconds(1)
                 .setReversed(true)
                 .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    //scoringMech.release();
+                    scoringMech.release();
                 })
                 .waitSeconds(1)
                 //slides
                 .lineToSplineHeading(carouselPosB)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    //carousel.run(true,false);
+                    carousel.run(true,false);
                 })
                 .waitSeconds(7)
                 //carousel
                 .lineToSplineHeading(parkB)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    // carousel.run(false,false);
+                    carousel.run(false,false);
                 })
                 .build();
-               // .splineTo(new Vector2d());
 
         //3ftx3ftmovement
 
@@ -131,6 +136,19 @@ public class StevensDuckyBlue extends LinearOpMode {
             telemetry.addData("Status", "Waiting in init");
             telemetry.update();
         }
+        if(cv.whichRegion() == 1) {
+            goal = "highgoal";
+        }
+        if(cv.whichRegion() == 2) {
+            goal = "midgoal";
+        }
+        if(cv.whichRegion() == 3) {
+            goal = "lowgoal";
+        }
+        telemetry.addData("goal: ",goal);
+        telemetry.addData("region", cv.whichRegion());
+        telemetry.update();
+
         scoringMech.toggle(goal);
         drive.followTrajectorySequence(duckyPath);
     }

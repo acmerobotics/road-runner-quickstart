@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 @Config
 @Autonomous
 public class StevensDuckyRed extends LinearOpMode {
+    private CapVision cv = new CapVision();
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
     private FreightSensor sensor = new FreightSensor();
@@ -25,7 +27,7 @@ public class StevensDuckyRed extends LinearOpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
 
-    public static double startx = -35.0;
+    public static double startx = -36.0;
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
@@ -43,7 +45,7 @@ public class StevensDuckyRed extends LinearOpMode {
     public static double parkY = 42;
     public static double parkAng = Math.toRadians(180);
 
-    public static String goal = "highgoal";
+    public static String goal = "";
 
     Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
     Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
@@ -58,6 +60,7 @@ public class StevensDuckyRed extends LinearOpMode {
         carousel.init(hardwareMap);
         scoringMech.init(hardwareMap);
         sensor.init(hardwareMap);
+        cv.init(hardwareMap);
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -70,6 +73,7 @@ public class StevensDuckyRed extends LinearOpMode {
 
         //trajectory
         TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPosR)
+                .waitSeconds(1)
                 .setReversed(true)
                 .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
@@ -118,6 +122,19 @@ public class StevensDuckyRed extends LinearOpMode {
             telemetry.addData("Status", "Waiting in init");
             telemetry.update();
         }
+        if(cv.whichRegion() == 1) {
+            goal = "highgoal";
+        }
+        if(cv.whichRegion() == 2) {
+            goal = "midgoal";
+        }
+        if(cv.whichRegion() == 3) {
+            goal = "lowgoal";
+        }
+        telemetry.addData("goal: ",goal);
+        telemetry.addData("region", cv.whichRegion());
+        telemetry.update();
+
         scoringMech.toggle(goal);
         drive.followTrajectorySequence(duckyPath);
     }
