@@ -55,7 +55,7 @@ public class StevensDuckyBlue extends LinearOpMode {
     public static double parkY = 40;
     public static double parkAng = Math.toRadians(180);
 
-    public static String goal = "";
+    public static String goal = "midgoal";
 
     Pose2d startPosB = new Pose2d(startx, starty, startAng);
     Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);

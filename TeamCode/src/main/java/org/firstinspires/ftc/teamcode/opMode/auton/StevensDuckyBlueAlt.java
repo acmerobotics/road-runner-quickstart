@@ -63,7 +63,7 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
     public static double duckX = -58;
     public static double duckY = 65;
 
-    public static String goal = "";
+    public static String goal = "midgoal";
 
     Pose2d startPosB = new Pose2d(startx, starty, startAng);
     Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
@@ -92,10 +92,10 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
         Pose2d park = new Pose2d(parkX,parkY,parkAng);
 
         //set startPose
-        drive.setPoseEstimate(startPos);
+        drive.setPoseEstimate(startPosB);
 
         //trajectory
-        TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPos)
+        TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPosB)
                 .waitSeconds(1)
                 .setReversed(true)
                 .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
@@ -113,14 +113,14 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(false,false);
                 })
-                .lineToSplineHeading(new Pose2d(reposX, reposY, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(reposX, reposY, Math.toRadians(90)))
                 .lineTo(new Vector2d( reposX, reposY + 12))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     intake.intake(1);
                 })
                 .splineTo(new Vector2d(-40, duckY+2), Math.toRadians(180))
                 //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
-                .lineToLinearHeading(new Pose2d(duckX, duckY+2, Math.toRadians(225)))
+                .lineToLinearHeading(new Pose2d(duckX, duckY+2, Math.toRadians(135)))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     intake.intake(0);
                 })
@@ -128,7 +128,7 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.toggle("midgoal");
                 })
-                .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngR))
+                .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.release();
                 })
