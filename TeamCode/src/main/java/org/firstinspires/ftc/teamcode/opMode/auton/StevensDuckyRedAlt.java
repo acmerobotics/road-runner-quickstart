@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.DelayCommand;
@@ -18,7 +19,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
 @Autonomous
-public class StevenDuckRedAlt extends LinearOpMode {
+public class StevensDuckyRedAlt extends LinearOpMode {
+    private Acquirer intake = new Acquirer();
     private CapVision cv = new CapVision();
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
@@ -41,14 +43,17 @@ public class StevenDuckRedAlt extends LinearOpMode {
     public static double carouselPosy = 64;
     public static double carouselPosAng = Math.toRadians(270);
 
-    public static double parkX = -60;
+    public static double parkX = -63;
     public static double parkY = 42;
     public static double parkAng = Math.toRadians(180);
 
-    public static double tempX = -36;
-    public static double tempY = 42;
+    public static double reposX = -34;
+    public static double reposY = -36;
 
-    public static String goal = "";
+    public static double duckX = -58;
+    public static double duckY = -65;
+
+    public static String goal = "midgoal";
 
     Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
     Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
@@ -64,6 +69,7 @@ public class StevenDuckRedAlt extends LinearOpMode {
         scoringMech.init(hardwareMap);
         sensor.init(hardwareMap);
         cv.init(hardwareMap);
+        intake.init(hardwareMap);
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -76,7 +82,6 @@ public class StevenDuckRedAlt extends LinearOpMode {
 
         //trajectory
         TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPosR)
-                .waitSeconds(1)
                 .setReversed(true)
                 .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
@@ -89,7 +94,26 @@ public class StevenDuckRedAlt extends LinearOpMode {
                     carousel.run(false, true);
                 })
                 .waitSeconds(7)
-                // carousel
+                .lineToSplineHeading(new Pose2d(reposX, reposY, Math.toRadians(270)))
+                .lineTo(new Vector2d( reposX, reposY - 12))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    intake.intake(1);
+                })
+                .splineTo(new Vector2d(-40, duckY-2), Math.toRadians(180))
+                //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
+                .lineToLinearHeading(new Pose2d(duckX, duckY-2, Math.toRadians(225)))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    intake.intake(0);
+                })
+                .setReversed(true)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.toggle("midgoal");
+                })
+                .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.release();
+                })
+                .waitSeconds(1)
                 .lineToSplineHeading(parkR)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     carousel.run(false, false);

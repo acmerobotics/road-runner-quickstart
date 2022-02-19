@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class Carousel extends Mechanism {
     private DcMotor carousel;
     ElapsedTime time = new ElapsedTime();
-    public static Double speed = 0.25;
+    public static Double speed = 0.35;
 
     public static Double phase0Speed = 0.55;
     public static Double phase1Speed = 1.0;

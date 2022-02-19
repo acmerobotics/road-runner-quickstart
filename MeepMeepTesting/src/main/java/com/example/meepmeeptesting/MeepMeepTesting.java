@@ -29,6 +29,12 @@ public class MeepMeepTesting {
     public static double parkY = 40;
     public static double parkAng = Math.toRadians(180);
 
+    public static double tempX = -34;
+    public static double tempY = -40;
+
+    public static double duckX = -58;
+    public static double duckY = -68;
+
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -93,9 +99,11 @@ public class MeepMeepTesting {
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // carousel.run(false,false);
                         })*/
-                        .lineToSplineHeading(new Pose2d(-34, -40, Math.toRadians(270)))
-                        .lineTo(new Vector2d( -34, -45))
-                        .splineTo(new Vector2d(-55, -58), Math.toRadians(180))
+                        .lineToSplineHeading(new Pose2d(tempX, tempY, Math.toRadians(270)))
+                        .lineTo(new Vector2d( tempX, tempY-5))
+                        .splineTo(new Vector2d(-40, duckY-2), Math.toRadians(180))
+                        //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
+                        .lineToLinearHeading(new Pose2d(duckX, duckY-2, Math.toRadians(225)))
                         .setReversed(true)
                         .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                         .build()
