@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 @Config
 public class FreightSensor extends Mechanism{
-    double lowB = 2.0;
-    double HighB = 3.0;
+    public static double lowB = 1.5;
+    public static double HighB = 3.5;
     ColorSensor left;
     ColorSensor right;
     @Override
@@ -32,6 +32,6 @@ public class FreightSensor extends Mechanism{
     }
 
     public boolean hasBlock() {
-        return (this.blue() / this.green()) >= lowB && (this.blue() / this.green() <= HighB);
+        return (this.red() / this.blue()) >= lowB && (this.red() / this.blue() <= HighB);
     }
 }

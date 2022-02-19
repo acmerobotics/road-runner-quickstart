@@ -27,6 +27,7 @@ public class ColorTest extends LinearOpMode {
             dash.addData("blue", color.blue());
             dash.addData("red", color.red());
             dash.addData("green", color.green());
+            dash.addData("block?", color.hasBlock());
             telemetry.update();
             dash.update();
 
