@@ -19,7 +19,7 @@ public class MeepMeepTestingParkSide {
     public static double scoreHubPosy = 40.4;
 
     public static double scoreHubPosAngB = 40;
-    public static double scoreHubPosAngR = 25;
+    public static double scoreHubPosAngR = -40;
 
     public static double repositionX = 15.0;
     public static double reposistionY = 71.5;
@@ -34,6 +34,7 @@ public class MeepMeepTestingParkSide {
         Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
 
         Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
+        Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
 
         Pose2d repositionB = new Pose2d(repositionX,reposistionY,Math.toRadians(0));
 
@@ -50,8 +51,24 @@ public class MeepMeepTestingParkSide {
                                 //scoringMech.release();
                             })
                             .waitSeconds(1)
-                            .lineToLinearHeading(repositionB)
-                            .forward(distanceForwards)
+                            //.lineToLinearHeading(repositionB)
+                            .lineTo(new Vector2d(scoreHubPosx, reposistionY -20))
+                            .splineTo(new Vector2d(repositionX, reposistionY-5), Math.toRadians(50))
+                            .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, reposistionY), Math.toRadians(0))
+                            .waitSeconds(1)
+                            .splineTo(new Vector2d(repositionX+5, reposistionY), Math.toRadians(180))
+                            .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
+                            .waitSeconds(1)
+                            .lineTo(new Vector2d(scoreHubPosx, reposistionY-20))
+                            .splineTo(new Vector2d(repositionX, reposistionY-5), Math.toRadians(50))
+                            .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, reposistionY), Math.toRadians(0))
+                            .waitSeconds(1)
+                            .splineTo(new Vector2d(repositionX+5, reposistionY), Math.toRadians(180))
+                            .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
+                            .waitSeconds(1)
+                            .lineTo(new Vector2d(scoreHubPosx, reposistionY-20))
+                            .splineTo(new Vector2d(repositionX, reposistionY-5), Math.toRadians(50))
+                            .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, reposistionY), Math.toRadians(0))
                             .strafeRight(strafeDistance)
                             .build()
 
@@ -62,10 +79,30 @@ public class MeepMeepTestingParkSide {
                 .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
                 // .setStartPose(startPos)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPosR)
+                        .waitSeconds(2)
                         .setReversed(true)
-                        .lineToLinearHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-scoreHubPosAngB)))
-                        .lineToLinearHeading(new Pose2d(repositionX, -reposistionY, Math.toRadians(0)))
-                        .forward(distanceForwards)
+                        .lineToLinearHeading(new Pose2d(scoreHubPosR, Math.toRadians(scoreHubPosAngR)))                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                            //scoringMech.release();
+                        })
+                        .waitSeconds(1)
+                        //.lineToLinearHeading(repositionB)
+                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY +20))
+                        .splineTo(new Vector2d(repositionX, -reposistionY+5), Math.toRadians(-50))
+                        .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, -reposistionY), Math.toRadians(0))
+                        .waitSeconds(1)
+                        .splineTo(new Vector2d(repositionX+5, -reposistionY), Math.toRadians(180))
+                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-40)), Math.toRadians(90))
+                        .waitSeconds(1)
+                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY +20))
+                        .splineTo(new Vector2d(repositionX, -reposistionY+5), Math.toRadians(-50))
+                        .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, -reposistionY), Math.toRadians(0))
+                        .waitSeconds(1)
+                        .splineTo(new Vector2d(repositionX+5, -reposistionY), Math.toRadians(180))
+                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-40)), Math.toRadians(90))
+                        .waitSeconds(1)
+                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY+20))
+                        .splineTo(new Vector2d(repositionX, -reposistionY+5), Math.toRadians(-50))
+                        .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, -reposistionY), Math.toRadians(0))
                         .strafeLeft(strafeDistance)
                         .build()
 
