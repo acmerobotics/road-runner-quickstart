@@ -79,8 +79,8 @@ public class LiftScoringV2 extends Mechanism{
 
                 }
             };
-
-            delay.delay(run, 700);
+            if(goal.equals("highgoal")) delay.delay(run, 700);
+            else if(goal.equals("midgoal")) delay.delay(run, 1100);
 
         }
         else{
