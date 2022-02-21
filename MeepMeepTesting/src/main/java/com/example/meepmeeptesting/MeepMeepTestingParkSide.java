@@ -15,10 +15,10 @@ public class MeepMeepTestingParkSide {
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = 10.9;
+    public static double scoreHubPosx = 7;
     public static double scoreHubPosy = 40.4;
 
-    public static double scoreHubPosAngB = -155;
+    public static double scoreHubPosAngB = -135;
     public static double scoreHubPosAngR = 25;
 
     public static double repositionX = 15.0;
@@ -45,8 +45,7 @@ public class MeepMeepTestingParkSide {
             
                         drive.trajectorySequenceBuilder(startPosB)
                             .waitSeconds(1)
-                            .setReversed(true)
-                            .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
+                            .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))
                             .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                                 //scoringMech.release();
                             })
@@ -63,8 +62,10 @@ public class MeepMeepTestingParkSide {
                 .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
                 // .setStartPose(startPos)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPosR)
-                        .back(18)
-
+                        .lineToLinearHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-scoreHubPosAngB)))
+                        .lineToLinearHeading(new Pose2d(repositionX, -reposistionY, Math.toRadians(0)))
+                        .forward(distanceForwards)
+                        .strafeLeft(strafeDistance)
                         .build()
 
                 );

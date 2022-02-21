@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
 @Autonomous
-public class PetersParkBluePreferred extends LinearOpMode {
+public class PetersParkRed extends LinearOpMode {
     private CapVision cv = new CapVision();
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
@@ -27,16 +27,16 @@ public class PetersParkBluePreferred extends LinearOpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public static double startx = 15.0;
-    public static double starty = 70.0;
-    public static double startAng = Math.toRadians(90);
+    public static double starty = -70.0;
+    public static double startAng = Math.toRadians(-90);
 
     public static double scoreHubPosx = 7;
-    public static double scoreHubPosy = 40.4;
+    public static double scoreHubPosy = -40.4;
 
-    public static double scoreHubPosAngB = -135;
+    public static double scoreHubPosAngR = 135;
 
     public static double repositionX = 15.0;
-    public static double reposistionY = 71.5;
+    public static double reposistionY = -71.5;
 
     public static double distanceForwards = 30;
     public static double strafeDistance = 24;
@@ -44,8 +44,8 @@ public class PetersParkBluePreferred extends LinearOpMode {
 
     public static String goal = "midgoal";
 
-    Pose2d startPosB = new Pose2d(startx, starty, startAng);
-    Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
+    Pose2d startPosR = new Pose2d(startx, starty, startAng);
+    Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, scoreHubPosy);
     Pose2d repositionB = new Pose2d(repositionX,reposistionY,Math.toRadians(0));
 
 
@@ -73,13 +73,13 @@ public class PetersParkBluePreferred extends LinearOpMode {
         TrajectorySequence depoPath = drive.trajectorySequenceBuilder(startPos)
                 .waitSeconds(2)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                .lineToLinearHeading(new Pose2d(scoreHubPosR, Math.toRadians(scoreHubPosAngR)))                .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     scoringMech.release();
                 })
                 .waitSeconds(1)
                 .lineToLinearHeading(repositionB)
                 .forward(distanceForwards)
-                .strafeRight(strafeDistance)
+                .strafeLeft(strafeDistance)
                 .build();
 
         //3ftx3ftmovement
