@@ -33,7 +33,7 @@ public class PetersParkBluePreferred extends LinearOpMode {
     public static double scoreHubPosx = 7;
     public static double scoreHubPosy = 40.4;
 
-    public static double scoreHubPosAngB = -135;
+    public static double scoreHubPosAngB = -40;
 
     public static double repositionX = 15.0;
     public static double reposistionY = 71.5;
