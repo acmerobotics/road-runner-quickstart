@@ -15,16 +15,17 @@ public class MeepMeepTestingParkSide {
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = 7;
-    public static double scoreHubPosy = 40;
+    public static double scoreHubPosx = 10.9;
+    public static double scoreHubPosy = 40.4;
 
-    public static double scoreHubPosAngB = -145;
+    public static double scoreHubPosAngB = -155;
     public static double scoreHubPosAngR = 25;
 
     public static double repositionX = 15.0;
-    public static double reposistionY = 74;
+    public static double reposistionY = 71.5;
 
-    public static double distanceForwards = 12;
+    public static double distanceForwards = 30;
+    public static double strafeDistance = 24;
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -43,11 +44,16 @@ public class MeepMeepTestingParkSide {
                 .followTrajectorySequence(drive ->
             
                         drive.trajectorySequenceBuilder(startPosB)
+                            .waitSeconds(1)
                             .setReversed(true)
                             .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
+                            .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                                //scoringMech.release();
+                            })
                             .waitSeconds(1)
                             .lineToLinearHeading(repositionB)
                             .forward(distanceForwards)
+                            .strafeRight(strafeDistance)
                             .build()
 
                 );
