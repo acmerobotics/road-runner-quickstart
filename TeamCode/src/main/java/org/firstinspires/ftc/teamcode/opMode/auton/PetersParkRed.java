@@ -33,7 +33,7 @@ public class PetersParkRed extends LinearOpMode {
     public static double scoreHubPosx = 7;
     public static double scoreHubPosy = -40.4;
 
-    public static double scoreHubPosAngR = 135;
+    public static double scoreHubPosAngR = -40;
 
     public static double repositionX = 15.0;
     public static double reposistionY = -71.5;
@@ -46,7 +46,7 @@ public class PetersParkRed extends LinearOpMode {
 
     Pose2d startPosR = new Pose2d(startx, starty, startAng);
     Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, scoreHubPosy);
-    Pose2d repositionB = new Pose2d(repositionX,reposistionY,Math.toRadians(0));
+    Pose2d repositionR = new Pose2d(repositionX,reposistionY,Math.toRadians(0));
 
 
     @Override
@@ -77,7 +77,7 @@ public class PetersParkRed extends LinearOpMode {
                     scoringMech.release();
                 })
                 .waitSeconds(1)
-                .lineToLinearHeading(repositionB)
+                .lineToLinearHeading(repositionR)
                 .forward(distanceForwards)
                 .strafeLeft(strafeDistance)
                 .build();
