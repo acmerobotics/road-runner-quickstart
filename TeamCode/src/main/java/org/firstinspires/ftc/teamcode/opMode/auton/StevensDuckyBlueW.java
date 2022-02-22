@@ -29,7 +29,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 
 @Config
 @Autonomous
-public class StevensDuckyBlueAlt extends LinearOpMode {
+public class StevensDuckyBlueW extends LinearOpMode {
     private Acquirer intake = new Acquirer();
     private CapVision cv = new CapVision();
     private Carousel carousel = new Carousel();
@@ -133,10 +133,13 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
                     scoringMech.release();
                 })
                 .waitSeconds(1)
-                .lineToSplineHeading(parkB)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     carousel.run(false, false);
                 })
+                .lineToLinearHeading(new Pose2d(scoreHubPosx, scoreHubPosy+10, Math.toRadians(0)))
+                .forward(30)
+                .splineToSplineHeading(new Pose2d(15, 71.5, Math.toRadians(0)), Math.toRadians(0))
+                .forward(30)
                 .build();
 
         //3ftx3ftmovement

@@ -16,7 +16,7 @@ public class MeepMeepTestingParkSide {
     public static double startAng = Math.toRadians(90);
 
     public static double scoreHubPosx = 7;
-    public static double scoreHubPosy = 40.4;
+    public static double scoreHubPosy = 46;
 
     public static double scoreHubPosAngB = 40;
     public static double scoreHubPosAngR = -40;

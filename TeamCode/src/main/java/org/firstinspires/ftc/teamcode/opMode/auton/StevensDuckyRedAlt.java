@@ -34,7 +34,7 @@ public class StevensDuckyRedAlt extends LinearOpMode {
     public static double startAng = Math.toRadians(90);
 
     public static double scoreHubPosx = -34;
-    public static double scoreHubPosy = 40;
+    public static double scoreHubPosy = 43;
 
     public static double scoreHubPosAngB = -25;
     public static double scoreHubPosAngR = 15;
