@@ -184,7 +184,6 @@ public class MeccRobot extends Mechanism{
 
         if(formerA & !gamepad.a){
             formerA = false;
-
             scoringV2.toggle("midgoal");
         }
 

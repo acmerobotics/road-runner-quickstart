@@ -6,7 +6,7 @@ public class LiftScoringV2 extends Mechanism{
     private Lift lift = new Lift();
     private ScoringArm scoring = new ScoringArm();
     private DelayCommand delay = new DelayCommand();
-    private String movementState; //STILL, EXTEND, RETRACT
+    private String movementState; //EXTEND, RETRACT
     private String goalReach;
     private boolean formerExtend = false;
     public static int testingInt = 300;
@@ -62,11 +62,28 @@ public class LiftScoringV2 extends Mechanism{
                 movementState = "EXTEND";
                 break;
             }
+
+            case "cap": {
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        scoring.goToEnd();
+                    }
+                };
+                scoring.tuckPos();
+                lift.raiseHigh();
+                //lift.retracting(false);
+                delay.delay(run, 150);
+                movementState = "EXTEND";
+                break;
+
+            }
         }
     }
 
 
     public void lower(String goal){
+        //auton vs teleop changes?
         if(!goal.equals("lowgoal")) {
             scoring.goToStart();
             scoring.tuckPos();
@@ -80,6 +97,8 @@ public class LiftScoringV2 extends Mechanism{
                 }
             };
             if(goal.equals("highgoal")) delay.delay(run, 700);
+            else if(goal.equals("cap")) delay.delay(run, 700);
+
             else if(goal.equals("midgoal")) delay.delay(run, 1100);
 
         }
@@ -110,6 +129,7 @@ public class LiftScoringV2 extends Mechanism{
         }
         goalReach = goal;
     }
+
     public void release(){
         if(!movementState.equals("DETRACT")){
             scoring.dump();
@@ -123,6 +143,7 @@ public class LiftScoringV2 extends Mechanism{
         }
     }
 
+    //enum based
     public String getMovementState(){
         return movementState;
     }
@@ -140,6 +161,7 @@ public class LiftScoringV2 extends Mechanism{
 
     }
 
+    //encoder based
     public double getPos() {
         return lift.getCurrentPosition();
     }
