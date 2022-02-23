@@ -50,16 +50,14 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
     public static double reposX = -34;
     public static double reposY = 36;
 
+    public static double preSweepY = 48;
+    public static double sweepX = -40;
+    public static double sweepY = 67;
+
     public static double duckX = -58;
     public static double duckY = 65;
 
     public static String goal = "midgoal";
-
-    Pose2d startPosB = new Pose2d(startx, starty, startAng);
-    Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
-    Pose2d carouselPosB = new Pose2d(carouselPosx, carouselPosy, carouselPosAng);
-    Pose2d parkB = new Pose2d(parkX, parkY, parkAng);
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -76,10 +74,15 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
         drive.setSlides(scoringMech);
 
         //important coordinates here
-        Pose2d startPos = new Pose2d(startx,starty, startAng);
-        Vector2d scoreHubPos = new Vector2d(scoreHubPosx,scoreHubPosy);
-        Pose2d carouselPos = new Pose2d(carouselPosx,carouselPosy,carouselPosAng);
-        Pose2d park = new Pose2d(parkX,parkY,parkAng);
+        Pose2d carouselPosB = new Pose2d(carouselPosx, carouselPosy, carouselPosAng);
+        Pose2d parkB = new Pose2d(parkX, parkY, parkAng);
+        Pose2d startPosB = new Pose2d(startx, starty, startAng);
+        Pose2d reposition = new Pose2d(reposX, reposY, Math.toRadians(90));
+        Vector2d preSweep = new Vector2d(reposX, preSweepY);
+        Vector2d sweepPos = new Vector2d(sweepX, sweepY);
+        Pose2d postSweep = new Pose2d(duckX, sweepY, Math.toRadians(90));
+        Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
+
 
         //set startPose
         drive.setPoseEstimate(startPosB);
@@ -103,14 +106,14 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(false,false);
                 })
-                .lineToSplineHeading(new Pose2d(reposX, reposY, Math.toRadians(90)))
-                .lineTo(new Vector2d( reposX, reposY + 12))
+                .lineToSplineHeading(reposition)
+                .lineTo(preSweep)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     intake.intake(1);
                 })
-                .splineTo(new Vector2d(-40, duckY+2), Math.toRadians(180))
+                .splineTo(sweepPos, Math.toRadians(180))
                 //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
-                .lineToLinearHeading(new Pose2d(duckX, duckY+2, Math.toRadians(90)))
+                .lineToLinearHeading(postSweep)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     intake.intake(0);
                 })
