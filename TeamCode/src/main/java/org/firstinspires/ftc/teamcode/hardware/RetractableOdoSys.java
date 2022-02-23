@@ -48,6 +48,7 @@ public class RetractableOdoSys extends ServoMechanism{
     }
 
     @Override
+    @Deprecated
     public void run(boolean bool) {
         if(bool){
             formerBool = true;
@@ -58,22 +59,35 @@ public class RetractableOdoSys extends ServoMechanism{
         }
     }
 
+    /**
+     * retracts odo
+     */
     private void retract(){
         for(int i = 0; i < odoRetractors.length;i++){
             odoRetractors[i].startPos();
         }
     }
 
+    /**
+     * releases odo
+     */
     private void release(){
         for(int i = 0; i < odoRetractors.length;i++){
             odoRetractors[i].endPos();
         }
     }
 
+    /**
+     *
+     * @return true if odo is released
+     */
     public boolean isReleased(){
         return released;
     }
 
+    /**
+     * toggles between release and retract
+     */
     public void toggle(){
         if(isReleased()){
             retract();

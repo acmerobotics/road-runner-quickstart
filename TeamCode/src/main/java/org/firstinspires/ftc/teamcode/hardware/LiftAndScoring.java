@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
+
+@Deprecated
 public class LiftAndScoring extends Mechanism{
     private Lift lift = new Lift();
     private ScoringArm scoring = new ScoringArm();

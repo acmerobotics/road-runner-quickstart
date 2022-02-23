@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware;
+package org.firstinspires.ftc.teamcode.hardware.util;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -9,8 +9,9 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class kellen extends OpenCvPipeline
-{
+public class kellen extends OpenCvPipeline {
+    //pipe line class for detecting capstone (or objects in three different regions)
+    //default color detections set to lime green
     public kellen() {
 
     }

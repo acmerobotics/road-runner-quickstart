@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.opMode.protoType;
 
 //Code for playing around with servos. Go on, experiment!
+//Instructions for doing this in odolift mech
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 @TeleOp(name = "ServoTest",group = "Teleop")
-public class ServoTest extends LinearOpMode {
+public class OdoLiftTuner extends LinearOpMode {
     private Servo testServoLeft;
     private Servo testServoRight;
     private Servo testServoFront;
@@ -23,10 +25,6 @@ public class ServoTest extends LinearOpMode {
 
     public static double START_FRONT = 0.0;
     public static double END_FRONT = 0.0;
-            ;
-    //Servo Main: START: 0.45; END: 0.95
-    //Servo Supp: START: 0.6; END: 0.1
-    //Clamp Servo: START: 0.1; END: 0.6
     public void init(HardwareMap hwMap){
 
         testServoLeft = hwMap.servo.get("LEFTSERVOHWMAP");

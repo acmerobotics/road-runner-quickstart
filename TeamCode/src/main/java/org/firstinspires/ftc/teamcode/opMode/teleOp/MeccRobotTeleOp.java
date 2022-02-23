@@ -28,6 +28,7 @@ public class MeccRobotTeleOp extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException{
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+
         robot.init(hardwareMap,telemetry,timer);
 
 

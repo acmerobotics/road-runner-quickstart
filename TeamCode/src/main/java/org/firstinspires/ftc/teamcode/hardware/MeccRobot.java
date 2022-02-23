@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.profile.MotionProfile;
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
-import com.acmerobotics.roadrunner.profile.MotionState;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,35 +8,31 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.hardware.util.BooleanManager;
 
 public class MeccRobot extends Mechanism{
     private boolean debug = true;
 
-
+    //Mechanisms Utilized
     private SampleMecanumDrive drive;
+    int left_stick_inverted =  1;
+
     private Acquirer acquirer = new Acquirer();
 
-    private Carousel carousel = new Carousel();
-    public static double maxV = 1;
-    public static double maxA = 0.1;
-    public static double startV = 0.5;
-    public static double startA = 0;
-
-    MotionProfile profile = MotionProfileGenerator.generateSimpleMotionProfile(
-            new MotionState(0, startV, startA),
-            new MotionState(60, maxV, 0),
-            maxV,
-            maxA
-    );
-
+    //values for carousel
     ElapsedTime timer;
+    private boolean motionProfiling = true;
     private static int cDir = -1;
-
+    private boolean formerDpadL = false;
+    private Carousel carousel = new Carousel();
 
     private LiftScoringV2 scoringV2 = new LiftScoringV2();
+
     private FreightSensor blockSense = new FreightSensor();
+
     private SenseHub senseHub = new SenseHub();
 
+    //BooleanManager for button presses
     BooleanManager leftStickManager = new BooleanManager(new Runnable() {
         @Override
         public void run() {
@@ -82,27 +75,6 @@ public class MeccRobot extends Mechanism{
         }
     });
 
-
-
-
-
-
-
-    private boolean formerB = false;
-    private boolean formerA = false;
-    private boolean formerX = false;
-    private boolean formerY = false;
-    private boolean formerDpadL = false;
-    private boolean formerDpadR = false;
-
-    private boolean formerLeftBumper = false;
-    private boolean formerRightBumper = false;
-
-    private boolean formerLeftStick = false;
-
-    int left_stick_inverted =  1;
-    private boolean motionProfiling = false;
-
     Telemetry telemetry;
 
     public void init(HardwareMap hwMap){
@@ -115,17 +87,32 @@ public class MeccRobot extends Mechanism{
         senseHub.init(hwMap);
     }
 
+    /**
+     * basic initialize *CANNOT USE WITH ROADRUNNER MP CAROUSEL
+     * @param hwmap
+     * @param telemetry
+     */
     public void init(HardwareMap hwmap, Telemetry telemetry){
         init(hwmap);
         this.telemetry = telemetry;
     }
 
+    /**
+     * initializes with timer -> for use with Roadrunner MP Carousel
+     * @param hwmap
+     * @param telemetry
+     * @param timer
+     */
     public void init(HardwareMap hwmap, Telemetry telemetry, ElapsedTime timer){
         init(hwmap);
         this.telemetry = telemetry;
         this.timer = timer;
     }
 
+    /**
+     * run in teleop mode
+     * @param gamepad
+     */
     public void run(Gamepad gamepad){
         drive(gamepad);
         acquirerControls(gamepad);
@@ -146,15 +133,21 @@ public class MeccRobot extends Mechanism{
 
     }
 
+    /**
+     * drive method -> controls DT
+     * @param gamepad
+     */
     public void drive(Gamepad gamepad){
         leftStickManager.update(gamepad.left_stick_button);
 
+        //left stick inverted inverts controls if equal to 1;
         Pose2d controls = new Pose2d(
                 //Going to test if maybe negative)
                 left_stick_inverted*gamepad.left_stick_y,
                 left_stick_inverted*gamepad.left_stick_x,
                 -gamepad.right_stick_x 
         );
+
         if(debug){
             telemetry.addData("Left_stick_y",gamepad.left_stick_y);
             telemetry.addData("Left_stick_X",gamepad.left_stick_x);
@@ -164,10 +157,19 @@ public class MeccRobot extends Mechanism{
         drive.setWeightedDrivePower(controls);
     }
 
+    /**
+     * controls acquirer
+     * @param gamepad
+     */
     public void acquirerControls(Gamepad gamepad){
         acquirerRun(gamepad.right_trigger,gamepad.left_trigger);
     }
 
+    /**
+     * runs acquirer based on inputes
+     * @param intake double dictating intake movement
+     * @param outake double dictating outake movement
+     */
     public void acquirerRun(double intake, double outake){
         boolean outaking = outake > 0.5;
         boolean intaking = intake > 0.5;
@@ -179,13 +181,23 @@ public class MeccRobot extends Mechanism{
         acquirer.run(outaking,intaking);
     }
 
+    /**
+     * carousel runs with constant speed method
+     * @param gamepad
+     */
     public void carouselRun(Gamepad gamepad){
         if(gamepad.dpad_up) carousel.run(false,true);
         else if (gamepad.dpad_down) carousel.run(true,false);
         else carousel.run(false,false);
     }
 
+    /**
+     * rumbled controller given a block is intaked
+     * UNSTABLE -> Lags code upon implementation due to constant rumble request. Requires fixing
+     * @param gamepad
+     */
 
+    @Deprecated
     public void colorRumble(Gamepad gamepad) {
         if(blockSense.hasFreight() && scoringV2.getMovementState()=="DETRACT") {
             gamepad.rumble(50, 50, 50);
@@ -201,6 +213,11 @@ public class MeccRobot extends Mechanism{
 
 
     }
+
+    /**
+     * method controller scoring mechanism controls (not just the lift)
+     * @param gamepad
+     */
     public void lift(Gamepad gamepad){
         //lift code here
         leftBumperManager.update(gamepad.left_bumper);
@@ -241,6 +258,10 @@ public class MeccRobot extends Mechanism{
 
     }
 
+    /**
+     * carousel RoadRunner motion profiling wrapper
+     * @param gamepad1 gamepad input
+     */
     public void mpCR(Gamepad gamepad1){
         if(!formerDpadL){
             if(gamepad1.dpad_left){
@@ -249,9 +270,11 @@ public class MeccRobot extends Mechanism{
         }
 
         if(gamepad1.dpad_left) {
-            carousel.rrrun(profile, timer,cDir);
+            carousel.rrrun(timer,cDir);
             formerDpadL = true;
-        }else {
+        }
+
+        else {
             carousel.run(false);
             formerDpadL = false;
         }

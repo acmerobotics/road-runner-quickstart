@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.concurrent.TimeUnit;
+import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 
 
 @Config
@@ -34,12 +34,18 @@ public class Carousel extends Mechanism {
 
     private DelayCommand delay = new DelayCommand();
 
-    private MotionProfile b = MotionProfileGenerator.generateSimpleMotionProfile(
-            new MotionState(0, 0, 0),
-            new MotionState(60, 1, 0),
-            1,
-            40
+    public static double maxV = 1;
+    public static double maxA = 0.1;
+    public static double startV = 0.5;
+    public static double startA = 0;
+
+    MotionProfile profile = MotionProfileGenerator.generateSimpleMotionProfile(
+            new MotionState(0, startV, startA),
+            new MotionState(60, maxV, 0),
+            maxV,
+            maxA
     );
+
     // single r run is first iteration; autorun is second; triple rrrun is third
     public void init(HardwareMap hwMap) {
         carousel = hwMap.dcMotor.get("carousel");
@@ -48,17 +54,32 @@ public class Carousel extends Mechanism {
         carousel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    /**
+     * input left and right boolean for which carousel runs. if both are true, defaults to left
+     * constant power motion profile
+     * @param left determines if left carousel runs
+     * @param right determines if right carousel runs
+     */
     public void run(boolean left, boolean right){
         if(left) carousel.setPower(speed);
         else if(right) carousel.setPower(-speed);
         else carousel.setPower(0);
     }
 
+    /**
+     * runs the carousel at the static double speed
+     * constant power motion profile
+     * @param run if true, runs carousel
+     */
     public void run(boolean run){
         if (run) carousel.setPower(speed);
         else carousel.setPower(0);
     }
 
+    /**
+     *     utilizes asynchronous speed changes
+     *     jerk motion profile
+     */
     public void autoRun(int direction) {
 
         Runnable phase0 = new Runnable() {
@@ -88,19 +109,19 @@ public class Carousel extends Mechanism {
 
     }
 
-    public void run(){
-        if(time.time(TimeUnit.SECONDS) >= timeRun){
-            carousel.setPower(0);
-        }
-        else{
-            if(time.time(TimeUnit.SECONDS) % 0.1 == 0){
-
-            }
-        }
-    }
-
+    /**
+     * utilizes roadrunner motion profiling to set carousel speed over a duration accordingly to desired MotionProfile
+     * Theoretically the best option
+     * @param profile motion profile to utilize for roadrunner MP
+     * @param timer timer to utilize for roadrunner MP
+     * @param direction direction of carousel; -1 reverses power (counter clockwise)
+     */
     public void rrrun(MotionProfile profile, ElapsedTime timer, int direction) {
         carousel.setPower(direction*profile.get(timer.seconds()).getV());
+    }
+
+    public void rrrun(ElapsedTime timer, int direction){
+
     }
 
 }

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
+
 public class LiftScoringV2 extends Mechanism{
     private Lift lift = new Lift();
     private ScoringArm scoring = new ScoringArm();
@@ -17,6 +19,10 @@ public class LiftScoringV2 extends Mechanism{
         movementState = "DETRACT";
     }
 
+    /**
+     * raises slide to desired position
+     * @param goal goal state desired ("highgoal", "midgoal", "lowgoal")
+     */
     public void raise(String goal){
         //FOR MIDDLE GOAL GO 9
         switch (goal) {
@@ -81,6 +87,7 @@ public class LiftScoringV2 extends Mechanism{
         }
     }
 
+    @Deprecated
     public void readyCap(){
         Runnable run = new Runnable() {
             @Override
@@ -94,10 +101,12 @@ public class LiftScoringV2 extends Mechanism{
         movementState = "EXTEND";
     }
 
+    @Deprecated
     public void raiseCap(){
         lift.raiseHigh();
         scoring.reposCap();
     }
+
 
     public void bottom() {
         movementState = "DETRACT";
@@ -105,6 +114,10 @@ public class LiftScoringV2 extends Mechanism{
     }
 
 
+    /**
+     * lowers slides depending on goal state
+     * @param goal goal state desired ("highgoal", "midgoal", "lowgoal")
+     */
     public void lower(String goal){
         //auton vs teleop changes?
         if(!goal.equals("lowgoal")) {
@@ -142,6 +155,10 @@ public class LiftScoringV2 extends Mechanism{
         movementState = "DETRACT";
     }
 
+    /**
+     *
+     * @param goal toggles based on goal state desired ("highgoal", "midgoal", "lowgoal")
+     */
     public void toggle(String goal){
         if (movementState.equals("DETRACT")){
             raise(goal);
@@ -153,6 +170,9 @@ public class LiftScoringV2 extends Mechanism{
         goalReach = goal;
     }
 
+    /**
+     * dumps with deposit and lowers slides in tandem
+     */
     public void release(){
         if(!movementState.equals("DETRACT")){
             scoring.dump();
@@ -166,11 +186,17 @@ public class LiftScoringV2 extends Mechanism{
         }
     }
 
-    //enum based
+    /**
+     *
+     * @return movement state of slides returned ("highgoal", "midgoal", "lowgoal")
+     */
     public String getMovementState(){
         return movementState;
     }
 
+    /**
+     * update values (Ex. lift PID)
+     */
     public void update(){
 //        boolean stillCondition = Math.abs(lift.getTargetPosition() - lift.getCurrentPosition()) < 0.9;
 //        if(stillCondition) {
@@ -184,11 +210,18 @@ public class LiftScoringV2 extends Mechanism{
 
     }
 
-    //encoder based
+    /**
+     *
+     * @return encoder based position of lift
+     */
     public double getPos() {
         return lift.getCurrentPosition();
     }
 
+    /**
+     *
+     * @return target position of lift
+     */
     public double getTargetPos() {
         return lift.getTargetPosition();
     }

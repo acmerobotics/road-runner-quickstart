@@ -11,7 +11,12 @@ public class GearedServos extends ServoMechanism{
      *      e.g MAKE SURE THEY'RE NOT SCREWED IN OR GEARED FROM THE GET GO
      *      IF THEY ARE GEARED TOGETHER, MAKE SURE IT WONT SCREW THINGS UP
      * If it works, you're good to go
-     * NOTE: Starboard is the right side of the ship, and portside is the right side of the ship, when considering the ship from the orientation in which it moves forwards
+     * NOTE: Starboard is the right side of the ship, and portside is the right side of the ship,
+     *       when considering the ship from the orientation in which it moves forwards
+     * NOTE: The two servos do not necessarily need to be geared, but only to move in tandem with
+     *       each other, such that they move in OPPOSITE DIRECTIONS (Ex. one rotates clockwise and the
+     *       other rotates counter clockwise) and at the SAME SPEED (a given if the servos are the same,
+     *       or if a workaround is used, like gear ratios)
      ****/
 
 

@@ -7,11 +7,15 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-import org.firstinspires.ftc.teamcode.hardware.kellen;
+import org.firstinspires.ftc.teamcode.hardware.util.kellen;
 
 public class CapVision extends Mechanism {
+    //camera object
     private OpenCvWebcam webcam;
+
+    //pipeline
     private kellen regions = new kellen();
+
     @Override
     public void init(HardwareMap hwMap) {
         //viewid = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
@@ -40,6 +44,7 @@ public class CapVision extends Mechanism {
                  * away from the user.
                  */
                 webcam.startStreaming(320, 180, OpenCvCameraRotation.UPRIGHT);
+                setPipeline();
             }
             @Override
             public void onError(int errorCode)
@@ -51,6 +56,8 @@ public class CapVision extends Mechanism {
         });
 
     }
+
+    //set pipeline within the linear opmode
     public void setPipeline(){
         webcam.setPipeline(regions);
     }
