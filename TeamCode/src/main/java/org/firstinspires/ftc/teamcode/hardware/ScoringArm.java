@@ -45,6 +45,7 @@ public class ScoringArm extends ServoMechanism{
     public static double depoTuckPos= 0.3;
     public static double depoDumpPos = 0.5;
     public static double depoLowGoalPos = 0;
+    public static double depoCapStonePos = 0.9;
 
     private boolean formerBoolArm;
     private boolean formerBoolDeposit;
@@ -70,6 +71,16 @@ public class ScoringArm extends ServoMechanism{
         deposit.setPosRatio(depoLowGoalPos);
         homed = false;
         
+    }
+
+    public void pickUpCap(){
+        pivotArm.goTo(armLowGoalPos);
+        deposit.setPosRatio(0.9);
+    }
+
+    public void reposCap() {
+        pivotArm.goTo(armMidPos);
+        deposit.setPosRatio(1);
     }
 
     public void lowGoalTuck(){

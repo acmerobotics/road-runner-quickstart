@@ -11,14 +11,12 @@ import org.firstinspires.ftc.teamcode.hardware.kellen;
 
 public class CapVision extends Mechanism {
     private OpenCvWebcam webcam;
-    private int viewid;
     private kellen regions = new kellen();
     @Override
     public void init(HardwareMap hwMap) {
-        viewid = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hwMap.get(WebcamName.class, "camera"), viewid);
-        webcam.setPipeline(regions);
-        webcam.setMillisecondsPermissionTimeout(1000); // Timeout for obtaining permission is configurable. Set before opening.
+        //viewid = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hwMap.get(WebcamName.class, "camera"));
+        //webcam.setMillisecondsPermissionTimeout(1000); // Timeout for obtaining permission is configurable. Set before opening.
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -52,7 +50,9 @@ public class CapVision extends Mechanism {
         });
 
     }
-
+    public void setPipeline(){
+        webcam.setPipeline(regions);
+    }
     public int whichRegion() {
         return regions.whichRegion();
     }

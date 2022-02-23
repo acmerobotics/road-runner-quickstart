@@ -40,6 +40,54 @@ public class MeccRobot extends Mechanism{
     private FreightSensor blockSense = new FreightSensor();
     private SenseHub senseHub = new SenseHub();
 
+    BooleanManager leftStickManager = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            left_stick_inverted *= -1;
+        }
+    });
+
+    BooleanManager leftBumperManager = new BooleanManager(()->{
+        scoringV2.toggle("highgoal");
+
+    });
+
+    BooleanManager aButtonManager = new BooleanManager(()->{
+        scoringV2.readyCap();
+
+    });
+
+    BooleanManager bButtonManager = new BooleanManager(()->{
+            scoringV2.raiseCap();
+    });
+
+    BooleanManager xButtonManager = new BooleanManager(()->{
+        scoringV2.toggle("lowgoal");
+
+    });
+
+    BooleanManager rightBumperManager = new BooleanManager(()->{
+        scoringV2.release();
+    });
+
+    BooleanManager yButtonManager = new BooleanManager(()->{
+        scoringV2.bottom();
+    });
+
+    BooleanManager rightDPadButtonManager = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            cDir *= -1;
+
+        }
+    });
+
+
+
+
+
+
+
     private boolean formerB = false;
     private boolean formerA = false;
     private boolean formerX = false;
@@ -99,19 +147,7 @@ public class MeccRobot extends Mechanism{
     }
 
     public void drive(Gamepad gamepad){
-
-        if(gamepad.left_stick_button){
-            formerLeftStick = true;
-        }
-
-        if(formerLeftStick){
-            if(!gamepad.left_stick_button){
-                formerLeftStick = false;
-
-                left_stick_inverted *= -1;
-
-            }
-        }
+        leftStickManager.update(gamepad.left_stick_button);
 
         Pose2d controls = new Pose2d(
                 //Going to test if maybe negative)
@@ -167,52 +203,17 @@ public class MeccRobot extends Mechanism{
     }
     public void lift(Gamepad gamepad){
         //lift code here
-        if(gamepad.left_bumper){
-            formerLeftBumper = true;
-        }
+        leftBumperManager.update(gamepad.left_bumper);
 
-        if(formerLeftBumper){
-            if(!gamepad.left_bumper){
-                scoringV2.toggle("highgoal");
-                formerLeftBumper = false;
-            }
-        }
+        aButtonManager.update(gamepad.a);
 
-        if(gamepad.a){
-            formerA = true;
-        }
+        bButtonManager.update(gamepad.b);
 
-        if(formerA & !gamepad.a){
-            formerA = false;
-            scoringV2.toggle("midgoal");
-        }
+        xButtonManager.update(gamepad.x);
 
-        if(gamepad.x){
-            formerX = true;
-        }
+        rightBumperManager.update(gamepad.right_bumper);
 
-        if(formerX){
-            if(!gamepad.x){
-                formerX = false;
-
-                scoringV2.toggle("lowgoal");
-
-            }
-        }
-
-
-
-        if(gamepad.right_bumper){
-            formerRightBumper = true;
-        }
-
-        if(formerRightBumper){
-            if(!gamepad.right_bumper){
-                scoringV2.release();
-
-                formerRightBumper = false;
-            }
-        }
+        yButtonManager.update(gamepad.y);
 
 //        if(gamepad.right_bumper){
 //            formerRightBumper = true;
@@ -255,17 +256,7 @@ public class MeccRobot extends Mechanism{
             formerDpadL = false;
         }
 
-        if(gamepad1.dpad_right){
-            formerDpadR = true;
-        }
-
-        if(formerDpadR){
-            if(!gamepad1.dpad_right){
-                formerDpadR = false;
-
-                cDir *= -1;
-            }
-        }
+        rightDPadButtonManager.update(gamepad1.dpad_right);
 
     }
 

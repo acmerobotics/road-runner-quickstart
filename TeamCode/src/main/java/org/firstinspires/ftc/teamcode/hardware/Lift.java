@@ -24,6 +24,7 @@ public class Lift extends Mechanism{
     public static PIDCoefficients coeffs = new PIDCoefficients(0.1, 0, 0);
     public static double kF = 0; //min power to go against g
     PIDFController controller;
+    PIDFController controller2;
 
     // lift constants
     public static double SPOOL_DIAMETER_IN = 1.81102;
@@ -60,6 +61,7 @@ public class Lift extends Mechanism{
 
         //PID controller
         controller = new PIDFController(coeffs, 0, 0, kF);
+        controller2 = new PIDFController(coeffs, 0, 0, kF);
 
         //damp
         retract = false;
@@ -94,9 +96,10 @@ public class Lift extends Mechanism{
         if(target >= maxPos){target = maxPos;}
         if(target <= minPos){target = minPos;}
         controller.setTargetPosition(target);
+        controller2.setTargetPosition(target);
         //find the error
         double leftPow = controller.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
-        double rightPow = controller.update(encoderTicksToInches(liftRight.getCurrentPosition()));
+        double rightPow = controller2.update(encoderTicksToInches(liftRight.getCurrentPosition()));
         //compensate error
         if(!retract) {
             liftLeft.setPower(leftPow);

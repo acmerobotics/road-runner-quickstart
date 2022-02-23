@@ -81,6 +81,29 @@ public class LiftScoringV2 extends Mechanism{
         }
     }
 
+    public void readyCap(){
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                scoring.pickUpCap();
+            }
+        };
+        scoring.tuckPos();
+        scoring.goToEnd();
+        delay.delay(run, 500);
+        movementState = "EXTEND";
+    }
+
+    public void raiseCap(){
+        lift.raiseHigh();
+        scoring.reposCap();
+    }
+
+    public void bottom() {
+        movementState = "DETRACT";
+        lift.lower();
+    }
+
 
     public void lower(String goal){
         //auton vs teleop changes?
