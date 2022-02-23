@@ -3,7 +3,7 @@
 ## About Us
 We are Stuy Fusion 479, based in NYC, Stuyvesant High School. This is our repo for the 2021-2022 season, Freight Frenzy. 
 
-[Check out our team website!](fusion479.com)
+[Check out our team website!](https://fusion479.com/)
 
 This is our FTC project which utilizes [Road Runner](https://github.com/acmerobotics/road-runner). **Note:** Road Runner is in alpha and many of its APIs are incubating. For more info on [how to use Road Runner](https://learnroadrunner.com/).
 
