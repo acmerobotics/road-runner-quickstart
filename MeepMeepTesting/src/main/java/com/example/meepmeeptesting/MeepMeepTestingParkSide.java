@@ -16,7 +16,7 @@ public class MeepMeepTestingParkSide {
     public static double startAng = Math.toRadians(90);
 
     public static double scoreHubPosx = 7;
-    public static double scoreHubPosy = 40.4;
+    public static double scoreHubPosy = 43;
 
     public static double scoreHubPosAngB = 40;
     public static double scoreHubPosAngR = -40;
@@ -41,6 +41,7 @@ public class MeepMeepTestingParkSide {
         RoadRunnerBotEntity myBotBlue = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
+                .setDimensions(11.838583, 14.4882 )
                 //.setStartPose(startPos)
                 .followTrajectorySequence(drive ->
             
@@ -53,22 +54,22 @@ public class MeepMeepTestingParkSide {
                             .waitSeconds(1)
                             //.lineToLinearHeading(repositionB)
                             .lineTo(new Vector2d(scoreHubPosx, reposistionY -20))
-                            .splineTo(new Vector2d(repositionX, reposistionY-5), Math.toRadians(50))
-                            .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, reposistionY), Math.toRadians(0))
+                            .splineToSplineHeading(new Pose2d(repositionX+5, reposistionY, Math.toRadians(0)), Math.toRadians(0))
+                            .lineTo(new Vector2d(repositionX + distanceForwards, reposistionY))
                             .waitSeconds(1)
                             .splineTo(new Vector2d(repositionX+5, reposistionY), Math.toRadians(180))
                             .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
                             .waitSeconds(1)
-                            .lineTo(new Vector2d(scoreHubPosx, reposistionY-20))
-                            .splineTo(new Vector2d(repositionX, reposistionY-5), Math.toRadians(50))
-                            .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, reposistionY), Math.toRadians(0))
+                            .lineTo(new Vector2d(scoreHubPosx, reposistionY -20))
+                            .splineToSplineHeading(new Pose2d(repositionX+5, reposistionY, Math.toRadians(0)), Math.toRadians(0))
+                            .lineTo(new Vector2d(repositionX + distanceForwards, reposistionY))
                             .waitSeconds(1)
                             .splineTo(new Vector2d(repositionX+5, reposistionY), Math.toRadians(180))
                             .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
                             .waitSeconds(1)
-                            .lineTo(new Vector2d(scoreHubPosx, reposistionY-20))
-                            .splineTo(new Vector2d(repositionX, reposistionY-5), Math.toRadians(50))
-                            .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, reposistionY), Math.toRadians(0))
+                            .lineTo(new Vector2d(scoreHubPosx, reposistionY -20))
+                            .splineToSplineHeading(new Pose2d(repositionX+5, reposistionY, Math.toRadians(0)), Math.toRadians(0))
+                            .lineTo(new Vector2d(repositionX + distanceForwards, reposistionY))
                             .strafeRight(strafeDistance)
                             .build()
 
@@ -87,22 +88,22 @@ public class MeepMeepTestingParkSide {
                         .waitSeconds(1)
                         //.lineToLinearHeading(repositionB)
                         .lineTo(new Vector2d(scoreHubPosx, -reposistionY +20))
-                        .splineTo(new Vector2d(repositionX, -reposistionY+5), Math.toRadians(-50))
-                        .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, -reposistionY), Math.toRadians(0))
+                        .splineToSplineHeading(new Pose2d(repositionX+5, -reposistionY, Math.toRadians(0)), Math.toRadians(0))
+                        .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
                         .waitSeconds(1)
                         .splineTo(new Vector2d(repositionX+5, -reposistionY), Math.toRadians(180))
                         .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-40)), Math.toRadians(90))
                         .waitSeconds(1)
                         .lineTo(new Vector2d(scoreHubPosx, -reposistionY +20))
-                        .splineTo(new Vector2d(repositionX, -reposistionY+5), Math.toRadians(-50))
-                        .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, -reposistionY), Math.toRadians(0))
+                        .splineToSplineHeading(new Pose2d(repositionX+5, -reposistionY, Math.toRadians(0)), Math.toRadians(0))
+                        .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
                         .waitSeconds(1)
                         .splineTo(new Vector2d(repositionX+5, -reposistionY), Math.toRadians(180))
                         .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-40)), Math.toRadians(90))
                         .waitSeconds(1)
-                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY+20))
-                        .splineTo(new Vector2d(repositionX, -reposistionY+5), Math.toRadians(-50))
-                        .splineToLinearHeading(new Pose2d(repositionX +distanceForwards, -reposistionY), Math.toRadians(0))
+                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY +20))
+                        .splineToSplineHeading(new Pose2d(repositionX+5, -reposistionY, Math.toRadians(0)), Math.toRadians(0))
+                        .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
                         .strafeLeft(strafeDistance)
                         .build()
 

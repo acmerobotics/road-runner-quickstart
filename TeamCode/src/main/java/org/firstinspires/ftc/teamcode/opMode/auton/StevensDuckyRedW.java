@@ -29,7 +29,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 
 @Config
 @Autonomous
-public class StevensDuckyBlueAlt extends LinearOpMode {
+public class StevensDuckyRedW extends LinearOpMode {
     private Acquirer intake = new Acquirer();
     private CapVision cv = new CapVision();
     private Carousel carousel = new Carousel();
@@ -61,13 +61,13 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
     public static double reposY = 36;
 
     public static double duckX = -58;
-    public static double duckY = 65;
+    public static double duckY = -68;
 
     public static String goal = "midgoal";
 
-    Pose2d startPosB = new Pose2d(startx, starty, startAng);
-    Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
-    Pose2d carouselPosB = new Pose2d(carouselPosx, carouselPosy, carouselPosAng);
+    Pose2d startPosR = new Pose2d(startx, -starty, startAng);
+    Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
+    Pose2d carouselPosR = new Pose2d(carouselPosx, -carouselPosy, carouselPosAng);
     Pose2d parkB = new Pose2d(parkX, parkY, parkAng);
 
 
@@ -86,25 +86,25 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
         drive.setSlides(scoringMech);
 
         //important coordinates here
-        Pose2d startPos = new Pose2d(startx,starty, startAng);
-        Vector2d scoreHubPos = new Vector2d(scoreHubPosx,scoreHubPosy);
-        Pose2d carouselPos = new Pose2d(carouselPosx,carouselPosy,carouselPosAng);
-        Pose2d park = new Pose2d(parkX,parkY,parkAng);
+        Pose2d startPos = new Pose2d(startx,-starty, startAng);
+        Vector2d scoreHubPos = new Vector2d(scoreHubPosx,-scoreHubPosy);
+        Pose2d carouselPos = new Pose2d(carouselPosx,-carouselPosy,carouselPosAng);
+        Pose2d park = new Pose2d(parkX,-parkY,parkAng);
 
         //set startPose
-        drive.setPoseEstimate(startPosB);
+        drive.setPoseEstimate(startPosR);
 
         //trajectory
-        TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPosB)
+        TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPosR)
                 .waitSeconds(1)
                 .setReversed(true)
-                .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
+                .splineTo(scoreHubPosR,Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     scoringMech.release();
                 })
                 .waitSeconds(1)
                 //slides
-                .lineToSplineHeading(carouselPosB)
+                .lineToSplineHeading(carouselPosR)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(true,false);
                 })
@@ -118,9 +118,9 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     intake.intake(1);
                 })
-                .splineTo(new Vector2d(-40, duckY+2), Math.toRadians(180))
+                .splineTo(new Vector2d(-40, duckY-2), Math.toRadians(180))
                 //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
-                .lineToLinearHeading(new Pose2d(duckX, duckY+2, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(duckX, duckY-2, Math.toRadians(90)))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     intake.intake(0);
                 })
@@ -128,15 +128,18 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.toggle("highgoal");
                 })
-                .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
+                .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.release();
                 })
                 .waitSeconds(1)
-                .lineToSplineHeading(parkB)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     carousel.run(false, false);
                 })
+                .lineToLinearHeading(new Pose2d(scoreHubPosx, -scoreHubPosy-10, Math.toRadians(0)))
+                .forward(30)
+                .splineToSplineHeading(new Pose2d(15, -71.5, Math.toRadians(0)), Math.toRadians(0))
+                .forward(30)
                 .build();
 
         //3ftx3ftmovement
