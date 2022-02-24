@@ -1,8 +1,16 @@
-# Road Runner Quickstart
+# 479's Freight Frenzy Repo
 
-An example FTC project using [Road Runner](https://github.com/acmerobotics/road-runner). **Note:** Road Runner is in alpha and many of its APIs are incubating.
+## About Us
+We are Stuy Fusion 479, based in NYC, Stuyvesant High School. This is our repo for the 2021-2022 season, Freight Frenzy. 
+
+[Check out our team website!](https://fusion479.com/)
+
+This is our FTC project which utilizes [Road Runner](https://github.com/acmerobotics/road-runner). **Note:** Road Runner is in alpha and many of its APIs are incubating. For more info on [how to use Road Runner](https://learnroadrunner.com/).
 
 ## Installation
+
+All our files, including gradle, are within this repo. Simply clone and use.
+
 
 For more detailed instructions on getting Road Runner setup in your own project, see the [Road Runner README](https://github.com/acmerobotics/road-runner#core).
 
@@ -14,4 +22,4 @@ For more detailed instructions on getting Road Runner setup in your own project,
 
 ## Documentation
 
-Check out the new [online quickstart documentation](https://acme-robotics.gitbook.io/road-runner/quickstart/introduction).
+Check for information on how to get started using RoadRunner, checkout [online quickstart documentation](https://acme-robotics.gitbook.io/road-runner/quickstart/introduction).
