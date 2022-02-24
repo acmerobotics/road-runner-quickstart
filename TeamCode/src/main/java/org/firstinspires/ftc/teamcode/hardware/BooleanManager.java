@@ -10,7 +10,7 @@ public class BooleanManager {
 
     public void update(boolean checkValue){
         if (checkValue) formerBoolean = true;
-        if(formerBoolean && checkValue){
+        if(formerBoolean && !checkValue){
             formerBoolean = false;
 
             task.run();

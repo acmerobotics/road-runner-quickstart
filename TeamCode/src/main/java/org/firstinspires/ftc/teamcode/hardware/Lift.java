@@ -33,7 +33,7 @@ public class Lift extends Mechanism{
 
     //PIDCoefficients for RoadRunner motion profiling
     public static PIDCoefficients coeffs = new PIDCoefficients(0.1, 0, 0);
-    public static double kF = 0; //min power to go against g
+    public static double kF = 0.12; //min power to go against g
 
     //two controllers because we have two motors (although in theory it is possible to utilize only one
     PIDFController controller;
@@ -86,8 +86,8 @@ public class Lift extends Mechanism{
          * Part of gravity logic. Not needed if utilizing kF
          */
 
-//        retract = false;
-//        retMult = 0.2;
+        retract = false;
+        retMult = 0.2;
     }
 
 
@@ -252,6 +252,8 @@ public class Lift extends Mechanism{
      */
     public void retracting(boolean status) {
         retract = status;
+        if(retract) kF = 0;
+        else kF = 0.12;
     }
 
     public void reset(){
