@@ -121,7 +121,7 @@ public class Carousel extends Mechanism {
     }
 
     public void rrrun(ElapsedTime timer, int direction){
-
+        carousel.setPower(direction*profile.get(timer.seconds()).getV());
     }
 
 }

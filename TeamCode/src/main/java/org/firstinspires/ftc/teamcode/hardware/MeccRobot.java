@@ -26,11 +26,11 @@ public class MeccRobot extends Mechanism{
     private boolean formerDpadL = false;
     private Carousel carousel = new Carousel();
 
-    private LiftScoringV2 scoringV2 = new LiftScoringV2();
-
-    private FreightSensor blockSense = new FreightSensor();
-
-    private SenseHub senseHub = new SenseHub();
+//    private LiftScoringV2 scoringV2 = new LiftScoringV2();
+//
+//    private FreightSensor blockSense = new FreightSensor();
+//
+//    private SenseHub senseHub = new SenseHub();
 
     //BooleanManager for button presses
     BooleanManager leftStickManager = new BooleanManager(new Runnable() {
@@ -40,32 +40,23 @@ public class MeccRobot extends Mechanism{
         }
     });
 
-    BooleanManager leftBumperManager = new BooleanManager(()->{
-        scoringV2.toggle("highgoal");
-
-    });
-
-    BooleanManager aButtonManager = new BooleanManager(()->{
-        scoringV2.readyCap();
-
-    });
-
-    BooleanManager bButtonManager = new BooleanManager(()->{
-            scoringV2.raiseCap();
-    });
-
-    BooleanManager xButtonManager = new BooleanManager(()->{
-        scoringV2.toggle("lowgoal");
-
-    });
-
-    BooleanManager rightBumperManager = new BooleanManager(()->{
-        scoringV2.release();
-    });
-
-    BooleanManager yButtonManager = new BooleanManager(()->{
-        scoringV2.bottom();
-    });
+//    BooleanManager leftBumperManager = new BooleanManager(()->{
+//        scoringV2.toggle("highgoal");
+//
+//    });
+//
+//    BooleanManager xButtonManager = new BooleanManager(()->{
+//        scoringV2.toggle("lowgoal");
+//
+//    });
+//
+//    BooleanManager rightBumperManager = new BooleanManager(()->{
+//        scoringV2.release();
+//    });
+//
+//    BooleanManager yButtonManager = new BooleanManager(()->{
+//        scoringV2.bottom();
+//    });
 
     BooleanManager rightDPadButtonManager = new BooleanManager(new Runnable() {
         @Override
@@ -80,11 +71,11 @@ public class MeccRobot extends Mechanism{
     public void init(HardwareMap hwMap){
         drive = new SampleMecanumDrive(hwMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        blockSense.init(hwMap);
+//        blockSense.init(hwMap);
         acquirer.init(hwMap);
         carousel.init(hwMap);
-        scoringV2.init(hwMap);
-        senseHub.init(hwMap);
+//        scoringV2.init(hwMap);
+//        senseHub.init(hwMap);
     }
 
     /**
@@ -116,7 +107,7 @@ public class MeccRobot extends Mechanism{
     public void run(Gamepad gamepad){
         drive(gamepad);
         acquirerControls(gamepad);
-        lift(gamepad);
+        //lift(gamepad);
         //colorRumble(gamepad);
         //ducks
         if(motionProfiling){
@@ -126,8 +117,8 @@ public class MeccRobot extends Mechanism{
             carouselRun(gamepad);
         }
         if(debug){
-            telemetry.addData("has freight",blockSense.hasFreight());
-            scoringV2.update();
+            //telemetry.addData("has freight",blockSense.hasFreight());
+            //scoringV2.update();
             telemetry.update();
         }
 
@@ -174,10 +165,10 @@ public class MeccRobot extends Mechanism{
         boolean outaking = outake > 0.5;
         boolean intaking = intake > 0.5;
 
-        if(intaking && blockSense.hasFreight()){
-            outaking = true;
-            intaking = false;
-        }
+//        if(intaking && blockSense.hasFreight()){
+//            outaking = true;
+//            intaking = false;
+//        }
         acquirer.run(outaking,intaking);
     }
 
@@ -197,22 +188,22 @@ public class MeccRobot extends Mechanism{
      * @param gamepad
      */
 
-    @Deprecated
-    public void colorRumble(Gamepad gamepad) {
-        if(blockSense.hasFreight() && scoringV2.getMovementState()=="DETRACT") {
-            gamepad.rumble(50, 50, 50);
-        }
-//        else if(senseHub.inRange() && scoringV2.getMovementState()=="EXTEND"){
-//            gamepad.rumble(100, 100, 50);
+//    @Deprecated
+//    public void colorRumble(Gamepad gamepad) {
+//        if(blockSense.hasFreight() && scoringV2.getMovementState()=="DETRACT") {
+//            gamepad.rumble(50, 50, 50);
 //        }
-
-        if(debug){
-            telemetry.addData("Distance", senseHub.distance());
-            telemetry.addData("InRange", senseHub.inRange());
-        }
-
-
-    }
+////        else if(senseHub.inRange() && scoringV2.getMovementState()=="EXTEND"){
+////            gamepad.rumble(100, 100, 50);
+////        }
+//
+//        if(debug){
+//            telemetry.addData("Distance", senseHub.distance());
+//            telemetry.addData("InRange", senseHub.inRange());
+//        }
+//
+//
+//    }
 
     /**
      * method controller scoring mechanism controls (not just the lift)
@@ -220,17 +211,13 @@ public class MeccRobot extends Mechanism{
      */
     public void lift(Gamepad gamepad){
         //lift code here
-        leftBumperManager.update(gamepad.left_bumper);
-
-        aButtonManager.update(gamepad.a);
-
-        bButtonManager.update(gamepad.b);
-
-        xButtonManager.update(gamepad.x);
-
-        rightBumperManager.update(gamepad.right_bumper);
-
-        yButtonManager.update(gamepad.y);
+//        leftBumperManager.update(gamepad.left_bumper);
+//
+//        xButtonManager.update(gamepad.x);
+//
+//        rightBumperManager.update(gamepad.right_bumper);
+//
+//        yButtonManager.update(gamepad.y);
 
 //        if(gamepad.right_bumper){
 //            formerRightBumper = true;
@@ -249,10 +236,10 @@ public class MeccRobot extends Mechanism{
 
         //scoring.run((int)lift.getCurrentPosition() == 3);
         if(debug){
-            telemetry.addData("liftpos: ", scoringV2.getPos());
-            telemetry.addData("targetlift: ", scoringV2.getTargetPos());
-            telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
-            telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
+//            telemetry.addData("liftpos: ", scoringV2.getPos());
+//            telemetry.addData("targetlift: ", scoringV2.getTargetPos());
+//            telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
+//            telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
         }
 
 

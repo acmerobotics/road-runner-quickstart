@@ -5,30 +5,35 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.hardware.Lift;
+import org.firstinspires.ftc.teamcode.hardware.util.BooleanManager;
+
 @TeleOp
 public class liftor extends LinearOpMode {
     public boolean formerDpadL = false;
     public boolean formerDpadR = false;
-    public DcMotor motor;
+    public Lift lift = new Lift();
+    BooleanManager aToggle = new BooleanManager(()->{
+        lift.toggle();
+    });
+
     @Override
     public void runOpMode() throws InterruptedException {
-        motor = hardwareMap.dcMotor.get("lift");
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+        lift.init(hardwareMap);
         waitForStart();
+
         while(opModeIsActive()) {
-            telemetry.addData("encoder: ", motor.getCurrentPosition());
+
+            aToggle.update(gamepad1.b);
+
+            lift.update();
+
+            telemetry.addData("A value", gamepad1.b);
+            telemetry.addData("targetPos", lift.getTargetPosition());
+            telemetry.addData("currentPos", lift.getCurrentPosition());
             telemetry.update();
-            if(gamepad1.dpad_left && motor.getCurrentPosition() > -2800) {
-                motor.setPower(0.375);
-            }
-            if(!gamepad1.dpad_left && gamepad1.dpad_right && motor.getCurrentPosition() < 2800)  {
-                motor.setPower(-0.375);
-            }
-            if(gamepad1.a || motor.getCurrentPosition() > 2500 && !gamepad2.dpad_left|| motor.getCurrentPosition() < -2500 && !gamepad2.dpad_right){
-                motor.setPower(0);
-            }
 
         }
     }

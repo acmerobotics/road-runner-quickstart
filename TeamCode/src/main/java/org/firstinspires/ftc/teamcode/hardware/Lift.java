@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @Config
 public class Lift extends Mechanism{
@@ -18,6 +19,9 @@ public class Lift extends Mechanism{
     //motors
     public DcMotor liftLeft;
     public DcMotor liftRight;
+
+    public TouchSensor limitSwitch;
+    private boolean useLimitSwitch = false;
 
     //retract logic for handling coefficient of gravity. Not needed if utilizing kF
     private boolean retract;
@@ -33,7 +37,7 @@ public class Lift extends Mechanism{
 
     //PIDCoefficients for RoadRunner motion profiling
     public static PIDCoefficients coeffs = new PIDCoefficients(0.1, 0, 0);
-    public static double kF = 0; //min power to go against g
+    public static double kF = 0.1; //min power to go against g
 
     //two controllers because we have two motors (although in theory it is possible to utilize only one
     PIDFController controller;
@@ -53,7 +57,7 @@ public class Lift extends Mechanism{
     public void init(HardwareMap hardwareMap) {
         liftLeft = hardwareMap.get(DcMotor.class, "liftLeft");
         liftRight = hardwareMap.get(DcMotor.class, "liftRight");
-
+        limitSwitch = hardwareMap.touchSensor.get("limitSwitch");
         // if you need to make sure to reverse as necessary
 
 //        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -86,8 +90,8 @@ public class Lift extends Mechanism{
          * Part of gravity logic. Not needed if utilizing kF
          */
 
-//        retract = false;
-//        retMult = 0.2;
+        retract = false;
+        retMult = 0.5;
     }
 
 
@@ -146,6 +150,10 @@ public class Lift extends Mechanism{
 
         if (positionHistory.length - 1 - 1 >= 0)
             System.arraycopy(positionHistory, 2, positionHistory, 1, positionHistory.length - 1 - 1);
+
+            if (limitSwitch.isPressed() && useLimitSwitch) {
+                reset();
+            }
     }
 
     /**

@@ -15,6 +15,7 @@ public class Acquirer extends Mechanism {
     public void init(HardwareMap hwMap) {
         acquirerM = hwMap.dcMotor.get("intake");
         acquirerM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        acquirerM.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     //Simple intake and outake code, directing the motors to power and rotate in a certain direction.

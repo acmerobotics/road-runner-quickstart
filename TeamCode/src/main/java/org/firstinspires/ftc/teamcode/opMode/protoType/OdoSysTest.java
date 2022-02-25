@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
+import org.firstinspires.ftc.teamcode.hardware.util.BooleanManager;
 
 @Config
 @TeleOp(name = "OdoSysTest",group = "Teleop")
@@ -27,6 +28,10 @@ public class OdoSysTest extends LinearOpMode {
         boolean formerB = false;
         init(hardwareMap);
         waitForStart();
+        BooleanManager bButton = new BooleanManager(()->{
+            odoSys = new RetractableOdoSys();
+            init(hardwareMap);
+        });
         while(opModeIsActive()&& !isStopRequested()){
             //press A to toggle odoSys
             if(gamepad1.a){
@@ -39,6 +44,9 @@ public class OdoSysTest extends LinearOpMode {
 
                 }
             }
+
+            bButton.update(gamepad1.b);
+
         }
     }
 }
