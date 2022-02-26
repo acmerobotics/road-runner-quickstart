@@ -33,6 +33,7 @@ public class liftor extends LinearOpMode {
             telemetry.addData("A value", gamepad1.b);
             telemetry.addData("targetPos", lift.getTargetPosition());
             telemetry.addData("currentPos", lift.getCurrentPosition());
+            telemetry.addData("limitswitched is pressed",lift.touchSensor());
             telemetry.update();
 
         }

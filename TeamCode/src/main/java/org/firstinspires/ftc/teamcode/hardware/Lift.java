@@ -17,11 +17,11 @@ public class Lift extends Mechanism{
      */
 
     //motors
-    public DcMotor liftLeft;
-    public DcMotor liftRight;
+    private DcMotor liftLeft;
+    private DcMotor liftRight;
 
-    public TouchSensor limitSwitch;
-    private boolean useLimitSwitch = false;
+    private TouchSensor limitSwitch;
+    private boolean useLimitSwitch = true;
 
     //retract logic for handling coefficient of gravity. Not needed if utilizing kF
     private boolean retract;
@@ -40,8 +40,10 @@ public class Lift extends Mechanism{
     public static double kF = 0.1; //min power to go against g
 
     //two controllers because we have two motors (although in theory it is possible to utilize only one
-    PIDFController controller;
-    PIDFController controller2;
+    PIDFController upwardsControl;
+
+    PIDFController downwardsControl;
+    double gFactor = 0.0001;
 
     // lift constants
     public static double SPOOL_DIAMETER_IN = 1.81102;
@@ -83,8 +85,8 @@ public class Lift extends Mechanism{
          * https://acme-robotics.gitbook.io/road-runner/tour/feedforward-control
          */
 
-        controller = new PIDFController(coeffs, 0, 0, 0, (x,v) -> kF);
-        controller2 = new PIDFController(coeffs, 0, 0, 0, (x,v) -> kF);
+        upwardsControl = new PIDFController(coeffs, 0, 0, 0);//, (x,v) -> kF);
+        downwardsControl = new PIDFController(coeffs, 0, 0, 0);//, (x,v) -> kF);
 
         /*
          * Part of gravity logic. Not needed if utilizing kF
@@ -125,11 +127,23 @@ public class Lift extends Mechanism{
     private void updatePID(double target) {
         if(target >= maxPos){target = maxPos;}
         if(target <= minPos){target = minPos;}
-        controller.setTargetPosition(target);
-        controller2.setTargetPosition(target);
+        double leftPow;
+        double rightPow;
+        if(target <= getCurrentPosition()){
+            upwardsControl.setTargetPosition(target);
+            leftPow = upwardsControl.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
+            rightPow = upwardsControl.update(encoderTicksToInches(liftRight.getCurrentPosition()));
+
+        }
+
+        else {
+            downwardsControl.setTargetPosition(target);
+            downwardsControl.setTargetVelocity(gFactor);
+            leftPow = downwardsControl.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
+            rightPow = downwardsControl.update(encoderTicksToInches(liftRight.getCurrentPosition()));
+        }
         //find the error
-        double leftPow = controller.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
-        double rightPow = controller2.update(encoderTicksToInches(liftRight.getCurrentPosition()));
+
         //compensate error
         if(!retract) {
             liftLeft.setPower(leftPow);
@@ -193,6 +207,7 @@ public class Lift extends Mechanism{
      */
     public void raiseHigh(){
         setTargetPosition(maxPos);
+        retracting(false);
         inAir = true;
     }
 
@@ -201,6 +216,7 @@ public class Lift extends Mechanism{
      */
     public void lower(){
         setTargetPosition(minPos);
+        retracting(true);
         inAir = false;
 
     }
@@ -265,6 +281,12 @@ public class Lift extends Mechanism{
     public void reset(){
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public boolean touchSensor(){
+        return limitSwitch.isPressed();
     }
 
 }
