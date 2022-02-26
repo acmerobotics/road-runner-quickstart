@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import java.lang.Math;
+
 @Config
 public class FreightSensor extends Mechanism{
     // Adaptar class for color sensor that detects freight
@@ -34,7 +36,7 @@ public class FreightSensor extends Mechanism{
      * @return returns the status of detected freight
      */
     public boolean hasFreight(){
-        return hasFreightSensor(left);
+        return this.hasBall() || this.hasBlock();
     }
 
     /**
@@ -63,5 +65,9 @@ public class FreightSensor extends Mechanism{
 
     public boolean hasBlock() {
         return (this.red() / this.blue()) >= lowB && (this.red() / this.blue() <= HighB);
+    }
+
+    public boolean hasBall() {
+    	return Math.round((this.red()/this.blue())) == 1 && Math.round(this.red()/this.green()) == 1 && Math.round(this.blue()/this.green()) == 1;
     }
 }
