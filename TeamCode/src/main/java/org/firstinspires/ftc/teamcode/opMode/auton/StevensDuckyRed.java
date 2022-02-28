@@ -77,7 +77,7 @@ public class StevensDuckyRed extends LinearOpMode {
                 .setReversed(true)
                 .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.release();
+                    scoringMech.releaseHard();
                 })
                 .waitSeconds(1)
                 // slides

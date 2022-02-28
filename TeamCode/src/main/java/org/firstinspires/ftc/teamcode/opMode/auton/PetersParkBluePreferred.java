@@ -74,7 +74,7 @@ public class PetersParkBluePreferred extends LinearOpMode {
                 .waitSeconds(2)
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    scoringMech.release();
+                    scoringMech.releaseHard();
                 })
                 .waitSeconds(1)
                 .lineToLinearHeading(repositionB)

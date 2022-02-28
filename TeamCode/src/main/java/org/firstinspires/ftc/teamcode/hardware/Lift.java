@@ -31,19 +31,21 @@ public class Lift extends Mechanism{
     public static double HEIGHT_INCREMENT = 1.5;
 
     // saved lift positions
-    public static double maxPos = 15; //highest position slides can reach
+    public static double maxPos = 14; //highest position slides can reach
     public static double midPos = 9; //mid goal position
     public static double minPos = 0; //lowest position slides can reach (default to 0)
 
     //PIDCoefficients for RoadRunner motion profiling
-    public static PIDCoefficients coeffs = new PIDCoefficients(0.1, 0, 0);
-    public static double kF = 0.1; //min power to go against g
+    public static PIDCoefficients coeffsUp = new PIDCoefficients(0.1, 0, 0);
+    public static PIDCoefficients coeffsDown = new PIDCoefficients(0.1, 0, 0);
+
+    public static double kF = 0.09; //min power to go against g
 
     //two controllers because we have two motors (although in theory it is possible to utilize only one
     PIDFController upwardsControl;
 
     PIDFController downwardsControl;
-    double gFactor = 0.0001;
+    public static double gFactor = 1;
 
     // lift constants
     public static double SPOOL_DIAMETER_IN = 1.81102;
@@ -85,15 +87,15 @@ public class Lift extends Mechanism{
          * https://acme-robotics.gitbook.io/road-runner/tour/feedforward-control
          */
 
-        upwardsControl = new PIDFController(coeffs, 0, 0, 0);//, (x,v) -> kF);
-        downwardsControl = new PIDFController(coeffs, 0, 0, 0);//, (x,v) -> kF);
+        upwardsControl = new PIDFController(coeffsUp, 0, 0, 0, (x,v) -> kF);
+        downwardsControl = new PIDFController(coeffsDown, 0, 0, 0);//, (x,v) -> kF);
 
         /*
          * Part of gravity logic. Not needed if utilizing kF
          */
 
         retract = false;
-        retMult = 0.5;
+        retMult = 0.3;
     }
 
 
@@ -138,7 +140,7 @@ public class Lift extends Mechanism{
 
         else {
             downwardsControl.setTargetPosition(target);
-            downwardsControl.setTargetVelocity(gFactor);
+            downwardsControl.setTargetAcceleration(-gFactor);
             leftPow = downwardsControl.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
             rightPow = downwardsControl.update(encoderTicksToInches(liftRight.getCurrentPosition()));
         }

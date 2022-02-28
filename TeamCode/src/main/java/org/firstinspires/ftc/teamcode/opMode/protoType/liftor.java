@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opMode.protoType;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,7 +18,7 @@ public class liftor extends LinearOpMode {
     BooleanManager aToggle = new BooleanManager(()->{
         lift.toggle();
     });
-
+    private final FtcDashboard dashboard = FtcDashboard.getInstance();
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -26,6 +28,7 @@ public class liftor extends LinearOpMode {
 
         while(opModeIsActive()) {
 
+            telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
             aToggle.update(gamepad1.b);
 
             lift.update();

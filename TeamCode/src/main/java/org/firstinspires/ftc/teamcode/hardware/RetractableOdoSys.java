@@ -27,12 +27,12 @@ public class RetractableOdoSys extends ServoMechanism{
 
     //RIGHT LIMITS HERE
     public static double LIMIT_RIGHT_START = 0.95;
-    public static double LIMIT_RIGHT_END = 0.35;
+    public static double LIMIT_RIGHT_END = 0.45;
     ServoManager right = new ServoManager("odoRight",LIMIT_RIGHT_START,LIMIT_RIGHT_END);
 
     //FRONT LIMITS HERE
-    public static double LIMIT_FRONT_START = 0;
-    public static double LIMIT_FRONT_END = 0;
+    public static double LIMIT_FRONT_START = 0.2;
+    public static double LIMIT_FRONT_END = 0.7;
     ServoManager front = new ServoManager("odoFront",LIMIT_FRONT_START,LIMIT_FRONT_END);
 
     ServoManager[] odoRetractors = {left,right,front};

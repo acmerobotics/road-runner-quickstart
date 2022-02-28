@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 @Config
 public class ScoringMechTest extends LinearOpMode {
     private ScoringArm score = new ScoringArm();
+    //0.1
+    //
     public static double position = 0.0;
     @Override
     public void runOpMode() throws InterruptedException{

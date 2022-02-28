@@ -76,7 +76,7 @@ public class PetersParkBlue extends LinearOpMode {
                 .setReversed(true)
                 .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    scoringMech.release();
+                    scoringMech.releaseHard();
                 })
                 .waitSeconds(1)
                 .lineToLinearHeading(repositionB)

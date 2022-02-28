@@ -26,9 +26,9 @@ public class MeccRobot extends Mechanism{
     private boolean formerDpadL = false;
     private Carousel carousel = new Carousel();
 
-//    private LiftScoringV2 scoringV2 = new LiftScoringV2();
-//
-//    private FreightSensor blockSense = new FreightSensor();
+    private LiftScoringV2 scoringV2 = new LiftScoringV2();
+
+    private FreightSensor blockSense = new FreightSensor();
 //
 //    private SenseHub senseHub = new SenseHub();
 
@@ -40,23 +40,23 @@ public class MeccRobot extends Mechanism{
         }
     });
 
-//    BooleanManager leftBumperManager = new BooleanManager(()->{
-//        scoringV2.toggle("highgoal");
-//
-//    });
-//
-//    BooleanManager xButtonManager = new BooleanManager(()->{
-//        scoringV2.toggle("lowgoal");
-//
-//    });
-//
-//    BooleanManager rightBumperManager = new BooleanManager(()->{
-//        scoringV2.release();
-//    });
-//
-//    BooleanManager yButtonManager = new BooleanManager(()->{
-//        scoringV2.bottom();
-//    });
+    BooleanManager leftBumperManager = new BooleanManager(()->{
+        scoringV2.toggle("highgoal");
+
+    });
+
+    BooleanManager xButtonManager = new BooleanManager(()->{
+        scoringV2.toggle("lowgoal");
+
+    });
+
+    BooleanManager rightBumperManager = new BooleanManager(()->{
+        scoringV2.releaseHard();
+    });
+
+    BooleanManager yButtonManager = new BooleanManager(()->{
+        scoringV2.bottom();
+    });
 
     BooleanManager rightDPadButtonManager = new BooleanManager(new Runnable() {
         @Override
@@ -71,10 +71,10 @@ public class MeccRobot extends Mechanism{
     public void init(HardwareMap hwMap){
         drive = new SampleMecanumDrive(hwMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        blockSense.init(hwMap);
+        blockSense.init(hwMap);
         acquirer.init(hwMap);
         carousel.init(hwMap);
-//        scoringV2.init(hwMap);
+        scoringV2.init(hwMap,blockSense);
 //        senseHub.init(hwMap);
     }
 
@@ -107,8 +107,9 @@ public class MeccRobot extends Mechanism{
     public void run(Gamepad gamepad){
         drive(gamepad);
         acquirerControls(gamepad);
-        //lift(gamepad);
+        lift(gamepad);
         //colorRumble(gamepad);
+
         //ducks
         if(motionProfiling){
             mpCR(gamepad);
@@ -118,7 +119,7 @@ public class MeccRobot extends Mechanism{
         }
         if(debug){
             //telemetry.addData("has freight",blockSense.hasFreight());
-            //scoringV2.update();
+            scoringV2.update();
             telemetry.update();
         }
 
@@ -136,7 +137,7 @@ public class MeccRobot extends Mechanism{
                 //Going to test if maybe negative)
                 left_stick_inverted*gamepad.left_stick_y,
                 left_stick_inverted*gamepad.left_stick_x,
-                -gamepad.right_stick_x 
+                -gamepad.right_stick_x * 0.8
         );
 
         if(debug){
@@ -165,10 +166,10 @@ public class MeccRobot extends Mechanism{
         boolean outaking = outake > 0.5;
         boolean intaking = intake > 0.5;
 
-//        if(intaking && blockSense.hasFreight()){
-//            outaking = true;
-//            intaking = false;
-//        }
+        if(intaking && blockSense.hasFreight()){
+            outaking = true;
+            intaking = false;
+        }
         acquirer.run(outaking,intaking);
     }
 
@@ -211,35 +212,19 @@ public class MeccRobot extends Mechanism{
      */
     public void lift(Gamepad gamepad){
         //lift code here
-//        leftBumperManager.update(gamepad.left_bumper);
-//
-//        xButtonManager.update(gamepad.x);
-//
-//        rightBumperManager.update(gamepad.right_bumper);
-//
-//        yButtonManager.update(gamepad.y);
+        leftBumperManager.update(gamepad.left_bumper);
 
-//        if(gamepad.right_bumper){
-//            formerRightBumper = true;
-//        }
-//
-//        if(formerRightBumper){
-//            if(!gamepad.right_bumper){
-//                scoringV2.lower();
-//
-//                formerRightBumper = false;
-//            }
-//        }
+        xButtonManager.update(gamepad.x);
 
+        rightBumperManager.update(gamepad.right_bumper);
 
+        yButtonManager.update(gamepad.y);
 
-
-        //scoring.run((int)lift.getCurrentPosition() == 3);
         if(debug){
-//            telemetry.addData("liftpos: ", scoringV2.getPos());
-//            telemetry.addData("targetlift: ", scoringV2.getTargetPos());
-//            telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
-//            telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
+            telemetry.addData("liftpos: ", scoringV2.getPos());
+            telemetry.addData("targetlift: ", scoringV2.getTargetPos());
+            telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
+            //telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
         }
 
 

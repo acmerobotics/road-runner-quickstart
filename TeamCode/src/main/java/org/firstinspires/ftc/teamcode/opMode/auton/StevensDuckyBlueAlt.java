@@ -90,7 +90,7 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
                 .setReversed(true)
                 .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    scoringMech.release();
+                    scoringMech.releaseHard();
                 })
                 .waitSeconds(1)
                 //slides
@@ -120,7 +120,7 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
                 })
                 .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.release();
+                    scoringMech.releaseHard();
                 })
                 .waitSeconds(1)
                 .lineToSplineHeading(parkB)

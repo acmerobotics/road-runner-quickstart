@@ -8,6 +8,7 @@ public class LiftScoringV2 extends Mechanism{
     private Lift lift = new Lift();
     private ScoringArm scoring = new ScoringArm();
     private DelayCommand delay = new DelayCommand();
+    private FreightSensor freightSensor = new FreightSensor();
     private String movementState; //EXTEND, RETRACT
     private String goalReach;
     private boolean formerExtend = false;
@@ -16,7 +17,15 @@ public class LiftScoringV2 extends Mechanism{
     public void init(HardwareMap hwmap){
         lift.init(hwmap);
         scoring.init(hwmap);
+        freightSensor.init(hwmap);
         movementState = "DETRACT";
+    }
+    public void init(HardwareMap hwmap, FreightSensor freightSensor){
+        init(hwmap);
+        setFreightSensor(freightSensor);
+    }
+    public void setFreightSensor(FreightSensor freightSensor){
+        this.freightSensor = freightSensor;
     }
 
     /**
@@ -36,7 +45,7 @@ public class LiftScoringV2 extends Mechanism{
                 scoring.tuckPos();
                 lift.raiseHigh();
                 //lift.retracting(false);
-                delay.delay(run, 150);
+                delay.delay(run, 0);
                 movementState = "EXTEND";
                 break;
             }
@@ -52,7 +61,7 @@ public class LiftScoringV2 extends Mechanism{
 
                 //CHANGE THIS LINE TO WHATEVER HEIGHT YOU NEED
                 lift.raiseMid();
-                delay.delay(run, 150);
+                delay.delay(run, 0);
                 movementState = "EXTEND";
                 break;
             }
@@ -64,7 +73,7 @@ public class LiftScoringV2 extends Mechanism{
                     }
                 };
                 scoring.tuckPos();
-                delay.delay(run, 100);
+                delay.delay(run, 0);
                 movementState = "EXTEND";
                 break;
             }
@@ -79,7 +88,7 @@ public class LiftScoringV2 extends Mechanism{
                 scoring.tuckPos();
                 lift.raiseHigh();
                 //lift.retracting(false);
-                delay.delay(run, 150);
+                delay.delay(run, 0);
                 movementState = "EXTEND";
                 break;
 
@@ -132,10 +141,11 @@ public class LiftScoringV2 extends Mechanism{
 
                 }
             };
-            if(goal.equals("highgoal")) delay.delay(run, 700);
-            else if(goal.equals("cap")) delay.delay(run, 700);
 
-            else if(goal.equals("midgoal")) delay.delay(run, 1100);
+            if(goal.equals("highgoal")) delay.delay(run, 0);
+            else if(goal.equals("cap")) delay.delay(run, 0);
+
+            else if(goal.equals("midgoal")) delay.delay(run, 0);
 
         }
         else{
@@ -150,7 +160,7 @@ public class LiftScoringV2 extends Mechanism{
                 }
             };
 
-            delay.delay(run, 700);
+            delay.delay(run, 100);
         }
         movementState = "DETRACT";
     }
@@ -173,9 +183,9 @@ public class LiftScoringV2 extends Mechanism{
     /**
      * dumps with deposit and lowers slides in tandem
      */
-    public void release(){
+    public void releaseHard(){
         if(!movementState.equals("DETRACT")){
-            scoring.dump();
+            scoring.dumpHard();
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
@@ -204,6 +214,12 @@ public class LiftScoringV2 extends Mechanism{
 //            lift.retracting(false);
 //        }
 
+        if(freightSensor.hasFreight() && movementState.equals("DETRACT")){
+            scoring.tuckPos();
+        }
+        else if (movementState.equals("DETRACT")){
+            scoring.depositReset();
+        }
         lift.retracting(movementState.equals("DETRACT"));
 
         lift.update();
