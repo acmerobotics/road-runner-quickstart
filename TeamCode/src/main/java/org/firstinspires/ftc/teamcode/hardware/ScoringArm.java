@@ -49,7 +49,7 @@ public class ScoringArm extends ServoMechanism{
     public static double depoDumpPos_Hard = 0.5; //position to go to for dump movement HARD
     public static double depoDumpPos_Soft = 0.5; //position to go to for dump movement SOFT
 
-    public static double depoLowGoalPos = 0.6; //position to go to for lowGoal prep
+    public static double depoLowGoalPos = depoStartPos; //position to go to for lowGoal prep
     public static double depoCapStonePos = 0.9; //position to go to for capStone prep
 
 
@@ -148,7 +148,20 @@ public class ScoringArm extends ServoMechanism{
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                kicker.setPosRatio(depoTuckPos);
+                kicker.setPosRatio(depoStartPos);
+            }
+
+        };
+        //delay.delay(run, 350);
+
+    }
+
+    public void dumpSoft() {
+        kicker.setPosRatio(depoDumpPos_Soft);
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                kicker.setPosRatio(depoStartPos);
             }
 
         };

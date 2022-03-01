@@ -16,7 +16,7 @@ public class MeccRobot extends Mechanism{
     //Mechanisms Utilized
     private SampleMecanumDrive drive;
     int left_stick_inverted =  1;
-
+    private boolean soft_dump = false;
     private Acquirer acquirer = new Acquirer();
 
     //values for carousel
@@ -51,7 +51,9 @@ public class MeccRobot extends Mechanism{
     });
 
     BooleanManager rightBumperManager = new BooleanManager(()->{
-        scoringV2.releaseHard();
+        if(!soft_dump) scoringV2.releaseHard();
+        else scoringV2.releaseSoft();
+        
     });
 
     BooleanManager yButtonManager = new BooleanManager(()->{

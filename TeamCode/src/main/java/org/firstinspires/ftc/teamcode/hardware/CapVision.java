@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -12,15 +13,16 @@ import org.firstinspires.ftc.teamcode.hardware.util.kellen;
 public class CapVision extends Mechanism {
     //camera object
     private OpenCvWebcam webcam;
-
+    public static boolean preview = true;
     //pipeline
     private kellen regions = new kellen();
+    int viewid;
 
     @Override
     public void init(HardwareMap hwMap) {
-        //viewid = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hwMap.get(WebcamName.class, "camera"));
-        //webcam.setMillisecondsPermissionTimeout(1000); // Timeout for obtaining permission is configurable. Set before opening.
+        viewid = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
+        if(preview) webcam = OpenCvCameraFactory.getInstance().createWebcam(hwMap.get(WebcamName.class, "camera"),viewid);
+        else webcam = OpenCvCameraFactory.getInstance().createWebcam(hwMap.get(WebcamName.class, "camera"));
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -44,7 +46,9 @@ public class CapVision extends Mechanism {
                  * away from the user.
                  */
                 webcam.startStreaming(320, 180, OpenCvCameraRotation.UPRIGHT);
+                FtcDashboard.getInstance().startCameraStream(webcam, 0);
                 setPipeline();
+
             }
             @Override
             public void onError(int errorCode)
@@ -64,4 +68,5 @@ public class CapVision extends Mechanism {
     public int whichRegion() {
         return regions.whichRegion();
     }
+
 }

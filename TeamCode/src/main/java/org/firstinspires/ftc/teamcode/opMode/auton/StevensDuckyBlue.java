@@ -81,19 +81,19 @@ public class StevensDuckyBlue extends LinearOpMode {
                 .setReversed(true)
                 .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    scoringMech.releaseHard();
+                    //scoringMech.releaseHard();
                 })
                 .waitSeconds(1)
                 //slides
                 .lineToSplineHeading(carouselPosB)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    carousel.run(true,false);
+                    //carousel.run(true,false);
                 })
                 .waitSeconds(7)
                 //carousel
                 .lineToSplineHeading(parkB)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    carousel.run(false,false);
+                    //carousel.run(false,false);
                 })
                 .build();
 
@@ -139,7 +139,7 @@ public class StevensDuckyBlue extends LinearOpMode {
         telemetry.addData("region", cv.whichRegion());
         telemetry.update();
 
-        scoringMech.toggle(goal);
+        //scoringMech.toggle(goal);
         drive.followTrajectorySequence(duckyPath);
     }
 }
