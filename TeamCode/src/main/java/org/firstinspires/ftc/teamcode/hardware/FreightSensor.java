@@ -36,7 +36,7 @@ public class FreightSensor extends Mechanism{
      * @return returns the status of detected freight
      */
     public boolean hasFreight(){
-        return this.hasBall() || this.hasBlock();
+        return hasFreightSensor(left);
     }
 
     /**
