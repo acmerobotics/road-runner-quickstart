@@ -27,9 +27,8 @@ public class OdoLiftTuner extends LinearOpMode {
     public static double END_FRONT = 0.0;
     public void init(HardwareMap hwMap){
 
-        testServoLeft = hwMap.servo.get("LEFTSERVOHWMAP");
-        testServoRight = hwMap.servo.get("RIGHTSERVOHWMAP");
-        testServoFront = hwMap.servo.get("FRONTSERVOHWMAP");
+        testServoLeft = hwMap.servo.get("deposit");
+
 
     }
     @Override
@@ -47,8 +46,7 @@ public class OdoLiftTuner extends LinearOpMode {
                     formerA = false;
 
                     testServoLeft.setPosition(START_LEFT);
-                    testServoRight.setPosition(START_RIGHT);
-                    testServoFront.setPosition(START_FRONT);
+
 
                 }
             }
@@ -61,8 +59,7 @@ public class OdoLiftTuner extends LinearOpMode {
                     formerB = false;
 
                     testServoLeft.setPosition(END_LEFT);
-                    testServoRight.setPosition(END_RIGHT);
-                    testServoFront.setPosition(END_FRONT);
+
                 }
             }
         }
