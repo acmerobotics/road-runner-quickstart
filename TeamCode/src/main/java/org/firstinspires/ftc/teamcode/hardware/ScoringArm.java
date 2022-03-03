@@ -41,13 +41,13 @@ public class ScoringArm extends ServoMechanism{
     public static double armEndPos = 0.7; //goes to... end?
     public static double armLowGoalPos = 0.7; //goes to... far end for low goal?
     public static double armMidPos = 0.7; //goes to... the middle that's not the middle?
-
+    public static double armReadyPos = 0.35;
     /////DEPO SERVO POSITIONS
     public static double depoStartPos = 0.6; //init position of depo
     public static double depoEndPos = 1.0; //far end position of depo
-    public static double depoTuckPos= 1.0; //tuck position for movement while going upwards
-    public static double depoDumpPos_Hard = 0.5; //position to go to for dump movement HARD
-    public static double depoDumpPos_Soft = 0.5; //position to go to for dump movement SOFT
+    public static double depoTuckPos= 0.75; //tuck position for movement while going upwards
+    public static double depoDumpPos_Hard = 0.25; //position to go to for dump movement HARD
+    public static double depoDumpPos_Soft = 0.4; //position to go to for dump movement SOFT
 
     public static double depoLowGoalPos = depoStartPos; //position to go to for lowGoal prep
     public static double depoCapStonePos = 0.9; //position to go to for capStone prep
@@ -174,6 +174,10 @@ public class ScoringArm extends ServoMechanism{
      */
     public void depositReset() {
         kicker.setPosRatio(depoStartPos);
+    }
+
+    public void readyPos(){
+        pivotArm.goTo(armReadyPos);
     }
 
     /** goes to tucked position

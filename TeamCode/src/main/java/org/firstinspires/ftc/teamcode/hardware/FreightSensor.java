@@ -28,7 +28,8 @@ public class FreightSensor extends Mechanism{
      * @return a boolean that returns whether or not a freight is detected
      */
     public boolean hasFreightSensor(ColorSensor color) {
-        return ((color.red() + color.green()) / 2 > color.blue() && (color.red()+color.green()) / 2 >= 100); //idk how this works mannn
+        //return ((color.red() + color.green()) / 2 > color.blue() && (color.red()+color.green()) / 2 >= 100); //idk how this works mannn
+        return  (green() + blue() + red()) / 3 > 100;
     }
 
     /**

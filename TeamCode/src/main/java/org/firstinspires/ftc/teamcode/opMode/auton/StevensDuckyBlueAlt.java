@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
+import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
 import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
@@ -26,6 +27,8 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
     private DelayCommand delay = new DelayCommand();
     private FreightSensor sensor = new FreightSensor();
     private LiftScoringV2 scoringMech= new LiftScoringV2();
+    private RetractableOdoSys odoSys = new RetractableOdoSys();
+
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
 
@@ -44,7 +47,7 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
     public static double carouselPosAng = Math.toRadians(180);
 
     public static double parkX = -60;
-    public static double parkY = 40;
+    public static double parkY = 44;
     public static double parkAng = Math.toRadians(180);
 
     public static double reposX = -34;
@@ -68,6 +71,8 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
         scoringMech.init(hardwareMap);
         sensor.init(hardwareMap);
         cv.init(hardwareMap);
+        odoSys.init(hardwareMap, true);
+
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -119,7 +124,7 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
                 })
                 .setReversed(true)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.toggle("highgoal");
+                    scoringMech.toggle(goal);
                 })
                 .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {

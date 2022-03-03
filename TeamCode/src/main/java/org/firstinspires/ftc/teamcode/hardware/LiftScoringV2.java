@@ -11,7 +11,10 @@ public class LiftScoringV2 extends Mechanism{
     private FreightSensor freightSensor = new FreightSensor();
     private String movementState; //EXTEND, RETRACT
     private String goalReach;
+    private boolean readyPosition = false;
     private boolean formerExtend = false;
+    private boolean formerFreight = false;
+    private boolean auton = false;
     public static int testingInt = 300;
 
     public void init(HardwareMap hwmap){
@@ -33,6 +36,7 @@ public class LiftScoringV2 extends Mechanism{
      * @param goal goal state desired ("highgoal", "midgoal", "lowgoal")
      */
     public void raise(String goal){
+        readyPosition = false;
         //FOR MIDDLE GOAL GO 9
         switch (goal) {
             case "highgoal": {
@@ -128,6 +132,7 @@ public class LiftScoringV2 extends Mechanism{
      * @param goal goal state desired ("highgoal", "midgoal", "lowgoal")
      */
     public void lower(String goal){
+        readyPosition = false;
         //auton vs teleop changes?
         if(!goal.equals("lowgoal")) {
             scoring.goToStart();
@@ -142,7 +147,7 @@ public class LiftScoringV2 extends Mechanism{
                 }
             };
 
-            if(goal.equals("highgoal")) delay.delay(run, 0);
+            if(goal.equals("highgoal")) delay.delay(run, 100);
             else if(goal.equals("cap")) delay.delay(run, 0);
 
             else if(goal.equals("midgoal")) delay.delay(run, 0);
@@ -192,7 +197,7 @@ public class LiftScoringV2 extends Mechanism{
                     toggle(goalReach);
                 }
             };
-            delay.delay(run,300);
+            delay.delay(run,200);
         }
     }
 
@@ -205,7 +210,7 @@ public class LiftScoringV2 extends Mechanism{
                     toggle(goalReach);
                 }
             };
-            delay.delay(run,300);
+            delay.delay(run,200);
         }
     }
 
@@ -215,6 +220,19 @@ public class LiftScoringV2 extends Mechanism{
      */
     public String getMovementState(){
         return movementState;
+    }
+
+    public void setReadyPosition(){
+        scoring.readyPos();
+        readyPosition = true;
+    }
+
+    public boolean isReadyPosition(){
+        return readyPosition;
+    }
+
+    public void setAuton(boolean auton){
+        this.auton = auton;
     }
 
     /**
@@ -227,12 +245,21 @@ public class LiftScoringV2 extends Mechanism{
 //            lift.retracting(false);
 //        }
 
-        if(freightSensor.hasFreight() && movementState.equals("DETRACT")){
-            scoring.tuckPos();
+
+        if(!auton) {
+            if (!formerFreight && freightSensor.hasFreight() && movementState.equals("DETRACT") && !readyPosition) {
+                scoring.tuckPos();
+                setReadyPosition();
+
+            } else if (freightSensor.hasFreight() && movementState.equals("DETRACT")) {
+                formerFreight = true;
+            } else if (movementState.equals("DETRACT") && !freightSensor.hasFreight()) {
+                scoring.depositReset();
+                formerFreight = false;
+            }
         }
-        else if (movementState.equals("DETRACT")){
-            scoring.depositReset();
-        }
+
+
         lift.retracting(movementState.equals("DETRACT"));
 
         lift.update();

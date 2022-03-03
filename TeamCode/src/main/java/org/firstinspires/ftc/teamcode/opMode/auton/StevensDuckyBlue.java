@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
+import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
 import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
@@ -24,6 +25,8 @@ public class StevensDuckyBlue extends LinearOpMode {
     private DelayCommand delay = new DelayCommand();
     private FreightSensor sensor = new FreightSensor();
     private LiftScoringV2 scoringMech= new LiftScoringV2();
+    private RetractableOdoSys odoSys = new RetractableOdoSys();
+
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
 
@@ -42,7 +45,7 @@ public class StevensDuckyBlue extends LinearOpMode {
     public static double carouselPosAng = Math.toRadians(180);
 
     public static double parkX = -60;
-    public static double parkY = 40;
+    public static double parkY = 44;
     public static double parkAng = Math.toRadians(180);
 
     public static String goal = "midgoal";
@@ -61,6 +64,8 @@ public class StevensDuckyBlue extends LinearOpMode {
         scoringMech.init(hardwareMap);
         sensor.init(hardwareMap);
         cv.init(hardwareMap);
+        odoSys.init(hardwareMap, true);
+
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -81,19 +86,19 @@ public class StevensDuckyBlue extends LinearOpMode {
                 .setReversed(true)
                 .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    //scoringMech.releaseHard();
+                    scoringMech.releaseHard();
                 })
                 .waitSeconds(1)
                 //slides
                 .lineToSplineHeading(carouselPosB)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    //carousel.run(true,false);
+                    carousel.run(true,false);
                 })
                 .waitSeconds(7)
                 //carousel
                 .lineToSplineHeading(parkB)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    //carousel.run(false,false);
+                    carousel.run(false,false);
                 })
                 .build();
 
@@ -139,7 +144,7 @@ public class StevensDuckyBlue extends LinearOpMode {
         telemetry.addData("region", cv.whichRegion());
         telemetry.update();
 
-        //scoringMech.toggle(goal);
+        scoringMech.toggle(goal);
         drive.followTrajectorySequence(duckyPath);
     }
 }

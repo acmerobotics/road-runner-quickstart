@@ -29,6 +29,7 @@ public class MeccRobot extends Mechanism{
     private LiftScoringV2 scoringV2 = new LiftScoringV2();
 
     private FreightSensor blockSense = new FreightSensor();
+    private RetractableOdoSys odoSys = new RetractableOdoSys();
 //
 //    private SenseHub senseHub = new SenseHub();
 
@@ -49,6 +50,22 @@ public class MeccRobot extends Mechanism{
         scoringV2.toggle("lowgoal");
 
     });
+
+    BooleanManager bButtonManager = new BooleanManager(()->{
+        scoringV2.toggle("midgoal");
+    });
+
+    BooleanManager aButtonManager = new BooleanManager(()->{
+        odoSys.toggle();
+    });
+
+    BooleanManager rightStickManager = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            soft_dump = !soft_dump;
+        }
+    });
+
 
     BooleanManager rightBumperManager = new BooleanManager(()->{
         if(!soft_dump) scoringV2.releaseHard();
@@ -77,6 +94,7 @@ public class MeccRobot extends Mechanism{
         acquirer.init(hwMap);
         carousel.init(hwMap);
         scoringV2.init(hwMap,blockSense);
+        odoSys.init(hwMap);
 //        senseHub.init(hwMap);
     }
 
@@ -132,6 +150,7 @@ public class MeccRobot extends Mechanism{
      * @param gamepad
      */
     public void drive(Gamepad gamepad){
+        aButtonManager.update(gamepad.a);
         leftStickManager.update(gamepad.left_stick_button);
 
         //left stick inverted inverts controls if equal to 1;
@@ -222,7 +241,12 @@ public class MeccRobot extends Mechanism{
 
         yButtonManager.update(gamepad.y);
 
+        bButtonManager.update(gamepad.b);
+
+        rightStickManager.update(gamepad.right_stick_button);
+
         if(debug){
+            telemetry.addData("softdump?", soft_dump);
             telemetry.addData("liftpos: ", scoringV2.getPos());
             telemetry.addData("targetlift: ", scoringV2.getTargetPos());
             telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());

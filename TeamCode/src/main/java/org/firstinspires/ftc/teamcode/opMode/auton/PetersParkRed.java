@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
+import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
 import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
@@ -24,6 +25,7 @@ public class PetersParkRed extends LinearOpMode {
     private DelayCommand delay = new DelayCommand();
     private FreightSensor sensor = new FreightSensor();
     private LiftScoringV2 scoringMech= new LiftScoringV2();
+    private RetractableOdoSys odoSys = new RetractableOdoSys();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public static double startx = 15.0;
@@ -57,6 +59,7 @@ public class PetersParkRed extends LinearOpMode {
         scoringMech.init(hardwareMap);
         sensor.init(hardwareMap);
         cv.init(hardwareMap);
+        odoSys.init(hardwareMap, true);
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);

@@ -21,31 +21,32 @@ public class Lift extends Mechanism{
     private DcMotor liftRight;
 
     private TouchSensor limitSwitch;
-    private boolean useLimitSwitch = true;
+    private boolean useLimitSwitch = false;
 
     //retract logic for handling coefficient of gravity. Not needed if utilizing kF
-    private boolean retract;
-    public static double retMult;
+    private boolean retract = true;
+    public static double retMult = 0.4;
 
     //height increment for moving slides up and down at steady rate
     public static double HEIGHT_INCREMENT = 1.5;
 
     // saved lift positions
     public static double maxPos = 14; //highest position slides can reach
-    public static double midPos = 9; //mid goal position
+    public static double midPos = 7.0; //mid goal position
     public static double minPos = 0; //lowest position slides can reach (default to 0)
 
     //PIDCoefficients for RoadRunner motion profiling
     public static PIDCoefficients coeffsUp = new PIDCoefficients(0.1, 0, 0);
     public static PIDCoefficients coeffsDown = new PIDCoefficients(0.1, 0, 0);
 
-    public static double kF = 0.09; //min power to go against g
+    public static double kF = 0.12; //min power to go against g
 
     //two controllers because we have two motors (although in theory it is possible to utilize only one
     PIDFController upwardsControl;
 
     PIDFController downwardsControl;
     public static double gFactor = 1;
+    public static double downwardsAccel = 1;
 
     // lift constants
     public static double SPOOL_DIAMETER_IN = 1.81102;
@@ -94,8 +95,6 @@ public class Lift extends Mechanism{
          * Part of gravity logic. Not needed if utilizing kF
          */
 
-        retract = false;
-        retMult = 0.3;
     }
 
 
@@ -131,7 +130,8 @@ public class Lift extends Mechanism{
         if(target <= minPos){target = minPos;}
         double leftPow;
         double rightPow;
-        if(target <= getCurrentPosition()){
+
+        if(target >= getCurrentPosition()){
             upwardsControl.setTargetPosition(target);
             leftPow = upwardsControl.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
             rightPow = upwardsControl.update(encoderTicksToInches(liftRight.getCurrentPosition()));
@@ -139,10 +139,10 @@ public class Lift extends Mechanism{
         }
 
         else {
-            downwardsControl.setTargetPosition(target);
-            downwardsControl.setTargetAcceleration(-gFactor);
-            leftPow = downwardsControl.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
-            rightPow = downwardsControl.update(encoderTicksToInches(liftRight.getCurrentPosition()));
+            upwardsControl.setTargetPosition(target);
+            //downwardsControl.setTargetVelocity(downwardsAccel);
+            leftPow = upwardsControl.update(encoderTicksToInches(liftLeft.getCurrentPosition()));
+            rightPow = upwardsControl.update(encoderTicksToInches(liftRight.getCurrentPosition()));
         }
         //find the error
 

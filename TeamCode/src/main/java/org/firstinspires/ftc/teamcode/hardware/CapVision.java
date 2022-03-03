@@ -45,7 +45,9 @@ public class CapVision extends Mechanism {
                  * For a rear facing camera or a webcam, rotation is defined assuming the camera is facing
                  * away from the user.
                  */
-                webcam.startStreaming(320, 180, OpenCvCameraRotation.UPRIGHT);
+                //webcam.startStreaming(320, 180, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+
                 FtcDashboard.getInstance().startCameraStream(webcam, 0);
                 setPipeline();
 

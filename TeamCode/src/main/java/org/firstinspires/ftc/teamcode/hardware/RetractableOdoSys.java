@@ -31,8 +31,8 @@ public class RetractableOdoSys extends ServoMechanism{
     ServoManager right = new ServoManager("odoRight",LIMIT_RIGHT_START,LIMIT_RIGHT_END);
 
     //FRONT LIMITS HERE
-    public static double LIMIT_FRONT_START = 0.2;
-    public static double LIMIT_FRONT_END = 0.7;
+    public static double LIMIT_FRONT_START = 0.25;
+    public static double LIMIT_FRONT_END = 0.85;
     ServoManager front = new ServoManager("odoFront",LIMIT_FRONT_START,LIMIT_FRONT_END);
 
     ServoManager[] odoRetractors = {left,right,front};
@@ -42,10 +42,19 @@ public class RetractableOdoSys extends ServoMechanism{
         right.init(hwMap);
         front.init(hwMap);
 
-
 ///        left = hwMap.servo.get("leftServo");
 //        right = hwMap.servo.get("rightServo");
 //        front = hwMap.servo.get("frontServo");
+    }
+
+    public void init(HardwareMap hwMap, boolean auton){
+        init(hwMap);
+        if(auton){
+            release();
+        }
+        else{
+            retract();
+        }
     }
 
     @Override

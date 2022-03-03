@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
+import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
 import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
@@ -26,6 +27,8 @@ public class StevensDuckyRedAlt extends LinearOpMode {
     private DelayCommand delay = new DelayCommand();
     private FreightSensor sensor = new FreightSensor();
     private LiftScoringV2 scoringMech = new LiftScoringV2();
+    private RetractableOdoSys odoSys = new RetractableOdoSys();
+
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
 
@@ -70,6 +73,8 @@ public class StevensDuckyRedAlt extends LinearOpMode {
         sensor.init(hardwareMap);
         cv.init(hardwareMap);
         intake.init(hardwareMap);
+        odoSys.init(hardwareMap, true);
+
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -114,7 +119,7 @@ public class StevensDuckyRedAlt extends LinearOpMode {
                 })
                 .setReversed(true)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.toggle("midgoal");
+                    scoringMech.toggle(goal);
                 })
                 .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
