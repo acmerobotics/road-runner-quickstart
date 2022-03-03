@@ -38,7 +38,7 @@ public class StevensDuckyRed extends LinearOpMode {
     public static double scoreHubPosy = 40;
 
     public static double scoreHubPosAngB = -25;
-    public static double scoreHubPosAngR = 15;
+    public static double scoreHubPosAngR = 25;
 
     public static double carouselPosx = -62;
     public static double carouselPosy = 64;

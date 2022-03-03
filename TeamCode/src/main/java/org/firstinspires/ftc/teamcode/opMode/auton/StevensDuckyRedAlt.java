@@ -40,7 +40,7 @@ public class StevensDuckyRedAlt extends LinearOpMode {
     public static double scoreHubPosy = 43;
 
     public static double scoreHubPosAngB = -25;
-    public static double scoreHubPosAngR = 15;
+    public static double scoreHubPosAngR = 25;
 
     public static double carouselPosx = -62;
     public static double carouselPosy = 64;
@@ -51,7 +51,7 @@ public class StevensDuckyRedAlt extends LinearOpMode {
     public static double parkAng = Math.toRadians(180);
 
     public static double reposX = -34;
-    public static double reposY = -36;
+    public static double reposY = 36;
 
     public static double preSweepY = 48;
     public static double sweepX = -40;
