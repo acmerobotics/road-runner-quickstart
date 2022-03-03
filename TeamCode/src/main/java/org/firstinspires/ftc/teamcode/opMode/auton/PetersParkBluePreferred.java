@@ -29,7 +29,7 @@ public class PetersParkBluePreferred extends LinearOpMode {
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    public static double startx = 15.0;
+    public static double startx = 14;
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
