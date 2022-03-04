@@ -58,7 +58,7 @@ public class StevensDuckyRedW extends LinearOpMode {
     public static double sweepY = 67;
 
     public static double duckX = -58;
-    public static double preParkY = 53;
+    public static double preParkY = 50;
 
     public static double enterX = 15;
     public static double enterY = 71.5;
@@ -108,9 +108,9 @@ public class StevensDuckyRedW extends LinearOpMode {
                 //slides
                 .lineToSplineHeading(carouselPosR)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    carousel.run(true,false);
+                    carousel.run(false,true);
                 })
-                .waitSeconds(4)
+                .waitSeconds(2.5)
                 //carousel
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(false,false);
@@ -139,9 +139,12 @@ public class StevensDuckyRedW extends LinearOpMode {
                     carousel.run(false, false);
                 })
                 .lineToLinearHeading(prePark)
-                .forward(30)
-                .splineToSplineHeading(bEnter, Math.toRadians(0))
-                .forward(30)
+                .forward(15)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    odoSys.toggle();
+                })
+                .waitSeconds(1)
+                .forward(45)
                 .build();
 
         //3ftx3ftmovement
