@@ -64,8 +64,8 @@ public class StevensDuckyRedW extends LinearOpMode {
     public static double enterY = 71.5;
     public static String goal = "midgoal";
 
-    public static double parkTimer = 2000;
-    public static double parkAngleOffset = 3;
+    public static double parkTimer = 1800;
+    public static double parkAngleOffset = 10;
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
