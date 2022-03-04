@@ -11,21 +11,30 @@ import kotlin.math.MathKt;
 
 public class MeepMeepTestingParkSide {
 
-    public static double startx = 15.0;
+    public static double startx = -36.0;
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = 7;
-    public static double scoreHubPosy = 43;
+    public static double scoreHubPosx = -34;
+    public static double scoreHubPosy = 40;
 
-    public static double scoreHubPosAngB = 40;
-    public static double scoreHubPosAngR = -40;
+    public static double scoreHubPosAngB = -25;
+    public static double scoreHubPosAngR = 25;
 
-    public static double repositionX = 15.0;
-    public static double reposistionY = 71.5;
+    public static double carouselPosx = -62;
+    public static double carouselPosy = 64;
+    public static double carouselPosAng = Math.toRadians(270);
 
-    public static double distanceForwards = 30;
-    public static double strafeDistance = 24;
+    public static double parkX = -60;
+    public static double parkY = 42;
+    public static double parkAng = Math.toRadians(180);
+
+    public static String goal = "";
+
+    public static Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
+    public static Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
+    public static Pose2d carouselPosR = new Pose2d(carouselPosx, -carouselPosy, carouselPosAng);
+    public static Pose2d parkR = new Pose2d(parkX, -parkY, parkAng);
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -36,8 +45,6 @@ public class MeepMeepTestingParkSide {
         Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
         Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
 
-        Pose2d repositionB = new Pose2d(repositionX,reposistionY,Math.toRadians(0));
-
         RoadRunnerBotEntity myBotBlue = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
@@ -45,66 +52,25 @@ public class MeepMeepTestingParkSide {
                 //.setStartPose(startPos)
                 .followTrajectorySequence(drive ->
             
-                        drive.trajectorySequenceBuilder(startPosB)
-                            .waitSeconds(2)
-                            .setReversed(true)
-                            .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                                //scoringMech.release();
-                            })
-                            .waitSeconds(1)
-                            //.lineToLinearHeading(repositionB)
-                            .lineTo(new Vector2d(scoreHubPosx, reposistionY -20))
-                            .splineToSplineHeading(new Pose2d(repositionX+5, reposistionY, Math.toRadians(0)), Math.toRadians(0))
-                            .lineTo(new Vector2d(repositionX + distanceForwards, reposistionY))
-                            .waitSeconds(1)
-                            .splineTo(new Vector2d(repositionX+5, reposistionY), Math.toRadians(180))
-                            .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
-                            .waitSeconds(1)
-                            .lineTo(new Vector2d(scoreHubPosx, reposistionY -20))
-                            .splineToSplineHeading(new Pose2d(repositionX+5, reposistionY, Math.toRadians(0)), Math.toRadians(0))
-                            .lineTo(new Vector2d(repositionX + distanceForwards, reposistionY))
-                            .waitSeconds(1)
-                            .splineTo(new Vector2d(repositionX+5, reposistionY), Math.toRadians(180))
-                            .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
-                            .waitSeconds(1)
-                            .lineTo(new Vector2d(scoreHubPosx, reposistionY -20))
-                            .splineToSplineHeading(new Pose2d(repositionX+5, reposistionY, Math.toRadians(0)), Math.toRadians(0))
-                            .lineTo(new Vector2d(repositionX + distanceForwards, reposistionY))
-                            .strafeRight(strafeDistance)
-                            .build()
-
-                );
-
-        RoadRunnerBotEntity myBotRed = new DefaultBotBuilder(meepMeep)
-                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
-                // .setStartPose(startPos)
-                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPosR)
-                        .waitSeconds(2)
+                        drive.trajectorySequenceBuilder(startPosR)
+                        .waitSeconds(1)
                         .setReversed(true)
-                        .lineToLinearHeading(new Pose2d(scoreHubPosR, Math.toRadians(scoreHubPosAngR)))                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                            //scoringMech.release();
+                        .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            //scoringMech.releaseHard();
                         })
                         .waitSeconds(1)
-                        //.lineToLinearHeading(repositionB)
-                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY +20))
-                        .splineToSplineHeading(new Pose2d(repositionX+5, -reposistionY, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
-                        .waitSeconds(1)
-                        .splineTo(new Vector2d(repositionX+5, -reposistionY), Math.toRadians(180))
-                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-40)), Math.toRadians(90))
-                        .waitSeconds(1)
-                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY +20))
-                        .splineToSplineHeading(new Pose2d(repositionX+5, -reposistionY, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
-                        .waitSeconds(1)
-                        .splineTo(new Vector2d(repositionX+5, -reposistionY), Math.toRadians(180))
-                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-40)), Math.toRadians(90))
-                        .waitSeconds(1)
-                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY +20))
-                        .splineToSplineHeading(new Pose2d(repositionX+5, -reposistionY, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
-                        .strafeLeft(strafeDistance)
+                        // slides
+                        .lineToSplineHeading(carouselPosR)
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            //carousel.run(false, true);
+                        })
+                        .waitSeconds(7)
+                        // carousel
+                        .lineToSplineHeading(parkR)
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            //carousel.run(false, false);
+                        })
                         .build()
 
                 );
@@ -117,7 +83,7 @@ public class MeepMeepTestingParkSide {
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBotBlue)
-                .addEntity(myBotRed)
+                //.addEntity(myBotRed)
                 .start();
     }
 }

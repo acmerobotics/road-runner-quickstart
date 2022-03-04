@@ -40,7 +40,7 @@ public class StevensDuckyRedW extends LinearOpMode {
     public static double scoreHubPosy = 43;
 
     public static double scoreHubPosAngB = -25;
-    public static double scoreHubPosAngR = 25;
+    public static double scoreHubPosAngR = 30;
 
     public static double carouselPosx = -62;
     public static double carouselPosy = 62;
@@ -58,14 +58,14 @@ public class StevensDuckyRedW extends LinearOpMode {
     public static double sweepY = 67;
 
     public static double duckX = -58;
-    public static double preParkY = 50;
+    public static double preParkY = 48;
 
     public static double enterX = 15;
     public static double enterY = 71.5;
     public static String goal = "midgoal";
 
-
-
+    public static double parkTimer = 2000;
+    public static double parkAngleOffset = 3;
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -140,10 +140,16 @@ public class StevensDuckyRedW extends LinearOpMode {
                 })
                 .lineToLinearHeading(prePark)
                 .forward(15)
+                .turn(Math.toRadians(parkAngleOffset))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     odoSys.toggle();
                 })
-                .waitSeconds(1)
+                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+                    delay.delay(()->{
+                        this.requestOpModeStop();
+                    }, (int)parkTimer);
+                })
                 .forward(45)
                 .build();
 
@@ -191,5 +197,6 @@ public class StevensDuckyRedW extends LinearOpMode {
 
         scoringMech.toggle(goal);
         drive.followTrajectorySequence(duckyPath);
+
     }
 }
