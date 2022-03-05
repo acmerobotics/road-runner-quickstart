@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
 import org.firstinspires.ftc.teamcode.hardware.util.BooleanManager;
 
 @Config
-@TeleOp(name = "OdoSysTest",group = "Teleop")
+@TeleOp (group = "prototype")
 public class OdoSysTest extends LinearOpMode {
     RetractableOdoSys odoSys = new RetractableOdoSys();
             ;

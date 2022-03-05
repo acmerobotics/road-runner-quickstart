@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.hardware.MeccRobot;
 import org.firstinspires.ftc.teamcode.hardware.SenseHub;
 
-@TeleOp
+@TeleOp (group = "prototype")
 public class distanceTest extends LinearOpMode {
     DistanceSensor distance;
     MeccRobot robot = new MeccRobot();

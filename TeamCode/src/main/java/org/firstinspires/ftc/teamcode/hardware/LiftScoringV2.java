@@ -214,6 +214,20 @@ public class LiftScoringV2 extends Mechanism{
         }
     }
 
+    public void releaseDuck(){
+        if(!movementState.equals("DETRACT")){
+            scoring.dumpSoft();
+
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    toggle(goalReach);
+                }
+            };
+            delay.delay(run,400);
+        }
+    }
+
     /**
      *
      * @return movement state of slides returned ("highgoal", "midgoal", "lowgoal")

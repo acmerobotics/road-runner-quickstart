@@ -11,33 +11,32 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
-import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
-import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
+import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
+import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
 @Autonomous (group = "BlueAuton")
-public class PetersParkBluePreferred extends LinearOpMode {
+public class PetersCyclesBlueIshVersion extends LinearOpMode {
     private CapVision cv = new CapVision();
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
     private FreightSensor sensor = new FreightSensor();
-    private LiftScoringV2 scoringMech= new LiftScoringV2();
+    private LiftScoringV2 scoringMech = new LiftScoringV2();
     private RetractableOdoSys odoSys = new RetractableOdoSys();
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    public static double startx = 14;
+    public static double startx = 15.0;
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
     public static double scoreHubPosx = 7;
-    public static double scoreHubPosy = 46;
+    public static double scoreHubPosy = 43;
 
     public static double scoreHubPosAngB = 40;
-
     public static double repositionX = 15.0;
     public static double reposistionY = 71.5;
 
@@ -49,7 +48,7 @@ public class PetersParkBluePreferred extends LinearOpMode {
 
     Pose2d startPosB = new Pose2d(startx, starty, startAng);
     Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
-    Pose2d repositionB = new Pose2d(repositionX,reposistionY,Math.toRadians(0));
+    Pose2d repositionB = new Pose2d(repositionX, reposistionY, Math.toRadians(0));
 
 
     @Override
@@ -68,8 +67,8 @@ public class PetersParkBluePreferred extends LinearOpMode {
         drive.setSlides(scoringMech);
 
         //important coordinates here
-        Pose2d startPos = new Pose2d(startx,starty, startAng);
-        Vector2d scoreHubPos = new Vector2d(scoreHubPosx,scoreHubPosy);
+        Pose2d startPos = new Pose2d(startx, starty, startAng);
+        Vector2d scoreHubPos = new Vector2d(scoreHubPosx, scoreHubPosy);
 
         //set startPose
         drive.setPoseEstimate(startPos);
@@ -77,15 +76,37 @@ public class PetersParkBluePreferred extends LinearOpMode {
         //trajectory
         TrajectorySequence depoPath = drive.trajectorySequenceBuilder(startPos)
                 .waitSeconds(2)
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    scoringMech.releaseHard();
+                .setReversed(false)
+                .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    // scoringMech.release();
                 })
                 .waitSeconds(1)
-                .lineToLinearHeading(repositionB)
-                .forward(distanceForwards)
-                .strafeRight(strafeDistance)
+                // .lineToLinearHeading(repositionB)
+                .splineTo(new Vector2d(repositionX, reposistionY - 4), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(repositionX + distanceForwards, reposistionY), Math.toRadians(
+                        0))
+                //.lineToLinearHeading(new Pose2d(repositionX + distanceForwards, reposistionY,Math.toRadians(0)))
+                .UNSTABLE_addDisplacementMarkerOffset(0, ()->{
+                    // intake here
+                })
+                .setReversed(true)
+                .waitSeconds(1)
+
+                .splineTo(new Vector2d(repositionX + 5, reposistionY), Math.toRadians(180))
+
+                .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy),
+                        Math.toRadians(220))
+                .UNSTABLE_addDisplacementMarkerOffset(0, ()->{
+                    //score here
+                })
+                .waitSeconds(1)
+                .setReversed(false)
+                .splineTo(new Vector2d(repositionX, reposistionY - 4), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(repositionX + distanceForwards, reposistionY), Math.toRadians(
+                        0))
                 .build();
+
 
         //3ftx3ftmovement
 
@@ -116,16 +137,16 @@ public class PetersParkBluePreferred extends LinearOpMode {
             telemetry.addData("Status", "Waiting in init");
             telemetry.update();
         }
-        if(cv.whichRegion() == 1) {
-            goal = "lowgoal";
-        }
-        if(cv.whichRegion() == 2) {
-            goal = "midgoal";
-        }
-        if(cv.whichRegion() == 3) {
+        if (cv.whichRegion() == 1) {
             goal = "highgoal";
         }
-        telemetry.addData("goal: ",goal);
+        if (cv.whichRegion() == 2) {
+            goal = "midgoal";
+        }
+        if (cv.whichRegion() == 3) {
+            goal = "lowgoal";
+        }
+        telemetry.addData("goal: ", goal);
         telemetry.addData("region", cv.whichRegion());
         telemetry.update();
 

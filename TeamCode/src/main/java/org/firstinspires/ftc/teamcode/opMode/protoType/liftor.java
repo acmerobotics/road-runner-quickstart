@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.hardware.Lift;
 import org.firstinspires.ftc.teamcode.hardware.util.BooleanManager;
 
-@TeleOp
+@TeleOp (group = "prototype")
 public class liftor extends LinearOpMode {
     public boolean formerDpadL = false;
     public boolean formerDpadR = false;

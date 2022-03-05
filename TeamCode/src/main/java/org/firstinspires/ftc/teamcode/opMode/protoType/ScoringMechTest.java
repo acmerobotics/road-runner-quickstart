@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 
-@TeleOp (name = "ScoringMechTest",group = "Teleop")
+@TeleOp (group = "prototype")
 @Config
 public class ScoringMechTest extends LinearOpMode {
     private ScoringArm score = new ScoringArm();

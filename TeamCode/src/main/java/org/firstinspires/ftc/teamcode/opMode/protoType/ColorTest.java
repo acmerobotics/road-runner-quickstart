@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 
-@TeleOp
+@TeleOp (group = "prototype")
 public class ColorTest extends LinearOpMode {
     FreightSensor color = new FreightSensor();
     FtcDashboard dashboard = FtcDashboard.getInstance();
