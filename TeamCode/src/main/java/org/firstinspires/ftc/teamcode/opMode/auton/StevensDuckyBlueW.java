@@ -39,7 +39,7 @@ public class StevensDuckyBlueW extends LinearOpMode {
     public static double scoreHubPosx = -34;
     public static double scoreHubPosy = 43;
 
-    public static double scoreHubPosAngB = -25;
+    public static double scoreHubPosAngB = -30;
     public static double scoreHubPosAngR = 25;
 
     public static double carouselPosx = -62;
@@ -144,7 +144,7 @@ public class StevensDuckyBlueW extends LinearOpMode {
                 })
                 .lineToLinearHeading(prePark)
                 .forward(15)
-                .turn(Math.toRadians(parkAngleOffset))
+                .turn(Math.toRadians(parkAngleOffset/2))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     odoSys.toggle();
                 })

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
@@ -19,14 +20,14 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
 @Autonomous
-public class PetersCyclesBlue extends LinearOpMode {
+public class PetersCyclesRed extends LinearOpMode {
     private CapVision cv = new CapVision();
     private Carousel carousel = new Carousel();
     private DelayCommand delay = new DelayCommand();
     private FreightSensor sensor = new FreightSensor();
     private LiftScoringV2 scoringMech = new LiftScoringV2();
     private RetractableOdoSys odoSys = new RetractableOdoSys();
-
+    private Acquirer acquirer = new Acquirer();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public static double startx = 15.0;
@@ -36,29 +37,29 @@ public class PetersCyclesBlue extends LinearOpMode {
     public static double scoreHubPosx = 7;
     public static double scoreHubPosy = 52;
 
-    public static double scoreHubPosAngB = 40;
+    public static double scoreHubPosAngB = -50;
     public static double scoreHubPosAngR = -40;
 
     public static double repositionX = 15.0;
     public static double reposistionY = 71.5;
 
-    public static double distanceForwards = 30;
+    public static double distanceForwards = 40;
     public static double strafeDistance = 24;
 
-    public static double preSplineY = 53.5;
+    public static double preSplineY = -53.5;
     public static double bEnterX = 20;
-    public static double bEnterY = 70.5;
-    public static double wareHouseX = 55;
+    public static double bEnterY = -70.5;
+    public static double warehouseX = 55;
 
 
-    public static String goal = "midgoal";
+    public static String goal = "highgoal";
 
     Pose2d startPosB = new Pose2d(startx, starty, startAng);
-    Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
+    Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, -scoreHubPosy);
     Pose2d repositionB = new Pose2d(repositionX, reposistionY, Math.toRadians(0));
     Vector2d preSpline = new Vector2d(scoreHubPosx, preSplineY);
     Vector2d bEnter = new Vector2d(bEnterX, bEnterY);
-    Vector2d wareHouse = new Vector2d(wareHouseX, bEnterY);
+    Vector2d wareHouse = new Vector2d(warehouseX, bEnterY);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -69,44 +70,59 @@ public class PetersCyclesBlue extends LinearOpMode {
         sensor.init(hardwareMap);
         cv.init(hardwareMap);
         odoSys.init(hardwareMap, true);
+        acquirer.init(hardwareMap);
 
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setSlides(scoringMech);
-
+        drive.setAcquirer(acquirer,sensor);
         //important coordinates here
-        Pose2d startPos = new Pose2d(startx, starty, startAng);
-        //set startPose
+        Pose2d startPos = new Pose2d(startx, -starty, -startAng);        //set startPose
         drive.setPoseEstimate(startPos);
 
         //trajectory
         TrajectorySequence depoPath = drive.trajectorySequenceBuilder(startPos)
-                .waitSeconds(2)
+                .waitSeconds(1)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB))).UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    //scoringMech.release();
+                .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.releaseHard();
+                    drive.acquirerRuns = true;
                 })
-                .waitSeconds(1)
-                //.lineToLinearHeading(repositionB)
+                .waitSeconds(.25)
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineTo(wareHouse)
-                .waitSeconds(1)
+                .lineToLinearHeading(new Pose2d(warehouseX, bEnterY))
+                .waitSeconds(.5)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.toggle("highgoal");
+                    drive.acquirerRuns = false;
+                })
                 .splineTo(bEnter, Math.toRadians(180))
-                .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
-                .waitSeconds(1)
+                .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(scoreHubPosAngB)), Math.toRadians(90))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.releaseHard();
+                    drive.acquirerRuns = true;
+                })
+                .waitSeconds(.5)
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
                 .lineTo(wareHouse)
-                .waitSeconds(1)
+                .waitSeconds(.25)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.toggle("highgoal");
+                    drive.acquirerRuns = false;
+                })
                 .splineTo(bEnter, Math.toRadians(180))
-                .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
-                .waitSeconds(1)
+                .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(scoreHubPosAngB)), Math.toRadians(90))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.releaseHard();
+                })
+                .waitSeconds(.5)
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
                 .lineTo(wareHouse)
-                .strafeRight(strafeDistance)
                 .build();
 
 
