@@ -13,14 +13,18 @@ public class kellen extends OpenCvPipeline {
     //pipe line class for detecting capstone (or objects in three different regions)
     //default color detections set to lime green
     public kellen() {
-
+        color = "green";
+    }
+    public kellen(String choice) {
+        color = choice;
     }
     boolean viewportPaused;
 
     private Mat workingMatrix = new Mat();
-
+    private Scalar lowHSV;
+    private Scalar highHSV;
     private double b1p, b2p, b3p;
-
+    private String color;
     private Rect RO1;
     private Rect RO2;
     private Rect RO3;
@@ -36,8 +40,10 @@ public class kellen extends OpenCvPipeline {
         NORMALLY, HSV is defined like so: Hue in range 0-360, Saturation in range 0.0-1.0 and Value in range 0.0-1.0.
         All of this is also technically BGR to HSV, so take the absolute value of your Hue minus 180 to get the right number
         */
-        Scalar lowHSV = new Scalar(40, 50, 50);
-        Scalar highHSV = new Scalar(75, 255, 255);
+        if(color == "green") {
+            lowHSV = new Scalar(40, 50, 50);
+            highHSV = new Scalar(75, 255, 255);
+        }
         //This creates our mask, and filters out all colors except for whats within our defined bound
             /* IGNORE ALL OF THIS FOR NOW, but essentially we'll use this to tell where our capstone is by counting pixels
 

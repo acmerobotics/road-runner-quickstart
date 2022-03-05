@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.hardware.MeccRobot;
 import org.firstinspires.ftc.teamcode.hardware.MeccRobotPrototyping;
 
 @Config
-@TeleOp(name="MeccRobotTeleOp",group="TeleOp")
+@TeleOp(name="MeccRobotTeleOpProto",group="TeleOp")
 
 public class MeccRobotTeleOpPrototyping extends LinearOpMode{
     private MeccRobotPrototyping robot = new MeccRobotPrototyping();
