@@ -42,6 +42,7 @@ public class ScoringArm extends ServoMechanism{
     public static double armLowGoalPos = 0.7; //goes to... far end for low goal?
     public static double armMidPos = 0.7; //goes to... the middle that's not the middle?
     public static double armReadyPos = 0.35;
+    public static double armDuckPos = 1.0;
     /////DEPO SERVO POSITIONS
     public static double depoStartPos = 0.6; //init position of depo
     public static double depoEndPos = 1.0; //far end position of depo
@@ -167,6 +168,18 @@ public class ScoringArm extends ServoMechanism{
         };
         //delay.delay(run, 350);
 
+    }
+
+    public void dumpDuck(){
+        kicker.setPosRatio(depoDumpPos_Soft);
+        pivotArm.goTo(armDuckPos);
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                kicker.setPosRatio(depoStartPos);
+            }
+
+        };
     }
 
     /**

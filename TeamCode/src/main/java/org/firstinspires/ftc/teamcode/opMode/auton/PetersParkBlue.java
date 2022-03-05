@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
-@Autonomous
+@Autonomous (group = "BlueAuton")
 public class PetersParkBlue extends LinearOpMode {
     private CapVision cv = new CapVision();
     private Carousel carousel = new Carousel();

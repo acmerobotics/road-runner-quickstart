@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
-@TeleOp
+@TeleOp (group = "prototype")
 public class capTest extends LinearOpMode {
     CapVision vision = new CapVision();
     private final FtcDashboard dashboard = FtcDashboard.getInstance();

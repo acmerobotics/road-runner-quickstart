@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 
 
-@TeleOp
+@TeleOp (group = "prototype")
 @Config
 public class encTest extends LinearOpMode {
     Carousel ccp = new Carousel();

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Config
-@TeleOp(name="DrivetrainTest",group="TeleOp")
+@TeleOp(group = "prototype")
 public class DrivetrainTest extends LinearOpMode{
 
     @Override

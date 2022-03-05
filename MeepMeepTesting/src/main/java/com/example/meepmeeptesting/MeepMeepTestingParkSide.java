@@ -44,7 +44,6 @@ public class MeepMeepTestingParkSide {
 
         Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
         Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
-
         RoadRunnerBotEntity myBotBlue = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
@@ -71,6 +70,7 @@ public class MeepMeepTestingParkSide {
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             //carousel.run(false, false);
                         })
+                        .lineTo()
                         .build()
 
                 );

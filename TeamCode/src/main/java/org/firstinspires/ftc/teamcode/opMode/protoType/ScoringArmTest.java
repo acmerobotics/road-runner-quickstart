@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 
 @Config
-@TeleOp(name="ScoringArmTest",group="TeleOp")
+@TeleOp (group = "prototype")
 public class ScoringArmTest extends LinearOpMode {
     private ScoringArm scoringArm = new ScoringArm();
     public static double goToDouble = 0.5;
