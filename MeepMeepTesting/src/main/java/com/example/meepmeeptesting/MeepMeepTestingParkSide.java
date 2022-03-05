@@ -11,30 +11,29 @@ import kotlin.math.MathKt;
 
 public class MeepMeepTestingParkSide {
 
-    public static double startx = -36.0;
+    public static double startx = 15.0;
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = -34;
-    public static double scoreHubPosy = 40;
+    public static double scoreHubPosx = 7;
+    public static double scoreHubPosy = 43;
 
-    public static double scoreHubPosAngB = -25;
-    public static double scoreHubPosAngR = 25;
+    public static double scoreHubPosAngB = 40;
+    public static double repositionX = 15.0;
+    public static double reposistionY = 71.5;
 
-    public static double carouselPosx = -62;
-    public static double carouselPosy = 64;
-    public static double carouselPosAng = Math.toRadians(270);
-
-    public static double parkX = -60;
-    public static double parkY = 42;
-    public static double parkAng = Math.toRadians(180);
+    public static double distanceForwards = 30;
+    public static double strafeDistance = 24;
 
     public static String goal = "";
 
     public static Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
     public static Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
-    public static Pose2d carouselPosR = new Pose2d(carouselPosx, -carouselPosy, carouselPosAng);
-    public static Pose2d parkR = new Pose2d(parkX, -parkY, parkAng);
+    public static Pose2d startPos = new Pose2d(startx, starty, startAng);
+
+    Pose2d startPosB = new Pose2d(startx, starty, startAng);
+    Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
+    Pose2d repositionB = new Pose2d(repositionX, reposistionY, Math.toRadians(0));
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -51,26 +50,38 @@ public class MeepMeepTestingParkSide {
                 //.setStartPose(startPos)
                 .followTrajectorySequence(drive ->
             
-                        drive.trajectorySequenceBuilder(startPosR)
+                        drive.trajectorySequenceBuilder(startPos)
+                        .waitSeconds(2)
+                        .setReversed(false)
+                        .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            // scoringMech.release();
+                        })
                         .waitSeconds(1)
+                        // .lineToLinearHeading(repositionB)
+                        .splineTo(new Vector2d(repositionX, reposistionY - 4), Math.toRadians(0))
+                        .splineToLinearHeading(new Pose2d(repositionX + distanceForwards, reposistionY), Math.toRadians(
+                                0))
+                        //.lineToLinearHeading(new Pose2d(repositionX + distanceForwards, reposistionY,Math.toRadians(0)))
+                        .UNSTABLE_addDisplacementMarkerOffset(0, ()->{
+                            // intake here
+                        })
                         .setReversed(true)
-                        .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.releaseHard();
+                        .waitSeconds(1)
+
+                        .splineTo(new Vector2d(repositionX + 5, reposistionY), Math.toRadians(180))
+
+                        .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy),
+                                Math.toRadians(220))
+                        .UNSTABLE_addDisplacementMarkerOffset(0, ()->{
+                            //score here
                         })
                         .waitSeconds(1)
-                        // slides
-                        .lineToSplineHeading(carouselPosR)
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //carousel.run(false, true);
-                        })
-                        .waitSeconds(7)
-                        // carousel
-                        .lineToSplineHeading(parkR)
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //carousel.run(false, false);
-                        })
-                        .lineTo()
+                        .setReversed(false)
+                        .splineTo(new Vector2d(repositionX, reposistionY - 4), Math.toRadians(0))
+                        .splineToLinearHeading(new Pose2d(repositionX + distanceForwards, reposistionY), Math.toRadians(
+                                0))
+                        //.lineToLinearHeading(new Pose2d(repositionX + distanceForwards, reposistionY,Math.toRadians(0)))
                         .build()
 
                 );
