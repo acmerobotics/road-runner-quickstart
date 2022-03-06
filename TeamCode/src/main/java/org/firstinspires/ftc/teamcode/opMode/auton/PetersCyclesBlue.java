@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.hardware.Acquirer;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
 import org.firstinspires.ftc.teamcode.hardware.Carousel;
 import org.firstinspires.ftc.teamcode.hardware.RetractableOdoSys;
@@ -26,6 +27,7 @@ public class PetersCyclesBlue extends LinearOpMode {
     private FreightSensor sensor = new FreightSensor();
     private LiftScoringV2 scoringMech = new LiftScoringV2();
     private RetractableOdoSys odoSys = new RetractableOdoSys();
+    private Acquirer intake = new Acquirer();
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -88,6 +90,7 @@ public class PetersCyclesBlue extends LinearOpMode {
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, 10.55, 0.0159, 0.0016, 0.062, 3);
         drive.setSlides(scoringMech);
+        drive.setAcquirer(intake);
 
         //important coordinates here
         Pose2d startPos = new Pose2d(startx, starty, startAng);
@@ -98,8 +101,10 @@ public class PetersCyclesBlue extends LinearOpMode {
         TrajectorySequence depoPath = drive.trajectorySequenceBuilder(startPos)
                 .waitSeconds(2)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB))).UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    //scoringMech.release();
+                .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.releaseHard();
+                    drive.acquirerRuns = true;
                 })
                 .waitSeconds(1)
                 //.lineToLinearHeading(repositionB)
@@ -107,15 +112,31 @@ public class PetersCyclesBlue extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
                 .lineTo(wareHouse)
                 .waitSeconds(1)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.toggle("highgoal");
+                    drive.acquirerRuns = false;
+                })
                 .splineTo(bEnter, Math.toRadians(180))
                 .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.releaseHard();
+                    drive.acquirerRuns = true;
+                })
                 .waitSeconds(1)
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
                 .lineTo(wareHouse)
                 .waitSeconds(1)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.toggle("highgoal");
+                    drive.acquirerRuns = false;
+                })
                 .splineTo(bEnter, Math.toRadians(180))
                 .splineToSplineHeading(new Pose2d(scoreHubPosx, scoreHubPosy, Math.toRadians(40)), Math.toRadians(270))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.releaseHard();
+                    drive.acquirerRuns = true;
+                })
                 .waitSeconds(1)
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
