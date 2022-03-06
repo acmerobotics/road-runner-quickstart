@@ -87,7 +87,7 @@ public class PetersCyclesRed extends LinearOpMode {
 
 
         //drive train + async updates of mechanisms
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, 3);
         drive.setSlides(scoringMech);
         drive.setAcquirer(acquirer,sensor);
         //important coordinates here

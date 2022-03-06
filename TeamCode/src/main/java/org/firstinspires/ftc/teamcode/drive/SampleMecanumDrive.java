@@ -58,8 +58,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(4, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(3, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID;
+    public static PIDCoefficients HEADING_PID;
 
     //old value
     //public static double LATERAL_MULTIPLIER = 1.441395175626227;
@@ -86,10 +86,16 @@ public class SampleMecanumDrive extends MecanumDrive {
     private FreightSensor sensor;
     private Acquirer acquirer;
     public boolean acquirerRuns = false;
-
     public SampleMecanumDrive(HardwareMap hardwareMap) {
-        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-
+        this(hardwareMap, TRACK_WIDTH, kV, kA, kStatic, 4.0);
+    }
+    public SampleMecanumDrive(HardwareMap hardwareMap, double hP) {
+        this(hardwareMap, TRACK_WIDTH, kV, kA, kStatic, hP);
+    }
+    public SampleMecanumDrive(HardwareMap hardwareMap, double tW, double kv, double ka, double kS, double hP) {
+        super(kv, ka, kS, tW, tW, LATERAL_MULTIPLIER);
+        TRANSLATIONAL_PID = new PIDCoefficients(4, 0, 0);
+        HEADING_PID = new PIDCoefficients(hP, 0, 0);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
