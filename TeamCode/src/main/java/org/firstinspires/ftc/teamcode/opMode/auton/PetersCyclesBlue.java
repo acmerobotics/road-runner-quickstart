@@ -47,8 +47,10 @@ public class PetersCyclesBlue extends LinearOpMode {
 
     public static double preSplineY = 53.5;
     public static double bEnterX = 20;
-    public static double bEnterY = 70.5;
-    public static double wareHouseX = 55;
+    public static double bEnterY = 68;
+    public static double warehouseX = 57;
+    public static double bExitY = 70.5;
+    public static double inc = -.5;
 
 
     public static String goal = "midgoal";
@@ -58,7 +60,19 @@ public class PetersCyclesBlue extends LinearOpMode {
     Pose2d repositionB = new Pose2d(repositionX, reposistionY, Math.toRadians(0));
     Vector2d preSpline = new Vector2d(scoreHubPosx, preSplineY);
     Vector2d bEnter = new Vector2d(bEnterX, bEnterY);
-    Vector2d wareHouse = new Vector2d(wareHouseX, bEnterY);
+    Vector2d bEnter2 = new Vector2d(bEnterX, bEnterY-inc);
+    Vector2d bEnter3 = new Vector2d(bEnterX, bEnterY-2*inc);
+    Vector2d bEnter4 = new Vector2d(bEnterX, bEnterY-3*inc);
+    Vector2d bEnter5 = new Vector2d(bEnterX, bEnterY-4*inc);
+    Vector2d bExit = new Vector2d(bEnterX, bExitY);
+    Vector2d bExit2 = new Vector2d(bEnterX, bEnterY-inc);
+    Vector2d bExit3 = new Vector2d(bEnterX, bEnterY-2*inc);
+    Vector2d bExit4 = new Vector2d(bEnterX, bEnterY-3*inc);
+    Vector2d wareHouse = new Vector2d(warehouseX, bEnterY);
+    Vector2d wareHouse2 = new Vector2d(warehouseX, bEnterY-inc);
+    Vector2d wareHouse3 = new Vector2d(warehouseX, bEnterY-2*inc);
+    Vector2d wareHouse4 = new Vector2d(warehouseX, bEnterY-3*inc);
+    Vector2d wareHouse5 = new Vector2d(warehouseX, bEnterY-4*inc);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -72,7 +86,7 @@ public class PetersCyclesBlue extends LinearOpMode {
 
 
         //drive train + async updates of mechanisms
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, 10.55, 0.0159, 0.0016, 0.062, 3);
         drive.setSlides(scoringMech);
 
         //important coordinates here

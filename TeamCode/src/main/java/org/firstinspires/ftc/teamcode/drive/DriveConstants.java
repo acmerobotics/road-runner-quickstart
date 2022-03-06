@@ -47,24 +47,24 @@ public class DriveConstants {
     public static double GEAR_RATIO = 22.0/20.0; // output (wheel) speed / input (motor) speed
 
     //OLD VALUE
-    //public static double TRACK_WIDTH = 11.05; // in
-    public static double TRACK_WIDTH = 10.55;
+    public static double TRACK_WIDTH = 11.05; // in
+    //cycles track widthpublic static double TRACK_WIDTH = 10.55;
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
      * the built-in velocity PID, *these values are fine as is*. However, if you do not have drive
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    //OLD K VALUES
-//    public static double kV = 0.0154;
-//    public static double kA = 0.00154;
-//    public static double kStatic = 0.062;
+    //non cycles K VALUES
+    public static double kV = 0.0154;
+    public static double kA = 0.00154;
+    public static double kStatic = 0.062;
 
-
+    /*cycles k values
     public static double kV = 0.0159;
     public static double kA = 0.0016;
     public static double kStatic = 0.062;
-
+    */
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
      * the constraints should never exceed ~80% of the robot's actual capabilities. While Road
