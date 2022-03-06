@@ -85,12 +85,13 @@ public class PetersCyclesBlue extends LinearOpMode {
         sensor.init(hardwareMap);
         cv.init(hardwareMap);
         odoSys.init(hardwareMap, true);
+        intake.init(hardwareMap);
 
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, 10.55, 0.0159, 0.0016, 0.062, 3);
         drive.setSlides(scoringMech);
-        drive.setAcquirer(intake);
+        drive.setAcquirer(intake, sensor);
 
         //important coordinates here
         Pose2d startPos = new Pose2d(startx, starty, startAng);
