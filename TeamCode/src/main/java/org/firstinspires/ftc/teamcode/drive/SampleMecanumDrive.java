@@ -94,7 +94,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
     public SampleMecanumDrive(HardwareMap hardwareMap, double tW, double kv, double ka, double kS, double hP) {
         super(kv, ka, kS, tW, tW, LATERAL_MULTIPLIER);
-        TRANSLATIONAL_PID = new PIDCoefficients(4, 0, 0);
+        TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0);
         HEADING_PID = new PIDCoefficients(hP, 0, 0);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);

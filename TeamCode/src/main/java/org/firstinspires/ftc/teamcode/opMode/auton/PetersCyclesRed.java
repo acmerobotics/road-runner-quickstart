@@ -105,7 +105,7 @@ public class PetersCyclesRed extends LinearOpMode {
                 })
                 .waitSeconds(.04)
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(-5)), Math.toRadians(0))
                 .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
                 .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
@@ -120,7 +120,7 @@ public class PetersCyclesRed extends LinearOpMode {
                 })
                 .waitSeconds(.04)
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter2, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnter2, Math.toRadians(-5)), Math.toRadians(0))
                 .lineTo(wareHouse2)
                 .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
@@ -135,7 +135,7 @@ public class PetersCyclesRed extends LinearOpMode {
                 })
                 .waitSeconds(.04)
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter3, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnter3, Math.toRadians(-5)), Math.toRadians(0))
                 .lineTo(wareHouse3)
                 .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
@@ -150,7 +150,7 @@ public class PetersCyclesRed extends LinearOpMode {
                 })
                 .waitSeconds(.01)
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter4, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnter4, Math.toRadians(-5)), Math.toRadians(0))
                 .lineTo(wareHouse4)
                 .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
@@ -164,7 +164,7 @@ public class PetersCyclesRed extends LinearOpMode {
                 })
                 .waitSeconds(.01)
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter5, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnter5, Math.toRadians(-5)), Math.toRadians(0))
                 .lineTo(wareHouse5)
                 .build();
 
