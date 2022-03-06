@@ -18,7 +18,7 @@ public class OdoLiftTuner extends LinearOpMode {
     private Servo testServoFront;
 
     public static double START_LEFT = 0.0;
-    public static double END_LEFT = 0.0;
+    public static double END_LEFT = 1.0;
 
     public static double START_RIGHT = 0.0;
     public static double END_RIGHT = 0.0;

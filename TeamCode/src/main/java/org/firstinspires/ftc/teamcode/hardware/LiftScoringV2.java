@@ -216,15 +216,14 @@ public class LiftScoringV2 extends Mechanism{
 
     public void releaseDuck(){
         if(!movementState.equals("DETRACT")){
-            scoring.dumpSoft();
-
+            scoring.dumpDuck();
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
                     toggle(goalReach);
                 }
             };
-            delay.delay(run,400);
+            delay.delay(run,800);
         }
     }
 
@@ -261,16 +260,20 @@ public class LiftScoringV2 extends Mechanism{
 
 
         if(!auton) {
-            if (!formerFreight && freightSensor.hasFreight() && movementState.equals("DETRACT") && !readyPosition) {
+            if(freightSensor.hasFreight() && movementState.equals("DETRACT")){
                 scoring.tuckPos();
                 setReadyPosition();
-
-            } else if (freightSensor.hasFreight() && movementState.equals("DETRACT")) {
-                formerFreight = true;
-            } else if (movementState.equals("DETRACT") && !freightSensor.hasFreight()) {
-                scoring.depositReset();
-                formerFreight = false;
             }
+//            if (!formerFreight && freightSensor.hasFreight() && movementState.equals("DETRACT") && !readyPosition) {
+//                scoring.tuckPos();
+//                setReadyPosition();
+//
+//            } else if (freightSensor.hasFreight() && movementState.equals("DETRACT")) {
+//                formerFreight = true;
+//            } else if (movementState.equals("DETRACT") && !freightSensor.hasFreight()) {
+//                scoring.depositReset();
+//                formerFreight = false;
+//            }
         }
 
 
