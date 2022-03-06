@@ -95,6 +95,7 @@ public class MeccRobot extends Mechanism{
         carousel.init(hwMap);
         scoringV2.init(hwMap,blockSense);
         odoSys.init(hwMap);
+        odoSys.toggle();
 //        senseHub.init(hwMap);
     }
 
@@ -106,6 +107,8 @@ public class MeccRobot extends Mechanism{
     public void init(HardwareMap hwmap, Telemetry telemetry){
         init(hwmap);
         this.telemetry = telemetry;
+        odoSys.toggle();
+
     }
 
     /**
@@ -118,6 +121,7 @@ public class MeccRobot extends Mechanism{
         init(hwmap);
         this.telemetry = telemetry;
         this.timer = timer;
+        odoSys.toggle();
     }
 
     /**

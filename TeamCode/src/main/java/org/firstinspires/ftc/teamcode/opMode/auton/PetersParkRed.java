@@ -44,7 +44,7 @@ public class PetersParkRed extends LinearOpMode {
     public static double strafeDistance = 24;
 
 
-    public static String goal = "midgoal";
+    public static String goal = "highgoal";
 
     Pose2d startPosR = new Pose2d(startx, starty, startAng);
     Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, scoreHubPosy);

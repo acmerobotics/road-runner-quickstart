@@ -60,7 +60,7 @@ public class StevensDuckyBlueAlt extends LinearOpMode {
     public static double duckX = -58;
     public static double duckY = 65;
 
-    public static String goal = "midgoal";
+    public static String goal = "highgoal";
 
     @Override
     public void runOpMode() throws InterruptedException {

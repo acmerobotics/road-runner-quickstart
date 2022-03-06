@@ -63,7 +63,7 @@ public class StevensDuckyBlueW extends LinearOpMode {
     public static double enterX = 15;
     public static double enterY = 71.5;
 
-    public static String goal = "midgoal";
+    public static String goal = "highgoal";
     public static double fDistance = 30;
 
     public static double parkTimer = 1800;
