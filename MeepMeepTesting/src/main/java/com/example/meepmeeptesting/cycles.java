@@ -24,6 +24,13 @@ public class cycles {
     public static double repositionX = 15.0;
     public static double reposistionY = 71.5;
 
+    public static double preSplineY = -53.5;
+    public static double bEnterX = 20;
+    public static double bEnterY = -68;
+    public static double warehouseX = 57;
+    public static double bExitY = -70.5;
+    public static double inc = .5;
+
     public static double distanceForwards = 30;
     public static double strafeDistance = 24;
     public static void main(String[] args) {
@@ -36,7 +43,22 @@ public class cycles {
         Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
         Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
 
-        Pose2d repositionB = new Pose2d(repositionX,reposistionY,Math.toRadians(0));
+        Pose2d repositionB = new Pose2d(repositionX, reposistionY, Math.toRadians(0));
+        Vector2d preSpline = new Vector2d(scoreHubPosx, preSplineY);
+        Vector2d bEnter = new Vector2d(bEnterX, bEnterY);
+        Vector2d bEnter2 = new Vector2d(bEnterX, bEnterY-inc);
+        Vector2d bEnter3 = new Vector2d(bEnterX, bEnterY-2*inc);
+        Vector2d bEnter4 = new Vector2d(bEnterX, bEnterY-3*inc);
+        Vector2d bEnter5 = new Vector2d(bEnterX, bEnterY-4*inc);
+        Vector2d bExit = new Vector2d(bEnterX, bExitY);
+        Vector2d bExit2 = new Vector2d(bEnterX, bEnterY-2*inc);
+        Vector2d bExit3 = new Vector2d(bEnterX, bEnterY-4*inc);
+        Vector2d bExit4 = new Vector2d(bEnterX, bEnterY-6*inc);
+        Vector2d wareHouse = new Vector2d(warehouseX, bEnterY);
+        Vector2d wareHouse2 = new Vector2d(warehouseX, bEnterY-inc);
+        Vector2d wareHouse3 = new Vector2d(warehouseX, bEnterY-2*inc);
+        Vector2d wareHouse4 = new Vector2d(warehouseX, bEnterY-3*inc);
+        Vector2d wareHouse5 = new Vector2d(warehouseX, bEnterY-4*inc);
 
         RoadRunnerBotEntity myBotBlue = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -81,31 +103,48 @@ public class cycles {
                 // .setStartPose(startPos)
                 .setDimensions(11.839, 14.141)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPosR)
-                        .waitSeconds(2)
+                        .waitSeconds(.25)
                         .setReversed(true)
-                        .lineToLinearHeading(new Pose2d(scoreHubPosR, Math.toRadians(scoreHubPosAngR)))                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                            //scoringMech.release();
+                        .lineToLinearHeading(new Pose2d(scoreHubPosR, Math.toRadians(scoreHubPosAngR)))
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            //scoringMech.releaseHard();
+                           // drive.acquirerRuns = true;
                         })
-                        .waitSeconds(1)
-                        //.lineToLinearHeading(repositionB)
-                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY +18))
-                        .splineToSplineHeading(new Pose2d(repositionX+5, -reposistionY, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
-                        .waitSeconds(1)
-                        .lineTo(new Vector2d(repositionX+5, -reposistionY))//, Math.toRadians(180))
-                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-40)), Math.toRadians(90))
-                        .waitSeconds(1)
-                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY +18))
-                        .splineToSplineHeading(new Pose2d(repositionX+5, -reposistionY, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
-                        .waitSeconds(1)
-                        .lineTo(new Vector2d(repositionX+5, -reposistionY))
-                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(-40)), Math.toRadians(90))
-                        .waitSeconds(1)
-                        .lineTo(new Vector2d(scoreHubPosx, -reposistionY +18))
-                        .splineToSplineHeading(new Pose2d(repositionX+5, -reposistionY, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
-                        .strafeLeft(strafeDistance)
+                        .waitSeconds(.04)
+                        .lineTo(preSpline)
+                        .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
+                        .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
+                        .waitSeconds(0.01)
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            //scoringMech.toggle("highgoal");
+                           // drive.acquirerRuns = false;
+                        })
+                        .lineTo(bExit)
+                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(scoreHubPosAngR)), Math.toRadians(90))
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                           // scoringMech.releaseHard();
+                           // drive.acquirerRuns = true;
+                        })
+                        .waitSeconds(.04)
+                        .lineTo(preSpline)
+                        .splineToSplineHeading(new Pose2d(bEnter2, Math.toRadians(0)), Math.toRadians(0))
+                        .lineTo(wareHouse2)
+                        .waitSeconds(0.01)
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            //scoringMech.toggle("highgoal");
+                           // drive.acquirerRuns = false;
+                        })
+                        .lineTo(bExit)
+                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(scoreHubPosAngR)), Math.toRadians(90))
+                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                            //scoringMech.releaseHard();
+                            //drive.acquirerRuns = true;
+                        })
+                        .waitSeconds(.04)
+                        .lineTo(preSpline)
+                        .splineToSplineHeading(new Pose2d(bEnter3, Math.toRadians(0)), Math.toRadians(0))
+                        .lineTo(wareHouse3)
+                        .strafeLeft(18)
                         .build()
 
                 );

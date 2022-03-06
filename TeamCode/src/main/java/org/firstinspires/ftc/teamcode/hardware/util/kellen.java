@@ -49,7 +49,7 @@ public class kellen extends OpenCvPipeline {
             highHSV = new Scalar(180, 255, 255);
         }
         if(color == "blue") {
-            lowHSV = new Scalar(110, 100, 100);
+            lowHSV = new Scalar(110, 50, 50);
             highHSV = new Scalar(120, 255, 255);
         }
         //This creates our mask, and filters out all colors except for whats within our defined bound
