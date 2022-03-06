@@ -137,6 +137,12 @@ public class PetersCyclesRed extends LinearOpMode {
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter3, Math.toRadians(-5)), Math.toRadians(0))
                 .lineTo(wareHouse3)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    scoringMech.toggle("highgoal");
+                    drive.acquirerRuns = false;
+                })
+                .waitSeconds(0.01)
+
                 .strafeLeft(18)
                 .build();
 
