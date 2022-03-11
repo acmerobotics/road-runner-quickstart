@@ -58,17 +58,17 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID;
-    public static PIDCoefficients HEADING_PID;
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
     //old value
     //public static double LATERAL_MULTIPLIER = 1.441395175626227;
 
     public static double LATERAL_MULTIPLIER = 1.438494117982162;
 
-    public static double VX_WEIGHT = 1;
-    public static double VY_WEIGHT = 1;
-    public static double OMEGA_WEIGHT = 1;
+    public static double VX_WEIGHT = 1.0;
+    public static double VY_WEIGHT = 1.0;
+    public static double OMEGA_WEIGHT = 1.0;
 
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
@@ -94,7 +94,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
     public SampleMecanumDrive(HardwareMap hardwareMap, double tW, double kv, double ka, double kS, double hP) {
         super(kv, ka, kS, tW, tW, LATERAL_MULTIPLIER);
-        TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0);
+        TRANSLATIONAL_PID = new PIDCoefficients(5.0, 0, 0);
         HEADING_PID = new PIDCoefficients(hP, 0, 0);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
