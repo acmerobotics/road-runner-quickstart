@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -14,12 +13,12 @@ public class LIFTFSM extends Mechanism{
         mid,
         high,
     };
-    public states scoreState;
+    public states liftState;
     @Override
     public void init(HardwareMap hwMap) {
         lift.init(hwMap);
         lift.lower();
-        scoreState = states.low;
+        liftState = states.low;
     }
     public void init(HardwareMap hwMap, Telemetry tele) {
         this.init(hwMap);
@@ -27,7 +26,7 @@ public class LIFTFSM extends Mechanism{
     }
 
     public void loop() {
-        switch(scoreState) {
+        switch(liftState) {
             case low:
                 lift.retracting(true);
                 lift.lower();
@@ -43,13 +42,13 @@ public class LIFTFSM extends Mechanism{
         lift.update();
     }
     public void goHigh() {
-        scoreState = states.high;
+        liftState = states.high;
     }
     public void goMid() {
-        scoreState = states.mid;
+        liftState = states.mid;
     }
     public void goLow() {
-        scoreState = states.low;
+        liftState = states.low;
     }
 
 }
