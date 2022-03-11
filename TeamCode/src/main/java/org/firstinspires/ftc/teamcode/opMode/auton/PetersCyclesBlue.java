@@ -126,7 +126,7 @@ public class PetersCyclesBlue extends LinearOpMode {
                 .waitSeconds(1)
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineTo(wareHouse)
+                .lineTo(wareHouse2)
                 .waitSeconds(1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.toggle("highgoal");
@@ -141,7 +141,8 @@ public class PetersCyclesBlue extends LinearOpMode {
                 .waitSeconds(1)
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineTo(wareHouse)
+                .lineTo(wareHouse3)
+
                 .strafeRight(strafeDistance)
                 .build();
 

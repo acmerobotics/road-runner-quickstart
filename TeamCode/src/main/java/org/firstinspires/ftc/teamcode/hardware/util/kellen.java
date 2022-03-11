@@ -52,6 +52,23 @@ public class kellen extends OpenCvPipeline {
             lowHSV = new Scalar(110, 50, 50);
             highHSV = new Scalar(120, 255, 255);
         }
+        if(color == "purple") {
+            lowHSV = new Scalar(135, 50, 50);
+            highHSV = new Scalar(155, 255, 255);
+        }
+        if(color == "cyan") {
+            lowHSV = new Scalar(80, 50, 50);
+            highHSV = new Scalar(95, 255, 255);
+        }
+        if(color == "yellow") {
+            lowHSV = new Scalar(20, 55, 55);
+            highHSV = new Scalar(35, 255, 255);
+        }
+        if(color == "orange") {
+            lowHSV = new Scalar(0, 50, 50);
+            highHSV = new Scalar(20, 255, 255);
+        }
+
         //This creates our mask, and filters out all colors except for whats within our defined bound
             /* IGNORE ALL OF THIS FOR NOW, but essentially we'll use this to tell where our capstone is by counting pixels
 
