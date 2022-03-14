@@ -28,8 +28,12 @@ public class LIFTFSM extends Mechanism{
     public void loop() {
         switch(liftState) {
             case low:
-                lift.retracting(true);
-                lift.lower();
+                if(lift.getCurrentPosition() >= lift.midPos + 2) {
+                    lift.retracting(true);
+                }else {
+                    lift.retracting(false);
+                }
+                lift.setTargetPosition(lift.minPos);
                 break;
             case mid:
                 lift.retracting(false);
