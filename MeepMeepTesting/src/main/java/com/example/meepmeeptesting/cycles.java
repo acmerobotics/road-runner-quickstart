@@ -78,7 +78,7 @@ public class cycles {
                                 .waitSeconds(1)
                                 //.lineToLinearHeading(repositionB)
                                 .lineTo(preSpline)
-                                .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
                                 .lineTo(wareHouse)
                                 .waitSeconds(1)
                                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {

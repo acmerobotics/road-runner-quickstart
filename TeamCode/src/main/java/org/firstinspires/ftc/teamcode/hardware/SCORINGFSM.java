@@ -11,7 +11,9 @@ public class SCORINGFSM extends Mechanism {
     ElapsedTime timer = new ElapsedTime();
     public enum states {
         down,
-        ready,
+        readyH,
+        readyM,
+        readyL,
         score
     }
     public states scoreStates;
@@ -33,8 +35,16 @@ public class SCORINGFSM extends Mechanism {
                     arm.down();
                 }
                 break;
-            case ready:
+            case readyH:
                 lift.goHigh();
+                arm.ready();
+                break;
+            case readyM:
+                lift.goMid();
+                arm.ready();
+                break;
+            case readyL:
+                lift.goLow();
                 arm.ready();
                 break;
             case score:
@@ -46,4 +56,17 @@ public class SCORINGFSM extends Mechanism {
         lift.loop();
         arm.loop();
     }
+    public void highGoal() {
+        scoreStates = states.readyH;
+    }
+    public void midGoal() {
+        scoreStates = states.readyM;
+    }
+    public void lowGoal() {
+        scoreStates = states.readyL;
+    }
+    public void score() {
+        scoreStates = states.score;
+    }
+    public void down() {scoreStates = states.down;}
 }
