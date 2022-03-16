@@ -21,7 +21,7 @@ public class DriveConstants {
      * These are motor constants that should be listed online for your motors.
      */
     public static final double TICKS_PER_REV = 537.7;
-    public static final double MAX_RPM = 312;
+    public static final double MAX_RPM = 312.0;
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
@@ -47,7 +47,7 @@ public class DriveConstants {
     public static double GEAR_RATIO = 22.0/20.0; // output (wheel) speed / input (motor) speed
 
     //OLD VALUE
-    public static double TRACK_WIDTH = 11.05; // in
+    public static double TRACK_WIDTH = 11.3; // in
     //cycles track widthpublic static double TRACK_WIDTH = 10.55;
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -56,9 +56,9 @@ public class DriveConstants {
      * empirically tuned.
      */
     //non cycles K VALUES
-    public static double kV = 0.0154;
-    public static double kA = 0.00154;
-    public static double kStatic = 0.062;
+    public static double kV = 0.0166;
+    public static double kA = 0.003;
+    public static double kStatic = 0;
 
     /*cycles k values
     public static double kV = 0.0159;
@@ -77,10 +77,10 @@ public class DriveConstants {
 //    public static double MAX_ACCEL = 30;
 //    public static double MAX_ANG_VEL = 5;
 //    public static double MAX_ANG_ACCEL = 5;
-    public static double MAX_VEL = 40;
-    public static double MAX_ACCEL = 30;
-    public static double MAX_ANG_VEL = 6.14;
-    public static double MAX_ANG_ACCEL = 6.14;
+    public static double MAX_VEL = 55.0;
+    public static double MAX_ACCEL = 45.0;
+    public static double MAX_ANG_VEL = Math.toRadians(360);
+    public static double MAX_ANG_ACCEL = Math.toRadians(360);
 
 
     public static double encoderTicksToInches(double ticks) {

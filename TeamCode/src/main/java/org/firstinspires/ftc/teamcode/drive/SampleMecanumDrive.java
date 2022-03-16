@@ -58,13 +58,13 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID;
-    public static PIDCoefficients HEADING_PID;
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(3.5, 4.5, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(3.5, 0, 0);
 
     //old value
     //public static double LATERAL_MULTIPLIER = 1.441395175626227;
 
-    public static double LATERAL_MULTIPLIER = 1.438494117982162;
+    public static double LATERAL_MULTIPLIER = 1.621122601836806;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -86,18 +86,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     private FreightSensor sensor;
     private Acquirer acquirer;
     public boolean acquirerRuns = false;
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
-        this(hardwareMap, TRACK_WIDTH, kV, kA, kStatic, 4.0);
-    }
-    public SampleMecanumDrive(HardwareMap hardwareMap, double hP) {
-        this(hardwareMap, TRACK_WIDTH, kV, kA, kStatic, hP);
-    }
-    public SampleMecanumDrive(HardwareMap hardwareMap, double tW, double kv, double ka, double kS, double hP) {
-        super(kv, ka, kS, tW, tW, LATERAL_MULTIPLIER);
-        TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0);
-        HEADING_PID = new PIDCoefficients(hP, 0, 0);
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+                new Pose2d(0.5, 0.5, Math.toRadians(1.0)), 0.1);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
