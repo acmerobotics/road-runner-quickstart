@@ -9,28 +9,37 @@ import org.firstinspires.ftc.teamcode.hardware.ScoringArm;
 public class ARMFSM extends Mechanism{
     private ScoringArm arm = new ScoringArm();
     private ElapsedTime timer = new ElapsedTime();
+    private FreightSensor sensor = new FreightSensor();
     private Telemetry telemetry;
     public enum states {
         down,
         up,
         dump,
-        postDump,
+        ready,
     };
     public states armStates;
     @Override
     public void init(HardwareMap hwMap) {
         arm.init(hwMap);
+        sensor.init(hwMap);
         armStates = states.down;
     }
     public void init(HardwareMap hwMap, Telemetry tele) {
         arm.init(hwMap);
+        sensor.init(hwMap);
         telemetry = tele;
     }
     public void loop() {
         switch(armStates) {
             case down:
-                arm.goToStart();
-                arm.depositReset();
+                if(timer.milliseconds() >= 100) {
+                    arm.goToStart();
+                    arm.depositReset();
+                    if (sensor.hasFreight()) {
+                        timer.reset();
+                        armStates = states.ready;
+                    }
+                }
                 break;
             case up:
                 arm.goToEnd();
@@ -38,12 +47,13 @@ public class ARMFSM extends Mechanism{
             case dump:
                 timer.reset();
                 arm.dumpHard();
-                armStates = states.postDump;
+                armStates = states.down;
                 break;
-            case postDump:
-                if(timer.milliseconds() >= 100) {
-                    armStates = states.down;
+            case ready:
+                if(timer.milliseconds() >= 200) {
+                    arm.tuckPos();
                 }
+                break;
         }
     }
     public void ready() {

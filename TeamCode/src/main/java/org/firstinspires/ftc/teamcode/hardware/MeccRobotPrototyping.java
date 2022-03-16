@@ -30,6 +30,7 @@ public class MeccRobotPrototyping extends Mechanism{
 
     private FreightSensor blockSense = new FreightSensor();
     private RetractableOdoSys odoSys = new RetractableOdoSys();
+    private SCORINGFSM scoring = new SCORINGFSM();
 //
 //    private SenseHub senseHub = new SenseHub();
 
@@ -42,25 +43,21 @@ public class MeccRobotPrototyping extends Mechanism{
     });
 
     BooleanManager leftBumperManager = new BooleanManager(()->{
-        scoringV2.toggle("highgoal");
+        scoring.highGoal();
 
     });
 
     BooleanManager xButtonManager = new BooleanManager(()->{
-        scoringV2.toggle("lowgoal");
+        scoring.lowGoal();
 
     });
 
     BooleanManager bButtonManager = new BooleanManager(()->{
-        scoringV2.toggle("midgoal");
+        scoring.midGoal();
     });
 
     BooleanManager aButtonManager = new BooleanManager(()->{
         odoSys.toggle();
-    });
-
-    BooleanManager yButtonManager = new BooleanManager(()->{
-       scoringV2.releaseDuck();
     });
 
     BooleanManager rightStickManager = new BooleanManager(new Runnable() {
@@ -72,9 +69,12 @@ public class MeccRobotPrototyping extends Mechanism{
 
 
     BooleanManager rightBumperManager = new BooleanManager(()->{
-        if(!soft_dump) scoringV2.releaseHard();
-        else scoringV2.releaseSoft();
-        
+        scoring.score();
+
+    });
+
+    BooleanManager yButtonManager = new BooleanManager(()->{
+        scoring.lowGoal();
     });
 
     BooleanManager rightDPadButtonManager = new BooleanManager(new Runnable() {
@@ -93,8 +93,9 @@ public class MeccRobotPrototyping extends Mechanism{
         blockSense.init(hwMap);
         acquirer.init(hwMap);
         carousel.init(hwMap);
-        scoringV2.init(hwMap,blockSense);
+        scoring.init(hwMap);
         odoSys.init(hwMap);
+        odoSys.toggle();
 //        senseHub.init(hwMap);
     }
 
@@ -106,6 +107,8 @@ public class MeccRobotPrototyping extends Mechanism{
     public void init(HardwareMap hwmap, Telemetry telemetry){
         init(hwmap);
         this.telemetry = telemetry;
+        odoSys.toggle();
+
     }
 
     /**
@@ -118,6 +121,7 @@ public class MeccRobotPrototyping extends Mechanism{
         init(hwmap);
         this.telemetry = telemetry;
         this.timer = timer;
+        odoSys.toggle();
     }
 
     /**
@@ -128,6 +132,7 @@ public class MeccRobotPrototyping extends Mechanism{
         drive(gamepad);
         acquirerControls(gamepad);
         lift(gamepad);
+        scoring.loop();
         //colorRumble(gamepad);
 
         //ducks
@@ -139,7 +144,7 @@ public class MeccRobotPrototyping extends Mechanism{
         }
         if(debug){
             //telemetry.addData("has freight",blockSense.hasFreight());
-            scoringV2.update();
+            //scoringV2.update();
             telemetry.update();
         }
 
@@ -245,13 +250,13 @@ public class MeccRobotPrototyping extends Mechanism{
 
         rightStickManager.update(gamepad.right_stick_button);
 
-        if(debug){
+        /*if(debug){
             telemetry.addData("softdump?", soft_dump);
             telemetry.addData("liftpos: ", scoringV2.getPos());
             telemetry.addData("targetlift: ", scoringV2.getTargetPos());
             telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
             //telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
-        }
+        }*/
 
 
     }

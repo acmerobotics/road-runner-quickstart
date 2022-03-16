@@ -46,10 +46,18 @@ public class LIFTFSM extends Mechanism{
         lift.update();
     }
     public void goHigh() {
-        liftState = states.high;
+        if(liftState != states.high) {
+            liftState = states.high;
+        }else {
+            liftState = states.low;
+        }
     }
     public void goMid() {
-        liftState = states.mid;
+        if(liftState != states.mid) {
+            liftState = states.mid;
+        }else {
+            liftState = states.low;
+        }
     }
     public void goLow() {
         liftState = states.low;
