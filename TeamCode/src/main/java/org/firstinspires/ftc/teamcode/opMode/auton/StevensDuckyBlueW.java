@@ -36,8 +36,8 @@ public class StevensDuckyBlueW extends LinearOpMode {
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = -34;
-    public static double scoreHubPosy = 43;
+    public static double scoreHubPosx = -35;
+    public static double scoreHubPosy = 38;
 
     public static double scoreHubPosAngB = -30;
     public static double scoreHubPosAngR = 25;
@@ -66,8 +66,8 @@ public class StevensDuckyBlueW extends LinearOpMode {
     public static String goal = "highgoal";
     public static double fDistance = 30;
 
-    public static double parkTimer = 1800;
-    public static double parkAngleOffset = 10;
+    public static double parkTimer = 1750;
+    public static double parkAngleOffset = -7;
 
 
     @Override
@@ -102,11 +102,11 @@ public class StevensDuckyBlueW extends LinearOpMode {
 
         //trajectory
         TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPosB)
-                .waitSeconds(1)
+                .waitSeconds(2)
                 .setReversed(true)
                 .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    scoringMech.releaseHard();
+                    scoringMech.releaseSoft();
                 })
                 .waitSeconds(1)
                 //slides
@@ -136,7 +136,7 @@ public class StevensDuckyBlueW extends LinearOpMode {
                 })
                 .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.releaseHard();
+                    scoringMech.releaseSoft();
                 })
                 .waitSeconds(1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
@@ -144,9 +144,10 @@ public class StevensDuckyBlueW extends LinearOpMode {
                 })
                 .lineToLinearHeading(prePark)
                 .forward(15)
-                .turn(Math.toRadians(parkAngleOffset/2))
+                .turn(Math.toRadians(-parkAngleOffset/2))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     odoSys.toggle();
+                    scoringMech.setReadyPosition();
                 })
                 .waitSeconds(0.5)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
@@ -187,13 +188,13 @@ public class StevensDuckyBlueW extends LinearOpMode {
             telemetry.update();
         }
         if(cv.whichRegion() == 1) {
-            goal = "highgoal";
+            goal = "lowgoal";
         }
         if(cv.whichRegion() == 2) {
             goal = "midgoal";
         }
         if(cv.whichRegion() == 3) {
-            goal = "lowgoal";
+            goal = "highgoal";
         }
         telemetry.addData("goal: ",goal);
         telemetry.addData("region", cv.whichRegion());

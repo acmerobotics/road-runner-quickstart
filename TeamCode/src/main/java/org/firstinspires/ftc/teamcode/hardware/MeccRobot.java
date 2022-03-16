@@ -95,7 +95,7 @@ public class MeccRobot extends Mechanism{
         carousel.init(hwMap);
         scoringV2.init(hwMap,blockSense);
         odoSys.init(hwMap);
-        odoSys.toggle();
+
 //        senseHub.init(hwMap);
     }
 
@@ -162,7 +162,7 @@ public class MeccRobot extends Mechanism{
                 //Going to test if maybe negative)
                 left_stick_inverted*gamepad.left_stick_y,
                 left_stick_inverted*gamepad.left_stick_x,
-                -gamepad.right_stick_x * 0.8
+                -gamepad.right_stick_x
         );
 
         if(debug){

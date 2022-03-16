@@ -128,13 +128,13 @@ public class StevensDuckyRed extends LinearOpMode {
             telemetry.update();
         }
         if(cv.whichRegion() == 1) {
-            goal = "highgoal";
+            goal = "lowgoal";
         }
         if(cv.whichRegion() == 2) {
             goal = "midgoal";
         }
         if(cv.whichRegion() == 3) {
-            goal = "lowgoal";
+            goal = "highgoal";
         }
         telemetry.addData("goal: ",goal);
         telemetry.addData("region", cv.whichRegion());

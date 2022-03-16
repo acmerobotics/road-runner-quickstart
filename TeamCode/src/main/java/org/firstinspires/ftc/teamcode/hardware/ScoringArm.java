@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 @Config
 public class ScoringArm extends ServoMechanism{
     DelayCommand delay = new DelayCommand();
-
     /****
      * WHAT TO DO HERE:
      * Figure out the DESIRED endpoints using ServoTest OpMode
@@ -44,11 +43,11 @@ public class ScoringArm extends ServoMechanism{
     public static double armReadyPos = 0.35;
     public static double armDuckPos = 0.8;
     /////DEPO SERVO POSITIONS
-    public static double depoStartPos = 0.6; //init position of depo
+    public static double depoStartPos = 0.55; //init position of depo
     public static double depoEndPos = 1.0; //far end position of depo
-    public static double depoTuckPos= 0.75; //tuck position for movement while going upwards
-    public static double depoDumpPos_Hard = 0.25; //position to go to for dump movement HARD
-    public static double depoDumpPos_Soft = 0.4; //position to go to for dump movement SOFT
+    public static double depoTuckPos= 1.0; //tuck position for movement while going upwards
+    public static double depoDumpPos_Hard = 0.2; //position to go to for dump movement HARD
+    public static double depoDumpPos_Soft = 0.5; //position to go to for dump movement SOFT
 
     public static double depoLowGoalPos = depoStartPos; //position to go to for lowGoal prep
     public static double depoCapStonePos = 0.9; //position to go to for capStone prep

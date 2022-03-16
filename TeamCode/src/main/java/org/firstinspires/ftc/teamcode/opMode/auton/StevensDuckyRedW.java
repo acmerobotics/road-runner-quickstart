@@ -37,7 +37,7 @@ public class StevensDuckyRedW extends LinearOpMode {
     public static double startAng = Math.toRadians(90);
 
     public static double scoreHubPosx = -34;
-    public static double scoreHubPosy = 43;
+    public static double scoreHubPosy = 38;
 
     public static double scoreHubPosAngB = -25;
     public static double scoreHubPosAngR = 30;
@@ -54,7 +54,7 @@ public class StevensDuckyRedW extends LinearOpMode {
     public static double reposY = 36;
 
     public static double preSweepY = 48;
-    public static double sweepX = -40;
+    public static double sweepX = -34;
     public static double sweepY = 67;
 
     public static double duckX = -58;
@@ -64,8 +64,8 @@ public class StevensDuckyRedW extends LinearOpMode {
     public static double enterY = 71.5;
     public static String goal = "highgoal";
 
-    public static double parkTimer = 1800;
-    public static double parkAngleOffset = 10;
+    public static double parkTimer = 1750;
+    public static double parkAngleOffset = 7;
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -89,7 +89,7 @@ public class StevensDuckyRedW extends LinearOpMode {
         Pose2d reposition = new Pose2d(reposX, -reposY, Math.toRadians(270));
         Vector2d preSweep = new Vector2d(reposX,-preSweepY);
         Vector2d sweepPos = new Vector2d(sweepX, -sweepY);
-        Pose2d postSweep = new Pose2d(duckX, -sweepY, Math.toRadians(270));
+        Pose2d postSweep = new Pose2d(duckX, -sweepY, Math.toRadians(210));
         Pose2d prePark = new Pose2d(scoreHubPosx, -preParkY, Math.toRadians(0));
         Pose2d bEnter = new Pose2d(enterX, -enterY, Math.toRadians(0));
 
@@ -102,7 +102,7 @@ public class StevensDuckyRedW extends LinearOpMode {
                 .setReversed(true)
                 .splineTo(scoreHubPosR,Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    scoringMech.releaseHard();
+                    scoringMech.releaseSoft();
                 })
                 .waitSeconds(1)
                 //slides
@@ -110,16 +110,16 @@ public class StevensDuckyRedW extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(false,true);
                 })
-                .waitSeconds(2.5)
+                .waitSeconds(3.0)
                 //carousel
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(false,false);
                 })
                 .lineToSplineHeading(reposition)
-                .lineTo(preSweep)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     intake.intake(1);
                 })
+                .lineTo(preSweep)
                 .splineTo(sweepPos, Math.toRadians(180))
                 //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
                 .lineToLinearHeading(postSweep)
@@ -128,11 +128,11 @@ public class StevensDuckyRedW extends LinearOpMode {
                 })
                 .setReversed(true)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.toggle("midgoal");
+                    scoringMech.toggle("highgoal");
                 })
                 .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.releaseHard();
+                    scoringMech.releaseSoft();
                 })
                 .waitSeconds(1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
@@ -140,7 +140,6 @@ public class StevensDuckyRedW extends LinearOpMode {
                 })
                 .lineToLinearHeading(prePark)
                 .forward(15)
-                .turn(Math.toRadians(parkAngleOffset))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     odoSys.toggle();
                 })
@@ -183,13 +182,13 @@ public class StevensDuckyRedW extends LinearOpMode {
             telemetry.update();
         }
         if(cv.whichRegion() == 1) {
-            goal = "highgoal";
+            goal = "lowgoal";
         }
         if(cv.whichRegion() == 2) {
             goal = "midgoal";
         }
         if(cv.whichRegion() == 3) {
-            goal = "lowgoal";
+            goal = "highgoal";
         }
         telemetry.addData("goal: ",goal);
         telemetry.addData("region", cv.whichRegion());

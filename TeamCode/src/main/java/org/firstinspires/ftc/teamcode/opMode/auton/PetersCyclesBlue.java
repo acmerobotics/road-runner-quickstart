@@ -89,7 +89,7 @@ public class PetersCyclesBlue extends LinearOpMode {
 
 
         //drive train + async updates of mechanisms
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, 10.55, 0.0159, 0.0016, 0.062, 3);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setSlides(scoringMech);
         drive.setAcquirer(intake, sensor);
 
@@ -177,13 +177,13 @@ public class PetersCyclesBlue extends LinearOpMode {
             telemetry.update();
         }
         if (cv.whichRegion() == 1) {
-            goal = "highgoal";
+            goal = "lowgoal";
         }
         if (cv.whichRegion() == 2) {
             goal = "midgoal";
         }
         if (cv.whichRegion() == 3) {
-            goal = "lowgoal";
+            goal = "highgoal";
         }
         telemetry.addData("goal: ", goal);
         telemetry.addData("region", cv.whichRegion());

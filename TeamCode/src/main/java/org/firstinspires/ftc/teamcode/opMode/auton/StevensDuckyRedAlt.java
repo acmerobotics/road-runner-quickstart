@@ -37,7 +37,7 @@ public class StevensDuckyRedAlt extends LinearOpMode {
     public static double startAng = Math.toRadians(90);
 
     public static double scoreHubPosx = -34;
-    public static double scoreHubPosy = 43;
+    public static double scoreHubPosy = 38;
 
     public static double scoreHubPosAngB = -25;
     public static double scoreHubPosAngR = 25;
@@ -97,7 +97,7 @@ public class StevensDuckyRedAlt extends LinearOpMode {
                 .setReversed(true)
                 .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.releaseHard();
+                    scoringMech.releaseSoft();
                 })
                 .waitSeconds(1)
                 // slides
@@ -119,11 +119,11 @@ public class StevensDuckyRedAlt extends LinearOpMode {
                 })
                 .setReversed(true)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.toggle(goal);
+                    scoringMech.toggle("highgoal");
                 })
                 .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    scoringMech.releaseHard();
+                    scoringMech.releaseSoft();
                 })
                 .waitSeconds(1)
                 .lineToSplineHeading(parkR)
@@ -162,13 +162,13 @@ public class StevensDuckyRedAlt extends LinearOpMode {
             telemetry.update();
         }
         if (cv.whichRegion() == 1) {
-            goal = "highgoal";
+            goal = "lowgoal";
         }
         if (cv.whichRegion() == 2) {
             goal = "midgoal";
         }
         if (cv.whichRegion() == 3) {
-            goal = "lowgoal";
+            goal = "highgoal";
         }
         telemetry.addData("goal: ", goal);
         telemetry.addData("region", cv.whichRegion());

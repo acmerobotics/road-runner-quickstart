@@ -35,7 +35,7 @@ public class PeterCycle2Red extends LinearOpMode {
     public static double startAng = Math.toRadians(90);
 
     public static double scoreHubPosx = 7;
-    public static double scoreHubPosy = 52;
+    public static double scoreHubPosy = 40;
 
     public static double scoreHubPosAngB = -50;
     public static double scoreHubPosAngR = -40;
@@ -48,7 +48,7 @@ public class PeterCycle2Red extends LinearOpMode {
 
     public static double preSplineY = -53.5;
     public static double bEnterX = 20;
-    public static double bEnterY = -68;
+    public static double bEnterY = -70;
     public static double warehouseX = 57;
     public static double bExitY = -70.5;
     public static double inc = .5;
@@ -87,7 +87,7 @@ public class PeterCycle2Red extends LinearOpMode {
 
 
         //drive train + async updates of mechanisms
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, 3);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setSlides(scoringMech);
         drive.setAcquirer(acquirer,sensor);
         //important coordinates here
@@ -172,13 +172,13 @@ public class PeterCycle2Red extends LinearOpMode {
             telemetry.update();
         }
         if (cv.whichRegion() == 1) {
-            goal = "highgoal";
+            goal = "lowgoal";
         }
         if (cv.whichRegion() == 2) {
             goal = "midgoal";
         }
         if (cv.whichRegion() == 3) {
-            goal = "lowgoal";
+            goal = "highgoal";
         }
         telemetry.addData("goal: ", goal);
         telemetry.addData("region", cv.whichRegion());

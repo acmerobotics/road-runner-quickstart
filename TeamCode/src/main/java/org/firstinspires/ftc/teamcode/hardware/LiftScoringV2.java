@@ -1,13 +1,21 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
+
+import java.util.concurrent.TimeUnit;
 
 public class LiftScoringV2 extends Mechanism{
     private Lift lift = new Lift();
     private ScoringArm scoring = new ScoringArm();
     private DelayCommand delay = new DelayCommand();
+    private ElapsedTime timer = new ElapsedTime();
+    private double triggerTime = 200;
+    private double timeMarker = 0;
+    private boolean counting = false;
+
     private FreightSensor freightSensor = new FreightSensor();
     private String movementState; //EXTEND, RETRACT
     private String goalReach;
@@ -15,9 +23,11 @@ public class LiftScoringV2 extends Mechanism{
     private boolean formerExtend = false;
     private boolean formerFreight = false;
     private boolean auton = false;
+    private boolean shooting = false;
     public static int testingInt = 300;
 
     public void init(HardwareMap hwmap){
+        timer.reset();
         lift.init(hwmap);
         scoring.init(hwmap);
         freightSensor.init(hwmap);
@@ -189,6 +199,7 @@ public class LiftScoringV2 extends Mechanism{
      * dumps with deposit and lowers slides in tandem
      */
     public void releaseHard(){
+        shooting = true;
         if(!movementState.equals("DETRACT")){
             scoring.dumpHard();
             Runnable run = new Runnable() {
@@ -197,11 +208,22 @@ public class LiftScoringV2 extends Mechanism{
                     toggle(goalReach);
                 }
             };
+
+            Runnable shootState = new Runnable() {
+                @Override
+                public void run() {
+                    shooting = false;
+
+                }
+            };
+            delay.delay(shootState,400);
+
             delay.delay(run,200);
         }
     }
 
     public void releaseSoft(){
+        shooting = true;
         if(!movementState.equals("DETRACT")){
             scoring.dumpSoft();
             Runnable run = new Runnable() {
@@ -210,6 +232,17 @@ public class LiftScoringV2 extends Mechanism{
                     toggle(goalReach);
                 }
             };
+
+            Runnable shootState = new Runnable() {
+                @Override
+                public void run() {
+                    shooting = false;
+
+                }
+            };
+            delay.delay(shootState,400);
+
+
             delay.delay(run,200);
         }
     }
@@ -260,10 +293,23 @@ public class LiftScoringV2 extends Mechanism{
 
 
         if(!auton) {
-            if(freightSensor.hasFreight() && movementState.equals("DETRACT")){
+            if(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && !counting) {
                 scoring.tuckPos();
-                setReadyPosition();
+                counting = true;
+                timer.reset();
             }
+
+            if(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && counting){
+                if(timer.time(TimeUnit.MILLISECONDS) > triggerTime){
+                    scoring.tuckPos();
+                    setReadyPosition();
+                }
+            }
+
+            if(!(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting)){
+                counting = false;
+            }
+
 //            if (!formerFreight && freightSensor.hasFreight() && movementState.equals("DETRACT") && !readyPosition) {
 //                scoring.tuckPos();
 //                setReadyPosition();

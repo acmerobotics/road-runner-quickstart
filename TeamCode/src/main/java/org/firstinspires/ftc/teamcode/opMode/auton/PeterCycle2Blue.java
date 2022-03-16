@@ -36,9 +36,9 @@ public class PeterCycle2Blue extends LinearOpMode {
     public static double startAng = Math.toRadians(90);
 
     public static double scoreHubPosx = 7;
-    public static double scoreHubPosy = 52;
+    public static double scoreHubPosy = 54;
 
-    public static double scoreHubPosAngB = 40;
+    public static double scoreHubPosAngB = 50;
     public static double scoreHubPosAngR = -40;
 
     public static double repositionX = 15.0;
@@ -47,10 +47,10 @@ public class PeterCycle2Blue extends LinearOpMode {
     public static double distanceForwards = 30;
     public static double strafeDistance = 24;
 
-    public static double preSplineY = 53.5;
+    public static double preSplineY = 55.5;
     public static double bEnterX = 20;
     public static double bEnterY = 68;
-    public static double warehouseX = 57;
+    public static double warehouseX = 55;
     public static double bExitY = 70.5;
     public static double inc = -.5;
 
@@ -70,7 +70,7 @@ public class PeterCycle2Blue extends LinearOpMode {
     Vector2d bExit2 = new Vector2d(bEnterX, bEnterY-inc);
     Vector2d bExit3 = new Vector2d(bEnterX, bEnterY-2*inc);
     Vector2d bExit4 = new Vector2d(bEnterX, bEnterY-3*inc);
-    Vector2d wareHouse = new Vector2d(warehouseX, bEnterY);
+    Vector2d wareHouse = new Vector2d(warehouseX, bExitY);
     Vector2d wareHouse2 = new Vector2d(warehouseX, bEnterY-inc);
     Vector2d wareHouse3 = new Vector2d(warehouseX, bEnterY-2*inc);
     Vector2d wareHouse4 = new Vector2d(warehouseX, bEnterY-3*inc);
@@ -89,7 +89,7 @@ public class PeterCycle2Blue extends LinearOpMode {
 
 
         //drive train + async updates of mechanisms
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, 10.55, 0.0159, 0.0016, 0.062, 3);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setSlides(scoringMech);
         drive.setAcquirer(intake, sensor);
 
@@ -145,7 +145,6 @@ public class PeterCycle2Blue extends LinearOpMode {
                 .strafeRight(strafeDistance)
                 .build();
 
-
         //3ftx3ftmovement
 
 //        TrajectorySequenceBuilder taahkbeer = drive.trajectorySequenceBuilder(alFatihah.build().end())
@@ -176,13 +175,13 @@ public class PeterCycle2Blue extends LinearOpMode {
             telemetry.update();
         }
         if (cv.whichRegion() == 1) {
-            goal = "highgoal";
+            goal = "lowgoal";
         }
         if (cv.whichRegion() == 2) {
             goal = "midgoal";
         }
         if (cv.whichRegion() == 3) {
-            goal = "lowgoal";
+            goal = "highgoal";
         }
         telemetry.addData("goal: ", goal);
         telemetry.addData("region", cv.whichRegion());

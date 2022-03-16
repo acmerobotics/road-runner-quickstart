@@ -48,7 +48,7 @@ public class CapVision extends Mechanism {
                 //webcam.startStreaming(320, 180, OpenCvCameraRotation.UPRIGHT);
                 webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
 
-                FtcDashboard.getInstance().startCameraStream(webcam, 0);
+                //FtcDashboard.getInstance().startCameraStream(webcam, 0);
                 setPipeline();
 
             }

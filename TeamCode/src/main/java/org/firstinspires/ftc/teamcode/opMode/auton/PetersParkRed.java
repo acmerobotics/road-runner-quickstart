@@ -33,7 +33,7 @@ public class PetersParkRed extends LinearOpMode {
     public static double startAng = Math.toRadians(-90);
 
     public static double scoreHubPosx = 7;
-    public static double scoreHubPosy = -40.4;
+    public static double scoreHubPosy = -54;
 
     public static double scoreHubPosAngR = -40;
 
@@ -115,13 +115,13 @@ public class PetersParkRed extends LinearOpMode {
             telemetry.update();
         }
         if(cv.whichRegion() == 1) {
-            goal = "highgoal";
+            goal = "lowgoal";
         }
         if(cv.whichRegion() == 2) {
             goal = "midgoal";
         }
         if(cv.whichRegion() == 3) {
-            goal = "lowgoal";
+            goal = "highgoal";
         }
         telemetry.addData("goal: ",goal);
         telemetry.addData("region", cv.whichRegion());
