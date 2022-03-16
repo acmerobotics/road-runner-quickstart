@@ -11,134 +11,107 @@ import kotlin.math.MathKt;
 
 public class MeepMeepTesting {
 
-    public static double startx = -35.0;
-    public static double starty = 70.0;
-    public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = -34;
-    public static double scoreHubPosy = 43;
+    public static double scoreHubPosx = 0;
+    public static double scoreHubPosy = 38;
 
-    public static double scoreHubPosAngB = -25;
-    public static double scoreHubPosAngR = 25;
+    public static double wareHousePosX = 48;
+    public static double warhousePosY = 64;
 
-    public static double carouselPosx = -62;
-    public static double carouselPosy = 62;
-    public static double carouselPosAng = Math.toRadians(180);
+    public static Pose2d origin = new Pose2d(15,70,Math.toRadians(90));
+    public static Pose2d startPos = new Pose2d(scoreHubPosx,scoreHubPosy,Math.toRadians(45));
+    public static Pose2d endPos = new Pose2d(wareHousePosX,warhousePosY, Math.toRadians(0));
+    public static Pose2d midWayPos = new Pose2d(15,64,Math.toRadians(0));
+    public static Vector2d endPosVector = new Vector2d(wareHousePosX,warhousePosY);
+    public static Vector2d startPosVector = new Vector2d(scoreHubPosx,scoreHubPosy);
 
-    public static double parkX = -60;
-    public static double parkY = 40;
-    public static double parkAng = Math.toRadians(180);
-
-    public static double tempX = -34;
-    public static double tempY = -40;
-
-    public static double reposX = -34;
-    public static double reposY = 36;
-
-    public static double duckX = -58;
-    public static double duckY = -68;
-
-
+    public static Pose2d firstRepos = new Pose2d(scoreHubPosx + 8 , scoreHubPosy + 8, Math.toRadians(22.5));
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
-
-
-        Pose2d startPosB = new Pose2d(startx, starty, startAng);
-        Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
-        Pose2d carouselPosB = new Pose2d(carouselPosx, carouselPosy, carouselPosAng);
-        Pose2d parkB = new Pose2d(parkX, parkY, parkAng);
-
-        Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
-        Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
-        Pose2d carouselPosR = new Pose2d(carouselPosx, -carouselPosy, carouselPosAng);
-        Pose2d parkR = new Pose2d(parkX, -parkY, parkAng);
-
         RoadRunnerBotEntity myBotBlue = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
+                .setConstraints(50, 45, Math.toRadians(180), Math.toRadians(180), 9.85)
                 //.setDimensions()
                 //.setStartPose(startPos)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(startPosB)
-                                .waitSeconds(1)
+
+                        drive.trajectorySequenceBuilder(origin)
+                                //.lineToLinearHeading(startPos)
                                 .setReversed(true)
-                                .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
-                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                                  //  scoringMech.release();
-                                })
-                                .waitSeconds(1)
-                                //slides
-                                .lineToSplineHeading(carouselPosB)
-                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                                    //carousel.run(true,false);
-                                })
-                                .waitSeconds(4)
-                                //carousel
-                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                                    //carousel.run(false,false);
-                                })
-                                .lineToSplineHeading(new Pose2d(reposX, reposY, Math.toRadians(90)))
-                                .lineTo(new Vector2d( reposX, reposY + 12))
-                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                                    //intake.intake(1);
-                                })
-                                .splineTo(new Vector2d(-40, -duckY+2), Math.toRadians(180))
-                                //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
-                                .lineToLinearHeading(new Pose2d(duckX, -duckY+2, Math.toRadians(90)))
-                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                                    //intake.intake(0);
-                                })
+                                .splineTo(pose2Vector(firstRepos), Math.toRadians(180) + firstRepos.getHeading())
+                                .splineTo(pose2Vector(startPos), startPos.getHeading() + Math.toRadians(180))
+                                // .setReversed(true)
+                                // .splineTo(pose2Vector(startPos), startPos.getHeading())
+                                .setReversed(false)
+                                .splineTo(pose2Vector(midWayPos), midWayPos.getHeading())
+                                .splineTo(pose2Vector(endPos), endPos.getHeading())
                                 .setReversed(true)
-                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                                    //scoringMech.toggle("highgoal");
-                                })
-                                .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
-                                .waitSeconds(1)
-                                .lineToLinearHeading(new Pose2d(scoreHubPosx, scoreHubPosy+10, Math.toRadians(0)))
-                                .forward(30)
-                                .splineToSplineHeading(new Pose2d(15, 71.5, Math.toRadians(0)), Math.toRadians(0))
-                                .forward(30)
+                                
+                                .splineToLinearHeading(midWayPos, midWayPos.getHeading() + Math.toRadians(180))
+                                .splineTo(pose2Vector(startPos),  startPos.getHeading() + Math.toRadians(180))
+                                .setReversed(false)
+
+                                //cycle1
+                        //         .splineTo(pose2Vector(midWayPos), midWayPos.getHeading())
+                        //         .splineTo(pose2Vector(endPos), endPos.getHeading())
+                        //         .setReversed(true)
+
+                        //         .splineToLinearHeading(midWayPos, midWayPos.getHeading() + Math.toRadians(180))
+                        //         .splineTo(pose2Vector(startPos), startPos.getHeading() + Math.toRadians(180))
+                        //         .setReversed(false)
+
+                        //         //cycle 2
+                        //         .splineTo(pose2Vector(midWayPos), midWayPos.getHeading())
+                        //         .splineTo(pose2Vector(endPos), endPos.getHeading())
+                        //         .setReversed(true)
+
+                        //         .splineToLinearHeading(midWayPos, midWayPos.getHeading() + Math.toRadians(180))
+                        //         .splineTo(pose2Vector(startPos), startPos.getHeading() + Math.toRadians(180))
+                        //         .setReversed(false)
+
+                        //         //cycle 3
+                        //         .splineTo(pose2Vector(midWayPos), midWayPos.getHeading())
+                        //         .splineTo(pose2Vector(endPos), endPos.getHeading())
+                        //         .setReversed(true)
+
+                        //         .splineToLinearHeading(midWayPos, midWayPos.getHeading() + Math.toRadians(180))
+                        //         .splineTo(pose2Vector(startPos), startPos.getHeading() + Math.toRadians(180))
+                        //         .setReversed(false)
+
+                        //         //cycle 4
+                        //         .splineTo(pose2Vector(midWayPos), midWayPos.getHeading())
+                        //         .splineTo(pose2Vector(endPos), endPos.getHeading())
+                        //         .setReversed(true)
+
+                                
+                        //         .splineToLinearHeading(midWayPos, midWayPos.getHeading() + Math.toRadians(180))
+                        //         .splineTo(pose2Vector(startPos), startPos.getHeading() + Math.toRadians(180))
+                        //         .setReversed(false)
+
+                        //         //cycle 5
+                        //        .splineTo(pose2Vector(midWayPos), midWayPos.getHeading())
+                        //         .splineTo(pose2Vector(endPos), endPos.getHeading())
+                        //         .setReversed(true)
+
+
                                 .build()
 
-                );
+        );
 
-        RoadRunnerBotEntity myBotRed = new DefaultBotBuilder(meepMeep)
-                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
-                // .setStartPose(startPos)
-                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPosR)
-                        .setReversed(true)
-                        .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            // scoringMech.release();
-                        })
-                        //.waitSeconds(1)
-                        // slides
-                        .lineToSplineHeading(carouselPosR)
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            // carousel.run(true,false);
-                        })
-                        //.waitSeconds(7)
-                        // carousel
-                        /*.lineToSplineHeading(parkR)
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            // carousel.run(false,false);
-                        })*/
-                        .lineToSplineHeading(new Pose2d(tempX, tempY, Math.toRadians(270)))
-                        .lineTo(new Vector2d( tempX, tempY-5))
-                        .splineTo(new Vector2d(-40, duckY-2), Math.toRadians(180))
-                        //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
-                        .lineToLinearHeading(new Pose2d(duckX, duckY-2, Math.toRadians(225)))
-                        .setReversed(true)
-                        .splineTo(scoreHubPosR, Math.toRadians(scoreHubPosAngR))
-                        .waitSeconds(1)
-                        .lineToLinearHeading(new Pose2d(scoreHubPosx, -scoreHubPosy-10, Math.toRadians(0)))
-                        .forward(30)
-                        .splineToSplineHeading(new Pose2d(15, -71.5, Math.toRadians(0)), Math.toRadians(0))
-                        .build()
 
-                );
+                // RoadRunnerBotEntity myBotRed = new DefaultBotBuilder(meepMeep)
+                // // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                // .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
+                // // .setDimensions()
+                // // .setStartPose(startPos)
+                // .followTrajectorySequence(drive ->
+
+                // drive.trajectorySequenceBuilder(startPos)
+                        
+                //         .build()
+
+                // );
 
 
         
@@ -148,7 +121,10 @@ public class MeepMeepTesting {
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBotBlue)
-                .addEntity(myBotRed)
                 .start();
+    }
+
+    public static Vector2d pose2Vector(Pose2d givenPose){
+        return new Vector2d(givenPose.getX(),givenPose.getY());
     }
 }

@@ -24,12 +24,12 @@ public class cycles {
     public static double repositionX = 15.0;
     public static double reposistionY = 71.5;
 
-    public static double preSplineY = -53.5;
+    public static double preSplineY = 53.5;
     public static double bEnterX = 20;
-    public static double bEnterY = -68;
+    public static double bEnterY = 68;
     public static double warehouseX = 57;
-    public static double bExitY = -70.5;
-    public static double inc = .5;
+    public static double bExitY = 70.5;
+    public static double inc = -.5;
 
     public static double distanceForwards = 30;
     public static double strafeDistance = 24;
@@ -175,7 +175,7 @@ public class cycles {
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBotBlue)
-                .addEntity(myBotRed)
+                //.addEntity(myBotRed)
                 .start();
     }
 }
