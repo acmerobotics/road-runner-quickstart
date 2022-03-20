@@ -15,8 +15,8 @@ public class beep {
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = 2;
-    public static double scoreHubPosy = 48;
+    public static double scoreHubPosx = 4;
+    public static double scoreHubPosy = 50;
 
     public static double scoreHubPosAngB = 50;
     public static double scoreHubPosAngR = -40;
