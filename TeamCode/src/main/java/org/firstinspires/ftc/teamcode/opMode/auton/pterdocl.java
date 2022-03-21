@@ -46,13 +46,15 @@ public class pterdocl extends LinearOpMode {
 
     public static double preSplineY = 53.5;
     public static double bEnterX = 20;
-    public static double bEnterY = 73;
+    public static double bEnterY = 69;
     public static double warehouseX = 53;
     public static double bExitY = 69.5;
     public static double inc = 0;
     public static Pose2d startPos = new Pose2d(startx, starty, startAng);
     public static double angmod = 195;
-
+    public static double xmod = 5;
+    public static double ymod = .5;
+    public static double hubmod = .75;
 
 
     public static String goal = "highgoal";
@@ -115,7 +117,7 @@ public class pterdocl extends LinearOpMode {
                 //-----------------------------------------------------------------------------------END OF DUMPING PRELOAD
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 1
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnterX, bEnterY, Math.toRadians(0)), Math.toRadians(0))
                 .lineToLinearHeading(new Pose2d(warehouseX, bEnterY))
                 .waitSeconds(0.1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
@@ -123,8 +125,8 @@ public class pterdocl extends LinearOpMode {
                     // drive.acquirerRuns = false;              //This section is "spline into the barrier, then into warehouse, then stop intaking after .1 seconds
                 })
                     //-----------------------------------------------------------------------------------
-                .lineTo(new Vector2d(bEnterX+5, bExitY))
-                .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+angmod))
+                .lineTo(new Vector2d(bEnterX+xmod, bExitY))
+                .splineTo(new Vector2d(scoreHubPosx-hubmod, scoreHubPosy), Math.toRadians(scoreHubPosAngB+angmod))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.releaseHard();
                     // drive.acquirerRuns = true;   //This section is "line out of the barrier, then spline to the score hub"
@@ -133,15 +135,15 @@ public class pterdocl extends LinearOpMode {
                 //-----------------------------------------------------------------------------------END OF CYCLE 1
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 2
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnterX, bEnterY-ymod, Math.toRadians(0)), Math.toRadians(0))
                 .lineToLinearHeading(new Pose2d(warehouseX, bEnterY))
                 .waitSeconds(0.1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.toggle("highgoal");
                     // drive.acquirerRuns = false;
                 })
-                .lineTo(new Vector2d(bEnterX+5, bExitY))
-                .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+angmod))
+                .lineTo(new Vector2d(bEnterX+xmod, bExitY))
+                .splineTo(new Vector2d(scoreHubPosx-2*hubmod, scoreHubPosy), Math.toRadians(scoreHubPosAngB+angmod))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.releaseHard();
                     // drive.acquirerRuns = true;
@@ -149,15 +151,15 @@ public class pterdocl extends LinearOpMode {
                 //-----------------------------------------------------------------------------------END OF CYCLE 2
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 3
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnterX, bEnterY-2*ymod, Math.toRadians(0)), Math.toRadians(0))
                 .lineToLinearHeading(new Pose2d(warehouseX, bEnterY))
                 .waitSeconds(0.1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.toggle("highgoal");
                     // drive.acquirerRuns = false;
                 })
-                .lineTo(new Vector2d(bEnterX+5, bExitY))
-                .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+angmod))
+                .lineTo(new Vector2d(bEnterX+xmod, bExitY))
+                .splineTo(new Vector2d(scoreHubPosx-3*hubmod, scoreHubPosy), Math.toRadians(scoreHubPosAngB+angmod))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.releaseHard();
                     // drive.acquirerRuns = true;
@@ -165,21 +167,21 @@ public class pterdocl extends LinearOpMode {
                 //-----------------------------------------------------------------------------------END OF CYCLE 3
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 4
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnterX, bEnterY-3*ymod, Math.toRadians(0)), Math.toRadians(0))
                 .lineToLinearHeading(new Pose2d(warehouseX, bEnterY))
                 .waitSeconds(0.1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.toggle("highgoal");
                     // drive.acquirerRuns = false;
                 })
-                .lineTo(new Vector2d(bEnterX+5, bExitY))
-                .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+angmod))
+                .lineTo(new Vector2d(bEnterX+xmod, bExitY))
+                .splineTo(new Vector2d(scoreHubPosx-4*hubmod, scoreHubPosy), Math.toRadians(scoreHubPosAngB+angmod))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.releaseHard();
                     // drive.acquirerRuns = true;
                 })
                 .lineTo(preSpline)
-                .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(bEnterX, bEnterY-4*ymod, Math.toRadians(0)), Math.toRadians(0))
                 .lineToLinearHeading(new Pose2d(warehouseX, bEnterY))
                 //-----------------------------------------------------------------------------------END OF CYCLE 4 + PARK
 
