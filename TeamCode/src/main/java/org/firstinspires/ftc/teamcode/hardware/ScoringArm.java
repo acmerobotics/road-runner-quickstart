@@ -43,7 +43,7 @@ public class ScoringArm extends ServoMechanism{
     public static double armReadyPos = 0.35;
     public static double armDuckPos = 0.8;
     /////DEPO SERVO POSITIONS
-    public static double depoStartPos = 0.55; //init position of depo
+    public static double depoStartPos = 0.8; //init position of depo
     public static double depoEndPos = 1.0; //far end position of depo
     public static double depoTuckPos= 1.0; //tuck position for movement while going upwards
     public static double depoDumpPos_Hard = 0.2; //position to go to for dump movement HARD
