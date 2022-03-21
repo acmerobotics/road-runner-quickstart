@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -7,14 +8,22 @@ import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 
 import java.util.concurrent.TimeUnit;
 
+@Config
 public class LiftScoringV2 extends Mechanism{
     private Lift lift = new Lift();
     private ScoringArm scoring = new ScoringArm();
     private DelayCommand delay = new DelayCommand();
-    private ElapsedTime timer = new ElapsedTime();
-    private double triggerTime = 200;
+    private ElapsedTime timerBlock = new ElapsedTime();
+
+    //for when the block is there
+    public static double triggerTime = 50;
     private double timeMarker = 0;
-    private boolean counting = false;
+    private boolean countingBlockHeld = false;
+
+    //for when block isnt there
+    private ElapsedTime timerEmpty = new ElapsedTime();
+    public static double errorThreshold = 200;
+    private boolean countingEmptyHeld = false;
 
     private FreightSensor freightSensor = new FreightSensor();
     private String movementState; //EXTEND, RETRACT
@@ -27,7 +36,8 @@ public class LiftScoringV2 extends Mechanism{
     public static int testingInt = 300;
 
     public void init(HardwareMap hwmap){
-        timer.reset();
+        timerEmpty.reset();
+        timerBlock.reset();
         lift.init(hwmap);
         scoring.init(hwmap);
         freightSensor.init(hwmap);
@@ -218,7 +228,7 @@ public class LiftScoringV2 extends Mechanism{
             };
             delay.delay(shootState,400);
 
-            delay.delay(run,200);
+            delay.delay(run,450);
         }
     }
 
@@ -243,7 +253,7 @@ public class LiftScoringV2 extends Mechanism{
             delay.delay(shootState,400);
 
 
-            delay.delay(run,200);
+            delay.delay(run,450);
         }
     }
 
@@ -293,21 +303,36 @@ public class LiftScoringV2 extends Mechanism{
 
 
         if(!auton) {
-            if(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && !counting) {
-                scoring.tuckPos();
-                counting = true;
-                timer.reset();
+            if(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && !countingBlockHeld) {
+                countingBlockHeld = true;
+                timerBlock.reset();
             }
 
-            if(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && counting){
-                if(timer.time(TimeUnit.MILLISECONDS) > triggerTime){
+
+            if(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && countingBlockHeld){
+                if(timerBlock.time(TimeUnit.MILLISECONDS) > triggerTime){
                     scoring.tuckPos();
                     setReadyPosition();
                 }
             }
 
             if(!(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting)){
-                counting = false;
+                countingBlockHeld = false;
+            }
+
+            if(readyPosition && !freightSensor.hasFreight() && movementState.equals("DETRACT") && !countingEmptyHeld){
+                countingEmptyHeld = true;
+                timerEmpty.reset();
+            }
+
+            if(readyPosition && !freightSensor.hasFreight() && movementState.equals("DETRACT") && countingEmptyHeld){
+                if(timerEmpty.time(TimeUnit.MILLISECONDS) > errorThreshold){
+                    lower("lowgoal");
+                }
+            }
+
+            if(readyPosition && freightSensor.hasFreight() && movementState.equals("DETRACT")){
+                countingEmptyHeld = false;
             }
 
 //            if (!formerFreight && freightSensor.hasFreight() && movementState.equals("DETRACT") && !readyPosition) {
@@ -327,6 +352,10 @@ public class LiftScoringV2 extends Mechanism{
 
         lift.update();
 
+    }
+
+    public boolean raisingStatus(){
+        return freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && countingBlockHeld;
     }
 
     /**

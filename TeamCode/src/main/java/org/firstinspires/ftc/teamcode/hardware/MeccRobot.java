@@ -191,7 +191,7 @@ public class MeccRobot extends Mechanism{
         boolean outaking = outake > 0.5;
         boolean intaking = intake > 0.5;
 
-        if(intaking && blockSense.hasFreight()){
+        if(intaking && scoringV2.raisingStatus()){
             outaking = true;
             intaking = false;
         }
@@ -254,7 +254,7 @@ public class MeccRobot extends Mechanism{
             telemetry.addData("liftpos: ", scoringV2.getPos());
             telemetry.addData("targetlift: ", scoringV2.getTargetPos());
             telemetry.addData("REAL Lift Movement state",scoringV2.getMovementState());
-            //telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
+            telemetry.addData("COLOR SENSOR OUTPUT", blockSense.hasFreight());
         }
 
 
