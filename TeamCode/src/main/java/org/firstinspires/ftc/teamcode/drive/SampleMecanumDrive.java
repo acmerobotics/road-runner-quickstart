@@ -244,8 +244,16 @@ public class SampleMecanumDrive extends MecanumDrive {
             scoringMech.update();
         }
         if(acquirer != null) {
+
             if(sensor != null){
-                acquirer.run(acquirerRuns && sensor.hasFreight(),acquirerRuns);
+                boolean outaking = acquirerRuns && sensor.hasFreight();
+                boolean intaking = acquirerRuns;
+
+                if(intaking && scoringMech.raisingStatus()){
+                    outaking = true;
+                    intaking = false;
+                }
+                acquirer.run(outaking,intaking);
             }
         }
     }

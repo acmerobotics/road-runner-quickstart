@@ -3,12 +3,14 @@ repositories {
     google() // Needed for androidx
     jcenter()  // Needed for tensorflow-lite
     maven { url = 'https://maven.brott.dev/' }
+    maven { url 'https://jitpack.io' }
     flatDir {
         dirs rootProject.file('libs')
     }
 }
 
 dependencies {
+    implementation 'com.github.Thermal-Equilibrium:homeostasis-FTC:1.0.8'
     implementation 'org.firstinspires.ftc:Inspection:7.1.0'
     implementation 'org.firstinspires.ftc:Blocks:7.1.0'
     implementation 'org.firstinspires.ftc:Tfod:7.1.0'
