@@ -87,6 +87,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private FreightSensor sensor;
     private Acquirer acquirer;
     public boolean acquirerRuns = false;
+    public boolean acquirerReverse = false;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
 
@@ -100,7 +101,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         TRANSLATIONAL_PID = new PIDCoefficients(5.0, 0, 0);
         HEADING_PID = new PIDCoefficients(hP, 0, 0);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(1.0)), 0.1);
+                new Pose2d(0.5, 0.5, Math.toRadians(1.0)), 0.0);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -246,7 +247,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         if(acquirer != null) {
 
             if(sensor != null){
-                boolean outaking = acquirerRuns && sensor.hasFreight();
+                boolean outaking = (acquirerRuns && sensor.hasFreight()) || (acquirerReverse && acquirerRuns);
                 boolean intaking = acquirerRuns;
 
                 if(intaking && scoringMech.raisingStatus()){
