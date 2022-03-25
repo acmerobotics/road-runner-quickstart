@@ -90,7 +90,6 @@ public class MeccRobot extends Mechanism{
     public void init(HardwareMap hwMap){
         drive = new SampleMecanumDrive(hwMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        blockSense.init(hwMap);
         acquirer.init(hwMap);
         carousel.init(hwMap);
         scoringV2.init(hwMap,blockSense);

@@ -87,6 +87,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private FreightSensor sensor;
     private Acquirer acquirer;
     public boolean acquirerRuns = false;
+    public boolean acquirerReverse = false;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
 
@@ -246,7 +247,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         if(acquirer != null) {
 
             if(sensor != null){
-                boolean outaking = acquirerRuns && sensor.hasFreight();
+                boolean outaking = (acquirerRuns && sensor.hasFreight()) || (acquirerReverse && acquirerRuns);
                 boolean intaking = acquirerRuns;
 
                 if(intaking && scoringMech.raisingStatus()){

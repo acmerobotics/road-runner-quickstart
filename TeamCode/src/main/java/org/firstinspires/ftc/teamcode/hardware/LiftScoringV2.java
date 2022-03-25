@@ -40,7 +40,6 @@ public class LiftScoringV2 extends Mechanism{
         timerBlock.reset();
         lift.init(hwmap);
         scoring.init(hwmap);
-        freightSensor.init(hwmap);
         movementState = "DETRACT";
     }
     public void init(HardwareMap hwmap, FreightSensor freightSensor){
