@@ -54,7 +54,7 @@ public class pterdocl extends LinearOpMode {
     public static Pose2d startPos = new Pose2d(startx, starty, startAng);
 
     public static double localeReadjustX = 0;
-    public static double wallYEstimate = 70;
+    public static double wallYEstimate = 72.38;
     public static double localeReadjustY = 0;
 
     public static double depoIncrement = 3;
