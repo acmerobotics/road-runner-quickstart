@@ -48,19 +48,6 @@ public class beep {
         Pose2d repositionB = new Pose2d(repositionX, reposistionY, Math.toRadians(0));
         Vector2d preSpline = new Vector2d(scoreHubPosx, preSplineY);
         Vector2d bEnter = new Vector2d(bEnterX, bEnterY);
-        Vector2d bEnter2 = new Vector2d(bEnterX, bEnterY-inc);
-        Vector2d bEnter3 = new Vector2d(bEnterX, bEnterY-2*inc);
-        Vector2d bEnter4 = new Vector2d(bEnterX, bEnterY-3*inc);
-        Vector2d bEnter5 = new Vector2d(bEnterX, bEnterY-4*inc);
-        Vector2d bExit = new Vector2d(bEnterX, bExitY);
-        Vector2d bExit2 = new Vector2d(bEnterX, bEnterY-2*inc);
-        Vector2d bExit3 = new Vector2d(bEnterX, bEnterY-4*inc);
-        Vector2d bExit4 = new Vector2d(bEnterX, bEnterY-6*inc);
-        Vector2d wareHouse = new Vector2d(warehouseX, bEnterY);
-        Vector2d wareHouse2 = new Vector2d(warehouseX, bEnterY-inc);
-        Vector2d wareHouse3 = new Vector2d(warehouseX, bEnterY-2*inc);
-        Vector2d wareHouse4 = new Vector2d(warehouseX, bEnterY-3*inc);
-        Vector2d wareHouse5 = new Vector2d(warehouseX, bEnterY-4*inc);
         RoadRunnerBotEntity myBotBlue = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(50, 45, Math.toRadians(180), Math.toRadians(180), 9.85)
@@ -76,13 +63,13 @@ public class beep {
                         .waitSeconds(.1)
                         .lineTo(preSpline)
                         .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                        .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
+                        .splineTo(new Vector2d(warehouseX, bEnterY-5), Math.toRadians(-20))
                         .waitSeconds(0.1)
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             //scoringMech.toggle("highgoal");
                             // drive.acquirerRuns = false;
                         })
-                        .lineTo(new Vector2d(bEnterX+5, bEnterY))
+                        .splineTo(new Vector2d(bEnterX+5, bEnterY), Math.toRadians(180))
                         .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // scoringMech.releaseHard();

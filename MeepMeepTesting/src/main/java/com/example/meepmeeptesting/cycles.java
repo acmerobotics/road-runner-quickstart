@@ -66,7 +66,7 @@ public class cycles {
                 .setDimensions(11.838583, 14.4882 )
                 //.setStartPose(startPos)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPosB)
-                                .setReversed(true)
+                                /*.setReversed(true)
                                 .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))
                                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                                     //scoringMech.releaseHard();
@@ -150,7 +150,9 @@ public class cycles {
                                 .waitSeconds(.1)
                                 .lineTo(preSpline)
                                 .splineToSplineHeading(new Pose2d(bEnter3, Math.toRadians(0)), Math.toRadians(0))
-                                .lineTo(new Vector2d(warehouseX-10,bEnterY))
+                                .lineTo(new Vector2d(warehouseX-10,bEnterY))*/
+                                .lineTo(new Vector2d(30, 70))
+                                .lineToSplineHeading(new Pose2d(45, 70, Math.toRadians(80)))
                                 .build()
                 );
 

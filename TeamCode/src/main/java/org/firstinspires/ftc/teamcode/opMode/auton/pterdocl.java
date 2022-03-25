@@ -52,13 +52,14 @@ public class pterdocl extends LinearOpMode {
     public static double bExitY = 67.5;
     public static double inc = 0;
     public static Pose2d startPos = new Pose2d(startx, starty, startAng);
-
+    public static double xmod = 5;
+    public static double ymod = 5;
     public static double localeReadjustX = 0;
     public static double wallYEstimate = 70;
     public static double localeReadjustY = 0;
 
     public static double depoIncrement = 3;
-    public static double intakeAngle = 0;
+    public static double intakeAngle = -20;
     public static String goal = "highgoal";
 
     Pose2d startPosB = new Pose2d(startx, starty, startAng);
@@ -89,11 +90,12 @@ public class pterdocl extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         //initialize mechanisms
         carousel.init(hardwareMap);
-        scoringMech.init(hardwareMap);
         sensor.init(hardwareMap);
         cv.init(hardwareMap);
         odoSys.init(hardwareMap, true);
         intake.init(hardwareMap);
+
+        scoringMech.init(hardwareMap, sensor);
 
 
         //drive train + async updates of mechanisms
@@ -138,7 +140,7 @@ public class pterdocl extends LinearOpMode {
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 2
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(warehouseX+depoIncrement, bEnterY, Math.toRadians(intakeAngle)))
+                .splineTo(new Vector2d(warehouseX+depoIncrement * 2, bEnterY-ymod), Math.toRadians(intakeAngle))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     readjustLocale(drive);
 
@@ -147,7 +149,8 @@ public class pterdocl extends LinearOpMode {
                     scoringMech.toggle("highgoal");
                     drive.acquirerReverse = true;
                 })
-                .lineTo(new Vector2d(bEnterX, bExitY))
+                .waitSeconds(0.1)
+                .splineTo(new Vector2d(bEnterX+xmod, bExitY), Math.toRadians(180))
                 .splineTo(new Vector2d(scoreHubPosx + scoreHubXOffset * 2, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.releaseHard();
@@ -173,7 +176,7 @@ public class pterdocl extends LinearOpMode {
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 4
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(warehouseX+depoIncrement*3, bEnterY, Math.toRadians(intakeAngle)))
+                .splineTo(new Vector2d(warehouseX+depoIncrement * 3, bEnterY-ymod), Math.toRadians(intakeAngle))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     readjustLocale(drive);
 
@@ -182,7 +185,8 @@ public class pterdocl extends LinearOpMode {
                     scoringMech.toggle("highgoal");
                     drive.acquirerReverse = true;
                 })
-                .lineTo(new Vector2d(bEnterX, bExitY))
+                .waitSeconds(0.1)
+                .splineTo(new Vector2d(bEnterX+xmod, bExitY), Math.toRadians(180))
                 .splineTo(new Vector2d(scoreHubPosx + scoreHubXOffset * 4, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
 
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
