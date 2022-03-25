@@ -55,7 +55,7 @@ public class pterdocl extends LinearOpMode {
     public static double xmod = 5;
     public static double ymod = 5;
     public static double localeReadjustX = 0;
-    public static double wallYEstimate = 70;
+    public static double wallYEstimate = 72.38;
     public static double localeReadjustY = 0;
 
     public static double depoIncrement = 3;
