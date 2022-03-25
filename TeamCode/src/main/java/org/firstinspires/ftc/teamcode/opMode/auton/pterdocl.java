@@ -122,6 +122,9 @@ public class pterdocl extends LinearOpMode {
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 1
                 .lineTo(preSpline)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+
+                })
                 .lineToLinearHeading(new Pose2d(warehouseX, bEnterY))
                 .UNSTABLE_addTemporalMarkerOffset(1.25, () -> {
                     drive.acquirerReverse = true;
