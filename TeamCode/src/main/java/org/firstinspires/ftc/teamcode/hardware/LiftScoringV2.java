@@ -45,6 +45,7 @@ public class LiftScoringV2 extends Mechanism{
     public void init(HardwareMap hwmap, FreightSensor freightSensor){
         init(hwmap);
         setFreightSensor(freightSensor);
+        freightSensor.init(hwmap);
     }
     public void setFreightSensor(FreightSensor freightSensor){
         this.freightSensor = freightSensor;
