@@ -30,6 +30,7 @@ public class MeccRobot extends Mechanism{
 
     private FreightSensor blockSense = new FreightSensor();
     private RetractableOdoSys odoSys = new RetractableOdoSys();
+    private Capper capper = new Capper();
 //
 //    private SenseHub senseHub = new SenseHub();
 
@@ -85,6 +86,38 @@ public class MeccRobot extends Mechanism{
         }
     });
 
+    BooleanManager rightBumper2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            scoringV2.toggle("cap");
+        }
+    });
+
+    BooleanManager aButton2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            if(scoringV2.goalReach.equals("cap")) capper.release();
+        }
+    });
+    BooleanManager bButton2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            capper.raise();
+        }
+    });
+    BooleanManager xButton2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            if(scoringV2.getMovementState().equals("DETRACT")) capper.reset();
+        }
+    });
+    BooleanManager yButton2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            if(scoringV2.getMovementState().equals("DETRACT")) capper.grabCap();
+        }
+    });
+
     Telemetry telemetry;
 
     public void init(HardwareMap hwMap){
@@ -94,6 +127,7 @@ public class MeccRobot extends Mechanism{
         carousel.init(hwMap);
         scoringV2.init(hwMap,blockSense);
         odoSys.init(hwMap);
+        capper.init(hwMap);
 
 //        senseHub.init(hwMap);
     }
@@ -125,20 +159,21 @@ public class MeccRobot extends Mechanism{
 
     /**
      * run in teleop mode
-     * @param gamepad
+     * @param gamepad1
      */
-    public void run(Gamepad gamepad){
-        drive(gamepad);
-        acquirerControls(gamepad);
-        lift(gamepad);
+    public void run(Gamepad gamepad1, Gamepad gamepad2){
+        drive(gamepad1);
+        acquirerControls(gamepad1);
+        lift(gamepad1);
+        capperControl(gamepad2);
         //colorRumble(gamepad);
 
         //ducks
         if(motionProfiling){
-            mpCR(gamepad);
+            mpCR(gamepad1);
         }
         else{
-            carouselRun(gamepad);
+            carouselRun(gamepad1);
         }
         if(debug){
             //telemetry.addData("has freight",blockSense.hasFreight());
@@ -282,6 +317,14 @@ public class MeccRobot extends Mechanism{
 
         rightDPadButtonManager.update(gamepad1.dpad_right);
 
+    }
+
+    public void capperControl(Gamepad gamepad2){
+        rightBumper2.update(gamepad2.right_bumper);
+        aButton2.update(gamepad2.a);
+        bButton2.update(gamepad2.b);
+        xButton2.update(gamepad2.x);
+        yButton2.update(gamepad2.y);
     }
 
 

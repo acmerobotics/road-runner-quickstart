@@ -27,7 +27,7 @@ public class LiftScoringV2 extends Mechanism{
 
     private FreightSensor freightSensor = new FreightSensor();
     private String movementState; //EXTEND, RETRACT
-    private String goalReach;
+    public String goalReach;
     private boolean readyPosition = false;
     private boolean formerExtend = false;
     private boolean formerFreight = false;
@@ -103,16 +103,8 @@ public class LiftScoringV2 extends Mechanism{
             }
 
             case "cap": {
-                Runnable run = new Runnable() {
-                    @Override
-                    public void run() {
-                        scoring.goToEnd();
-                    }
-                };
-                scoring.tuckPos();
-                lift.raiseHigh();
+                lift.setTargetPosition(Capper.CAP_POS);
                 //lift.retracting(false);
-                delay.delay(run, 0);
                 movementState = "EXTEND";
                 break;
 
@@ -168,9 +160,11 @@ public class LiftScoringV2 extends Mechanism{
             };
 
             if(goal.equals("highgoal")) delay.delay(run, 100);
-            else if(goal.equals("cap")) delay.delay(run, 0);
-
             else if(goal.equals("midgoal")) delay.delay(run, 0);
+
+            else if(goal.equals("cap")){
+                delay.delay(run,0);
+            }
 
         }
         else{

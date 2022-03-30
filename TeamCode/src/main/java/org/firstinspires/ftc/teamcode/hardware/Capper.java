@@ -9,6 +9,9 @@ public class Capper extends ServoMechanism{
     public static double CAPPING_UP = 0.5;
     public static double CAPPING_DOWN = 0.4;
     public static double IDLE = 0;
+    public static double CAP_POS = 7.5;
+
+
     Servo capper;
     @Override
     public void init(HardwareMap hwMap) {
@@ -57,6 +60,7 @@ public class Capper extends ServoMechanism{
         capper.setPosition(CAPPING_DOWN);
         
     }
+
     @Override
     public void run(boolean bool) {
 
