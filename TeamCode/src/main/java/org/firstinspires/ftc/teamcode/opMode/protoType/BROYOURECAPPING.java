@@ -19,9 +19,9 @@ public class BROYOURECAPPING extends LinearOpMode {
             if(gamepad1.x) {
                 cap.raise();
             }
-            telemetry.addData("endpos", cap.capping);
-            telemetry.addData("idlepos", cap.idle);
-            telemetry.addData("grabpos", cap.grab);
+//            telemetry.addData("endpos", cap.capping);
+//            telemetry.addData("idlepos", cap.idle);
+//            telemetry.addData("grabpos", cap.grab);
         }
     }
 }
