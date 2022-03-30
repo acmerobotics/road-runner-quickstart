@@ -14,9 +14,35 @@ public class Capper extends ServoMechanism{
     public void init(HardwareMap hwMap) {
         capper = hwMap.get(Servo.class, "capper");
     }
-
+    /* logic
+        //CONTROLS GOING UP OR GOING DOWN
+        if (button1){
+            capper.raise();
+            lift.setPos(CAPPING_POS);
+        }
+        else {
+            capper.reset()
+            lift.reset();
+        }
+        //CONTROLS CAPPING IF RAISED, ELSE TOGGLES GRABBING
+        if(button2){
+            if(lift.state = "CAPPING") {
+                if (former){
+                    capper.raise();
+                } else {
+                    capper.release();
+                }
+            } else {
+                if (former){
+                    capper.grab();
+                } else {
+                    capper.reset();
+                }
+            }
+            
+        }
+    */
     public void reset() {
-        //lift.reset();
         capper.setPosition(IDLE);
     }
 
@@ -26,7 +52,6 @@ public class Capper extends ServoMechanism{
 
     public void raise() {
         capper.setPosition(CAPPING_UP);
-        //lift.setPos(7.5);
     }
     public void release(){
         capper.setPosition(CAPPING_DOWN);
