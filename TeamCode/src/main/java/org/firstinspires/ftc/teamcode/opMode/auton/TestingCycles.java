@@ -36,7 +36,7 @@ public class TestingCycles extends LinearOpMode {
     public static double scoreHubPosx = 2;
     public static double scoreHubPosy = 52;
 
-    public static double scoreHubPosAngB = 75;
+    public static double scoreHubPosAngB = 60;
     public static double scoreHubPosAngR = -40;
 
     public static double repositionX = 15.0;
@@ -46,7 +46,7 @@ public class TestingCycles extends LinearOpMode {
     public static double bEnterX = 30;
     public static double bExitX = 30;
     public static double bEnterY = 71.5;
-    public static double warehouseX = 48;
+    public static double warehouseX = 51;
     public static double bExitY = -70.5;
     public static double inc = 0;
     public static Pose2d startPos = new Pose2d(startx, starty, startAng);
@@ -68,7 +68,7 @@ public class TestingCycles extends LinearOpMode {
         odoSys.init(hardwareMap, true);
 //
         scoringMech.init(hardwareMap, sensor);
-//        cv.init(hardwareMap);
+        cv.init(hardwareMap);
 //        odoSys.init(hardwareMap, true);
         intake.init(hardwareMap);
         Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
@@ -79,7 +79,6 @@ public class TestingCycles extends LinearOpMode {
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setSlides(scoringMech);
-        drive.setAcquirer(intake, sensor);
 
         //important coordinates here
         //set startPose
@@ -87,31 +86,20 @@ public class TestingCycles extends LinearOpMode {
         //trajectory
 
 
-        while (!opModeIsActive() && !isStopRequested()) {
-            telemetry.addData("Status", "Waiting in init");
-            telemetry.update();
-        }
-//        if (cv.whichRegion() == 1) {
-//            goal = "lowgoal";
-//        }
-//        if (cv.whichRegion() == 2) {
-//            goal = "midgoal";
-//        }
-//        if (cv.whichRegion() == 3) {
-//            goal = "highgoal";
-//        }
-//        telemetry.addData("goal: ", goal);
-//        telemetry.addData("region", cv.whichRegion());
-//        telemetry.update();
-//
-//        scoringMech.toggle(goal);
+        telemetry.addData("Status", "Waiting in init");
+        telemetry.update();
+
+
+        telemetry.update();
+
+
         drive.setPoseEstimate(startPos);
         TrajectorySequence depoPath = drive.trajectorySequenceBuilder(startPos)
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(scoreHubPosB, Math.toRadians(scoreHubPosAngB)))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    //scoringMech.releaseHard();
-                    // drive.acquirerRuns = true;
+                    scoringMech.releaseHard();
+                    intake.intake(1);
                 })
                 //.waitSeconds(.1)
                 //.lineTo(preSpline)
@@ -119,16 +107,18 @@ public class TestingCycles extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(bExitX, bEnterY, Math.toRadians(0)), Math.toRadians(0))
                 .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
                 //.waitSeconds(0.1)
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    //scoringMech.toggle("highgoal");
-                    // drive.acquirerRuns = false;
+                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
+                    scoringMech.toggle("highgoal");
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
+                    intake.outake(0.5);
                 })
                 .setReversed(true)
                 .lineTo(new Vector2d(bExitX, bEnterY))
                 .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    // scoringMech.releaseHard();
-                    // drive.acquirerRuns = true;
+                    scoringMech.releaseHard();
+                    intake.intake(1);
                 })
                 //.waitSeconds(.1)
                 //.lineTo(preSpline)
@@ -136,49 +126,56 @@ public class TestingCycles extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
                 .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
                 //.waitSeconds(0.1)
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    //scoringMech.toggle("highgoal");
-                    // drive.acquirerRuns = false;
+                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
+                    scoringMech.toggle("highgoal");
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
+                    intake.outake(0.5);
                 })
                 .setReversed(true)
                 .lineTo(new Vector2d(bExitX, bEnterY))
                 .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     readjustLocale(drive);
-                    // scoringMech.releaseHard();
-                    // drive.acquirerRuns = true;
+                    scoringMech.releaseHard();
+                    intake.intake(1);
                 })
                 //.lineTo(preSpline)
                 .setReversed(false)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
+                .lineToLinearHeading(new Pose2d(warehouseX+1, bEnterY))
                 //.waitSeconds(0.1)
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    //scoringMech.toggle("highgoal");
-                    // drive.acquirerRuns = false;
+                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
+                    scoringMech.toggle("highgoal");
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
+                    intake.outake(0.5);
                 })
                 .setReversed(true)
                 .lineTo(new Vector2d(bExitX, bEnterY))
                 .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    // scoringMech.releaseHard();
-                    // drive.acquirerRuns = true;
+                    scoringMech.releaseHard();
+                    intake.intake(1);
                 })
                 //.lineTo(preSpline)
                 .setReversed(false)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
+                .lineToLinearHeading(new Pose2d(warehouseX+3, bEnterY))
                 //.waitSeconds(0.1)
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    //scoringMech.toggle("highgoal");
-                    // drive.acquirerRuns = false;
+                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
+                    scoringMech.toggle("highgoal");
                 })
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
+                    intake.outake(0.5);
+                })
+
                 .setReversed(true)
                 .lineTo(new Vector2d(bExitX, bEnterY))
                 .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    // scoringMech.releaseHard();
-                    // drive.acquirerRuns = true;
+                    scoringMech.releaseHard();
+                    intake.intake(1);
                 })
                 //.lineTo(preSpline)
                 .setReversed(false)
@@ -217,6 +214,20 @@ public class TestingCycles extends LinearOpMode {
 //                .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
 //                .lineToLinearHeading(new Pose2d(warehouseX-10, bEnterY))
                 .build();
+
+        waitForStart();
+        if (cv.whichRegion() == 1) {
+            goal = "lowgoal";
+        }
+        if (cv.whichRegion() == 2) {
+            goal = "midgoal";
+        }
+        if (cv.whichRegion() == 3) {
+            goal = "highgoal";
+        }
+        telemetry.addData("goal: ", goal);
+        telemetry.addData("region", cv.whichRegion());
+        scoringMech.toggle(goal);
         drive.followTrajectorySequence(depoPath);
     }
 

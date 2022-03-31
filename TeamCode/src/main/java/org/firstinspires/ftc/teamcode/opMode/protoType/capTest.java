@@ -19,7 +19,7 @@ public class capTest extends LinearOpMode {
         vision.init(hardwareMap);
         waitForStart();
         while(opModeIsActive()) {
-            ;
+            //dashboard.startCameraStream(vision, 0);
             telemetry.addData("region?", vision.whichRegion());
             telemetry.update();
         }

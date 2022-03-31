@@ -1,21 +1,24 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.checkerframework.common.reflection.qual.GetConstructor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.firstinspires.ftc.teamcode.hardware.util.kellen;
-
+@Config
 public class CapVision extends Mechanism {
     //camera object
     private OpenCvWebcam webcam;
     public static boolean preview = true;
     //pipeline
-    private kellen regions = new kellen();
+    public static String color = "green";
+    private kellen regions = new kellen(color);
     int viewid;
 
     @Override
@@ -48,7 +51,7 @@ public class CapVision extends Mechanism {
                 //webcam.startStreaming(320, 180, OpenCvCameraRotation.UPRIGHT);
                 webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
 
-                //FtcDashboard.getInstance().startCameraStream(webcam, 0);
+                FtcDashboard.getInstance().startCameraStream(webcam, 0);
                 setPipeline();
 
             }

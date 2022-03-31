@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware.util;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -8,12 +10,12 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
-
+@Config
 public class kellen extends OpenCvPipeline {
     //pipe line class for detecting capstone (or objects in three different regions)
     //default color detections set to lime green
     public kellen() {
-        color = "green";
+        color = "red";
     }
     public kellen(String choice) {
         color = choice;
