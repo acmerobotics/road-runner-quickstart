@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.hardware.util.DelayCommand;
 import org.firstinspires.ftc.teamcode.hardware.FreightSensor;
 import org.firstinspires.ftc.teamcode.hardware.LiftScoringV2;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-
+import org.firstinspires.ftc.teamcode.hardware.Capper;
 @Config
 @Autonomous (group = "BlueAuton")
 public class pterdocl extends LinearOpMode {
@@ -28,6 +28,7 @@ public class pterdocl extends LinearOpMode {
     private LiftScoringV2 scoringMech = new LiftScoringV2();
     private RetractableOdoSys odoSys = new RetractableOdoSys();
     private Acquirer intake = new Acquirer();
+    private Capper capper = new Capper();
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -105,7 +106,7 @@ public class pterdocl extends LinearOpMode {
         intake.init(hardwareMap);
 
         scoringMech.init(hardwareMap, sensor);
-
+        capper.init(hardwareMap);
 
         //drive train + async updates of mechanisms
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);

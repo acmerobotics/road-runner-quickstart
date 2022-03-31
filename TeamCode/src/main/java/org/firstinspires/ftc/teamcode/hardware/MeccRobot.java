@@ -89,14 +89,14 @@ public class MeccRobot extends Mechanism{
     BooleanManager rightBumper2 = new BooleanManager(new Runnable() {
         @Override
         public void run() {
-            scoringV2.toggle("cap");
+            scoringV2.toggle("highgoal");
         }
     });
 
     BooleanManager aButton2 = new BooleanManager(new Runnable() {
         @Override
         public void run() {
-            if(scoringV2.goalReach.equals("cap")) capper.release();
+            if(scoringV2.goalReach.equals("highgoal")) capper.release();
         }
     });
     BooleanManager bButton2 = new BooleanManager(new Runnable() {
