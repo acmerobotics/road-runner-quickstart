@@ -62,28 +62,6 @@ public class pterdocl extends LinearOpMode {
     public static double intakeAngle = -20;
     public static String goal = "highgoal";
 
-    Pose2d startPosB = new Pose2d(startx, starty, startAng);
-    Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
-
-    Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
-    Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
-
-    Pose2d repositionB = new Pose2d(repositionX, reposistionY, Math.toRadians(0));
-    Vector2d preSpline = new Vector2d(preSplineX, preSplineY);
-    Vector2d bEnter = new Vector2d(bEnterX, bEnterY);
-    Vector2d bEnter2 = new Vector2d(bEnterX, bEnterY-inc);
-    Vector2d bEnter3 = new Vector2d(bEnterX, bEnterY-2*inc);
-    Vector2d bEnter4 = new Vector2d(bEnterX, bEnterY-3*inc);
-    Vector2d bEnter5 = new Vector2d(bEnterX, bEnterY-4*inc);
-    Vector2d bExit = new Vector2d(bEnterX, bExitY);
-    Vector2d bExit2 = new Vector2d(bEnterX, bEnterY-2*inc);
-    Vector2d bExit3 = new Vector2d(bEnterX, bEnterY-4*inc);
-    Vector2d bExit4 = new Vector2d(bEnterX, bEnterY-6*inc);
-    Vector2d wareHouse = new Vector2d(warehouseX, bEnterY);
-    Vector2d wareHouse2 = new Vector2d(warehouseX, bEnterY-inc);
-    Vector2d wareHouse3 = new Vector2d(warehouseX, bEnterY-2*inc);
-    Vector2d wareHouse4 = new Vector2d(warehouseX, bEnterY-3*inc);
-    Vector2d wareHouse5 = new Vector2d(warehouseX, bEnterY-4*inc);
 
     @Override
     public void runOpMode() throws InterruptedException {

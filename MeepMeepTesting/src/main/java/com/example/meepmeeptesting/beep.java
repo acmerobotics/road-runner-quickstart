@@ -26,6 +26,7 @@ public class beep {
 
     public static double preSplineY = 53.5;
     public static double bEnterX = 20;
+    public static double bExitX = 30;
     public static double bEnterY = 68;
     public static double warehouseX = 53;
     public static double bExitY = -70.5;
@@ -63,13 +64,12 @@ public class beep {
                         .waitSeconds(.1)
                         .lineTo(preSpline)
                         .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                        .splineTo(new Vector2d(warehouseX, bEnterY-5), Math.toRadians(-20))
-                        .waitSeconds(0.1)
+                        .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))                        .waitSeconds(0.1)
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             //scoringMech.toggle("highgoal");
                             // drive.acquirerRuns = false;
                         })
-                        .splineTo(new Vector2d(bEnterX+5, bEnterY), Math.toRadians(180))
+                        .lineTo(new Vector2d(bExitX, bEnterY))
                         .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // scoringMech.releaseHard();
@@ -84,7 +84,7 @@ public class beep {
                             //scoringMech.toggle("highgoal");
                             // drive.acquirerRuns = false;
                         })
-                        .lineTo(new Vector2d(bEnterX+5, bEnterY))
+                        .lineTo(new Vector2d(bExitX, bEnterY))
                         .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // scoringMech.releaseHard();
@@ -98,7 +98,7 @@ public class beep {
                             //scoringMech.toggle("highgoal");
                             // drive.acquirerRuns = false;
                         })
-                        .lineTo(new Vector2d(bEnterX+5, bEnterY))
+                        .lineTo(new Vector2d(bExitX, bEnterY))
                         .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // scoringMech.releaseHard();
@@ -112,7 +112,7 @@ public class beep {
                             //scoringMech.toggle("highgoal");
                             // drive.acquirerRuns = false;
                         })
-                        .lineTo(new Vector2d(bEnterX+5, bEnterY))
+                        .lineTo(new Vector2d(bExitX, bEnterY))
                         .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // scoringMech.releaseHard();
@@ -126,7 +126,7 @@ public class beep {
                             //scoringMech.toggle("highgoal");
                             // drive.acquirerRuns = false;
                         })
-                        .lineTo(new Vector2d(bEnterX+5, bEnterY))
+                        .lineTo(new Vector2d(bExitX, bEnterY))
                         .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
                         .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                             // scoringMech.releaseHard();

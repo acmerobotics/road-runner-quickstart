@@ -163,90 +163,26 @@ public class cycles {
                 .setDimensions(11.839, 14.141)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPosR)
                         .setReversed(true)
-                        .lineToLinearHeading(new Pose2d(scoreHubPosR, Math.toRadians(scoreHubPosAngR)))
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.releaseHard();
-                           // drive.acquirerRuns = true;
-                        })
-                        .waitSeconds(.1)
-                        .lineTo(preSpline)
-                        .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                        .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
+                        .lineTo(new Vector2d(15, -60))
+                        .splineTo(new Vector2d(20, -55), Math.toRadians(0))
                         .waitSeconds(0.1)
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.toggle("highgoal");
-                           // drive.acquirerRuns = false;
-                        })
-                        .lineTo(bEnter)
-                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(scoreHubPosAngR)), Math.toRadians(90))
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                           // scoringMech.releaseHard();
-                           // drive.acquirerRuns = true;
-                        })
-                        .waitSeconds(.1)
-                        .lineTo(preSpline)
-                        .splineToSplineHeading(new Pose2d(bEnter2, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(wareHouse2)
+                        .setReversed(false)
+                        .splineTo(new Vector2d(15, -60), Math.toRadians(270))
+                        .lineTo(new Vector2d(15, -70))
+                        .setReversed(true)
+                        .lineTo(new Vector2d(15, -60))
+                        .splineTo(new Vector2d(20, -55), Math.toRadians(0))
                         .waitSeconds(0.1)
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.toggle("highgoal");
-                           // drive.acquirerRuns = false;
-                        })
-                        .lineTo(bEnter)
-                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(scoreHubPosAngR)), Math.toRadians(90))
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.releaseHard();
-                            //drive.acquirerRuns = true;
-                        })
-                        .waitSeconds(.1)
-                        .lineTo(preSpline)
-                        .splineToSplineHeading(new Pose2d(bEnter3, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(wareHouse3)
+                        .setReversed(false)
+                        .splineTo(new Vector2d(15, -60), Math.toRadians(270))
+                        .lineTo(new Vector2d(startx, -starty))
+                        .setReversed(true)
+                        .lineTo(new Vector2d(15, -60))
+                        .splineTo(new Vector2d(20, -55), Math.toRadians(0))
                         .waitSeconds(0.1)
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.toggle("highgoal");
-                            // drive.acquirerRuns = false;
-                        })
-                        .lineTo(bEnter)
-                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(scoreHubPosAngR)), Math.toRadians(90))
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.releaseHard();
-                            //drive.acquirerRuns = true;
-                        })
-                        .waitSeconds(.1)
-                        .lineTo(preSpline)
-                        .splineToSplineHeading(new Pose2d(bEnter3, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(wareHouse3)
-                        .waitSeconds(0.1)
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.toggle("highgoal");
-                            // drive.acquirerRuns = false;
-                        })
-                        .lineTo(bEnter)
-                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(scoreHubPosAngR)), Math.toRadians(90))
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.releaseHard();
-                            //drive.acquirerRuns = true;
-                        })
-                        .waitSeconds(.1)
-                        .lineTo(preSpline)
-                        .splineToSplineHeading(new Pose2d(bEnter3, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(wareHouse3)
-                        .waitSeconds(0.1)
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.toggle("highgoal");
-                            // drive.acquirerRuns = false;
-                        })
-                        .lineTo(bEnter)
-                        .splineToSplineHeading(new Pose2d(scoreHubPosx, -scoreHubPosy, Math.toRadians(scoreHubPosAngR)), Math.toRadians(90))
-                        .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                            //scoringMech.releaseHard();
-                            //drive.acquirerRuns = true;
-                        })
-                        .waitSeconds(.1)
-                        .lineTo(preSpline)
-                        .splineToSplineHeading(new Pose2d(bEnter3, Math.toRadians(0)), Math.toRadians(0))
-                        .lineTo(wareHouse3)
+                        .setReversed(false)
+                        .splineTo(new Vector2d(15, -60), Math.toRadians(270))
+                        .lineTo(new Vector2d(startx, -starty))
                         .build()
 
                 );
@@ -258,8 +194,8 @@ public class cycles {
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(myBotBlue)
-                //.addEntity(myBotRed)
+                //.addEntity(myBotBlue)
+                .addEntity(myBotRed)
                 .start();
     }
 }
