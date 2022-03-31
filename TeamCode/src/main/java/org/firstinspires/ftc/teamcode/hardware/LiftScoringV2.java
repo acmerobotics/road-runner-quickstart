@@ -27,7 +27,7 @@ public class LiftScoringV2 extends Mechanism{
 
     private FreightSensor freightSensor = new FreightSensor();
     private String movementState; //EXTEND, RETRACT
-    public String goalReach;
+    public String goalReach = "lowgoal";
     private boolean readyPosition = false;
     private boolean formerExtend = false;
     private boolean formerFreight = false;
@@ -105,6 +105,7 @@ public class LiftScoringV2 extends Mechanism{
             case "cap": {
                 lift.setTargetPosition(Capper.CAP_POS);
                 //lift.retracting(false);
+                scoring.tuckPos();
                 movementState = "EXTEND";
                 break;
 

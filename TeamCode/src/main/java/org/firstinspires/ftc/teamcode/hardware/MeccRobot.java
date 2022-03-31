@@ -306,7 +306,15 @@ public class MeccRobot extends Mechanism{
         }
 
         if(gamepad1.dpad_left) {
-            carousel.rrrun(timer,cDir);
+            if(timer.seconds() <= 1) {
+                carousel.rrrun(timer, cDir);
+            }else {
+                if (cDir == -1) {
+                    carousel.runmax(false, true);
+                } else {
+                    carousel.runmax(true, false);
+                }
+            }
             formerDpadL = true;
         }
 

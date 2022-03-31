@@ -65,7 +65,11 @@ public class Carousel extends Mechanism {
         else if(right) carousel.setPower(-speed);
         else carousel.setPower(0);
     }
-
+    public void runmax(boolean left, boolean right){
+        if(left) carousel.setPower(1);
+        else if(right) carousel.setPower(-1);
+        else carousel.setPower(0);
+    }
     /**
      * runs the carousel at the static double speed
      * constant power motion profile
@@ -121,7 +125,7 @@ public class Carousel extends Mechanism {
     }
 
     public void rrrun(ElapsedTime timer, int direction){
-        carousel.setPower(direction*profile.get(timer.seconds()).getV());
+        carousel.setPower(direction * profile.get(timer.seconds()).getV());
     }
 
 }

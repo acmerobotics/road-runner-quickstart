@@ -42,6 +42,7 @@ public class LocalizationTest extends LinearOpMode {
             if(formattedheading < 0) formattedheading = formattedheading + Math.toRadians(360);
 
             telemetry.addData("heading2",Math.toDegrees(formattedheading));
+            telemetry.addData("heading velo", Math.toDegrees(drive.getExternalHeadingVelocity()));
             telemetry.update();
         }
     }

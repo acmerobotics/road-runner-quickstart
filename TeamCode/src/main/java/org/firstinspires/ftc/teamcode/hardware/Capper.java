@@ -1,21 +1,23 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
+@Config
 public class Capper extends ServoMechanism{
     //capper servo pos
-    public static double GRAB = .15;
+    public static double GRAB = .2;
     public static double CAPPING_UP = 0.5;
     public static double CAPPING_DOWN = 0.4;
     public static double IDLE = 0;
-    public static double CAP_POS = 7.5;
+    public static double CAP_POS = 5.5;
 
 
     Servo capper;
     @Override
     public void init(HardwareMap hwMap) {
         capper = hwMap.get(Servo.class, "capper");
+        reset();
     }
     /* logic
         //CONTROLS GOING UP OR GOING DOWN
