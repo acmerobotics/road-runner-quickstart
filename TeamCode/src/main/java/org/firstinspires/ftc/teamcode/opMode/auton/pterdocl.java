@@ -149,6 +149,8 @@ public class pterdocl extends LinearOpMode {
                     scoringMech.releaseHard();
                     drive.acquirerReverse = false;   //This section is "line out of the barrier, then spline to the score hub"
                 })
+                .waitSeconds(0.1)
+
                 //-----------------------------------------------------------------------------------END OF CYCLE 1
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 2
                 .setReversed(false)
@@ -175,6 +177,8 @@ public class pterdocl extends LinearOpMode {
                     scoringMech.releaseHard();
                     drive.acquirerReverse = false;
                 })
+                .waitSeconds(0.1)
+
                 //-----------------------------------------------------------------------------------END OF CYCLE 2
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 3
                 //.lineTo(preSpline)
@@ -200,6 +204,7 @@ public class pterdocl extends LinearOpMode {
                     scoringMech.releaseHard();
                     drive.acquirerReverse = false;
                 })
+                .waitSeconds(0.1)
                 //-----------------------------------------------------------------------------------END OF CYCLE 3
                 //-----------------------------------------------------------------------------------BEGINNING OF CYCLE 4
                 //.lineTo(preSpline)
@@ -226,6 +231,8 @@ public class pterdocl extends LinearOpMode {
                     scoringMech.releaseHard();
                     drive.acquirerReverse = false;
                 })
+                .waitSeconds(0.1)
+
                 //.lineTo(preSpline)
                 .setReversed(false)
                 .splineTo(preSplineVers, Math.toRadians(preSplineVersAng))
