@@ -45,7 +45,7 @@ public class TestingCycles extends LinearOpMode {
     public static double preSplineY = 53.5;
     public static double bEnterX = 30;
     public static double bExitX = 30;
-    public static double bEnterY = 68;
+    public static double bEnterY = 70;
     public static double warehouseX = 48;
     public static double bExitY = -70.5;
     public static double inc = 0;
