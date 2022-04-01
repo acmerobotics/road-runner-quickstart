@@ -36,7 +36,7 @@ public class TestingCycles extends LinearOpMode {
     public static double scoreHubPosx = 2;
     public static double scoreHubPosy = 52;
 
-    public static double scoreHubPosAngB = 60;
+    public static double scoreHubPosAngB = 65;
     public static double scoreHubPosAngR = -40;
 
     public static double repositionX = 15.0;
@@ -153,7 +153,7 @@ public class TestingCycles extends LinearOpMode {
                 })
                 .setReversed(true)
                 .lineTo(new Vector2d(bExitX, bEnterY))
-                .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
+                .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy+1), Math.toRadians(scoreHubPosAngB+180))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.releaseHard();
                     intake.intake(1);
@@ -172,7 +172,7 @@ public class TestingCycles extends LinearOpMode {
 
                 .setReversed(true)
                 .lineTo(new Vector2d(bExitX, bEnterY))
-                .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy), Math.toRadians(scoreHubPosAngB+180))
+                .splineTo(new Vector2d(scoreHubPosx, scoreHubPosy+1), Math.toRadians(scoreHubPosAngB+180))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     scoringMech.releaseHard();
                     intake.intake(1);
