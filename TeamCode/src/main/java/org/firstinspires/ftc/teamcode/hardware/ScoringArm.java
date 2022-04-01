@@ -40,7 +40,9 @@ public class ScoringArm extends ServoMechanism{
     public static double armEndPos = 0.7; //goes to... end?
     public static double armLowGoalPos = 0.7; //goes to... far end for low goal?
     public static double armMidPos = 0.7; //goes to... the middle that's not the middle?
-    public static double armReadyPos = 0.1; //.35 old
+    public static double armReadyPosAuton = 0.1; //.35 old
+    public static double armReadyPosTeleop = 0.35; //.35 old
+
     public static double armDuckPos = 0.8;
     /////DEPO SERVO POSITIONS
     public static double depoStartPos = 0.8; //init position of depo
@@ -52,7 +54,7 @@ public class ScoringArm extends ServoMechanism{
     public static double depoLowGoalPos = depoStartPos; //position to go to for lowGoal prep
     public static double depoCapStonePos = 0.9; //position to go to for capStone prep
 
-
+    public boolean auton = false;
     private boolean formerBoolArm;
     private boolean formerBoolDeposit;
     private boolean homed;
@@ -189,8 +191,13 @@ public class ScoringArm extends ServoMechanism{
     }
 
     public void readyPos(){
-        pivotArm.goTo(armReadyPos);
+        if(auton) pivotArm.goTo(armReadyPosAuton);
+        else{
+            pivotArm.goTo(armReadyPosTeleop);
+        }
     }
+
+
 
     /** goes to tucked position
      *

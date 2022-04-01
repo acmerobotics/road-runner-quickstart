@@ -42,6 +42,8 @@ public class LiftScoringV2 extends Mechanism{
         scoring.init(hwmap);
         movementState = "DETRACT";
     }
+
+
     public void init(HardwareMap hwmap, FreightSensor freightSensor){
         init(hwmap);
         setFreightSensor(freightSensor);
@@ -85,6 +87,22 @@ public class LiftScoringV2 extends Mechanism{
 
                 //CHANGE THIS LINE TO WHATEVER HEIGHT YOU NEED
                 lift.raiseMid();
+                delay.delay(run, 0);
+                movementState = "EXTEND";
+                break;
+            }
+            case "midgoalTele": {
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        scoring.goToLowGoal();
+                    }
+                };
+
+                scoring.tuckPos();
+
+                //CHANGE THIS LINE TO WHATEVER HEIGHT YOU NEED
+                lift.raiseMidTele();
                 delay.delay(run, 0);
                 movementState = "EXTEND";
                 break;
@@ -179,7 +197,7 @@ public class LiftScoringV2 extends Mechanism{
 
 
             if(goal.equals("highgoal")) delay.delay(runHigh, 100);
-            else if(goal.equals("midgoal")) delay.delay(run, 0);
+            else if(goal.equals("midgoal") || goal.equals("midgoalTele")) delay.delay(run, 0);
 
             else if(goal.equals("cap")){
                 delay.delay(run,0);
@@ -302,6 +320,7 @@ public class LiftScoringV2 extends Mechanism{
 
     public void setAuton(boolean auton){
         this.auton = auton;
+        scoring.auton = auton;
     }
 
     /**
@@ -315,7 +334,7 @@ public class LiftScoringV2 extends Mechanism{
 //        }
 
 
-        if(!auton) {
+        if(true) {
             if(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && !countingBlockHeld) {
                 countingBlockHeld = true;
                 timerBlock.reset();

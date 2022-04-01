@@ -33,6 +33,8 @@ public class Lift extends Mechanism{
     // saved lift positions
     public static double maxPos = 14; //highest position slides can reach
     public static double midPos = 7.0; //mid goal position
+    public static double midPosTele = 4.5; //mid goal position
+
     public static double minPos = 0; //lowest position slides can reach (default to 0)
 
     //PIDCoefficients for RoadRunner motion profiling
@@ -204,6 +206,11 @@ public class Lift extends Mechanism{
         inAir = true;
     }
 
+
+    public void raiseMidTele(){
+        setTargetPosition(midPosTele);
+        inAir = true;
+    }
     /**
      * raises slides to highPosition desired (in context of high goal)
      */

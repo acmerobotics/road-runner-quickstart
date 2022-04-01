@@ -53,7 +53,8 @@ public class MeccRobot extends Mechanism{
     });
 
     BooleanManager bButtonManager = new BooleanManager(()->{
-        scoringV2.toggle("midgoal");
+
+        scoringV2.toggle("midgoalTele");
     });
 
     BooleanManager aButtonManager = new BooleanManager(()->{
@@ -118,6 +119,12 @@ public class MeccRobot extends Mechanism{
         }
     });
 
+    BooleanManager leftBumper2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            scoringV2.toggle("midgoal");
+        }
+    });
     Telemetry telemetry;
 
     public void init(HardwareMap hwMap){
@@ -333,6 +340,7 @@ public class MeccRobot extends Mechanism{
         bButton2.update(gamepad2.b);
         xButton2.update(gamepad2.x);
         yButton2.update(gamepad2.y);
+        leftBumper2.update(gamepad2.left_bumper);
     }
 
 

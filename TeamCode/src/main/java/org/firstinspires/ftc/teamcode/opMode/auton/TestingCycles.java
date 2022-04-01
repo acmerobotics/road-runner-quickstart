@@ -33,7 +33,7 @@ public class TestingCycles extends LinearOpMode {
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = 2;
+    public static double scoreHubPosx = 0;
     public static double scoreHubPosy = 52;
 
     public static double scoreHubPosAngB = 65;
@@ -68,6 +68,7 @@ public class TestingCycles extends LinearOpMode {
         odoSys.init(hardwareMap, true);
 //
         scoringMech.init(hardwareMap, sensor);
+        scoringMech.setAuton(true);
         cv.init(hardwareMap);
 //        odoSys.init(hardwareMap, true);
         intake.init(hardwareMap);
@@ -124,7 +125,7 @@ public class TestingCycles extends LinearOpMode {
                 //.lineTo(preSpline)
                 .setReversed(false)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
+                .lineToLinearHeading(new Pose2d(warehouseX+1, bEnterY))
                 //.waitSeconds(0.1)
                 .UNSTABLE_addTemporalMarkerOffset(1, () -> {
                     scoringMech.toggle("highgoal");
@@ -143,7 +144,7 @@ public class TestingCycles extends LinearOpMode {
                 //.lineTo(preSpline)
                 .setReversed(false)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(warehouseX+1, bEnterY))
+                .lineToLinearHeading(new Pose2d(warehouseX+3, bEnterY))
                 //.waitSeconds(0.1)
                 .UNSTABLE_addTemporalMarkerOffset(1, () -> {
                     scoringMech.toggle("highgoal");
@@ -161,7 +162,7 @@ public class TestingCycles extends LinearOpMode {
                 //.lineTo(preSpline)
                 .setReversed(false)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(warehouseX+3, bEnterY))
+                .lineToLinearHeading(new Pose2d(warehouseX+5, bEnterY))
                 //.waitSeconds(0.1)
                 .UNSTABLE_addTemporalMarkerOffset(1, () -> {
                     scoringMech.toggle("highgoal");
@@ -180,7 +181,7 @@ public class TestingCycles extends LinearOpMode {
                 //.lineTo(preSpline)
                 .setReversed(false)
                 .splineToSplineHeading(new Pose2d(bEnter, Math.toRadians(0)), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(warehouseX-1, bEnterY))
+                .lineToLinearHeading(new Pose2d(warehouseX+6, bEnterY))
 //                //.waitSeconds(0.1)
 //                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
 //                    //scoringMech.toggle("highgoal");
