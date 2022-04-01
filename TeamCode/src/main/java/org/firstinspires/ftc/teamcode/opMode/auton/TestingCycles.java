@@ -111,7 +111,7 @@ public class TestingCycles extends LinearOpMode {
                     scoringMech.toggle("highgoal");
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
-                    intake.outake(0.5);
+                    intake.outake(1.0);
                 })
                 .setReversed(true)
                 .lineTo(new Vector2d(bExitX, bEnterY))
@@ -130,7 +130,7 @@ public class TestingCycles extends LinearOpMode {
                     scoringMech.toggle("highgoal");
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
-                    intake.outake(0.5);
+                    intake.outake(1.0);
                 })
                 .setReversed(true)
                 .lineTo(new Vector2d(bExitX, bEnterY))
@@ -149,7 +149,7 @@ public class TestingCycles extends LinearOpMode {
                     scoringMech.toggle("highgoal");
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
-                    intake.outake(0.5);
+                    intake.outake(1.0);
                 })
                 .setReversed(true)
                 .lineTo(new Vector2d(bExitX, bEnterY))
@@ -167,7 +167,7 @@ public class TestingCycles extends LinearOpMode {
                     scoringMech.toggle("highgoal");
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
-                    intake.outake(0.5);
+                    intake.outake(1.0);
                 })
 
                 .setReversed(true)

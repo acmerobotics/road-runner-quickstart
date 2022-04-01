@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.util.BooleanManager;
 
 public class MeccRobot extends Mechanism{
-    private boolean debug = true;
+    private boolean debug = false;
 
     //Mechanisms Utilized
     private SampleMecanumDrive drive;
@@ -177,9 +177,9 @@ public class MeccRobot extends Mechanism{
         }
         if(debug){
             //telemetry.addData("has freight",blockSense.hasFreight());
-            scoringV2.update();
             telemetry.update();
         }
+        scoringV2.update();
 
     }
 

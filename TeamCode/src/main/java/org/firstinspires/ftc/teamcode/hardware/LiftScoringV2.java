@@ -19,7 +19,7 @@ public class LiftScoringV2 extends Mechanism{
     public static double triggerTime = 50;
     private double timeMarker = 0;
     private boolean countingBlockHeld = false;
-
+    public static int scoringMechBuffer = 250;
     //for when block isnt there
     private ElapsedTime timerEmpty = new ElapsedTime();
     public static double errorThreshold = 200;
@@ -160,7 +160,25 @@ public class LiftScoringV2 extends Mechanism{
                 }
             };
 
-            if(goal.equals("highgoal")) delay.delay(run, 100);
+            Runnable runHigh = new Runnable() {
+                @Override
+                public void run() {
+                    //lift.retracting(true);
+                    Runnable lowerLift = new Runnable() {
+                        @Override
+                        public void run() {
+                            lift.lower();
+                        }
+                    };
+                    scoring.depositReset();
+                    delay.delay(lowerLift,scoringMechBuffer);
+
+                }
+            };
+
+
+
+            if(goal.equals("highgoal")) delay.delay(runHigh, 100);
             else if(goal.equals("midgoal")) delay.delay(run, 0);
 
             else if(goal.equals("cap")){
@@ -304,29 +322,29 @@ public class LiftScoringV2 extends Mechanism{
             }
 
 
-            if(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && countingBlockHeld){
+            else if(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && countingBlockHeld){
                 if(timerBlock.time(TimeUnit.MILLISECONDS) > triggerTime){
                     scoring.tuckPos();
                     setReadyPosition();
                 }
             }
 
-            if(!(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting)){
+            else if(!(freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting)){
                 countingBlockHeld = false;
             }
 
-            if(readyPosition && !freightSensor.hasFreight() && movementState.equals("DETRACT") && !countingEmptyHeld){
+            else if(readyPosition && !freightSensor.hasFreight() && movementState.equals("DETRACT") && !countingEmptyHeld){
                 countingEmptyHeld = true;
                 timerEmpty.reset();
             }
 
-            if(readyPosition && !freightSensor.hasFreight() && movementState.equals("DETRACT") && countingEmptyHeld){
+            else if(readyPosition && !freightSensor.hasFreight() && movementState.equals("DETRACT") && countingEmptyHeld){
                 if(timerEmpty.time(TimeUnit.MILLISECONDS) > errorThreshold){
                     lower("lowgoal");
                 }
             }
 
-            if(readyPosition && freightSensor.hasFreight() && movementState.equals("DETRACT")){
+            else if(readyPosition && freightSensor.hasFreight() && movementState.equals("DETRACT")){
                 countingEmptyHeld = false;
             }
 
