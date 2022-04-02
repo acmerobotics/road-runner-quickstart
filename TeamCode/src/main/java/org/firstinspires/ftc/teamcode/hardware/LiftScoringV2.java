@@ -16,7 +16,7 @@ public class LiftScoringV2 extends Mechanism{
     private ElapsedTime timerBlock = new ElapsedTime();
 
     //for when the block is there
-    public static double triggerTime = 50;
+    public static double triggerTime = 100;
     private double timeMarker = 0;
     private boolean countingBlockHeld = false;
     public static int scoringMechBuffer = 250;
@@ -387,7 +387,7 @@ public class LiftScoringV2 extends Mechanism{
     }
 
     public boolean raisingStatus(){
-        return freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && countingBlockHeld;
+        return freightSensor.hasFreight() && movementState.equals("DETRACT") && !shooting && countingBlockHeld && readyPosition;
     }
 
     /**

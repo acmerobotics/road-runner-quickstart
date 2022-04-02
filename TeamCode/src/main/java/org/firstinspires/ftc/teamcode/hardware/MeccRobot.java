@@ -22,7 +22,7 @@ public class MeccRobot extends Mechanism{
     //values for carousel
     ElapsedTime timer;
     private boolean motionProfiling = true;
-    private static int cDir = -1;
+    private static int cDir = 1;
     private boolean formerDpadL = false;
     private Carousel carousel = new Carousel();
 

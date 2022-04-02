@@ -26,7 +26,7 @@ public class Lift extends Mechanism{
     //retract logic for handling coefficient of gravity. Not needed if utilizing kF
     private boolean retract = true;
     public static double retMult = 0.4;
-
+    public boolean fullSend = false;
     //height increment for moving slides up and down at steady rate
     public static double HEIGHT_INCREMENT = 1.5;
 
@@ -126,7 +126,9 @@ public class Lift extends Mechanism{
         return still;
     }
 
+    public void posReadjust(){
 
+    }
     private void updatePID(double target) {
         if(target >= maxPos){target = maxPos;}
         if(target <= minPos){target = minPos;}

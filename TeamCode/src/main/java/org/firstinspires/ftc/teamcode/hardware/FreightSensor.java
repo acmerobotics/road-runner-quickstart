@@ -45,12 +45,17 @@ public class FreightSensor extends Mechanism{
         return  (green() + blue() + red()) / 3 > 100;
     }
 
+    public boolean hasFreightKalmanSensor(ColorSensor color) {
+        //return ((color.red() + color.green()) / 2 > color.blue() && (color.red()+color.green()) / 2 >= 100); //idk how this works mannn
+        return  (greenEstimate() + blueEstimate() + redEstimate()) / 3 > 100;
+    }
+
     /**
      *
      * @return returns the status of detected freight
      */
     public boolean hasFreight(){
-        return hasFreightSensor(left);
+        return hasFreightKalmanSensor(left);
     }
 
     /**
