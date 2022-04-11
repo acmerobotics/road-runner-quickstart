@@ -31,6 +31,8 @@ public class ZawadBreaksScoring extends LinearOpMode {
             }
             oppenheimer.loop();
             telemetry.addData("bruh", oppenheimer.scoreStates);
+            telemetry.addData("arm", oppenheimer.arm.armStates);
+            telemetry.addData("lift", oppenheimer.lift.liftState);
             telemetry.update();
         }
     }

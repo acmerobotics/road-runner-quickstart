@@ -73,7 +73,6 @@ public class TestingCycles extends LinearOpMode {
 //        odoSys.init(hardwareMap, true);
         intake.init(hardwareMap);
         Vector2d scoreHubPosB = new Vector2d(scoreHubPosx, scoreHubPosy);
-        Vector2d preSpline = new Vector2d(scoreHubPosx, preSplineY);
         Vector2d bEnter = new Vector2d(bEnterX, bEnterY);
 
 

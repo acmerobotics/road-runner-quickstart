@@ -43,17 +43,17 @@ public class MeccRobotPrototyping extends Mechanism{
     });
 
     BooleanManager leftBumperManager = new BooleanManager(()->{
-        scoring.highGoal();
+        scoring.toggleHigh();
 
     });
 
     BooleanManager xButtonManager = new BooleanManager(()->{
-        scoring.lowGoal();
+        scoring.toggleLow();
 
     });
 
     BooleanManager bButtonManager = new BooleanManager(()->{
-        scoring.midGoal();
+        scoring.toggleMid();
     });
 
     BooleanManager aButtonManager = new BooleanManager(()->{
@@ -74,7 +74,7 @@ public class MeccRobotPrototyping extends Mechanism{
     });
 
     BooleanManager yButtonManager = new BooleanManager(()->{
-        scoring.lowGoal();
+        scoring.down();
     });
 
     BooleanManager rightDPadButtonManager = new BooleanManager(new Runnable() {

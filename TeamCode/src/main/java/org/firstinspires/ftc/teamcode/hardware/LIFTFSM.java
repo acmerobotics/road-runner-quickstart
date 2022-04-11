@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+@Config
 public class LIFTFSM extends Mechanism{
     private Telemetry telemetry;
 
-    private Lift lift = new Lift();
+    public static int counter = 0;
+
+    public Lift lift = new Lift();
     public enum states {
         low,
         mid,
@@ -21,7 +25,7 @@ public class LIFTFSM extends Mechanism{
         liftState = states.low;
     }
     public void init(HardwareMap hwMap, Telemetry tele) {
-        this.init(hwMap);
+        init(hwMap);
         telemetry = tele;
     }
 
@@ -33,7 +37,7 @@ public class LIFTFSM extends Mechanism{
                 }else {
                     lift.retracting(false);
                 }
-                lift.setTargetPosition(lift.minPos);
+                lift.setTargetPosition(-1);
                 break;
             case mid:
                 lift.retracting(false);
@@ -46,21 +50,18 @@ public class LIFTFSM extends Mechanism{
         lift.update();
     }
     public void goHigh() {
-        if(liftState != states.high) {
-            liftState = states.high;
-        }else {
-            liftState = states.low;
-        }
+        liftState = states.high;
     }
     public void goMid() {
-        if(liftState != states.mid) {
-            liftState = states.mid;
-        }else {
-            liftState = states.low;
-        }
+        liftState = states.mid;
     }
     public void goLow() {
         liftState = states.low;
+    }
+
+
+    private boolean estimatedEqual(double one, double two){
+        return Math.abs(one - two) < 0.5;
     }
 
 }

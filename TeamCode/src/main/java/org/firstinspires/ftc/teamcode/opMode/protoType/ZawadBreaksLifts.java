@@ -27,6 +27,8 @@ public class ZawadBreaksLifts extends LinearOpMode {
             }
             destroyerOfWorlds.loop();
             telemetry.addData("state", destroyerOfWorlds.liftState);
+            telemetry.addData("bruh", destroyerOfWorlds.liftState == LIFTFSM.states.low);
+            telemetry.addData("hmm", gamepad1.a);
             telemetry.update();
         }
     }

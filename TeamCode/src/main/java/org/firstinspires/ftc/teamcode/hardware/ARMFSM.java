@@ -32,12 +32,13 @@ public class ARMFSM extends Mechanism{
     public void loop() {
         switch(armStates) {
             case down:
-                if(timer.milliseconds() >= 100) {
-                    arm.goToStart();
-                    arm.depositReset();
-                    if (sensor.hasFreight()) {
-                        timer.reset();
-                        armStates = states.ready;
+                if(timer.milliseconds() >= 350) {
+                    if(sensor.hasFreight() && timer.milliseconds() >= 550) {
+                        arm.tuckPos();
+                        arm.readyPos();
+                    }else {
+                        arm.depositReset();
+                        arm.goToStart();
                     }
                 }
                 break;
@@ -48,11 +49,6 @@ public class ARMFSM extends Mechanism{
                 timer.reset();
                 arm.dumpHard();
                 armStates = states.down;
-                break;
-            case ready:
-                if(timer.milliseconds() >= 200) {
-                    arm.tuckPos();
-                }
                 break;
         }
     }
