@@ -171,9 +171,9 @@ public class Lift extends Mechanism{
         if (positionHistory.length - 1 - 1 >= 0)
             System.arraycopy(positionHistory, 2, positionHistory, 1, positionHistory.length - 1 - 1);
 
-            if (limitSwitch.isPressed() && useLimitSwitch) {
-                reset();
-            }
+        if (limitSwitch.isPressed() && useLimitSwitch) {
+            reset();
+        }
     }
 
     /**
@@ -188,8 +188,8 @@ public class Lift extends Mechanism{
      */
     public double getCurrentPosition(){
         return (
-                  encoderTicksToInches(liftLeft.getCurrentPosition())
-                + encoderTicksToInches(liftRight.getCurrentPosition())
+                encoderTicksToInches(liftLeft.getCurrentPosition())
+                        + encoderTicksToInches(liftRight.getCurrentPosition())
         ) / 2.0;
     }
 
