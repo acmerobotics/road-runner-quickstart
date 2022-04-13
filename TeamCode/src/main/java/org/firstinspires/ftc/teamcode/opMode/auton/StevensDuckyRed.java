@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
@@ -34,18 +35,18 @@ public class StevensDuckyRed extends LinearOpMode {
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = -34;
-    public static double scoreHubPosy = 40;
+    public static double scoreHubPosx = -32;
+    public static double scoreHubPosy = 48;
 
     public static double scoreHubPosAngB = -25;
-    public static double scoreHubPosAngR = 25;
+    public static double scoreHubPosAngR = 45;
 
     public static double carouselPosx = -62;
     public static double carouselPosy = 64;
     public static double carouselPosAng = Math.toRadians(270);
 
     public static double parkX = -60;
-    public static double parkY = 42;
+    public static double parkY = 44;
     public static double parkAng = Math.toRadians(180);
 
     public static String goal = "highgoal";
@@ -90,12 +91,13 @@ public class StevensDuckyRed extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     carousel.run(false,true);
                 })
-                .waitSeconds(7)
-                // carousel
-                .lineToSplineHeading(parkR)
+                .build();
+        TrajectorySequence parka = drive.trajectorySequenceBuilder(carouselPosR)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     carousel.run(false,false);
                 })
+                .lineToSplineHeading(parkR)
+
                 .build();
 
         //3ftx3ftmovement
@@ -142,5 +144,14 @@ public class StevensDuckyRed extends LinearOpMode {
 
         scoringMech.toggle(goal);
         drive.followTrajectorySequence(duckyPath);
+        ElapsedTime timer = new ElapsedTime();
+        while(timer.seconds() <= 2) {
+            if(timer.seconds() <= 1) {
+                carousel.rrrun(timer, 1);
+            }else {
+                carousel.runmax(false, true);
+            }
+        }
+        drive.followTrajectorySequence(parka);
     }
 }

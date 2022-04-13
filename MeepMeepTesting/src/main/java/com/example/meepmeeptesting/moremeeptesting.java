@@ -15,11 +15,11 @@ public class moremeeptesting {
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = -34;
-    public static double scoreHubPosy = 43;
+    public static double scoreHubPosx = -32;
+    public static double scoreHubPosy = 25;
 
-    public static double scoreHubPosAngB = -25;
-    public static double scoreHubPosAngR = 25;
+    public static double scoreHubPosAngB = -45;
+    public static double scoreHubPosAngR = 45;
 
     public static double carouselPosx = -62;
     public static double carouselPosy = 62;
@@ -44,7 +44,10 @@ public class moremeeptesting {
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
-
+        Pose2d startPosR = new Pose2d(startx, -starty, -startAng);
+        Vector2d scoreHubPosR = new Vector2d(scoreHubPosx, -scoreHubPosy);
+        Pose2d carouselPosR = new Pose2d(carouselPosx, -carouselPosy, carouselPosAng);
+        Pose2d parkR = new Pose2d(parkX, -parkY, parkAng);
         Pose2d carouselPosB = new Pose2d(carouselPosx, carouselPosy, carouselPosAng);
         Pose2d parkB = new Pose2d(parkX, parkY, parkAng);
         Pose2d startPosB = new Pose2d(startx, starty, startAng);
@@ -62,57 +65,73 @@ public class moremeeptesting {
                 .followTrajectorySequence(drive ->
 
                         drive.trajectorySequenceBuilder(startPosB)
+//                                .waitSeconds(1)
+//                                .setReversed(true)
+//                                .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
+//                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+//                                   // scoringMech.release();
+//                                })
+//                                .waitSeconds(1)
+//                                //slides
+//                                .lineToSplineHeading(carouselPosB)
+//                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+//                                   //carousel.run(true,false);
+//                                })
+//                                .waitSeconds(4)
+//                                //carousel
+//                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+//                                   // carousel.run(false,false);
+//                                })
+//                                .lineToSplineHeading(reposition)
+//                                .lineTo(preSweep)
+//                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+//                                    //intake.intake(1);
+//                                })
+//                                .splineTo(sweepPos, Math.toRadians(180))
+//                                //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
+//                                .lineToLinearHeading(postSweep)
+//                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+//                                   // intake.intake(0);
+//                                })
+//                                .setReversed(true)
+//                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+//                                    //scoringMech.toggle("highgoal");
+//                                })
+//                                .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
+//                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+//                                    //.release();
+//                                })
+//                                .waitSeconds(1)
+//                                .lineToSplineHeading(parkB)
+//                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+//                                    //c//arousel.run(false, false);
+//                                })
                                 .waitSeconds(1)
                                 .setReversed(true)
-                                .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
-                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                                   // scoringMech.release();
-                                })
+                                .splineTo(new Vector2d(parkX, parkY),Math.toRadians(270))
+                                .splineTo(scoreHubPosB, Math.toRadians(0))
+//                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+//                                    scoringMech.releaseHard();
+//                                })
                                 .waitSeconds(1)
                                 //slides
+                                .setReversed(false)
+                                .splineTo(new Vector2d(parkX, parkY), Math.toRadians(90))
+//                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+//                                    carousel.run(true,false);
+//                                })
                                 .lineToSplineHeading(carouselPosB)
-                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                                   //carousel.run(true,false);
-                                })
-                                .waitSeconds(4)
-                                //carousel
-                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                                   // carousel.run(false,false);
-                                })
-                                .lineToSplineHeading(reposition)
-                                .lineTo(preSweep)
-                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                                    //intake.intake(1);
-                                })
-                                .splineTo(sweepPos, Math.toRadians(180))
-                                //.splineTo(new Vector2d(duckX, duckY), Math.toRadians(180))
-                                .lineToLinearHeading(postSweep)
-                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                                   // intake.intake(0);
-                                })
-                                .setReversed(true)
-                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                                    //scoringMech.toggle("highgoal");
-                                })
-                                .splineTo(scoreHubPosB, Math.toRadians(scoreHubPosAngB))
-                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                                    //.release();
-                                })
-                                .waitSeconds(1)
                                 .lineToSplineHeading(parkB)
-                                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                                    //c//arousel.run(false, false);
-                                })
                                 .build()
 
                 );
 
-        /*RoadRunnerBotEntity myBotRed = new DefaultBotBuilder(meepMeep)
+        RoadRunnerBotEntity myBotRed = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 9.85)
                 // .setStartPose(startPos)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPosR)
-                        .waitSeconds(2)
+                        /*.waitSeconds(2)
                         .setReversed(true)
                         .lineToLinearHeading(new Pose2d(scoreHubPosR, Math.toRadians(scoreHubPosAngR)))                .UNSTABLE_addTemporalMarkerOffset(0,()->{
                             //scoringMech.release();
@@ -138,8 +157,26 @@ public class moremeeptesting {
                         .lineTo(new Vector2d(repositionX + distanceForwards, -reposistionY))
                         .strafeLeft(strafeDistance)
                         .build()
+                        .waitSeconds(1)*/
+                                .waitSeconds(1)
+                                .setReversed(true)
+                                .splineTo(new Vector2d(parkX, -parkY),Math.toRadians(90))
+                                .splineTo(scoreHubPosR, Math.toRadians(0))
+//                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+//                                    scoringMech.releaseHard();
+//                                })
+                                .waitSeconds(1)
+                                //slides
+                                .setReversed(false)
+                                .splineTo(new Vector2d(parkX, -parkY), Math.toRadians(270))
+//                                .UNSTABLE_addTemporalMarkerOffset(0,()->{
+//                                    carousel.run(true,false);
+//                                })
+                                .lineToSplineHeading(carouselPosR)
+                                .lineToSplineHeading(parkR)
+                .build()
 
-                );*/
+                );
 
 
 
@@ -149,7 +186,7 @@ public class moremeeptesting {
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBotBlue)
-                //.addEntity(myBotRed)
+                .addEntity(myBotRed)
                 .start();
     }
 }

@@ -73,21 +73,21 @@ public class SCORINGFSM extends Mechanism {
     }
     public void down() {scoreStates = states.down;}
     public void toggleHigh(){
-        if(scoreStates == states.down) {
+        if(scoreStates != states.readyH) {
             highGoal();
         }else{
             down();
         }
     }
     public void toggleMid(){
-        if(scoreStates == states.down) {
+        if(scoreStates != states.readyM) {
             midGoal();
         }else{
             down();
         }
     }
     public void toggleLow(){
-        if(scoreStates == states.down) {
+        if(scoreStates != states.readyL) {
             lowGoal();
         }else{
             down();

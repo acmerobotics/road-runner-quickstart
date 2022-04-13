@@ -24,7 +24,10 @@ public class MeccRobotPrototyping extends Mechanism{
     private boolean motionProfiling = true;
     private static int cDir = -1;
     private boolean formerDpadL = false;
+    private boolean formerDpadR = false;
     private Carousel carousel = new Carousel();
+    private Capper capper = new Capper();
+
 
     private LiftScoringV2 scoringV2 = new LiftScoringV2();
 
@@ -84,6 +87,44 @@ public class MeccRobotPrototyping extends Mechanism{
 
         }
     });
+    BooleanManager rightBumper2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            scoringV2.toggle("highgoal");
+        }
+    });
+
+    BooleanManager aButton2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            if(scoringV2.goalReach.equals("highgoal")) capper.release();
+        }
+    });
+    BooleanManager bButton2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            capper.raise();
+        }
+    });
+    BooleanManager xButton2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            capper.reset();
+        }
+    });
+    BooleanManager yButton2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            capper.grabCap();
+        }
+    });
+
+    BooleanManager leftBumper2 = new BooleanManager(new Runnable() {
+        @Override
+        public void run() {
+            scoringV2.toggle("midgoal");
+        }
+    });
 
     Telemetry telemetry;
 
@@ -96,6 +137,8 @@ public class MeccRobotPrototyping extends Mechanism{
         scoring.init(hwMap);
         odoSys.init(hwMap);
         odoSys.toggle();
+        capper.init(hwMap);
+
 //        senseHub.init(hwMap);
     }
 
@@ -128,10 +171,11 @@ public class MeccRobotPrototyping extends Mechanism{
      * run in teleop mode
      * @param gamepad
      */
-    public void run(Gamepad gamepad){
+    public void run(Gamepad gamepad, Gamepad gamepad2){
         drive(gamepad);
         acquirerControls(gamepad);
         lift(gamepad);
+        capperControl(gamepad2);
         scoring.loop();
         //colorRumble(gamepad);
 
@@ -266,14 +310,27 @@ public class MeccRobotPrototyping extends Mechanism{
      * @param gamepad1 gamepad input
      */
     public void mpCR(Gamepad gamepad1){
+        boolean input = gamepad1.dpad_left ^ gamepad1.dpad_right;
         if(!formerDpadL){
-            if(gamepad1.dpad_left){
+            if(input){
                 timer.reset();
             }
         }
-
-        if(gamepad1.dpad_left) {
-            carousel.rrrun(timer,cDir);
+        if(gamepad1.dpad_right) {
+            cDir = -1;
+        }else {
+            cDir = 1;
+        }
+        if(input) {
+            if(timer.seconds() <= 1) {
+                carousel.rrrun(timer, cDir);
+            }else {
+                if(cDir == 1) {
+                    carousel.runmax(true, false);
+                }else {
+                    carousel.runmax(false, true);
+                }
+            }
             formerDpadL = true;
         }
 
@@ -282,8 +339,14 @@ public class MeccRobotPrototyping extends Mechanism{
             formerDpadL = false;
         }
 
-        rightDPadButtonManager.update(gamepad1.dpad_right);
-
+    }
+    public void capperControl(Gamepad gamepad2){
+        rightBumper2.update(gamepad2.right_bumper);
+        aButton2.update(gamepad2.a);
+        bButton2.update(gamepad2.b);
+        xButton2.update(gamepad2.x);
+        yButton2.update(gamepad2.y);
+        leftBumper2.update(gamepad2.left_bumper);
     }
 
 

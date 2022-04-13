@@ -24,6 +24,7 @@ public class MeccRobot extends Mechanism{
     private boolean motionProfiling = true;
     private static int cDir = 1;
     private boolean formerDpadL = false;
+    private boolean formerDpadR = false;
     private Carousel carousel = new Carousel();
 
     private LiftScoringV2 scoringV2 = new LiftScoringV2();
@@ -79,13 +80,6 @@ public class MeccRobot extends Mechanism{
         scoringV2.bottom();
     });
 
-    BooleanManager rightDPadButtonManager = new BooleanManager(new Runnable() {
-        @Override
-        public void run() {
-            cDir *= -1;
-
-        }
-    });
 
     BooleanManager rightBumper2 = new BooleanManager(new Runnable() {
         @Override
@@ -306,20 +300,26 @@ public class MeccRobot extends Mechanism{
      * @param gamepad1 gamepad input
      */
     public void mpCR(Gamepad gamepad1){
+        boolean input = gamepad1.dpad_left ^ gamepad1.dpad_right;
+        if(gamepad1.dpad_right) {
+            cDir = -1;
+        }else {
+            cDir = 1;
+        }
         if(!formerDpadL){
-            if(gamepad1.dpad_left){
+            if(input){
                 timer.reset();
             }
         }
 
-        if(gamepad1.dpad_left) {
+        if(input) {
             if(timer.seconds() <= 1) {
-                carousel.rrrun(timer, cDir);
+                carousel.rrrun(timer, 1);
             }else {
-                if (cDir == -1) {
-                    carousel.runmax(false, true);
-                } else {
+                if(cDir == 1) {
                     carousel.runmax(true, false);
+                }else {
+                    carousel.runmax(false, true);
                 }
             }
             formerDpadL = true;
@@ -329,9 +329,6 @@ public class MeccRobot extends Mechanism{
             carousel.run(false);
             formerDpadL = false;
         }
-
-        rightDPadButtonManager.update(gamepad1.dpad_right);
-
     }
 
     public void capperControl(Gamepad gamepad2){

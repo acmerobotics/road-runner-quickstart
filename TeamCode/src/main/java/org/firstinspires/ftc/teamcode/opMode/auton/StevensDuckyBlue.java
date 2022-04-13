@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.CapVision;
@@ -34,10 +35,11 @@ public class StevensDuckyBlue extends LinearOpMode {
     public static double starty = 70.0;
     public static double startAng = Math.toRadians(90);
 
-    public static double scoreHubPosx = -34;
-    public static double scoreHubPosy = 54;
+    public static double scoreHubPosx = -32;
+    public static double scoreHubPosy = 25;
 
-    public static double scoreHubPosAngB = -25;
+    public static double scoreHubPosAngB = -45
+            ;
     public static double scoreHubPosAngR = 25;
 
     public static double carouselPosx = -62;
@@ -61,8 +63,8 @@ public class StevensDuckyBlue extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         //initialize mechanisms
         carousel.init(hardwareMap);
-        scoringMech.init(hardwareMap);
         sensor.init(hardwareMap);
+        scoringMech.init(hardwareMap, sensor);
         cv.init(hardwareMap);
         odoSys.init(hardwareMap, true);
 
@@ -84,24 +86,25 @@ public class StevensDuckyBlue extends LinearOpMode {
         TrajectorySequence duckyPath = drive.trajectorySequenceBuilder(startPos)
                 .waitSeconds(1)
                 .setReversed(true)
-                .splineTo(scoreHubPosB,Math.toRadians(scoreHubPosAngB))
+                .splineTo(new Vector2d(parkX, parkY),Math.toRadians(90))
+                .splineTo(scoreHubPosB, Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     scoringMech.releaseHard();
                 })
                 .waitSeconds(1)
                 //slides
-                .lineToSplineHeading(carouselPosB)
+                .setReversed(false)
+                .splineTo(new Vector2d(parkX, parkY), Math.toRadians(90))
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(true,false);
                 })
-                .waitSeconds(7)
-                //carousel
-                .lineToSplineHeading(parkB)
+                .build();
+        TrajectorySequence parka = drive.trajectorySequenceBuilder(carouselPosB)
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{
                     carousel.run(false,false);
                 })
+                .lineToSplineHeading(parkB)
                 .build();
-
         //3ftx3ftmovement
 
 //        TrajectorySequenceBuilder taahkbeer = drive.trajectorySequenceBuilder(alFatihah.build().end())
@@ -131,6 +134,7 @@ public class StevensDuckyBlue extends LinearOpMode {
             telemetry.addData("Status", "Waiting in init");
             telemetry.update();
         }
+        waitForStart();
         if(cv.whichRegion() == 1) {
             goal = "lowgoal";
         }
@@ -146,5 +150,15 @@ public class StevensDuckyBlue extends LinearOpMode {
 
         scoringMech.toggle(goal);
         drive.followTrajectorySequence(duckyPath);
+        ElapsedTime timer = new ElapsedTime();
+        while(timer.seconds() <= 2) {
+            if(timer.seconds() <= 1) {
+                carousel.rrrun(timer, 1);
+            }else {
+                carousel.runmax(true, false);
+            }
+        }
+
+        drive.followTrajectorySequence(parka);
     }
 }
