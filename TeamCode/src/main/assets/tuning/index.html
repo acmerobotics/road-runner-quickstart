@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+  <head>
+    <title>RR Track Width Regression</title>
+
+    <style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.content {
+  max-width: 600px;
+  margin: auto;
+}
+
+.bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+    </style>
+
+    <script src="/tuning/plotly-2.12.1.min.js"></script>
+
+    <!-- https://tom-alexander.github.io/regression-js/ -->
+    <script src="/tuning/regression-2.0.1.min.js"></script>
+  </head>
+  <body>
+    <div class="content">
+      <h1>RR Track Width Regression</h1>
+      <p>The track width tuner works by comparing the wheel velocities measured
+      by the drive encoders with the angular velocity measured by the IMU at
+      many different instants. After running the op mode, reload the page to see
+      the data in the graph below. The samples should have a linear
+      (straight-line) pattern, and the slope of the line is the track width. Use
+      the selection tool and exclude button to remove obvious outliers that
+      deviate from the pattern to improve the accuracy of the final result. 
+      
+      <div id="chart">Loading...</div>
+    </div>
+    <script>
+// data comes in pairs
+function newLinearRegressionChart(container, data, options) {
+  // cribbed from https://plotly.com/javascript/plotlyjs-events/#select-event
+  const color = '#777';
+  const colorLight = '#bbb';
+
+  let mask = data.map(() => true);
+
+  const result = regression.linear(data);
+  const [m, b] = result.equation;
+
+  const xs = data.map(x => x[0]);
+  const ys = data.map(x => x[1]);
+
+  const minX = xs.reduce((a, b) => Math.min(a, b));
+  const maxX = xs.reduce((a, b) => Math.max(a, b));
+
+  const chartDiv = document.createElement('div');
+  Plotly.newPlot(chartDiv, [{
+    type: 'scatter',
+    mode: 'markers',
+    x: xs,
+    y: ys,
+    name: 'Samples',
+    // markers seem to respond to selection 
+    marker: {color: mask.map(b => b ? color : colorLight), size: 5},
+  }, {
+    type: 'scatter',
+    mode: 'lines',
+    x: [minX, maxX],
+    y: [m * minX + b, m * maxX + b],
+    name: 'Regression Line',
+    line: {color: 'red'}
+  }], {
+    title: options.title || '',
+    // sets the starting tool from the modebar
+    dragmode: 'select',
+    showlegend: false,
+    hovermode: false,
+    width: 600,
+  }, {
+    // 'select2d' left
+    modeBarButtonsToRemove: ['zoom2d', 'pan2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d'],
+  });
+
+  const results = document.createElement('p');
+
+  function setResultText(m, b) {
+    results.innerText = `${options.slope || 'slope'}: ${m.toFixed(2)}, ${options.intercept || 'y-intercept'}: ${b.toFixed(2)}`;
+  }
+  setResultText(m, b);
+
+  function updatePlot() {
+    Plotly.restyle(chartDiv, 'marker.color', [
+      mask.map(b => b ? color : colorLight)  
+    ], [0]);
+
+    const result = regression.linear(
+      data.filter((x, i) => mask[i])
+    );
+    const [m, b] = result.equation;
+    setResultText(m, b);
+
+    Plotly.restyle(chartDiv, {
+      x: [[minX, maxX]],
+      y: [[m * minX + b, m * maxX + b]],
+    }, [1]);
+  }
+
+  let pendingSelection = null;
+
+  chartDiv.on('plotly_selected', function(eventData) {
+    pendingSelection = eventData;
+  });
+
+  function applyPendingSelection(b) {
+    if (pendingSelection === null) return;
+
+    for (const pt of pendingSelection.points) {
+      mask[pt.pointIndex] = b;
+    }
+
+    Plotly.restyle(chartDiv, 'selectedpoints', [null], [0]);
+
+    pendingSelection = null;
+  }
+
+  const includeButton = document.createElement('button');
+  includeButton.innerText = '[i]nclude';
+  includeButton.addEventListener('click', () => {
+    applyPendingSelection(true);
+    updatePlot();
+  });
+
+  const excludeButton = document.createElement('button');
+  excludeButton.innerText = '[e]xclude';
+  excludeButton.addEventListener('click', () => {
+    applyPendingSelection(false);
+    updatePlot();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'i') {
+      applyPendingSelection(true);
+      updatePlot();
+    } else if (e.key === 'e') {
+      applyPendingSelection(false);
+      updatePlot();
+    }
+  });
+
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
+  const buttons = document.createElement('div');
+  buttons.appendChild(includeButton);
+  buttons.appendChild(excludeButton);
+
+  const bar = document.createElement('div');
+  bar.setAttribute('class', 'bar');
+  bar.appendChild(buttons);
+
+  bar.appendChild(results);
+
+  container.appendChild(bar);
+  container.appendChild(chartDiv);
+}
+    
+const chartDiv = document.getElementById('chart');
+fetch('/tuning/trackwidth/latest.json')
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      chartDiv.innerText = 'No data files found';
+      throw new Error();
+    }
+  })
+  .then(data => {
+    newLinearRegressionChart(chartDiv,
+      data.angVels.map((angVel, i) => [angVel, data.encVels[i]]),
+      {slope: 'track width'});
+  });
+    </script>
+  </body>
+</html>
+
