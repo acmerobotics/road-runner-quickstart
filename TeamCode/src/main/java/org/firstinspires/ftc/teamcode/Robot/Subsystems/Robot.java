@@ -19,7 +19,6 @@ public class Robot {
 	public Input gamepad1;
 	public Input gamepad2;
 	public Drivetrain drivetrain = new Drivetrain();
-	public Odometry odometry = new Odometry();
 
 	// print subsystem for testing
 	public PrintSubsystem1 print = new PrintSubsystem1();
@@ -27,7 +26,7 @@ public class Robot {
 	protected CommandScheduler scheduler;
 
 	public Robot(HardwareMap hwMap, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
-		scheduler = new CommandScheduler(hwMap, drivetrain, odometry, dashboard);
+		scheduler = new CommandScheduler(hwMap, drivetrain, dashboard);
 
 		this.gamepad1 = new Input(gamepad1, scheduler);
 		this.gamepad2 = new Input(gamepad2, scheduler);

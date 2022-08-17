@@ -16,7 +16,7 @@ public class TurnTuning extends BaseAuto {
 	@RequiresApi(api = Build.VERSION_CODES.N)
 	@Override
 	public Command setupAuto(CommandScheduler scheduler) {
-		Command auto = turn(Math.toRadians(180));
+		Command auto = null;
 		return auto;
 	}
 }

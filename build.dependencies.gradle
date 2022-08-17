@@ -3,6 +3,8 @@ repositories {
     google() // Needed for androidx
     jcenter()  // Needed for tensorflow-lite
     maven { url = 'https://maven.brott.dev/' }
+    maven { url 'https://jitpack.io' }
+
     flatDir {
         dirs rootProject.file('libs')
     }
@@ -22,5 +24,8 @@ dependencies {
     implementation 'org.firstinspires.ftc:gameAssets-FreightFrenzy:1.0.0'
 
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.4'
+    implementation 'com.github.Thermal-Equilibrium:homeostasis-FTC:1.0.8'
+    compile group: 'org.ejml', name: 'ejml-all', version: '0.41'
+
 }
 

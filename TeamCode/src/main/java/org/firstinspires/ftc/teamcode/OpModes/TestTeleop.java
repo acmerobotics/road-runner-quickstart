@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.CommandFramework.BaseTeleop;
 import org.firstinspires.ftc.teamcode.CommandFramework.CommandScheduler;
 import org.firstinspires.ftc.teamcode.CommandFramework.Command;
-import org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands.CheesyDrive;
 import org.firstinspires.ftc.teamcode.Simulation.TestCommandsSubsystems.PrintCommand1;
 
 
@@ -18,6 +17,6 @@ public class TestTeleop extends BaseTeleop {
 		robot.gamepad1.whenCrossPressed(printCommand);
 
 		//return new ClosedLoopTeleop(robot.drivetrain,robot.odometry,robot.gamepad1);
-		return new CheesyDrive(robot.gamepad1, robot.drivetrain);
+		return null;
 	}
 }

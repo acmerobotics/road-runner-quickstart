@@ -1,0 +1,39 @@
+package org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands;
+
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+
+import org.firstinspires.ftc.teamcode.CommandFramework.Command;
+import org.firstinspires.ftc.teamcode.Robot.Subsystems.Robot;
+
+public class RoadrunnerTrajectoryFollower extends Command {
+
+
+    private final Robot robot;
+    Trajectory traj;
+
+
+    public RoadrunnerTrajectoryFollower(Robot robot, Trajectory traj) {
+        this.robot = robot;
+        this.traj = traj;
+    }
+
+
+    @Override
+    public void init() {
+    }
+
+    @Override
+    public void periodic() {
+        robot.drivetrain.followTrajectory(traj);
+    }
+
+    @Override
+    public boolean completed() {
+        return !robot.drivetrain.isBusy();
+    }
+
+    @Override
+    public void shutdown() {
+
+    }
+}
