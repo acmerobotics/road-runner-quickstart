@@ -13,6 +13,7 @@ public class RoadrunnerTrajectoryFollower extends Command {
 
 
     public RoadrunnerTrajectoryFollower(Robot robot, Trajectory traj) {
+        super(robot.drivetrain);
         this.robot = robot;
         this.traj = traj;
     }

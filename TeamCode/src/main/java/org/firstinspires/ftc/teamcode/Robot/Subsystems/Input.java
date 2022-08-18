@@ -371,7 +371,7 @@ public class Input extends Subsystem {
 
 
 	public double getForwardJoystick() {
-		return -getLeft_stick_y();
+		return getLeft_stick_y();
 	}
 
 	public double getStrafeJoystick() {
