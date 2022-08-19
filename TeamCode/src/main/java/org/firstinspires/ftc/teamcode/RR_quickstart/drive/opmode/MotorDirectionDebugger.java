@@ -38,7 +38,6 @@ import org.firstinspires.ftc.teamcode.RR_quickstart.drive.SampleMecanumDrive;
  *
  * Uncomment the @Disabled tag below to use this opmode.
  */
-@Disabled
 @Config
 @TeleOp(group = "drive")
 public class MotorDirectionDebugger extends LinearOpMode {
@@ -70,16 +69,16 @@ public class MotorDirectionDebugger extends LinearOpMode {
             telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;A / X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Left</font>");
             telemetry.addLine();
 
-            if(gamepad1.x) {
+            if(gamepad1.cross) {
                 drive.setMotorPowers(MOTOR_POWER, 0, 0, 0);
                 telemetry.addLine("Running Motor: Front Left");
-            } else if(gamepad1.y) {
+            } else if(gamepad1.square) {
                 drive.setMotorPowers(0, 0, 0, MOTOR_POWER);
                 telemetry.addLine("Running Motor: Front Right");
-            } else if(gamepad1.b) {
+            } else if(gamepad1.circle) {
                 drive.setMotorPowers(0, 0, MOTOR_POWER, 0);
                 telemetry.addLine("Running Motor: Rear Right");
-            } else if(gamepad1.a) {
+            } else if(gamepad1.triangle) {
                 drive.setMotorPowers(0, MOTOR_POWER, 0, 0);
                 telemetry.addLine("Running Motor: Rear Left");
             } else {
