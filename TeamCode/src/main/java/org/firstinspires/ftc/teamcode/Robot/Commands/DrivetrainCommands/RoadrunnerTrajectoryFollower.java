@@ -21,11 +21,12 @@ public class RoadrunnerTrajectoryFollower extends Command {
 
     @Override
     public void init() {
+        robot.drivetrain.followTrajectory(traj);
     }
 
     @Override
     public void periodic() {
-        robot.drivetrain.followTrajectory(traj);
+
     }
 
     @Override

@@ -18,6 +18,7 @@ public class Dashboard extends Subsystem {
 	public void initAuto(HardwareMap hwMap) {
 		dashboard.sendTelemetryPacket(packet);
 		packet = new TelemetryPacket();
+		dashboard.setTelemetryTransmissionInterval(25);
 	}
 
 	@Override

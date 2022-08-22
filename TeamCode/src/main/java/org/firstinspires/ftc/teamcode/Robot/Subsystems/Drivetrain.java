@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.Robot.Subsystems;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.CommandFramework.Subsystem;
@@ -65,6 +66,10 @@ public class Drivetrain extends Subsystem {
 
 	public boolean isBusy() {
 		return drive.isBusy();
+	}
+
+	public SampleMecanumDrive getBuilder() {
+		return drive;
 	}
 
 
