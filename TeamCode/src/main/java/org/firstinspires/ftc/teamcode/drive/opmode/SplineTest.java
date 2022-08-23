@@ -22,12 +22,20 @@ public class SplineTest extends LinearOpMode {
         if (isStopRequested()) return;
 
         Trajectory traj = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(30, 30), 0)
+                .splineTo(new Vector2d(60, 30), 0)
                 .build();
 
         drive.followTrajectory(traj);
 
-        sleep(2000);
+//        sleep(1000);
+//
+//        Trajectory traj = drive.trajectorySequenceBuilder(new Pose2d())
+//                .splineTo(new Vector2d(10,60), 0)
+//                .build();
+//
+//        drive.followTrajectory(traj);
+
+        sleep(1000);
 
         drive.followTrajectory(
                 drive.trajectoryBuilder(traj.end(), true)
