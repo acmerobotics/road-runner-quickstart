@@ -18,7 +18,7 @@ public class CommandBasedAndRoadrunner extends BaseAuto {
 				.build();
 
 		Trajectory traj2 = robot.drivetrain.getBuilder().trajectoryBuilder(traj.end(), true)
-				.lineToLinearHeading(new Pose2d(0,0,0))
+				.splineToSplineHeading(new Pose2d(0,0,0),Math.toRadians(180))
 				.build();
 
 		return follow(traj)
