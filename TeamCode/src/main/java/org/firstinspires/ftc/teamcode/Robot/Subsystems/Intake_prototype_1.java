@@ -44,7 +44,7 @@ public class Intake_prototype_1 extends Subsystem {
 	public enum INTAKE_STATES {
 
 		ON(1),
-		OFF(0.3),
+		OFF(0.2),
 		REVERSED(-0.4);
 
 		protected double power;
