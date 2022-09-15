@@ -32,6 +32,10 @@ public class CommandScheduler {
     }
 
     public void run() {
+        for (Subsystem subsystem : subsystems) {
+            subsystem.periodic();
+        }
+
         Iterator<Command> commands = activeCommands.iterator();
 
         ArrayList<Command> nextCommands = new ArrayList<>();
@@ -50,10 +54,6 @@ public class CommandScheduler {
 
         for (Command nextCommand : nextCommands)
             forceCommand(nextCommand);
-
-        for (Subsystem subsystem : subsystems) {
-            subsystem.periodic();
-        }
     }
 
     public void forceCommand(Command command) {

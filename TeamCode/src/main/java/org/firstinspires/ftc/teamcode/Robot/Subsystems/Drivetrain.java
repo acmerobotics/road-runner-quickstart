@@ -32,7 +32,7 @@ public class Drivetrain extends Subsystem {
 	}
 
 
-	public void robotRelative(Pose2d powers) {
+	public void  robotRelative(Pose2d powers) {
 		drive.setWeightedDrivePower(powers);
 	}
 
@@ -70,6 +70,10 @@ public class Drivetrain extends Subsystem {
 
 	public SampleMecanumDrive getBuilder() {
 		return drive;
+	}
+
+	public Pose2d getVelocity() {
+		return drive.getPoseVelocity();
 	}
 
 
