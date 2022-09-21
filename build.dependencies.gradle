@@ -19,12 +19,6 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite-task-vision:0.2.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'org.firstinspires.ftc:gameAssets-PowerPlay:1.0.0'
-    //Tensor Flow
-    implementation('org.tensorflow:tensorflow-lite:2.4.0')
-    implementation('org.tensorflow:tensorflow-lite-gpu:2.6.0')
-    implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }
-
-    implementation 'org.openftc:easyopencv:1.5.0'
 
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.5'
 }
