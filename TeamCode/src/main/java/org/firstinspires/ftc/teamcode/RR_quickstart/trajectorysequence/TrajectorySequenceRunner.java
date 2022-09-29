@@ -176,20 +176,22 @@ public class TrajectorySequenceRunner {
 
         poseHistory.add(poseEstimate);
 
-        if (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
+        while (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
             poseHistory.removeFirst();
         }
-
+//
         Dashboard.packet.put("x", poseEstimate.getX());
         Dashboard.packet.put("y", poseEstimate.getY());
         Dashboard.packet.put("heading (deg)", Math.toDegrees(poseEstimate.getHeading()));
+
+
 
         Dashboard.packet.put("xError", getLastPoseError().getX());
         Dashboard.packet.put("yError", getLastPoseError().getY());
         Dashboard.packet.put("headingError (deg)", Math.toDegrees(getLastPoseError().getHeading()));
 
         draw(Dashboard.packet.fieldOverlay(), currentTrajectorySequence, currentSegment, targetPose, poseEstimate);
-
+//
 
         return driveSignal;
     }
@@ -251,7 +253,10 @@ public class TrajectorySequenceRunner {
             DashboardUtil.drawRobot(fieldOverlay, targetPose);
         }
 
+        // TODO optimize tf out of this
+
         fieldOverlay.setStroke("#3F51B5");
+        Dashboard.packet.put("pose history length", poseHistory.size());
         DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
 
         fieldOverlay.setStroke("#3F51B5");

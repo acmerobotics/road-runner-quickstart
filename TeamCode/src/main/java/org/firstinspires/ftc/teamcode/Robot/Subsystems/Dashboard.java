@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.teamcode.CommandFramework.Subsystem;
 
 public class Dashboard extends Subsystem {
@@ -18,7 +19,7 @@ public class Dashboard extends Subsystem {
 	public void initAuto(HardwareMap hwMap) {
 		dashboard.sendTelemetryPacket(packet);
 		packet = new TelemetryPacket();
-		dashboard.setTelemetryTransmissionInterval(25);
+		//dashboard.setTelemetryTransmissionInterval(250);
 	}
 
 	@Override
@@ -29,7 +30,13 @@ public class Dashboard extends Subsystem {
 		dashboardTimer.reset();
 	}
 
+
+	public void startCameraStream(CameraStreamSource source, int maxFps) {
+		dashboard.startCameraStream(source,maxFps);
+	}
+
 	@Override
 	public void shutdown() {
+
 	}
 }
