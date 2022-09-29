@@ -48,7 +48,7 @@ public class CriticallyDampedPDControl implements FeedbackController {
 	public static double solveKD(double Kp, double Kv, double Ka) throws Exception {
 		double sqrt_term = 2 * Math.sqrt(Ka * Kp);
 		if (sqrt_term < Kv) {
-			throw new ControllerSynthesisException("Controller synthesis yields non minimum phase system. Use different value of Kp.");
+			throw new ControllerSynthesisException("Controller synthesis yields non minimum phase system. Use different value of Kp. sqrt term was: " + sqrt_term + " and Kv is " + Kv);
 		}
 		return sqrt_term - Kv;
 	}
