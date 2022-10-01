@@ -33,8 +33,8 @@ public class AutoFitTextureView extends TextureView {
         if (width < 0 || height < 0) {
             throw new IllegalArgumentException("Size cannot be negative.");
         }
-        ratioWidth = width;
-        ratioHeight = height;
+        ratioHeight = width;
+        ratioWidth = height;
         requestLayout();
     }
 
