@@ -37,9 +37,9 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     //int ID_TAG_OF_INTEREST = 18; // Tag ID 18 from the 36h11 family
 
     // Tag ID 1,2,3 from the 36h11 family
-    int LEFT = 1;
-    int MIDDLE = 2;
-    int RIGHT = 3;
+    int LEFT = 0;
+    int MIDDLE = 1;
+    int RIGHT = 2;
     AprilTagDetection tagOfInterest = null;
 
     @Override
