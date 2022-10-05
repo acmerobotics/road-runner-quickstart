@@ -26,6 +26,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
     // You will need to do your own calibration for other configurations!
+
     double fx = 822.317; //578.272;
     double fy = 822.317; //578.272;
     double cx = 319.495; //402.145;
