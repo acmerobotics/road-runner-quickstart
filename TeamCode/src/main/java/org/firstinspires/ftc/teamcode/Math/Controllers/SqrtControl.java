@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Math.Controllers.Coefficient.SqrtCoefficients;
 
+
 public class SqrtControl implements FeedbackController {
 
 	SqrtCoefficients coefficients;
@@ -29,7 +30,7 @@ public class SqrtControl implements FeedbackController {
 			output = -Math.sqrt(Math.abs(error)) * coefficients.getK() - coefficients.getH();
 		}
 		checkForStart();
-		double derivative =( error - errorPrevious) / timer.seconds();
+		double derivative =(  error - errorPrevious) / timer.seconds();
 		timer.reset();
 		errorPrevious = error;
 
