@@ -14,14 +14,14 @@ public class CommandBasedAndRoadrunner extends BaseAuto {
 	@Override
 	public Command setupAuto(CommandScheduler scheduler) {
 		Trajectory traj = robot.drivetrain.getBuilder().trajectoryBuilder(new Pose2d())
-				.lineToLinearHeading(new Pose2d(48, 12, Math.toRadians(90)))
+				.splineToSplineHeading(new Pose2d(48, 12, Math.toRadians(90)),Math.toRadians(90))
 				.build();
 
-		Trajectory traj2 = robot.drivetrain.getBuilder().trajectoryBuilder(traj.end(), true)
+		Trajectory traj2 = robot.drivetrain.getBuilder().trajectoryBuilder(traj.end())
 				.splineToSplineHeading(new Pose2d(0,0,0),Math.toRadians(180))
 				.build();
 
-		return follow(traj)
+		return 			follow(traj)
 					   .addNext(
 					   		follow(traj2)
 					   );

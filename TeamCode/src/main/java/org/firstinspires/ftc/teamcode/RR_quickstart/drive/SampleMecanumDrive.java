@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.firstinspires.ftc.teamcode.Math.Controllers.CriticallyDampedPDControl.solveKD;
 import static org.firstinspires.ftc.teamcode.RR_quickstart.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.RR_quickstart.drive.DriveConstants.MAX_ANG_ACCEL;
 import static org.firstinspires.ftc.teamcode.RR_quickstart.drive.DriveConstants.MAX_ANG_VEL;
@@ -53,7 +54,19 @@ import static org.firstinspires.ftc.teamcode.RR_quickstart.drive.DriveConstants.
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(11, 0.01, 3);
+    static double translation_kp = 11;
+    public static PIDCoefficients TRANSLATIONAL_PID;
+
+    static {
+        try {
+            TRANSLATIONAL_PID = new PIDCoefficients(translation_kp, 0, solveKD(translation_kp, DriveConstants.kV,DriveConstants.kA));
+        } catch (Exception e) {
+            TRANSLATIONAL_PID = new PIDCoefficients(11, 0, 3);
+            System.out.println("controller synthesis failed, reverting to safe coefficients");
+            e.printStackTrace();
+        }
+    }
+
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(30, 0, 0.23);
     public static double LATERAL_MULTIPLIER = 1;
 

@@ -39,7 +39,7 @@ public class CriticallyDampedPDControl implements FeedbackController {
 
 	/**
 	 * given Kp, Ka, and Kv this will solve for the value of Kd that makes the position control loop
-	 * critically damped.
+	 * critically damped
 	 * @param Kp proportional term
 	 * @param Kv velocity coefficient
 	 * @param Ka acceleration coefficient
@@ -47,6 +47,11 @@ public class CriticallyDampedPDControl implements FeedbackController {
 	 */
 	public static double solveKD(double Kp, double Kv, double Ka) throws Exception {
 		double sqrt_term = 2 * Math.sqrt(Ka * Kp);
+		/* In our closed loop transfer function, Kp + Kd * s will be in the numerator of the transfer function.
+		* If Kd is negative which will result if we use too small of a value for Kp, our system will be non-minimum phase
+		* The act of being non-minimum phase places a zero in the left-half plane and while this does not make the system unstable,
+		* */
+
 		if (sqrt_term < Kv) {
 			throw new ControllerSynthesisException("Controller synthesis yields non minimum phase system." +
 					" Use larger value of Kp. sqrt = " +

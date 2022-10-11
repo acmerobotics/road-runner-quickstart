@@ -1,7 +1,7 @@
 repositories {
     mavenCentral()
     google() // Needed for androidx
-    jcenter()  // Needed for tensorflow-lite
+    mavenCentral()  // Needed for tensorflow-lite
     maven { url = 'https://maven.brott.dev/' }
     maven { url 'https://jitpack.io' }
     flatDir {
@@ -19,10 +19,10 @@ dependencies {
     implementation 'org.firstinspires.ftc:Hardware:8.0.0'
     implementation 'org.firstinspires.ftc:FtcCommon:8.0.0'
     implementation 'org.tensorflow:tensorflow-lite-task-vision:0.2.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'org.firstinspires.ftc:gameAssets-PowerPlay:1.0.0'
 
-    implementation 'com.acmerobotics.dashboard:dashboard:0.4.6-SNAPSHOT'
+    implementation 'com.acmerobotics.dashboard:dashboard:0.4.6'
     implementation 'com.github.Thermal-Equilibrium:homeostasis-FTC:1.0.8'
     implementation 'org.openftc:easyopencv:1.5.2'
 

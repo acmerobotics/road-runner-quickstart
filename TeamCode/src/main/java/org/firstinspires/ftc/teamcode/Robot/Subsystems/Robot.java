@@ -19,7 +19,6 @@ public class Robot {
 	public Input gamepad1;
 	public Input gamepad2;
 	public Drivetrain drivetrain = new Drivetrain();
-	public Intake_prototype_1 intake = new Intake_prototype_1();
 	public ConeDetectionSubsystem detectionSubsystem = new ConeDetectionSubsystem(dashboard);
 
 	// print subsystem for testing
@@ -28,7 +27,7 @@ public class Robot {
 	protected CommandScheduler scheduler;
 
 	public Robot(HardwareMap hwMap, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
-		scheduler = new CommandScheduler(hwMap, drivetrain, dashboard, intake, detectionSubsystem);
+		scheduler = new CommandScheduler(hwMap, drivetrain, dashboard, detectionSubsystem);
 
 		this.gamepad1 = new Input(gamepad1, scheduler);
 		this.gamepad2 = new Input(gamepad2, scheduler);
