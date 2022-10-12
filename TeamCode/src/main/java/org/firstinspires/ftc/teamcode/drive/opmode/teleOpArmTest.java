@@ -29,7 +29,7 @@ public class teleOpArmTest extends LinearOpMode {
         //imu = hardwareMap.get(Gyroscope.class, "imu");
         //LeftDrive = hardwareMap.get(DcMotor.class, "LeftDrive");
         //RightDrive = hardwareMap.get(DcMotor.class, "RightDrive");
-        ArmMotor = hardwareMap.get(DcMotor.class, "Arm");
+        ArmMotor = hardwareMap.get(DcMotor.class, "arm");
         //ArmMotor.setTargetPosition(0);
         //ArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
