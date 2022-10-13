@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -17,29 +20,65 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
+    private Servo intake;
+    private DcMotor arm;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        //drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake = hardwareMap.get(Servo.class, "intake");
+        intake.setDirection(Servo.Direction.REVERSE);
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
+/**
+ while (!isStopRequested()) {
+ drive.setWeightedDrivePower(
+ new Pose2d(
+ -gamepad1.left_stick_y,
+ -gamepad1.left_stick_x,
+ -gamepad1.right_stick_x
+ )
+ );
 
-        while (!isStopRequested()) {
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
-                    )
-            );
+ drive.update();
 
-            drive.update();
+ Pose2d poseEstimate = drive.getPoseEstimate();
+ telemetry.addData("x", poseEstimate.getX());
+ telemetry.addData("y", poseEstimate.getY());
+ telemetry.addData("heading", poseEstimate.getHeading());
+ telemetry.update();
+ }
+ */
+        if (opModeIsActive()) {
+            while (opModeIsActive()) {
+                // Put loop blocks here.
+                if (gamepad1.a) {
+                    intake.setPosition(0);
+                }
+                if (gamepad1.b) {
+                    intake.setPosition(0.5);
+                }
 
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.update();
+                if (gamepad1.atRest()) {
+                    arm.setPower(0);
+                }
+                if (gamepad1.x) {
+                    arm.setPower(1);
+                }
+                if (gamepad1.y) {
+                    arm.setPower(-0.5);
+                }
+
+
+                telemetry.update();
+
+            }
+
+
         }
     }
+
 }

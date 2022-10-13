@@ -5,23 +5,24 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.tfrec.Detector;
-import org.firstinspires.ftc.teamcode.tfrec.classification.Classifier;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous (name = "Auto Test")
 
 public class encoderTest extends LinearOpMode {
 
-    private DcMotor arm;
 
+    private DcMotor arm;
     //private DcMotor Arm;
-    //private DcMotor Intake;
+    private Servo intake;
+    private boolean open;
 
     private Detector tfDetector = null;
     //Create elapsed time variable and an instance of elapsed time
@@ -43,7 +44,7 @@ public class encoderTest extends LinearOpMode {
 
         if (opModeIsActive()) {
             // Create target positions
-            target = arm.getCurrentPosition() + (int) (inches * DRIVE_COUNTS_PER_IN);
+             target = arm.getCurrentPosition() + (int) (inches * DRIVE_COUNTS_PER_IN);
 
             //arm.setDirection(DcMotorSimple.Direction.REVERSE);
             // set target position
@@ -72,20 +73,60 @@ public class encoderTest extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
-        waitForStart();
+    public void runOpMode() throws InterruptedException {
+        //telemetry.addData("Status" , "Initialized");
+        //telemetry.update();
+
         arm = hardwareMap.get(DcMotor.class, "arm");
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        intake = hardwareMap.get(Servo.class, "intake");
 
 
-        //Intake = hardwareMap.get(DcMotor.class, "Intake");
+        intake.setDirection(Servo.Direction.REVERSE);
+        intake.setPosition(0.0);
+
 
 //maybe reverse?
-        //arm.setDirection(DcMotorSimple.Direction.REVERSE);
-        armControl(0.5, 20);
+
+
+        waitForStart();
+        runtime.reset();
+
+
+
+
+        if (intake.getPosition() == 0.0) {
+            open = true;
+
+        }
+
+        if (open) {
+            intake.setPosition(0.5);
+            sleep(1000);
+            open = false;
+        }
+
+        armControl(0.5, 10);
+
+
+
+        if (arm.getCurrentPosition() == arm.getTargetPosition()) {
+
+                open = true;
+                intake.setPosition(0.0);
+                sleep(1000);
+
+            }
+        }
+
+
+
 
 
 
     }
 
-}
+
+
 
