@@ -67,4 +67,11 @@ public class Arm extends Subsystem {
     public void setWristPosition(double position) {
         wrist.setPosition(position);
     }
+
+    public static double encoderTicksToInches(double ticks) {
+        double SPOOL_SIZE_IN = 1.270 / 2.0;
+        double GEAR_RATIO = 13.7;
+        double TICKS_PER_REV = 28;
+        return SPOOL_SIZE_IN * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+    }
 }
