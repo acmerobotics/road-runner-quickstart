@@ -19,9 +19,9 @@ public class Arm extends Subsystem {
     protected FeedbackController slideControllerRight = new NoFeedback();
 
     public static class SlidePositions {
-        public static double down = 0;
-        public static double low = 1;
-        public static double high = 2;
+        public static final double down = 0;
+        public static final double low = 1;
+        public static final double high = 2;
     }
 
     protected Servo wrist;
