@@ -20,6 +20,7 @@ public class Robot {
 	public Input gamepad2;
 	public Drivetrain drivetrain = new Drivetrain();
 	public ConeDetectionSubsystem detectionSubsystem = new ConeDetectionSubsystem(dashboard);
+	public Arm arm = new Arm();
 
 	// print subsystem for testing
 	public PrintSubsystem1 print = new PrintSubsystem1();
