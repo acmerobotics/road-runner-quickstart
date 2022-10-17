@@ -20,20 +20,20 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
-    private Servo intake;
-    private DcMotor arm;
+    private Servo intake = null;
+    private DcMotor arm = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        //drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake = hardwareMap.get(Servo.class, "intake");
         intake.setDirection(Servo.Direction.REVERSE);
         arm = hardwareMap.get(DcMotor.class, "arm");
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
-/**
+
  while (!isStopRequested()) {
  drive.setWeightedDrivePower(
  new Pose2d(
@@ -50,35 +50,23 @@ public class LocalizationTest extends LinearOpMode {
  telemetry.addData("y", poseEstimate.getY());
  telemetry.addData("heading", poseEstimate.getHeading());
  telemetry.update();
+
+
+
+
+
  }
- */
-        if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                // Put loop blocks here.
-                if (gamepad1.a) {
-                    intake.setPosition(0);
-                }
-                if (gamepad1.b) {
-                    intake.setPosition(0.5);
-                }
-
-                if (gamepad1.atRest()) {
-                    arm.setPower(0);
-                }
-                if (gamepad1.x) {
-                    arm.setPower(1);
-                }
-                if (gamepad1.y) {
-                    arm.setPower(-0.5);
-                }
 
 
-                telemetry.update();
-
-            }
 
 
-        }
+
+
+
+
+
+
+
     }
 
 }

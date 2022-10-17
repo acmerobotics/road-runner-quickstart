@@ -11,7 +11,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp
+
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp (name = "Arm Test", group = "Test Code")
+
 
 public class teleOpArmTest extends LinearOpMode {
     private Blinker Control_Hub;
@@ -55,41 +57,17 @@ public class teleOpArmTest extends LinearOpMode {
             double leftPower = -leftAxis;
             double rightPower = rightAxis;
 
-           //LeftDrive.setPower(leftPower);
-            //RightDrive.setPower(rightPower);
-
-            //MECHANISM CODE
-
-
-
-
-
-            //double IntakePower = (gamepad1.right_trigger>0.5)?1:((gamepad1.left_trigger>0.5)?-1:0);
-
-            //double SpinnerPower = gamepad1.dpad_left?1:(gamepad1.dpad_right?0:0.5);
 
             if (gamepad1.a) {
-                ArmMotor.setPower(0); //On the ground for starting and intaking
+                ArmMotor.setPower(0);
             }
             else if (gamepad1.x) {
-                ArmMotor.setPower(-1); //Low level on the goal
+                ArmMotor.setPower(-0.5);
             }
             else if (gamepad1.y) {
-                ArmMotor.setPower(1); //Mid level on the goal
+                ArmMotor.setPower(0.5);
             }
 
-
-            //stuff for arm position control
-            //ArmMotor.setPower(1);
-
-           //
-            //
-            //IntakeMotor.setPower(IntakePower);
-
-            //DuckSpinner.setPosition(SpinnerPower);
-
-           // telemetry.addData("Arm Position", ArmMotor.getCurrentPosition());
-          //  telemetry.update();
         }
     }
 }

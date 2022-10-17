@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous (name = "Auto Test")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous (name = "Encoder Test")
 
 public class encoderTest extends LinearOpMode {
 
@@ -73,7 +73,7 @@ public class encoderTest extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         //telemetry.addData("Status" , "Initialized");
         //telemetry.update();
 
@@ -89,35 +89,29 @@ public class encoderTest extends LinearOpMode {
 
 //maybe reverse?
 
-
-        waitForStart();
-        runtime.reset();
-
+            waitForStart();
+            runtime.reset();
 
 
-
-        if (intake.getPosition() == 0.0) {
-            open = true;
-
-        }
-
-        if (open) {
+            //500 is the optimal number of time for servo to close at 0.5
             intake.setPosition(0.5);
-            sleep(1000);
-            open = false;
+            sleep(500);
+
+
+            intake.setPosition(0.0);
+            sleep(500);
+
+/*
+        while opModeIsActive(){
+            intake.setPosition(0.5);
+            sleep
         }
-
-        armControl(0.5, 10);
-
+*/
 
 
-        if (arm.getCurrentPosition() == arm.getTargetPosition()) {
 
-                open = true;
-                intake.setPosition(0.0);
-                sleep(1000);
 
-            }
+
         }
 
 
