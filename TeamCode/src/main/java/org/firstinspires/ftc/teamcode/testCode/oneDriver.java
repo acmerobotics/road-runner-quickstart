@@ -156,7 +156,7 @@ public class oneDriver extends LinearOpMode {
             max = Math.max(max, Math.abs(leftBackPower));
             max = Math.max(max, Math.abs(rightBackPower));
 
-            if (max > 0.6) {
+            if (max > 1.0) {
                 leftFrontPower  /= max;
                 rightFrontPower /= max;
                 leftBackPower   /= max;
@@ -183,10 +183,10 @@ public class oneDriver extends LinearOpMode {
             */
 
             // Send calculated power to wheels
-            leftFront.setPower(leftFrontPower);
-            rightFront.setPower(rightFrontPower);
-            leftRear.setPower(leftBackPower);
-            rightRear.setPower(rightBackPower);
+            leftFront.setPower(leftFrontPower/2);
+            rightFront.setPower(rightFrontPower/2);
+            leftRear.setPower(leftBackPower/2);
+            rightRear.setPower(rightBackPower/2);
 
 
 
