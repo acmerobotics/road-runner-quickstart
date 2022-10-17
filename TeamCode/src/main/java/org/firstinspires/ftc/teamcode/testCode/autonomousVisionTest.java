@@ -2,6 +2,7 @@
 
 package org.firstinspires.ftc.teamcode.testCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@TeleOp
+@Autonomous
 public class autonomousVisionTest extends LinearOpMode {
     //Drive Train Constants
 
