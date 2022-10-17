@@ -68,7 +68,7 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="twoDriversTeleOp", group="teleOp")
+@TeleOp(name="oneDriversTeleOp", group="teleOp")
 
 public class oneDriver extends LinearOpMode {
 
@@ -102,7 +102,7 @@ public class oneDriver extends LinearOpMode {
 
 
         intake = hardwareMap.get(Servo.class, "intake");
-        intake.setDirection(Servo.Direction.REVERSE);
+        //intake.setDirection(Servo.Direction.REVERSE);
         arm = hardwareMap.get(DcMotor.class, "arm");
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -193,20 +193,17 @@ public class oneDriver extends LinearOpMode {
             if (gamepad1.atRest()){
                 arm.setPower(0);;
             }
-            if (gamepad1.b) {
-                intake.setPosition(0);
+            if (gamepad1.a) {
+                intake.setPosition(0.0);
             }
-            if (gamepad2.b) {
-                intake.setPosition(0.5);
+            if (gamepad1.b) {
+                intake.setPosition(0.8);
             }
             if (gamepad1.x) {
                 arm.setPower(1);
             }
             if (gamepad1.y) {
                 arm.setPower(-0.5);
-            }
-            if (gamepad1.right_bumper){
-                arm.setPower(0.1);
             }
 
 
