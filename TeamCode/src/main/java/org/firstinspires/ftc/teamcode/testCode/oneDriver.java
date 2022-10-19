@@ -78,7 +78,8 @@ public class oneDriver extends LinearOpMode {
     private DcMotorEx leftRear = null;
     private DcMotorEx rightFront = null;
     private DcMotorEx rightRear = null;
-    private Servo intake = null;
+    private Servo intakeLeft = null;
+    private Servo intakeRight = null;
     private DcMotor arm = null;
     private List<DcMotorEx> motors;
 
@@ -101,7 +102,9 @@ public class oneDriver extends LinearOpMode {
 
 
 
-        intake = hardwareMap.get(Servo.class, "intake");
+        intakeLeft = hardwareMap.get(Servo.class, "intakeLeft");
+        intakeRight = hardwareMap.get(Servo.class, "intakeRight");
+        intakeRight.setDirection(Servo.Direction.REVERSE);
         //intake.setDirection(Servo.Direction.REVERSE);
         arm = hardwareMap.get(DcMotor.class, "arm");
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -191,18 +194,22 @@ public class oneDriver extends LinearOpMode {
 
 
             if (gamepad1.atRest()){
-                arm.setPower(0);;
+                arm.setPower(0);
             }
-            if (gamepad1.a) {
-                intake.setPosition(0.0);
-            }
-            if (gamepad1.b) {
-                intake.setPosition(0.8);
-            }
+            //close
             if (gamepad1.x) {
-                arm.setPower(1);
+                intakeLeft.setPosition(0.0);
+                intakeRight.setPosition(0.0);
+            }
+            //open
+            if (gamepad1.b) {
+                intakeLeft.setPosition(0.4);
+                intakeRight.setPosition(0.5);
             }
             if (gamepad1.y) {
+                arm.setPower(1);
+            }
+            if (gamepad1.a) {
                 arm.setPower(-0.5);
             }
 
