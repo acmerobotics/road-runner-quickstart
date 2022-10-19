@@ -27,10 +27,7 @@ public class LocalizationTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake = hardwareMap.get(Servo.class, "intake");
-        intake.setDirection(Servo.Direction.REVERSE);
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         waitForStart();
 
