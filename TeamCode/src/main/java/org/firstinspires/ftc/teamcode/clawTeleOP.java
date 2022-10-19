@@ -13,6 +13,8 @@ public class clawTeleOP extends LinearOpMode {
         waitForStart();
         boolean toggleClaw = true;
         while (!isStopRequested()) {
+            /*int x = 1
+            while (x = 1){ *//**/
             if (gamepad1.a) {
                 if (toggleClaw) {
                     toggleClaw = false;
