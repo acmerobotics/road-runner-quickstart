@@ -177,4 +177,7 @@ public class AsymmetricMotionProfile {
                 velocity * Math.signum(distance), acceleration * Math.signum(distance));
     }
 
+    public double getProfileDuration() {
+        return profileDuration;
+    }
 }

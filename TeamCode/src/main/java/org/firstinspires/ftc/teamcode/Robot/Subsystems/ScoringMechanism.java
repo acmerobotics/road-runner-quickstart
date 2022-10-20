@@ -12,10 +12,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.CommandFramework.Subsystem;
+import org.firstinspires.ftc.teamcode.Utils.ProfiledServo;
 
 
 @Config
-public class Arm extends Subsystem {
+public class ScoringMechanism extends Subsystem {
 
 
     // LONG = side closets to the slide of the robot itself, arm reaches out the longest
@@ -29,7 +30,7 @@ public class Arm extends Subsystem {
     public static double WRIST_CARRY_SHORT = 0.2;
     public static double WRIST_DEPOSIT_LONG = WRIST_STOW;
 
-    public static double ARM_IN_COLLECT = 0.1;
+    public static double ARM_IN_COLLECT = 0.0;
     public static double ARM_CARRY = 0.2;
     public static double ARM_DEPOSIT_LONG_HIGH = 0.6;
     public static double ARM_DEPOSIT_LONG_MID = 0.6;
@@ -70,8 +71,7 @@ public class Arm extends Subsystem {
     protected FeedbackController slideControllerRight = new BasicPID(coefficients);
 
     protected Servo wrist;
-    protected Servo left_arm;
-    protected Servo right_arm;
+    protected ProfiledServo arm;
     protected CRServo intake;
 
     protected States desiredEnd = States.HIGH;
@@ -86,14 +86,14 @@ public class Arm extends Subsystem {
         slideRight = hwMap.get(DcMotorEx.class, "right_lift");
         slideRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        left_arm = hwMap.get(Servo.class, "arm_left");
-        right_arm = hwMap.get(Servo.class, "arm_right");
+        double velocity = 0.5; //percent/s
+        double accel = 0.5; // percent/s^2
+        arm = new ProfiledServo(hwMap, "arm_left","arm_right",velocity,accel,accel,ARM_IN_COLLECT);
 
         wrist = hwMap.get(Servo.class, "wrist");
 
         intake = hwMap.get(CRServo.class, "intake");
 
-        setServoPositions();
     }
 
     @Override
@@ -120,7 +120,13 @@ public class Arm extends Subsystem {
 
         transitionLogic();
         setPositions();
+        updateProfiledServos();
 
+    }
+
+
+    protected void updateProfiledServos() {
+        arm.periodic();
     }
 
     /**
@@ -148,6 +154,7 @@ public class Arm extends Subsystem {
                 break;
             case CARRY:
                 commandActuatorSetpoints(WRIST_CARRY_SHORT,ARM_IN_COLLECT,SLIDES_IN,INTAKE_SPEED);
+                break;
             case GO_TO_HIGH:
             case GO_TO_MID:
             case GO_TO_LOW:
@@ -249,8 +256,9 @@ public class Arm extends Subsystem {
     }
 
     protected void setArmPosition(double position) {
-        left_arm.setPosition(1 - position);
-        right_arm.setPosition(position);
+        arm.setPosition(position);
+//        left_arm.setPosition(1 - position);
+//        right_arm.setPosition(position);
     }
 
     public void setSlidePower(double leftPower,double rightPower) {

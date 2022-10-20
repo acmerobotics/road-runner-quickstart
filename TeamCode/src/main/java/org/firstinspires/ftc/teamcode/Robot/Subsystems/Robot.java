@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Robot.Subsystems;
 
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -20,7 +19,7 @@ public class Robot {
 	public Input gamepad2;
 	public Drivetrain drivetrain = new Drivetrain();
 	public ConeDetectionSubsystem detectionSubsystem = new ConeDetectionSubsystem(dashboard);
-	public Arm arm = new Arm();
+	public ScoringMechanism scoringMechanism = new ScoringMechanism();
 
 	// print subsystem for testing
 	public PrintSubsystem1 print = new PrintSubsystem1();
@@ -28,7 +27,7 @@ public class Robot {
 	protected CommandScheduler scheduler;
 
 	public Robot(HardwareMap hwMap, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
-		scheduler = new CommandScheduler(hwMap, drivetrain, dashboard, detectionSubsystem, arm);
+		scheduler = new CommandScheduler(hwMap, drivetrain, dashboard, detectionSubsystem, scoringMechanism);
 
 		this.gamepad1 = new Input(gamepad1, scheduler);
 		this.gamepad2 = new Input(gamepad2, scheduler);
