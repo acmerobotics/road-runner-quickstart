@@ -25,10 +25,15 @@ public class Arm extends Subsystem {
     }
 
     protected Servo wrist;
+    protected Servo left_arm;
+    protected Servo right_arm;
 
     private void commonInit(HardwareMap hwMap) {
-//        slideLeft = hwMap.get(DcMotorEx.class, "slide_left");
-//        slideRight = hwMap.get(DcMotorEx.class, "slide_right");
+        slideLeft = hwMap.get(DcMotorEx.class, "left_lift");
+        slideRight = hwMap.get(DcMotorEx.class, "right_lift");
+
+        left_arm = hwMap.get(Servo.class, "arm_left");
+        right_arm = hwMap.get(Servo.class, "arm_right");
 
         wrist = hwMap.get(Servo.class, "wrist");
     }
@@ -56,6 +61,9 @@ public class Arm extends Subsystem {
 //        slideRight.setPower(rightPower);
 
 //        wrist.setPosition(0);
+
+        setArmPosition(0.1);
+
     }
 
     @Override
@@ -74,4 +82,10 @@ public class Arm extends Subsystem {
         double TICKS_PER_REV = 28;
         return SPOOL_SIZE_IN * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
+
+    protected void setArmPosition(double position) {
+        left_arm.setPosition(1 - position);
+        right_arm.setPosition(position);
+    }
+
 }

@@ -28,7 +28,7 @@ public class Robot {
 	protected CommandScheduler scheduler;
 
 	public Robot(HardwareMap hwMap, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
-		scheduler = new CommandScheduler(hwMap, drivetrain, dashboard, detectionSubsystem);
+		scheduler = new CommandScheduler(hwMap, drivetrain, dashboard, detectionSubsystem, arm);
 
 		this.gamepad1 = new Input(gamepad1, scheduler);
 		this.gamepad2 = new Input(gamepad2, scheduler);
@@ -57,6 +57,7 @@ public class Robot {
 	public CommandScheduler getScheduler() {
 		return scheduler;
 	}
+
 
 
 
