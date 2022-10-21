@@ -29,6 +29,7 @@ public class ProfiledServo extends Subsystem {
 		this.currentPosition = initialPosition;
 		this.previousEndPosition = initialPosition + 100; // just guarantee that they are not equal
  		this.constraint = new MotionConstraint(velo,accel,decel);
+		setPositionsSynced(initialPosition);
 	}
 
 	protected void regenerate_profile() {
@@ -48,8 +49,7 @@ public class ProfiledServo extends Subsystem {
 		}
 		previousEndPosition = endPosition;
 		double current_target = profile_m.calculate(timer.seconds()).getX();
-		servo_left.setPosition(1 - current_target);
-		servo_right.setPosition(current_target);
+		setPositionsSynced(current_target);
 		Dashboard.packet.put(name + "position: ", current_target);
 	}
 
@@ -64,5 +64,10 @@ public class ProfiledServo extends Subsystem {
 
 	public void setPosition(double endPosition) {
 		this.endPosition = endPosition;
+	}
+
+	protected void setPositionsSynced(double pos) {
+		servo_left.setPosition(1 - pos);
+		servo_right.setPosition(pos);
 	}
 }

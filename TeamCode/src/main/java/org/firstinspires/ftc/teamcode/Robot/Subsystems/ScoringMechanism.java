@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.CommandFramework.Subsystem;
+import org.firstinspires.ftc.teamcode.Math.AsymmetricProfile.AsymmetricMotionProfile;
+import org.firstinspires.ftc.teamcode.Math.AsymmetricProfile.MotionConstraint;
 import org.firstinspires.ftc.teamcode.Utils.ProfiledServo;
 
 
@@ -24,14 +26,14 @@ public class ScoringMechanism extends Subsystem {
 
 
     private static final double CUTOFF_POINT = 4; // min height of slides for arm to move over the robot.
-    public static double WRIST_COLLECT_SHORT = 0;
+    public static double WRIST_COLLECT_SHORT = 0.0;
     public static double WRIST_COLLECT_LONG = 0;
     public static double WRIST_STOW = 1;
     public static double WRIST_CARRY_SHORT = 0.2;
     public static double WRIST_DEPOSIT_LONG = WRIST_STOW;
 
     public static double ARM_IN_COLLECT = 0.0;
-    public static double ARM_CARRY = 0.2;
+    public static double ARM_CARRY = 0.1;
     public static double ARM_DEPOSIT_LONG_HIGH = 0.6;
     public static double ARM_DEPOSIT_LONG_MID = 0.6;
     public static double ARM_DEPOSIT_LONG_LOW = 0.6;
@@ -66,6 +68,11 @@ public class ScoringMechanism extends Subsystem {
 
 
     protected PIDCoefficients coefficients = new PIDCoefficients(0.45,0,0);
+    ElapsedTime slide_profile_timer = new ElapsedTime();
+
+    public MotionConstraint slide_constraints = new MotionConstraint(20,20,20);
+
+    protected AsymmetricMotionProfile profile_slides = new AsymmetricMotionProfile(0,0,slide_constraints);
 
     protected FeedbackController slideControllerLeft = new BasicPID(coefficients);
     protected FeedbackController slideControllerRight = new BasicPID(coefficients);
@@ -81,19 +88,23 @@ public class ScoringMechanism extends Subsystem {
 
     double GO_TO_INTAKE_TIME = 0.5; // time between fully out-taking and moving arm before slides go back down to prevent bad things
     double OUTTAKE_DURATION = 0.25;  // time the out take occurs for before putting slides back in.
+    private double previousMotorTarget = 10000000;
+
     private void commonInit(HardwareMap hwMap) {
         slideLeft = hwMap.get(DcMotorEx.class, "left_lift");
         slideRight = hwMap.get(DcMotorEx.class, "right_lift");
         slideRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        double velocity = 0.5; //percent/s
-        double accel = 0.5; // percent/s^2
-        arm = new ProfiledServo(hwMap, "arm_left","arm_right",velocity,accel,accel,ARM_IN_COLLECT);
+        double velocity = 0.4; //percent/s
+        double accel = 1; // percent/s^2
+        arm = new ProfiledServo(hwMap, "arm_left","arm_right",velocity,accel * 2,accel / 1.5,ARM_IN_COLLECT);
 
         wrist = hwMap.get(Servo.class, "wrist");
 
         intake = hwMap.get(CRServo.class, "intake");
-
+        setServoPositions(true);
+        state = States.CARRY;
     }
 
     @Override
@@ -137,28 +148,27 @@ public class ScoringMechanism extends Subsystem {
             case STOW:
                 commandActuatorSetpoints(WRIST_STOW,ARM_IN_COLLECT,SLIDES_IN,INTAKE_SPEED_HOLD);
                 if (should_traverse) {
-                    state = States.INTAKE_READY;
-                }
-                break;
-            case INTAKE_READY:
-                commandActuatorSetpoints(WRIST_CARRY_SHORT,ARM_IN_COLLECT,SLIDES_IN,INTAKE_SPEED_HOLD);
-                if (should_traverse) {
-                    state = States.INTAKE_ON;
+                    state = States.CARRY;
+                    should_traverse = false;
                 }
                 break;
             case INTAKE_ON:
                 commandActuatorSetpoints(WRIST_COLLECT_SHORT,ARM_IN_COLLECT,SLIDES_IN,INTAKE_SPEED);
                 if (should_traverse) {
-                    state = desiredEndTransition;
+                    should_traverse = false;
+                    state = States.CARRY;
                 }
                 break;
             case CARRY:
-                commandActuatorSetpoints(WRIST_CARRY_SHORT,ARM_IN_COLLECT,SLIDES_IN,INTAKE_SPEED);
+                commandActuatorSetpoints(WRIST_CARRY_SHORT,ARM_CARRY,SLIDES_IN,INTAKE_SPEED_HOLD);
+                if (should_traverse) {
+                    state = desiredEndTransition;
+                }
                 break;
             case GO_TO_HIGH:
             case GO_TO_MID:
             case GO_TO_LOW:
-                commandActuatorSetpoints(WRIST_CARRY_SHORT,ARM_IN_COLLECT,getDesiredHeight(desiredEnd),INTAKE_SPEED_HOLD);
+                commandActuatorSetpoints(WRIST_DEPOSIT_LONG,ARM_IN_COLLECT,getDesiredHeight(desiredEnd),INTAKE_SPEED_HOLD);
                 if (getSlideHeightIN() > CUTOFF_POINT) {
                     state = desiredEnd;
                     should_traverse = false;
@@ -184,10 +194,12 @@ public class ScoringMechanism extends Subsystem {
                 commandActuatorSetpoints(WRIST_DEPOSIT_LONG,getDesiredArmPos(desiredEnd),getDesiredHeight(desiredEnd),OUT_TAKE);
 
                 if (TraverseTimer.seconds() > GO_TO_INTAKE_TIME) {
-                    state = States.INTAKE_READY;
+                    state = States.CARRY;
+                    should_traverse = false;
                 }
                 break;
         }
+        System.out.println("Current state: " + state);
     }
 
     /**
@@ -221,10 +233,24 @@ public class ScoringMechanism extends Subsystem {
         setArmPosition(currentArmPos);
         intake.setPower(intakePower);
         wrist.setPosition(currentWristPos);
+        intake.setPower(intakePower);
     }
+
+
+    public void setServoPositions(boolean isInit) {
+        setArmPosition(currentArmPos);
+        intake.setPower(intakePower);
+        wrist.setPosition(currentWristPos);
+        if (!isInit){
+            intake.setPower(intakePower);
+        }
+    }
+
     public void setPositions() {
         setServoPositions();
-        slideControl(currentMotorTarget);
+        regenerate_slide_profile();
+        double slide_profile_position = profile_slides.calculate(slide_profile_timer.seconds()).getX();
+        slideControl(slide_profile_position);
     }
 
     @Override
@@ -248,6 +274,7 @@ public class ScoringMechanism extends Subsystem {
         double left = encoderTicksToInches(slideLeft.getCurrentPosition());
         double right = encoderTicksToInches(slideRight.getCurrentPosition());
         System.out.println("left motor pos: " + left + " right motor pos: " + right);
+        previousMotorTarget = currentMotorTarget;
 
         double leftCommand = slideControllerLeft.calculate(ticks,left);
         double rightCommand = slideControllerRight.calculate(ticks,right);
@@ -356,6 +383,47 @@ public class ScoringMechanism extends Subsystem {
             default:
                 return SLIDES_LOW;
         }
+    }
+
+    /**
+     * if in placing position, this will allow the traversal to the next state which is out taking
+     */
+    public void activateEjection() {
+        if (state.equals(States.HIGH) || state.equals(States.MID) || state.equals(States.LOW)) {
+            should_traverse = true;
+        }
+    }
+
+    public void ACTIVATE_INTAKE() {
+        if (state.equals(States.CARRY)) {
+            state = States.INTAKE_ON;
+            should_traverse = false;
+        }
+    }
+
+    public void STOP_INTAKE() {
+        if (state.equals(States.INTAKE_ON)) {
+            should_traverse = true;
+        }
+    }
+
+    public void GO_TO_SCORING() {
+        if (state.equals(States.CARRY)) {
+            should_traverse = true;
+        }
+    }
+
+
+    public boolean isArmBusy() {
+        return arm.isBusy();
+    }
+
+    protected void regenerate_slide_profile() {
+        if (currentMotorTarget != previousMotorTarget) {
+            profile_slides = new AsymmetricMotionProfile(getSlideHeightIN(),currentMotorTarget,slide_constraints);
+            slide_profile_timer.reset();
+        }
+        previousMotorTarget = currentMotorTarget;
     }
 
 }
