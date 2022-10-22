@@ -19,16 +19,18 @@ public class Deposit extends Command {
 				&& !mechanism.getState().equals(ScoringMechanism.States.LOW);
 		mechanism.activateEjection();
 		System.out.println("State at beginning of Deposit is " + mechanism.getState());
+		System.out.println("did Deposit begin with invalid start? " + invalid_start);
 	}
 
 	@Override
 	public void periodic() {
+
 	}
 
 	@Override
 	public boolean completed() {
 		return mechanism.getState().equals(ScoringMechanism.States.GO_TO_INTAKE) ||
-				mechanism.getState().equals(ScoringMechanism.States.CARRY);
+				mechanism.getState().equals(ScoringMechanism.States.CARRY) ;
 	}
 
 	@Override

@@ -18,22 +18,24 @@ public class ProfiledServo extends Subsystem {
 	protected String name;
 
 	public AsymmetricMotionProfile profile_m;
-	public MotionConstraint constraint;
+	public MotionConstraint forwardConstraint;
+	public MotionConstraint backwardContraint;
 	public ElapsedTime timer = new ElapsedTime();
 
-	public ProfiledServo(HardwareMap hwmap, String name1, String name2, double velo, double accel, double decel, double initialPosition) {
+	public ProfiledServo(HardwareMap hwmap, String name1, String name2, double Forwardvelo, double Forwardaccel, double Forwarddecel, double BackwardVelo, double BackwardAccel, double backwawrdDecel, double initialPosition) {
 		servo_left = hwmap.get(Servo.class, name1);
 		servo_right = hwmap.get(Servo.class,name2);
 		this.name = name1 + " " + name2 + " ";
 		this.endPosition = initialPosition;
 		this.currentPosition = initialPosition;
 		this.previousEndPosition = initialPosition + 100; // just guarantee that they are not equal
- 		this.constraint = new MotionConstraint(velo,accel,decel);
+ 		this.forwardConstraint = new MotionConstraint(Forwardvelo,Forwardaccel,Forwarddecel);
+	 	this.backwardContraint = new MotionConstraint(BackwardVelo,BackwardAccel, backwawrdDecel);
 		setPositionsSynced(initialPosition);
 	}
 
 	protected void regenerate_profile() {
-		profile_m = new AsymmetricMotionProfile(this.currentPosition,this.endPosition,this.constraint);
+		profile_m = new AsymmetricMotionProfile(this.currentPosition,this.endPosition,this.forwardConstraint);
 		timer.reset();
 	}
 

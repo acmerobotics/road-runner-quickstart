@@ -17,7 +17,7 @@ public class TestTeleop extends BaseTeleop {
 
 	@Override
 	public Command setupTeleop(CommandScheduler scheduler) {
-		robot.gamepad1.whenCrossPressed(new ActivateIntakeToggle(robot.scoringMechanism,gamepad1));
+//		robot.gamepad1.whenCrossPressed(new ActivateIntakeToggle(robot.scoringMechanism,gamepad1));
 
 		//return new ClosedLoopTeleop(robot.drivetrain,robot.odometry,robot.gamepad1);
 		return new RobotRelative(robot, robot.gamepad1);

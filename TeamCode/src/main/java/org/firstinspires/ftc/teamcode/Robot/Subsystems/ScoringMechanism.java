@@ -4,6 +4,7 @@ import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FeedbackController;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.CommandFramework.Subsystem;
 import org.firstinspires.ftc.teamcode.Math.AsymmetricProfile.AsymmetricMotionProfile;
 import org.firstinspires.ftc.teamcode.Math.AsymmetricProfile.MotionConstraint;
+import org.firstinspires.ftc.teamcode.Math.AsymmetricProfile.MotionProfileDebug;
 import org.firstinspires.ftc.teamcode.Utils.ProfiledServo;
 
 
@@ -28,13 +30,13 @@ public class ScoringMechanism extends Subsystem {
     private static final double CUTOFF_POINT = 4; // min height of slides for arm to move over the robot.
     public static double WRIST_COLLECT_SHORT = 0.0;
     public static double WRIST_COLLECT_LONG = 0;
-    public static double WRIST_STOW = 1;
+    public static double WRIST_STOW = 0.9;
     public static double WRIST_CARRY_SHORT = 0.2;
     public static double WRIST_DEPOSIT_LONG = WRIST_STOW;
 
     public static double ARM_IN_COLLECT = 0.0;
     public static double ARM_CARRY = 0.1;
-    public static double ARM_DEPOSIT_LONG_HIGH = 0.6;
+    public static double ARM_DEPOSIT_LONG_HIGH = 0.35;
     public static double ARM_DEPOSIT_LONG_MID = 0.6;
     public static double ARM_DEPOSIT_LONG_LOW = 0.6;
 
@@ -42,22 +44,22 @@ public class ScoringMechanism extends Subsystem {
     public static double ARM_DEPOSIT_SHORT_MID = 0.6;
     public static double ARM_DEPOSIT_SHORT_LOW = 0.6;
 
-    public static double INTAKE_SPEED_HOLD = 0;
+    public static double INTAKE_SPEED_HOLD = 0.2;
     public static double INTAKE_SPEED = 0.5;
-    public static double OUT_TAKE = -0.3;
+    public static double OUT_TAKE = -1;
 
     public static double SLIDES_IN = 0;
     public static double SLIDES_CLEAR = 4;
-    public static double SLIDES_HIGH = 14;
+    public static double SLIDES_HIGH = 17;
     public static double SLIDES_MID = 10;
     public static double SLIDES_LOW = 5;
 
     protected double currentWristPos = WRIST_STOW;
-    protected double currentArmPos = ARM_IN_COLLECT;
+    protected double currentArmPos = ARM_CARRY;
     protected double currentMotorTarget = 0;
     protected double intakePower = INTAKE_SPEED_HOLD;
 
-    protected boolean should_traverse = true;  // should traverse to the next state in the state machine
+    protected boolean should_traverse = false;  // should traverse to the next state in the state machine
 
     public static boolean LONG_OUT_DEFAULT = true; // if true, in-taking on short side, out take on long is default
 
@@ -70,10 +72,9 @@ public class ScoringMechanism extends Subsystem {
     protected PIDCoefficients coefficients = new PIDCoefficients(0.45,0,0);
     ElapsedTime slide_profile_timer = new ElapsedTime();
 
-    public MotionConstraint slide_constraints = new MotionConstraint(20,20,20);
+    public MotionConstraint slide_constraints = new MotionConstraint(35,25,40);
 
     protected AsymmetricMotionProfile profile_slides = new AsymmetricMotionProfile(0,0,slide_constraints);
-
     protected FeedbackController slideControllerLeft = new BasicPID(coefficients);
     protected FeedbackController slideControllerRight = new BasicPID(coefficients);
 
@@ -93,12 +94,17 @@ public class ScoringMechanism extends Subsystem {
     private void commonInit(HardwareMap hwMap) {
         slideLeft = hwMap.get(DcMotorEx.class, "left_lift");
         slideRight = hwMap.get(DcMotorEx.class, "right_lift");
-        slideRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
         slideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        double velocity = 0.4; //percent/s
-        double accel = 1; // percent/s^2
-        arm = new ProfiledServo(hwMap, "arm_left","arm_right",velocity,accel * 2,accel / 1.5,ARM_IN_COLLECT);
+        double velocityForward = 0.8; //percent/s
+        double accelForward = 1; // percent/s^2
+
+        double velocityBackward = 0.5;
+        double accelBackward = 0.7;
+
+
+        arm = new ProfiledServo(hwMap, "arm_left","arm_right",velocityForward,accelForward * 1.5,accelForward / 2,velocityBackward,accelBackward * 1.5,accelBackward / 2,ARM_IN_COLLECT);
 
         wrist = hwMap.get(Servo.class, "wrist");
 
@@ -250,6 +256,7 @@ public class ScoringMechanism extends Subsystem {
         setServoPositions();
         regenerate_slide_profile();
         double slide_profile_position = profile_slides.calculate(slide_profile_timer.seconds()).getX();
+        System.out.println("slide position from motion profile: " + slide_profile_position);
         slideControl(slide_profile_position);
     }
 

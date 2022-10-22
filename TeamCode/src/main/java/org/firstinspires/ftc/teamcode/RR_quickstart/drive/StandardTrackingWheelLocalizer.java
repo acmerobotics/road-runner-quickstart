@@ -36,8 +36,8 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     int previous_middle_pos = 0;
     final int REJECT_CUTOFF = (int) TICKS_PER_REV * 10;
 
-    public static double LATERAL_DISTANCE = 12.40; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = -6.2; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 10; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = -0.84; // in; offset of the lateral wheel
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
@@ -88,7 +88,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         return Arrays.asList(
                 encoderTicksToInches(leftPos),
                 encoderTicksToInches(rightPos),
-                encoderTicksToInches(midPos)
+                encoderTicksToInches(-midPos)
         );
     }
 
@@ -102,7 +102,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         return Arrays.asList(
                 encoderTicksToInches(leftEncoder.getCorrectedVelocity()),
                 encoderTicksToInches(rightEncoder.getCorrectedVelocity()),
-                encoderTicksToInches(frontEncoder.getCorrectedVelocity())
+                encoderTicksToInches(-frontEncoder.getCorrectedVelocity())
         );
     }
 }

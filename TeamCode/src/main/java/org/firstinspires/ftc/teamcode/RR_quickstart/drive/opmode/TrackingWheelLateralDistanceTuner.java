@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.RR_quickstart.drive.opmode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.RR_quickstart.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RR_quickstart.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.Robot.Subsystems.Dashboard;
 
 /**
  * Opmode designed to assist the user in tuning the `StandardTrackingWheelLocalizer`'s
@@ -66,6 +68,7 @@ import org.firstinspires.ftc.teamcode.RR_quickstart.drive.StandardTrackingWheelL
 public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
     public static int NUM_TURNS = 5;
 
+
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -111,6 +114,7 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
             telemetry.addLine("Total Heading (deg): " + Math.toDegrees(headingAccumulator));
             telemetry.addLine("Raw Heading (deg): " + Math.toDegrees(heading));
             telemetry.addLine();
+            telemetry.addLine("adjusted track width"+ (headingAccumulator / (NUM_TURNS * Math.PI * 2)) * StandardTrackingWheelLocalizer.LATERAL_DISTANCE);
             telemetry.addLine("Press Y/△ to conclude routine");
             telemetry.update();
 
