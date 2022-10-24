@@ -9,7 +9,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 @Autonomous(name = "VisionAuto", group = "Auto")
 public class VisionAutoMode extends LinearOpMode {
-    final OpenCvCamera phoneCamera;
+    OpenCvCamera phoneCamera;
     @Override
     public void runOpMode() throws InterruptedException {
         int cameraMonitorViewId = hardwareMap.appContext
@@ -24,7 +24,7 @@ public class VisionAutoMode extends LinearOpMode {
                 new OpenCvCamera.AsyncCameraOpenListener() {
                     @Override
                     public void onOpened() {
-                        phoneCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT)
+                        phoneCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
                     }
 
                     @Override
