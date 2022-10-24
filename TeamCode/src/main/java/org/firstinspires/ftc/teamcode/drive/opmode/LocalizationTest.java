@@ -20,6 +20,11 @@ public class LocalizationTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
+        final DcMotor leftFrontMotor = hardwareMap.get(DcMotor.class, "leftFrontMotor");
+        final DcMotor leftBackMotor = hardwareMap.get(DcMotor.class, "leftBackMotor");
+        final DcMotor rightFrontMotor = hardwareMap.get(DcMotor.class, "rightFrontMotor");
+        final DcMotor rightBackMotor = hardwareMap.get(DcMotor.class, "rightBackMotor");
+
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
@@ -36,9 +41,15 @@ public class LocalizationTest extends LinearOpMode {
             drive.update();
 
             Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
+//            telemetry.addData("x", poseEstimate.getX());
+//            telemetry.addData("y", poseEstimate.getY());
+//            telemetry.addData("heading", poseEstimate.getHeading());
+
+            telemetry.addData("PWR_LFM", leftFrontMotor.getPower());
+            telemetry.addData("PWR_LBM", leftBackMotor.getPower());
+            telemetry.addData("PWR_RFM", rightFrontMotor.getPower());
+            telemetry.addData("PWR_RBM", rightBackMotor.getPower());
+
             telemetry.update();
         }
     }
