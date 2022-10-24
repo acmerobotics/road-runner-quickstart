@@ -32,11 +32,11 @@ public class ScoringMechanism extends Subsystem {
     public static double WRIST_COLLECT_LONG = 0;
     public static double WRIST_STOW = 0.9;
     public static double WRIST_CARRY_SHORT = 0.2;
-    public static double WRIST_DEPOSIT_LONG = WRIST_STOW;
+    public static double WRIST_DEPOSIT_LONG = 1;
 
     public static double ARM_IN_COLLECT = 0.0;
     public static double ARM_CARRY = 0.1;
-    public static double ARM_DEPOSIT_LONG_HIGH = 0.35;
+    public static double ARM_DEPOSIT_LONG_HIGH = 0.38;
     public static double ARM_DEPOSIT_LONG_MID = 0.6;
     public static double ARM_DEPOSIT_LONG_LOW = 0.6;
 
@@ -44,7 +44,7 @@ public class ScoringMechanism extends Subsystem {
     public static double ARM_DEPOSIT_SHORT_MID = 0.6;
     public static double ARM_DEPOSIT_SHORT_LOW = 0.6;
 
-    public static double INTAKE_SPEED_HOLD = 0.2;
+    public static double INTAKE_SPEED_HOLD = 0.1;
     public static double INTAKE_SPEED = 0.5;
     public static double OUT_TAKE = -1;
 
