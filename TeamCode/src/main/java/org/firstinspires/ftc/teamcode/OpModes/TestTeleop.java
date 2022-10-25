@@ -30,6 +30,7 @@ public class TestTeleop extends BaseTeleop {
 
 		robot.gamepad1.whenLeftBumperPressed(new ActivateIntakeToggle(robot.scoringMechanism, gamepad1, intakeSupplier));
 		robot.gamepad1.whenTrianglePressed(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.HIGH));
+		robot.gamepad1.whenSquarePressed(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.MID));
 		robot.gamepad1.whenRightBumperPressed(new Deposit(robot.scoringMechanism));
 
 		//return new ClosedLoopTeleop(robot.drivetrain,robot.odometry,robot.gamepad1);

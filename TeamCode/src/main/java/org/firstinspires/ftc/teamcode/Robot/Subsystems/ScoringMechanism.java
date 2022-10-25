@@ -32,12 +32,12 @@ public class ScoringMechanism extends Subsystem {
     public static double WRIST_COLLECT_LONG = 0;
     public static double WRIST_STOW = 0.9;
     public static double WRIST_CARRY_SHORT = 0.2;
-    public static double WRIST_DEPOSIT_LONG = 1;
+    public static double WRIST_DEPOSIT_LONG = 0.97;
 
     public static double ARM_IN_COLLECT = 0.0;
     public static double ARM_CARRY = 0.1;
     public static double ARM_DEPOSIT_LONG_HIGH = 0.38;
-    public static double ARM_DEPOSIT_LONG_MID = 0.6;
+    public static double ARM_DEPOSIT_LONG_MID = 0.38;
     public static double ARM_DEPOSIT_LONG_LOW = 0.6;
 
     public static double ARM_DEPOSIT_SHORT_HIGH = 0.6;
@@ -45,13 +45,13 @@ public class ScoringMechanism extends Subsystem {
     public static double ARM_DEPOSIT_SHORT_LOW = 0.6;
 
     public static double INTAKE_SPEED_HOLD = 0.1;
-    public static double INTAKE_SPEED = 0.5;
+    public static double INTAKE_SPEED = 0.85;
     public static double OUT_TAKE = -1;
 
     public static double SLIDES_IN = 0;
     public static double SLIDES_CLEAR = 4;
     public static double SLIDES_HIGH = 17;
-    public static double SLIDES_MID = 10;
+    public static double SLIDES_MID = 8;
     public static double SLIDES_LOW = 5;
 
     protected double currentWristPos = WRIST_STOW;
@@ -70,6 +70,7 @@ public class ScoringMechanism extends Subsystem {
 
 
     protected PIDCoefficients coefficients = new PIDCoefficients(0.45,0,0);
+    protected PIDCoefficients coefficients_between = new PIDCoefficients(1,0,0);
     ElapsedTime slide_profile_timer = new ElapsedTime();
 
     public MotionConstraint slide_constraints = new MotionConstraint(35,25,40);
@@ -77,6 +78,7 @@ public class ScoringMechanism extends Subsystem {
     protected AsymmetricMotionProfile profile_slides = new AsymmetricMotionProfile(0,0,slide_constraints);
     protected FeedbackController slideControllerLeft = new BasicPID(coefficients);
     protected FeedbackController slideControllerRight = new BasicPID(coefficients);
+    protected FeedbackController betweenSlideController = new BasicPID(coefficients);
 
     protected Servo wrist;
     protected ProfiledServo arm;
@@ -219,7 +221,7 @@ public class ScoringMechanism extends Subsystem {
                 if (LONG_OUT_DEFAULT) {
                     return ARM_DEPOSIT_LONG_HIGH;
                 }
-                return ARM_DEPOSIT_LONG_LOW;
+                return ARM_DEPOSIT_SHORT_HIGH;
             case MID:
                 if (LONG_OUT_DEFAULT) {
                     return ARM_DEPOSIT_LONG_MID;
@@ -282,9 +284,9 @@ public class ScoringMechanism extends Subsystem {
         double right = encoderTicksToInches(slideRight.getCurrentPosition());
         System.out.println("left motor pos: " + left + " right motor pos: " + right);
         previousMotorTarget = currentMotorTarget;
-
-        double leftCommand = slideControllerLeft.calculate(ticks,left);
-        double rightCommand = slideControllerRight.calculate(ticks,right);
+        double betweenSlideOutput = betweenSlideController.calculate(left,right);
+        double leftCommand = slideControllerLeft.calculate(ticks,left) - betweenSlideOutput;
+        double rightCommand = slideControllerRight.calculate(ticks,right) + betweenSlideOutput;
         setSlidePower(leftCommand,rightCommand);
 
     }
