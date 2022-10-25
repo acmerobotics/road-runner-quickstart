@@ -47,7 +47,7 @@ public class BlueRight extends BaseAuto {
 		return follow(goNearScoring1)
 				.addNext(new MultipleCommand(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.HIGH), follow(placeCone)))
 				.addNext(new Deposit(robot.scoringMechanism))
-				.addNext(new Delay(1.5))
+				.addNext(new Delay(2))
 				.addNext(follow(goToPickupPartial));
 
 
