@@ -101,6 +101,7 @@ public class autoLeft extends LinearOpMode {
 
         drive.setPoseEstimate(startPose);
 
+        //calibrate the distance
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
                 .strafeTo(new Vector2d(2,28))
                 .build();
