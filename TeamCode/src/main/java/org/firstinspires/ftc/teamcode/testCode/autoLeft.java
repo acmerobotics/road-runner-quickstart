@@ -80,10 +80,14 @@ public class autoLeft extends LinearOpMode {
         int RIGHT = 2;
         AprilTagDetection tagOfInterest = null;
 
-        //arm
+        //arm,change these values according to the height
         double high = 40;
+        double mid = 30;
+        double low = 20;
         armControl highJunction = new armControl(1,high);
-        armControl midJunction = new armControl
+        armControl midJunction = new armControl(1,mid);
+        armControl lowJunction = new armControl(1,low);
+
 
 
     @Override
