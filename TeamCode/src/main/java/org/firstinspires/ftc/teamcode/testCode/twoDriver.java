@@ -78,7 +78,8 @@ public class twoDriver extends LinearOpMode {
     private DcMotorEx leftRear = null;
     private DcMotorEx rightFront = null;
     private DcMotorEx rightRear = null;
-    private Servo intake = null;
+    private Servo intakeLeft = null;
+    private Servo intakeRight = null;
     private DcMotor arm = null;
     private List<DcMotorEx> motors;
 
@@ -101,8 +102,10 @@ public class twoDriver extends LinearOpMode {
 
 
 
-        intake = hardwareMap.get(Servo.class, "intake");
-        intake.setDirection(Servo.Direction.REVERSE);
+        intakeLeft = hardwareMap.get(Servo.class, "intakeLeft");
+        intakeRight = hardwareMap.get(Servo.class, "intakeRight");
+        intakeRight.setDirection(Servo.Direction.REVERSE);
+        //intake.setDirection(Servo.Direction.REVERSE);
         arm = hardwareMap.get(DcMotor.class, "arm");
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -125,6 +128,7 @@ public class twoDriver extends LinearOpMode {
         motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -183,30 +187,31 @@ public class twoDriver extends LinearOpMode {
             */
 
             // Send calculated power to wheels
-            leftFront.setPower(leftFrontPower);
-            rightFront.setPower(rightFrontPower);
-            leftRear.setPower(leftBackPower);
-            rightRear.setPower(rightBackPower);
+            leftFront.setPower(leftFrontPower/1.7);
+            rightFront.setPower(rightFrontPower/1.7);
+            leftRear.setPower(leftBackPower/1.7);
+            rightRear.setPower(rightBackPower/1.7);
 
 
 
             if (gamepad2.atRest()){
-                arm.setPower(0);;
+                arm.setPower(0);
             }
+            //close
             if (gamepad2.b) {
-                intake.setPosition(0);
+                intakeLeft.setPosition(0.5);
+                intakeRight.setPosition(0.55);
             }
-            if (gamepad2.b) {
-                intake.setPosition(0.5);
-            }
+            //open
             if (gamepad2.x) {
-                arm.setPower(1);
+                intakeLeft.setPosition(1);
+                intakeRight.setPosition(0.76);
             }
             if (gamepad2.y) {
-                arm.setPower(-0.5);
+                arm.setPower(1);
             }
-            if (gamepad2.right_bumper){
-                arm.setPower(0.1);
+            if (gamepad2.a) {
+                arm.setPower(-0.7);
             }
 
 

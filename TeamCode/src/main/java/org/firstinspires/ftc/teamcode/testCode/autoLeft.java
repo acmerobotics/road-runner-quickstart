@@ -2,31 +2,32 @@
 
 package org.firstinspires.ftc.teamcode.testCode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.testCode.encoderTest;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.testCode.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-
-import org.firstinspires.ftc.teamcode.testCode.driveTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Autonomous
-public class autonomousVisionTest extends LinearOpMode {
+public class autoLeft extends LinearOpMode {
     //Drive Train Constants
 
 
@@ -36,7 +37,8 @@ public class autonomousVisionTest extends LinearOpMode {
         private DcMotorEx leftRear = null;
         private DcMotorEx rightFront = null;
         private DcMotorEx rightRear = null;
-        private Servo intake = null;
+        private Servo intakeLeft = null;
+        private Servo intakeRight = null;
         private DcMotor arm = null;
         private List<DcMotorEx> motors;
 
@@ -48,7 +50,6 @@ public class autonomousVisionTest extends LinearOpMode {
                 motor.setZeroPowerBehavior(zeroPowerBehavior);
             }
         }
-
 
         //vision constants
         OpenCvCamera camera;
@@ -79,25 +80,38 @@ public class autonomousVisionTest extends LinearOpMode {
         int RIGHT = 2;
         AprilTagDetection tagOfInterest = null;
 
+        //arm
+        double high = 40;
+        armControl highJunction = new armControl(1,high);
+        armControl midJunction = new armControl
 
 
     @Override
         public void runOpMode() {
-            //Drive Train Init
-            leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-            leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-            rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-            rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        intakeLeft = hardwareMap.get(Servo.class, "intakeLeft");
+        intakeRight = hardwareMap.get(Servo.class, "intakeRight");
+        intakeRight.setDirection(Servo.Direction.REVERSE);
 
-            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
+        Pose2d startPose = new Pose2d(0, 0, 0);
+
+        drive.setPoseEstimate(startPose);
+
+        Trajectory traj1 = drive.trajectoryBuilder(startPose)
+                .strafeTo(new Vector2d(2,28))
+                .build();
 
 
-            motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
+        Trajectory traj2 = drive.trajectoryBuilder(startPose)
+                .forward(40)
+                .build();
 
-            setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Trajectory traj3 = drive.trajectoryBuilder(startPose)
+                .strafeTo(new Vector2d(2,-26))
+                .build();
+
+
+
 
 
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -172,15 +186,7 @@ public class autonomousVisionTest extends LinearOpMode {
              * during the init loop.
              */
 
-
-
-
             //May be add here
-            //waitForStart();
-
-
-
-
 
             /* Update the telemetry */
             if (tagOfInterest != null) {
@@ -193,15 +199,32 @@ public class autonomousVisionTest extends LinearOpMode {
             }
 
 
+
             if (tagOfInterest == null || tagOfInterest.id == LEFT) {
                 //input trajectory
+                intakeLeft.setPosition(1);
+                intakeRight.setPosition(0.76);
+               drive.followTrajectory(traj1);
+               sleep(2000);
+               drive.followTrajectory(traj2);
+
+
 
 
             } else if (tagOfInterest.id == MIDDLE) {
 
-
+                intakeLeft.setPosition(1);
+                intakeRight.setPosition(0.76);
+                drive.followTrajectory(traj2);
+                sleep(3000);
 
             } else {
+                intakeLeft.setPosition(1);
+                intakeRight.setPosition(0.76);
+                drive.followTrajectory(traj3);
+                sleep(2000);
+                drive.followTrajectory(traj2);
+
 
             }
 

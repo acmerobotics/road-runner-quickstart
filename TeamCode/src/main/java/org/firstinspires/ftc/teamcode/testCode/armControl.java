@@ -1,24 +1,12 @@
 package org.firstinspires.ftc.teamcode.testCode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.tfrec.Detector;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous (name = "Encoder Test")
-
-public class encoderTest extends LinearOpMode {
-
-
+public class armControl extends encoderTest {
     private DcMotor arm;
     private Servo intake;
     private boolean open;
@@ -34,16 +22,15 @@ public class encoderTest extends LinearOpMode {
     static final double DRIVE_COUNTS_PER_MM = (HD_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUMFERENCE_MM; //112/109.9
     static final double DRIVE_COUNTS_PER_IN = DRIVE_COUNTS_PER_MM * 25.4;//1.0191*25.4
 
-//35mm = 1.378 inches
+    public armControl(double power, double inches) {
+        //super();
 
-    // Drive function with 3 parameters
-    public void armControl(double power, double inches) {
         int target;
 
 
         if (opModeIsActive()) {
             // Create target positions
-             target = arm.getCurrentPosition() + (int) (inches * DRIVE_COUNTS_PER_IN);
+            target = arm.getCurrentPosition() + (int) (inches * DRIVE_COUNTS_PER_IN);
 
             //arm.setDirection(DcMotorSimple.Direction.REVERSE);
             // set target position
@@ -64,62 +51,6 @@ public class encoderTest extends LinearOpMode {
             // set motor power back to 0
             arm.setPower(0);
 
-
-
         }
     }
-
-
-
-    @Override
-    public void runOpMode() {
-        //telemetry.addData("Status" , "Initialized");
-        //telemetry.update();
-
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        intake = hardwareMap.get(Servo.class, "intake");
-
-
-        intake.setDirection(Servo.Direction.REVERSE);
-        intake.setPosition(0.0);
-
-
-//maybe reverse?
-
-            waitForStart();
-            runtime.reset();
-
-
-            //500 is the optimal number of time for servo to close at 0.5
-            intake.setPosition(0.5);
-            sleep(500);
-
-
-            intake.setPosition(0.0);
-            sleep(500);
-
-/*
-        while opModeIsActive(){
-            intake.setPosition(0.5);
-            sleep
-        }
-*/
-
-
-
-
-
-        }
-
-
-
-
-
-
-    }
-
-
-
-
+}
