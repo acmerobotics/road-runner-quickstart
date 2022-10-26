@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Robot.Subsystems;
 
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FeedbackController;
+import com.ThermalEquilibrium.homeostasis.Filters.FilterAlgorithms.LowPassFilter;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
@@ -67,6 +68,8 @@ public class ScoringMechanism extends Subsystem {
 
     protected DcMotorEx slideLeft;
     protected DcMotorEx slideRight;
+
+    protected LowPassFilter intake_power_filter = new LowPassFilter(0.5);
 
 
     protected PIDCoefficients coefficients = new PIDCoefficients(0.45,0,0);
@@ -258,7 +261,7 @@ public class ScoringMechanism extends Subsystem {
      */
     public void setServoPositions() {
         setArmPosition(currentArmPos);
-        intake.setPower(intakePower);
+        intake.setPower(intake_power_filter.estimate(intakePower));
         System.out.println("set intake to power: " + intakePower + " at Current state: " + state);
         System.out.println();
 
