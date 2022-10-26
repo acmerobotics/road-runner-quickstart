@@ -93,6 +93,10 @@ public class ScoringMechanism extends Subsystem {
     double OUTTAKE_DURATION = 1;  // time the out take occurs for before putting slides back in.
     private double previousMotorTarget = 10000000;
 
+    /**
+     * The initialization for both autonomous and teleop
+     * @param hwMap the hardware map
+     */
     private void commonInit(HardwareMap hwMap) {
         slideLeft = hwMap.get(DcMotorEx.class, "left_lift");
         slideRight = hwMap.get(DcMotorEx.class, "right_lift");
@@ -116,6 +120,10 @@ public class ScoringMechanism extends Subsystem {
         state = States.CARRY;
     }
 
+    /**
+     * The initialization specifically for autonomous
+     * @param hwMap the hardware map
+     */
     @Override
     public void initAuto(HardwareMap hwMap) {
         commonInit(hwMap);
@@ -127,6 +135,10 @@ public class ScoringMechanism extends Subsystem {
 
     }
 
+    /**
+     * The initialization specifically for teleop
+     * @param hwMap the hardware map
+     */
     @Override
     public void initTeleop(HardwareMap hwMap) {
         commonInit(hwMap);
@@ -134,10 +146,11 @@ public class ScoringMechanism extends Subsystem {
         slideRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-
+    /**
+     * The update loop for both autonomous and teleop
+     */
     @Override
     public void periodic() {
-
         transitionLogic();
         setPositions();
         updateProfiledServos();
@@ -150,7 +163,8 @@ public class ScoringMechanism extends Subsystem {
     }
 
     /**
-     * wow
+     * The main logic for the state machine
+     * This is where the state transitions are defined.
      */
     public void transitionLogic() {
         switch (state) {
@@ -211,6 +225,8 @@ public class ScoringMechanism extends Subsystem {
     }
 
     /**
+     * A getter for finding the desired angle of the entire arm.
+     * Checks LONG_OUT_DEFAULT to determine the angle
      *
      * @param s - Low, Medium, High desired state
      * @return gives the arm angle in percent (0-1)
@@ -236,7 +252,10 @@ public class ScoringMechanism extends Subsystem {
         }
     }
 
-
+    /**
+     * Sets the desired angle of the arm, sets the desired speed of the intake, and sets the position of the wrist
+     * Based on object variables
+     */
     public void setServoPositions() {
         setArmPosition(currentArmPos);
         intake.setPower(intakePower);
@@ -246,7 +265,10 @@ public class ScoringMechanism extends Subsystem {
         wrist.setPosition(currentWristPos);
     }
 
-
+    /**
+     * Sets the desired angle of the arm, sets the desired speed of the intake, and sets the position of the wrist
+     * Based on object variables
+     */
     public void setServoPositions(boolean isInit) {
         setArmPosition(currentArmPos);
         wrist.setPosition(currentWristPos);
@@ -255,6 +277,9 @@ public class ScoringMechanism extends Subsystem {
         }
     }
 
+    /**
+     * Sets all of the positions of the items
+     */
     public void setPositions() {
         setServoPositions();
         regenerate_slide_profile();
@@ -263,22 +288,36 @@ public class ScoringMechanism extends Subsystem {
         slideControl(slide_profile_position);
     }
 
+    /**
+     * Shutdowns the scoring mechanism, stopping the slides
+     */
     @Override
     public void shutdown() {
         slideLeft.setPower(0);
         slideRight.setPower(0);
     }
 
+    /**
+     * Sets the wrist position
+     * @param position the position to set the wrist to
+     */
     public void setWristPosition(double position) {
         wrist.setPosition(position);
     }
 
     // TODO I think these calculations are wrong
+
+    /**
+     * Gets the amount of inches for given ticks
+     * @param ticks the amount of ticks
+     * @return the amount of inches
+     */
     public static double encoderTicksToInches(double ticks) {
         double SPOOL_SIZE_IN = 1.270 / 2.0;
         double GEAR_RATIO = 1;
         return (SPOOL_SIZE_IN * 2 * Math.PI * GEAR_RATIO * ticks) / (28 * 13.7);
     }
+
 
     protected void slideControl(double ticks) {
         double left = encoderTicksToInches(slideLeft.getCurrentPosition());

@@ -19,5 +19,11 @@ public abstract class BaseTeleop extends LinearOpMode {
             robot.update();
     }
 
+    /**
+     * This method is called when the opmode is started. It should return a command that will be run
+     * until the opmode is stopped.
+     * @param scheduler The scheduler that will be used to run the command.
+     * @return The command that will be run until the opmode is stopped.
+     */
     public abstract Command setupTeleop(CommandScheduler scheduler);
 }
