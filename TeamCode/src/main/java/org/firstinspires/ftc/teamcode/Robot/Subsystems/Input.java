@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.CommandFramework.Subsystem;
 public class Input extends Subsystem {
 
 	// the threshold at which a trigger is detected as a button press
-	public double TRIGGER_DETECTION_THRESHOLD = 0.75;
+	public double TRIGGER_DETECTION_THRESHOLD = 0.35;
 
 	protected CommandScheduler scheduler;
 	Gamepad gamepad;

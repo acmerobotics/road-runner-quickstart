@@ -168,8 +168,11 @@ public class AsymmetricMotionProfile {
             // if we are out of bounds with time, we just assume we are supposed to be at the end of the profile
             acceleration = 0;
             velocity = 0;
-            position = distance;
+            return new MotionState(finalPosition,
+                    velocity * Math.signum(distance), acceleration * Math.signum(distance));
         }
+
+
 
         // construct the motion state object.  We take the signum of the distance to accurately describe the direction of travel.
         // this is because in the previous calculations our excessive use of Math.abs would only work for positive directions

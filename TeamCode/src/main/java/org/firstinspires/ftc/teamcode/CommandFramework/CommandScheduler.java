@@ -42,6 +42,7 @@ public class CommandScheduler {
         while (commands.hasNext()) {
             Command command = commands.next();
             command.periodic();
+            System.out.println("current command: " + command);
 
             if (command.completed()) {
                 command.shutdown();
