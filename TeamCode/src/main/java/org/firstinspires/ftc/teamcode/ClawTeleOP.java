@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(group = "drive")
-public class clawTeleOP extends LinearOpMode {
+public class ClawTeleOP extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Servo clawServo = hardwareMap.get(Servo.class, "clawServo");
-        claw claw = new claw(clawServo);
+        Claw claw = new Claw(clawServo);
         waitForStart();
         boolean toggleClaw = true;
         while (!isStopRequested()) {

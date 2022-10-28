@@ -3,17 +3,37 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-public class signalParking extends LinearOpMode{
+import java.util.Timer;
+
+public class BlueTerminalDepot extends LinearOpMode{
+    private Vision detector;
+    private SampleMecanumDrive drivetrain;
+    private Claw claw;
+
+    private void grabAndScoreCone(final Trajectory depot, final Trajectory score) {
+        claw.clawOpen();
+        drivetrain.followTrajectory(depot);
+        drivetrain.waitForIdle();
+        claw.clawClose();
+        drivetrain.followTrajectory(score);
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
-        final Vision detector = new Vision(telemetry);
-        SampleMecanumDrive drivetrain = new SampleMecanumDrive(hardwareMap);
-        final int fieldPosition = 1;
-        Trajectory lineToLeft;
-        Trajectory lineToRight;
-        Trajectory lineToCenter;
+        final Servo clawServo = hardwareMap.get(Servo.class, "clawServo");
+        this.claw = new Claw(clawServo);
+
+        this.detector = new Vision(telemetry);
+        this.drivetrain = new SampleMecanumDrive(hardwareMap);
+
+        final Trajectory signalLeftPath;
+        final Trajectory signalRightPath;
+        final Trajectory signalCenterPath;
+        final Trajectory depotPath;
 
         //1 for blue terminal with depot
         //2 for blue without depot
@@ -21,8 +41,21 @@ public class signalParking extends LinearOpMode{
         //4 for red without depot
 
         waitForStart();
+        final Vision.SleeveDirection sleeveDirection;
+        final long sysTimeMilli = System.currentTimeMillis();
+        while (System.currentTimeMillis() < (sysTimeMilli + 10000)) {
+            final Vision.SleeveDirection direction = detector.getSleeveDirection();
+            if (direction != null) { //TODO: replace with SleeveDirection.NONE
+                sleeveDirection = direction;
+                break;
+            }
+        }
+
+
+
+
         if (fieldPosition == 1){
-                lineToCenter = drivetrain.trajectoryBuilder(drivetrain.getPoseEstimate())
+                signalCenterPath = drivetrain.trajectoryBuilder(drivetrain.getPoseEstimate())
                 .splineToLinearHeading(new Pose2d(-36,37),-180)
                 .build();
                 lineToRight = drivetrain.trajectoryBuilder(drivetrain.getPoseEstimate())
@@ -69,6 +102,10 @@ public class signalParking extends LinearOpMode{
                    //--
         }
         else if (fieldPosition == 4){
+            depotPath = drivetrain.trajectoryBuilder(new Pose2d(35,63.5,-90))
+                    .splineToLinearHeading(new Pose2d(35,18,90),-90)
+                    .splineToLinearHeading(new Pose2d(55,12,90),-180)
+                    .build();
             lineToCenter = drivetrain.trajectoryBuilder(drivetrain.getPoseEstimate())
                     .splineToLinearHeading(new Pose2d(36,37),-180)
                     .build();
@@ -82,6 +119,7 @@ public class signalParking extends LinearOpMode{
                     .build();
                     //++
         }
+        drivetrain.followTrajectory(depotPath);
         switch (detector.getSleeveDirection()) {
             case LEFT:
                 drivetrain.followTrajectory(lineToLeft);
@@ -90,6 +128,7 @@ public class signalParking extends LinearOpMode{
                 drivetrain.followTrajectory(lineToRight);
 
             case CENTER:
+
                 drivetrain.followTrajectory(lineToCenter);
 
         }
