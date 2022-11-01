@@ -11,14 +11,14 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class ConeDetectionSubsystem extends Subsystem {
+public class PoleDetectionSubsystem extends Subsystem {
 
-	OpenCvPipeline pipeline = new DetectionPipeline();
+	public DetectionPipeline pipeline = new DetectionPipeline();
 	OpenCvWebcam webcam;
 
 	Dashboard dash;
 
-	public ConeDetectionSubsystem(Dashboard dashboard) {
+	public PoleDetectionSubsystem(Dashboard dashboard) {
 		this.dash = dashboard;
 	}
 
@@ -37,7 +37,7 @@ public class ConeDetectionSubsystem extends Subsystem {
 			public void onOpened()
 			{
 
-				webcam.startStreaming(640, 480 , OpenCvCameraRotation.SIDEWAYS_RIGHT);
+				webcam.startStreaming(640, 480 , OpenCvCameraRotation.UPRIGHT);
 			}
 
 			@Override

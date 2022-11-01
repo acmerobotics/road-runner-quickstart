@@ -38,7 +38,7 @@ public class BlueRight extends BaseAuto {
 
 
 		Trajectory goToPickupPartial = robot.drivetrain.getBuilder().trajectoryBuilder(placeCone.end(),true)
-				.splineToLinearHeading(new Pose2d(-48,15,Math.toRadians(0)),Math.toRadians(0))
+				.splineToLinearHeading(new Pose2d(-48,12,Math.toRadians(0)),Math.toRadians(0))
 				.build();
 
 

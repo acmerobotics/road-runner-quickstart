@@ -18,7 +18,7 @@ public class Robot {
 	public Input gamepad1;
 	public Input gamepad2;
 	public Drivetrain drivetrain = new Drivetrain();
-	public ConeDetectionSubsystem detectionSubsystem = new ConeDetectionSubsystem(dashboard);
+	public PoleDetectionSubsystem detectionSubsystem = new PoleDetectionSubsystem(dashboard);
 	public ScoringMechanism scoringMechanism = new ScoringMechanism();
 
 	// print subsystem for testing

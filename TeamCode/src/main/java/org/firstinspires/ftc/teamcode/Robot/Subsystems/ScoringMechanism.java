@@ -73,15 +73,15 @@ public class ScoringMechanism extends Subsystem {
 
 
     protected PIDCoefficients coefficients = new PIDCoefficients(0.45,0,0);
-    protected PIDCoefficients coefficients_between = new PIDCoefficients(1,0,0);
+    protected PIDCoefficients coefficients_between = new PIDCoefficients(0.6,0,0);
     ElapsedTime slide_profile_timer = new ElapsedTime();
 
-    public MotionConstraint slide_constraints = new MotionConstraint(35,25,40);
+    public MotionConstraint slide_constraints = new MotionConstraint(45,30,50);
 
     protected AsymmetricMotionProfile profile_slides = new AsymmetricMotionProfile(0,0,slide_constraints);
     protected FeedbackController slideControllerLeft = new BasicPID(coefficients);
     protected FeedbackController slideControllerRight = new BasicPID(coefficients);
-    protected FeedbackController betweenSlideController = new BasicPID(coefficients);
+    protected FeedbackController betweenSlideController = new BasicPID(coefficients_between);
 
     protected Servo wrist;
     protected ProfiledServo arm;
@@ -119,7 +119,7 @@ public class ScoringMechanism extends Subsystem {
 
         intake = hwMap.get(CRServo.class, "intake");
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        setServoPositions(true);
+        setServoPositions(false);
         state = States.CARRY;
     }
 

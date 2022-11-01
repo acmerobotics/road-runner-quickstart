@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.CommandFramework.BaseTeleop;
 import org.firstinspires.ftc.teamcode.CommandFramework.CommandScheduler;
 import org.firstinspires.ftc.teamcode.CommandFramework.Command;
+import org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands.AutoAlignWithVision;
 import org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands.RobotRelative;
 import org.firstinspires.ftc.teamcode.Robot.Commands.ScoringSubsystem.ActivateIntakeByTime;
 import org.firstinspires.ftc.teamcode.Robot.Commands.ScoringSubsystem.ActivateIntakeToggle;
@@ -32,6 +33,8 @@ public class TestTeleop extends BaseTeleop {
 		robot.gamepad1.whenTrianglePressed(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.HIGH));
 		robot.gamepad1.whenSquarePressed(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.MID));
 		robot.gamepad1.whenRightBumperPressed(new Deposit(robot.scoringMechanism));
+		robot.gamepad1.whenLeftStickButtonPressed(new AutoAlignWithVision(robot.drivetrain,robot.detectionSubsystem)
+				.addNext(new RobotRelative(robot,robot.gamepad1)));
 
 		//return new ClosedLoopTeleop(robot.drivetrain,robot.odometry,robot.gamepad1);
 		return new RobotRelative(robot, robot.gamepad1);

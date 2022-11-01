@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.visionPiplines;
 import org.opencv.core.*;
-import org.opencv.core.MatOfPoint;
-import org.opencv.imgproc.Imgproc;
-import java.util.List;
 public class Color {
     Scalar lower;
     Scalar upper;
