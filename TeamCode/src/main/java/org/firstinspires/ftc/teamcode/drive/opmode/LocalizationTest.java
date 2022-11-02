@@ -4,7 +4,10 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.claw.Claw;
+import org.firstinspires.ftc.teamcode.lift.Lift;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /**
@@ -16,14 +19,34 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
+    private Lift getLift(final String motorLName, final String motorRName) {
+        try {
+            final DcMotor leftLiftMotor = hardwareMap.get(DcMotor.class, motorLName);
+            final DcMotor rightLiftMotor = hardwareMap.get(DcMotor.class, motorRName);
+
+            return new Lift(leftLiftMotor, rightLiftMotor);
+        } catch (final IllegalArgumentException illegalArgumentException) {
+            // just catch and drop, this needs to be better
+            //TODO: only for comp 10/29, should not be dropping and sinking
+            return null;
+        }
+    }
+
+    private Claw getClaw(final String clawServoName) {
+        try {
+            final Servo clawServo = hardwareMap.get(Servo.class, clawServoName);
+            return new Claw(clawServo);
+        } catch (final IllegalArgumentException illegalArgumentException) {
+            //TODO: remove after comp on 10/29, should not be sinking
+            return null;
+        }
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-        final DcMotor leftFrontMotor = hardwareMap.get(DcMotor.class, "leftFrontMotor");
-        final DcMotor leftBackMotor = hardwareMap.get(DcMotor.class, "leftBackMotor");
-        final DcMotor rightFrontMotor = hardwareMap.get(DcMotor.class, "rightFrontMotor");
-        final DcMotor rightBackMotor = hardwareMap.get(DcMotor.class, "rightBackMotor");
+        final SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        final Lift lift = null;//getLift("leftLiftMotor", "rightLiftMotor");
+        final Claw claw = getClaw("clawServo");
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -37,18 +60,31 @@ public class LocalizationTest extends LinearOpMode {
                             -gamepad1.right_stick_x
                     )
             );
-
             drive.update();
 
-            Pose2d poseEstimate = drive.getPoseEstimate();
-//            telemetry.addData("x", poseEstimate.getX());
-//            telemetry.addData("y", poseEstimate.getY());
-//            telemetry.addData("heading", poseEstimate.getHeading());
+            if (lift != null && gamepad1.right_stick_x != 0)
+                lift.useJoystick(gamepad1.right_stick_x);
 
-            telemetry.addData("PWR_LFM", leftFrontMotor.getPower());
-            telemetry.addData("PWR_LBM", leftBackMotor.getPower());
-            telemetry.addData("PWR_RFM", rightFrontMotor.getPower());
-            telemetry.addData("PWR_RBM", rightBackMotor.getPower());
+            if (claw != null && gamepad1.a)
+                claw.clawOpen();
+            else if (claw != null && gamepad1.b)
+                claw.clawClose();
+
+            final Pose2d poseEstimate = drive.getPoseEstimate();
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+
+            telemetry.addData(
+                    "clawState (is open?)",
+                    claw != null ? claw.getClawState() : "no claw found"
+            );
+
+            if (lift != null) {
+                final double[] liftPower = lift.getPower();
+                telemetry.addData("liftPowerL", liftPower[0]);
+                telemetry.addData("liftPowerR", liftPower[1]);
+            }
 
             telemetry.update();
         }
