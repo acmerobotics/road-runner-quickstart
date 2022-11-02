@@ -14,7 +14,9 @@ import org.firstinspires.ftc.teamcode.RR_quickstart.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.RR_quickstart.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.Robot.Commands.MiscCommands.Delay;
 import org.firstinspires.ftc.teamcode.Robot.Commands.MiscCommands.MultipleCommand;
+import org.firstinspires.ftc.teamcode.Robot.Commands.ScoringSubsystem.ActivateIntakeAuto;
 import org.firstinspires.ftc.teamcode.Robot.Commands.ScoringSubsystem.Deposit;
+import org.firstinspires.ftc.teamcode.Robot.Commands.ScoringSubsystem.DepositAuto;
 import org.firstinspires.ftc.teamcode.Robot.Commands.ScoringSubsystem.GoToScore;
 import org.firstinspires.ftc.teamcode.Robot.Subsystems.ScoringMechanism;
 
@@ -38,7 +40,7 @@ public class BlueRight extends BaseAuto {
 
 
 		Trajectory goToPickupPartial = robot.drivetrain.getBuilder().trajectoryBuilder(placeCone.end(),true)
-				.splineToLinearHeading(new Pose2d(-48,12,Math.toRadians(0)),Math.toRadians(0))
+				.splineToLinearHeading(new Pose2d(-48,13,Math.toRadians(0)),Math.toRadians(0))
 				.build();
 
 
@@ -46,9 +48,10 @@ public class BlueRight extends BaseAuto {
 
 		return follow(goNearScoring1)
 				.addNext(new MultipleCommand(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.HIGH), follow(placeCone)))
-				.addNext(new Deposit(robot.scoringMechanism))
+				.addNext(new DepositAuto(robot.scoringMechanism))
 				.addNext(new Delay(2))
-				.addNext(follow(goToPickupPartial));
+				.addNext(follow(goToPickupPartial))
+				.addNext(new ActivateIntakeAuto(robot.scoringMechanism));
 
 
 	}

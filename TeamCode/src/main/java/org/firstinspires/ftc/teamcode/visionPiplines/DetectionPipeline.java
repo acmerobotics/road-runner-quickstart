@@ -3,11 +3,6 @@ package org.firstinspires.ftc.teamcode.visionPiplines;
 
 
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.config.Config;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -16,12 +11,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-@Config
 public class DetectionPipeline extends OpenCvPipeline {
 
 
-    public static Scalar upper = new Scalar(190,210,150,255);
-    public static Scalar lower = new Scalar(100,140,60,0);
+    public static Scalar upper_1 = new Scalar(190,210,150,255);
+    public static Scalar lower_1 = new Scalar(255,255,255,0);
+
+    public static Scalar upper_2 = new Scalar(28.8,176.9,255,255);
+    public static Scalar lower_2 = new Scalar(9.6,26.0,137.1,0);
+
 
     protected Pole pole = new Pole();
 
@@ -31,10 +29,7 @@ public class DetectionPipeline extends OpenCvPipeline {
     private ArrayList<Mat> matsToRelease = new ArrayList<>();
 
 
-    public DetectionPipeline() {
-    }
-
-
+    public DetectionPipeline() {}
 
 
     @Override
@@ -43,23 +38,30 @@ public class DetectionPipeline extends OpenCvPipeline {
         fuckMemoryLeaks();
 
         Mat mask = new Mat();
+        Mat mask_2 = new Mat();
         Mat out = new Mat();
-        Imgproc.cvtColor(input,input,Imgproc.COLOR_RGB2YCrCb);
-        Core.inRange(input,lower,upper,mask);
-        Core.bitwise_and(input,input,out,mask);
+        Mat converted = new Mat();
+        Mat converted_HSV = new Mat();
+        Imgproc.cvtColor(input,converted,Imgproc.COLOR_RGB2YCrCb);
+        Imgproc.cvtColor(input,converted_HSV,Imgproc.COLOR_RGB2HSV);
+        Core.inRange(converted,lower_1,upper_1,mask);
+        Core.inRange(converted_HSV,lower_2,upper_2,mask_2);
+        Core.add(mask,mask_2,mask);
+        Core.bitwise_and(converted,converted,out,mask);
+
         Mat blackAndWhite = new Mat();
         // Imgproc.cvtColor(out, blackAndWhite, Imgproc.COLOR_YCrCb2BGR);
         Imgproc.cvtColor(out, blackAndWhite, Imgproc.COLOR_BGR2GRAY);
 
 
         ArrayList<MatOfPoint> detectedContours = new ArrayList<>();
-
+        Imgproc.medianBlur(blackAndWhite,blackAndWhite,5);
         Imgproc.findContours(blackAndWhite,detectedContours,new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
 
 
         ArrayList<MatOfPoint> contours_to_remove = new ArrayList<>();
         if (detectedContours.size() < 1) {
-            return out;
+            return input;
         } else {
             // find largest height to width ratio
 
@@ -83,8 +85,7 @@ public class DetectionPipeline extends OpenCvPipeline {
                     contours_to_remove.add(c);
                 }
             }
-
-
+            Imgproc.drawContours(converted,detectedContours,-1, new Scalar(255.0, 255.0, 255.0), 3);
 
             for (MatOfPoint c: contours_to_remove) {
                 detectedContours.remove(c);
@@ -103,16 +104,10 @@ public class DetectionPipeline extends OpenCvPipeline {
 
         }
 
+        Imgproc.drawContours(converted,detectedContours,-1, new Scalar(0, 255.0, 0.0), 3);
+        roundupMemory(blackAndWhite,out,mask,mask_2,converted,converted_HSV);
 
-
-
-        Imgproc.drawContours(input,detectedContours,-1, new Scalar(0.0, 255.0, 0.0), 3);
-        roundupMemory(blackAndWhite,out,mask);
-
-
-
-
-        return input;
+        return converted;
     }
 
 
@@ -130,7 +125,6 @@ public class DetectionPipeline extends OpenCvPipeline {
     public void onViewportTapped() {
     }
 
-    @NonNull
     public Pole getPole() {
         return pole;
     }

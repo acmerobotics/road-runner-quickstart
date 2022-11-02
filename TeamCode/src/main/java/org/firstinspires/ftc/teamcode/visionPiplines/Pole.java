@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.visionPiplines;
 
-import androidx.annotation.NonNull;
 
 public class Pole {
 	public double xPixel;
@@ -19,7 +18,6 @@ public class Pole {
 		this.isValidPole = true;
 	}
 
-	@NonNull
 	@Override
 	public String toString() {
 		return "Pole{" +

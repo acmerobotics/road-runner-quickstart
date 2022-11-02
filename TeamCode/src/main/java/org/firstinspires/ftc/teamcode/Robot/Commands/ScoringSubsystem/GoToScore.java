@@ -30,7 +30,9 @@ public class GoToScore extends Command {
 	public void init() {
 		mechanism.setTarget(targetState);
 		mechanism.GO_TO_SCORING();
-		if (mechanism.getState().equals(ScoringMechanism.States.CARRY) || mechanism.getState().equals(ScoringMechanism.States.INTAKE_ON)) {
+		if (mechanism.getState().equals(ScoringMechanism.States.CARRY)
+				|| mechanism.getState().equals(ScoringMechanism.States.INTAKE_ON)
+				|| mechanism.getState().equals(ScoringMechanism.States.READY_TO_SCORE_AUTO)) {
 			invalidStart = false;
 		}
 		previousState = mechanism.getState();

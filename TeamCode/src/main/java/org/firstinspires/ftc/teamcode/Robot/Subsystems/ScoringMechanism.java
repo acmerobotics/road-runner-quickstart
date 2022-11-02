@@ -5,7 +5,6 @@ import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FeedbackControlle
 import com.ThermalEquilibrium.homeostasis.Filters.FilterAlgorithms.LowPassFilter;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -16,7 +15,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.CommandFramework.Subsystem;
 import org.firstinspires.ftc.teamcode.Math.AsymmetricProfile.AsymmetricMotionProfile;
 import org.firstinspires.ftc.teamcode.Math.AsymmetricProfile.MotionConstraint;
-import org.firstinspires.ftc.teamcode.Math.AsymmetricProfile.MotionProfileDebug;
 import org.firstinspires.ftc.teamcode.Utils.ProfiledServo;
 
 
@@ -29,11 +27,11 @@ public class ScoringMechanism extends Subsystem {
 
 
     private static final double CUTOFF_POINT = 4; // min height of slides for arm to move over the robot.
-    public static double WRIST_COLLECT_SHORT = 0.0;
+    public static double WRIST_COLLECT_SHORT = 0.15;
     public static double WRIST_COLLECT_LONG = 0;
-    public static double WRIST_STOW = 0.9;
+    public static double WRIST_STOW = 1;
     public static double WRIST_CARRY_SHORT = 0.2;
-    public static double WRIST_DEPOSIT_LONG = 0.97;
+    public static double WRIST_DEPOSIT_LONG = 1;
 
     public static double ARM_IN_COLLECT = 0.0;
     public static double ARM_CARRY = 0.1;
@@ -51,9 +49,10 @@ public class ScoringMechanism extends Subsystem {
 
     public static double SLIDES_IN = 0;
     public static double SLIDES_CLEAR = 4;
-    public static double SLIDES_HIGH = 17;
+    public static double SLIDES_HIGH = 16.5;
     public static double SLIDES_MID = 8;
     public static double SLIDES_LOW = 5;
+    public static double SLIDES_SAFE_FOR_STACK = 5;
 
     protected double currentWristPos = WRIST_STOW;
     protected double currentArmPos = ARM_CARRY;
@@ -68,6 +67,8 @@ public class ScoringMechanism extends Subsystem {
 
     protected DcMotorEx slideLeft;
     protected DcMotorEx slideRight;
+
+    protected States currentStackProgress = States.AUTO_INTAKE_5; // the 5 high stack is the first.
 
     protected LowPassFilter intake_power_filter = new LowPassFilter(0.5);
 
@@ -90,11 +91,14 @@ public class ScoringMechanism extends Subsystem {
     protected States desiredEnd = States.HIGH;
     protected States desiredEndTransition = States.GO_TO_HIGH;
 
+    protected States desiredIntakingType = States.CARRY;
+
     ElapsedTime TraverseTimer = new ElapsedTime();  // timer used to help assist some servo position specific maneuvers such as putting down the arm.
 
     double GO_TO_INTAKE_TIME = 1; // time between fully out-taking and moving arm before slides go back down to prevent bad things
     double OUTTAKE_DURATION = 1;  // time the out take occurs for before putting slides back in.
     private double previousMotorTarget = 10000000;
+    private double AUTO_INTAKE_DURATION = 0.5;
 
     /**
      * The initialization for both autonomous and teleop
@@ -220,8 +224,39 @@ public class ScoringMechanism extends Subsystem {
                 commandActuatorSetpoints(WRIST_DEPOSIT_LONG,getDesiredArmPos(desiredEnd),getDesiredHeight(desiredEnd),OUT_TAKE);
 
                 if (TraverseTimer.seconds() > GO_TO_INTAKE_TIME) {
-                    state = States.CARRY;
+                    state = desiredIntakingType;
                     should_traverse = false;
+                }
+                break;
+            case AUTO_INTAKE_SAFE: // at safe height to approach stack and then begin intaking
+                commandActuatorSetpoints(WRIST_COLLECT_SHORT, ARM_IN_COLLECT, SLIDES_SAFE_FOR_STACK, INTAKE_SPEED_HOLD);
+                if (should_traverse) {
+                    should_traverse = false;
+                    state = currentStackProgress;
+                    TraverseTimer.reset();
+                }
+                break;
+            case AUTO_INTAKE_5:
+            case AUTO_INTAKE_4:
+            case AUTO_INTAKE_3:
+            case AUTO_INTAKE_2:
+            case AUTO_INTAKE_1:
+                commandActuatorSetpoints(WRIST_COLLECT_SHORT, ARM_IN_COLLECT, getSlideHeightForAutoIntaking(),INTAKE_SPEED);
+                if (TraverseTimer.seconds() > 2) {
+                    currentStackProgress = getNextAutoIntake();
+                    state = States.AUTO_STOP_IN_TAKING;
+                }
+                break;
+            case AUTO_STOP_IN_TAKING:
+                commandActuatorSetpoints(WRIST_COLLECT_SHORT, ARM_IN_COLLECT, SLIDES_SAFE_FOR_STACK,INTAKE_SPEED_HOLD);
+                if (getSlideHeightIN() > getSlideHeightForAutoIntaking()) {
+                    state = States.READY_TO_SCORE_AUTO;
+                }
+                break;
+            case READY_TO_SCORE_AUTO:
+                commandActuatorSetpoints(WRIST_CARRY_SHORT,ARM_CARRY,SLIDES_SAFE_FOR_STACK,INTAKE_SPEED_HOLD);
+                if (should_traverse) {
+                    state = desiredEndTransition;
                 }
                 break;
         }
@@ -347,7 +382,6 @@ public class ScoringMechanism extends Subsystem {
 
     public enum States {
         STOW,
-        INTAKE_READY,
         INTAKE_ON,
         CARRY,
         GO_TO_HIGH,
@@ -357,7 +391,15 @@ public class ScoringMechanism extends Subsystem {
         MID,
         LOW,
         DEPOSIT,
-        GO_TO_INTAKE
+        GO_TO_INTAKE,
+        AUTO_INTAKE_SAFE, // above the stack safe distance
+        AUTO_INTAKE_5,
+        AUTO_INTAKE_4,
+        AUTO_INTAKE_3,
+        AUTO_INTAKE_2,
+        AUTO_INTAKE_1,
+        AUTO_STOP_IN_TAKING, // after in-taking go to this state to put the slides up
+        READY_TO_SCORE_AUTO // after auto in-aking, go to this state to signify it is safe to move towards the junction
     }
 
 
@@ -380,7 +422,6 @@ public class ScoringMechanism extends Subsystem {
 
 
         boolean allow_change = state.equals(States.STOW) ||
-                                state.equals(States.INTAKE_READY) ||
                                 state.equals(States.INTAKE_ON) ||
                                 state.equals(States.CARRY);
 
@@ -440,15 +481,30 @@ public class ScoringMechanism extends Subsystem {
     /**
      * if in placing position, this will allow the traversal to the next state which is out taking
      */
-    public void activateEjection() {
+    public void activateEjectionTeleop() {
         if (state.equals(States.HIGH) || state.equals(States.MID) || state.equals(States.LOW)) {
             should_traverse = true;
+            desiredIntakingType = States.CARRY;
+        }
+    }
+
+    public void activateEjectionAuto() {
+        if (state.equals(States.HIGH) || state.equals(States.MID) || state.equals(States.LOW)) {
+            should_traverse = true;
+            desiredIntakingType = States.AUTO_INTAKE_SAFE;
         }
     }
 
     public void ACTIVATE_INTAKE() {
         if (state.equals(States.CARRY)) {
             state = States.INTAKE_ON;
+            should_traverse = false;
+        }
+    }
+
+    public void ACTIVATE_INTAKE_AUTO() {
+        if (state.equals(States.AUTO_INTAKE_SAFE)) {
+            state = currentStackProgress;
             should_traverse = false;
         }
     }
@@ -460,7 +516,7 @@ public class ScoringMechanism extends Subsystem {
     }
 
     public void GO_TO_SCORING() {
-        if (state.equals(States.CARRY)) {
+        if (state.equals(States.CARRY) || state.equals(States.READY_TO_SCORE_AUTO)) {
             should_traverse = true;
         }
     }
@@ -478,4 +534,29 @@ public class ScoringMechanism extends Subsystem {
         previousMotorTarget = currentMotorTarget;
     }
 
+    public States getNextAutoIntake() {
+        switch (currentStackProgress) {
+            case AUTO_INTAKE_5:
+                return States.AUTO_INTAKE_4;
+            case AUTO_INTAKE_4:
+                return States.AUTO_INTAKE_3;
+            case AUTO_INTAKE_3:
+                return States.AUTO_INTAKE_2;
+            default:
+                return States.AUTO_INTAKE_1;
+        }
+    }
+    public double getSlideHeightForAutoIntaking() {
+        switch (currentStackProgress) {
+            case AUTO_INTAKE_5:
+                return 3;
+            case AUTO_INTAKE_4:
+                return 2;
+            case AUTO_INTAKE_3:
+                return 1;
+            default:
+                return 0;
+        }
+
+    }
 }
