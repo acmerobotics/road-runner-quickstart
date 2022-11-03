@@ -21,7 +21,7 @@ public class AutoAlignWithVision2 extends Command {
 	protected PIDCoefficients controllerCoefficients = new PIDCoefficients(0.1,0,0.05);
 	protected BasicPID controller = new BasicPID(controllerCoefficients);
 	BooleanSupplier keepRunning;
-	double referenceDistance = 10; // distance in inches away from the pole
+	double referenceDistance = 9; // distance in inches away from the pole
 
 
 	public AutoAlignWithVision2(Drivetrain drivetrain, DistanceSensor distanceSensor, BooleanSupplier keepRunning) {
