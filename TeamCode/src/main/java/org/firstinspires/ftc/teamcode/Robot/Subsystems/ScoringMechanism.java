@@ -95,8 +95,8 @@ public class ScoringMechanism extends Subsystem {
 
     ElapsedTime TraverseTimer = new ElapsedTime();  // timer used to help assist some servo position specific maneuvers such as putting down the arm.
 
-    double GO_TO_INTAKE_TIME = 1; // time between fully out-taking and moving arm before slides go back down to prevent bad things
-    double OUTTAKE_DURATION = 1;  // time the out take occurs for before putting slides back in.
+    double GO_TO_INTAKE_TIME = 0.6; // time between fully out-taking and moving arm before slides go back down to prevent bad things
+    double OUTTAKE_DURATION = 0.6;  // time the out take occurs for before putting slides back in.
     private double previousMotorTarget = 10000000;
     private double AUTO_INTAKE_DURATION = 0.5;
 

@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.CommandFramework.BaseTeleop;
 import org.firstinspires.ftc.teamcode.CommandFramework.CommandScheduler;
 import org.firstinspires.ftc.teamcode.CommandFramework.Command;
 import org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands.AutoAlignWithVision;
+import org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands.AutoAlignWithVision2;
 import org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands.RobotRelative;
 import org.firstinspires.ftc.teamcode.Robot.Commands.ScoringSubsystem.ActivateIntakeByTime;
 import org.firstinspires.ftc.teamcode.Robot.Commands.ScoringSubsystem.ActivateIntakeToggle;
@@ -24,16 +25,21 @@ public class TestTeleop extends BaseTeleop {
 	@Override
 	public Command setupTeleop(CommandScheduler scheduler) {
 		BooleanSupplier intakeSupplier = null;
+		BooleanSupplier autoAlignSupplier = null;
 
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
 			intakeSupplier = () -> gamepad1.left_bumper;
+			autoAlignSupplier = () -> gamepad1.left_stick_button;
 		}
+
+
 
 		robot.gamepad1.whenLeftBumperPressed(new ActivateIntakeToggle(robot.scoringMechanism, gamepad1, intakeSupplier));
 		robot.gamepad1.whenTrianglePressed(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.HIGH));
 		robot.gamepad1.whenSquarePressed(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.MID));
 		robot.gamepad1.whenRightBumperPressed(new Deposit(robot.scoringMechanism));
-		robot.gamepad1.whenLeftStickButtonPressed(new AutoAlignWithVision(robot.drivetrain,robot.detectionSubsystem)
+		//robot.gamepad1.whenLeftStickButtonPressed(new AutoAlignWithVision(robot.drivetrain,robot.detectionSubsystem)
+		robot.gamepad1.whenLeftStickButtonPressed(new AutoAlignWithVision2(robot.drivetrain, robot.distanceSensor, autoAlignSupplier)
 				.addNext(new RobotRelative(robot,robot.gamepad1)));
 
 
