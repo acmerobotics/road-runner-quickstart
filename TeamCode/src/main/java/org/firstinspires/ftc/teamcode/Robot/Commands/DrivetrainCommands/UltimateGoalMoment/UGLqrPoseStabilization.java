@@ -39,7 +39,7 @@ public class UGLqrPoseStabilization extends Command {
 
 	@Override
 	public boolean completed() {
-		return false; // controller.errorMag() < 1 && controller.headingErrorMag() < Math.toRadians(2);
+		return controller.errorMag() < 1 && controller.headingErrorMag() < Math.toRadians(2);
 	}
 
 	@Override
