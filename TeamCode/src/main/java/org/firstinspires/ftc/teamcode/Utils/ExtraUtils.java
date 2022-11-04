@@ -89,7 +89,7 @@ public class ExtraUtils {
 
 
 	}
-	public static void drawRobotTarget(Pose2d pose, TelemetryPacket packet) {
+	public static void drawRobotTarget(com.acmerobotics.roadrunner.geometry.Pose2d pose, TelemetryPacket packet) {
 
 		double ROBOT_RADIUS = 8;
 		Vector2d v = new Vector2d(Math.cos(pose.getHeading()), Math.sin(pose.getHeading())).times(ROBOT_RADIUS);

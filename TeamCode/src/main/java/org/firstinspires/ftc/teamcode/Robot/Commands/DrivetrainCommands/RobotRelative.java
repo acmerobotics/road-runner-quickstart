@@ -44,7 +44,7 @@ public class RobotRelative extends Command {
         }
 
         Pose2d powers = new Pose2d(x,y,turn);
-        drivetrain.robotRelative(powers);
+        drivetrain.fieldRelative(powers);
 
 
     }

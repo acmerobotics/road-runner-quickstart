@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands.RoadrunnerTrajectoryFollower;
+import org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands.UltimateGoalMoment.UGLqrPoseStabilization;
 import org.firstinspires.ftc.teamcode.Robot.Subsystems.Robot;
 
 public abstract class BaseAuto extends LinearOpMode {
@@ -33,6 +34,10 @@ public abstract class BaseAuto extends LinearOpMode {
 
 	public RoadrunnerTrajectoryFollower follow(Trajectory trajectory) {
 		return new RoadrunnerTrajectoryFollower(this.robot, trajectory);
+	}
+
+	public UGLqrPoseStabilization goToLQR(Pose2d pose) {
+		return new UGLqrPoseStabilization(robot.drivetrain, pose);
 	}
 
 	public void setRobotPosition() {

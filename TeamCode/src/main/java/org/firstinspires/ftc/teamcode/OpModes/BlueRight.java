@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.CommandFramework.Command;
 import org.firstinspires.ftc.teamcode.CommandFramework.CommandScheduler;
 import org.firstinspires.ftc.teamcode.RR_quickstart.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.RR_quickstart.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.Robot.Commands.DrivetrainCommands.AlignWithVision2Auto;
 import org.firstinspires.ftc.teamcode.Robot.Commands.MiscCommands.Delay;
 import org.firstinspires.ftc.teamcode.Robot.Commands.MiscCommands.MultipleCommand;
 import org.firstinspires.ftc.teamcode.Robot.Commands.ScoringSubsystem.ActivateIntakeAuto;
@@ -24,12 +25,9 @@ import org.firstinspires.ftc.teamcode.Robot.Subsystems.ScoringMechanism;
 public class BlueRight extends BaseAuto {
 
 	public final Pose2d initialPose = new Pose2d( -36, 63.5, Math.toRadians(-90));
-	protected TrajectoryVelocityConstraint slowVelo = SampleMecanumDrive.getVelocityConstraint(20,Math.toRadians(60), DriveConstants.TRACK_WIDTH);
-	protected TrajectoryAccelerationConstraint slowAccel = SampleMecanumDrive.getAccelerationConstraint(15);
 	@Override
 	public Command setupAuto(CommandScheduler scheduler) {
 
-//
 		Trajectory goNearScoring1 = robot.drivetrain.getBuilder().trajectoryBuilder(initialPose)
 			.lineToLinearHeading(new Pose2d(-36.0, 18, Math.toRadians(-90)))
 				.build();
@@ -44,10 +42,9 @@ public class BlueRight extends BaseAuto {
 				.build();
 
 
-
-
 		return follow(goNearScoring1)
 				.addNext(new MultipleCommand(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.HIGH), follow(placeCone)))
+				.addNext(new AlignWithVision2Auto(robot.drivetrain, robot.distanceSensor))
 				.addNext(new DepositAuto(robot.scoringMechanism))
 				.addNext(new Delay(2))
 				.addNext(follow(goToPickupPartial))

@@ -35,11 +35,13 @@ public class Drivetrain extends Subsystem {
 	}
 
 	public void fieldRelative(Pose2d powers) {
-		Vector2d vec = powers.vec();
+		Vector2d vec = new Vector2d(powers.getX(),-powers.getY());
+
 		vec = vec.rotated(drive.getPoseEstimate().getHeading());
-		powers = new Pose2d(vec.getX(),vec.getY(),powers.getHeading());
+		powers = new Pose2d(vec.getX(),-vec.getY(),powers.getHeading());
 		robotRelative(powers);
 	}
+
 
 	public void followTrajectory(Trajectory traj) {
 		drive.followTrajectoryAsync(traj);
