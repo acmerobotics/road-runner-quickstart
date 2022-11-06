@@ -27,7 +27,7 @@ public class BlueCorner2Cone extends LinearOpMode{
         final TrajectorySequence driveToDepot = drivetrain.trajectorySequenceBuilder(driveUpToJunction.end())
                 .lineToLinearHeading(new Pose2d(58, -12, 0))
                 .build();
-        //Robot drives back to high junction from depot
+        //Robot drives back to high junction from depot.
         final TrajectorySequence driveBackToJunction = drivetrain.trajectorySequenceBuilder(driveToDepot.end())
                 .lineToLinearHeading(new Pose2d(33, -9, Math.toRadians(135)))
                 .build();
