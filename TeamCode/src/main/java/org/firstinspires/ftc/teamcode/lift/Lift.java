@@ -7,7 +7,7 @@ public class Lift {
     private final DcMotor rightMotor;
 
     private DcMotor.RunMode runMode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-    private DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
+    private DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
 //define junction heights here//
     private static final int STAGE_1_REVOLUTIONS = 1;
@@ -48,13 +48,8 @@ public class Lift {
         if (runMode != DcMotor.RunMode.RUN_WITHOUT_ENCODER)
             useRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if (joystickWeight > 0) {
-            leftMotor.setPower(joystickWeight);
-            rightMotor.setPower(-joystickWeight);
-        } else if(joystickWeight < 0) {
-            leftMotor.setPower(-joystickWeight);
-            rightMotor.setPower(joystickWeight);
-        }
+        leftMotor.setPower(joystickWeight);
+        rightMotor.setPower(-joystickWeight);
     }
 
     //uses the defined junction heights to tell the motors to go to rotate till a certain height//

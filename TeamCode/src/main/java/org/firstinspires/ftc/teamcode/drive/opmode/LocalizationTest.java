@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.claw.Claw;
 import org.firstinspires.ftc.teamcode.lift.Lift;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -45,8 +46,14 @@ public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         final SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        final Lift lift = null;//getLift("leftLiftMotor", "rightLiftMotor");
-        final Claw claw = getClaw("clawServo");
+        //final Lift lift = getLift("leftLiftMotor", "rightLiftMotor");
+        final DcMotor leftLiftMotor = hardwareMap.get(DcMotor.class, "leftLiftMotor");
+        final DcMotor rightLiftMotor = hardwareMap.get(DcMotor.class, "rightLiftMotor");
+        final Lift lift = new Lift(leftLiftMotor, rightLiftMotor);
+
+        //final Claw claw = getClaw("clawServo");
+        final Servo clawServo = hardwareMap.get(Servo.class, "clawServo");
+        final Claw claw = new Claw(clawServo);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -62,8 +69,8 @@ public class LocalizationTest extends LinearOpMode {
             );
             drive.update();
 
-            if (lift != null && gamepad1.right_stick_x != 0)
-                lift.useJoystick(gamepad1.right_stick_x);
+            if (lift != null)
+                lift.useJoystick(gamepad1.right_stick_y);
 
             if (claw != null && gamepad1.a)
                 claw.clawOpen();
@@ -84,7 +91,8 @@ public class LocalizationTest extends LinearOpMode {
                 final double[] liftPower = lift.getPower();
                 telemetry.addData("liftPowerL", liftPower[0]);
                 telemetry.addData("liftPowerR", liftPower[1]);
-            }
+            } else
+                telemetry.addData("lift motor state", "none found");
 
             telemetry.update();
         }
