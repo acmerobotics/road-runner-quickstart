@@ -39,11 +39,14 @@ public class UGLqrPoseStabilization extends Command {
 
 	@Override
 	public boolean completed() {
-		return controller.errorMag() < 1 && controller.headingErrorMag() < Math.toRadians(2);
+		return  controller.errorMag() < 1
+				&& controller.headingErrorMag() < Math.toRadians(2)
+				&& controller.getErrorMagDeriv() < 1
+				&& Math.abs(drivetrain.getVelocity().getHeading()) < Math.toRadians(1);
 	}
 
 	@Override
 	public void shutdown() {
-		drivetrain.robotRelative(new Pose2d());
+		drivetrain.robotRelative(new Pose2d(0,0,0));
 	}
 }

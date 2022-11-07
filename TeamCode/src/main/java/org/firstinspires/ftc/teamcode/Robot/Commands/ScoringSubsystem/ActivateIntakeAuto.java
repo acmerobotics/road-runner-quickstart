@@ -18,6 +18,8 @@ public class ActivateIntakeAuto extends Command {
 		if (!mechanism.getState().equals(ScoringMechanism.States.AUTO_INTAKE_SAFE)) {
 			invalidStart = true;
 		}
+		System.out.println("Did Activate intake Auto had an invalid start?" + invalidStart);
+
 		mechanism.ACTIVATE_INTAKE_AUTO();
 
 	}

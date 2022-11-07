@@ -36,8 +36,8 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     int previous_middle_pos = 0;
     final int REJECT_CUTOFF = (int) TICKS_PER_REV * 10;
 
-    public static double LATERAL_DISTANCE = 10; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = -0.84; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 10.509951133427611; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 1.6; // in; offset of the lateral wheel
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 

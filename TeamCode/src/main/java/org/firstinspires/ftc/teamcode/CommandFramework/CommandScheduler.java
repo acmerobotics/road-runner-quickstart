@@ -75,4 +75,8 @@ public class CommandScheduler {
         activeCommands.add(command);
         command.init();
     }
+
+    boolean isEmpty() {
+        return activeCommands.isEmpty();
+    }
 }

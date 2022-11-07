@@ -27,11 +27,10 @@ public class ScoringMechanism extends Subsystem {
 
 
     private static final double CUTOFF_POINT = 4; // min height of slides for arm to move over the robot.
-    public static double WRIST_COLLECT_SHORT = 0.15;
-    public static double WRIST_COLLECT_LONG = 0;
+    public static double WRIST_COLLECT_SHORT = 0;
     public static double WRIST_STOW = 1;
-    public static double WRIST_CARRY_SHORT = 0.2;
-    public static double WRIST_DEPOSIT_LONG = 1;
+    public static double WRIST_CARRY_SHORT = 0.05;
+    public static double WRIST_DEPOSIT_LONG = 0.85;
 
     public static double ARM_IN_COLLECT = 0.0;
     public static double ARM_CARRY = 0.1;
@@ -174,6 +173,7 @@ public class ScoringMechanism extends Subsystem {
      * This is where the state transitions are defined.
      */
     public void transitionLogic() {
+        System.out.println("current state in ScoringMechanism is " + state);
         switch (state) {
             case STOW:
                 commandActuatorSetpoints(WRIST_STOW,ARM_IN_COLLECT,SLIDES_IN,INTAKE_SPEED_HOLD);
@@ -222,7 +222,6 @@ public class ScoringMechanism extends Subsystem {
                 }
             case GO_TO_INTAKE:
                 commandActuatorSetpoints(WRIST_DEPOSIT_LONG,getDesiredArmPos(desiredEnd),getDesiredHeight(desiredEnd),OUT_TAKE);
-
                 if (TraverseTimer.seconds() > GO_TO_INTAKE_TIME) {
                     state = desiredIntakingType;
                     should_traverse = false;
@@ -231,6 +230,7 @@ public class ScoringMechanism extends Subsystem {
             case AUTO_INTAKE_SAFE: // at safe height to approach stack and then begin intaking
                 commandActuatorSetpoints(WRIST_COLLECT_SHORT, ARM_IN_COLLECT, SLIDES_SAFE_FOR_STACK, INTAKE_SPEED_HOLD);
                 if (should_traverse) {
+                    System.out.println("Traversing from AUTO_INTAKE_SAFE");
                     should_traverse = false;
                     state = currentStackProgress;
                     TraverseTimer.reset();
@@ -242,7 +242,8 @@ public class ScoringMechanism extends Subsystem {
             case AUTO_INTAKE_2:
             case AUTO_INTAKE_1:
                 commandActuatorSetpoints(WRIST_COLLECT_SHORT, ARM_IN_COLLECT, getSlideHeightForAutoIntaking(),INTAKE_SPEED);
-                if (TraverseTimer.seconds() > 2) {
+                if (TraverseTimer.seconds() > 1.5) {
+                    System.out.println("going to AUTO_STOP_IN_TAKING");
                     currentStackProgress = getNextAutoIntake();
                     state = States.AUTO_STOP_IN_TAKING;
                 }
@@ -504,8 +505,7 @@ public class ScoringMechanism extends Subsystem {
 
     public void ACTIVATE_INTAKE_AUTO() {
         if (state.equals(States.AUTO_INTAKE_SAFE)) {
-            state = currentStackProgress;
-            should_traverse = false;
+            should_traverse = true;
         }
     }
 
@@ -549,14 +549,19 @@ public class ScoringMechanism extends Subsystem {
     public double getSlideHeightForAutoIntaking() {
         switch (currentStackProgress) {
             case AUTO_INTAKE_5:
-                return 3;
+                return 4;
             case AUTO_INTAKE_4:
-                return 2;
+                return 3;
             case AUTO_INTAKE_3:
-                return 1;
+                return 2;
             default:
                 return 0;
         }
 
+    }
+
+    public void setWristToStow() {
+        currentWristPos = WRIST_STOW;
+        wrist.setPosition(WRIST_STOW);
     }
 }

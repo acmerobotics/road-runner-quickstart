@@ -2,11 +2,17 @@ package org.firstinspires.ftc.teamcode.returnToUltimateGoal;
 
 import static com.ThermalEquilibrium.homeostasis.Utils.MathUtils.AngleWrap;
 
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.AngleController;
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedforward.BasicFeedforward;
+import com.ThermalEquilibrium.homeostasis.Parameters.FeedforwardCoefficients;
+import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Math.Geometry.Pose2d;
-import org.firstinspires.ftc.teamcode.Robot.Subsystems.Dashboard;
-import org.firstinspires.ftc.teamcode.Utils.ExtraUtils;
+import org.firstinspires.ftc.teamcode.Math.Controllers.Coefficient.SqrtCoefficients;
+import org.firstinspires.ftc.teamcode.Math.Controllers.SqrtControl;
 
 public class LQRMotionProfiledPoseStabalizationController {
 	private double integral_sum = 0;
@@ -18,18 +24,14 @@ public class LQRMotionProfiledPoseStabalizationController {
 	protected boolean hasStarted = false;
 
 	// approx the number of milliseconds one loop takes
-	protected double loop_time_est = 23;
+	protected double loop_time_est = 15;
 
 	// time in milliseconds we take to accelerate
-	protected double acceleration_time = 450;
+	protected double acceleration_time = 1800;
 
-	// time of starting the pose motion profiled move
-	private double integral_sum_x = 0;
-	private double integral_sum_y = 0;
-
-	private double integral_sum_max = 1;
-	private double integral_sum_min = -integral_sum_max;
-
+	BasicPID turnController = new BasicPID(new PIDCoefficients(0.55,0,0));
+	AngleController turnControlWrapped = new AngleController(turnController);
+	ElapsedTime timer = new ElapsedTime();
 
 	com.acmerobotics.roadrunner.geometry.Pose2d poseError = new com.acmerobotics.roadrunner.geometry.Pose2d(10,10,10);
 
@@ -38,16 +40,21 @@ public class LQRMotionProfiledPoseStabalizationController {
 	// the amount on each iteration that we increase the power scalar by inorder to ramp acceleration
 	protected double rate_of_acceleration =  1 / (acceleration_time / loop_time_est);
 
-	// the amount we scale the power by inorder to speedramp; init to rate_of_accel because its a small non-0 number.
-	protected double powerScaler = rate_of_acceleration;
+	// the amount we scale the power by inorder to speed-ramp; init to rate_of_accel because its a small non-0 number.
+	protected double powerScalar = rate_of_acceleration;
 
-	protected double LQR_K = 7.234 * 1.1;
+	protected double LQR_K = 7.234 * 0.65;
 	protected double LQR_Kr = LQR_K;
-	protected double LQR_scaler = 0.01;
-	protected double ki = 0; //0.110;
-	double kpTurn = 2.8;
-	OneDimensionalLQRController translationLQRx = new OneDimensionalLQRController(LQR_K,LQR_Kr,LQR_scaler,ki);
-	OneDimensionalLQRController translationLQRy = new OneDimensionalLQRController(LQR_K,LQR_Kr,LQR_scaler,ki);
+	protected double LQR_scalar = 0.01;
+	protected double ki = 0.005;
+
+	double previousErrorMag = 0;
+	double errorMagDeriv = 10;
+	OneDimensionalLQRController translationLQRx = new OneDimensionalLQRController(LQR_K,LQR_Kr, LQR_scalar,ki);
+	OneDimensionalLQRController translationLQRy = new OneDimensionalLQRController(LQR_K,LQR_Kr, LQR_scalar,ki);
+	PIDCoefficients coefficients = new PIDCoefficients(0.09,0,0.15);
+	BasicPID pidX = new BasicPID(coefficients);
+	BasicPID pidY = new BasicPID(coefficients);
 
 	public LQRMotionProfiledPoseStabalizationController() {
 	}
@@ -65,30 +72,46 @@ public class LQRMotionProfiledPoseStabalizationController {
 
 			hasStarted = true;
 		}
-		if (powerScaler < 1) {
-			powerScaler += rate_of_acceleration;
+		if (powerScalar < 1) {
+			powerScalar += rate_of_acceleration;
 		} else {
-			powerScaler = 1;
+			powerScalar = 1;
 		}
 
 
 		double angle = robotPose.getHeading();
 		double targetAngle = targetPose.getHeading();
-		// We are epic so we assume that if the target angle is close to 180 and we are somewhat close to 180 we are at the target angle because we dont fw angle wrap
 		double headingError = AngleWrap(targetAngle - angle);
 
 
 
 
-		double xPower = translationLQRx.outputLQR(targetPose.getX(),robotPose.getX()) * powerScaler;
-		double yPower = translationLQRy.outputLQR(targetPose.getY(),robotPose.getY()) * powerScaler;
-		poseError = new com.acmerobotics.roadrunner.geometry.Pose2d(translationLQRx.getError(), translationLQRy.getError(),headingError);
+		double xPower = clipPower(pidX.calculate(targetPose.getX(),robotPose.getX()));//clipPower(translationLQRx.outputLQR(targetPose.getX(),robotPose.getX()));
+		double yPower = clipPower(pidY.calculate(targetPose.getY(),robotPose.getY())); //clipPower(translationLQRy.outputLQR(targetPose.getY(),robotPose.getY()));
+		Vector2d normalized = normalizePower(xPower,yPower).times(powerScalar);
+		xPower = normalized.getX();
+		yPower = normalized.getY();
+		double errorX = targetPose.getX() - robotPose.getX();
+		double errorY = targetPose.getY() - robotPose.getY();
+
+		double ffX = Math.signum(errorX) * 0.05;
+		double ffY = Math.signum(errorY) * 0.05;
+		poseError = new com.acmerobotics.roadrunner.geometry.Pose2d(errorX,errorY,headingError);
 
 		//yPower = -yPower;
-		double turnPower = (headingError * kpTurn) * powerScaler;
+		//double turnPower = clipPower(headingError * kpTurn) * powerScaler;
+		//double turnPower = clipPower(turnController.calculate(0,-headingError)) * powerScalar;
+		double turnPower = turnControlWrapped.calculate(targetAngle,angle);
+		turnPower *= powerScalar;
+		double headingFF = Math.signum(turnPower) * 0.03;
 
+		double errorMag = poseError.vec().norm();
+		errorMagDeriv = errorMag - previousErrorMag;
+		errorMagDeriv /= timer.seconds();
+		previousErrorMag = errorMag;
+		timer.reset();
 
-		return new com.acmerobotics.roadrunner.geometry.Pose2d(xPower,yPower,turnPower);
+		return new com.acmerobotics.roadrunner.geometry.Pose2d(xPower + ffX,yPower + ffY,turnPower + headingFF);
 
 	}
 
@@ -109,9 +132,23 @@ public class LQRMotionProfiledPoseStabalizationController {
 		return poseError.vec().norm();
 	}
 
+	public Vector2d normalizePower(double xPower, double yPower) {
+		Vector2d powerVec = new Vector2d(xPower,yPower);
+//		if (Math.abs(xPower) > 0 || Math.abs(yPower) > 0) {
+//			powerVec = powerVec.div(powerVec.norm());
+//		}
+		return powerVec;
+	}
+
 	public double headingErrorMag() {
 		return Math.abs(poseError.getHeading());
 	}
 
+	protected double clipPower(double power) {
+		return Range.clip(power,-1,1);
+	}
 
+	public double getErrorMagDeriv() {
+		return Math.abs(errorMagDeriv);
+	}
 }

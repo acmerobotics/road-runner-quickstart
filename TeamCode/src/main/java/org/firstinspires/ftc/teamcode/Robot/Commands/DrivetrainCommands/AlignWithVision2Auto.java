@@ -18,7 +18,7 @@ public class AlignWithVision2Auto extends Command {
 
 	public static PIDCoefficients controllerCoefficientsDistance = new PIDCoefficients(0.1,0,0.05);
 	protected BasicPID controller = new BasicPID(controllerCoefficientsDistance);
-	public static double referenceDistanceSensor = 8; // distance in inches away from the pole
+	public static double referenceDistanceSensor = 12; // distance in inches away from the pole
 
 	double error = 10;
 	double error_tolerance = 0.5;

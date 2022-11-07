@@ -28,27 +28,22 @@ public class BlueRight extends BaseAuto {
 	@Override
 	public Command setupAuto(CommandScheduler scheduler) {
 
-		Trajectory goNearScoring1 = robot.drivetrain.getBuilder().trajectoryBuilder(initialPose)
-			.lineToLinearHeading(new Pose2d(-36.0, 18, Math.toRadians(-90)))
-				.build();
+		Pose2d goNearScoring = new Pose2d(-36.0, 18, Math.toRadians(-90));
+		Pose2d placeCone = new Pose2d(-26, 14.5, Math.toRadians(-75));
+		Pose2d pickupPartial = new Pose2d(-48,14.5,Math.toRadians(0));
+		Pose2d pickupFull = new Pose2d(-60,14.5,Math.toRadians(0));
 
-		Trajectory placeCone = robot.drivetrain.getBuilder().trajectoryBuilder(goNearScoring1.end())
-				.lineToLinearHeading(new Pose2d(-30, 9, Math.toRadians(-75)))
-				.build();
-
-
-		Trajectory goToPickupPartial = robot.drivetrain.getBuilder().trajectoryBuilder(placeCone.end(),true)
-				.splineToLinearHeading(new Pose2d(-48,13,Math.toRadians(0)),Math.toRadians(0))
-				.build();
-
-
-		return follow(goNearScoring1)
-				.addNext(new MultipleCommand(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.HIGH), follow(placeCone)))
-				.addNext(new AlignWithVision2Auto(robot.drivetrain, robot.distanceSensor))
+		return goToLQR(goNearScoring)
+				.addNext(new MultipleCommand(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.HIGH), goToLQR(placeCone)))
 				.addNext(new DepositAuto(robot.scoringMechanism))
 				.addNext(new Delay(2))
-				.addNext(follow(goToPickupPartial))
-				.addNext(new ActivateIntakeAuto(robot.scoringMechanism));
+				.addNext(goToLQR(pickupPartial))
+				.addNext(goToLQR(pickupFull))
+				.addNext(new ActivateIntakeAuto(robot.scoringMechanism))
+				.addNext(goToLQR(goNearScoring))
+				.addNext(new MultipleCommand(new GoToScore(robot.scoringMechanism, ScoringMechanism.States.HIGH), goToLQR(placeCone)))
+				.addNext(new DepositAuto(robot.scoringMechanism))
+				.addNext(new Delay(2));
 
 
 	}

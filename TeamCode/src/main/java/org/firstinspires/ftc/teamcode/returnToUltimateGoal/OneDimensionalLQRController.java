@@ -10,11 +10,8 @@ public class OneDimensionalLQRController {
 	// gain 'matrix' K
 	protected double K = 0;
 
-	// output gain scaler
+	// output gain scalar
 	protected double outputGain = 1;
-
-	private double integral_sum_max = 1;
-	private double integral_sum_min = -integral_sum_max;
 
 	private double integral_sum = 0;
 
@@ -22,8 +19,9 @@ public class OneDimensionalLQRController {
 
 	private double last_setpoint = 0;
 
+	double state_error = 0;
 
-	double kd = 0.12627 * 0.06;
+	double kd = 0.12627 * 0.05;
 
 	double last_error = 0;
 	double error = 0;
@@ -69,16 +67,20 @@ public class OneDimensionalLQRController {
 		double scaledReference = reference * Kr;
 		double scaledState = state * K;
 		error = scaledReference - scaledState;
-
 		integral_sum += (reference - state) * timer.milliseconds();
+
+
+		double integral_sum_max = 1;
 		if (integral_sum_max < integral_sum) {
 			integral_sum = integral_sum_max;
 		}
+		double integral_sum_min = -integral_sum_max;
 		if (integral_sum_min > integral_sum) {
 			integral_sum = integral_sum_min;
 		}
 
-		double state_error = (reference - state);
+
+		state_error = (reference - state);
 		double derivative = state_error - last_error / timer.milliseconds();
 		last_error = (reference - state);
 
@@ -90,7 +92,7 @@ public class OneDimensionalLQRController {
 	}
 
 	public double getError() {
-		return error;
+		return state_error;
 	}
 
 	public double getK() {
@@ -119,6 +121,13 @@ public class OneDimensionalLQRController {
 	}
 
 
+	/**
+	 *
+	 * @return if the error has crossed zero, indicating it is wise to zero the integral count.
+	 */
+	protected boolean ZeroCrossOccured() {
+		return Math.signum(error) != Math.signum(last_error);
+	}
 
 
 }
