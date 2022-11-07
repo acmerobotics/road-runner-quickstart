@@ -6,7 +6,7 @@ public class Claw {
     private final Servo clawServo;
     //variables to help set claw open and close positions
     private static final double CLAMPED_POSITION = 0.2;
-    private static final double OPEN_POSITION = 1;
+    private static final double OPEN_POSITION = .7;
 
     private boolean clawState = true;
 
