@@ -14,6 +14,8 @@ public class Lift {
     private static final int STAGE_2_REVOLUTIONS = 2;
     private static final int STAGE_3_REVOLUTIONS = 3;
 
+    private static final double CONSTANT_POWER_AT_ZERO_INPUT = 0.1;
+
     //basically sets up robot//
     public Lift (final DcMotor leftMotor, final DcMotor rightMotor) {
         this.leftMotor = leftMotor;
@@ -48,8 +50,13 @@ public class Lift {
         if (runMode != DcMotor.RunMode.RUN_WITHOUT_ENCODER)
             useRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftMotor.setPower(joystickWeight);
-        rightMotor.setPower(-joystickWeight);
+        if (joystickWeight == 0) {
+            leftMotor.setPower(CONSTANT_POWER_AT_ZERO_INPUT);
+            rightMotor.setPower(CONSTANT_POWER_AT_ZERO_INPUT);
+        } else {
+            leftMotor.setPower(joystickWeight);
+            rightMotor.setPower(-joystickWeight);
+        }
     }
 
     //uses the defined junction heights to tell the motors to go to rotate till a certain height//
