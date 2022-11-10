@@ -52,7 +52,7 @@ public class LQRMotionProfiledPoseStabalizationController {
 	double errorMagDeriv = 10;
 	OneDimensionalLQRController translationLQRx = new OneDimensionalLQRController(LQR_K,LQR_Kr, LQR_scalar,ki);
 	OneDimensionalLQRController translationLQRy = new OneDimensionalLQRController(LQR_K,LQR_Kr, LQR_scalar,ki);
-	PIDCoefficients coefficients = new PIDCoefficients(0.09,0,0.15);
+	PIDCoefficients coefficients = new PIDCoefficients(0.09,0,0.35);
 	BasicPID pidX = new BasicPID(coefficients);
 	BasicPID pidY = new BasicPID(coefficients);
 

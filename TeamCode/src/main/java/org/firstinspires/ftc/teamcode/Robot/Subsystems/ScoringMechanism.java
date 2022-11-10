@@ -29,10 +29,10 @@ public class ScoringMechanism extends Subsystem {
     private static final double CUTOFF_POINT = 4; // min height of slides for arm to move over the robot.
     public static double WRIST_COLLECT_SHORT = 0;
     public static double WRIST_STOW = 1;
-    public static double WRIST_CARRY_SHORT = 0.05;
+    public static double WRIST_CARRY_SHORT = 0;
     public static double WRIST_DEPOSIT_LONG = 0.85;
 
-    public static double ARM_IN_COLLECT = 0.0;
+    public static double ARM_IN_COLLECT = 0;
     public static double ARM_CARRY = 0.1;
     public static double ARM_DEPOSIT_LONG_HIGH = 0.38;
     public static double ARM_DEPOSIT_LONG_MID = 0.38;
@@ -42,9 +42,9 @@ public class ScoringMechanism extends Subsystem {
     public static double ARM_DEPOSIT_SHORT_MID = 0.6;
     public static double ARM_DEPOSIT_SHORT_LOW = 0.6;
 
-    public static double INTAKE_SPEED_HOLD = 0.1;
-    public static double INTAKE_SPEED = 0.85;
-    public static double OUT_TAKE = -0.85;
+    public static double INTAKE_SPEED_HOLD = 0.15;
+    public static double INTAKE_SPEED = 1;
+    public static double OUT_TAKE = -INTAKE_SPEED;
 
     public static double SLIDES_IN = 0;
     public static double SLIDES_CLEAR = 4;
@@ -70,10 +70,9 @@ public class ScoringMechanism extends Subsystem {
     protected States currentStackProgress = States.AUTO_INTAKE_5; // the 5 high stack is the first.
 
     protected LowPassFilter intake_power_filter = new LowPassFilter(0.5);
-
-
     protected PIDCoefficients coefficients = new PIDCoefficients(0.45,0,0);
     protected PIDCoefficients coefficients_between = new PIDCoefficients(0.6,0,0);
+
     ElapsedTime slide_profile_timer = new ElapsedTime();
 
     public MotionConstraint slide_constraints = new MotionConstraint(45,30,50);
