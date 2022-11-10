@@ -35,7 +35,7 @@ public class BlueCornerBlueSideAuto extends LinearOpMode {
     public void scoreConeInClaw(
             final int liftStage, final Trajectory score
     ) {
-        lift.liftToStage(liftStage);
+        lift.liftToJunction(liftStage);
 
         drivetrain.followTrajectory(score);
         drivetrain.waitForIdle();

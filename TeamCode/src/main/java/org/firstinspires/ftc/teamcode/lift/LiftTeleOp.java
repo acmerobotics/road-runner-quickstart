@@ -25,7 +25,7 @@ public class LiftTeleOp extends LinearOpMode {
                     currentStage = 0;
                     lift.retract();
                 } else {
-                    lift.liftToStage(currentStage++);
+                    lift.liftToJunction(currentStage++);
                 }
             }
         }
