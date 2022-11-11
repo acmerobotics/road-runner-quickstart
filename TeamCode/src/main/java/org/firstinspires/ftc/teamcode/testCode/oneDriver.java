@@ -100,11 +100,10 @@ public class oneDriver extends LinearOpMode {
         motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-<<<<<<< Updated upstream
+
 
         //Break arm?
-=======
->>>>>>> Stashed changes
+
         //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
@@ -175,11 +174,8 @@ public class oneDriver extends LinearOpMode {
                 arm.setPower(0);
             }
             //close
-<<<<<<< Updated upstream
+
             if (gamepad1.x) {
-=======
-            if (gamepad1.b) {
->>>>>>> Stashed changes
                 intakeLeft.setPosition(0.1);
                 intakeRight.setPosition(0.1);
             }
