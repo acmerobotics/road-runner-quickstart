@@ -66,12 +66,10 @@ public class oneDriver extends LinearOpMode {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear  = hardwareMap.get(DcMotorEx.class, "leftRear");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-
-
 
 
         intakeLeft = hardwareMap.get(Servo.class, "intakeLeft");
@@ -100,11 +98,9 @@ public class oneDriver extends LinearOpMode {
         motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-<<<<<<< Updated upstream
+
 
         //Break arm?
-=======
->>>>>>> Stashed changes
         //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
@@ -120,16 +116,16 @@ public class oneDriver extends LinearOpMode {
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral = gamepad1.left_stick_x;
+            double yaw = gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = axial + lateral + yaw;
+            double leftFrontPower = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
+            double leftBackPower = axial - lateral + yaw;
+            double rightBackPower = axial + lateral - yaw;
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -138,12 +134,11 @@ public class oneDriver extends LinearOpMode {
             max = Math.max(max, Math.abs(rightBackPower));
 
             if (max > 1.0) {
-                leftFrontPower  /= max;
+                leftFrontPower /= max;
                 rightFrontPower /= max;
-                leftBackPower   /= max;
-                rightBackPower  /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
             }
-
 
 
             // This is test code:
@@ -164,44 +159,39 @@ public class oneDriver extends LinearOpMode {
             */
 
             // Send calculated power to wheels
-            leftFront.setPower(leftFrontPower/1.7);
-            rightFront.setPower(rightFrontPower/1.7);
-            leftRear.setPower(leftBackPower/1.7);
-            rightRear.setPower(rightBackPower/1.7);
+            leftFront.setPower(leftFrontPower / 1.7);
+            rightFront.setPower(rightFrontPower / 1.7);
+            leftRear.setPower(leftBackPower / 1.7);
+            rightRear.setPower(rightBackPower / 1.7);
 
 
-
-            if (gamepad1.atRest()){
+            if (gamepad1.atRest()) {
                 arm.setPower(0);
             }
             //close
-<<<<<<< Updated upstream
             if (gamepad1.x) {
-=======
-            if (gamepad1.b) {
->>>>>>> Stashed changes
-                intakeLeft.setPosition(0.1);
-                intakeRight.setPosition(0.1);
-            }
-            //open
-            if (gamepad1.b) {
-                intakeLeft.setPosition(1);
-                intakeRight.setPosition(0.76);
-            }
-            if (gamepad1.y) {
-                arm.setPower(1);
-            }
-            if (gamepad1.a) {
-                arm.setPower(-0.7);
-            }
+                if (gamepad1.b) {
+                    intakeLeft.setPosition(0.1);
+                    intakeRight.setPosition(0.1);
+                }
+                //open
+                if (gamepad1.b) {
+                    intakeLeft.setPosition(1);
+                    intakeRight.setPosition(0.76);
+                }
+                if (gamepad1.y) {
+                    arm.setPower(1);
+                }
+                if (gamepad1.a) {
+                    arm.setPower(-0.7);
+                }
 
 
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.update();
+                // Show the elapsed game time and wheel power.
+                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+                telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+                telemetry.update();
+            }
         }
-    }
-}
-
+    }}

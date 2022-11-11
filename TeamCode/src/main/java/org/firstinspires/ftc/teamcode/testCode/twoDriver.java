@@ -200,11 +200,7 @@ public class twoDriver extends LinearOpMode {
                 arm.setPower(0);
             }
             //close
-<<<<<<< Updated upstream
             if (gamepad2.x) {
-=======
-            if (gamepad2.b) {
->>>>>>> Stashed changes
                 intakeLeft.setPosition(0.1);
                 intakeRight.setPosition(0.1);
             }

@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.testCode.encoderTest;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.tfrec.Detector;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -29,9 +30,13 @@ import java.util.List;
 @Autonomous
 public class AutoLeft2 extends LinearOpMode {
     //Drive Train Constants
+    //private DcMotor arm;
+    private Servo intake;
+    private boolean open;
 
 
     // Declare OpMode members for each of the 4 motors.
+    private Detector tfDetector = null;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFront = null;
     private DcMotorEx leftRear = null;
@@ -44,6 +49,44 @@ public class AutoLeft2 extends LinearOpMode {
 
     static final double FORWARD_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+    static final double HD_COUNTS_PER_REV = 537.7; //537.7,,28
+    static final double DRIVE_GEAR_REDUCTION = 1; //20.15293;
+    static final double WHEEL_CIRCUMFERENCE_MM = 35 * Math.PI;//109.9
+    static final double DRIVE_COUNTS_PER_MM = (HD_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUMFERENCE_MM; //112/109.9
+    static final double DRIVE_COUNTS_PER_IN = DRIVE_COUNTS_PER_MM * 25.4;//1.0191*25.4
+
+    public void armControl(double power, double inches) {
+        int target;
+
+
+        if (opModeIsActive()) {
+            // Create target positions
+            target = arm.getCurrentPosition() + (int) (inches * DRIVE_COUNTS_PER_IN);
+
+            //arm.setDirection(DcMotorSimple.Direction.REVERSE);
+            // set target position
+            arm.setTargetPosition(target);
+
+            //switch to run to position mode
+            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            //run to position at the desiginated power
+            arm.setPower(power);
+
+
+            // wait until both motors are no longer busy running to position
+            while (opModeIsActive() && (arm.isBusy())) {
+            }
+
+            // set motor power back to 0
+            arm.setPower(0);
+
+
+
+        }
+    }
+
 
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
         for (DcMotorEx motor : motors) {
@@ -88,8 +131,6 @@ public class AutoLeft2 extends LinearOpMode {
     armControl midJunction = new armControl(1,mid);
     armControl lowJunction = new armControl(1,low);
 
-
-
     @Override
     public void runOpMode() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -116,19 +157,12 @@ public class AutoLeft2 extends LinearOpMode {
                 .build();
 
         Trajectory traj4 = drive.trajectoryBuilder(startPose)
-                .forward(50)
+                .forward(55)
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(startPose)
-                .strafeTo(new Vector2d(0,-12))
+                .strafeTo(new Vector2d(3,12))
                 .build();
-
-
-
-
-
-
-
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -221,8 +255,13 @@ public class AutoLeft2 extends LinearOpMode {
             intakeLeft.setPosition(1);
             intakeRight.setPosition(0.76);
             drive.followTrajectory(traj4);
-            sleep(2000);
+            sleep(700);
             drive.followTrajectory(traj5);
+            sleep(700);
+            arm.setPower(1);
+            sleep(500);
+            //intakeLeft.setPosition(0.1);
+            //intakeRight.setPosition(0.1);
 
 
 
