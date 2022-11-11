@@ -185,6 +185,21 @@ public class oneDriver extends LinearOpMode {
                 if (gamepad1.a) {
                     arm.setPower(-0.7);
                 }
+            if (gamepad1.x) {
+                intakeLeft.setPosition(0.1);
+                intakeRight.setPosition(0.1);
+            }
+            //open
+            if (gamepad1.b) {
+                intakeLeft.setPosition(1);
+                intakeRight.setPosition(0.76);
+            }
+            if (gamepad1.y) {
+                arm.setPower(1);
+            }
+            if (gamepad1.a) {
+                arm.setPower(-0.7);
+            }
 
 
                 // Show the elapsed game time and wheel power.

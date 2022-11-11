@@ -2,6 +2,7 @@
 
 package org.firstinspires.ftc.teamcode.newCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,9 +13,16 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+
+
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+
+
 import java.util.ArrayList;
 
-@TeleOp
+@Autonomous
 public class testOne extends LinearOpMode
 {
     OpenCvCamera camera;
@@ -43,12 +51,62 @@ public class testOne extends LinearOpMode
     int RIGHT = 2;
     AprilTagDetection tagOfInterest = null;
 
+    //17348 Code
+    private DcMotor rightFront;
+    private DcMotor leftFront;
+    private DcMotor rightRear;
+    private DcMotor leftRear;
+    private DcMotor ViperMotor;
+    private Servo gripper;
+
+    int LeftPos;
+    int RightPos;
+    int LBPos;
+    int RBPos;
+    int LinearPos;
+    int leftTarget;
+    int rightTarget;
+    int LBack;
+    int RBack;
+    double speed;
+
+
+
     @Override
     public void runOpMode()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        //17348 Code
+        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
+        rightRear = hardwareMap.get(DcMotor.class, "rightRear");
+        leftRear = hardwareMap.get(DcMotor.class, "leftRear");
+        ViperMotor = hardwareMap.get(DcMotor.class, "ViperMotor");
+        gripper = hardwareMap.get(Servo.class, "gripper");
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        ViperMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        ViperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        gripper.setPosition(0.4);
+        sleep(1000);
+        ViperMotor.setPower(-0.5);
+        sleep(40);
+        ViperMotor.setPower(0);
+        RightPos = 0;
+        LeftPos = 0;
+        LBPos = 0;
+        RBPos = 0;
+        LinearPos = 0;
 
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -151,17 +209,154 @@ public class testOne extends LinearOpMode
 
 
 
+
         if(tagOfInterest == null || tagOfInterest.id == LEFT){
-            //input trajectory
+            drive(1050, -1050, -1050, 1050, 0.25);
+            sleep(1000);
+            reset_values();
+            sleep(1000);
+            drive(2200, 2200, 2200, 2200, 0.25);
+            sleep(1000);
+            reset_values();
+            sleep(1000);
+            drive(-580, 580, 580, -580, 0.25);
+            sleep(1000);
+            reset_values();
+            ViperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            ViperMotor.setPower(-0.5);
+            sleep(4300);
+            ViperMotor.setPower(0);
+            drive(300, 300, 300, 300, 0.25);
+            sleep(2000);
+            gripper.setPosition(0.6);
+            reset_values();
+            sleep(2000);
+            drive(-200, -200, -200, -200, 0.25);
+            gripper.setPosition(0.4);
+            ViperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            ViperMotor.setPower(0.5);
+            sleep(1500);
+            reset_values();
+            sleep(1000);
+            ViperMotor.setPower(0);
+            drive(-1800, 1800, 1800, -1800, 0.25);
+
         }else if(tagOfInterest.id == MIDDLE){
-            //trajectory
-        }else{
-            //trajectory
+            drive(1050, -1050, -1050, 1050, 0.25);
+            sleep(1000);
+            reset_values();
+            sleep(1000);
+            drive(2200, 2200, 2200, 2200, 0.25);
+            sleep(1000);
+            reset_values();
+            sleep(1000);
+            drive(-580, 580, 580, -580, 0.25);
+            sleep(1000);
+            reset_values();
+            ViperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            ViperMotor.setPower(-0.5);
+            sleep(4300);
+            ViperMotor.setPower(0);
+            drive(300, 300, 300, 300, 0.25);
+            sleep(2000);
+            gripper.setPosition(0.6);
+            reset_values();
+            sleep(2000);
+            drive(-200, -200, -200, -200, 0.25);
+            gripper.setPosition(0.4);
+            ViperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            ViperMotor.setPower(0.5);
+            sleep(1500);
+            reset_values();
+            sleep(1000);
+            ViperMotor.setPower(0);
+            drive(-700, 700, 700, -700, 0.25);
+        }
+        else
+        {
+            drive(1050, -1050, -1050, 1050, 0.25);
+            sleep(1000);
+            reset_values();
+            sleep(1000);
+            drive(2200, 2200, 2200, 2200, 0.25);
+            sleep(1000);
+            reset_values();
+            sleep(1000);
+            drive(-580, 580, 580, -580, 0.25);
+            sleep(1000);
+            reset_values();
+            ViperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            ViperMotor.setPower(-0.5);
+            sleep(4300);
+            ViperMotor.setPower(0);
+            drive(300, 300, 300, 300, 0.25);
+            sleep(2000);
+            gripper.setPosition(0.6);
+            reset_values();
+            sleep(2000);
+            drive(-200, -200, -200, -200, 0.25);
+            gripper.setPosition(0.4);
+            ViperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            ViperMotor.setPower(0.5);
+            sleep(1500);
+            reset_values();
+            sleep(1000);
+            ViperMotor.setPower(0);
+            drive(700, -700, -700, 700, 0.25);
+
         }
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-       // while (opModeIsActive()) {sleep(20);}
+        // while (opModeIsActive()) {sleep(20);}
+    }
+
+    private void reset_values()
+    {
+        int leftTarget;
+        int rightTarget;
+        int LBack;
+        int RBack;
+        int Linear_Target;
+
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightPos = 0;
+        LeftPos = 0;
+        LBPos = 0;
+        RBPos = 0;
+        leftTarget = 0;
+        rightTarget = 0;
+        RBack = 0;
+        LBack = 0;
+        LinearPos = 0;
+        Linear_Target = 0;
+    }
+
+    private void drive(int leftTarget, int rightTarget, int LBack, int RBack, double speed)
+    {
+        LeftPos += leftTarget;
+        RightPos += rightTarget;
+        LBPos += LBack;
+        RBPos += RBack;
+        rightFront.setTargetPosition(rightTarget);
+        leftFront.setTargetPosition(leftTarget);
+        rightRear.setTargetPosition(RBack);
+        leftRear.setTargetPosition(LBack);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setPower(speed);
+        leftFront.setPower(speed);
+        leftRear.setPower(speed);
+        rightRear.setPower(speed);
+        while (opModeIsActive() && rightFront.isBusy() && leftFront.isBusy() && rightRear.isBusy() && leftRear.isBusy())
+        {
+            idle();
+        }
     }
 
     void tagToTelemetry(AprilTagDetection detection)
@@ -175,3 +370,4 @@ public class testOne extends LinearOpMode
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }
+
