@@ -128,6 +128,8 @@ public class twoDriver extends LinearOpMode {
         motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //break arm?
         //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
@@ -198,12 +200,12 @@ public class twoDriver extends LinearOpMode {
                 arm.setPower(0);
             }
             //close
-            if (gamepad2.b) {
-                intakeLeft.setPosition(0.5);
-                intakeRight.setPosition(0.55);
+            if (gamepad2.x) {
+                intakeLeft.setPosition(0.1);
+                intakeRight.setPosition(0.1);
             }
             //open
-            if (gamepad2.x) {
+            if (gamepad2.b) {
                 intakeLeft.setPosition(1);
                 intakeRight.setPosition(0.76);
             }

@@ -100,7 +100,9 @@ public class oneDriver extends LinearOpMode {
         motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //Break arm?
+        //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -170,12 +172,12 @@ public class oneDriver extends LinearOpMode {
                 arm.setPower(0);
             }
             //close
-            if (gamepad1.b) {
-                intakeLeft.setPosition(0.5);
-                intakeRight.setPosition(0.55);
+            if (gamepad1.x) {
+                intakeLeft.setPosition(0.1);
+                intakeRight.setPosition(0.1);
             }
             //open
-            if (gamepad1.x) {
+            if (gamepad1.b) {
                 intakeLeft.setPosition(1);
                 intakeRight.setPosition(0.76);
             }
