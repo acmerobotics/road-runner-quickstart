@@ -115,6 +115,17 @@ public class autoLeft extends LinearOpMode {
                 .strafeTo(new Vector2d(2,-26))
                 .build();
 
+        Trajectory traj4 = drive.trajectoryBuilder(startPose)
+                .forward(50)
+                .build();
+
+        Trajectory traj5 = drive.trajectoryBuilder(startPose)
+                .strafeTo(new Vector2d(0,-12))
+                .build();
+
+
+
+
 
 
 
@@ -209,9 +220,9 @@ public class autoLeft extends LinearOpMode {
                 //input trajectory
                 intakeLeft.setPosition(1);
                 intakeRight.setPosition(0.76);
-               drive.followTrajectory(traj1);
-               sleep(2000);
-               drive.followTrajectory(traj2);
+                drive.followTrajectory(traj1);
+                sleep(2000);
+                drive.followTrajectory(traj2);
 
 
 
