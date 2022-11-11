@@ -146,7 +146,7 @@ public class twoDriver extends LinearOpMode {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
+            double lateral =  gamepad1.right_stick_x;
             double yaw     =  gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
@@ -189,10 +189,10 @@ public class twoDriver extends LinearOpMode {
             */
 
             // Send calculated power to wheels
-            leftFront.setPower(leftFrontPower/1.7);
-            rightFront.setPower(rightFrontPower/1.7);
-            leftRear.setPower(leftBackPower/1.7);
-            rightRear.setPower(rightBackPower/1.7);
+            leftFront.setPower(leftFrontPower/1.3);
+            rightFront.setPower(rightFrontPower/1.3);
+            leftRear.setPower(leftBackPower/1.3);
+            rightRear.setPower(rightBackPower/1.3);
 
 
 
@@ -200,7 +200,11 @@ public class twoDriver extends LinearOpMode {
                 arm.setPower(0);
             }
             //close
+<<<<<<< Updated upstream
             if (gamepad2.x) {
+=======
+            if (gamepad2.b) {
+>>>>>>> Stashed changes
                 intakeLeft.setPosition(0.1);
                 intakeRight.setPosition(0.1);
             }
