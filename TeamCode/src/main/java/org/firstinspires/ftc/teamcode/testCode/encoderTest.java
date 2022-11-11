@@ -79,26 +79,14 @@ public class encoderTest extends LinearOpMode {
         arm = hardwareMap.get(DcMotor.class, "arm");
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        intake = hardwareMap.get(Servo.class, "intake");
 
 
-        intake.setDirection(Servo.Direction.REVERSE);
-        intake.setPosition(0.0);
+        waitForStart();
+        runtime.reset();
+
+        armControl(1, 20);
 
 
-//maybe reverse?
-
-            waitForStart();
-            runtime.reset();
-
-
-            //500 is the optimal number of time for servo to close at 0.5
-            intake.setPosition(0.5);
-            sleep(500);
-
-
-            intake.setPosition(0.0);
-            sleep(500);
 
 /*
         while opModeIsActive(){

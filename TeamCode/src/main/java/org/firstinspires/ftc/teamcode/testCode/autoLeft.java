@@ -115,6 +115,12 @@ public class autoLeft extends LinearOpMode {
                 .strafeTo(new Vector2d(2,-26))
                 .build();
 
+        Trajectory traj4 = drive.trajectoryBuilder(startPose)
+                .strafeTo(new Vector2d(10,-26))
+                .build();
+
+
+
 
 
 
