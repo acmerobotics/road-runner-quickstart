@@ -116,31 +116,26 @@ public class autoLeft extends LinearOpMode {
                 .build();
 
         Trajectory traj4 = drive.trajectoryBuilder(startPose)
-                .strafeTo(new Vector2d(10,-26))
+                .forward(50)
                 .build();
 
 
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
+        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
+            }
 
+            @Override
+            public void onError(int errorCode) {
 
-
-
-            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-            camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-            aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
-
-            camera.setPipeline(aprilTagDetectionPipeline);
-            camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-                @Override
-                public void onOpened() {
-                    camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
-                }
-
-                @Override
-                public void onError(int errorCode) {
-
-                }
-            });
+            }
+        });
 
             telemetry.setMsTransmissionInterval(50);
 
@@ -215,9 +210,9 @@ public class autoLeft extends LinearOpMode {
                 //input trajectory
                 intakeLeft.setPosition(1);
                 intakeRight.setPosition(0.76);
-               drive.followTrajectory(traj1);
-               sleep(2000);
-               drive.followTrajectory(traj2);
+                drive.followTrajectory(traj1);
+                sleep(2000);
+                drive.followTrajectory(traj2);
 
 
 
