@@ -35,23 +35,24 @@ public class BlueCorner2ConeAlt extends LinearOpMode{
                 .build();
 
         final TrajectorySequence driveCloserToJunction = drivetrain.trajectorySequenceBuilder(driveUpToJunction.end())
-                .forward(5)
+                .forward(5.5)//Changed from 5 to 5.5
                 .build();
 
         final TrajectorySequence driveBackFromJunction = drivetrain.trajectorySequenceBuilder(driveCloserToJunction.end())
-                .back(5)
+                .back(5.5)//Changed from 5 to 5.5
                 .build();
 
-        //Robot drives to depot from high junction
+        //Robot drives to depot from mid junction
         final TrajectorySequence driveToDepot = drivetrain.trajectorySequenceBuilder(driveBackFromJunction.end())
                 .turn(Math.toRadians(-45))
-                .lineToLinearHeading(new Pose2d(36, -20, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(64, -12.5, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(36, -13, Math.toRadians(90)))
+                .turn(Math.toRadians(90))
+                .lineToLinearHeading(new Pose2d(60, -14.5, Math.toRadians(0)))//12.5 to 14.5
                 .build();
         //Robot drives back to high junction from depot
         final TrajectorySequence driveBackToJunction = drivetrain.trajectorySequenceBuilder(driveToDepot.end())
                 .lineToConstantHeading(new Vector2d(56, -12))
-                .lineToConstantHeading(new Vector2d(33, -16.5))
+                .lineToConstantHeading(new Vector2d(30.5, -20))
                 .turn(Math.toRadians(-135))
                 .forward(4)
                 .build();
@@ -76,11 +77,12 @@ public class BlueCorner2ConeAlt extends LinearOpMode{
         lift.retract();
 
         drivetrain.followTrajectorySequence(driveToDepot);
-        lift.liftToConeStack(5);
+        lift.liftToConeStack(4); // 5 to 4 so that lift can come lower and pick the cone more properly
         sleep(1000);
         claw.clawClose();
         sleep(2000);
         lift.liftToJunction(2);
+        sleep(1000);
         drivetrain.followTrajectorySequence(driveBackToJunction);
     }
 

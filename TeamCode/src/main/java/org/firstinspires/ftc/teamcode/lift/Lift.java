@@ -18,7 +18,7 @@ public class Lift {
     private static final int CONE_ENCODER_POSITION = 115;
 
     private static final double REST_POWER = 0.0025;
-    private static final double LIFT_POWER = 0.3;
+    private static final double LIFT_POWER = 0.2;//Changed from 0.3 to 0.2
 
     //basically sets up robot//
     public Lift (final DcMotor leftMotor, final DcMotor rightMotor) {

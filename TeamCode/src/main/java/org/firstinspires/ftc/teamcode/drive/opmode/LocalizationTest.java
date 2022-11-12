@@ -47,11 +47,11 @@ public class LocalizationTest extends LinearOpMode {
             drive.update();
 
             //if (lift != null)
-            lift.useJoystick(-gamepad1.right_stick_y/2);
+            lift.useJoystick(-gamepad2.right_stick_y/2);
 
-            if (gamepad1.a)
+            if (gamepad2.a)
                 claw.clawOpen();
-            else if (gamepad1.b)
+            else if (gamepad2.b)
                 claw.clawClose();
 
             final Pose2d poseEstimate = drive.getPoseEstimate();
