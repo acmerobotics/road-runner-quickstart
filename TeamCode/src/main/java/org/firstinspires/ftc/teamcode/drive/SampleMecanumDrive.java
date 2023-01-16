@@ -30,6 +30,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.util.SmartdampPID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,8 +53,17 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
+
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+
+    // TODO: uncomment this to use the SMARTDAMP PID algorithm to auto tune derivative gain.
+    // One will supply a proportional gain and SMARTDAMP will...
+    // use your kV and kA coefficients to solve for an optimal derivative gain
+    /*
+    public static PIDCoefficients TRANSLATIONAL_PID = SmartdampPID.TranslationCoefficientsSMART(0);
+    public static PIDCoefficients HEADING_PID = SmartdampPID.RotationCoefficientsSMART(0);
+     */
 
     public static double LATERAL_MULTIPLIER = 1;
 
