@@ -42,6 +42,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.PIDController;
 import org.firstinspires.ftc.teamcode.commands.servoCommand;
+import org.firstinspires.ftc.teamcode.constants;
 
 @TeleOp(name = "mecanumReal", group = "Competition")
 // @Disabled
@@ -53,8 +54,6 @@ public class mecanumReal extends LinearOpMode {
 
   public static Orientation angles;
   public static Acceleration gravity;
-
-  private boolean autoSlides = true;
 
   //button press
   private boolean isX = false;
@@ -244,10 +243,25 @@ public class mecanumReal extends LinearOpMode {
 
       telemetry.addData("Speed: ", speed);
       telemetry.addData("Heading: ", botHeading);
-      telemetry.addData("Slide One Position:", slideOne.getCurrentPosition());
-      telemetry.addData("Slide 1 Target:", slideOne.getTargetPosition());
+      telemetry.addData("Slide 1 Target (in):", slideOne.getTargetPosition() / 130);
       telemetry.addData("Slide 1 Height (in):", slideOne.getCurrentPosition() / 130);
-      telemetry.addData("AutoSlides:", autoSlides);
+
+      if(slideOne.getTargetPosition() == slidePosArray[0]){
+        telemetry.addData("Slide 1 Position: ", "Ground");
+      } else if(slideOne.getTargetPosition() == slidePosArray[1]){
+        telemetry.addData("Slide 1 Position: ", "Low");
+      } else if(slideOne.getTargetPosition() == slidePosArray[2]){
+        telemetry.addData("Slide 1 Position: ", "Medium");
+      } else if(slideOne.getTargetPosition() == slidePosArray[3]){
+        telemetry.addData("Slide 1 Position: ", "High");
+      }
+
+      if(clawLeft.getPosition() == constants.servos.clawClosedLeft && clawRight.getPosition() == constants.servos.clawClosedRight){
+        telemetry.addData("Claw Position: ", "Closed");
+      } else if(clawLeft.getPosition() == constants.servos.clawOpenLeft && clawRight.getPosition() == constants.servos.clawOpenRight){
+        telemetry.addData("Claw Position: ", "Open");
+      }
+
       telemetry.update();
     }
   }
