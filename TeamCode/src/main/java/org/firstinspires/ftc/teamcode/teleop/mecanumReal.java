@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static org.firstinspires.ftc.teamcode.constants.drive.strafeSpeed;
+import static org.firstinspires.ftc.teamcode.constants.drive.turnSpeed;
 import static org.firstinspires.ftc.teamcode.constants.slides.slideOnePID;
 import static org.firstinspires.ftc.teamcode.constants.slides.slidePosArray;
 
@@ -49,7 +51,8 @@ import org.firstinspires.ftc.teamcode.constants;
 public class mecanumReal extends LinearOpMode {
 
   int slideOneTicks = 0;
-  double speed = 0.7;
+  double strafeSpeed = constants.drive.strafeSpeed;
+  double turnSpeed = constants.drive.turnSpeed;
 
 
   public static Orientation angles;
@@ -64,6 +67,8 @@ public class mecanumReal extends LinearOpMode {
   private boolean isDown = false;
   private boolean speedIsDown = false;
   private boolean speedIsUp = false;
+  private boolean turnSpeedIsDown;
+  private boolean turnSpeedIsUp;
 
   //button press stuff
   private boolean wasX = false;
@@ -74,6 +79,8 @@ public class mecanumReal extends LinearOpMode {
   private boolean wasDown = false;
   private boolean speedWasUp = false;
   private boolean speedWasDown = false;
+  private boolean turnSpeedWasUp;
+  private boolean turnSpeedWasDown;
 
 
 
@@ -185,9 +192,9 @@ public class mecanumReal extends LinearOpMode {
         servoCommand.clawOpen(clawLeft, clawRight);
       }
 
-      double y = -gamepad1.left_stick_y; // Remember, this is reversed!
-      double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
-      double rx = gamepad1.right_stick_x;
+      double y = -gamepad1.left_stick_y * strafeSpeed; // Remember, this is reversed!
+      double x = gamepad1.left_stick_x * 1.1 * strafeSpeed; // Counteract imperfect strafing
+      double rx = gamepad1.right_stick_x * turnSpeed;
 
       // Read inverse IMU heading, as the IMU heading is CW positive
       double botHeading = -imu.getAngularOrientation().firstAngle;
@@ -206,21 +213,27 @@ public class mecanumReal extends LinearOpMode {
 
       // Send calculated power to motors
       if (gamepad1.left_bumper) {
-        lF.setPower(frontLeftPower * speed * 0.25);
-        rF.setPower(frontRightPower * speed * 0.25);
-        lB.setPower(backLeftPower * speed * 0.25);
-        rB.setPower(backRightPower * speed * 0.25);
+        lF.setPower(frontLeftPower * 0.25);
+        rF.setPower(frontRightPower * 0.25);
+        lB.setPower(backLeftPower * 0.25);
+        rB.setPower(backRightPower * 0.25);
       } else {
-        lF.setPower(frontLeftPower * speed);
-        rF.setPower(frontRightPower * speed);
-        lB.setPower(backLeftPower * speed);
-        rB.setPower(backRightPower * speed);
+        lF.setPower(frontLeftPower);
+        rF.setPower(frontRightPower);
+        lB.setPower(backLeftPower);
+        rB.setPower(backRightPower);
       }
 
       if((speedIsDown = gamepad2.dpad_down) && !speedWasDown){
-        speed -= 0.1;
+        strafeSpeed -= 0.1;
       } else if((speedIsUp = gamepad2.dpad_up) && !speedWasUp){
-        speed += 0.1;
+        strafeSpeed += 0.1;
+      }
+
+      if((turnSpeedIsDown = gamepad2.dpad_right) && !turnSpeedWasDown){
+        turnSpeed -= 0.1;
+      } else if((turnSpeedIsUp = gamepad2.dpad_left) && !turnSpeedWasUp){
+        turnSpeed += 0.1;
       }
 
 
@@ -238,10 +251,13 @@ public class mecanumReal extends LinearOpMode {
       wasDown = isDown;
       speedWasUp = speedIsUp;
       speedWasDown = speedIsDown;
+      turnSpeedWasDown = turnSpeedIsDown;
+      turnSpeedWasUp = turnSpeedIsUp;
 
 
 
-      telemetry.addData("Speed: ", speed);
+      telemetry.addData("Strafe Speed: ", strafeSpeed);
+      telemetry.addData("Turn Speed:", turnSpeed);
       telemetry.addData("Heading: ", botHeading);
       telemetry.addData("Slide 1 Target (in):", slideOne.getTargetPosition() / 130);
       telemetry.addData("Slide 1 Height (in):", slideOne.getCurrentPosition() / 130);

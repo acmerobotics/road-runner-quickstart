@@ -34,6 +34,7 @@ public final class constants {
     }
 
     public static final class drive{
-        public static final double driveSpeed = 0.7;
+        public static final double strafeSpeed = 0.8;
+        public static final double turnSpeed = 0.9;
     }
 }
