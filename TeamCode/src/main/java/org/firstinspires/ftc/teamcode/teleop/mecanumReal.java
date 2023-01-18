@@ -29,6 +29,17 @@
 
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.teamcode.constants.servos.clawClosedLeft;
+import static org.firstinspires.ftc.teamcode.constants.servos.clawClosedRight;
+import static org.firstinspires.ftc.teamcode.constants.servos.clawOpenLeft;
+import static org.firstinspires.ftc.teamcode.constants.servos.clawOpenRight;
+import static org.firstinspires.ftc.teamcode.constants.slides.slidePosArray;
+import static org.firstinspires.ftc.teamcode.constants.slides.slideOnePID;
+import static org.firstinspires.ftc.teamcode.constants.drive.driveSpeed;
+import static org.firstinspires.ftc.teamcode.constants.slides.slideTwoPID;
+import static org.firstinspires.ftc.teamcode.constants.motors;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -47,17 +58,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.PIDController;
+import org.firstinspires.ftc.teamcode.commands.servoCommand;
 
 @TeleOp(name = "mecanumReal", group = "Competition")
 // @Disabled
 public class mecanumReal extends LinearOpMode {
 
   int slideOneTicks = 0;
-  int slideTwoTicks = 0;
+  double speed = 0.7;
+
 
   public static Orientation angles;
   public static Acceleration gravity;
-  public static final int[] slidePosArray = { 0, 33, 50, 100 };
 
   private boolean autoSlides = true;
 
@@ -68,6 +80,8 @@ public class mecanumReal extends LinearOpMode {
   private boolean isB = false;
   private boolean isUp = false;
   private boolean isDown = false;
+  private boolean speedIsDown = false;
+  private boolean speedIsUp = false;
 
   //button press stuff
   private boolean wasX = false;
@@ -76,18 +90,22 @@ public class mecanumReal extends LinearOpMode {
   private boolean wasB = false;
   private boolean wasUp = false;
   private boolean wasDown = false;
+  private boolean speedWasUp = false;
+  private boolean speedWasDown = false;
 
 
 
   @Override
   public void runOpMode() throws InterruptedException {
     // Declare OpMode members.
+
     DcMotor lF = hardwareMap.dcMotor.get("front_left");
     DcMotor lB = hardwareMap.dcMotor.get("back_left");
     DcMotor rF = hardwareMap.dcMotor.get("front_right");
     DcMotor rB = hardwareMap.dcMotor.get("back_right");
     DcMotor slideOne = hardwareMap.dcMotor.get("slide_one");
-    DcMotor slideTwo = hardwareMap.dcMotor.get("slide_two");
+    Servo clawLeft = hardwareMap.servo.get("claw_left");
+    Servo clawRight = hardwareMap.servo.get("claw_right");
 
     BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -97,12 +115,11 @@ public class mecanumReal extends LinearOpMode {
     telemetry.update();
 
     // Set motor directions
-    lF.setDirection(DcMotor.Direction.FORWARD);
-    rF.setDirection(DcMotor.Direction.REVERSE);
-    lB.setDirection(DcMotor.Direction.FORWARD);
-    rB.setDirection(DcMotor.Direction.REVERSE);
+    lF.setDirection(DcMotor.Direction.REVERSE);
+    rF.setDirection(DcMotor.Direction.FORWARD);
+    lB.setDirection(DcMotor.Direction.REVERSE);
+    rB.setDirection(DcMotor.Direction.FORWARD);
     slideOne.setDirection(DcMotor.Direction.REVERSE);
-    slideTwo.setDirection(DcMotorSimple.Direction.REVERSE);
 
     // Set zero power behavior
     lF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -110,25 +127,27 @@ public class mecanumReal extends LinearOpMode {
     lB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     rB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     slideOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    slideTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+    //servo setting
+    clawLeft.setDirection(Servo.Direction.REVERSE);
+    clawRight.setDirection(Servo.Direction.FORWARD);
+
 
     //reset encoders
     slideOne.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    slideTwo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-    //set default target position
-    slideOne.setTargetPosition(0);
-    slideTwo.setTargetPosition(0);
-
+    slideOne.setTargetPosition(slidePosArray[0]);
     //set encoder behavior
     slideOne.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    slideTwo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     //variables
     int slidePos = 0;
 
-    PIDController slideOneController = new PIDController(0.01, 0, 0, false);
-    PIDController slideTwoController = new PIDController(0.01, 0, 0, false);
+    PIDController slideOneController = new PIDController(slideOnePID[0], slideOnePID[1], slideOnePID[2], false);
+
+    //set default target position
+    slideOne.setTargetPosition(slidePosArray[0]);
+
+    servoCommand.clawClose(clawLeft, clawRight);
 
     // Wait for the game to start (driver presses PLAY)
     waitForStart();
@@ -136,63 +155,58 @@ public class mecanumReal extends LinearOpMode {
     // run until the end of the match (driver presses STOP)
     while (opModeIsActive()) {
 
-      //change autoSlides setting
-      if (gamepad1.dpad_left) {
-        autoSlides = false;
-      } else if (gamepad1.dpad_right) {
-        autoSlides = true;
-      }
-
-      //autoSlides on
-      if (autoSlides) {
         //ground
         if ((isA = gamepad1.a) && !wasA) {
-          slidePos = 0;
+          slideOne.setTargetPosition(slidePosArray[0]);
         }
         //high
         else if ((isB = gamepad1.b) && !wasB) {
-          slidePos = 3;
+          slideOne.setTargetPosition(slidePosArray[3]);
         }
         //medium
-        else if ((isX = gamepad1.x) && !wasX) {
-          slidePos = 2;
+        else if ((isY = gamepad1.y) && !wasY) {
+          slideOne.setTargetPosition(slidePosArray[2]);
         }
         //low
-        else if ((isY = gamepad1.y) && !wasY) {
-          slidePos = 1;
+        else if ((isX = gamepad1.x) && !wasX) {
+          slideOne.setTargetPosition(slidePosArray[1]);
         }
-        //sets target position to determined state
-        slideOne.setTargetPosition(slidePosArray[slidePos]);
-        slideTwo.setTargetPosition(slidePosArray[slidePos]);
-      }
 
-      //auto slides off
-      else {
         //manual slides up
         if ((isUp = gamepad1.dpad_up) && !wasUp) {
-          slideOne.setTargetPosition(slideOne.getTargetPosition() + 1);
-          slideTwo.setTargetPosition(slideTwo.getTargetPosition() + 1);
+          if (slideOne.getTargetPosition() >= 4355) {
+            slideOne.setTargetPosition(4355);
+          }
+          else {
+            slideOne.setTargetPosition(slideOne.getTargetPosition() + 130);
+          }
         }
         //manual slides down
         else if ((isDown = gamepad1.dpad_down) && !wasDown) {
-          slideOne.setTargetPosition(slideOne.getTargetPosition() - 1);
-          slideTwo.setTargetPosition(slideTwo.getTargetPosition() - 1);
+          if (slideOne.getTargetPosition() <= 0) {
+            slideOne.setTargetPosition(0);
+          }
+          else {
+            slideOne.setTargetPosition(slideOne.getTargetPosition() - 130);
+          }
         }
-      }
 
       // call "update" method and prepare motorPower
       double slideOnePower = slideOneController.update(
         slideOne.getTargetPosition(),
         slideOne.getCurrentPosition()
       );
-      double slideTwoPower = slideTwoController.update(
-        slideTwo.getTargetPosition(),
-        slideTwo.getCurrentPosition()
-      );
 
-      // assign motor the PID output
+      //assign motor the Pid output
       slideOne.setPower(slideOnePower);
-      slideTwo.setPower(slideTwoPower);
+
+      if(gamepad1.right_trigger == 1){
+        servoCommand.clawClose(clawLeft, clawRight);
+      } else if(gamepad1.left_trigger == 1){
+        servoCommand.clawOpen(clawLeft, clawRight);
+      }
+
+
 
       // Setup a variable for each drive wheel to save power level for telemetry
       double frontLeftPower;
@@ -213,32 +227,34 @@ public class mecanumReal extends LinearOpMode {
         x * Math.sin(botHeading) + y * Math.cos(botHeading);
 
       // x, y, theta input mixing
-      double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(t), 1);
+      double denominator = Math.max(Math.abs(y_rotated) + Math.abs(x_rotated) + Math.abs(t), 1);
       frontLeftPower = (y + x + t) / denominator;
       backLeftPower = (y - x + t) / denominator;
       frontRightPower = (y - x - t) / denominator;
       backRightPower = (y + x - t) / denominator;
 
       // Send calculated power to motors
-      if (gamepad1.right_bumper) {
-        lF.setPower(frontLeftPower * 0.75);
-        rF.setPower(frontRightPower * 0.75);
-        lB.setPower(backLeftPower * 0.75);
-        rB.setPower(backRightPower * 0.75);
-      } else if (gamepad1.left_bumper) {
-        lF.setPower(frontLeftPower * 0.25);
-        rF.setPower(frontRightPower * 0.25);
-        lB.setPower(backLeftPower * 0.25);
-        rB.setPower(backRightPower * 0.25);
+      if (gamepad1.left_bumper) {
+        lF.setPower(frontLeftPower * speed * 0.25);
+        rF.setPower(frontRightPower * speed * 0.25);
+        lB.setPower(backLeftPower * speed * 0.25);
+        rB.setPower(backRightPower * speed * 0.25);
       } else {
-        lF.setPower(frontLeftPower);
-        rF.setPower(frontRightPower);
-        lB.setPower(backLeftPower);
-        rB.setPower(backRightPower);
+        lF.setPower(frontLeftPower * speed);
+        rF.setPower(frontRightPower * speed);
+        lB.setPower(backLeftPower * speed);
+        rB.setPower(backRightPower * speed);
       }
 
+      if((speedIsDown = gamepad2.dpad_down) && !speedWasDown){
+        speed -= 0.1;
+      } else if((speedIsUp = gamepad2.dpad_up) && !speedWasUp){
+        speed += 0.1;
+      }
+
+
       // reinitialize field oriented
-      if (gamepad1.left_trigger == 1 && gamepad1.right_trigger == 1) {
+      if (gamepad1.right_bumper) {
         imu.initialize(parameters);
       }
 
@@ -249,13 +265,16 @@ public class mecanumReal extends LinearOpMode {
       wasB = isB;
       wasUp = isUp;
       wasDown = isDown;
+      speedWasUp = speedIsUp;
+      speedWasDown = speedIsDown;
 
-      telemetry.addData("Slide 1 Ticks:", slideOneTicks);
-      telemetry.addData("Slide 2 Ticks:", slideTwoTicks);
-      telemetry.addData("Slide 1 Power:", slideOnePower);
-      telemetry.addData("Slide 2 Power:", slideTwoPower);
+
+
+      telemetry.addData("Speed: ", speed);
+      telemetry.addData("Heading: ", botHeading);
+      telemetry.addData("Slide One Position:", slideOne.getCurrentPosition());
       telemetry.addData("Slide 1 Target:", slideOne.getTargetPosition());
-      telemetry.addData("Slide 2 Target:", slideTwo.getTargetPosition());
+      telemetry.addData("Slide 1 Height (in):", slideOne.getCurrentPosition() / 130);
       telemetry.addData("AutoSlides:", autoSlides);
       telemetry.update();
     }
