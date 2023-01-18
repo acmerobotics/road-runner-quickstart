@@ -29,33 +29,16 @@
 
 package org.firstinspires.ftc.teamcode.teleop;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.teamcode.constants.servos.clawClosedLeft;
-import static org.firstinspires.ftc.teamcode.constants.servos.clawClosedRight;
-import static org.firstinspires.ftc.teamcode.constants.servos.clawOpenLeft;
-import static org.firstinspires.ftc.teamcode.constants.servos.clawOpenRight;
-import static org.firstinspires.ftc.teamcode.constants.slides.slidePosArray;
 import static org.firstinspires.ftc.teamcode.constants.slides.slideOnePID;
-import static org.firstinspires.ftc.teamcode.constants.drive.driveSpeed;
-import static org.firstinspires.ftc.teamcode.constants.slides.slideTwoPID;
-import static org.firstinspires.ftc.teamcode.constants.motors;
+import static org.firstinspires.ftc.teamcode.constants.slides.slidePosArray;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import java.lang.reflect.Parameter;
-import java.util.Locale;
+
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.PIDController;
 import org.firstinspires.ftc.teamcode.commands.servoCommand;
@@ -172,24 +155,21 @@ public class mecanumReal extends LinearOpMode {
           slideOne.setTargetPosition(slidePosArray[1]);
         }
 
-        //manual slides up
+        //manual slide control
         if ((isUp = gamepad1.dpad_up) && !wasUp) {
-          if (slideOne.getTargetPosition() >= 4355) {
-            slideOne.setTargetPosition(4355);
-          }
-          else {
+
             slideOne.setTargetPosition(slideOne.getTargetPosition() + 130);
-          }
-        }
-        //manual slides down
-        else if ((isDown = gamepad1.dpad_down) && !wasDown) {
-          if (slideOne.getTargetPosition() <= 0) {
-            slideOne.setTargetPosition(0);
-          }
-          else {
+          } else if ((isDown = gamepad1.dpad_down) && !wasDown) {
             slideOne.setTargetPosition(slideOne.getTargetPosition() - 130);
           }
+
+        //slide limiter
+        if (slideOne.getTargetPosition() > slidePosArray[3]) {
+          slideOne.setTargetPosition(slidePosArray[3]);
+        } else if (slideOne.getTargetPosition() < slidePosArray[0]) {
+          slideOne.setTargetPosition(slidePosArray[0]);
         }
+
 
       // call "update" method and prepare motorPower
       double slideOnePower = slideOneController.update(
