@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -23,7 +25,7 @@ public final class constants {
     }
 
 
-    public static final class motors{
+    public static final class hardware{
         DcMotor lF = hardwareMap.dcMotor.get("front_left");
         DcMotor lB = hardwareMap.dcMotor.get("back_left");
         DcMotor rF = hardwareMap.dcMotor.get("front_right");
@@ -31,6 +33,11 @@ public final class constants {
         DcMotor slideOne = hardwareMap.dcMotor.get("slide_one");
         Servo clawLeft = hardwareMap.servo.get("claw_left");
         Servo clawRight = hardwareMap.servo.get("claw_right");
+    }
+
+    public final class sensors{
+        public BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
+        ColorSensor colorSensor = hardwareMap.colorSensor.get("color_sensor");
     }
 
     public static final class drive{
