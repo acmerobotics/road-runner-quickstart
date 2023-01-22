@@ -77,7 +77,7 @@ import java.util.List;
  */
 
 @Autonomous(name="auto RR right", group="Concept")
-@Disabled
+//@Disabled
 public class AutoRoadRunner extends LinearOpMode {
 
     public int autonomousStartLocation = 1; // 1 for right location, and -1 for left location.

@@ -44,6 +44,7 @@ public class Params {
     static final double HALF_MAT = 12.0;
     static final double CHASSIS_HALF_WIDTH = 14 / 2.0;
     static final double CHASSIS_LENGTH = 15;
+    static final double CHASSIS_HALF_LENGTH = CHASSIS_LENGTH / 2.0;
     static final double SWING_ARM_LENGTH = 12;
     static final double FLIP_ARM_LENGTH = 10.5;
     static final double ARM_LOCATION_BIAS = 2.0; // Arm joint location to the center of chassis.
