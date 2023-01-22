@@ -44,7 +44,6 @@ public class Params {
     static final double HALF_MAT = 12.0;
     static final double CHASSIS_HALF_WIDTH = 14 / 2.0;
     static final double CHASSIS_LENGTH = 15;
-    static final double CHASSIS_HALF_LENGTH = 15 / 2.0;
     static final double SWING_ARM_LENGTH = 12;
     static final double FLIP_ARM_LENGTH = 10.5;
     static final double ARM_LOCATION_BIAS = 2.0; // Arm joint location to the center of chassis.
@@ -52,7 +51,7 @@ public class Params {
     static final double INIT_POSITION_TO_MAT_CENTER = 5 * HALF_MAT - CHASSIS_HALF_WIDTH;
     static final double INIT_POSITION_TO_2ND_MAT_EDGE = 4 * HALF_MAT - CHASSIS_HALF_WIDTH;
     static final double HIGH_JUNCTION_TO_CONE_STACK = 4 * HALF_MAT - SWING_ARM_LENGTH;
-    static final double BASE_TO_JUNCTION = 3 * HALF_MAT - FLIP_ARM_LENGTH * 2;
+    static final double BASE_TO_JUNCTION = 3 * HALF_MAT - 18;
     static final double UNLOAD_DS_VALUE = 4.5;
     static final double LOAD_DS_VALUE = 6;
 
@@ -73,12 +72,13 @@ public class Params {
     static final double MEDIUM_JUNCTION_POS_TELE = 23.5 - ARM_UNLOADING_LIFT_TELE;
     static final double HIGH_JUNCTION_POS_TELE = 33 - ARM_UNLOADING_LIFT_TELE;
     static final double WALL_POSITION = 8;
+    static final double COVER_POSITION = 4.0;
     static final double SLIDER_MOVE_DOWN_POSITION = 3.0;
     static final double SLIDER_MOVE_OUT_CONE_STACK = WALL_POSITION - coneStack5th;
 
     //claw action time
     static final int CLAW_CLOSE_SLEEP = 200; // ms
-    static final int CLAW_OPEN_SLEEP = 100; // ms
+    static final int CLAW_OPEN_SLEEP = 200; // ms
     static final int WAIT_SHAKING_SLEEP = 100;
 }
 

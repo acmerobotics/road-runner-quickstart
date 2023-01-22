@@ -73,7 +73,7 @@ public class ChassisWith4Motors {
     // Driving motor variables
     final double MAX_CORRECTION_POWER = 0.12;
     final double AUTO_ROTATE_POWER = 0.9;
-    final double MAX_POWER = 1.0 - MAX_CORRECTION_POWER;
+    double MAX_POWER = 1.0 - MAX_CORRECTION_POWER;
     final double AUTO_MAX_POWER = 0.8;
     final double SHORT_DISTANCE_POWER = 0.5;
     final double RAMP_START_POWER = 0.4;
@@ -374,7 +374,7 @@ public class ChassisWith4Motors {
      *
      * @param degrees Degrees to turn, + is left - is right
      */
-    private void rotate(double degrees) {
+    public void rotate(double degrees) {
         resetAngle();
         runWithoutEncoders(); // make sure it is the mode of Run without encoder
 
@@ -786,7 +786,7 @@ public class ChassisWith4Motors {
         // driving with max power
         currDs = ds.getDistance(DistanceUnit.INCH);
         currPower = maxPower;
-        while (((currEn - startEn) < targetDis) && (currDs > threshold)) {
+        while ((currEn - startEn) < targetDis) {
             if (drivingOrStrafe) {
                 drivingWithPID(currPower * direct, 0.0, 0.0, true);
             }
