@@ -63,6 +63,7 @@ public class Params {
     // slider position variables
     static final double ARM_UNLOADING_LIFTING = 5; // Autonomous: Arm lifting from loading position to unloading position
     static final double ARM_UNLOADING_LIFT_TELE = 3; // Teleop: ARM is more lower than autonomous to reach junctions
+    static final double ARM_UNLOADING_EXTENSION = 6;
     static final double GROUND_CONE_POSITION = 0.0;
     static final double coneStack5th = coneLoadStackGap * 4;
     static final double GROUND_JUNCTION_POS = GROUND_CONE_POSITION + 1.0;
