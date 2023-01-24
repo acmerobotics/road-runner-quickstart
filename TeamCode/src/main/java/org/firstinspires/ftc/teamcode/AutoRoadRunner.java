@@ -109,9 +109,14 @@ public class AutoRoadRunner extends LinearOpMode {
     boolean isCameraInstalled = true;
 
     // road runner variables
+    /*
     Pose2d startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH,-3 * Params.HALF_MAT, Math.toRadians(90));
+    double dropOffAngle = -70;
+    */
+    Pose2d startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH,
+            -3 * Params.HALF_MAT, Math.toRadians(-90));
 
-    double dropOffAngle = -70; // the target robot heading angle when drop off cone
+    double dropOffAngle = -110; // the target robot heading angle when drop off cone
 
     @Override
     public void runOpMode() {
@@ -160,9 +165,9 @@ public class AutoRoadRunner extends LinearOpMode {
 
         armClaw.init(hardwareMap, "ArmServo", "ClawServo");
         armClaw.armFlipFrontLoad();
-        sleep(200);
-        armClaw.clawClose();
         sleep(300);
+        armClaw.clawClose();
+        sleep(200);
         armClaw.armFlipCenter();
 
         runtime.reset();
@@ -212,6 +217,21 @@ public class AutoRoadRunner extends LinearOpMode {
         // lift slider
         //slider.setInchPosition(Params.LOW_JUNCTION_POS);
 
+        Trajectory traj1;
+        traj1= drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(Params.ARM_UNLOADING_EXTENSION * Math.cos(Math.toRadians(dropOffAngle)),
+                        -2 * Params.HALF_MAT + Params.ARM_UNLOADING_EXTENSION * Math.sin(Math.toRadians(dropOffAngle)),
+                        Math.toRadians(dropOffAngle)))
+                .build();
+        drive.followTrajectory(traj1);
+
+
+        telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+        telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+
+        /*
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(-4 * Params.HALF_MAT, -3 * Params.HALF_MAT, Math.toRadians(135)))
                 .build();
@@ -243,7 +263,7 @@ public class AutoRoadRunner extends LinearOpMode {
                 traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
         telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
                 drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-
+*/
                 //.strafeRight(Params.HALF_MAT * 2 - Params.CHASSIS_HALF_WIDTH)
                 //.splineTo(new Vector2d(4 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 0), Math.toRadians(-180))
                 //.splineTo(new Vector2d(0, 4 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH * 2), Math.toRadians(0))
