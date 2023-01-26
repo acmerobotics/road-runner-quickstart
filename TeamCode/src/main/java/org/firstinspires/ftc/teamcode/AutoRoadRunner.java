@@ -212,8 +212,8 @@ public class AutoRoadRunner extends LinearOpMode {
     public void autonomousCore() {
 
         // lift slider
-        //slider.setInchPosition(Params.LOW_JUNCTION_POS);
-
+        slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
+        armClaw.armFlipBackUnload();
         // drive to medium junction and drop off the cone
         Trajectory traj1;
         traj1= drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -233,10 +233,6 @@ public class AutoRoadRunner extends LinearOpMode {
                 traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
         telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
                 drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-
-
-        //slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
-        armClaw.armFlipBackUnload();
 
         // drop cone and back to the center of mat
         rrUnloadCone();
@@ -289,13 +285,13 @@ public class AutoRoadRunner extends LinearOpMode {
      * @param coneLocation: the target cone high location.
      */
     public void rrLoadCone(double coneLocation) {
-        //slider.setInchPosition(coneLocation);
+        slider.setInchPosition(coneLocation);
         //driveBack(Params.DISTANCE_PICK_UP);
         Logging.log("Wait before claw close.");
         slider.waitRunningComplete();
         armClaw.clawClose();
         sleep(Params.CLAW_CLOSE_SLEEP - 100);// subtract 50ms due to the following rotation function.
-        //slider.movingSliderInch(Params.SLIDER_MOVE_OUT_CONE_STACK);
+        slider.movingSliderInch(Params.SLIDER_MOVE_OUT_CONE_STACK);
         armClaw.armFlipBackUnload();
         Logging.log("Wait before moving out cone stack.");
         slider.waitRunningComplete(); // make sure slider has been lifted.
@@ -305,22 +301,24 @@ public class AutoRoadRunner extends LinearOpMode {
      * auto unload cone with roadrunner support.
      */
     public void rrUnloadCone() {
-        armClaw.armFlipBackUnload();
+        //armClaw.armFlipBackUnload();
         //driveForward(Params.DISTANCE_DROP_OFF);
-        sleep(Params.WAIT_SHAKING_SLEEP);
-        //slider.movingSliderInch(-Params.SLIDER_MOVE_DOWN_POSITION);
+        //sleep(Params.WAIT_SHAKING_SLEEP);
+        slider.movingSliderInch(-Params.SLIDER_MOVE_DOWN_POSITION);
         Logging.log("Wait before unloading claw open.");
         slider.waitRunningComplete();
         armClaw.clawOpen();
         sleep(Params.CLAW_OPEN_SLEEP - 100); // 200
         armClaw.armFlipFrontLoad();
-
         Logging.log("Auto unload - Cone has been unloaded.");
     }
 
     private void moveFromJunctionToConeStack() {
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(poseConeStack)
+                .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
+                    slider.movingSliderInch(Params.WALL_POSITION);
+                })
                 .build();
         drive.followTrajectory(traj1);
 
@@ -340,8 +338,10 @@ public class AutoRoadRunner extends LinearOpMode {
     private void moveFromConeStackToJunction() {
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(poseMJDropOff)
+                .addDisplacementMarker(Params.HALF_MAT, () -> {
+                    slider.movingSliderInch(Params.MEDIUM_JUNCTION_POS);
+                })
                 .build();
-        drive.followTrajectory(traj1);
         drive.followTrajectory(traj1);
 
         Logging.log("Arrived junction");
