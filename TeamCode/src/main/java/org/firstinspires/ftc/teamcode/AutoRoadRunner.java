@@ -111,7 +111,8 @@ public class AutoRoadRunner extends LinearOpMode {
 
     double parkingEndHeading = Math.toRadians(-180.0);
     double parkingEndTangent = Math.toRadians(-180.0);
-    Pose2d poseParkingEnd1 = new Pose2d(-2.5 * Params.HALF_MAT, -3 * Params.HALF_MAT, parkingEndHeading);
+    Pose2d poseParkingEnd1;
+    Pose2d poseParkingEnd2;
     Pose2d poseParking;
 
     @Override
@@ -181,7 +182,7 @@ public class AutoRoadRunner extends LinearOpMode {
             telemetry.update();
         }
 
-        poseParking = setParkingPose(coneSleeveDetect.getParkingLot());
+        setParkingPose(coneSleeveDetect.getParkingLot());
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -256,6 +257,7 @@ public class AutoRoadRunner extends LinearOpMode {
         // parking
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .splineToSplineHeading(poseParkingEnd1, parkingEndTangent)
+                .splineToSplineHeading(poseParkingEnd2, parkingEndTangent)
                 .splineToSplineHeading(poseParking, parkingEndTangent)
                 .build();
         drive.followTrajectory(traj1);
@@ -353,26 +355,33 @@ public class AutoRoadRunner extends LinearOpMode {
 
     }
 
-    private Pose2d setParkingPose(ObjectDetection.ParkingLot parkingLot) {
+    private void setParkingPose(ObjectDetection.ParkingLot parkingLot) {
         double poseParkingY;
+        double poseParkingEnd2Y;
         switch (parkingLot) {
             case LEFT:
                 poseParkingY = -Params.HALF_MAT;
+                poseParkingEnd2Y = poseParkingY - Params.CHASSIS_HALF_WIDTH;
                 parkingEndTangent = Math.toRadians(90);
                 break;
             case CENTER:
                 poseParkingY = -3 * Params.HALF_MAT;
+                poseParkingEnd2Y = poseParkingY - 1;
                 parkingEndTangent = Math.toRadians(180);
                 break;
             case RIGHT:
                 poseParkingY = -5 * Params.HALF_MAT;
+                poseParkingEnd2Y = poseParkingY + Params.CHASSIS_HALF_WIDTH;
                 parkingEndTangent = Math.toRadians(-90);
                 break;
             default:
                 poseParkingY = -5 * Params.HALF_MAT;
+                poseParkingEnd2Y = poseParkingY + Params.CHASSIS_HALF_WIDTH;
         }
-        Pose2d p = new Pose2d(-3 * Params.HALF_MAT + 1, poseParkingY, parkingEndHeading);
-        return p;
+
+        poseParkingEnd1 = new Pose2d(-2 * Params.HALF_MAT - Params.CHASSIS_HALF_LENGTH + 2, -3 * Params.HALF_MAT - 2, parkingEndHeading);
+        poseParkingEnd2 = new Pose2d(-2 * Params.HALF_MAT - Params.CHASSIS_HALF_LENGTH + 2, poseParkingEnd2Y, parkingEndHeading);
+        poseParking = new Pose2d(-2 * Params.HALF_MAT - Params.CHASSIS_HALF_LENGTH + 2, poseParkingY, parkingEndHeading);
     }
 
     /**
