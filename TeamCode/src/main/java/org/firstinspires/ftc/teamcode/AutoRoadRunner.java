@@ -109,8 +109,9 @@ public class AutoRoadRunner extends LinearOpMode {
     Pose2d poseMJDropOff = new Pose2d(-2 * Params.HALF_MAT + armX, -2 * Params.HALF_MAT + armY, dropOffAngle);
     Pose2d poseConeStack = new Pose2d(-Params.HALF_MAT, -6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH, Math.toRadians(-90));
 
+    double parkingEndHeading = Math.toRadians(-180.0);
     double parkingEndTangent = Math.toRadians(-180.0);
-    Pose2d poseParkingEnd1 = new Pose2d(-2.5 * Params.HALF_MAT, -3 * Params.HALF_MAT, Math.toRadians(-180));
+    Pose2d poseParkingEnd1 = new Pose2d(-2.5 * Params.HALF_MAT, -3 * Params.HALF_MAT, parkingEndHeading);
     Pose2d poseParking;
 
     @Override
@@ -357,17 +358,20 @@ public class AutoRoadRunner extends LinearOpMode {
         switch (parkingLot) {
             case LEFT:
                 poseParkingY = -Params.HALF_MAT;
+                parkingEndTangent = Math.toRadians(90);
                 break;
             case CENTER:
                 poseParkingY = -3 * Params.HALF_MAT;
+                parkingEndTangent = Math.toRadians(180);
                 break;
             case RIGHT:
                 poseParkingY = -5 * Params.HALF_MAT;
+                parkingEndTangent = Math.toRadians(-90);
                 break;
             default:
                 poseParkingY = -5 * Params.HALF_MAT;
         }
-        Pose2d p = new Pose2d(-3 * Params.HALF_MAT + 1, poseParkingY, Math.toRadians(-180));
+        Pose2d p = new Pose2d(-3 * Params.HALF_MAT + 1, poseParkingY, parkingEndHeading);
         return p;
     }
 
