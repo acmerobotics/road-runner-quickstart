@@ -59,7 +59,6 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -89,17 +88,6 @@ public class AutoRoadRunner extends LinearOpMode {
 
     private SampleMecanumDrive drive;
 
-    // variables for autonomous
-    double matCenterToJunction = Params.HALF_MAT * 1.414 - Params.BACK_V_TO_CENTER - Params.CONE_WALL_THICKNESS; //12.468
-    double matCenterToConeStack = Params.HALF_MAT * 3 - Params.FLIP_ARM_LENGTH; // 25.5
-
-    //  adjust -2 ~ 2 inch if needed for below 5 variables
-    double backDistanceToThrowSleeve = Params.HALF_MAT - Params.CHASSIS_LENGTH / 2.0 + 1;
-    double movingDistBeforeDrop = matCenterToJunction;
-    double movingDistAfterDrop = matCenterToJunction - 1;
-    double movingToConeStack = matCenterToConeStack - 1.0;
-    double MovingToMatCenter = matCenterToConeStack - Params.DISTANCE_PICK_UP - 3;
-
     // camera and sleeve color
     ObjectDetection.ParkingLot myParkingLot = ObjectDetection.ParkingLot.UNKNOWN;
     double parkingLotDis = 0;
@@ -109,14 +97,21 @@ public class AutoRoadRunner extends LinearOpMode {
     boolean isCameraInstalled = true;
 
     // road runner variables
-    /*
-    Pose2d startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH,-3 * Params.HALF_MAT, Math.toRadians(90));
-    double dropOffAngle = -70;
-    */
     Pose2d startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH,
             -3 * Params.HALF_MAT, Math.toRadians(-90));
+    double dropOffAngle = -70; // the target robot heading angle when drop off cone
+    double armX = Params.ARM_UNLOADING_EXTENSION * Math.cos(Math.toRadians(dropOffAngle));
+    double armY = Params.ARM_UNLOADING_EXTENSION * Math.sin(Math.toRadians(dropOffAngle));
 
-    double dropOffAngle = -110; // the target robot heading angle when drop off cone
+    Pose2d poseLineEnd1 = new Pose2d(startPose.getX() + 2 * Params.HALF_MAT, startPose.getY(), startPose.getHeading());
+    Pose2d poseSplineEnd2 = new Pose2d(startPose.getX() + 4 * Params.HALF_MAT, startPose.getY(), startPose.getHeading());
+    Pose2d poseSplineEnd3 = new Pose2d(poseSplineEnd2.getX() + 5, poseSplineEnd2.getY() + 5, dropOffAngle);
+    Pose2d poseMJDropOff = new Pose2d(-2 * Params.HALF_MAT + armX, -2 * Params.HALF_MAT + armY, dropOffAngle);
+    Pose2d poseConeStack = new Pose2d(-Params.HALF_MAT, -6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH, Math.toRadians(-90));
+
+    double parkingEndTangent = Math.toRadians(-180.0);
+    Pose2d poseParkingEnd1 = new Pose2d(-2.5 * Params.HALF_MAT, -3 * Params.HALF_MAT, Math.toRadians(-180));
+    Pose2d poseParking;
 
     @Override
     public void runOpMode() {
@@ -185,6 +180,8 @@ public class AutoRoadRunner extends LinearOpMode {
             telemetry.update();
         }
 
+        poseParking = setParkingPose(coneSleeveDetect.getParkingLot());
+
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
@@ -217,67 +214,25 @@ public class AutoRoadRunner extends LinearOpMode {
         // lift slider
         //slider.setInchPosition(Params.LOW_JUNCTION_POS);
 
+        // drive to medium junction and drop off the cone
         Trajectory traj1;
         traj1= drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(Params.ARM_UNLOADING_EXTENSION * Math.cos(Math.toRadians(dropOffAngle)),
-                        -2 * Params.HALF_MAT + Params.ARM_UNLOADING_EXTENSION * Math.sin(Math.toRadians(dropOffAngle)),
-                        Math.toRadians(dropOffAngle)))
+                .lineToLinearHeading(poseLineEnd1)
+                .splineToSplineHeading(poseSplineEnd2, startPose.getHeading())
+                .splineToSplineHeading(poseSplineEnd3, dropOffAngle)
+                .splineToSplineHeading(poseMJDropOff, dropOffAngle)
                 .build();
         drive.followTrajectory(traj1);
 
+        Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+        Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
 
         telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
                 traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
         telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
                 drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-
-        /*
-        Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-4 * Params.HALF_MAT, -3 * Params.HALF_MAT, Math.toRadians(135)))
-                .build();
-        drive.followTrajectory(traj1);
-
-        telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-        telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-
-        traj1 = drive.trajectoryBuilder(new Pose2d(0,0,0))
-                .lineToLinearHeading(new Pose2d(-Params.HALF_MAT, 0, Math.toRadians(35)))
-                .build();
-        drive.followTrajectory(traj1);
-
-        telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-        telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-
-        traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-2 * Params.HALF_MAT + Params.ARM_UNLOADING_EXTENSION * Math.cos(Math.toRadians(dropOffAngle)),
-                        -2 * Params.HALF_MAT + Params.ARM_UNLOADING_EXTENSION * Math.sin(Math.toRadians(dropOffAngle)),
-                        Math.toRadians(dropOffAngle)))
-                .build();
-        drive.followTrajectory(traj1);
-
-        telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-        telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-*/
-                //.strafeRight(Params.HALF_MAT * 2 - Params.CHASSIS_HALF_WIDTH)
-                //.splineTo(new Vector2d(4 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 0), Math.toRadians(-180))
-                //.splineTo(new Vector2d(0, 4 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH * 2), Math.toRadians(0))
-                //.splineToConstantHeading(new Vector2d(0, 4 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH * 2), Math.toRadians(0))
-                //.lineToSplineHeading(new Pose2d(2 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 0, Math.toRadians(120)))
-                //.lineToLinearHeading(new Pose2d(Params.HALF_MAT * 4 - Params.CHASSIS_HALF_WIDTH + 13, Params.HALF_MAT - Params.ARM_UNLOADING_EXTENSION + 12, Math.toRadians(270)))
-                //.lineToSplineHeading(new Pose2d(Params.HALF_MAT * 4 - Params.CHASSIS_HALF_WIDTH + 13, Params.HALF_MAT - Params.ARM_UNLOADING_EXTENSION + 12, Math.toRadians(270)))
-                //.splineTo(Pose2d(1,1,0))
-
-                //.splineTo(new Vector2d(-(Params.HALF_MAT - Params.ARM_UNLOADING_EXTENSION), 4 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH), 0)
-                //.splineTo(new Vector2d(-10, 30 ), -1)
-                //.lineToLinearHeading()
-                //.build();
-        //drive.followTrajectory(traj1);
 
 
         //slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
@@ -287,26 +242,31 @@ public class AutoRoadRunner extends LinearOpMode {
         rrUnloadCone();
 
         for(int autoLoop = 0; autoLoop < 5; autoLoop++) {
-
-
             moveFromJunctionToConeStack();
 
             // load cone
-           rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop);
+            rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop);
 
             moveFromConeStackToJunction();
 
             // unload cone & adjust, 0.2 inch for cone thickness adjust
             rrUnloadCone();
         }
+        // lower slider in prep for tele-op
+        //slider.setInchPosition(Params.GROUND_CONE_POSITION);
+        armClaw.armFlipFrontLoad();
 
         // parking
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-Params.HALF_MAT,
-                        -3 * Params.HALF_MAT - parkingLotDis * autonomousStartLocation + 1,
-                        Math.toRadians(-90)))
+                .splineToSplineHeading(poseParkingEnd1, parkingEndTangent)
+                .splineToSplineHeading(poseParking, parkingEndTangent)
                 .build();
         drive.followTrajectory(traj1);
+
+        Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+        Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
 
         telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
                 traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
@@ -314,13 +274,9 @@ public class AutoRoadRunner extends LinearOpMode {
                 drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
 
 
-        // lower slider in prep for tele-op
-        //slider.setInchPosition(Params.GROUND_CONE_POSITION);
-        armClaw.armFlipFrontLoad();
-
         Logging.log("Autonomous - Arrived at parking lot Mat: %.2f", parkingLotDis);
 
-        //slider.waitRunningComplete();
+        slider.waitRunningComplete();
         Logging.log("Autonomous - Autonomous complete.");
 
         telemetry.update();
@@ -364,11 +320,16 @@ public class AutoRoadRunner extends LinearOpMode {
 
     private void moveFromJunctionToConeStack() {
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-Params.HALF_MAT,
-                        -6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH,
-                        Math.toRadians(-90)))
+                .lineToLinearHeading(poseConeStack)
                 .build();
         drive.followTrajectory(traj1);
+
+        Logging.log("Arrived cone stack");
+        Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+        Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+
 
         telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
                 traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
@@ -378,12 +339,12 @@ public class AutoRoadRunner extends LinearOpMode {
 
     private void moveFromConeStackToJunction() {
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-2 * Params.HALF_MAT + Params.ARM_UNLOADING_EXTENSION * Math.cos(Math.toRadians(dropOffAngle)),
-                        -2 * Params.HALF_MAT + Params.ARM_UNLOADING_EXTENSION * Math.sin(Math.toRadians(dropOffAngle)),
-                        Math.toRadians(dropOffAngle)))
+                .lineToLinearHeading(poseMJDropOff)
                 .build();
         drive.followTrajectory(traj1);
+        drive.followTrajectory(traj1);
 
+        Logging.log("Arrived junction");
         telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
                 traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
         telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
@@ -391,18 +352,23 @@ public class AutoRoadRunner extends LinearOpMode {
 
     }
 
-    private void driveForward(double distance) {
-        Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .forward(distance)
-                .build();
-        drive.followTrajectory(traj);
-    }
-
-    private void driveBack(double distance) {
-        Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .back(distance)
-                .build();
-        drive.followTrajectory(traj);
+    private Pose2d setParkingPose(ObjectDetection.ParkingLot parkingLot) {
+        double poseParkingY;
+        switch (parkingLot) {
+            case LEFT:
+                poseParkingY = -Params.HALF_MAT;
+                break;
+            case CENTER:
+                poseParkingY = -3 * Params.HALF_MAT;
+                break;
+            case RIGHT:
+                poseParkingY = -5 * Params.HALF_MAT;
+                break;
+            default:
+                poseParkingY = -5 * Params.HALF_MAT;
+        }
+        Pose2d p = new Pose2d(-3 * Params.HALF_MAT + 1, poseParkingY, Math.toRadians(-180));
+        return p;
     }
 
     /**
