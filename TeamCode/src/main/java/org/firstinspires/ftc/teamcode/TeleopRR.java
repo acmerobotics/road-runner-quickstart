@@ -91,12 +91,6 @@ public class TeleopRR extends LinearOpMode {
 
     // chassis
     SampleMecanumDrive mecanum = new SampleMecanumDrive(hardwareMap);
-    //private final ChassisWith4Motors chassis = new ChassisWith4Motors();
-
-    // Driving motor variables
-    final double POWER_LOW = 0.3;
-    final double POWER_NORMAL = 0.6;
-    final double POWER_HIGH = 0.95;
 
     // slider motor power variables
     private final SlidersWith2Motors slider = new SlidersWith2Motors();
@@ -146,7 +140,6 @@ public class TeleopRR extends LinearOpMode {
         telemetry.update();
         waitForStart();
         runtime.reset();
-        double timeStamp = 0.0;
 
         // move slider to wall position just when starting.
         if (opModeIsActive()) {
@@ -158,20 +151,6 @@ public class TeleopRR extends LinearOpMode {
 
             //gamepad1 buttons
             gpButtons.checkGamepadButtons(gamepad1, gamepad2);
-
-            // update chassis power
-            double maxDrivePower;
-            double deltaTime = runtime.milliseconds() - timeStamp;
-            double powerRampRate = 0.3 / 100; // 0.3 per 100 ms for speed ramp up
-            timeStamp = runtime.milliseconds();
-
-            if (gpButtons.speedUp) {
-                maxDrivePower = POWER_HIGH;
-            } else if (gpButtons.speedDown) {
-                maxDrivePower = POWER_LOW;
-            } else {
-                maxDrivePower = POWER_NORMAL;
-            }
 
             mecanum.setWeightedDrivePower(
                     new Pose2d(
@@ -318,27 +297,6 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if (debugFlag) {
-                ctrlHubCurrent = ctrlHub.getCurrent(CurrentUnit.AMPS);
-                ctrlHubVolt = ctrlHub.getInputVoltage(VoltageUnit.VOLTS);
-                exHubCurrent = exHub.getCurrent(CurrentUnit.AMPS);
-                exHubVolt = exHub.getInputVoltage(VoltageUnit.VOLTS);
-
-                auVolt = ctrlHub.getAuxiliaryVoltage(VoltageUnit.VOLTS);
-                minAuVolt = Math.min(auVolt, minAuVolt);
-
-                maxCtrlCurrent = Math.max(ctrlHubCurrent, maxCtrlCurrent);
-                maxExCurrent = Math.max(exHubCurrent, maxExCurrent);
-                minCtrlVolt = Math.min(ctrlHubVolt, minCtrlVolt);
-                minExVolt = Math.min(exHubVolt, minExVolt);
-
-                Logging.log("Ctrl hub current = %.2f, max = %.2f", ctrlHubCurrent, maxCtrlCurrent);
-                Logging.log("Ctrl hub volt = %.2f, min = %.2f", ctrlHubVolt, minCtrlVolt);
-                Logging.log("Extend hub current = %.2f, max = %.2f", exHubCurrent, maxExCurrent);
-                Logging.log("Extend hub volt = %.2f, min = %.2f", exHubVolt, minExVolt);
-                Logging.log("Auxiliary voltage = %.2f, min = %.2f", auVolt, minAuVolt);
-
-                // imu log
-                mecanum.getRawExternalHeading(); // update last angles and global angle before logging
 
                 // claw arm servo log
                 telemetry.addData("Arm", "position = %.2f", armClaw.getArmPosition());
@@ -348,15 +306,10 @@ public class TeleopRR extends LinearOpMode {
                         slider.RightSliderMotor.getCurrentPosition());
                 telemetry.addData("Left slider", "current position %d",
                         slider.LeftSliderMotor.getCurrentPosition());
-
-                // drive motors log
-                telemetry.addData("Max driving power ", "%.2f", maxDrivePower);
             }
 
             // running time
-            telemetry.addData("Status", "While loop Time in ms = ", "%.1f", deltaTime);
             telemetry.update(); // update message at the end of while loop
-            Logging.log("While loop time in ms = %.1f.", deltaTime);
         }
 
         // The motor stop on their own but power is still applied. Turn off motor.
