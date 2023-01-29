@@ -74,9 +74,14 @@ public class GamePadButtons {
         }
 
         if (ArmClawUnit.ArmMode.FLIP == ArmClawUnit.armMode) {
-            armFrontLoad = gamepad2.left_stick_y < -0.2;
-            armBackUnload= gamepad2.left_stick_y > 0.2;
-            armManualControl = gamepad2.left_stick_x;
+            armFrontLoad = (gamepad2.left_stick_y < -0.2) && (Math.abs(gamepad2.left_stick_x) < Math.abs(gamepad2.left_stick_y));
+            armBackUnload= (gamepad2.left_stick_y > 0.2) && (Math.abs(gamepad2.left_stick_x) < Math.abs(gamepad2.left_stick_y));
+            if (Math.abs(gamepad2.left_stick_x) > Math.abs(gamepad2.left_stick_y)) {
+                armManualControl = gamepad2.left_stick_x;
+            }
+            else {
+                armManualControl = 0;
+            }
         }
     }
 
