@@ -90,7 +90,7 @@ public class TeleopRR extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
     // chassis
-    SampleMecanumDrive mecanum = new SampleMecanumDrive(hardwareMap);
+    SampleMecanumDrive mecanum;
 
     // slider motor power variables
     private final SlidersWith2Motors slider = new SlidersWith2Motors();
@@ -104,16 +104,13 @@ public class TeleopRR extends LinearOpMode {
     // debug flags, turn it off for formal version to save time of logging
     boolean debugFlag = false;
 
-    // voltage management
-    LynxModule ctrlHub;
-    LynxModule exHub;
-
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
 
         GamePadButtons gpButtons = new GamePadButtons();
+
+        mecanum = new SampleMecanumDrive(hardwareMap);
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -122,12 +119,6 @@ public class TeleopRR extends LinearOpMode {
         slider.setInchPosition(Params.GROUND_CONE_POSITION);
 
         armClaw.init(hardwareMap, "ArmServo", "ClawServo");
-
-        // power control
-        ctrlHub = hardwareMap.get(LynxModule.class, "Control Hub");
-        exHub = hardwareMap.get(LynxModule.class, "Control Hub");
-        double ctrlHubCurrent, ctrlHubVolt, exHubCurrent, exHubVolt, auVolt;
-        double maxCtrlCurrent = 0.0, minCtrlVolt = 15.0, maxExCurrent = 0.0, minExVolt = 15.0, minAuVolt = 15.0;
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
