@@ -365,13 +365,14 @@ public class TeleopRR extends LinearOpMode {
 
         armClaw.armFlipFrontLoad();
 
-        // driving back to cone base
-        driveForwardBack(moveOutJunctionDistance); // move out from junction
+        Trajectory unload = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())  //combines drive back and lower slider action
+                .forward(Params.BASE_TO_JUNCTION)
+                .addDisplacementMarker(moveOutJunctionDistance, () -> {
+                    slider.setInchPosition(Params.WALL_POSITION - Params.coneLoadStackGap * 3);
+                })
+                .build();
+        mecanum.followTrajectory(unload);
 
-        slider.setInchPosition(Params.WALL_POSITION - Params.coneLoadStackGap * 3);
-
-        // -2 ~ 2 inch adjust moving to base for pick up
-        driveForwardBack(Params.BASE_TO_JUNCTION - moveOutJunctionDistance);
     }
 
     private void driveForwardBack(double distanceInch) {
