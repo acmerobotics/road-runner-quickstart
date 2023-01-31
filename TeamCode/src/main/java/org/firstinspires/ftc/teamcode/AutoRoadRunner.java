@@ -73,7 +73,30 @@ import java.util.List;
 
 /**
  * Extended from AutonomousRight file.
- * Use this one for autonomous when robot located at left side of game field.
+ * Use this one for autonomous when robot located at right side of game field.
+ */
+
+/**
+ * Hardware config:
+ *      imu on control Hub:
+ *          "imu"
+ *
+ *      Four drive motors:
+ *          "FrontLeft"
+ *          "BackLeft"
+ *          "BackRight"
+ *          "FrontRight"
+ *
+ *      Tow slider motors:
+ *          "RightSlider"
+ *          "LeftSlider"
+ *
+ *      Tow servo motors:
+ *          "ArmServo"
+ *          "ClawServo"
+ *
+ *      One camera:
+ *          "Webcam 1"
  */
 
 @Autonomous(name="auto RR right", group="Concept")

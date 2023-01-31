@@ -66,16 +66,23 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.util.List;
 
 /**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
+ * Hardware config:
+ *      imu on control Hub:
+ *          "imu"
  *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
+ *      Four drive motors:
+ *          "FrontLeft"
+ *          "BackLeft"
+ *          "BackRight"
+ *          "FrontRight"
  *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ *      Tow slider motors:
+ *          "RightSlider"
+ *          "LeftSlider"
+ *
+ *      Tow servo motors:
+ *          "ArmServo"
+ *          "ClawServo"
  */
 
 @TeleOp(name="Teleop RR", group="Concept")
@@ -97,7 +104,7 @@ public class TeleopRR extends LinearOpMode {
     double moveOutJunctionDistance = 5.0; // in INCH
 
     // debug flags, turn it off for formal version to save time of logging
-    boolean debugFlag = false;
+    boolean debugFlag = true;
 
     @Override
     public void runOpMode() {
@@ -292,6 +299,10 @@ public class TeleopRR extends LinearOpMode {
                         slider.RightSliderMotor.getCurrentPosition());
                 telemetry.addData("Left slider", "current position %d",
                         slider.LeftSliderMotor.getCurrentPosition());
+
+                telemetry.addData("RR", "x = %.1f, y = %.1f, Heading = %.1f",
+                        mecanum.getPoseEstimate().getX(), mecanum.getPoseEstimate().getY(),
+                        Math.toDegrees(mecanum.getPoseEstimate().getHeading()));
             }
 
             // running time
@@ -360,21 +371,20 @@ public class TeleopRR extends LinearOpMode {
 
         armClaw.armFlipFrontLoad();
 
-        Trajectory unload = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())  //combines drive back and lower slider action
+        //combines drive back and lower slider action
+        Trajectory unload = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
                 .forward(Params.BASE_TO_JUNCTION)
                 .addDisplacementMarker(moveOutJunctionDistance, () -> {
                     slider.setInchPosition(Params.WALL_POSITION - Params.coneLoadStackGap * 3);
                 })
                 .build();
         mecanum.followTrajectory(unload);
-
     }
 
     private void driveForwardBack(double distanceInch) {
         Trajectory trajectory = mecanum.trajectoryBuilder(new Pose2d())
                 .lineTo(new Vector2d(distanceInch, 0))
                 .build();
-
         mecanum.followTrajectory(trajectory);
     }
 
