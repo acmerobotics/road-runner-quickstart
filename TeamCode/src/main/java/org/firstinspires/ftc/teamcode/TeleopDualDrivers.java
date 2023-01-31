@@ -185,17 +185,17 @@ public class TeleopDualDrivers extends LinearOpMode {
 
             // use Y button to lift up the slider reaching high junction
             if (gpButtons.sliderHighJunction) {
-                slider.setInchPosition(Params.HIGH_JUNCTION_POS_TELE);
+                slider.setInchPosition(Params.HIGH_JUNCTION_POS);
             }
 
             // use B button to lift up the slider reaching medium junction
             if (gpButtons.sliderMediumJunction) {
-                slider.setInchPosition(Params.MEDIUM_JUNCTION_POS_TELE);
+                slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
             }
 
             // use A button to lift up the slider reaching low junction
             if (gpButtons.sliderLowJunction) {
-                slider.setInchPosition(Params.LOW_JUNCTION_POS_TELE);
+                slider.setInchPosition(Params.LOW_JUNCTION_POS);
             }
 
             // use X button to move the slider for wall position
@@ -271,7 +271,7 @@ public class TeleopDualDrivers extends LinearOpMode {
                 if (slider.getInchPosition() < Params.COVER_POSITION) {
                     slider.setInchPosition(Params.COVER_POSITION);
                 }
-                armClaw.armFlipBackUnloadTele();
+                armClaw.armFlipBackUnload();
             }
 
             // 0.2 is to avoid pressing button by mistake.
@@ -382,8 +382,8 @@ public class TeleopDualDrivers extends LinearOpMode {
         slider.waitRunningComplete();
         armClaw.clawClose();
         sleep(Params.CLAW_CLOSE_SLEEP); // wait to make sure clawServo is at grep position, 200 ms
-        slider.setInchPosition(Params.LOW_JUNCTION_POS_TELE);
-        armClaw.armFlipBackUnloadTele();
+        slider.setInchPosition(Params.LOW_JUNCTION_POS);
+        armClaw.armFlipBackUnload();
     }
 
     /**
@@ -400,11 +400,11 @@ public class TeleopDualDrivers extends LinearOpMode {
         armClaw.clawClose();
         sleep(Params.CLAW_CLOSE_SLEEP - 50); // 200 ms
         chassis.rotate(-chassis.getAngle());
-        slider.setInchPosition(Params.HIGH_JUNCTION_POS_TELE);
+        slider.setInchPosition(Params.HIGH_JUNCTION_POS);
         armClaw.armFlipCenter();
         chassis.runToPosition(-Params.BASE_TO_JUNCTION, true);
         slider.waitRunningComplete();
-        armClaw.armFlipBackUnloadTele();
+        armClaw.armFlipBackUnload();
         chassis.MAX_POWER = power_old;
     }
 

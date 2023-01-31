@@ -59,8 +59,8 @@ public class ArmClawUnit
 
     // claw servo motor variables
     private Servo clawServo = null;
-    final double CLAW_OPEN_POS = 0.60;
-    final double CLAW_CLOSE_POS = 0.85;
+    final double CLAW_OPEN_POS = 0.47;
+    final double CLAW_CLOSE_POS = 0.6;
     final double CLAW_MAX_POS = 1; // Maximum rotational position
     final double CLAW_MIN_POS = 0;  // Minimum rotational position
 
@@ -73,7 +73,7 @@ public class ArmClawUnit
     final double ARM_FLIP_FRONT_LOAD_POS = 0.23;
     final double ARM_FLIP_FRONT_UNLOAD_POS = 0.35;
     final double ARM_FLIP_BACK_UNLOAD_POS = 0.9;
-    final double ARM_FLIP_BACK_UNLOAD_TELE = 0.80;
+    final double ARM_FLIP_BACK_UNLOAD_PRE = 0.75;
     final double ARM_FLIP_BACK_LOAD_POS = 0.9;
     final double ARM_FLIP_CENTER = 0.56;
 
@@ -196,10 +196,10 @@ public class ArmClawUnit
     }
 
     /**
-     * turn the Flip arm to back unloading position during Teleop, the art extend more farther.
+     * turn the Flip arm to back preparing unloading position during Teleop, the art extend more farther.
      */
-    public void armFlipBackUnloadTele() {
-        setArmPosition(ARM_FLIP_BACK_UNLOAD_TELE);
+    public void armFlipBackUnloadPre() {
+        setArmPosition(ARM_FLIP_BACK_UNLOAD_PRE);
     }
 
     /**

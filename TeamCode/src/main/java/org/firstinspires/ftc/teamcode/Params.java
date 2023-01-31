@@ -61,8 +61,7 @@ public class Params {
     static final double DISTANCE_DROP_OFF = 1.0; // in INCH
 
     // slider position variables
-    static final double ARM_UNLOADING_LIFTING = 0; // Autonomous: Arm lifting from loading position to unloading position
-    static final double ARM_UNLOADING_LIFT_TELE = 4; // Teleop: ARM is more lower than autonomous to reach junctions
+    static final double ARM_UNLOADING_LIFTING = 4; // Autonomous: Arm lifting from loading position to unloading position
     static final double ARM_UNLOADING_EXTENSION = 8;
     static final double GROUND_CONE_POSITION = 0.0;
     static final double coneStack5th = coneLoadStackGap * 4;
@@ -70,9 +69,6 @@ public class Params {
     static final double LOW_JUNCTION_POS = 14 - ARM_UNLOADING_LIFTING;
     static final double MEDIUM_JUNCTION_POS = 23.5 - ARM_UNLOADING_LIFTING;
     static final double HIGH_JUNCTION_POS = 33 - ARM_UNLOADING_LIFTING;
-    static final double LOW_JUNCTION_POS_TELE = 14 - ARM_UNLOADING_LIFT_TELE;
-    static final double MEDIUM_JUNCTION_POS_TELE = 23.5 - ARM_UNLOADING_LIFT_TELE;
-    static final double HIGH_JUNCTION_POS_TELE = 33 - ARM_UNLOADING_LIFT_TELE;
     static final double WALL_POSITION = 8;
     static final double COVER_POSITION = 4.0;
     static final double SLIDER_MOVE_DOWN_POSITION = 3.0;

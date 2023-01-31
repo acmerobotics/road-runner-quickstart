@@ -52,10 +52,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  *
  * Need config below hardware names:
  * 1. IMU - imu
- * 2. Distance sensor - fcds
- * 3. Distance sensor - rcds
+ * 2. Distance sensor - fcds - not used
+ * 3. Distance sensor - rcds - not used
  * 4. Wheel motors - names from initial function parameters.
- * 5. color sensor (Rev Color Sensor V3) - cs
+ * 5. color sensor (Rev Color Sensor V3) - cs - not used
  */
 public class ChassisWith4Motors {
     //private
@@ -183,14 +183,6 @@ public class ChassisWith4Motors {
         pidDrive.setSetpoint(0); // be sure input range has been set before
         pidDrive.setOutputRange(0, MAX_CORRECTION_POWER);
         pidDrive.enable();
-
-        // Distance sensors
-        frontCenterDS = hardwareMap.get(DistanceSensor.class, "fcds");
-        backCenterDS = hardwareMap.get(DistanceSensor.class, "bcds");
-
-        //frontLeftDS = hardwareMap.get(DistanceSensor.class, "flds");
-        //frontRightDS = hardwareMap.get(DistanceSensor.class, "frds");
-        //colorSensor = hardwareMap.get(ColorSensor.class, "cs");
     }
 
     /**
