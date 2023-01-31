@@ -55,6 +55,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -71,7 +72,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
  */
 
 @Autonomous(name="Autonomous_Left", group="Concept")
-//@Disabled
+@Disabled
 public class AutonomousLeft extends AutonomousRight {
 
     @Override

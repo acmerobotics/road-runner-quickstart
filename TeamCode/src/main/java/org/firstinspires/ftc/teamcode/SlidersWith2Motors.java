@@ -59,11 +59,11 @@ public class SlidersWith2Motors
     public DcMotor RightSliderMotor = null;
     public DcMotor LeftSliderMotor = null;
     final double SLIDER_MOTOR_POWER = 0.98; // save some powers
-    final int COUNTS_PER_INCH = 120; // verified by testing.
-    final double manualUpdatePos = COUNTS_PER_INCH / 2.0; // 0.5 inch
+    final double COUNTS_PER_INCH = 31.3;// for 1150RPM motor //120  for 312 RPM motor - 537.7 PPR at the Output Shaft
+    final double manualUpdatePos = COUNTS_PER_INCH / 3.0;
 
     // slider position variables
-    final int FOUR_STAGE_SLIDER_MAX_POS = 3800;  // with 312 RPM motor.
+    final int FOUR_STAGE_SLIDER_MAX_POS = (int)(COUNTS_PER_INCH * Params.HIGH_JUNCTION_POS * 1.05);
     final int SLIDER_MIN_POS = 0;
 
     /**
@@ -99,7 +99,7 @@ public class SlidersWith2Motors
      * @param inchPosition the target high position of sliders in inch.
      */
     public void setInchPosition(double inchPosition) {
-        int sliderMotorPosition = (int)inchPosition * COUNTS_PER_INCH;
+        int sliderMotorPosition = (int)(inchPosition * COUNTS_PER_INCH);
         setCountPosition(sliderMotorPosition);
     }
 

@@ -56,6 +56,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -81,7 +82,7 @@ import java.util.List;
  */
 
 @Autonomous(name="Autonomous_Right", group="Concept")
-//@Disabled
+@Disabled
 public class AutonomousRight extends LinearOpMode {
 
     public int autonomousStartLocation = 1; // 1 for right location, and -1 for left location.

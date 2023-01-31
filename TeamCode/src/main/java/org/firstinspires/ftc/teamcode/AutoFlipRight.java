@@ -71,7 +71,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  */
 
 @Autonomous(name="Auto Flip Right", group="Concept")
-//@Disabled
+@Disabled
 public class AutoFlipRight extends AutonomousRight {
 
     @Override

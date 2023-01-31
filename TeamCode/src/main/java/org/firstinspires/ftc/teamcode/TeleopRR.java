@@ -118,7 +118,8 @@ public class TeleopRR extends LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         slider.init(hardwareMap, "RightSlider", "LeftSlider");
-        slider.setInchPosition(Params.GROUND_CONE_POSITION);
+        slider.setCountPosition(slider.getPosition());
+        slider.runToPosition();
 
         armClaw.init(hardwareMap, "ArmServo", "ClawServo");
 
@@ -136,7 +137,7 @@ public class TeleopRR extends LinearOpMode {
 
         // move slider to wall position just when starting.
         if (opModeIsActive()) {
-            slider.setInchPosition(Params.WALL_POSITION);
+            //slider.setInchPosition(Params.WALL_POSITION);
         }
 
         // run until the end of the match (driver presses STOP)
@@ -148,8 +149,8 @@ public class TeleopRR extends LinearOpMode {
             mecanum.setWeightedDrivePower(
                     new Pose2d(
                             gpButtons.robotDrive,
-                            -gpButtons.robotTurn,
-                            gpButtons.robotStrafe
+                            gpButtons.robotStrafe,
+                            -gpButtons.robotTurn
                     )
             );
 
@@ -299,6 +300,11 @@ public class TeleopRR extends LinearOpMode {
                         slider.RightSliderMotor.getCurrentPosition());
                 telemetry.addData("Left slider", "current position %d",
                         slider.LeftSliderMotor.getCurrentPosition());
+
+                telemetry.addData("Right slider", "T position %d",
+                        slider.RightSliderMotor.getTargetPosition());
+                telemetry.addData("Left slider", "T position %d",
+                        slider.LeftSliderMotor.getTargetPosition());
 
                 telemetry.addData("RR", "x = %.1f, y = %.1f, Heading = %.1f",
                         mecanum.getPoseEstimate().getX(), mecanum.getPoseEstimate().getY(),

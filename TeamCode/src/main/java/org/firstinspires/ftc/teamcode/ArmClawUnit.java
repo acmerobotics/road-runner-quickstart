@@ -59,8 +59,8 @@ public class ArmClawUnit
 
     // claw servo motor variables
     private Servo clawServo = null;
-    final double CLAW_OPEN_POS = 0.5;
-    final double CLAW_CLOSE_POS = 0.71;
+    final double CLAW_OPEN_POS = 0.60;
+    final double CLAW_CLOSE_POS = 0.85;
     final double CLAW_MAX_POS = 1; // Maximum rotational position
     final double CLAW_MIN_POS = 0;  // Minimum rotational position
 
