@@ -261,6 +261,7 @@ public class AutoRoadRunner extends LinearOpMode {
         drive.followTrajectory(traj1);
 
         // drop cone and back to the center of mat
+        drive.setPoseEstimate(poseMJDropOffEst); // reset orientation.
         rrUnloadCone();
 
         for(int autoLoop = 0; autoLoop < 5; autoLoop++) {
@@ -326,8 +327,6 @@ public class AutoRoadRunner extends LinearOpMode {
      */
     public void rrUnloadCone() {
         slider.movingSliderInch(-Params.SLIDER_MOVE_DOWN_POSITION);
-
-        //drive.setPoseEstimate(poseMJDropOffEst); // reset orientation.
 
         driveForward(Params.DISTANCE_DROP_OFF);
         Logging.log("Wait before unloading claw open.");

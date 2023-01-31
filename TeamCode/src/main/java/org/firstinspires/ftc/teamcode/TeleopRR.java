@@ -340,7 +340,7 @@ public class TeleopRR extends LinearOpMode {
         driveForwardBack(-Params.DISTANCE_PICK_UP); // moving to loading position
         slider.waitRunningComplete();
         armClaw.clawClose();
-        sleep(Params.CLAW_CLOSE_SLEEP); // 200 ms
+        sleep(Params.CLAW_CLOSE_SLEEP); // 50 ms
         slider.setInchPosition(Params.HIGH_JUNCTION_POS_TELE);
         armClaw.armFlipCenter();
         driveForwardBack(-Params.BASE_TO_JUNCTION);
@@ -372,13 +372,13 @@ public class TeleopRR extends LinearOpMode {
         armClaw.armFlipFrontLoad();
 
         //combines drive back and lower slider action
-        Trajectory unload = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
+        Trajectory unloadTraj = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
                 .forward(Params.BASE_TO_JUNCTION)
                 .addDisplacementMarker(moveOutJunctionDistance, () -> {
                     slider.setInchPosition(Params.WALL_POSITION - Params.coneLoadStackGap * 3);
                 })
                 .build();
-        mecanum.followTrajectory(unload);
+        mecanum.followTrajectory(unloadTraj);
     }
 
     private void driveForwardBack(double distanceInch) {
