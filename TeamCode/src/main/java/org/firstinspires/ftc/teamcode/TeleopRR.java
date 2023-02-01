@@ -361,7 +361,7 @@ public class TeleopRR extends LinearOpMode {
         sleep(Params.CLAW_CLOSE_SLEEP);
         slider.setInchPosition(Params.HIGH_JUNCTION_POS);
         armClaw.armFlipCenter();
-        driveForwardBack(-Params.BASE_TO_JUNCTION);
+        driveForwardBack(-(Params.BASE_TO_JUNCTION - Params.DISTANCE_PICK_UP));
         slider.waitRunningComplete();
         armClaw.armFlipBackUnloadPre();
     }

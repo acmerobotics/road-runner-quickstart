@@ -70,7 +70,7 @@ public class ArmClawUnit
     final double ARM_SWING_LEFT = 0.73;
     final double ARM_SWING_RIGHT = 0.06;
 
-    final double ARM_FLIP_FRONT_LOAD_POS = 0.20;
+    final double ARM_FLIP_FRONT_LOAD_POS = 0.22;
     final double ARM_FLIP_FRONT_UNLOAD_POS = 0.35;
     final double ARM_FLIP_BACK_UNLOAD_POS = 0.85;
     final double ARM_FLIP_BACK_UNLOAD_PRE = 0.75;
