@@ -59,7 +59,7 @@ public class SlidersWith2Motors
     public DcMotor RightSliderMotor = null;
     public DcMotor LeftSliderMotor = null;
     final double SLIDER_MOTOR_POWER = 0.98; // save some powers
-    final double COUNTS_PER_INCH = 31.3;// for 1150RPM motor //120  for 312 RPM motor - 537.7 PPR at the Output Shaft
+    final double COUNTS_PER_INCH = 82.9; // for 435RPM; 31.3 for 1150RPM; 120 for 312RPM
     final double manualUpdatePos = COUNTS_PER_INCH / 3.0;
 
     // slider position variables

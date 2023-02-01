@@ -61,8 +61,8 @@ public class Params {
     static final double DISTANCE_DROP_OFF = 1.0; // in INCH
 
     // slider position variables
-    static final double ARM_UNLOADING_LIFTING = 4; // Autonomous: Arm lifting from loading position to unloading position
-    static final double ARM_UNLOADING_EXTENSION = 8;
+    static final double ARM_UNLOADING_LIFTING = 5; // Autonomous: Arm lifting from loading position to unloading position
+    static final double ARM_UNLOADING_EXTENSION = 7;
     static final double GROUND_CONE_POSITION = 0.0;
     static final double coneStack5th = coneLoadStackGap * 4;
     static final double GROUND_JUNCTION_POS = GROUND_CONE_POSITION + 1.0;

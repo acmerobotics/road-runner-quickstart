@@ -254,7 +254,7 @@ public class TeleopRR extends LinearOpMode {
                 if (slider.getPosition() < Params.WALL_POSITION * slider.COUNTS_PER_INCH) {
                     slider.setInchPosition(Params.WALL_POSITION);
                 }
-                armClaw.armFlipBackUnload();
+                armClaw.armFlipBackUnloadPre();
             }
 
             // 0.2 is to avoid pressing button by mistake.
@@ -345,7 +345,7 @@ public class TeleopRR extends LinearOpMode {
         armClaw.clawClose();
         sleep(Params.CLAW_CLOSE_SLEEP); // wait to make sure clawServo is at grep position, 200 ms
         slider.setInchPosition(Params.LOW_JUNCTION_POS);
-        armClaw.armFlipBackUnload();
+        armClaw.armFlipBackUnloadPre();
     }
 
     /**
@@ -363,7 +363,7 @@ public class TeleopRR extends LinearOpMode {
         armClaw.armFlipCenter();
         driveForwardBack(-Params.BASE_TO_JUNCTION);
         slider.waitRunningComplete();
-        armClaw.armFlipBackUnload();
+        armClaw.armFlipBackUnloadPre();
     }
 
     /**

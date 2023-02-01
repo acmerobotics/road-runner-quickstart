@@ -344,6 +344,10 @@ public class AutoRoadRunner extends LinearOpMode {
                 .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
                     slider.setInchPosition(Params.WALL_POSITION);
                 })
+
+                // path option 2
+
+
                 .build();
         drive.followTrajectory(traj1);
 
