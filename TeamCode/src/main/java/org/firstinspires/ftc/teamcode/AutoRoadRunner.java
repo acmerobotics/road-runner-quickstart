@@ -272,7 +272,7 @@ public class AutoRoadRunner extends LinearOpMode {
             moveFromJunctionToConeStack();
 
             // load cone
-            rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 1.0);
+            rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
             moveFromConeStackToJunction();
 
@@ -329,6 +329,7 @@ public class AutoRoadRunner extends LinearOpMode {
      */
     public void rrUnloadCone() {
         armClaw.armFlipBackUnload();
+        slider.movingSliderInch(-Params.SLIDER_MOVE_DOWN_POSITION / 2.0);
         sleep(100); // wait arm flip down a little bit to junction
         drive.setPoseEstimate(new Pose2d(vectorConeStackEst2, drive.getPoseEstimate().getHeading())); // reset orientation
 

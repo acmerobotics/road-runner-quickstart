@@ -61,8 +61,8 @@ public class Params {
     static final double DISTANCE_DROP_OFF = 1.0; // in INCH
 
     // slider position variables
-    static final double ARM_UNLOADING_LIFTING = 5.3; // Autonomous: Arm lifting from loading position to unloading position
-    static final double ARM_UNLOADING_EXTENSION = 7.3;
+    static final double ARM_UNLOADING_LIFTING = 5; // Autonomous: Arm lifting from loading position to unloading position
+    static final double ARM_UNLOADING_EXTENSION = 7.1;
     static final double GROUND_CONE_POSITION = 0.0;
     static final double coneStack5th = coneLoadStackGap * 4;
     static final double GROUND_JUNCTION_POS = GROUND_CONE_POSITION + 1.0;
@@ -81,7 +81,7 @@ public class Params {
 
     // chasis power factors
     static final double POWER_LOW = 0.3;
-    static final double POWER_NORMAL = 0.8;
+    static final double POWER_NORMAL = 0.75;
     static final double POWER_HIGH = 1.0;
 }
 

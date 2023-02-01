@@ -340,7 +340,7 @@ public class TeleopRR extends LinearOpMode {
         armClaw.armFlipFrontLoad();
         armClaw.clawOpen();
         slider.setInchPosition(coneLocation);
-        driveForwardBack(-Params.DISTANCE_PICK_UP); // moving to loading position
+        driveBack(Params.DISTANCE_PICK_UP); // moving to loading position
         slider.waitRunningComplete();
         armClaw.clawClose();
         sleep(Params.CLAW_CLOSE_SLEEP); // wait to make sure clawServo is at grep position, 200 ms
@@ -355,13 +355,13 @@ public class TeleopRR extends LinearOpMode {
         armClaw.armFlipFrontLoad();
         armClaw.clawOpen();
         slider.setInchPosition(Params.GROUND_CONE_POSITION);
-        driveForwardBack(-Params.DISTANCE_PICK_UP); // moving to loading position
+        driveBack(Params.DISTANCE_PICK_UP); // moving to loading position
         slider.waitRunningComplete();
         armClaw.clawClose();
         sleep(Params.CLAW_CLOSE_SLEEP);
         slider.setInchPosition(Params.HIGH_JUNCTION_POS);
         armClaw.armFlipCenter();
-        driveForwardBack(-(Params.BASE_TO_JUNCTION - Params.DISTANCE_PICK_UP));
+        driveBack(Params.BASE_TO_JUNCTION - Params.DISTANCE_PICK_UP);
         slider.waitRunningComplete();
         armClaw.armFlipBackUnloadPre();
     }
@@ -375,7 +375,8 @@ public class TeleopRR extends LinearOpMode {
         armClaw.clawOpen();
         sleep(Params.CLAW_OPEN_SLEEP); // to make sure claw Servo is at open position
         armClaw.armFlipFrontLoad();
-        driveForwardBack(drivingDistance); // move out from junction
+        driveForward(drivingDistance); // move out from junction
+        sleep(100);
         slider.setInchPosition(Params.WALL_POSITION);
     }
 
@@ -405,11 +406,30 @@ public class TeleopRR extends LinearOpMode {
     private void driveForwardBack(double distanceInch) {
         mecanum.setPoseEstimate(new Pose2d());
         mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Trajectory trajectory = mecanum.trajectoryBuilder(new Pose2d())
+        Trajectory trajectory = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
                 .lineToConstantHeading(new Vector2d(distanceInch, 0))
                 .build();
         mecanum.followTrajectory(trajectory);
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    private void driveBack(double distanceInch) {
+        mecanum.setPoseEstimate(new Pose2d());
+        mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Trajectory trajBack = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
+                .back(distanceInch)
+                .build();
+        mecanum.followTrajectory(trajBack);
+        mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    private void driveForward(double distanceInch) {
+        mecanum.setPoseEstimate(new Pose2d());
+        mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Trajectory trajBack = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
+                .forward(distanceInch)
+                .build();
+        mecanum.followTrajectory(trajBack);
+        mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
 }
