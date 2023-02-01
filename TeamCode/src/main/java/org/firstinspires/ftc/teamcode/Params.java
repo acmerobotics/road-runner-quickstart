@@ -75,8 +75,13 @@ public class Params {
     static final double SLIDER_MOVE_OUT_CONE_STACK = WALL_POSITION - coneStack5th;
 
     //claw action time
-    static final int CLAW_CLOSE_SLEEP = 50; // ms
+    static final int CLAW_CLOSE_SLEEP = 150; // ms
     static final int CLAW_OPEN_SLEEP = 50; // ms
     static final int WAIT_SHAKING_SLEEP = 100;
+
+    // chasis power factors
+    static final double POWER_LOW = 0.3;
+    static final double POWER_NORMAL = 0.8;
+    static final double POWER_HIGH = 1.0;
 }
 

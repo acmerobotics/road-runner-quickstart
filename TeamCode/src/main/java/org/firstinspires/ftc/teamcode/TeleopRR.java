@@ -60,6 +60,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -114,6 +115,8 @@ public class TeleopRR extends LinearOpMode {
 
         mecanum = new SampleMecanumDrive(hardwareMap);
 
+        mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -146,11 +149,20 @@ public class TeleopRR extends LinearOpMode {
             //gamepad1 buttons
             gpButtons.checkGamepadButtons(gamepad1, gamepad2);
 
+            double maxDrivePower;
+            if (gpButtons.speedUp) {
+                maxDrivePower = Params.POWER_HIGH;
+            } else if (gpButtons.speedDown) {
+                maxDrivePower = Params.POWER_LOW;
+            } else {
+                maxDrivePower = Params.POWER_NORMAL;
+            }
+
             mecanum.setWeightedDrivePower(
                     new Pose2d(
-                            gpButtons.robotDrive,
-                            gpButtons.robotStrafe,
-                            -gpButtons.robotTurn
+                            gpButtons.robotDrive * maxDrivePower,
+                            gpButtons.robotStrafe * maxDrivePower,
+                            -gpButtons.robotTurn * maxDrivePower
                     )
             );
 
@@ -363,7 +375,7 @@ public class TeleopRR extends LinearOpMode {
         armClaw.clawOpen();
         sleep(Params.CLAW_OPEN_SLEEP); // to make sure claw Servo is at open position
         armClaw.armFlipFrontLoad();
-        driveForwardBack(-drivingDistance); // move out from junction
+        driveForwardBack(drivingDistance); // move out from junction
         slider.setInchPosition(Params.WALL_POSITION);
     }
 
@@ -371,6 +383,8 @@ public class TeleopRR extends LinearOpMode {
      * Special using case for unloading cone on high junction, then driving to cone base
      */
     private void unloadConeThenDriving() {
+        mecanum.setPoseEstimate(new Pose2d());
+        mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slider.movingSliderInch(-Params.SLIDER_MOVE_DOWN_POSITION);
         armClaw.clawOpen();
         sleep(Params.CLAW_OPEN_SLEEP); // to make sure claw Servo is at open position
@@ -385,13 +399,17 @@ public class TeleopRR extends LinearOpMode {
                 })
                 .build();
         mecanum.followTrajectory(unloadTraj);
+        mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     private void driveForwardBack(double distanceInch) {
+        mecanum.setPoseEstimate(new Pose2d());
+        mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Trajectory trajectory = mecanum.trajectoryBuilder(new Pose2d())
-                .lineTo(new Vector2d(distanceInch, 0))
+                .lineToConstantHeading(new Vector2d(distanceInch, 0))
                 .build();
         mecanum.followTrajectory(trajectory);
+        mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
 }
