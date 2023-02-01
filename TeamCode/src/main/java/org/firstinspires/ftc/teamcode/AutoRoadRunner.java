@@ -122,30 +122,30 @@ public class AutoRoadRunner extends LinearOpMode {
 
     // road runner variables
     Pose2d startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, // -65.0
-            -3 * Params.HALF_MAT, Math.toRadians(-90));
-    double dropOffAngle = Math.toRadians(30 - 90); // actan(1/2) the target robot heading angle when drop off cone
-    double dropOffAngle2 = Math.toRadians(30 - 90); // the target robot heading angle when drop off cone
+            //-3 * Params.HALF_MAT * autonomousStartLocation, Math.toRadians(-90));
+            -3 * Params.HALF_MAT * autonomousStartLocation, Math.toRadians(0));
+    double dropOffAngle = Math.toRadians(-60 * autonomousStartLocation); // actan(1/2) the target robot heading angle when drop off cone
+    double dropOffAngle2 = Math.toRadians(-60 * autonomousStartLocation); // the target robot heading angle when drop off cone
     double armX = Params.ARM_UNLOADING_EXTENSION * Math.cos(dropOffAngle);
     double armY = Params.ARM_UNLOADING_EXTENSION * Math.sin(dropOffAngle);
 
     double armX2 = Params.ARM_UNLOADING_EXTENSION * Math.cos(dropOffAngle2);
     double armY2 = Params.ARM_UNLOADING_EXTENSION * Math.sin(dropOffAngle2);
 
-    Pose2d poseLineEnd1 = new Pose2d(startPose.getX() + 2 * Params.HALF_MAT, startPose.getY(), startPose.getHeading());
-    Pose2d poseSplineEnd2 = new Pose2d(-2 * Params.HALF_MAT, startPose.getY(), startPose.getHeading());
-    Pose2d poseSplineEnd3 = new Pose2d(-2 * Params.HALF_MAT + 5, -2 * Params.HALF_MAT - 9, dropOffAngle);
+    //Pose2d poseLineEnd1 = new Pose2d(startPose.getX() + 2 * Params.HALF_MAT, startPose.getY(), startPose.getHeading());
+    //Pose2d poseSplineEnd2 = new Pose2d(-2 * Params.HALF_MAT, startPose.getY(), startPose.getHeading());
+    Pose2d poseLineEnd1 = new Pose2d(startPose.getX() + 2 * Params.HALF_MAT, startPose.getY(), Math.toRadians(-80 * autonomousStartLocation));
+    Pose2d poseSplineEnd2 = new Pose2d(-2 * Params.HALF_MAT, startPose.getY(), Math.toRadians(-80 * autonomousStartLocation));
+    Pose2d poseSplineEnd3 = new Pose2d(-2 * Params.HALF_MAT + 5, -(2 * Params.HALF_MAT + 9) * autonomousStartLocation, dropOffAngle);
 
-    Pose2d poseMJDropOff = new Pose2d(-2 * Params.HALF_MAT + armX - 2, -2 * Params.HALF_MAT + armY, dropOffAngle);
-    Vector2d VectorMJDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX, -2 * Params.HALF_MAT + armY);
+    Pose2d poseMJDropOff = new Pose2d(-2 * Params.HALF_MAT + armX - 2, (-2 * Params.HALF_MAT + armY) * autonomousStartLocation, dropOffAngle);
+    Vector2d VectorMJDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX, (-2 * Params.HALF_MAT + armY) * autonomousStartLocation);
 
-    Pose2d poseMidPoint1 = new Pose2d(-Params.HALF_MAT, -3 * Params.HALF_MAT, Math.toRadians(-90));
-    Pose2d poseMidPoint2 = new Pose2d(-Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90));
+    Pose2d poseConeStack = new Pose2d(-Params.HALF_MAT + 0.5, (-6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH) * autonomousStartLocation, Math.toRadians(-90));
+    Vector2d vectorConeStackEst = new Vector2d(-Params.HALF_MAT, (-6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH) * autonomousStartLocation);
 
-    Pose2d poseConeStack = new Pose2d(-Params.HALF_MAT + 0.5, -6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH, Math.toRadians(-90));
-    Vector2d vectorConeStackEst = new Vector2d(-Params.HALF_MAT, -6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH);
-
-    Pose2d poseMJDropOff2 = new Pose2d(-2 * Params.HALF_MAT + armX2, -2 * Params.HALF_MAT + armY2, dropOffAngle2);
-    Vector2d vectorConeStackEst2 = new Vector2d(-2 * Params.HALF_MAT + armX2, -2 * Params.HALF_MAT + armY2);
+    Pose2d poseMJDropOff2 = new Pose2d(-2 * Params.HALF_MAT + armX2, (-2 * Params.HALF_MAT + armY2) * autonomousStartLocation, dropOffAngle2);
+    Vector2d vectorConeStackEst2 = new Vector2d(-2 * Params.HALF_MAT + armX2, (-2 * Params.HALF_MAT + armY2) * autonomousStartLocation);
 
     Trajectory traj1;
 
@@ -237,8 +237,8 @@ public class AutoRoadRunner extends LinearOpMode {
                     armClaw.armFlipBackUnloadPre();
                 })
                 .splineToSplineHeading(poseSplineEnd2, Math.toRadians(0))
-                .splineToSplineHeading(poseSplineEnd3, Math.toRadians(70))
-                .splineToLinearHeading(poseMJDropOff, Math.toRadians(70))
+                .splineToSplineHeading(poseSplineEnd3, Math.toRadians(70 * autonomousStartLocation))
+                .splineToLinearHeading(poseMJDropOff, Math.toRadians(70 * autonomousStartLocation))
                 .build();
 
         waitForStart();
@@ -387,23 +387,23 @@ public class AutoRoadRunner extends LinearOpMode {
         double parkingY, parkingX, parkingH;
         Pose2d poseParking;
 
-        Pose2d poseParking1 = new Pose2d(-3 * Params.HALF_MAT - 2, -3 * Params.HALF_MAT - 2, Math.toRadians(-90));
+        Pose2d poseParking1 = new Pose2d(-3 * Params.HALF_MAT - 2, (-3 * Params.HALF_MAT - 2) * autonomousStartLocation, Math.toRadians(-90 * autonomousStartLocation));
         // build trajectory
         switch (parkingLot) {
             case LEFT:
-                parkingY = -Params.HALF_MAT;
+                parkingY = -Params.HALF_MAT * autonomousStartLocation;
                 parkingX = -3 * Params.HALF_MAT + 3;
-                parkingH = Math.toRadians(-180);
+                parkingH = Math.toRadians(-180 * autonomousStartLocation);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
                 // move to center
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(poseParking1, Math.toRadians(-130))
+                        .splineToSplineHeading(poseParking1, Math.toRadians(-130 * autonomousStartLocation))
                         .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
                             // lower slider
                             slider.setInchPosition(Params.WALL_POSITION);
                         })
-                        .splineToSplineHeading(poseParking, Math.toRadians(90))
+                        .splineToSplineHeading(poseParking, Math.toRadians(90 * autonomousStartLocation))
                         .build();
 
                // drive.followTrajectory(traj1);
@@ -414,9 +414,9 @@ public class AutoRoadRunner extends LinearOpMode {
 
                 break;
             case CENTER:
-                parkingY = -3 * Params.HALF_MAT;
+                parkingY = -3 * Params.HALF_MAT * autonomousStartLocation;
                 parkingX = -3 * Params.HALF_MAT + 3;
-                parkingH = Math.toRadians(-180);
+                parkingH = Math.toRadians(-180 * autonomousStartLocation);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
                 // parking
@@ -425,18 +425,18 @@ public class AutoRoadRunner extends LinearOpMode {
                         .build();
                 break;
             case RIGHT:
-                parkingY = -5 * Params.HALF_MAT + 1;
+                parkingY = -5 * Params.HALF_MAT * autonomousStartLocation;
                 parkingX = -3 * Params.HALF_MAT + 2;
                 parkingH = Math.toRadians(-180);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(poseParking1, Math.toRadians(-130))
+                        .splineToSplineHeading(poseParking1, Math.toRadians(-130 * autonomousStartLocation))
                         .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
                             // lower slider
                             slider.setInchPosition(Params.WALL_POSITION);
                         })
-                        .splineToSplineHeading(poseParking, Math.toRadians(-90))
+                        .splineToSplineHeading(poseParking, Math.toRadians(-90 * autonomousStartLocation))
                         .build();
 
                 // parking
