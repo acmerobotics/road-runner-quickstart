@@ -318,6 +318,9 @@ public class TeleopRR extends LinearOpMode {
                 telemetry.addData("Left slider", "T position %d",
                         slider.LeftSliderMotor.getTargetPosition());
 
+                telemetry.addData("RR", "imu Heading = %.1f",
+                        Math.toDegrees(mecanum.getRawExternalHeading()));
+
                 telemetry.addData("RR", "x = %.1f, y = %.1f, Heading = %.1f",
                         mecanum.getPoseEstimate().getX(), mecanum.getPoseEstimate().getY(),
                         Math.toDegrees(mecanum.getPoseEstimate().getHeading()));

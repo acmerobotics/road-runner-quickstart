@@ -55,23 +55,26 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Extended from AutonomousRight file.
  * Use this one for autonomous when robot located at left side of game field.
  */
 
-@Autonomous(name="RR test - pickCone", group="Concept")
-@Disabled
-public class AutonomousTest extends AutoRoadRunner {
+@Autonomous(name="RR test 2 - pickCone", group="Concept")
+//@Disabled
+public class AutoRRTest_PickCone extends AutoRoadRunner {
+
+    @Override
+    public void setRobotLocation() {
+        preConeDropAdjust = new Vector2d(-2.0, 0);
+        poseConeStackAdjust = new Vector2d(0.5, 0);
+    }
 
     @Override
     public void autonomousCore() {
-        // drive to medium junction, lift sliders, arm to back
-        drive.followTrajectory(traj1);
-
 
         // drive to medium junction, lift sliders, arm to back
         drive.followTrajectory(traj1);
