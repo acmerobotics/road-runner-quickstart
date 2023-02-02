@@ -50,12 +50,12 @@ public class ArmClawUnit
     HardwareMap hardwareMap =  null;
 
     // for arm mode
-    public enum ArmMode {
+    public enum ArmType {
         FLIP,
         SWING
     }
 
-    public static ArmMode armMode = ArmMode.FLIP;
+    public static ArmType armMode = ArmType.FLIP;
 
     // claw servo motor variables
     private Servo clawServo = null;

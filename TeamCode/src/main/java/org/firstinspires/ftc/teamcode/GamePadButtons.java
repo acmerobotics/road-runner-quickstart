@@ -39,6 +39,7 @@ public class GamePadButtons {
     public boolean autoUnloadCone;
     public boolean autoUnloadThenBase; // driving robot to cone loading base after unloading cone
     public boolean teapot; // auto drop off cone, moving to cone base, auto pick up cone, then moving to junction.
+    public boolean backBase; // back to cone base when starting Teleop
 
     public void checkGamepadButtons(@NonNull Gamepad gamepad1, @NonNull Gamepad gamepad2) {
         //gamepad1 buttons
@@ -54,6 +55,7 @@ public class GamePadButtons {
         autoLoadThenJunction    = gamepad1.left_trigger > 0;
         autoUnloadThenBase      = gamepad1.right_trigger > 0;
         teapot                  = gamepad1.y;
+        backBase                = gamepad1.back;
 
         // gamepad1(single driver) or gamepad2(dual driver) buttons
         sliderUpDown            = gamepad2.right_stick_y;
@@ -67,13 +69,13 @@ public class GamePadButtons {
         // gamepad1 or gamepad2
         clawClose               = gamepad2.dpad_up;
         clawOpen                = gamepad2.dpad_down || gamepad1.a;
-        if (ArmClawUnit.ArmMode.SWING == ArmClawUnit.armMode) {
+        if (ArmClawUnit.ArmType.SWING == ArmClawUnit.armMode) {
             armLeft = gamepad2.left_stick_x < -0.2;
             armRight = gamepad2.left_stick_x > 0.2;
             armForward = gamepad2.left_stick_y > 0.2;
         }
 
-        if (ArmClawUnit.ArmMode.FLIP == ArmClawUnit.armMode) {
+        if (ArmClawUnit.ArmType.FLIP == ArmClawUnit.armMode) {
             armFrontLoad = (gamepad2.left_stick_y < -0.2) && (Math.abs(gamepad2.left_stick_x) < Math.abs(gamepad2.left_stick_y));
             armBackUnload= (gamepad2.left_stick_y > 0.2) && (Math.abs(gamepad2.left_stick_x) < Math.abs(gamepad2.left_stick_y));
             if (Math.abs(gamepad2.left_stick_x) > Math.abs(gamepad2.left_stick_y)) {
