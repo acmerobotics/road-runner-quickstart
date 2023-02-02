@@ -403,16 +403,6 @@ public class TeleopRR extends LinearOpMode {
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    private void driveForwardBack(double distanceInch) {
-        mecanum.setPoseEstimate(new Pose2d());
-        mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Trajectory trajectory = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
-                .lineToConstantHeading(new Vector2d(distanceInch, 0))
-                .build();
-        mecanum.followTrajectory(trajectory);
-        mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-
     private void driveBack(double distanceInch) {
         mecanum.setPoseEstimate(new Pose2d());
         mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

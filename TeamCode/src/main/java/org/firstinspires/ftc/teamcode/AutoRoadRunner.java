@@ -417,67 +417,48 @@ public class AutoRoadRunner extends LinearOpMode {
         double parkingY, parkingX, parkingH;
         Pose2d poseParking;
 
-        Pose2d poseParking1 = new Pose2d(-3 * Params.HALF_MAT - 2, (-3 * Params.HALF_MAT - 2) * startLoc, Math.toRadians(-90 * startLoc));
-        // build trajectory
+        // move to 2nd mat center, which is green parking lot
+        parkingY = -3 * Params.HALF_MAT * startLoc;
+        parkingX = -3 * Params.HALF_MAT + 2;
+        parkingH = Math.toRadians(180);
+        Pose2d poseParkingGreen = new Pose2d(parkingX, parkingY, parkingH);
+
+        // parking
+        traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(poseParkingGreen)
+                .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
+                    // lower slider
+                    slider.setInchPosition(Params.WALL_POSITION);
+                })
+                .build();
+        drive.followTrajectory(traj1);
+
         switch (parkingLot) {
             case LEFT:
                 parkingY = -Params.HALF_MAT * startLoc;
-                parkingX = -3 * Params.HALF_MAT + 3;
-                parkingH = Math.toRadians(-180 * startLoc);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
-                // move to center
-                traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(poseParking1, Math.toRadians(-130 * startLoc))
-                        .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
-                            // lower slider
-                            slider.setInchPosition(Params.WALL_POSITION);
-                        })
-                        .splineToSplineHeading(poseParking, Math.toRadians(90 * startLoc))
-                        .build();
-
-               // drive.followTrajectory(traj1);
-
-                //traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                 //       .lineToLinearHeading(poseParking)
-                 //       .build();
-
-                break;
-            case CENTER:
-                parkingY = -3 * Params.HALF_MAT * startLoc;
-                parkingX = -3 * Params.HALF_MAT + 3;
-                parkingH = Math.toRadians(-180 * startLoc);
-                poseParking = new Pose2d(parkingX, parkingY, parkingH);
-
-                // parking
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .lineToLinearHeading(poseParking)
                         .build();
+
+                drive.followTrajectory(traj1);
                 break;
+
+            case CENTER:
+                break;
+
             case RIGHT:
                 parkingY = -5 * Params.HALF_MAT * startLoc;
-                parkingX = -3 * Params.HALF_MAT + 2;
-                parkingH = Math.toRadians(-180);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(poseParking1, Math.toRadians(-130 * startLoc))
-                        .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
-                            // lower slider
-                            slider.setInchPosition(Params.WALL_POSITION);
-                        })
-                        .splineToSplineHeading(poseParking, Math.toRadians(-90 * startLoc))
+                        .lineToLinearHeading(poseParking)
                         .build();
 
-                // parking
-                //traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                     //   .lineToLinearHeading(poseParking)
-                      //  .build();
+                drive.followTrajectory(traj1);
                 break;
         }
-
-        //drving to parking lot
-        drive.followTrajectory(traj1);
     }
 
     /**
@@ -494,10 +475,4 @@ public class AutoRoadRunner extends LinearOpMode {
         drive.followTrajectory(trajBack);
     }
 
-    private void driveForward(double distanceInch) {
-        Trajectory trajBack = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .forward(distanceInch)
-                .build();
-        drive.followTrajectory(trajBack);
-    }
 }
