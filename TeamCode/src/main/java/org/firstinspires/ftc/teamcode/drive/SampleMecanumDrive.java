@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
@@ -295,6 +296,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
+        double voltage = batteryVoltageSensor.getVoltage();
+        double scalar = 12.0 / voltage;
+        v = Range.clip(v,-1,1) * scalar;
+        v1 = Range.clip(v1,-1,1) * scalar;
+        v2 = Range.clip(v2,-1,1) * scalar;
+        v3 = Range.clip(v3,-1,1) * scalar;
         leftFront.setPower(v);
         leftRear.setPower(v1);
         rightRear.setPower(v2);
