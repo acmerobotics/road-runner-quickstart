@@ -273,11 +273,13 @@ public class SampleTankDrive extends TankDrive {
 
     @Override
     public void setMotorPowers(double v, double v1) {
+        double voltage = batteryVoltageSensor.getVoltage();
+        double scaleFactor = 12 / voltage;
         for (DcMotorEx leftMotor : leftMotors) {
-            leftMotor.setPower(v);
+            leftMotor.setPower(v * scaleFactor);
         }
         for (DcMotorEx rightMotor : rightMotors) {
-            rightMotor.setPower(v1);
+            rightMotor.setPower(v1 * scaleFactor);
         }
     }
 
