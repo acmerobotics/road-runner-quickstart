@@ -26,14 +26,12 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
-import org.firstinspires.ftc.teamcode.util.SmartdampPID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -281,14 +279,28 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         double voltage = batteryVoltageSensor.getVoltage();
         double scalar = 12.0 / voltage;
-        v = Range.clip(v,-1,1) * scalar;
-        v1 = Range.clip(v1,-1,1) * scalar;
-        v2 = Range.clip(v2,-1,1) * scalar;
-        v3 = Range.clip(v3,-1,1) * scalar;
+        v*= scalar;
+        v1 *= scalar;
+        v2 *= scalar;
+        v3 *= scalar;
+        double maxPowerMag = getMaximumPowerMag(v, v1, v2, v3);
+        if (maxPowerMag > 1) {
+            v /= maxPowerMag;
+            v1 /= maxPowerMag;
+            v2 /= maxPowerMag;
+            v3 /= maxPowerMag;
+        }
         leftFront.setPower(v);
         leftRear.setPower(v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
+    }
+
+    private double getMaximumPowerMag(double v, double v1, double v2, double v3) {
+        double v_max = Math.max(Math.abs(v),Math.abs(v1));
+        v_max = Math.max(v_max,Math.abs(v2));
+        v_max = Math.max(v_max,Math.abs(v3));
+        return v_max;
     }
 
     @Override
