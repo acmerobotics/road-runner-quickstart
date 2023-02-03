@@ -297,10 +297,10 @@ public class AutoCommon extends LinearOpMode {
     }
 
     protected void hover() {
-        robot.lift.motorLiftL.setTargetPosition(robot.lift.LIFT_HOVER_POS);
+        robot.lift.motorLiftL.setTargetPosition(300);
         robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.motorLiftL.setPower(1);
-        robot.lift.motorLiftR.setTargetPosition(robot.lift.LIFT_HOVER_POS);
+        robot.lift.motorLiftR.setTargetPosition(300);
         robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift. motorLiftR.setPower(1);
         robot.lift.servoExtension.setPosition(robot.lift.EXTENSION_INTAKE_POS);
@@ -318,19 +318,43 @@ public class AutoCommon extends LinearOpMode {
 //                elapsedTime.reset();
     }
     protected void highJunctionDrop() {
-        robot.lift.motorLiftL.setTargetPosition(3300);
+        robot.lift.motorLiftL.setTargetPosition(2400);
         robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorLiftL.setPower(1);
-        robot.lift.motorLiftR.setTargetPosition(3300);
+        robot.lift.motorLiftL.setPower(0.5);
+        robot.lift.motorLiftR.setTargetPosition(2400);
         robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorLiftR.setPower(1);
+        robot.lift.motorLiftR.setPower(0.5);
     }
     protected void turretLeft135() {
+
         robot.lift.motorTurret.setTargetPosition(robot.lift.TURRET_LEFT_135_POS);
         robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.motorTurret.setPower(0.5);
         robot.lift.servoExtension.setPosition(0.65);
         robot.lift.currentState = RobotHardware.Lift.States.TurretLeft;
+    }
+    protected void turretLeft45() {
+        robot.lift.motorLiftL.setTargetPosition(robot.lift.LIFT_HIGH_POS);
+        robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorLiftL.setPower(1);
+        robot.lift.motorLiftR.setTargetPosition(robot.lift.LIFT_HIGH_POS);
+        robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorLiftR.setPower(1);
+        robot.lift.motorTurret.setTargetPosition(robot.lift.TURRET_LEFT_45_POS);
+        robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorTurret.setPower(0.5);
+    }
+
+    protected void turretRight45() {
+        robot.lift.motorLiftL.setTargetPosition(robot.lift.LIFT_HIGH_POS);
+        robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorLiftL.setPower(1);
+        robot.lift.motorLiftR.setTargetPosition(robot.lift.LIFT_HIGH_POS);
+        robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorLiftR.setPower(1);
+        robot.lift.motorTurret.setTargetPosition(robot.lift.TURRET_RIGHT_45_POS);
+        robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorTurret.setPower(0.5);
     }
 
     protected void turretStackPos() {
@@ -346,6 +370,13 @@ public class AutoCommon extends LinearOpMode {
         robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.motorTurret.setPower(0.5);
         robot.lift.servoExtension.setPosition(robot.lift.EXTENSION_AUTO_POS);
+        robot.lift.currentState = RobotHardware.Lift.States.TurretLeft;
+    }
+    protected void turret0Pos() {
+        robot.lift.motorTurret.setTargetPosition(robot.lift.TURRET_0_POS);
+        robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorTurret.setPower(0.7);
+        robot.lift.servoExtension.setPosition(robot.lift.TURRET_0_POS);
         robot.lift.currentState = RobotHardware.Lift.States.TurretLeft;
     }
 
@@ -364,16 +395,55 @@ public class AutoCommon extends LinearOpMode {
     }
 
     protected void liftPos(int pos) {
-        robot.lift.motorLiftL.setTargetPosition(pos);
+            robot.lift.motorLiftL.setTargetPosition(pos);
+            robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.motorLiftL.setPower(0.7);
+            robot.lift.motorLiftR.setTargetPosition(pos);
+            robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.motorLiftR.setPower(0.7);
+            robot.lift.motorTurret.setTargetPosition(robot.lift.TURRET_0_POS);
+            robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.motorTurret.setPower(0.5);
+//            robot.lift.servoExtension.setPosition(robot.lift.EXTENSION_INTAKE_POS);
+            robot.lift.currentState = RobotHardware.Lift.States.INTAKE;
+        }
+
+    protected void turretLeft90() {
+        robot.lift.motorLiftL.setTargetPosition(robot.lift.LIFT_MID_POS);
         robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.motorLiftL.setPower(1);
-        robot.lift.motorLiftR.setTargetPosition(pos);
+        robot.lift.motorLiftR.setTargetPosition(robot.lift.LIFT_MID_POS);
         robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.motorLiftR.setPower(1);
+        robot.lift.motorTurret.setTargetPosition(robot.lift.TURRET_LEFT_POS);
+        robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorTurret.setPower(0.7);
+    }
+
+    protected void turretLeftLow90() {
+        robot.lift.motorLiftL.setTargetPosition(robot.lift.LIFT_LOW_POS);
+        robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorLiftL.setPower(1);
+        robot.lift.motorLiftR.setTargetPosition(robot.lift.LIFT_LOW_POS);
+        robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorLiftR.setPower(1);
+        robot.lift.motorTurret.setTargetPosition(1690);
+        robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorTurret.setPower(0.7);
+    }
+
+    protected void midJunctionDrop() {
+        robot.lift.motorLiftL.setTargetPosition(1200);
+        robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorLiftL.setPower(0.5);
+        robot.lift.motorLiftR.setTargetPosition(1200);
+        robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.motorLiftR.setPower(0.5);
+    }
     }
 
 
-    }
+
 
 //    protected void turnToHeading(double targetHeading, double power) {
 //        while (opModeIsActive() && Math.abs(getHeadingDiff(targetHeading)) > 6) {

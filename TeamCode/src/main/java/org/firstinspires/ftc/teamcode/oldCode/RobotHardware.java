@@ -87,32 +87,38 @@ public class RobotHardware {
 
         ElapsedTime elapsedTime;
 
-        public static int LIFT_HIGH_POS = 4180;
-        public static int LIFT_MID_POS = 3000;
-        public static int LIFT_LOW_POS = 1800;
-        public static int LIFT_HOVER_POS  = 250;
+        public static int LIFT_HIGH_POS = 3100;
+        public static int LIFT_MID_POS = 2150;
+        public static int LIFT_LOW_POS = 1250;
+        public static int LIFT_HOVER_POS  = 100;
         public static int LIFT_INTAKE_POS = 0;
 
-        public static int TURRET_LEFT_POS = 1580;
-        public static int TURRET_RIGHT_POS = -1685;
+        public static int TURRET_LEFT_POS = 1545;
+        public static int TURRET_RIGHT_POS = -1560;
         public static int TURRET_LEFT_135_POS = 2300;
         public static int TURRET_RIGHT_135_POS = -2350;
+        public static int TURRET_LEFT_45_POS = 770;
+        public static int TURRET_RIGHT_45_POS = -780;
         public static int TURRET_STACK_POS = -2700;
-        public static int TURRET_180_POS = 3074;
+        public static int TURRET_180_POS = 3080;
         public static int TURRET_0_POS = 0;
 
-        public static double CLAW_CLOSE_POS = 0.5;
-        public static double CLAW_OPEN_POS = 0.69;
-        public static double CLAW_INIT_POS = 0.7;
+        public static double CLAW_CLOSE_POS = 0.52;
+        public static double CLAW_OPEN_POS = 0.72;
+        public static double CLAW_INIT_POS = 0.78;
 
-        public static double EXTENSION_SCORE_POS = 0.56;
-        public static double EXTENSION_INTAKE_POS = 0.32;
-        public static double EXTENSION_INIT_POS = 0.32;
+        public static double EXTENSION_SCORE_L_POS = 0.39;
+        public static double EXTENSION_SCORE_R_POS = 0.39;
+        public static double EXTENSION_180_SCORE_POS = 0.52;
+        public static double EXTENSION_INTAKE_POS = 0.26;
+        public static double EXTENSION_INIT_POS = 0.26;
 
-        public static double EXTENSION_INTAKE_OUT_POS = 0.73;
-        public static double EXTENSION_AUTO_POS = 0.75;
-        public static double EXTENSION_90_INTAKE_POS = 0.55;
-
+        public static double EXTENSION_INTAKE_OUT_POS = 0.6;
+        public static double EXTENSION_SCORE_45_POS = 0.52;
+        public static double EXTENSION_AUTO_POS = 0.6;
+        public static double EXTENSION_90_INTAKE_POS = 0.52;
+        public static double EXTENSION_90_AUTO_POS = 0.34;
+        public static double EXTENSION_90_AUTO_LOW_POS = 0.36;
 
 
         public Lift (HardwareMap hardwareMap) {
@@ -193,15 +199,15 @@ public class RobotHardware {
         }
 
         public void Intake() {
-            motorLiftL.setTargetPosition(0);
+            motorLiftL.setTargetPosition(10);
             motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorLiftL.setPower(1);
-            motorLiftR.setTargetPosition(0);
+            motorLiftR.setTargetPosition(10);
             motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorLiftR.setPower(1);
             motorTurret.setTargetPosition(TURRET_0_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.5);
+            motorTurret.setPower(0.7);
             servoExtension.setPosition(EXTENSION_INTAKE_POS);
             currentState = States.INTAKE;
 
@@ -238,23 +244,38 @@ public class RobotHardware {
         public void TurretLeft() {
             motorTurret.setTargetPosition(TURRET_LEFT_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.5);
-            servoExtension.setPosition(EXTENSION_SCORE_POS);
+            motorTurret.setPower(0.7);
+            servoExtension.setPosition(EXTENSION_SCORE_L_POS);
             currentState = States.TurretLeft;
+
         }
 
         public void TurretRight() {
             motorTurret.setTargetPosition(TURRET_RIGHT_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.5);
-            servoExtension.setPosition(EXTENSION_SCORE_POS);
+            motorTurret.setPower(0.7);
+            servoExtension.setPosition(EXTENSION_SCORE_R_POS);
             currentState = States.TurretRight;
+        }
+
+        public void Turret180Cycle() {
+            motorLiftL.setTargetPosition(LIFT_HIGH_POS);
+            motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLiftL.setPower(1);
+            motorLiftR.setTargetPosition(LIFT_HIGH_POS);
+            motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLiftR.setPower(1);
+            motorTurret.setTargetPosition(TURRET_180_POS);
+            motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorTurret.setPower(0.7);
+            servoExtension.setPosition(EXTENSION_180_SCORE_POS);
+            currentState = States.Turret180Cycle;
         }
 
         public void Turret180() {
             motorTurret.setTargetPosition(TURRET_180_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.5);
+            motorTurret.setPower(0.7);
             servoExtension.setPosition(EXTENSION_INTAKE_POS);
             currentState = States.Turret180;
         }
@@ -262,7 +283,7 @@ public class RobotHardware {
         public void Turret0() {
             motorTurret.setTargetPosition(TURRET_0_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.5);
+            motorTurret.setPower(0.7);
             servoExtension.setPosition(EXTENSION_INTAKE_POS);
             currentState = States.Turret0;
         }
@@ -271,19 +292,6 @@ public class RobotHardware {
             if (currentState == States.HOVER) {
 
             }
-//            else if (currentState == States.UP) {
-////                motorArm.setPower(0.2);
-////                servoArm.setPosition(SERVO_TOP);
-////                servoFlicker.setPosition(FLICKER_TOP);
-//            } else if (currentState == States.INTAKE) {
-////                motorArm.setPower(0.05);
-////                motorArm.setTargetPosition(MOTOR_BOTTOM);
-////                servoArm.setPosition(SERVO_BOTTOM);
-////                servoFlicker.setPosition(FLICKER_INTAKE);
-////                motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            } else if (currentState == States.DROP) {
-//                currentState = States.HighJunction;
-//            }
         }
 
 
@@ -300,7 +308,9 @@ public class RobotHardware {
             Turret0,
 
             TurretRightINTAKE,
-            TurretLeftINTAKE
+            TurretLeftINTAKE,
+            Turret180Cycle,
+            MANUAL_MODE
 
         }
 
@@ -329,10 +339,10 @@ public class RobotHardware {
             motors = new DcMotor[]{motorFL, motorFR, motorBL, motorBR};
 
 
-            motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
-            motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
-            motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
-            motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
+            motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
+            motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
+            motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
+            motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
 
             for (DcMotor motor : motors) {
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

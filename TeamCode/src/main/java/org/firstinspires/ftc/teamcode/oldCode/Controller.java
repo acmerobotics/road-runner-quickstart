@@ -73,23 +73,24 @@ public class Controller extends OpMode {
         liftControl();
         turretControl();
         extensionControl();
+        manualControl();
     }
 
     public int liftPos = 0;
     public int liftDropPos = liftPos - 200;
 
     private void driveControl() {
-        double scale = 0.35;
+        double scale = 0.3;
         if (gamepad1.left_bumper) {
             gamepad1.rumble(500);
-            scale = 0.8;
+            scale = 0.6;
         } else if (gamepad1.left_trigger > 0.5) {
-            scale = 0.3;
+            scale = 0.1;
         }
 
-        double drive = -gamepad1.left_stick_y;
-        double strafe = gamepad1.left_stick_x;
-        double turn = gamepad1.right_stick_x;
+        double drive = gamepad1.left_stick_y;
+        double strafe = -gamepad1.left_stick_x;
+        double turn = -gamepad1.right_stick_x;
         robot.driveTrain.startMove(drive, strafe, turn, scale);
 
         robot.driveTrain.telemetryUpdate(telemetry);
@@ -117,30 +118,31 @@ public class Controller extends OpMode {
             liftPos = robot.lift.LIFT_HOVER_POS;
         }
 
+
         if (gamepad1.right_trigger > 0.5 && robot.lift.motorLiftR.getCurrentPosition() > 300) {
-            if (robot.lift.motorLiftR.getCurrentPosition() > 4000 && robot.lift.motorLiftR.getCurrentPosition() < 4200) {
-                robot.lift.motorLiftL.setTargetPosition(3400);
+            if (robot.lift.motorLiftR.getCurrentPosition() > 2800 && robot.lift.motorLiftR.getCurrentPosition() < 3200) {
+                robot.lift.motorLiftL.setTargetPosition(2400);
                 robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.lift.motorLiftL.setPower(1);
-                robot.lift.motorLiftR.setTargetPosition(3400);
+                robot.lift.motorLiftL.setPower(0.5);
+                robot.lift.motorLiftR.setTargetPosition(2400);
                 robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.lift.motorLiftR.setPower(1);
+                robot.lift.motorLiftR.setPower(0.5);
             }
-            if (robot.lift.motorLiftR.getCurrentPosition() > 2900 && robot.lift.motorLiftR.getCurrentPosition() < 3100) {
-                robot.lift.motorLiftL.setTargetPosition(2200);
-                robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.lift.motorLiftL.setPower(1);
-                robot.lift.motorLiftR.setTargetPosition(2200);
-                robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.lift.motorLiftR.setPower(1);
-            }
-            if (robot.lift.motorLiftR.getCurrentPosition() > 1700 && robot.lift.motorLiftR.getCurrentPosition() < 1900) {
+            if (robot.lift.motorLiftR.getCurrentPosition() > 1800 && robot.lift.motorLiftR.getCurrentPosition() < 2200) {
                 robot.lift.motorLiftL.setTargetPosition(1200);
                 robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.lift.motorLiftL.setPower(1);
-                robot.lift.motorLiftR.setTargetPosition(1500);
+                robot.lift.motorLiftL.setPower(0.5);
+                robot.lift.motorLiftR.setTargetPosition(1200);
                 robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.lift.motorLiftR.setPower(1);
+                robot.lift.motorLiftR.setPower(0.5);
+            }
+            if (robot.lift.motorLiftR.getCurrentPosition() > 1100 && robot.lift.motorLiftR.getCurrentPosition() < 1400) {
+                robot.lift.motorLiftL.setTargetPosition(950);
+                robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.lift.motorLiftL.setPower(0.5);
+                robot.lift.motorLiftR.setTargetPosition(950);
+                robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.lift.motorLiftR.setPower(0.5);
             }
         } else {
             robot.lift.motorLiftL.setTargetPosition(liftPos);
@@ -178,7 +180,7 @@ public class Controller extends OpMode {
                 robot.lift.TurretRight();
             }
             if (gamepad1.dpad_up) {
-                robot.lift.Turret180();
+                robot.lift.Turret180Cycle();
             }
             if (gamepad1.dpad_down) {
                 robot.lift.Turret0();
@@ -188,6 +190,9 @@ public class Controller extends OpMode {
             }
             if (gamepad1.dpad_left && gamepad1.left_trigger > 0.5) {
                 robot.lift.TurretLeftIntake();
+            }
+            if (gamepad1.left_trigger > 0.5 && gamepad1.dpad_up) {
+                robot.lift.Turret180();
             }
         }
 
@@ -199,6 +204,33 @@ public class Controller extends OpMode {
             } else if (robot.lift.currentState == RobotHardware.Lift.States.INTAKE) {
                 robot.lift.servoExtension.setPosition(robot.lift.EXTENSION_INTAKE_POS);
             }
+        }
+
+        public void manualControl () {
+
+        if (gamepad2.b) {
+            robot.lift.currentState = RobotHardware.Lift.States.MANUAL_MODE;
+        }
+        if (robot.lift.currentState == RobotHardware.Lift.States.MANUAL_MODE) {
+            if (gamepad2.dpad_down) {
+                robot.lift.motorLiftR.setPower(-0.5);
+                robot.lift.motorLiftL.setPower(-0.5);
+            } else if (gamepad2.dpad_up) {
+                robot.lift.motorLiftR.setPower(0.5);
+                robot.lift.motorLiftL.setPower(0.5);
+            } else {
+                robot.lift.motorLiftR.setPower(0);
+                robot.lift.motorLiftL.setPower(0);
+            }
+
+            if (gamepad2.dpad_right) {
+                robot.lift.motorTurret.setPower(-0.5);
+            } else if (gamepad2.dpad_left) {
+                robot.lift.motorTurret.setPower(0.5);
+            } else {
+                robot.lift.motorTurret.setPower(0);
+            }
+        }
         }
 
 //            if (gamepad2.a) {
