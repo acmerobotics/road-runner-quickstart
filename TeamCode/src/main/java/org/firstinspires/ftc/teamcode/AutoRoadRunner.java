@@ -99,8 +99,9 @@ import java.util.List;
 public class AutoRoadRunner extends LinearOpMode {
 
     public int startLoc = 1; // 1 for right location, and -1 for left location.
-    Vector2d preConeDropAdjust = new Vector2d(-2.0, 0);
+    Vector2d preConeDropAdjust = new Vector2d(-2.0, 1);
     Vector2d poseConeStackAdjust = new Vector2d(0.5, 0);
+    Vector2d poseMJDropOffAdjust = new Vector2d(1.2, 0.5);
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
@@ -167,7 +168,7 @@ public class AutoRoadRunner extends LinearOpMode {
         poseSplineEnd3 = new Pose2d(-2 * Params.HALF_MAT + 5, -(2 * Params.HALF_MAT + 9) * startLoc, dropOffAngle);
 
         posePreConeDropOff = new Pose2d(-2 * Params.HALF_MAT + armX + preConeDropAdjust.getX(),
-                -2 * Params.HALF_MAT * startLoc + armY + preConeDropAdjust.getY(),
+                -2 * Params.HALF_MAT * startLoc + armY + preConeDropAdjust.getY() * startLoc,
                 dropOffAngle);
         vPreConeDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX, -2 * Params.HALF_MAT * startLoc + armY);
 
@@ -176,7 +177,8 @@ public class AutoRoadRunner extends LinearOpMode {
                 Math.toRadians(-90 * startLoc));
         vConeStackEst = new Vector2d(-Params.HALF_MAT, (-6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH) * startLoc);
 
-        poseMJDropOff = new Pose2d(-2 * Params.HALF_MAT + armX2, -2 * Params.HALF_MAT * startLoc + armY2, dropOffAngle2);
+        poseMJDropOff = new Pose2d(-2 * Params.HALF_MAT + armX2 + poseMJDropOffAdjust.getX(),
+                -2 * Params.HALF_MAT * startLoc + armY2 + poseMJDropOffAdjust.getY() * startLoc, dropOffAngle2);
         vMJDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX2, -2 * Params.HALF_MAT * startLoc + armY2);
 
         poseHJDropOff = new Pose2d(armXHJ, -2 * Params.HALF_MAT * startLoc + armY2, dropOffAngleHJ);
@@ -347,7 +349,7 @@ public class AutoRoadRunner extends LinearOpMode {
                     return;
             }
 
-            //drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
+            drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
             // unload cone & adjust
             rrUnloadCone();
 
@@ -471,7 +473,7 @@ public class AutoRoadRunner extends LinearOpMode {
 
         // move to 2nd mat center, which is green parking lot
         parkingY = -3 * Params.HALF_MAT * startLoc;
-        parkingX = -3 * Params.HALF_MAT + 2;
+        parkingX = -3 * Params.HALF_MAT + 3;
         parkingH = Math.toRadians(180);
         Pose2d poseParkingGreen = new Pose2d(parkingX, parkingY, parkingH);
 
