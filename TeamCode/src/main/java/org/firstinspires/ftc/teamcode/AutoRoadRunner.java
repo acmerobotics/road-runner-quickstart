@@ -72,12 +72,6 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.List;
 
 /**
- *
- * Extended from AutonomousRight file.
- * Use this one for autonomous when robot located at right side of game field.
- */
-
-/**
  * Hardware config:
  *      imu on control Hub:
  *          "imu"
@@ -100,7 +94,7 @@ import java.util.List;
  *          "Webcam 1"
  */
 
-@Autonomous(name="auto RR right", group="Concept")
+@Autonomous(name="Auto RR right", group="Concept")
 //@Disabled
 public class AutoRoadRunner extends LinearOpMode {
 
@@ -125,57 +119,67 @@ public class AutoRoadRunner extends LinearOpMode {
 
     // road runner variables
     Pose2d startPose;
-    double dropOffAngle;
-    double dropOffAngle2;
-    double armX;
-    double armY;
+    
+    // medium junction
+    double dropOffAngle, dropOffAngle2;
+    double armX, armY;
+    double armX2, armY2;
+    // high junction
+    double dropOffAngleHJ;
+    double armXHJ;
+    double armYHJ;
 
-    double armX2;
-    double armY2;
-
-    Pose2d poseLineEnd1;
-    Pose2d poseSplineEnd2;
-    Pose2d poseSplineEnd3;
-
-    Pose2d poseMJDropOff;
-    Vector2d VectorMJDropOffEst;
-
+    // pre cone to medium junction
+    Pose2d poseLineEnd1, poseSplineEnd2, poseSplineEnd3, posePreConeDropOff;
+    Vector2d vPreConeDropOffEst;
+    // cone stack
     Pose2d poseConeStack;
-    Vector2d vectorConeStackEst;
+    Vector2d vConeStackEst;
+    // medium junction pose
+    Pose2d poseMJDropOff;
+    Vector2d vMJDropOffEst;
 
-    Pose2d poseMJDropOff2;
-    Vector2d vectorConeStackEst2;
+    // high junction pose
+    Pose2d poseHJDropOff;
 
     Trajectory traj1;
 
     private void setPoses() {
         // road runner variables
         startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, // -65.0
-                -3 * Params.HALF_MAT * startLoc, Math.toRadians(0));
+                -3 * Params.HALF_MAT * startLoc, Math.toRadians(-90 * startLoc));
         dropOffAngle = Math.toRadians(-60 * startLoc);
         dropOffAngle2 = Math.toRadians(-60 * startLoc); // the target robot heading angle when drop off cone
+
+        // high junction drop off
+        dropOffAngleHJ = Math.toRadians(-120 * startLoc);
+        armXHJ = Params.ARM_UNLOADING_EXTENSION * Math.cos(dropOffAngleHJ);
+        armYHJ = Params.ARM_UNLOADING_EXTENSION * Math.sin(dropOffAngleHJ);
+
         armX = Params.ARM_UNLOADING_EXTENSION * Math.cos(dropOffAngle);
         armY = Params.ARM_UNLOADING_EXTENSION * Math.sin(dropOffAngle);
 
         armX2 = Params.ARM_UNLOADING_EXTENSION * Math.cos(dropOffAngle2);
         armY2 = Params.ARM_UNLOADING_EXTENSION * Math.sin(dropOffAngle2);
 
-        poseLineEnd1 = new Pose2d(startPose.getX() + 2 * Params.HALF_MAT, startPose.getY(), dropOffAngle);
-        poseSplineEnd2 = new Pose2d(-2 * Params.HALF_MAT, startPose.getY(), dropOffAngle);
+        poseLineEnd1 = new Pose2d(startPose.getX() + 2 * Params.HALF_MAT, startPose.getY(), startPose.getHeading());
+        poseSplineEnd2 = new Pose2d(-2 * Params.HALF_MAT, startPose.getY(), startPose.getHeading());
         poseSplineEnd3 = new Pose2d(-2 * Params.HALF_MAT + 5, -(2 * Params.HALF_MAT + 9) * startLoc, dropOffAngle);
 
-        poseMJDropOff = new Pose2d(-2 * Params.HALF_MAT + armX + preConeDropAdjust.getX(),
-                (-2 * Params.HALF_MAT + armY + preConeDropAdjust.getY()) * startLoc,
+        posePreConeDropOff = new Pose2d(-2 * Params.HALF_MAT + armX + preConeDropAdjust.getX(),
+                -2 * Params.HALF_MAT * startLoc + armY + preConeDropAdjust.getY(),
                 dropOffAngle);
-        VectorMJDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX, (-2 * Params.HALF_MAT + armY) * startLoc);
+        vPreConeDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX, -2 * Params.HALF_MAT * startLoc + armY);
 
         poseConeStack = new Pose2d(-Params.HALF_MAT + poseConeStackAdjust.getX(),
                 (-6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH + poseConeStackAdjust.getY()) * startLoc,
-                Math.toRadians(-90));
-        vectorConeStackEst = new Vector2d(-Params.HALF_MAT, (-6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH) * startLoc);
+                Math.toRadians(-90 * startLoc));
+        vConeStackEst = new Vector2d(-Params.HALF_MAT, (-6 * Params.HALF_MAT + Params.FLIP_ARM_LENGTH) * startLoc);
 
-        poseMJDropOff2 = new Pose2d(-2 * Params.HALF_MAT + armX2, (-2 * Params.HALF_MAT + armY2) * startLoc, dropOffAngle2);
-        vectorConeStackEst2 = new Vector2d(-2 * Params.HALF_MAT + armX2, (-2 * Params.HALF_MAT + armY2) * startLoc);
+        poseMJDropOff = new Pose2d(-2 * Params.HALF_MAT + armX2, -2 * Params.HALF_MAT * startLoc + armY2, dropOffAngle2);
+        vMJDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX2, -2 * Params.HALF_MAT * startLoc + armY2);
+
+        poseHJDropOff = new Pose2d(armXHJ, -2 * Params.HALF_MAT * startLoc + armY2, dropOffAngleHJ);
     }
 
 
@@ -183,6 +187,8 @@ public class AutoRoadRunner extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         Logging.log("Status - Initialized");
+        // init drive with road runner
+        drive = new SampleMecanumDrive(hardwareMap);
 
         setRobotLocation();
 
@@ -220,6 +226,8 @@ public class AutoRoadRunner extends LinearOpMode {
 
         // init drive with road runner
         drive = new SampleMecanumDrive(hardwareMap);
+        drive.setPoseEstimate(startPose);
+        Params.currentPose = startPose; // init storage pose.
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -247,6 +255,8 @@ public class AutoRoadRunner extends LinearOpMode {
             parkingLotDis = coneSleeveDetect.getParkingLotDistance();
             telemetry.addData("Parking position: ", myParkingLot);
             telemetry.addData("robot position: ", startLoc > 0? "Right":"Left");
+            telemetry.addData("RR", "imu Heading = %.1f",
+                    Math.toDegrees(drive.getRawExternalHeading()));
             telemetry.update();
         }
 
@@ -256,21 +266,17 @@ public class AutoRoadRunner extends LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // Wait for the game to start (driver presses PLAY)
-        drive.setPoseEstimate(startPose);
-
         // move this code here to save the path build time during autonomous.
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .splineToSplineHeading(poseLineEnd1, Math.toRadians(0))
+                .lineToLinearHeading(poseLineEnd1)
                 .addDisplacementMarker(Params.HALF_MAT, () -> {
                     // lift slider
                     slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
-                    //armClaw.armFlipBackUnload();
                     armClaw.armFlipBackUnloadPre();
                 })
                 .splineToSplineHeading(poseSplineEnd2, Math.toRadians(0))
                 .splineToSplineHeading(poseSplineEnd3, Math.toRadians(70 * startLoc))
-                .splineToLinearHeading(poseMJDropOff, Math.toRadians(70 * startLoc))
+                .splineToLinearHeading(posePreConeDropOff, Math.toRadians(70 * startLoc))
                 .build();
 
         waitForStart();
@@ -295,19 +301,53 @@ public class AutoRoadRunner extends LinearOpMode {
         // drive to medium junction, lift sliders, arm to back
         drive.followTrajectory(traj1);
 
+        // for testing
+        if (gamepad1.a || gamepad1.b) {
+            sleep(5000);
+            if (gamepad1.b)
+                return;
+        }
+
         // drop cone and back to the center of mat
-        drive.setPoseEstimate(new Pose2d(VectorMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
+        drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
 
         rrUnloadCone();
 
         for(int autoLoop = 0; autoLoop < 5; autoLoop++) {
             moveFromJunctionToConeStack();
 
+            // for testing
+            if (gamepad1.a || gamepad1.b) {
+                sleep(5000);
+                if (gamepad1.b)
+                    return;
+            }
+
+            drive.setPoseEstimate(new Pose2d(vConeStackEst, drive.getPoseEstimate().getHeading())); // reset orientation
+
             // load cone
             rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
             moveFromConeStackToJunction();
+            /*
+            if (autoLoop < 5) {
+                moveFromConeStackToJunction();
+            }
+            else {
+                vMJDropOffEst = new Vector2d(poseHJDropOff.getX(), poseHJDropOff.getY());
+                slider.setInchPosition(Params.HIGH_JUNCTION_POS);
+                moveFromConeStackToHJunction();
+            }
+             */
 
+            // for testing
+            if (gamepad1.a || gamepad1.b) {
+                sleep(5000);
+                if (gamepad1.b)
+                    return;
+            }
+
+            //drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
             // unload cone & adjust
             rrUnloadCone();
 
@@ -320,6 +360,10 @@ public class AutoRoadRunner extends LinearOpMode {
 
         // parking
         driveToParkingLot(coneSleeveDetect.getParkingLot());
+
+
+        // storage robot pose of the end of autonomous
+        Params.currentPose = drive.getPoseEstimate();
 
         // lower sliders
         slider.setInchPosition(Params.WALL_POSITION);
@@ -342,9 +386,6 @@ public class AutoRoadRunner extends LinearOpMode {
      */
     public void rrLoadCone(double coneLocation) {
         slider.setInchPosition(coneLocation);
-
-        drive.setPoseEstimate(new Pose2d(vectorConeStackEst, drive.getPoseEstimate().getHeading())); // reset orientation
-
         driveBack(Params.DISTANCE_PICK_UP);
         Logging.log("Wait before claw close.");
         slider.waitRunningComplete();
@@ -363,7 +404,6 @@ public class AutoRoadRunner extends LinearOpMode {
         armClaw.armFlipBackUnload();
         slider.movingSliderInch(-Params.SLIDER_MOVE_DOWN_POSITION / 2.0);
         sleep(100); // wait arm flip down a little bit to junction
-        drive.setPoseEstimate(new Pose2d(vectorConeStackEst2, drive.getPoseEstimate().getHeading())); // reset orientation
 
         //driveForward(Params.DISTANCE_DROP_OFF);
         Logging.log("Wait before unloading claw open.");
@@ -398,7 +438,7 @@ public class AutoRoadRunner extends LinearOpMode {
 
     public void moveFromConeStackToJunction() {
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(poseMJDropOff2)
+                .lineToSplineHeading(poseMJDropOff)
                 .build();
         drive.followTrajectory(traj1);
 
@@ -413,6 +453,16 @@ public class AutoRoadRunner extends LinearOpMode {
         telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
                 drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
 
+    }
+
+    public void moveFromConeStackToHJunction() {
+        Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToSplineHeading(poseHJDropOff)
+                .addDisplacementMarker(Params.HALF_MAT, () -> {
+                    slider.setInchPosition(Params.HIGH_JUNCTION_POS);
+                })
+                .build();
+        drive.followTrajectory(traj1);
     }
 
     private void driveToParkingLot(ObjectDetection.ParkingLot parkingLot) {
@@ -435,9 +485,16 @@ public class AutoRoadRunner extends LinearOpMode {
                 .build();
         drive.followTrajectory(traj1);
 
+        // for testing
+        if (gamepad1.a || gamepad1.b) {
+            sleep(5000);
+            if (gamepad1.b)
+                return;
+        }
+
         switch (parkingLot) {
             case LEFT:
-                parkingY = -Params.HALF_MAT * startLoc;
+                parkingY = (-3 * startLoc + 2) * Params.HALF_MAT;
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -451,7 +508,7 @@ public class AutoRoadRunner extends LinearOpMode {
                 break;
 
             case RIGHT:
-                parkingY = -5 * Params.HALF_MAT * startLoc;
+                parkingY = (-3 * startLoc - 2) * Params.HALF_MAT;
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())

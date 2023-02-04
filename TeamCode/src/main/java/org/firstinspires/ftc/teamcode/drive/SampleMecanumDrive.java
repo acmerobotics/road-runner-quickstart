@@ -95,10 +95,17 @@ public class SampleMecanumDrive extends MecanumDrive {
         imu = hardwareMap.get(IMU.class, "imu");
         // DONE: Adjust the orientations here to match your robot. See the FTC SDK documentation for
         // details
+        // ctrl hub new IMU has some unexpected issue.
+        //IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                //       RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                //       RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
+
+        // expend ctrl hub IMU
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
+        imu.resetYaw();
 
         // customized motor config name for 21180
         leftFront = hardwareMap.get(DcMotorEx.class, "FrontLeft");

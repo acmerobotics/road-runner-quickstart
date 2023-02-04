@@ -77,7 +77,7 @@ public class AutonomousTest extends AutoRoadRunner {
         drive.followTrajectory(traj1);
 
         // drop cone and back to the center of mat
-        drive.setPoseEstimate(new Pose2d(VectorMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
+        drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
 
         rrUnloadCone();
 

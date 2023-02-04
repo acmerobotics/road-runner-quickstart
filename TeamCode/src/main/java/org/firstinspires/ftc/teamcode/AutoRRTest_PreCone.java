@@ -68,13 +68,18 @@ public class AutoRRTest_PreCone extends AutoRoadRunner {
 
     @Override
     public void setRobotLocation() {
-        preConeDropAdjust = new Vector2d(-2.0, 0);
-        poseConeStackAdjust = new Vector2d(0.5, 0);
+        //preConeDropAdjust = new Vector2d(0, 0);
+        //poseConeStackAdjust = new Vector2d(0, 0);
+        if (gamepad1.x || gamepad2.x) {
+            startLoc = -1;
+        }
     }
 
     @Override
     public void autonomousCore() {
         // drive to medium junction, lift sliders, arm to back
+        // move this code here to save the path build time during autonomous.
+
         drive.followTrajectory(traj1);
     }
 }

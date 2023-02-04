@@ -69,21 +69,34 @@ public class AutoRRTest_PickCone extends AutoRoadRunner {
 
     @Override
     public void setRobotLocation() {
-        preConeDropAdjust = new Vector2d(-2.0, 0);
-        poseConeStackAdjust = new Vector2d(0.5, 0);
+        preConeDropAdjust = new Vector2d(0.0, 0);
+        poseConeStackAdjust = new Vector2d(0, 0);
+        if (gamepad1.x || gamepad2.x) {
+            startLoc = -1;
+        }
     }
 
     @Override
     public void autonomousCore() {
 
-        // drive to medium junction, lift sliders, arm to back
-        drive.followTrajectory(traj1);
+        drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, dropOffAngle)); // reset orientation.
 
-        // drop cone and back to the center of mat
-        drive.setPoseEstimate(new Pose2d(VectorMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
+        for(int autoLoop = 0; autoLoop < 5; autoLoop++) {
+            moveFromJunctionToConeStack();
 
-        rrUnloadCone();
+            // load cone
+            rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
-        moveFromJunctionToConeStack();
+            moveFromConeStackToJunction();
+
+            // unload cone & adjust
+            rrUnloadCone();
+
+            telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+            telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+            telemetry.update();
+        }
     }
 }

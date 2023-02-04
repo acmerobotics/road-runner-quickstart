@@ -115,6 +115,8 @@ public class TeleopRR extends LinearOpMode {
 
         mecanum = new SampleMecanumDrive(hardwareMap);
 
+        mecanum.setPoseEstimate(Params.currentPose); // load the pose of the end of autonomous
+
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Initialize the hardware variables. Note that the strings used here as parameters

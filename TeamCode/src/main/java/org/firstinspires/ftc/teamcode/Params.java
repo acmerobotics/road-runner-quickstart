@@ -30,12 +30,17 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+
 /**
  * This is NOT an opmode.
  *
  * This class defines the parameters related with game field elements.
  */
 public class Params {
+    // road runner
+    public static Pose2d currentPose = new Pose2d();
+
     //cone parameters
     static final double CONE_WALL_THICKNESS = 0.5; // inch
     static final double coneLoadStackGap = 1.3;
@@ -62,7 +67,7 @@ public class Params {
 
     // slider position variables
     static final double ARM_UNLOADING_LIFTING = 5;
-    static final double ARM_UNLOADING_EXTENSION = 7.1;
+    static final double ARM_UNLOADING_EXTENSION = 7.0;
     static final double GROUND_CONE_POSITION = 0.0;
     static final double coneStack5th = coneLoadStackGap * 4;
     static final double GROUND_JUNCTION_POS = GROUND_CONE_POSITION + 1.0;
@@ -79,7 +84,7 @@ public class Params {
     static final int CLAW_OPEN_SLEEP = 50; // ms
     static final int WAIT_SHAKING_SLEEP = 100;
 
-    // chasis power factors
+    // chassis power factors
     static final double POWER_LOW = 0.3;
     static final double POWER_NORMAL = 0.75;
     static final double POWER_HIGH = 1.0;
