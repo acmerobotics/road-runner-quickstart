@@ -70,12 +70,13 @@ public class ArmClawUnit
     final double ARM_SWING_LEFT = 0.73;
     final double ARM_SWING_RIGHT = 0.06;
 
-    final double ARM_FLIP_FRONT_LOAD_POS = 0.22;
-    final double ARM_FLIP_FRONT_UNLOAD_POS = 0.35;
-    final double ARM_FLIP_BACK_UNLOAD_POS = 0.85;
-    final double ARM_FLIP_BACK_UNLOAD_PRE = 0.75;
-    final double ARM_FLIP_BACK_LOAD_POS = 0.9;
-    final double ARM_FLIP_CENTER = 0.56;
+    final double ARM_LOCATION_ADJ = 0.04;
+    final double ARM_FLIP_FRONT_LOAD_POS = ARM_LOCATION_ADJ + 0.22;
+    final double ARM_FLIP_FRONT_UNLOAD_POS = ARM_LOCATION_ADJ + 0.35;
+    final double ARM_FLIP_CENTER = ARM_LOCATION_ADJ + 0.56;
+    final double ARM_FLIP_BACK_UNLOAD_PRE = ARM_LOCATION_ADJ + 0.78;
+    final double ARM_FLIP_BACK_UNLOAD_POS = ARM_LOCATION_ADJ + 0.86;
+    final double ARM_FLIP_BACK_LOAD_POS = ARM_LOCATION_ADJ + 0.9;
 
     /**
      * Init slider motors hardware, and set their behaviors.

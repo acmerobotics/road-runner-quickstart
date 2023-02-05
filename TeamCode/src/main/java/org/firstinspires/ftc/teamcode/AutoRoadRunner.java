@@ -90,8 +90,9 @@ import java.util.List;
  *          "ArmServo"
  *          "ClawServo"
  *
- *      One camera:
+ *      Two camera:
  *          "Webcam 1"
+ *          "WebcamR"
  */
 
 @Autonomous(name="Auto RR right", group="Concept")
@@ -197,6 +198,12 @@ public class AutoRoadRunner extends LinearOpMode {
         setPoses();
 
         // camera for sleeve color detect, start camera at the beginning.
+        if (startLoc > 0) {
+            webcamName = "Webcam 1";
+        }
+        else {
+            webcamName = "WebcamR";
+        }
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 

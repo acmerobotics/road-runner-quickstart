@@ -66,7 +66,7 @@ public class Params {
     static final double DISTANCE_DROP_OFF = 1.0; // in INCH
 
     // slider position variables
-    static final double ARM_UNLOADING_LIFTING = 5;
+    static final double ARM_UNLOADING_LIFTING = 4;
     static final double ARM_UNLOADING_EXTENSION = 7.0;
     static final double GROUND_CONE_POSITION = 0.0;
     static final double coneStack5th = coneLoadStackGap * 4;
