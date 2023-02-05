@@ -100,9 +100,9 @@ import java.util.List;
 public class AutoRoadRunner extends LinearOpMode {
 
     public int startLoc = 1; // 1 for right location, and -1 for left location.
-    Vector2d preConeDropAdjust = new Vector2d(-2.0, 1);
-    Vector2d poseConeStackAdjust = new Vector2d(0.5, 0);
-    Vector2d poseMJDropOffAdjust = new Vector2d(1.2, 0.5);
+    Vector2d preConeDropAdjust = new Vector2d(-1.0, 0);
+    Vector2d poseConeStackAdjust = new Vector2d(0.3, 0);
+    Vector2d poseMJDropOffAdjust = new Vector2d(1.3, 0.5);
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
@@ -246,7 +246,6 @@ public class AutoRoadRunner extends LinearOpMode {
         slider.resetEncoders();
 
         armClaw.init(hardwareMap, "ArmServo", "ClawServo");
-        //armClaw.armFlipFrontLoad();
         sleep(500);
         armClaw.clawClose();
         sleep(500);
