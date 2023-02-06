@@ -6,7 +6,45 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 
 /**
- * Used to detect cone position, and sleeve color.
+ * Game pad buttons design:
+ * Game Pad1:
+ *  Left stick:
+ *      left-right: strafe robot
+ *      up-down:    drive root
+ *  Right stick:
+ *      left-right: turn robot
+ *  dpad:
+ *      left:       robot movement speed down
+ *      right:      robot movement speed up
+ *      up:         normal auto pickup the 3rd cone from cone stack
+ *      down:       normal auto pickup the 4th and 5th cone from cone stack
+ *  X:              robot movement speed down (same as dpad_left)
+ *  B:              robot movement speed down (same as dpad_right)
+ *  Left Bumper:    normal auto pickup cone from ground
+ *  Right bumper:   normal auto drop off cone
+ *  Left trigger:   auto pick up cone from cone base then move to high junction, slider lifted to high junction
+ *  Right trigger:  auto drop off cone on high junction then move to cone base
+ *  Y:              Teapot function - drop off cone on high junction then pick up cone from base, then move to high junction
+ *  Back:           Back to cone base just at the beginning of Teleop
+ *  A:              open claw to drop off cone manually.
+ *
+ * Game pad2:
+ *  dpad:
+ *      Up:         close the claw to pick up cone
+ *      Down:       open claw to drop off cone manually
+ *  Right stick:
+ *                  left-right: manually control slider up and down
+ *  X:              move slider to wall position
+ *  A:              move slider to low junction position
+ *  B:              move slider to medium junction position
+ *  Y:              move slider to high junction position
+ *  Right bumper:   move slider to ground junction position
+ *  Right trigger:  move slider to ground position
+ *  Left stick:
+ *      left-right: manually control arm position
+ *      up:         move arm to pick up position
+ *      down:       move arm to drop off position
+ *
  */
 public class GamePadButtons {
     //game pad setting
@@ -57,7 +95,11 @@ public class GamePadButtons {
         teapot                  = gamepad1.y;
         backBase                = gamepad1.back;
 
-        // gamepad1(single driver) or gamepad2(dual driver) buttons
+        // gamepad1 and gamepad2
+        clawOpen                = gamepad2.dpad_down || gamepad1.a;
+
+        // gamepad2 buttons
+        clawClose               = gamepad2.dpad_up;
         sliderUpDown            = gamepad2.right_stick_y;
         sliderWallPosition      = gamepad2.x;
         sliderLowJunction       = gamepad2.a;
@@ -66,9 +108,6 @@ public class GamePadButtons {
         sliderGroundJunction    = gamepad2.right_bumper;
         sliderGround            = (gamepad2.right_trigger > 0);
 
-        // gamepad1 or gamepad2
-        clawClose               = gamepad2.dpad_up;
-        clawOpen                = gamepad2.dpad_down || gamepad1.a;
         if (ArmClawUnit.ArmType.SWING == ArmClawUnit.armMode) {
             armLeft = gamepad2.left_stick_x < -0.2;
             armRight = gamepad2.left_stick_x > 0.2;

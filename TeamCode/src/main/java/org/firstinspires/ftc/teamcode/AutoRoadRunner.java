@@ -99,10 +99,14 @@ import java.util.List;
 //@Disabled
 public class AutoRoadRunner extends LinearOpMode {
 
-    public int startLoc = 1; // 1 for right location, and -1 for left location.
+    // calibration parameters for home Mat.
     Vector2d preConeDropAdjust = new Vector2d(-1.0, 0);
     Vector2d poseConeStackAdjust = new Vector2d(0.3, 0);
     Vector2d poseMJDropOffAdjust = new Vector2d(1.3, 0.5);
+
+    public int startLoc = 1; // 1 for right location, and -1 for left location.
+
+    boolean debug_flag = false;
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
@@ -359,11 +363,13 @@ public class AutoRoadRunner extends LinearOpMode {
             // unload cone & adjust
             rrUnloadCone();
 
-            telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-            telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-            telemetry.update();
+            if (debug_flag) {
+                telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                        traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+                telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                        drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+                telemetry.update();
+            }
         }
 
         // parking
@@ -431,17 +437,19 @@ public class AutoRoadRunner extends LinearOpMode {
                 .build();
         drive.followTrajectory(traj1);
 
-        Logging.log("Arrived cone stack");
-        Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-        Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+        if (debug_flag) {
+            Logging.log("Arrived cone stack");
+            Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+            Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
 
 
-        telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-        telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+            telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+            telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+        }
     }
 
     public void moveFromConeStackToJunction() {
@@ -450,17 +458,18 @@ public class AutoRoadRunner extends LinearOpMode {
                 .build();
         drive.followTrajectory(traj1);
 
-        Logging.log("Arrived junction");
-        Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-        Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+        if (debug_flag) {
+            Logging.log("Arrived junction");
+            Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+            Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
 
-        telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-        telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-
+            telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
+                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+            telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
+                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+        }
     }
 
     public void moveFromConeStackToHJunction() {

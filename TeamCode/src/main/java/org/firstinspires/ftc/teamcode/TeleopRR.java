@@ -304,8 +304,8 @@ public class TeleopRR extends LinearOpMode {
                 loadConeThenDriving();
             }
 
-            //back to cone base
-            if (gpButtons.backBase) {
+            //back to cone base, only active at the beginning of 5sec teleop
+            if ((gpButtons.backBase) && (runtime.seconds() < 5)) {
                     mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     Trajectory trajBack = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
                             .lineToLinearHeading(new Pose2d(-3 * Params.HALF_MAT, 0, Math.toRadians(180)))
@@ -315,9 +315,7 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if (debugFlag) {
-
                 // claw arm servo log
-                telemetry.addData("Arm", "position = %.2f", armClaw.getArmPosition());
                 telemetry.addData("Claw", "position %.2f", armClaw.getClawPosition());
 
                 telemetry.addData("Right slider", "current position %d",
@@ -338,8 +336,7 @@ public class TeleopRR extends LinearOpMode {
                         mecanum.getPoseEstimate().getX(), mecanum.getPoseEstimate().getY(),
                         Math.toDegrees(mecanum.getPoseEstimate().getHeading()));
             }
-
-            // running time
+            telemetry.addData("Arm", "position = %.2f", armClaw.getArmPosition());
             telemetry.update(); // update message at the end of while loop
         }
 
