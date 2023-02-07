@@ -70,6 +70,13 @@ public class AutoRRLeft extends AutoRoadRunner {
     @Override
     public void setRobotLocation() {
         startLoc = -1;
+
+        // calibration parameters for home Mat.
+        /*
+        preConeDropAdjust = new Vector2d(-2.5, 1);
+        poseConeStackAdjust = new Vector2d(0.2, 0);
+        poseMJDropOffAdjust = new Vector2d(1.2, 0.5);
+         */
         preConeDropAdjust = new Vector2d(-2.5, 1);
         poseConeStackAdjust = new Vector2d(0.2, 0);
         poseMJDropOffAdjust = new Vector2d(1.2, 0.5);

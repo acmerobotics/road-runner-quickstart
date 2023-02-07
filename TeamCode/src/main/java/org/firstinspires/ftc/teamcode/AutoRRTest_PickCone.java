@@ -69,8 +69,9 @@ public class AutoRRTest_PickCone extends AutoRoadRunner {
 
     @Override
     public void setRobotLocation() {
-        preConeDropAdjust = new Vector2d(0.0, 0);
-        poseConeStackAdjust = new Vector2d(0, 0);
+
+        //preConeDropAdjust = new Vector2d(0.0, 0);
+        //poseConeStackAdjust = new Vector2d(0, 0);
         if (gamepad1.x || gamepad2.x) {
             startLoc = -1;
         }
@@ -81,7 +82,7 @@ public class AutoRRTest_PickCone extends AutoRoadRunner {
 
         drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, dropOffAngle)); // reset orientation.
 
-        for(int autoLoop = 0; autoLoop < 5; autoLoop++) {
+        for(int autoLoop = 0; autoLoop < 1; autoLoop++) {
             moveFromJunctionToConeStack();
 
             // load cone
@@ -98,5 +99,6 @@ public class AutoRRTest_PickCone extends AutoRoadRunner {
                     drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
             telemetry.update();
         }
+        sleep(10000);
     }
 }

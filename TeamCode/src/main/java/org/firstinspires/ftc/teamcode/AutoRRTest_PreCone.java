@@ -81,5 +81,6 @@ public class AutoRRTest_PreCone extends AutoRoadRunner {
         // move this code here to save the path build time during autonomous.
 
         drive.followTrajectory(traj1);
+        sleep(15000);
     }
 }
