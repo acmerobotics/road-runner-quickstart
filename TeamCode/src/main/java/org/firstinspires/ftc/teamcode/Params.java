@@ -71,9 +71,9 @@ public class Params {
     static final double GROUND_CONE_POSITION = 0.0;
     static final double coneStack5th = coneLoadStackGap * 4;
     static final double GROUND_JUNCTION_POS = GROUND_CONE_POSITION + 1.0;
-    static final double LOW_JUNCTION_POS = 14 - ARM_UNLOADING_LIFTING;
+    static final double LOW_JUNCTION_POS = 13.5 - ARM_UNLOADING_LIFTING;
     static final double MEDIUM_JUNCTION_POS = 23.5 - ARM_UNLOADING_LIFTING;
-    static final double HIGH_JUNCTION_POS = 33 - ARM_UNLOADING_LIFTING;
+    static final double HIGH_JUNCTION_POS = 33.5 - ARM_UNLOADING_LIFTING;
     static final double WALL_POSITION = 8.7;
     static final double COVER_POSITION = 4.0;
     static final double SLIDER_MOVE_DOWN_POSITION = 3.0;
