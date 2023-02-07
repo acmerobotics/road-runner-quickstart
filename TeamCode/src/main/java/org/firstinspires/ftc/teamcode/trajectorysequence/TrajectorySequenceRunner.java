@@ -185,8 +185,10 @@ public class TrajectorySequenceRunner {
             poseHistory.removeFirst();
         }
 
-        LogFiles.recordPose(poseEstimate);
-        LogFiles.recordTargetPose(targetPose);
+        if (targetPose != null) {
+            LogFiles.recordPose(poseEstimate);
+            LogFiles.recordTargetPose(targetPose);
+        }
 
         packet.put("x", poseEstimate.getX());
         packet.put("y", poseEstimate.getY());
