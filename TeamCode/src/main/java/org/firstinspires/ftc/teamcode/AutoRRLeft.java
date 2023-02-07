@@ -72,13 +72,10 @@ public class AutoRRLeft extends AutoRoadRunner {
         startLoc = -1;
 
         // calibration parameters for home Mat.
-        /*
-        preConeDropAdjust = new Vector2d(-2.5, 1);
-        poseConeStackAdjust = new Vector2d(0.2, 0);
-        poseMJDropOffAdjust = new Vector2d(1.2, 0.5);
-         */
-        preConeDropAdjust = new Vector2d(-2.5, 1);
-        poseConeStackAdjust = new Vector2d(0.2, 0);
-        poseMJDropOffAdjust = new Vector2d(1.2, 0.5);
+        preConeDropAdjust = new Vector2d(-1, 1);
+        poseConeStackAdjust = new Vector2d(0, 0);
+        poseMJDropOffAdjust = new Vector2d(0.5, 0.5);
+        poseHJDropOffAdjust = new Vector2d(0, 0);
+
     }
 }

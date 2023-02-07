@@ -101,8 +101,10 @@ public class AutoRoadRunner extends LinearOpMode {
 
     // calibration parameters for home Mat.
     Vector2d preConeDropAdjust = new Vector2d(-1.0, 0);
-    Vector2d poseConeStackAdjust = new Vector2d(0.3, 0);
-    Vector2d poseMJDropOffAdjust = new Vector2d(1.3, 0.5);
+    Vector2d poseConeStackAdjust = new Vector2d(0, 0);
+    Vector2d poseMJDropOffAdjust = new Vector2d(0.5, 0.5);
+    Vector2d poseHJDropOffAdjust = new Vector2d(0, 0);
+
 
     public int startLoc = 1; // 1 for right location, and -1 for left location.
 
@@ -147,6 +149,7 @@ public class AutoRoadRunner extends LinearOpMode {
 
     // high junction pose
     Pose2d poseHJDropOff;
+    Vector2d vHJDropOffEst;
 
     Trajectory traj1;
 
@@ -186,7 +189,11 @@ public class AutoRoadRunner extends LinearOpMode {
                 -2 * Params.HALF_MAT * startLoc + armY2 + poseMJDropOffAdjust.getY() * startLoc, dropOffAngle2);
         vMJDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX2, -2 * Params.HALF_MAT * startLoc + armY2);
 
-        poseHJDropOff = new Pose2d(armXHJ, -2 * Params.HALF_MAT * startLoc + armY2, dropOffAngleHJ);
+        poseHJDropOff = new Pose2d(armXHJ - poseHJDropOffAdjust.getX(),
+                -2 * Params.HALF_MAT * startLoc + armYHJ + poseHJDropOffAdjust.getY() * startLoc,
+                dropOffAngleHJ);
+        vHJDropOffEst = new Vector2d(armXHJ, -2 * Params.HALF_MAT * startLoc + armYHJ);
+
     }
 
 
@@ -341,14 +348,17 @@ public class AutoRoadRunner extends LinearOpMode {
             rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
             moveFromConeStackToJunction();
+            drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
+
             /*
-            if (autoLoop < 5) {
+            if (autoLoop < 4) {
                 moveFromConeStackToJunction();
+                drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
             }
             else {
-                vMJDropOffEst = new Vector2d(poseHJDropOff.getX(), poseHJDropOff.getY());
                 slider.setInchPosition(Params.HIGH_JUNCTION_POS);
                 moveFromConeStackToHJunction();
+                drive.setPoseEstimate(new Pose2d(vHJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
             }
              */
 
@@ -487,9 +497,9 @@ public class AutoRoadRunner extends LinearOpMode {
         Pose2d poseParking;
 
         // move to 2nd mat center, which is green parking lot
+        parkingX = -Params.HALF_MAT;
         parkingY = -3 * Params.HALF_MAT * startLoc;
-        parkingX = -3 * Params.HALF_MAT + 3;
-        parkingH = Math.toRadians(180);
+        parkingH = Math.toRadians(-90 * startLoc);
         Pose2d poseParkingGreen = new Pose2d(parkingX, parkingY, parkingH);
 
         // parking
@@ -502,6 +512,9 @@ public class AutoRoadRunner extends LinearOpMode {
                 .build();
         drive.followTrajectory(traj1);
 
+        // arm
+        armClaw.armFlipCenter();
+
         // for testing
         if (gamepad1.a || gamepad1.b) {
             sleep(5000);
@@ -511,7 +524,44 @@ public class AutoRoadRunner extends LinearOpMode {
 
         switch (parkingLot) {
             case LEFT:
-                parkingY = (-3 * startLoc + 2) * Params.HALF_MAT;
+                parkingX = -Params.HALF_MAT;
+                parkingY = (-3 * startLoc + 2) * Params.HALF_MAT - 1;
+                parkingH = Math.toRadians(-90 * startLoc);
+                poseParking = new Pose2d(parkingX, parkingY, parkingH);
+
+                traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToLinearHeading(poseParking)
+                        .build();
+                drive.followTrajectory(traj1);
+
+                parkingX = -3 * Params.HALF_MAT + 2;
+                parkingY = (-3 * startLoc + 2) * Params.HALF_MAT - 1;
+                parkingH = Math.toRadians(-90 * startLoc);
+                poseParking = new Pose2d(parkingX, parkingY, parkingH);
+
+                traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToLinearHeading(poseParking)
+                        .build();
+                drive.followTrajectory(traj1);
+
+                break;
+
+            case CENTER:
+                parkingY = -3 * Params.HALF_MAT * startLoc;
+                parkingX = -3 * Params.HALF_MAT + 5;
+                parkingH = Math.toRadians(180);
+                poseParking = new Pose2d(parkingX, parkingY, parkingH);
+
+                traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToLinearHeading(poseParking)
+                        .build();
+                drive.followTrajectory(traj1);
+                break;
+
+            case RIGHT:
+                parkingX = -Params.HALF_MAT;
+                parkingY = (-3 * startLoc - 2) * Params.HALF_MAT - 1;
+                parkingH = Math.toRadians(-90 * startLoc);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -519,19 +569,16 @@ public class AutoRoadRunner extends LinearOpMode {
                         .build();
 
                 drive.followTrajectory(traj1);
-                break;
 
-            case CENTER:
-                break;
 
-            case RIGHT:
-                parkingY = (-3 * startLoc - 2) * Params.HALF_MAT;
+                parkingX = -3 * Params.HALF_MAT + 2;
+                parkingY = (-3 * startLoc - 2) * Params.HALF_MAT - 1;
+                parkingH = Math.toRadians(-90 * startLoc);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .lineToLinearHeading(poseParking)
                         .build();
-
                 drive.followTrajectory(traj1);
                 break;
         }
