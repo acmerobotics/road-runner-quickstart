@@ -55,7 +55,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
@@ -65,7 +64,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="RR test 2 - pickCone", group="Concept")
 //@Disabled
-public class AutoRRTest_PickCone extends AutoRoadRunner {
+public class AutoRRTest_PickCone extends AutoMJ_Right {
 
     @Override
     public void setRobotLocation() {

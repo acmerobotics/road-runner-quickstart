@@ -54,33 +54,29 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Extended from AutonomousRight file.
  * Use this one for autonomous when robot located at left side of game field.
  */
 
-@Autonomous(name="RR test - pickCone", group="Concept")
-@Disabled
-public class AutonomousTest extends AutoMJ_Right {
+@Autonomous(name="Auto H Left", group="Concept")
+//@Disabled
+public class AutoHJ_Left extends AutoMJ_Right {
 
     @Override
-    public void autonomousCore() {
-        // drive to medium junction, lift sliders, arm to back
-        drive.followTrajectory(traj1);
+    public void setRobotLocation() {
+        startLoc = -1;
 
+        junctionType = 2;
 
-        // drive to medium junction, lift sliders, arm to back
-        drive.followTrajectory(traj1);
+        // calibration parameters for home Mat.
 
-        // drop cone and back to the center of mat
-        drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
-
-        rrUnloadCone();
-
-        moveFromJunctionToConeStack();
+        preConeDropAdjust = new Vector2d(-1, 1);
+        poseConeStackAdjust = new Vector2d(0, 0);
+        poseMJDropOffAdjust = new Vector2d(0.5, 0.5);
+        poseHJDropOffAdjust = new Vector2d(0, 0);
     }
 }

@@ -56,23 +56,24 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Extended from AutonomousRight file.
  * Use this one for autonomous when robot located at left side of game field.
  */
 
-@Autonomous(name="Auto RR Left", group="Concept")
+@Autonomous(name="Auto H Right", group="Concept")
 //@Disabled
-public class AutoRRLeft extends AutoRoadRunner {
+public class AutoHJ_Right extends AutoMJ_Right {
 
     @Override
     public void setRobotLocation() {
-        startLoc = -1;
+        startLoc = 1;
+
+        junctionType = 2;
 
         // calibration parameters for home Mat.
-        preConeDropAdjust = new Vector2d(-1, 1);
+        preConeDropAdjust = new Vector2d(-2, 1);
         poseConeStackAdjust = new Vector2d(0, 0);
         poseMJDropOffAdjust = new Vector2d(0.5, 0.5);
         poseHJDropOffAdjust = new Vector2d(0, 0);

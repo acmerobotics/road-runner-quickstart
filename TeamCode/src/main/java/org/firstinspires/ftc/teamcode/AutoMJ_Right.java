@@ -95,18 +95,21 @@ import java.util.List;
  *          "WebcamR"
  */
 
-@Autonomous(name="Auto RR right", group="Concept")
+@Autonomous(name="Auto M right", group="Concept")
 //@Disabled
-public class AutoRoadRunner extends LinearOpMode {
+public class AutoMJ_Right extends LinearOpMode {
 
     // calibration parameters for home Mat.
-    Vector2d preConeDropAdjust = new Vector2d(-1.0, 0);
-    Vector2d poseConeStackAdjust = new Vector2d(0, 0);
-    Vector2d poseMJDropOffAdjust = new Vector2d(0.5, 0.5);
+    Vector2d preConeDropAdjust = new Vector2d(-1, -0.5);
+    Vector2d poseConeStackAdjust = new Vector2d(-1, -0.5);
+    Vector2d poseMJDropOffAdjust = new Vector2d(0, 0);
+
+    Vector2d poseHJPreConAdjust = new Vector2d(0, 0);
     Vector2d poseHJDropOffAdjust = new Vector2d(0, 0);
 
-
     public int startLoc = 1; // 1 for right location, and -1 for left location.
+
+    public int junctionType = 1; // 1 for medium junction, 2 for high junction
 
     boolean debug_flag = false;
 
@@ -148,6 +151,9 @@ public class AutoRoadRunner extends LinearOpMode {
     Vector2d vMJDropOffEst;
 
     // high junction pose
+    Pose2d poseHJPrecon;
+    Vector2d vHJPreCon;
+
     Pose2d poseHJDropOff;
     Vector2d vHJDropOffEst;
 
@@ -189,11 +195,16 @@ public class AutoRoadRunner extends LinearOpMode {
                 -2 * Params.HALF_MAT * startLoc + armY2 + poseMJDropOffAdjust.getY() * startLoc, dropOffAngle2);
         vMJDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX2, -2 * Params.HALF_MAT * startLoc + armY2);
 
+        // high junction
+        poseHJPrecon  = new Pose2d(armXHJ - poseHJPreConAdjust.getX(),
+                -2 * Params.HALF_MAT * startLoc + armYHJ + poseHJPreConAdjust.getY() * startLoc,
+                dropOffAngleHJ);
+        vHJPreCon = new Vector2d(armXHJ, -2 * Params.HALF_MAT * startLoc + armYHJ);
+
         poseHJDropOff = new Pose2d(armXHJ - poseHJDropOffAdjust.getX(),
                 -2 * Params.HALF_MAT * startLoc + armYHJ + poseHJDropOffAdjust.getY() * startLoc,
                 dropOffAngleHJ);
         vHJDropOffEst = new Vector2d(armXHJ, -2 * Params.HALF_MAT * startLoc + armYHJ);
-
     }
 
 
@@ -286,17 +297,34 @@ public class AutoRoadRunner extends LinearOpMode {
         }
 
         // move this code here to save the path build time during autonomous.
-        traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(poseLineEnd1)
-                .addDisplacementMarker(Params.HALF_MAT, () -> {
-                    // lift slider
-                    slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
-                    armClaw.armFlipBackUnloadPre();
-                })
-                .splineToSplineHeading(poseSplineEnd2, Math.toRadians(0))
-                .splineToSplineHeading(poseSplineEnd3, Math.toRadians(70 * startLoc))
-                .splineToLinearHeading(posePreConeDropOff, Math.toRadians(70 * startLoc))
-                .build();
+        if (1 == junctionType) {
+            // medium junction
+            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(poseLineEnd1)
+                    .addDisplacementMarker(Params.HALF_MAT, () -> {
+                        // lift slider
+                        slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
+                        armClaw.armFlipBackUnloadPre();
+                    })
+                    .splineToSplineHeading(poseSplineEnd2, Math.toRadians(0))
+                    .splineToSplineHeading(poseSplineEnd3, Math.toRadians(70 * startLoc))
+                    .splineToLinearHeading(posePreConeDropOff, Math.toRadians(70 * startLoc))
+                    .build();
+        }
+
+        if (2 == junctionType) {
+            // high junction
+            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(poseLineEnd1)
+                    .addDisplacementMarker(2 * Params.HALF_MAT, () -> {
+                        // lift slider
+                        slider.setInchPosition(Params.HIGH_JUNCTION_POS);
+                        armClaw.armFlipBackUnloadPre();
+                    })
+                    .splineToSplineHeading(poseSplineEnd2, Math.toRadians(0))
+                    .splineToSplineHeading(poseHJPrecon, Math.toRadians(30 * startLoc))
+                    .build();
+        }
 
         waitForStart();
         runtime.reset();
@@ -328,7 +356,13 @@ public class AutoRoadRunner extends LinearOpMode {
         }
 
         // drop cone and back to the center of mat
-        drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
+        if (1 == junctionType) {
+            drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
+        }
+
+        if (2 == junctionType) {
+            drive.setPoseEstimate(new Pose2d(vHJPreCon, drive.getPoseEstimate().getHeading())); // reset orientation.
+        }
 
         rrUnloadCone();
 
@@ -347,8 +381,14 @@ public class AutoRoadRunner extends LinearOpMode {
             // load cone
             rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
-            moveFromConeStackToJunction();
-            drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
+            if (1 == junctionType) {
+                moveFromConeStackToJunction();
+                drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading()));
+            }
+            else if (2 == junctionType) {
+                moveFromConeStackToHJunction();
+                drive.setPoseEstimate(new Pose2d(vHJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
+            }
 
             /*
             if (autoLoop < 4) {
@@ -369,7 +409,7 @@ public class AutoRoadRunner extends LinearOpMode {
                     return;
             }
 
-            drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
+            //drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
             // unload cone & adjust
             rrUnloadCone();
 

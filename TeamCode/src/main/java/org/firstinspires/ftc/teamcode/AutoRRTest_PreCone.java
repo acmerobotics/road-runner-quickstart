@@ -54,7 +54,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
@@ -64,7 +63,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="RR test 1 - precone", group="Concept")
 //@Disabled
-public class AutoRRTest_PreCone extends AutoRoadRunner {
+public class AutoRRTest_PreCone extends AutoMJ_Right {
 
     @Override
     public void setRobotLocation() {
