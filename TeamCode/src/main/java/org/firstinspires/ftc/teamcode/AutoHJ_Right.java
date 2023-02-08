@@ -56,6 +56,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Extended from AutonomousRight file.
@@ -64,6 +65,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="Auto H Right", group="Concept")
 //@Disabled
+@Disabled
 public class AutoHJ_Right extends AutoMJ_Right {
 
     @Override
@@ -73,10 +75,9 @@ public class AutoHJ_Right extends AutoMJ_Right {
         junctionType = 2;
 
         // calibration parameters for home Mat.
-        preConeDropAdjust = new Vector2d(-2, 1);
-        poseConeStackAdjust = new Vector2d(0, 0);
-        poseMJDropOffAdjust = new Vector2d(0.5, 0.5);
-        poseHJDropOffAdjust = new Vector2d(0, 0);
+        preConeDropAdjust = new Vector2d(3, 1.5);
+        poseConeStackAdjust = new Vector2d(-2, -0.3);
+        poseHJDropOffAdjust = new Vector2d(-0.5, 0);
 
     }
 }

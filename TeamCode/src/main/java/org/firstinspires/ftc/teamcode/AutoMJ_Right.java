@@ -196,12 +196,12 @@ public class AutoMJ_Right extends LinearOpMode {
         vMJDropOffEst = new Vector2d(-2 * Params.HALF_MAT + armX2, -2 * Params.HALF_MAT * startLoc + armY2);
 
         // high junction
-        poseHJPrecon  = new Pose2d(armXHJ - poseHJPreConAdjust.getX(),
+        poseHJPrecon  = new Pose2d(armXHJ + poseHJPreConAdjust.getX(),
                 -2 * Params.HALF_MAT * startLoc + armYHJ + poseHJPreConAdjust.getY() * startLoc,
                 dropOffAngleHJ);
         vHJPreCon = new Vector2d(armXHJ, -2 * Params.HALF_MAT * startLoc + armYHJ);
 
-        poseHJDropOff = new Pose2d(armXHJ - poseHJDropOffAdjust.getX(),
+        poseHJDropOff = new Pose2d(armXHJ + poseHJDropOffAdjust.getX(),
                 -2 * Params.HALF_MAT * startLoc + armYHJ + poseHJDropOffAdjust.getY() * startLoc,
                 dropOffAngleHJ);
         vHJDropOffEst = new Vector2d(armXHJ, -2 * Params.HALF_MAT * startLoc + armYHJ);
@@ -314,6 +314,7 @@ public class AutoMJ_Right extends LinearOpMode {
 
         if (2 == junctionType) {
             // high junction
+            poseSplineEnd3 = new Pose2d(-8, startPose.getY(), dropOffAngleHJ);
             traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(poseLineEnd1)
                     .addDisplacementMarker(2 * Params.HALF_MAT, () -> {
@@ -322,7 +323,8 @@ public class AutoMJ_Right extends LinearOpMode {
                         armClaw.armFlipBackUnloadPre();
                     })
                     .splineToSplineHeading(poseSplineEnd2, Math.toRadians(0))
-                    .splineToSplineHeading(poseHJPrecon, Math.toRadians(30 * startLoc))
+                    .splineToSplineHeading(poseSplineEnd3, Math.toRadians(30))
+                    .splineToLinearHeading(poseHJPrecon, Math.toRadians(30))
                     .build();
         }
 
@@ -345,6 +347,11 @@ public class AutoMJ_Right extends LinearOpMode {
 
     public void autonomousCore() {
 
+        double coneNum = 5;
+        if (2 == junctionType) {
+            coneNum = 4;
+        }
+
         // drive to medium junction, lift sliders, arm to back
         drive.followTrajectory(traj1);
 
@@ -366,7 +373,7 @@ public class AutoMJ_Right extends LinearOpMode {
 
         rrUnloadCone();
 
-        for(int autoLoop = 0; autoLoop < 5; autoLoop++) {
+        for(int autoLoop = 0; autoLoop < coneNum; autoLoop++) {
             moveFromJunctionToConeStack();
 
             // for testing
@@ -390,18 +397,6 @@ public class AutoMJ_Right extends LinearOpMode {
                 drive.setPoseEstimate(new Pose2d(vHJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
             }
 
-            /*
-            if (autoLoop < 4) {
-                moveFromConeStackToJunction();
-                drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
-            }
-            else {
-                slider.setInchPosition(Params.HIGH_JUNCTION_POS);
-                moveFromConeStackToHJunction();
-                drive.setPoseEstimate(new Pose2d(vHJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
-            }
-             */
-
             // for testing
             if (gamepad1.a || gamepad1.b) {
                 sleep(5000);
@@ -409,7 +404,6 @@ public class AutoMJ_Right extends LinearOpMode {
                     return;
             }
 
-            //drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
             // unload cone & adjust
             rrUnloadCone();
 
@@ -424,7 +418,6 @@ public class AutoMJ_Right extends LinearOpMode {
 
         // parking
         driveToParkingLot(coneSleeveDetect.getParkingLot());
-
 
         // storage robot pose of the end of autonomous
         Params.currentPose = drive.getPoseEstimate();
@@ -455,7 +448,12 @@ public class AutoMJ_Right extends LinearOpMode {
         slider.waitRunningComplete();
         armClaw.clawClose();
         sleep(Params.CLAW_CLOSE_SLEEP);// subtract 50ms due to the following rotation function.
-        slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
+        if (1 == junctionType) {
+            slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
+        }
+        else {
+            slider.setInchPosition(Params.HIGH_JUNCTION_POS);
+        }
         armClaw.armFlipBackUnloadPre();
         Logging.log("Wait before moving out cone stack.");
         sleep(50); // wait slider lift from cone stack.
@@ -467,9 +465,7 @@ public class AutoMJ_Right extends LinearOpMode {
     public void rrUnloadCone() {
         armClaw.armFlipBackUnload();
         slider.movingSliderInch(-Params.SLIDER_MOVE_DOWN_POSITION / 2.0);
-        sleep(100); // wait arm flip down a little bit to junction
-
-        //driveForward(Params.DISTANCE_DROP_OFF);
+        sleep(50); // wait arm flip down a little bit to junction
         Logging.log("Wait before unloading claw open.");
         armClaw.clawOpen();
         sleep(Params.CLAW_OPEN_SLEEP); // 50
@@ -525,9 +521,6 @@ public class AutoMJ_Right extends LinearOpMode {
     public void moveFromConeStackToHJunction() {
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToSplineHeading(poseHJDropOff)
-                .addDisplacementMarker(Params.HALF_MAT, () -> {
-                    slider.setInchPosition(Params.HIGH_JUNCTION_POS);
-                })
                 .build();
         drive.followTrajectory(traj1);
     }
@@ -574,7 +567,7 @@ public class AutoMJ_Right extends LinearOpMode {
                         .build();
                 drive.followTrajectory(traj1);
 
-                parkingX = -3 * Params.HALF_MAT + 2;
+                parkingX = -3 * Params.HALF_MAT + 1;
                 parkingY = (-3 * startLoc + 2) * Params.HALF_MAT - 1;
                 parkingH = Math.toRadians(-90 * startLoc);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
@@ -587,8 +580,8 @@ public class AutoMJ_Right extends LinearOpMode {
                 break;
 
             case CENTER:
+                parkingX = -3 * Params.HALF_MAT + 1;
                 parkingY = -3 * Params.HALF_MAT * startLoc;
-                parkingX = -3 * Params.HALF_MAT + 5;
                 parkingH = Math.toRadians(180);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
@@ -599,7 +592,7 @@ public class AutoMJ_Right extends LinearOpMode {
                 break;
 
             case RIGHT:
-                parkingX = -Params.HALF_MAT;
+                parkingX = -Params.HALF_MAT + 1;
                 parkingY = (-3 * startLoc - 2) * Params.HALF_MAT - 1;
                 parkingH = Math.toRadians(-90 * startLoc);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);

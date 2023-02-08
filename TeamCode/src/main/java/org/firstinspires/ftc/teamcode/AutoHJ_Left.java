@@ -56,6 +56,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Extended from AutonomousRight file.
@@ -63,8 +64,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 
 @Autonomous(name="Auto H Left", group="Concept")
-//@Disabled
-public class AutoHJ_Left extends AutoMJ_Right {
+@Disabled
+public class AutoHJ_Left extends AutoHJ_Right {
 
     @Override
     public void setRobotLocation() {
@@ -76,7 +77,6 @@ public class AutoHJ_Left extends AutoMJ_Right {
 
         preConeDropAdjust = new Vector2d(-1, 1);
         poseConeStackAdjust = new Vector2d(0, 0);
-        poseMJDropOffAdjust = new Vector2d(0.5, 0.5);
         poseHJDropOffAdjust = new Vector2d(0, 0);
     }
 }

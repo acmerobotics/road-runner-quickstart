@@ -62,7 +62,7 @@ public class Params {
     static final double LOAD_DS_VALUE = 6;
 
     // moving distance variables
-    static final double DISTANCE_PICK_UP = 1.0; // in INCH
+    static final double DISTANCE_PICK_UP = 0.5; // in INCH
     static final double DISTANCE_DROP_OFF = 1.0; // in INCH
 
     // slider position variables
