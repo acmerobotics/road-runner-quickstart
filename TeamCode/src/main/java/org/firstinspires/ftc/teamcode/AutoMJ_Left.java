@@ -73,9 +73,16 @@ public class AutoMJ_Left extends AutoMJ_Right {
         junctionType = 1;
 
         // calibration parameters for home Mat.
+        /*
         preConeDropAdjust = new Vector2d(-1, 1);
         poseConeStackAdjust = new Vector2d(0, 0);
         poseMJDropOffAdjust = new Vector2d(0.5, 0.5);
+         */
+
+        // bc lab mat
+        preConeDropAdjust = new Vector2d(-1, 1);
+        poseConeStackAdjust = new Vector2d(0, 0);
+        poseMJDropOffAdjust = new Vector2d(1, 0.5);
 
     }
 }

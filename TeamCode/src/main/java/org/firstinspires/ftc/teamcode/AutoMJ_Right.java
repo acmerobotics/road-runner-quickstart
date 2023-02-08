@@ -100,9 +100,16 @@ import java.util.List;
 public class AutoMJ_Right extends LinearOpMode {
 
     // calibration parameters for home Mat.
+    /*
     Vector2d preConeDropAdjust = new Vector2d(-1, -0.5);
     Vector2d poseConeStackAdjust = new Vector2d(-1, -0.5);
     Vector2d poseMJDropOffAdjust = new Vector2d(0, 0);
+     */
+
+    // BC lab mat
+    Vector2d preConeDropAdjust = new Vector2d(-2, 1.5);
+    Vector2d poseConeStackAdjust = new Vector2d(-0.2, -0.5);
+    Vector2d poseMJDropOffAdjust = new Vector2d(1.2, 1.1);
 
     Vector2d poseHJPreConAdjust = new Vector2d(0, 0);
     Vector2d poseHJDropOffAdjust = new Vector2d(0, 0);

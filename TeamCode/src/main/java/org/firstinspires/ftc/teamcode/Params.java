@@ -62,7 +62,7 @@ public class Params {
     static final double LOAD_DS_VALUE = 6;
 
     // moving distance variables
-    static final double DISTANCE_PICK_UP = 0.5; // in INCH
+    static final double DISTANCE_PICK_UP = 1.0; // in INCH
     static final double DISTANCE_DROP_OFF = 1.0; // in INCH
 
     // slider position variables
@@ -74,7 +74,7 @@ public class Params {
     static final double LOW_JUNCTION_POS = 13.5 - ARM_UNLOADING_LIFTING;
     static final double MEDIUM_JUNCTION_POS = 23.5 - ARM_UNLOADING_LIFTING;
     static final double HIGH_JUNCTION_POS = 33.5 - ARM_UNLOADING_LIFTING;
-    static final double WALL_POSITION = 8.7;
+    static final double WALL_POSITION = 9.1;
     static final double COVER_POSITION = 4.0;
     static final double SLIDER_MOVE_DOWN_POSITION = 3.0;
     static final double SLIDER_MOVE_OUT_CONE_STACK = WALL_POSITION - coneStack5th;
