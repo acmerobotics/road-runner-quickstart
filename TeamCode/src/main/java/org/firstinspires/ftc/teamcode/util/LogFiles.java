@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerNotifier;
@@ -40,7 +41,7 @@ public final class LogFiles {
     public static LogFile log = new LogFile("uninitialized");
 
     public static class LogFile {
-        public String version = "quickstart1 v0";
+        public String version = "quickstart1 v1";
 
         public String opModeName;
         public long msInit = System.currentTimeMillis();
@@ -89,6 +90,9 @@ public final class LogFiles {
         public double trackingLateralDistance = StandardTrackingWheelLocalizer.LATERAL_DISTANCE;
         public double trackingForwardOffset = StandardTrackingWheelLocalizer.FORWARD_OFFSET;
 
+        public RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR = DriveConstants.LOGO_FACING_DIR;
+        public RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR = DriveConstants.USB_FACING_DIR;
+
         public List<Long> nsTimes = new ArrayList<>();
 
         public List<Double> targetXs = new ArrayList<>();
@@ -99,24 +103,64 @@ public final class LogFiles {
         public List<Double> ys = new ArrayList<>();
         public List<Double> headings = new ArrayList<>();
 
+        public List<Double> voltages = new ArrayList<>();
+
+        public List<List<Integer>> driveEncPositions = new ArrayList<>();
+        public List<List<Integer>> driveEncVels = new ArrayList<>();
+        public List<List<Integer>> trackingEncPositions = new ArrayList<>();
+        public List<List<Integer>> trackingEncVels = new ArrayList<>();
+
         public LogFile(String opModeName) {
             this.opModeName = opModeName;
         }
     }
 
-    public static void recordTargetPose(Pose2d targetPose) {
+    public static void record(
+            Pose2d targetPose, Pose2d pose, double voltage,
+            List<Integer> lastDriveEncPositions, List<Integer> lastDriveEncVels, List<Integer> lastTrackingEncPositions, List<Integer> lastTrackingEncVels
+    ) {
+        long nsTime = System.nanoTime();
+        if (nsTime - log.nsStart > 3 * 60 * 1_000_000_000L) {
+            return;
+        }
+
+        log.nsTimes.add(nsTime);
+
         log.targetXs.add(targetPose.getX());
         log.targetYs.add(targetPose.getY());
         log.targetHeadings.add(targetPose.getHeading());
-    }
-
-    public static void recordPose(Pose2d pose) {
-        // arbitrarily add time here
-        log.nsTimes.add(System.nanoTime());
 
         log.xs.add(pose.getX());
         log.ys.add(pose.getY());
         log.headings.add(pose.getHeading());
+
+        log.voltages.add(voltage);
+
+        while (log.driveEncPositions.size() < lastDriveEncPositions.size()) {
+            log.driveEncPositions.add(new ArrayList<>());
+        }
+        while (log.driveEncVels.size() < lastDriveEncVels.size()) {
+            log.driveEncVels.add(new ArrayList<>());
+        }
+        while (log.trackingEncPositions.size() < lastTrackingEncPositions.size()) {
+            log.trackingEncPositions.add(new ArrayList<>());
+        }
+        while (log.trackingEncVels.size() < lastTrackingEncVels.size()) {
+            log.trackingEncVels.add(new ArrayList<>());
+        }
+
+        for (int i = 0; i < lastDriveEncPositions.size(); i++) {
+            log.driveEncPositions.get(i).add(lastDriveEncPositions.get(i));
+        }
+        for (int i = 0; i < lastDriveEncVels.size(); i++) {
+            log.driveEncVels.get(i).add(lastDriveEncVels.get(i));
+        }
+        for (int i = 0; i < lastTrackingEncPositions.size(); i++) {
+            log.trackingEncPositions.get(i).add(lastTrackingEncPositions.get(i));
+        }
+        for (int i = 0; i < lastTrackingEncVels.size(); i++) {
+            log.trackingEncVels.get(i).add(lastTrackingEncVels.get(i));
+        }
     }
 
     private static final OpModeManagerNotifier.Notifications notifHandler = new OpModeManagerNotifier.Notifications() {
@@ -139,7 +183,7 @@ public final class LogFiles {
             }
 
             int i = 0;
-            while (i < fs.length && totalSizeBytes >= 8 * 1000 * 1000) {
+            while (i < fs.length && totalSizeBytes >= 32 * 1000 * 1000) {
                 totalSizeBytes -= fs[i].length();
                 if (!fs[i].delete()) {
                     RobotLog.setGlobalErrorMsg("Unable to delete file " + fs[i].getAbsolutePath());
