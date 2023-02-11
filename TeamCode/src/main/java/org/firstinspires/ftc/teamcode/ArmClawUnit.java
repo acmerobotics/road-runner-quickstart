@@ -70,12 +70,12 @@ public class ArmClawUnit
     final double ARM_SWING_LEFT = 0.73;
     final double ARM_SWING_RIGHT = 0.06;
 
-    final double ARM_LOCATION_ADJ = 0;
+    final double ARM_LOCATION_ADJ = 0.07;
     final double ARM_FLIP_FRONT_LOAD_POS = ARM_LOCATION_ADJ + 0.23;
     final double ARM_FLIP_FRONT_UNLOAD_POS = ARM_LOCATION_ADJ + 0.35;
-    final double ARM_FLIP_CENTER = ARM_LOCATION_ADJ + 0.64;
-    final double ARM_FLIP_BACK_UNLOAD_PRE = ARM_LOCATION_ADJ + 0.86;
-    final double ARM_FLIP_BACK_UNLOAD_POS = ARM_LOCATION_ADJ + 0.96;
+    final double ARM_FLIP_CENTER = ARM_LOCATION_ADJ + 0.62;
+    final double ARM_FLIP_BACK_UNLOAD_PRE = ARM_LOCATION_ADJ + 0.81;
+    final double ARM_FLIP_BACK_UNLOAD_POS = ARM_LOCATION_ADJ + 0.87;
     final double ARM_FLIP_BACK_LOAD_POS = 1.0;
 
     /**

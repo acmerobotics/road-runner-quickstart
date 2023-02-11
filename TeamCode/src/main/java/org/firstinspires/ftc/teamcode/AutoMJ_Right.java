@@ -99,23 +99,29 @@ import java.util.List;
 //@Disabled
 public class AutoMJ_Right extends LinearOpMode {
 
-    // calibration parameters for home Mat.
+    // calibration parameters for home Mat - old.
     /*
     Vector2d preConeDropAdjust = new Vector2d(-1, -0.5);
     Vector2d poseConeStackAdjust = new Vector2d(-1, -0.5);
     Vector2d poseMJDropOffAdjust = new Vector2d(0, 0);
      */
 
-    // BC lab mat
+    // BC lab mat - new
+    /*
     Vector2d preConeDropAdjust = new Vector2d(-2, 1.5);
     Vector2d poseConeStackAdjust = new Vector2d(-0.2, -0.5);
     Vector2d poseMJDropOffAdjust = new Vector2d(1.2, 1.1);
+     */
+
+    // average calibration values
+    Vector2d preConeDropAdjust = new Vector2d(-1.5, 0.7);
+    Vector2d poseConeStackAdjust = new Vector2d(-0.5, -1.5);
+    Vector2d poseMJDropOffAdjust = new Vector2d(1, 1);
 
     Vector2d poseHJPreConAdjust = new Vector2d(0, 0);
     Vector2d poseHJDropOffAdjust = new Vector2d(0, 0);
 
     public int startLoc = 1; // 1 for right location, and -1 for left location.
-
     public int junctionType = 1; // 1 for medium junction, 2 for high junction
 
     boolean debug_flag = false;
@@ -170,8 +176,8 @@ public class AutoMJ_Right extends LinearOpMode {
         // road runner variables
         startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, // -65.0
                 -3 * Params.HALF_MAT * startLoc, Math.toRadians(-90 * startLoc));
-        dropOffAngle = Math.toRadians(-60 * startLoc);
-        dropOffAngle2 = Math.toRadians(-60 * startLoc); // the target robot heading angle when drop off cone
+        dropOffAngle = Math.toRadians(-55 * startLoc);
+        dropOffAngle2 = Math.toRadians(-55 * startLoc); // the target robot heading angle when drop off cone
 
         // high junction drop off
         dropOffAngleHJ = Math.toRadians(-120 * startLoc);

@@ -74,7 +74,7 @@ public class Params {
     static final double LOW_JUNCTION_POS = 13.5 - ARM_UNLOADING_LIFTING;
     static final double MEDIUM_JUNCTION_POS = 23.5 - ARM_UNLOADING_LIFTING;
     static final double HIGH_JUNCTION_POS = 33.5 - ARM_UNLOADING_LIFTING;
-    static final double WALL_POSITION = 9.1;
+    static final double WALL_POSITION = 9.4;
     static final double COVER_POSITION = 4.0;
     static final double SLIDER_MOVE_DOWN_POSITION = 3.0;
     static final double SLIDER_MOVE_OUT_CONE_STACK = WALL_POSITION - coneStack5th;
