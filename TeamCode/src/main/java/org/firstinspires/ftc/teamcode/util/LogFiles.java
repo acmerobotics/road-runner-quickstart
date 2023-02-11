@@ -202,6 +202,9 @@ public final class LogFiles {
             log.nsStop = System.nanoTime();
 
             if (!(opMode instanceof OpModeManagerImpl.DefaultOpMode)) {
+                //noinspection ResultOfMethodCallIgnored
+                ROOT.mkdirs();
+
                 String filename = dateFormat.format(new Date(log.msInit)) + "__" + opMode.getClass().getSimpleName() + ".json";
                 File file = new File(ROOT, filename);
                 try {
