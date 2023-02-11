@@ -114,8 +114,8 @@ public class AutoMJ_Right extends LinearOpMode {
      */
 
     // average calibration values
-    Vector2d preConeDropAdjust = new Vector2d(-1.5, 0.7);
-    Vector2d poseConeStackAdjust = new Vector2d(-0.5, -1.5);
+    Vector2d preConeDropAdjust = new Vector2d(-1, 0);
+    Vector2d poseConeStackAdjust = new Vector2d(0, -1.5);
     Vector2d poseMJDropOffAdjust = new Vector2d(1, 1);
 
     Vector2d poseHJPreConAdjust = new Vector2d(0, 0);
@@ -281,6 +281,7 @@ public class AutoMJ_Right extends LinearOpMode {
         slider.resetEncoders();
 
         armClaw.init(hardwareMap, "ArmServo", "ClawServo");
+        armClaw.armFlipFrontLoad();
         sleep(500);
         armClaw.clawClose();
         sleep(500);
