@@ -114,7 +114,8 @@ public class AutoMJ_Right extends LinearOpMode {
      */
 
     // average calibration values
-    Vector2d preConeDropAdjust = new Vector2d(-1, 0);
+    //field 2 blue good
+    Vector2d preConeDropAdjust = new Vector2d(-0.5, 0);
     Vector2d poseConeStackAdjust = new Vector2d(0, -1.5);
     Vector2d poseMJDropOffAdjust = new Vector2d(1, 1);
 

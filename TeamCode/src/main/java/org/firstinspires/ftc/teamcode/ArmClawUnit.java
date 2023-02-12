@@ -222,7 +222,7 @@ public class ArmClawUnit
      * @param updatePosition the value needed to add to current arm servo position value.
      */
     public void armManualMoving(double updatePosition) {
-        setArmPosition(armServo.getPosition() + updatePosition / 500);
+        setArmPosition(armServo.getPosition() + updatePosition / 200);
     }
 
 }

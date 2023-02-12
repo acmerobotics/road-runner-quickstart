@@ -60,7 +60,7 @@ public class SlidersWith2Motors
     public DcMotor LeftSliderMotor = null;
     final double SLIDER_MOTOR_POWER = 0.98; // save some powers
     final double COUNTS_PER_INCH = 82.9; // for 435RPM; 31.3 for 1150RPM; 120 for 312RPM
-    final double manualUpdatePos = COUNTS_PER_INCH / 3.0;
+    final double manualUpdatePos = COUNTS_PER_INCH / 1.1;
 
     // slider position variables
     final int FOUR_STAGE_SLIDER_MAX_POS = (int)(COUNTS_PER_INCH * Params.HIGH_JUNCTION_POS * 1.05);
