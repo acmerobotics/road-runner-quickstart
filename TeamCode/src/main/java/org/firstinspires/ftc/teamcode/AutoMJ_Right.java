@@ -113,8 +113,14 @@ public class AutoMJ_Right extends LinearOpMode {
     Vector2d poseMJDropOffAdjust = new Vector2d(1.2, 1.1);
      */
 
-    // average calibration values
-    //field 2 blue good
+    // average calibration values - good for the math in BC
+    /*
+    Vector2d preConeDropAdjust = new Vector2d(-0.5, 0);
+    Vector2d poseConeStackAdjust = new Vector2d(0, -1.5);
+    Vector2d poseMJDropOffAdjust = new Vector2d(1, 1);
+     */
+
+    double armLengthAdj = 0.0;
     Vector2d preConeDropAdjust = new Vector2d(-0.5, 0);
     Vector2d poseConeStackAdjust = new Vector2d(0, -1.5);
     Vector2d poseMJDropOffAdjust = new Vector2d(1, 1);
@@ -325,6 +331,8 @@ public class AutoMJ_Right extends LinearOpMode {
                     .splineToSplineHeading(poseSplineEnd3, Math.toRadians(70 * startLoc))
                     .splineToLinearHeading(posePreConeDropOff, Math.toRadians(70 * startLoc))
                     .build();
+
+            posePreConeDropOff = setMJPreConePath();
         }
 
         if (2 == junctionType) {
@@ -646,4 +654,54 @@ public class AutoMJ_Right extends LinearOpMode {
         drive.followTrajectory(trajBack);
     }
 
+    private Pose2d setMJPreConePath() {
+
+        double armLength = Params.ARM_UNLOADING_EXTENSION + armLengthAdj; // in inch
+        double alpha = dropOffAngle;
+        double alphaR = Math.toRadians(alpha);
+        double beta = (90.0 - alpha) / 2.0;
+        double betaR = Math.toRadians(beta);
+
+
+        // add calculate equations here
+        double eg = Params.HALF_MAT;
+        double cg = eg / Math.cos(alphaR);
+        double ag = armLength;
+        double ac = cg - ag;
+        double ao = ac * Math.tan(betaR);
+        double bo = ao;
+        double fo = ao;
+        double ax = armLength * Math.sin(alphaR);
+        double gx = armLength * Math.cos(alphaR);
+        double bc = ac;
+        double ce = eg * Math.tan(alphaR);
+        double be = ce - bc;
+        double co = ac / Math.cos(betaR);
+        double cVx = -eg * 2 + ce;
+        double cf = co - fo;
+        double fh = cf * bo / co;
+        double ch = cf * bc / co;
+
+
+        // update below 6 variable values
+        double Ax = ax - eg * 2;
+        double Ay = -eg * 2 - gx;
+        double Fx = cVx - ch;
+        double Fy = fh - eg * 3;
+        double Bx = be - eg * 2;
+        double By = -eg * 3;
+
+        Pose2d bB = new Pose2d(Bx, By, Math.toRadians(-90.0));
+        Pose2d fF = new Pose2d(Fx, Fy, Math.toRadians(-90.0 + alpha / 2.0));
+        Pose2d aA = new Pose2d(Ax, Ay, Math.toRadians(-90.0 + alpha));
+
+        traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .strafeLeft(24.0)
+                .splineToSplineHeading(bB, 0.0)
+                .splineToSplineHeading(fF, Math.toRadians(90.0 + alpha) / 2.0)
+                .splineToSplineHeading(aA, Math.toRadians(90.0 +  alpha))
+                .build();
+
+        return aA;
+    }
 }
