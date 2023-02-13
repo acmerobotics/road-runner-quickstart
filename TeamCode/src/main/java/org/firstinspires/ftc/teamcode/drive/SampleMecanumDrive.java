@@ -54,8 +54,17 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
+
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+
+    // TODO: uncomment this to use the SMARTDAMP PID algorithm to auto tune derivative gain.
+    // One will supply a proportional gain and SMARTDAMP will...
+    // use your kV and kA coefficients to solve for an optimal derivative gain
+    /*
+    public static PIDCoefficients TRANSLATIONAL_PID = SmartdampPID.TranslationCoefficientsSMART(0);
+    public static PIDCoefficients HEADING_PID = SmartdampPID.RotationCoefficientsSMART(0);
+     */
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -282,10 +291,30 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
+        double voltage = batteryVoltageSensor.getVoltage();
+        double scalar = 12.0 / voltage;
+        v*= scalar;
+        v1 *= scalar;
+        v2 *= scalar;
+        v3 *= scalar;
+        double maxPowerMag = getMaximumPowerMag(v, v1, v2, v3);
+        if (maxPowerMag > 1) {
+            v /= maxPowerMag;
+            v1 /= maxPowerMag;
+            v2 /= maxPowerMag;
+            v3 /= maxPowerMag;
+        }
         leftFront.setPower(v);
         leftRear.setPower(v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
+    }
+
+    private double getMaximumPowerMag(double v, double v1, double v2, double v3) {
+        double v_max = Math.max(Math.abs(v),Math.abs(v1));
+        v_max = Math.max(v_max,Math.abs(v2));
+        v_max = Math.max(v_max,Math.abs(v3));
+        return v_max;
     }
 
     @Override
