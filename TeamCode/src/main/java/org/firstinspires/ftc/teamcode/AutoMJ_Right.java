@@ -656,6 +656,8 @@ public class AutoMJ_Right extends LinearOpMode {
 
     private Pose2d setMJPreConePath() {
 
+        // check the detail field coordinate system and labels in doc/FieldCoordinateSystem.pdf file
+
         double armLength = Params.ARM_UNLOADING_EXTENSION + armLengthAdj; // in inch
         double alpha = dropOffAngle;
         double alphaR = Math.toRadians(alpha);
