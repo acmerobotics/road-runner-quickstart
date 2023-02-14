@@ -659,7 +659,7 @@ public class AutoMJ_Right extends LinearOpMode {
         // check the detail field coordinate system and labels in doc/FieldCoordinateSystem.pdf file
 
         double armLength = Params.ARM_UNLOADING_EXTENSION + armLengthAdj; // in inch
-        double alpha = dropOffAngle;
+        double alpha = 90.0 + Math.toDegrees(dropOffAngle);
         double alphaR = Math.toRadians(alpha);
         double beta = (90.0 - alpha) / 2.0;
         double betaR = Math.toRadians(beta);
