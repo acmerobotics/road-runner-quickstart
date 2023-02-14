@@ -144,7 +144,7 @@ public class RobotHardware {
             motorLiftR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             motorTurret = hardwareMap.get(DcMotor.class, "motorTurret");
-
+            //K
             motorTurret.setDirection(DcMotorSimple.Direction.FORWARD);
             motorTurret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorTurret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
