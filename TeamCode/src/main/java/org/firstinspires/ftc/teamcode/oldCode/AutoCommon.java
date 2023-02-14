@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.oldCode;
 
+import static org.firstinspires.ftc.teamcode.oldCode.RobotHardware.lift;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -329,32 +331,44 @@ public class AutoCommon extends LinearOpMode {
 
         robot.lift.motorTurret.setTargetPosition(robot.lift.TURRET_LEFT_135_POS);
         robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorTurret.setPower(0.5);
-        robot.lift.servoExtension.setPosition(0.65);
-        robot.lift.currentState = RobotHardware.Lift.States.TurretLeft;
+        robot.lift.motorTurret.setPower(0.8);
+    }
+
+    protected void dropLeft135Cone() {
+        turretLeft135();
+        robot.lift.servoExtension.setPosition(robot.lift.EXTENSION_AUTO_POS);
+        sleep(5000);
+        midJunctionDrop();
     }
     protected void turretLeft45() {
-        robot.lift.motorLiftL.setTargetPosition(robot.lift.LIFT_HIGH_POS);
-        robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorLiftL.setPower(1);
-        robot.lift.motorLiftR.setTargetPosition(robot.lift.LIFT_HIGH_POS);
-        robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorLiftR.setPower(1);
         robot.lift.motorTurret.setTargetPosition(robot.lift.TURRET_LEFT_45_POS);
         robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorTurret.setPower(0.5);
+        robot.lift.motorTurret.setPower(0.8);
+    }
+
+    protected void dropSignal() {
+        turretLeft45();
+        robot.lift.servoExtension.setPosition(robot.lift.EXTENSION_AUTO_POS);
+        sleep(750);
+        robot.lift.servoClaw.setPosition(robot.lift.CLAW_OPEN_POS);
+        sleep(100);
+        turret0Pos();
+        robot.lift.motorLiftR.setTargetPosition(robot.lift.LIFT_FIVE_STACK_POS);
+        sleep(1000);
+    }
+
+    protected void stackPickupCone() {
+        lift.servoClaw.setPosition(lift.CLAW_CLOSE_POS);
+        sleep(250);
+        robot.lift.motorLiftR.setTargetPosition(1000);
+        sleep(350);
+        lift.servoExtension.setPosition(lift.EXTENSION_INTAKE_POS);
     }
 
     protected void turretRight45() {
-        robot.lift.motorLiftL.setTargetPosition(robot.lift.LIFT_HIGH_POS);
-        robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorLiftL.setPower(1);
-        robot.lift.motorLiftR.setTargetPosition(robot.lift.LIFT_HIGH_POS);
-        robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorLiftR.setPower(1);
         robot.lift.motorTurret.setTargetPosition(robot.lift.TURRET_RIGHT_45_POS);
         robot.lift.motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorTurret.setPower(0.5);
+        robot.lift.motorTurret.setPower(0.8);
     }
 
     protected void turretStackPos() {
@@ -435,10 +449,13 @@ public class AutoCommon extends LinearOpMode {
     protected void midJunctionDrop() {
         robot.lift.motorLiftL.setTargetPosition(1200);
         robot.lift.motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorLiftL.setPower(0.5);
+        robot.lift.motorLiftL.setPower(1);
         robot.lift.motorLiftR.setTargetPosition(1200);
         robot.lift.motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.motorLiftR.setPower(0.5);
+        robot.lift.motorLiftR.setPower(1);
+        sleep(550);
+        robot.lift.servoClaw.setPosition(robot.lift.CLAW_OPEN_POS);
+        sleep(750);
     }
     }
 

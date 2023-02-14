@@ -44,21 +44,33 @@ public class RightSide extends AutoCommon {
 
 
         robot.lift.servoClaw.setPosition(robot.lift.CLAW_CLOSE_POS);
-        sleep(500);
+        sleep(250);
         hover();
-        sleep(500);
+        sleep(250);
         drive.followTrajectory(traj);
         liftPos(550);
-        sleep(500);
+        sleep(250);
 
         Pose2d addPose = new Pose2d(34.5,-56.5,Math.toRadians(270));
 
         drive.setPoseEstimate(addPose);
 
         Trajectory add = drive.trajectoryBuilder(addPose)
-                .lineToConstantHeading(new Vector2d(34.5,-6))
+                .lineToConstantHeading(new Vector2d(34.5,-3))
                 .build();
         drive.followTrajectory(add);
+
+        sleep(500);
+
+        Pose2d addPose1 = new Pose2d(34.5,-3,Math.toRadians(270));
+
+        drive.setPoseEstimate(addPose1);
+
+        Trajectory trajAdd = drive.trajectoryBuilder(addPose1)
+                .lineToConstantHeading(new Vector2d(34.5,-6))
+                .build();
+
+        drive.followTrajectory(trajAdd);
         turretRight45();
         sleep(2000);
         robot.lift.servoExtension.setPosition(robot.lift.EXTENSION_SCORE_45_POS);
@@ -232,7 +244,9 @@ public class RightSide extends AutoCommon {
             drive.setPoseEstimate(sixthPose);
 
             Trajectory traj6 = drive.trajectoryBuilder(sixthPose)
-                    .lineToConstantHeading(new Vector2d(64,-10))
+                    .lineToConstantHeading(new Vector2d(62,-9.5),
+                            SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build();
             drive.followTrajectory(traj6);
             //trajetory (code that makes it move)

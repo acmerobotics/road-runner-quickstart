@@ -74,6 +74,7 @@ public class Controller extends OpMode {
         turretControl();
         extensionControl();
         manualControl();
+        stackControl();
     }
 
     public int liftPos = 0;
@@ -88,9 +89,9 @@ public class Controller extends OpMode {
             scale = 0.1;
         }
 
-        double drive = gamepad1.left_stick_y;
-        double strafe = -gamepad1.left_stick_x;
-        double turn = -gamepad1.right_stick_x;
+        double drive = -gamepad1.left_stick_y;
+        double strafe = gamepad1.left_stick_x;
+        double turn = gamepad1.right_stick_x;
         robot.driveTrain.startMove(drive, strafe, turn, scale);
 
         robot.driveTrain.telemetryUpdate(telemetry);
@@ -207,41 +208,48 @@ public class Controller extends OpMode {
         }
 
         public void manualControl () {
-
-        if (gamepad2.b) {
-            robot.lift.currentState = RobotHardware.Lift.States.MANUAL_MODE;
-        }
-        if (robot.lift.currentState == RobotHardware.Lift.States.MANUAL_MODE) {
-            if (gamepad2.dpad_down) {
-                robot.lift.motorLiftR.setPower(-0.5);
-                robot.lift.motorLiftL.setPower(-0.5);
-            } else if (gamepad2.dpad_up) {
-                robot.lift.motorLiftR.setPower(0.5);
-                robot.lift.motorLiftL.setPower(0.5);
-            } else {
-                robot.lift.motorLiftR.setPower(0);
-                robot.lift.motorLiftL.setPower(0);
-            }
-
-            if (gamepad2.dpad_right) {
-                robot.lift.motorTurret.setPower(-0.5);
-            } else if (gamepad2.dpad_left) {
-                robot.lift.motorTurret.setPower(0.5);
-            } else {
-                robot.lift.motorTurret.setPower(0);
-            }
-        }
-        }
-
-//            if (gamepad2.a) {
-//                robot.lift.servoExtension.setPosition(0.6);
-//            } else if (gamepad2.b) {
-//                robot.lift.servoExtension.setPosition(0.5);
-//            } else if (gamepad2.x) {
-//                robot.lift.servoExtension.setPosition(0.4);
+//
+//        if (gamepad2.b) {
+//            robot.lift.currentState = RobotHardware.Lift.States.MANUAL_MODE;
+//        }
+//        if (robot.lift.currentState == RobotHardware.Lift.States.MANUAL_MODE) {
+//            if (gamepad2.dpad_down) {
+//                robot.lift.motorLiftR.setPower(-0.5);
+//                robot.lift.motorLiftL.setPower(-0.5);
+//            } else if (gamepad2.dpad_up) {
+//                robot.lift.motorLiftR.setPower(0.5);
+//                robot.lift.motorLiftL.setPower(0.5);
+//            } else {
+//                robot.lift.motorLiftR.setPower(0);
+//                robot.lift.motorLiftL.setPower(0);
 //            }
+//
+//            if (gamepad2.dpad_right) {
+//                robot.lift.motorTurret.setPower(-0.5);
+//            } else if (gamepad2.dpad_left) {
+//                robot.lift.motorTurret.setPower(0.5);
+//            } else {
+//                robot.lift.motorTurret.setPower(0);
 //            }
-
+//        }
+        }
+        public void stackControl() {
+            if (gamepad2.y) {
+                // 5 height
+                robot.lift.fiveStack();
+                liftPos = robot.lift.LIFT_FIVE_STACK_POS;
+            }
+            if (gamepad2.x) {
+                // 4 height
+                robot.lift.fourStack();
+                liftPos = robot.lift.LIFT_FOUR_STACK_POS;
+            }
+            if (gamepad2.b) {
+                // 3 height
+                robot.lift.threeStack();
+                liftPos = robot.lift.LIFT_THREE_STACK_POS;
+            }
+        }
 
 
         /*

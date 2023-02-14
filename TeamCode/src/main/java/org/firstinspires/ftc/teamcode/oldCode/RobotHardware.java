@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.oldCode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -28,6 +29,8 @@ public class RobotHardware {
 
     public static final double WHEEL_DIAMETER = 6.0;
     public static final double DRIVE_MOTOR_TICKS_PER_ROTATION = 385.5; //changing from 537.6
+    public PIDFController motorLiftR;
+    public PIDFController motorTurret;
 
 
     private HardwareMap hardwareMap;
@@ -71,6 +74,7 @@ public class RobotHardware {
 
     @Config
     public static class Lift {
+        public static Lift.States States;
         public DcMotor motorLiftL;
 
         public DcMotor motorTurret;
@@ -87,11 +91,14 @@ public class RobotHardware {
 
         ElapsedTime elapsedTime;
 
-        public static int LIFT_HIGH_POS = 3100;
+        public static int LIFT_HIGH_POS = 3000;
         public static int LIFT_MID_POS = 2150;
         public static int LIFT_LOW_POS = 1250;
         public static int LIFT_HOVER_POS  = 100;
         public static int LIFT_INTAKE_POS = 0;
+        public static int LIFT_THREE_STACK_POS = 165;
+        public static int LIFT_FOUR_STACK_POS = 330;
+        public static int LIFT_FIVE_STACK_POS = 430;
 
         public static int TURRET_LEFT_POS = 1545;
         public static int TURRET_RIGHT_POS = -1560;
@@ -104,7 +111,7 @@ public class RobotHardware {
         public static int TURRET_0_POS = 0;
 
         public static double CLAW_CLOSE_POS = 0.52;
-        public static double CLAW_OPEN_POS = 0.72;
+        public static double CLAW_OPEN_POS = 0.7;
         public static double CLAW_INIT_POS = 0.78;
 
         public static double EXTENSION_SCORE_L_POS = 0.39;
@@ -113,9 +120,9 @@ public class RobotHardware {
         public static double EXTENSION_INTAKE_POS = 0.26;
         public static double EXTENSION_INIT_POS = 0.26;
 
-        public static double EXTENSION_INTAKE_OUT_POS = 0.6;
-        public static double EXTENSION_SCORE_45_POS = 0.52;
-        public static double EXTENSION_AUTO_POS = 0.6;
+        public static double EXTENSION_INTAKE_OUT_POS = 0.57;
+        public static double EXTENSION_SCORE_45_POS = 0.5;
+        public static double EXTENSION_AUTO_POS = 0.57;
         public static double EXTENSION_90_INTAKE_POS = 0.52;
         public static double EXTENSION_90_AUTO_POS = 0.34;
         public static double EXTENSION_90_AUTO_LOW_POS = 0.36;
@@ -198,6 +205,36 @@ public class RobotHardware {
             currentState = States.LowJunction;
         }
 
+        public void fiveStack() {
+            motorLiftL.setTargetPosition(LIFT_FIVE_STACK_POS);
+            motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLiftL.setPower(1);
+            motorLiftR.setTargetPosition(LIFT_FIVE_STACK_POS);
+            motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLiftR.setPower(1);
+            currentState = States.LowJunction;
+        }
+
+        public void fourStack() {
+            motorLiftL.setTargetPosition(LIFT_FOUR_STACK_POS);
+            motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLiftL.setPower(1);
+            motorLiftR.setTargetPosition(LIFT_FOUR_STACK_POS);
+            motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLiftR.setPower(1);
+            currentState = States.LowJunction;
+        }
+
+        public void threeStack() {
+            motorLiftL.setTargetPosition(LIFT_THREE_STACK_POS);
+            motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLiftL.setPower(1);
+            motorLiftR.setTargetPosition(LIFT_THREE_STACK_POS);
+            motorLiftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLiftR.setPower(1);
+            currentState = States.LowJunction;
+        }
+
         public void Intake() {
             motorLiftL.setTargetPosition(10);
             motorLiftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -207,7 +244,7 @@ public class RobotHardware {
             motorLiftR.setPower(1);
             motorTurret.setTargetPosition(TURRET_0_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.7);
+            motorTurret.setPower(0.8);
             servoExtension.setPosition(EXTENSION_INTAKE_POS);
             currentState = States.INTAKE;
 
@@ -222,7 +259,7 @@ public class RobotHardware {
             motorLiftR.setPower(0.8);
             motorTurret.setTargetPosition(TURRET_RIGHT_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.5);
+            motorTurret.setPower(0.7);
             servoExtension.setPosition(EXTENSION_90_INTAKE_POS);
             currentState = States.TurretRightINTAKE;
         }
@@ -236,7 +273,7 @@ public class RobotHardware {
             motorLiftR.setPower(0.8);
             motorTurret.setTargetPosition(TURRET_LEFT_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.5);
+            motorTurret.setPower(0.7);
             servoExtension.setPosition(EXTENSION_90_INTAKE_POS);
             currentState = States.TurretLeftINTAKE;
         }
@@ -244,7 +281,7 @@ public class RobotHardware {
         public void TurretLeft() {
             motorTurret.setTargetPosition(TURRET_LEFT_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.7);
+            motorTurret.setPower(0.8);
             servoExtension.setPosition(EXTENSION_SCORE_L_POS);
             currentState = States.TurretLeft;
 
@@ -253,7 +290,7 @@ public class RobotHardware {
         public void TurretRight() {
             motorTurret.setTargetPosition(TURRET_RIGHT_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.7);
+            motorTurret.setPower(0.8);
             servoExtension.setPosition(EXTENSION_SCORE_R_POS);
             currentState = States.TurretRight;
         }
@@ -267,7 +304,7 @@ public class RobotHardware {
             motorLiftR.setPower(1);
             motorTurret.setTargetPosition(TURRET_180_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.7);
+            motorTurret.setPower(0.8);
             servoExtension.setPosition(EXTENSION_180_SCORE_POS);
             currentState = States.Turret180Cycle;
         }
@@ -275,7 +312,7 @@ public class RobotHardware {
         public void Turret180() {
             motorTurret.setTargetPosition(TURRET_180_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.7);
+            motorTurret.setPower(0.8);
             servoExtension.setPosition(EXTENSION_INTAKE_POS);
             currentState = States.Turret180;
         }
@@ -283,7 +320,7 @@ public class RobotHardware {
         public void Turret0() {
             motorTurret.setTargetPosition(TURRET_0_POS);
             motorTurret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorTurret.setPower(0.7);
+            motorTurret.setPower(0.8);
             servoExtension.setPosition(EXTENSION_INTAKE_POS);
             currentState = States.Turret0;
         }
@@ -301,6 +338,9 @@ public class RobotHardware {
             HighJunction,
             MiddleJunction,
             LowJunction,
+            fiveStack,
+            fourStack,
+            threeStack,
 
             TurretLeft,
             TurretRight,
@@ -339,10 +379,10 @@ public class RobotHardware {
             motors = new DcMotor[]{motorFL, motorFR, motorBL, motorBR};
 
 
-            motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
-            motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
-            motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
-            motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
+            motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
+            motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
+            motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
+            motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
             for (DcMotor motor : motors) {
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
