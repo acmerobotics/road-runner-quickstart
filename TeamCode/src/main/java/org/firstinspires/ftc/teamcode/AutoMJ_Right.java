@@ -397,7 +397,8 @@ public class AutoMJ_Right extends LinearOpMode {
         rrUnloadCone();
 
         for(int autoLoop = 0; autoLoop < coneNum; autoLoop++) {
-            moveFromJunctionToConeStack();
+
+            moveFromJunctionToConeStack(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
             // for testing
             if (gamepad1.a || gamepad1.b) {
@@ -409,7 +410,7 @@ public class AutoMJ_Right extends LinearOpMode {
             drive.setPoseEstimate(new Pose2d(vConeStackEst, drive.getPoseEstimate().getHeading())); // reset orientation
 
             // load cone
-            rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
+            //rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
             if (1 == junctionType) {
                 moveFromConeStackToJunction();
@@ -496,11 +497,15 @@ public class AutoMJ_Right extends LinearOpMode {
         Logging.log("Auto unload - Cone has been unloaded.");
     }
 
-    public void moveFromJunctionToConeStack() {
+    public void moveFromJunctionToConeStack(double coneLoc) {
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(poseConeStack)
                 .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
                     slider.setInchPosition(Params.WALL_POSITION);
+                })
+
+                .addDisplacementMarker(() -> {
+                    rrLoadCone(coneLoc);
                 })
 
                 .build();

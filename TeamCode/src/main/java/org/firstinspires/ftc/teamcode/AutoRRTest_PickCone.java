@@ -82,10 +82,10 @@ public class AutoRRTest_PickCone extends AutoMJ_Right {
         drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, dropOffAngle)); // reset orientation.
 
         for(int autoLoop = 0; autoLoop < 1; autoLoop++) {
-            moveFromJunctionToConeStack();
+            moveFromJunctionToConeStack(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
             // load cone
-            rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
+            //rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
             moveFromConeStackToJunction();
 

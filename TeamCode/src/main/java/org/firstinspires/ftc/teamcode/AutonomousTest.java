@@ -81,6 +81,6 @@ public class AutonomousTest extends AutoMJ_Right {
 
         rrUnloadCone();
 
-        moveFromJunctionToConeStack();
+        moveFromJunctionToConeStack(Params.coneStack5th);
     }
 }
