@@ -121,9 +121,9 @@ public class AutoMJ_Right extends LinearOpMode {
      */
 
     double armLengthAdj = 0.0;
-    Vector2d preConeDropAdjust = new Vector2d(-0.5, 0);
-    Vector2d poseConeStackAdjust = new Vector2d(0, -1.5);
-    Vector2d poseMJDropOffAdjust = new Vector2d(1, 1);
+    Vector2d preConeDropAdjust = new Vector2d(0, 0);
+    Vector2d poseConeStackAdjust = new Vector2d(0, 0);
+    Vector2d poseMJDropOffAdjust = new Vector2d(0, 0);
 
     Vector2d poseHJPreConAdjust = new Vector2d(0, 0);
     Vector2d poseHJDropOffAdjust = new Vector2d(0, 0);
@@ -332,7 +332,7 @@ public class AutoMJ_Right extends LinearOpMode {
                     .splineToLinearHeading(posePreConeDropOff, Math.toRadians(70 * startLoc))
                     .build();
 
-            //posePreConeDropOff = setMJPreConePath();
+            posePreConeDropOff = setMJPreConePath();
         }
 
         if (2 == junctionType) {
@@ -387,7 +387,7 @@ public class AutoMJ_Right extends LinearOpMode {
 
         // drop cone and back to the center of mat
         if (1 == junctionType) {
-            drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
+            //drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
         }
 
         if (2 == junctionType) {
@@ -407,18 +407,18 @@ public class AutoMJ_Right extends LinearOpMode {
                     return;
             }
 
-            drive.setPoseEstimate(new Pose2d(vConeStackEst, drive.getPoseEstimate().getHeading())); // reset orientation
+            //drive.setPoseEstimate(new Pose2d(vConeStackEst, drive.getPoseEstimate().getHeading())); // reset orientation
 
             // load cone
             //rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
             if (1 == junctionType) {
                 moveFromConeStackToJunction();
-                drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading()));
+                //drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading()));
             }
             else if (2 == junctionType) {
                 moveFromConeStackToHJunction();
-                drive.setPoseEstimate(new Pose2d(vHJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
+                //drive.setPoseEstimate(new Pose2d(vHJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
             }
 
             // for testing
@@ -704,6 +704,11 @@ public class AutoMJ_Right extends LinearOpMode {
 
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .strafeLeft(24.0)
+                .addDisplacementMarker(Params.HALF_MAT, () -> {
+                    // lift slider
+                    slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
+                    armClaw.armFlipBackUnloadPre();
+                })
                 .splineToSplineHeading(bB, 0.0)
                 .splineToSplineHeading(fF, Math.toRadians(90.0 + alpha) / 2.0)
                 .splineToSplineHeading(aA, Math.toRadians(90.0 +  alpha))
