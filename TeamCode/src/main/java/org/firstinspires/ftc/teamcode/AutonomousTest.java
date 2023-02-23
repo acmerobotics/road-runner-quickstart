@@ -63,24 +63,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * Use this one for autonomous when robot located at left side of game field.
  */
 
-@Autonomous(name="RR test - pickCone", group="Concept")
-@Disabled
+@Autonomous(name="RR test - test", group="Concept")
+//@Disabled
 public class AutonomousTest extends AutoMJ_Right {
 
     @Override
     public void autonomousCore() {
+
+        traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .strafeLeft(3)
+                .build();
+
         // drive to medium junction, lift sliders, arm to back
         drive.followTrajectory(traj1);
 
 
-        // drive to medium junction, lift sliders, arm to back
-        drive.followTrajectory(traj1);
-
-        // drop cone and back to the center of mat
-        drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
-
-        rrUnloadCone();
-
-        moveFromJunctionToConeStack(Params.coneStack5th);
     }
 }

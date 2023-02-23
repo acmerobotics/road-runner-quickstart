@@ -55,8 +55,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8,0,0);//(8, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8,0,0);//(4, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);//(8, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);//(4, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1.18;
 
@@ -100,8 +100,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         // details
         // ctrl hub new IMU has some unexpected issue.
         //IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                //       RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                //       RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
+        //       RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+        //       RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
         imu.initialize(parameters);
@@ -146,6 +146,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightRear.setDirection(DcMotor.Direction.FORWARD);
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+
+        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
 
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();

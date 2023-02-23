@@ -82,15 +82,15 @@ import java.util.List;
  *          "BackRight"
  *          "FrontRight"
  *
- *      Tow slider motors:
+ *      Two slider motors:
  *          "RightSlider"
  *          "LeftSlider"
  *
- *      Tow servo motors:
+ *      Two servo motors:
  *          "ArmServo"
  *          "ClawServo"
  *
- *      Two camera:
+ *      Two cameras:
  *          "Webcam 1"
  *          "WebcamR"
  */
@@ -332,7 +332,7 @@ public class AutoMJ_Right extends LinearOpMode {
                     .splineToLinearHeading(posePreConeDropOff, Math.toRadians(70 * startLoc))
                     .build();
 
-            posePreConeDropOff = setMJPreConePath();
+            //posePreConeDropOff = setMJPreConePath();
         }
 
         if (2 == junctionType) {
