@@ -26,12 +26,14 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.util.SmartdampPID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,8 +56,17 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
+
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+
+    // TODO: uncomment this to use the SMARTDAMP PID algorithm to auto tune derivative gain.
+    // One will supply a proportional gain and SMARTDAMP will...
+    // use your kV and kA coefficients to solve for an optimal derivative gain
+    /*
+    public static PIDCoefficients TRANSLATIONAL_PID = SmartdampPID.TranslationCoefficientsSMART(0);
+    public static PIDCoefficients HEADING_PID = SmartdampPID.RotationCoefficientsSMART(0);
+     */
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -282,6 +293,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
+        double voltage = batteryVoltageSensor.getVoltage();
+        double scalar = 12.0 / voltage;
+        v = Range.clip(v,-1,1) * scalar;
+        v1 = Range.clip(v1,-1,1) * scalar;
+        v2 = Range.clip(v2,-1,1) * scalar;
+        v3 = Range.clip(v3,-1,1) * scalar;
         leftFront.setPower(v);
         leftRear.setPower(v1);
         rightRear.setPower(v2);
