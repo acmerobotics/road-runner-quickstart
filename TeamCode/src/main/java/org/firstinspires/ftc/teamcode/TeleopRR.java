@@ -390,7 +390,7 @@ public class TeleopRR extends LinearOpMode {
         armClaw.armFlipFrontLoad();
         driveForward(drivingDistance); // move out from junction
         sleep(100);
-        slider.setInchPosition(Params.WALL_POSITION);
+        slider.setInchPosition(Params.GROUND_CONE_READY_POSITION);
     }
 
     /**
@@ -409,7 +409,7 @@ public class TeleopRR extends LinearOpMode {
         Trajectory unloadTraj = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
                 .forward(Params.BASE_TO_JUNCTION)
                 .addDisplacementMarker(moveOutJunctionDistance, () -> {
-                    slider.setInchPosition(Params.WALL_POSITION - Params.coneLoadStackGap * 3);
+                    slider.setInchPosition(Params.GROUND_CONE_READY_POSITION);
                 })
                 .build();
         mecanum.followTrajectory(unloadTraj);

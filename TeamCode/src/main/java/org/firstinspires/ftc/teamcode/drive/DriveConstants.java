@@ -23,6 +23,7 @@ public class DriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
+    public static final boolean withDW = false;
     public static final double TICKS_PER_REV = 537.6;
     public static final double MAX_RPM = 312;
 
@@ -35,9 +36,8 @@ public class DriveConstants {
      * from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    //(15, 0, 1,
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(15,0,1,
-            12.73);
+
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(14.8,0,4.6,12.8);
             //getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
     /*
@@ -49,8 +49,8 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 1.8898; // in
-    public static double GEAR_RATIO = 1.02; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 13.1; // Effective track width = 13.89 (SE = 0.011)
+    public static double GEAR_RATIO = 1.00; // output (wheel) speed / input (motor) speed
+    public static double TRACK_WIDTH = 14.73; // Effective track width = 13.89 (SE = 0.011)
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -92,16 +92,16 @@ public class DriveConstants {
      */
     public static double MAX_VEL = 47; // 92% of tested value (47.5)
     public static double MAX_ACCEL = 47;
-    public static double MAX_ANG_VEL = Math.toRadians(131.5);
-    public static double MAX_ANG_ACCEL = Math.toRadians(131.5); // Max Recommended Angular Velocity (deg): 131.50001470146003
+    public static double MAX_ANG_VEL = Math.toRadians(110);
+    public static double MAX_ANG_ACCEL = Math.toRadians(110);
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
      */
     public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR =
-            RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
+            RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
     public static RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR =
-            RevHubOrientationOnRobot.UsbFacingDirection.DOWN;
+            RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;

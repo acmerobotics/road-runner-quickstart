@@ -64,6 +64,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -114,16 +115,12 @@ public class AutoMJ_Right extends LinearOpMode {
      */
 
     // average calibration values - good for the math in BC
-    /*
     Vector2d preConeDropAdjust = new Vector2d(-0.5, 0);
     Vector2d poseConeStackAdjust = new Vector2d(0, -1.5);
     Vector2d poseMJDropOffAdjust = new Vector2d(1, 1);
-     */
 
     double armLengthAdj = 0.0;
-    Vector2d preConeDropAdjust = new Vector2d(0, 0);
-    Vector2d poseConeStackAdjust = new Vector2d(0, 0);
-    Vector2d poseMJDropOffAdjust = new Vector2d(0, 0);
+    boolean withDW = DriveConstants.withDW; // with dead wheels
 
     Vector2d poseHJPreConAdjust = new Vector2d(0, 0);
     Vector2d poseHJDropOffAdjust = new Vector2d(0, 0);
@@ -180,6 +177,12 @@ public class AutoMJ_Right extends LinearOpMode {
     Trajectory traj1;
 
     private void setPoses() {
+        if (withDW) {
+            preConeDropAdjust = new Vector2d(0, 0);
+            poseConeStackAdjust = new Vector2d(0, 0);
+            poseMJDropOffAdjust = new Vector2d(0, 0);
+        }
+
         // road runner variables
         startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, // -65.0
                 -3 * Params.HALF_MAT * startLoc, Math.toRadians(-90 * startLoc));
@@ -332,7 +335,9 @@ public class AutoMJ_Right extends LinearOpMode {
                     .splineToLinearHeading(posePreConeDropOff, Math.toRadians(70 * startLoc))
                     .build();
 
-            posePreConeDropOff = setMJPreConePath();
+            if (startLoc>0) { // only for right starting position now
+                posePreConeDropOff = setMJPreConePath();
+            }
         }
 
         if (2 == junctionType) {
@@ -386,8 +391,8 @@ public class AutoMJ_Right extends LinearOpMode {
         }
 
         // drop cone and back to the center of mat
-        if (1 == junctionType) {
-            //drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
+        if ((1 == junctionType) && (!withDW)) {
+            drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
         }
 
         if (2 == junctionType) {
@@ -406,19 +411,23 @@ public class AutoMJ_Right extends LinearOpMode {
                 if (gamepad1.b)
                     return;
             }
-
-            //drive.setPoseEstimate(new Pose2d(vConeStackEst, drive.getPoseEstimate().getHeading())); // reset orientation
-
+            if (withDW) {
+                drive.setPoseEstimate(new Pose2d(vConeStackEst, drive.getPoseEstimate().getHeading())); // reset orientation
+            }
             // load cone
-            //rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
+            rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
 
             if (1 == junctionType) {
                 moveFromConeStackToJunction();
-                //drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading()));
+                if (withDW) {
+                    drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading()));
+                }
             }
             else if (2 == junctionType) {
                 moveFromConeStackToHJunction();
-                //drive.setPoseEstimate(new Pose2d(vHJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
+                if (withDW) {
+                    drive.setPoseEstimate(new Pose2d(vHJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
+                }
             }
 
             // for testing
@@ -504,9 +513,12 @@ public class AutoMJ_Right extends LinearOpMode {
                     slider.setInchPosition(Params.WALL_POSITION);
                 })
 
+                /*
                 .addDisplacementMarker(() -> {
                     rrLoadCone(coneLoc);
                 })
+
+                 */
 
                 .build();
         drive.followTrajectory(traj1);
