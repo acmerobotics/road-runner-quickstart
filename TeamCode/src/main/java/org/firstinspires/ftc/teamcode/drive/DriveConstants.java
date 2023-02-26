@@ -37,7 +37,7 @@ public class DriveConstants {
      */
     public static final boolean RUN_USING_ENCODER = true;
 
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(14.8,0,4.6,12.8);
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(withDW? 14.8 : 15,0,withDW? 4.6 : 1, withDW? 12.8 : 12.73);
             //getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
     /*
@@ -49,8 +49,8 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 1.8898; // in
-    public static double GEAR_RATIO = 1.00; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 14.73; // Effective track width = 13.89 (SE = 0.011)
+    public static double GEAR_RATIO = withDW? 1.00 : 1.02; // output (wheel) speed / input (motor) speed
+    public static double TRACK_WIDTH = withDW? 14.73 : 13.1; // Effective track width = 13.89 (SE = 0.011)
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -92,8 +92,8 @@ public class DriveConstants {
      */
     public static double MAX_VEL = 47; // 92% of tested value (47.5)
     public static double MAX_ACCEL = 47;
-    public static double MAX_ANG_VEL = Math.toRadians(110);
-    public static double MAX_ANG_ACCEL = Math.toRadians(110);
+    public static double MAX_ANG_VEL = Math.toRadians(withDW? 110 : 131.5);
+    public static double MAX_ANG_ACCEL = Math.toRadians(withDW? 110 : 131.5);
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.

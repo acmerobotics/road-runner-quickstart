@@ -66,6 +66,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -128,7 +129,7 @@ public class AutoMJ_Right extends LinearOpMode {
     public int startLoc = 1; // 1 for right location, and -1 for left location.
     public int junctionType = 1; // 1 for medium junction, 2 for high junction
 
-    boolean debug_flag = false;
+    boolean debug_flag = true;
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
@@ -335,7 +336,7 @@ public class AutoMJ_Right extends LinearOpMode {
                     .splineToLinearHeading(posePreConeDropOff, Math.toRadians(70 * startLoc))
                     .build();
 
-            if (startLoc>0) { // only for right starting position now
+            if (startLoc > 0) { // only for right starting position now
                 posePreConeDropOff = setMJPreConePath();
             }
         }
@@ -508,6 +509,10 @@ public class AutoMJ_Right extends LinearOpMode {
 
     public void moveFromJunctionToConeStack(double coneLoc) {
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                /*
+                //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                //.splineTo(poseConeStack.vec(), Math.toRadians(-90))
+                 */
                 .lineToLinearHeading(poseConeStack)
                 .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
                     slider.setInchPosition(Params.WALL_POSITION);
@@ -522,6 +527,19 @@ public class AutoMJ_Right extends LinearOpMode {
 
                 .build();
         drive.followTrajectory(traj1);
+
+        //Drop point to stack
+        /*
+        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .splineTo(poseConeStack.vec(), poseConeStack.getHeading())
+                .resetConstraints()
+                .build();
+
+        drive.followTrajectorySequenceAsync(traj2);
+
+         */
+
 
         if (debug_flag) {
             Logging.log("Arrived cone stack");
@@ -543,6 +561,18 @@ public class AutoMJ_Right extends LinearOpMode {
                 .lineToSplineHeading(poseMJDropOff)
                 .build();
         drive.followTrajectory(traj1);
+
+        /*
+        TrajectorySequence traj3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .splineTo(poseMJDropOff.vec(), poseMJDropOff.getHeading())
+                .build();
+                .resetConstraints()
+
+        drive.followTrajectorySequenceAsync(traj3);
+
+         */
+
 
         if (debug_flag) {
             Logging.log("Arrived junction");
