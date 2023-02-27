@@ -124,6 +124,7 @@ public class AutoMJ_Right extends LinearOpMode {
 
     double armLengthAdj = 0.0;
     boolean withDW = DriveConstants.withDW; // with dead wheels
+    boolean compensationOn = true;
     double splineVelocity = 40.0;
     double splineMAX_ACCEL = 45.0;
 
@@ -184,10 +185,14 @@ public class AutoMJ_Right extends LinearOpMode {
     private void setPoses() {
 
         // road runner variables
-        startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH - preConeDropAdjust.getX(), // -65.0
-                -3 * Params.HALF_MAT * startLoc - preConeDropAdjust.getY() * startLoc, Math.toRadians(-90 * startLoc));
+        startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, // -65.0
+                -3 * Params.HALF_MAT * startLoc, Math.toRadians(-90 * startLoc));
         dropOffAngle = Math.toRadians(-55 * startLoc);
         dropOffAngle2 = Math.toRadians(-55 * startLoc); // the target robot heading angle when drop off cone
+
+        if (compensationOn) {
+            startPose = startPose.plus(new Pose2d(- preConeDropAdjust.getX(), - preConeDropAdjust.getY() * startLoc, 0));
+        }
 
         // high junction drop off
         dropOffAngleHJ = Math.toRadians(-120 * startLoc);
@@ -382,12 +387,14 @@ public class AutoMJ_Right extends LinearOpMode {
         }
 
         // drop cone and back to the center of mat
-        if ((1 == junctionType) && (!withDW)) {
-            drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
-        }
+        if (compensationOn) {
+            if (1 == junctionType) {
+                drive.setPoseEstimate(new Pose2d(vPreConeDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation.
+            }
 
-        if (2 == junctionType) {
-            drive.setPoseEstimate(new Pose2d(vHJPreCon, drive.getPoseEstimate().getHeading())); // reset orientation.
+            if (2 == junctionType) {
+                drive.setPoseEstimate(new Pose2d(vHJPreCon, drive.getPoseEstimate().getHeading())); // reset orientation.
+            }
         }
 
         rrUnloadCone();
@@ -402,7 +409,7 @@ public class AutoMJ_Right extends LinearOpMode {
                 if (gamepad1.b)
                     return;
             }
-            if (!withDW) {
+            if (compensationOn) {
                 drive.setPoseEstimate(new Pose2d(vConeStackEst, drive.getPoseEstimate().getHeading())); // reset orientation
             }
             // load cone
@@ -410,13 +417,13 @@ public class AutoMJ_Right extends LinearOpMode {
 
             if (1 == junctionType) {
                 moveFromConeStackToJunction();
-                if (!withDW) {
+                if (compensationOn) {
                     drive.setPoseEstimate(new Pose2d(vMJDropOffEst, drive.getPoseEstimate().getHeading()));
                 }
             }
             else if (2 == junctionType) {
                 moveFromConeStackToHJunction();
-                if (!withDW) {
+                if (compensationOn) {
                     drive.setPoseEstimate(new Pose2d(vHJDropOffEst, drive.getPoseEstimate().getHeading())); // reset orientation
                 }
             }
@@ -650,6 +657,7 @@ public class AutoMJ_Right extends LinearOpMode {
             poseMJDropOffAdjust = new Pose2d(0, 0, 0);
         }
         Logging.log("dead wheel on? %s.", withDW? "yes" : "No");
+        Logging.log("Compensation is %s.", compensationOn? "On" : "Off");
     }
 
     private void driveBack(double distanceInch) {
