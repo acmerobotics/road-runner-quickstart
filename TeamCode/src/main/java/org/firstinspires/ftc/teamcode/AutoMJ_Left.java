@@ -54,6 +54,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -80,9 +81,9 @@ public class AutoMJ_Left extends AutoMJ_Right {
          */
 
         // bc lab mat
-        preConeDropAdjust = new Vector2d(-1, 1);
-        poseConeStackAdjust = new Vector2d(0, 0);
-        poseMJDropOffAdjust = new Vector2d(1, 0.5);
+        preConeDropAdjust = new Pose2d(-1, 1, 0);
+        poseConeStackAdjust = new Pose2d(0, 0, 0);
+        poseMJDropOffAdjust = new Pose2d(1, 0.5, 0);
 
     }
 }

@@ -54,6 +54,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -116,20 +118,20 @@ public class AutoMJ_Right extends LinearOpMode {
      */
 
     // average calibration values - good for the math in BC
-    Vector2d preConeDropAdjust = new Vector2d(-0.5, 0);
-    Vector2d poseConeStackAdjust = new Vector2d(0, -1.5);
-    Vector2d poseMJDropOffAdjust = new Vector2d(1, 1);
+    Pose2d preConeDropAdjust = new Pose2d(-0.5, 0, 0);
+    Pose2d poseConeStackAdjust = new Pose2d(0, -1.5, 0);
+    Pose2d poseMJDropOffAdjust = new Pose2d(1, 1, 0);
 
     double armLengthAdj = 0.0;
     boolean withDW = DriveConstants.withDW; // with dead wheels
-    double splineVelocity = 35.0;
+    double splineVelocity = 40.0;
+    double splineMAX_ACCEL = 45.0;
 
-    Vector2d poseHJPreConAdjust = new Vector2d(0, 0);
-    Vector2d poseHJDropOffAdjust = new Vector2d(0, 0);
+    Pose2d poseHJPreConAdjust = new Pose2d(0, 0, 0);
+    Pose2d poseHJDropOffAdjust = new Pose2d(0, 0, 0);
 
     public int startLoc = 1; // 1 for right location, and -1 for left location.
     public int junctionType = 1; // 1 for medium junction, 2 for high junction
-
     boolean debug_flag = true;
 
     // Declare OpMode members.
@@ -180,16 +182,21 @@ public class AutoMJ_Right extends LinearOpMode {
     TrajectorySequence trajSeq1;
 
     private void setPoses() {
-        //if (withDW) {
-            preConeDropAdjust = new Vector2d(0, 0);
-            poseConeStackAdjust = new Vector2d(0, 0);
-            poseMJDropOffAdjust = new Vector2d(0, 0);
-        //}
+        if (!withDW) {
+            preConeDropAdjust = new Pose2d(-0.5, 0, 0);
+            poseConeStackAdjust = new Pose2d(0.1, -0.8, 0);
+            poseMJDropOffAdjust = new Pose2d(-0.4, 0, 0);
+        }
+        else {
+            preConeDropAdjust = new Pose2d(0, 0, 0);
+            poseConeStackAdjust = new Pose2d(0, 0, 0);
+            poseMJDropOffAdjust = new Pose2d(0, 0, 0);
+        }
         Logging.log("dead wheel on? %s.", withDW? "yes" : "No");
 
         // road runner variables
-        startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, // -65.0
-                -3 * Params.HALF_MAT * startLoc, Math.toRadians(-90 * startLoc));
+        startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH - preConeDropAdjust.getX(), // -65.0
+                -3 * Params.HALF_MAT * startLoc - preConeDropAdjust.getX(), Math.toRadians(-90 * startLoc));
         dropOffAngle = Math.toRadians(-55 * startLoc);
         dropOffAngle2 = Math.toRadians(-55 * startLoc); // the target robot heading angle when drop off cone
 
@@ -413,7 +420,7 @@ public class AutoMJ_Right extends LinearOpMode {
 
         for(int autoLoop = 0; autoLoop < coneNum; autoLoop++) {
 
-            moveFromJunctionToConeStack(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
+            moveFromJunctionToConeStack(Params.WALL_POSITION - Params.coneLoadStackGap * autoLoop);
 
             // for testing
             if (gamepad1.a || gamepad1.b) {
@@ -485,7 +492,7 @@ public class AutoMJ_Right extends LinearOpMode {
         Logging.log("Wait before claw close.");
         slider.waitRunningComplete();
         armClaw.clawClose();
-        sleep(Params.CLAW_CLOSE_SLEEP);// subtract 50ms due to the following rotation function.
+        sleep((coneLocation < Params.coneLoadStackGap)? Params.CLAW_CLOSE_SLEEP + 100 : Params.CLAW_CLOSE_SLEEP);// 100ms additional for last cone
         if (1 == junctionType) {
             slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
         }
@@ -511,6 +518,9 @@ public class AutoMJ_Right extends LinearOpMode {
         Logging.log("Auto unload - Cone has been unloaded.");
     }
 
+    /**
+     * Drop point to stack
+     */
     public void moveFromJunctionToConeStack(double coneLoc) {
         /*
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -520,42 +530,33 @@ public class AutoMJ_Right extends LinearOpMode {
                 })
                 .build();
         drive.followTrajectory(traj1);
-
          */
 
-        //Drop point to stack
-
-        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+        //drop point to stack
+        TrajectorySequence traj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .setReversed(false)
-                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(splineVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(splineMAX_ACCEL))
                 .splineTo(poseConeStack.vec(), poseConeStack.getHeading())
                 .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
-                    slider.setInchPosition(Params.WALL_POSITION);
+                    slider.setInchPosition(coneLoc);
                 })
                 .resetConstraints()
                 .build();
-
-        //drive.followTrajectorySequenceAsync(traj2);
-        drive.followTrajectorySequence(traj2);
-
-
-
+        drive.followTrajectorySequence(traj);
 
         if (debug_flag) {
             Logging.log("Arrived cone stack");
             Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+                    traj.end().getX(), traj.end().getY(), Math.toDegrees(traj.end().getHeading()));
             Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-
-
-            telemetry.addData("RR", "traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-            telemetry.addData("RR", "estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
+                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));;
         }
     }
 
+    /**
+     * cone stack to medium junction
+     */
     public void moveFromConeStackToJunction() {
         /*
         Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -564,19 +565,19 @@ public class AutoMJ_Right extends LinearOpMode {
         drive.followTrajectory(traj1);
          */
 
-
-        TrajectorySequence traj3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+        TrajectorySequence traj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .setReversed(true)
                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(splineVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(splineMAX_ACCEL))
                 .splineTo(poseMJDropOff.vec(), poseMJDropOff.getHeading() + Math.PI)
                 .resetConstraints()
                 .build();
-        drive.followTrajectorySequence(traj3);
+        drive.followTrajectorySequence(traj);
 
         if (debug_flag) {
             Logging.log("Arrived junction");
             Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
+                    traj.end().getX(), traj.end().getY(), Math.toDegrees(traj.end().getHeading()));
             Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
                     drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
 
@@ -597,6 +598,8 @@ public class AutoMJ_Right extends LinearOpMode {
         double parkingY, parkingX, parkingH;
         Pose2d poseParking;
 
+        TrajectorySequence parkingt;
+
         // move to 2nd mat center, which is green parking lot
         parkingX = -Params.HALF_MAT;
         parkingY = -3 * Params.HALF_MAT * startLoc;
@@ -604,24 +607,16 @@ public class AutoMJ_Right extends LinearOpMode {
         Pose2d poseParkingGreen = new Pose2d(parkingX, parkingY, parkingH);
 
         // parking
+
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(poseParkingGreen)
                 .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
                     // lower slider
                     slider.setInchPosition(Params.WALL_POSITION);
+                    armClaw.armFlipCenter();
                 })
                 .build();
-        drive.followTrajectory(traj1);
-
-        // arm
-        armClaw.armFlipCenter();
-
-        // for testing
-        if (gamepad1.a || gamepad1.b) {
-            sleep(5000);
-            if (gamepad1.b)
-                return;
-        }
+        //drive.followTrajectory(traj1);
 
         switch (parkingLot) {
             case LEFT:
@@ -630,41 +625,49 @@ public class AutoMJ_Right extends LinearOpMode {
                 parkingH = Math.toRadians(-90 * startLoc);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
 
-                traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(poseParking)
-                        .build();
-                drive.followTrajectory(traj1);
+                if (startLoc < 0) {
+                    TrajectorySequence traj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                            .splineTo(poseConeStack.vec(), poseConeStack.getHeading())
+                            .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
+                                slider.setInchPosition(Params.WALL_POSITION);
+                                armClaw.armFlipCenter();
+                            })
+                            .build();
+                    drive.followTrajectorySequence(traj);
+                }
+                else {
+                    drive.followTrajectory(traj1); // move to center
 
-                parkingX = -3 * Params.HALF_MAT + 1;
-                parkingY = (-3 * startLoc + 2) * Params.HALF_MAT - 1;
-                parkingH = Math.toRadians(-90 * startLoc);
-                poseParking = new Pose2d(parkingX, parkingY, parkingH);
-
-                traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(poseParking)
-                        .build();
-                drive.followTrajectory(traj1);
-
+                    traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(poseParking)
+                            .build();
+                    drive.followTrajectory(traj1);
+                }
                 break;
 
             case CENTER:
-                parkingX = -3 * Params.HALF_MAT + 1;
+                parkingX = -3 * Params.HALF_MAT;
                 parkingY = -3 * Params.HALF_MAT * startLoc;
                 parkingH = Math.toRadians(180);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
-
+/*
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .lineToLinearHeading(poseParking)
                         .build();
                 drive.followTrajectory(traj1);
+ */
+                parkingt = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                        .addTrajectory(traj1)
+                        .build();
+                drive.followTrajectorySequence(parkingt);
                 break;
 
             case RIGHT:
-                parkingX = -Params.HALF_MAT + 1;
-                parkingY = (-3 * startLoc - 2) * Params.HALF_MAT - 1;
+                parkingX = -Params.HALF_MAT;
+                parkingY = (-3 * startLoc - 2) * Params.HALF_MAT + 1;
                 parkingH = Math.toRadians(-90 * startLoc);
                 poseParking = new Pose2d(parkingX, parkingY, parkingH);
-
+/*
                 traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .lineToLinearHeading(poseParking)
                         .build();
@@ -681,6 +684,29 @@ public class AutoMJ_Right extends LinearOpMode {
                         .lineToLinearHeading(poseParking)
                         .build();
                 drive.followTrajectory(traj1);
+
+ */
+
+                if (startLoc > 0) {
+                    TrajectorySequence traj = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                            .splineTo(poseConeStack.vec(), poseConeStack.getHeading())
+                            .addDisplacementMarker(Params.UNLOAD_DS_VALUE, () -> {
+                                // lower slider
+                                slider.setInchPosition(Params.WALL_POSITION);
+                                armClaw.armFlipCenter();
+                            })
+                            .build();
+                    drive.followTrajectorySequence(traj);
+                }
+                else {
+                    drive.followTrajectory(traj1); // move to center
+
+                    traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(poseParking)
+                            .build();
+                    drive.followTrajectory(traj1);
+                }
+
                 break;
         }
     }
@@ -702,13 +728,11 @@ public class AutoMJ_Right extends LinearOpMode {
     private Pose2d setMJPreConePath() {
 
         // check the detail field coordinate system and labels in doc/FieldCoordinateSystem.pdf file
-
         double armLength = Params.ARM_UNLOADING_EXTENSION + armLengthAdj; // in inch
         double alpha = 90.0 + Math.toDegrees(dropOffAngle);
         double alphaR = Math.toRadians(alpha);
         double beta = (90.0 - alpha) / 2.0;
         double betaR = Math.toRadians(beta);
-
 
         // add calculate equations here
         double eg = Params.HALF_MAT;
@@ -754,7 +778,6 @@ public class AutoMJ_Right extends LinearOpMode {
                 .splineToSplineHeading(fF, Math.toRadians(90.0 + alpha) / 2.0)
                 .splineToSplineHeading(aA, Math.toRadians(90.0 +  alpha))
                 .build();
-
          */
 
         trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
@@ -764,8 +787,9 @@ public class AutoMJ_Right extends LinearOpMode {
                     slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
                     armClaw.armFlipBackUnloadPre();
                 })
+                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(splineVelocity, 80,/*DriveConstants.MAX_ANG_VEL,*/ DriveConstants.TRACK_WIDTH))
+                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(splineMAX_ACCEL))
                 .splineToSplineHeading(bB, 0.0)
-                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(splineVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
                 .splineToSplineHeading(fF, Math.toRadians(90.0 + alpha) / 2.0)
                 .splineToSplineHeading(aA, Math.toRadians(90.0 +  alpha))
                 .resetConstraints()

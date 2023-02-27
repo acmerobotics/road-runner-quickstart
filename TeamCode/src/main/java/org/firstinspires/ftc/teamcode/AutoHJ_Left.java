@@ -54,6 +54,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -75,8 +76,8 @@ public class AutoHJ_Left extends AutoHJ_Right {
 
         // calibration parameters for home Mat.
 
-        preConeDropAdjust = new Vector2d(-1, 1);
-        poseConeStackAdjust = new Vector2d(0, 0);
-        poseHJDropOffAdjust = new Vector2d(0, 0);
+        preConeDropAdjust = new Pose2d(-1, 1, 0);
+        poseConeStackAdjust = new Pose2d(0, 0, 0);
+        poseHJDropOffAdjust = new Pose2d(0, 0, 0);
     }
 }

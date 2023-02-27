@@ -37,7 +37,7 @@ public class DriveConstants {
      */
     public static final boolean RUN_USING_ENCODER = true;
 
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(withDW? 14.8 : 15,0,withDW? 4.6 : 1, withDW? 12.8 : 12.73);
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(15, 0, 1, 12.73);
             //getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
     /*
@@ -92,8 +92,8 @@ public class DriveConstants {
      */
     public static double MAX_VEL = 47; // 92% of tested value (47.5)
     public static double MAX_ACCEL = 47;
-    public static double MAX_ANG_VEL = Math.toRadians(withDW? 110 : 131.5);
-    public static double MAX_ANG_ACCEL = Math.toRadians(withDW? 110 : 131.5);
+    public static double MAX_ANG_VEL = Math.toRadians(131.5);
+    public static double MAX_ANG_ACCEL = Math.toRadians(131.5);
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
