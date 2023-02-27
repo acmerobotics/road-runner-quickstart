@@ -78,12 +78,22 @@ public class AutoMJ_Left extends AutoMJ_Right {
         preConeDropAdjust = new Vector2d(-1, 1);
         poseConeStackAdjust = new Vector2d(0, 0);
         poseMJDropOffAdjust = new Vector2d(0.5, 0.5);
-         */
 
         // bc lab mat
         preConeDropAdjust = new Pose2d(-1, 1, 0);
         poseConeStackAdjust = new Pose2d(0, 0, 0);
         poseMJDropOffAdjust = new Pose2d(1, 0.5, 0);
+         */
+        if (!withDW) {
+            preConeDropAdjust = new Pose2d(0.5, 0, 0);
+            poseConeStackAdjust = new Pose2d(0, -0.8, 0);
+            poseMJDropOffAdjust = new Pose2d(0.3, 0, 0);
+        }
+        else {
+            preConeDropAdjust = new Pose2d(0, 0, 0);
+            poseConeStackAdjust = new Pose2d(0, 0, 0);
+            poseMJDropOffAdjust = new Pose2d(0, 0, 0);
+        }
 
     }
 }
