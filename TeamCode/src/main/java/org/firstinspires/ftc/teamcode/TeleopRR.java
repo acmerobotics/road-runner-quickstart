@@ -385,6 +385,7 @@ public class TeleopRR extends LinearOpMode {
      */
     private void unloadCone(double drivingDistance) {
         slider.movingSliderInch(-Params.SLIDER_MOVE_DOWN_POSITION);
+        slider.waitRunningComplete();
         armClaw.clawOpen();
         sleep(Params.CLAW_OPEN_SLEEP); // to make sure claw Servo is at open position
         armClaw.armFlipFrontLoad();
@@ -400,6 +401,7 @@ public class TeleopRR extends LinearOpMode {
         mecanum.setPoseEstimate(new Pose2d());
         mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slider.movingSliderInch(-Params.SLIDER_MOVE_DOWN_POSITION);
+        slider.waitRunningComplete();
         armClaw.clawOpen();
         sleep(Params.CLAW_OPEN_SLEEP); // to make sure claw Servo is at open position
 

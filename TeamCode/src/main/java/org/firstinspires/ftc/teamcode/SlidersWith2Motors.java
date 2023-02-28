@@ -110,7 +110,6 @@ public class SlidersWith2Motors
     public void movingSliderInch(double distance) {
         int currPos = getPosition();
         setCountPosition(currPos + (int)(distance * COUNTS_PER_INCH));
-        waitRunningComplete();
     }
 
     /**
@@ -118,9 +117,9 @@ public class SlidersWith2Motors
      * return slider motor position.
      */
     public int getPosition() {
-        int r = RightSliderMotor.getCurrentPosition();
-        int l = LeftSliderMotor.getCurrentPosition();
-        return (r+l)/2;
+        return RightSliderMotor.getCurrentPosition();
+        //int l = LeftSliderMotor.getCurrentPosition();
+        //return (r+l)/2;
     }
 
     /**
