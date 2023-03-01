@@ -55,6 +55,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.with2DW;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.with3DW;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -123,8 +125,8 @@ public class AutoMJ_Right extends LinearOpMode {
     Pose2d poseMJDropOffAdjust = new Pose2d(1, 1, 0);
 
     double armLengthAdj = 0.0;
-    boolean withDW = DriveConstants.with2DW; // with dead wheels
-    boolean compensationOn = true;
+    boolean withDW = with2DW || with3DW; // with dead wheels
+    boolean compensationOn = false;
     double splineVelocity = 40.0;
     double splineMAX_ACCEL = 45.0;
 
@@ -197,7 +199,7 @@ public class AutoMJ_Right extends LinearOpMode {
         }
         else {
             preConeDropAdjust = new Pose2d(0.0, 0, 0);
-            poseConeStackAdjust = new Pose2d(0, 1.0, 0);
+            poseConeStackAdjust = new Pose2d(0, 0.0, 0);
             poseMJDropOffAdjust = new Pose2d(0, 0, 0);
         }
         Logging.log("dead wheel on? %s.", withDW? "yes" : "No");
@@ -206,7 +208,7 @@ public class AutoMJ_Right extends LinearOpMode {
 
     private void setPoses() {
         // road runner variables
-        startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, // -65.0
+        startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH + 1.0, // -64.0
                 -3 * Params.HALF_MAT * startLoc, Math.toRadians(-90 * startLoc));
         dropOffAngle = Math.toRadians(-55 * startLoc);
         dropOffAngle2 = Math.toRadians(-55 * startLoc); // the target robot heading angle when drop off cone
@@ -261,8 +263,6 @@ public class AutoMJ_Right extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         Logging.log("Status - Initialized");
-        // init drive with road runner
-        drive = new SampleMecanumDrive(hardwareMap);
 
         setRobotLocation();
 
@@ -421,8 +421,8 @@ public class AutoMJ_Right extends LinearOpMode {
         }
 
         // drive to medium junction, lift sliders, arm to back
-        drive.followTrajectorySequence(trajSeq1);
-        //drive.followTrajectorySequence(trajSeq2);
+        //drive.followTrajectorySequence(trajSeq1);
+        drive.followTrajectorySequence(trajSeq2);
 
         //drive.followTrajectory(traj1);
 
@@ -464,6 +464,7 @@ public class AutoMJ_Right extends LinearOpMode {
         }
 
         rrUnloadCone();
+        //drive.setPoseEstimate(posePreConeDropOff);
 
         for(int autoLoop = 0; autoLoop < coneNum; autoLoop++) {
 
@@ -511,11 +512,6 @@ public class AutoMJ_Right extends LinearOpMode {
         // storage robot pose of the end of autonomous
         Params.currentPose = drive.getPoseEstimate();
 
-        // lower sliders
-        slider.setInchPosition(Params.WALL_POSITION);
-
-        Logging.log("traj1 end x = %.2f,  y = %.2f, angle = %.2f",
-                traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
         Logging.log("estimate end x = %.2f,  y = %.2f, angle = %.2f",
                 drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
     }
@@ -704,6 +700,7 @@ public class AutoMJ_Right extends LinearOpMode {
 
                 break;
         }
+        Logging.log("Complete parking.");
     }
 
     private void driveBack(double distanceInch) {

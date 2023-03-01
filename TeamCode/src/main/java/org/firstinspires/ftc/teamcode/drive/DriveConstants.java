@@ -38,7 +38,7 @@ public class DriveConstants {
      */
     public static final boolean RUN_USING_ENCODER = !with3DW;
 
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(15, 0, 1, 12.73);
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(with3DW? 0 : 15, 0, with3DW? 0 : 1, 12.73);
             //getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
     /*
@@ -50,8 +50,8 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 1.8898; // in
-    public static double GEAR_RATIO = with2DW? 1.00 : 1.02; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = with2DW? 14.73 : 13.1; // Effective track width = 13.89 (SE = 0.011)
+    public static double GEAR_RATIO = (with2DW || with3DW)? 1.00 : 1.02; // output (wheel) speed / input (motor) speed
+    public static double TRACK_WIDTH = with2DW? 14.73 : (with3DW? 12.72 : 13.1); // Effective track width = 13.89 (SE = 0.011)
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -59,8 +59,8 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0;
+    public static double kV = with3DW? 0.018 : 1.0 / rpmToVelocity(MAX_RPM); //0.019
+    public static double kA = with3DW? 0.005 : 0.0; // 0.005
     public static double kStatic = 0;
 
     /*
@@ -93,8 +93,8 @@ public class DriveConstants {
      */
     public static double MAX_VEL = 47; // 92% of tested value (47.5)
     public static double MAX_ACCEL = 47;
-    public static double MAX_ANG_VEL = Math.toRadians(131.5);
-    public static double MAX_ANG_ACCEL = Math.toRadians(131.5);
+    public static double MAX_ANG_VEL = Math.toRadians(with3DW? 200 : 131.5);
+    public static double MAX_ANG_ACCEL = Math.toRadians(with3DW? 200 : 131.5);
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
