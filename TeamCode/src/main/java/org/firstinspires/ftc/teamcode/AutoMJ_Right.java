@@ -123,7 +123,7 @@ public class AutoMJ_Right extends LinearOpMode {
     Pose2d poseMJDropOffAdjust = new Pose2d(1, 1, 0);
 
     double armLengthAdj = 0.0;
-    boolean withDW = DriveConstants.withDW; // with dead wheels
+    boolean withDW = DriveConstants.with2DW; // with dead wheels
     boolean compensationOn = true;
     double splineVelocity = 40.0;
     double splineMAX_ACCEL = 45.0;

@@ -23,7 +23,8 @@ public class DriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final boolean withDW = false;
+    public static final boolean with2DW = false;
+    public static final boolean with3DW = true;
     public static final double TICKS_PER_REV = 537.6;
     public static final double MAX_RPM = 312;
 
@@ -35,7 +36,7 @@ public class DriveConstants {
      * If using the built-in motor velocity PID, update MOTOR_VELO_PID with the tuned coefficients
      * from DriveVelocityPIDTuner.
      */
-    public static final boolean RUN_USING_ENCODER = true;
+    public static final boolean RUN_USING_ENCODER = !with3DW;
 
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(15, 0, 1, 12.73);
             //getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
@@ -49,8 +50,8 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 1.8898; // in
-    public static double GEAR_RATIO = withDW? 1.00 : 1.02; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = withDW? 14.73 : 13.1; // Effective track width = 13.89 (SE = 0.011)
+    public static double GEAR_RATIO = with2DW? 1.00 : 1.02; // output (wheel) speed / input (motor) speed
+    public static double TRACK_WIDTH = with2DW? 14.73 : 13.1; // Effective track width = 13.89 (SE = 0.011)
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using

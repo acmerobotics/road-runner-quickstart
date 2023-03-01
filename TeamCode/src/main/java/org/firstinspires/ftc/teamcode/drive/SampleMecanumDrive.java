@@ -50,6 +50,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksTo
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.with2DW;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.with3DW;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
@@ -58,7 +60,7 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 public class SampleMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0, 0);
-    public static double LATERAL_MULTIPLIER = DriveConstants.withDW? 1.33 : 1.18;
+    public static double LATERAL_MULTIPLIER = DriveConstants.with2DW? 1.33 : 1.18;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -95,17 +97,19 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // DONE: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(IMU.class, "imu");
         // DONE: Adjust the orientations here to match your robot. See the FTC SDK documentation for
         // details
         // ctrl hub new IMU has some unexpected issue.
         //IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
         //       RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
         //       RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
-        imu.initialize(parameters);
-        imu.resetYaw();
+        if (!with3DW) {
+            imu = hardwareMap.get(IMU.class, "imu");
+            IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                    DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
+            imu.initialize(parameters);
+            imu.resetYaw();
+        }
 
         // customized motor config name for 21180
         leftFront = hardwareMap.get(DcMotorEx.class, "FrontLeft");
@@ -138,9 +142,14 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightRear.setDirection(DcMotor.Direction.FORWARD);
 
         // DONE: if desired, use setLocalizer() to change the localization method
-        if (DriveConstants.withDW) {
+        if (with2DW) {
             setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         }
+
+        if (with3DW) {
+            setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, lastEncPositions, lastEncVels));
+        }
+
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
 
@@ -304,7 +313,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        //return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        return 0;
     }
 
     @Override
