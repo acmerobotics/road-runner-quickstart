@@ -24,7 +24,7 @@ public class DriveConstants {
      * These are motor constants that should be listed online for your motors.
      */
     public static final boolean with2DW = false;
-    public static final boolean with3DW = true;
+    public static final boolean with3DW = false;
     public static final double TICKS_PER_REV = 537.6;
     public static final double MAX_RPM = 312;
 

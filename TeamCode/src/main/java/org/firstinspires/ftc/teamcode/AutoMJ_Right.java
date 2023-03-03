@@ -126,8 +126,8 @@ public class AutoMJ_Right extends LinearOpMode {
 
     double armLengthAdj = 0.0;
     boolean withDW = with2DW || with3DW; // with dead wheels
-    boolean compensationOn = false;
-    double splineVelocity = 40.0;
+    boolean compensationOn = true;
+    double splineVelocity = 45.0;
     double splineMAX_ACCEL = 45.0;
 
     Pose2d poseHJPreConAdjust = new Pose2d(0, 0, 0);
@@ -184,6 +184,8 @@ public class AutoMJ_Right extends LinearOpMode {
     Trajectory traj1;
     TrajectorySequence trajSeq1; // use circle path
     TrajectorySequence trajSeq2;
+    TrajectorySequence trajSeq3;
+    boolean heading0 = false; // the heading angle of start position
 
     /**
      * Set robot starting position: 1 for right and -1 for left.
@@ -193,14 +195,14 @@ public class AutoMJ_Right extends LinearOpMode {
 
         // compensationOn parameters
         if (!withDW) {
-            preConeDropAdjust = new Pose2d(0, -1.0, 0);
+            preConeDropAdjust = new Pose2d(-1.0, -1.0, 0);
             poseConeStackAdjust = new Pose2d(0, -0.8, 0);
             poseMJDropOffAdjust = new Pose2d(-0.3, 0, 0);
         }
         else {
-            preConeDropAdjust = new Pose2d(0.0, 0, 0);
-            poseConeStackAdjust = new Pose2d(0, 0.0, 0);
-            poseMJDropOffAdjust = new Pose2d(0, 0, 0);
+            preConeDropAdjust = new Pose2d(-0.5, -0.5, 0);
+            poseConeStackAdjust = new Pose2d(-0.5, 0.5, 0);
+            poseMJDropOffAdjust = new Pose2d(-0.5, 0, 0);
         }
         Logging.log("dead wheel on? %s.", withDW? "yes" : "No");
         Logging.log("Compensation is %s.", compensationOn? "On" : "Off");
@@ -215,6 +217,11 @@ public class AutoMJ_Right extends LinearOpMode {
 
         if (compensationOn) {
             startPose = startPose.plus(new Pose2d(- preConeDropAdjust.getX(), - preConeDropAdjust.getY() * startLoc, 0));
+        }
+
+        if (heading0) {
+            startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_LENGTH / 2.0 + 1.0, // -64.0
+                    -3 * Params.HALF_MAT * startLoc, 0);
         }
 
         // high junction drop off
@@ -376,8 +383,10 @@ public class AutoMJ_Right extends LinearOpMode {
                     .splineToLinearHeading(posePreConeDropOff, Math.toRadians(70 * startLoc))
                     .resetConstraints()
                     .build();
-
             posePreConeDropOff = setMJPreConePath();
+            if (heading0) {
+                posePreConeDropOff = setMJPreConePath3();
+            }
         }
 
         if (2 == junctionType) {
@@ -399,14 +408,10 @@ public class AutoMJ_Right extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-
         // run until the end of the match (driver presses STOP)
         if (opModeIsActive()) {
-            camera.stopRecordingPipeline();
-            camera.closeCameraDevice();
-
             autonomousCore();
-
+            camera.closeCameraDevice(); // cost too times at the beginning to close camera about 300 ms
             Logging.log("Autonomous - total Run Time: " + runtime);
         }
         // The motor stop on their own but power is still applied. Turn off motor.
@@ -421,11 +426,16 @@ public class AutoMJ_Right extends LinearOpMode {
         }
 
         // drive to medium junction, lift sliders, arm to back
-        //drive.followTrajectorySequence(trajSeq1);
-        drive.followTrajectorySequence(trajSeq2);
+        Logging.log("Autonomous - Starting raj1: " + runtime);
 
-        //drive.followTrajectory(traj1);
-
+        if (heading0) {
+            drive.followTrajectorySequence(trajSeq1);
+        }
+        else {
+            drive.followTrajectory(traj1);
+            //drive.followTrajectorySequence(trajSeq2);
+        }
+        Logging.log("Autonomous - ending traj1: " + runtime);
 
         if (debug_flag) {
             Logging.log("Arrived pre cone junction");
@@ -507,7 +517,7 @@ public class AutoMJ_Right extends LinearOpMode {
         }
 
         // parking
-        driveToParkingLot(coneSleeveDetect.getParkingLot());
+        driveToParkingLot(myParkingLot);
 
         // storage robot pose of the end of autonomous
         Params.currentPose = drive.getPoseEstimate();
@@ -754,8 +764,10 @@ public class AutoMJ_Right extends LinearOpMode {
                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(splineVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
                 .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(splineMAX_ACCEL))
                 .strafeLeft(24.0 * startLoc)
-                .addDisplacementMarker(Params.HALF_MAT, () -> {
+                .addDisplacementMarker(Params.HALF_MAT / 2.0, () -> {
                     // lift slider
+                    camera.closeCameraDevice();
+
                     slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
                     armClaw.armFlipBackUnloadPre();
                 })
@@ -771,5 +783,29 @@ public class AutoMJ_Right extends LinearOpMode {
                     trajSeq1.end().getX(), trajSeq1.end().getY(), Math.toDegrees(trajSeq1.end().getHeading()));
         }
         return aA;
+    }
+
+    private Pose2d setMJPreConePath3() {
+        Pose2d p1 = new Pose2d(-Params.CHASSIS_LENGTH / 2.0 - 3.0, startPose.getY(), startPose.getHeading());
+        trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineTo(p1.vec())
+                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(splineVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(splineMAX_ACCEL))
+                .addDisplacementMarker(Params.HALF_MAT, () -> {
+                    // lift slider
+                    //camera.closeCameraDevice();
+                    slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
+                    armClaw.armFlipBackUnloadPre();
+                })
+                //.waitSeconds(0.050)
+                //.splineToSplineHeading(bB, 0.0)
+                //.splineToSplineHeading(fF, Math.toRadians(90.0 + alpha) / 2.0)
+                //.splineToSplineHeading(aA, Math.toRadians(90.0 +  alpha))
+                .setReversed(true)
+                .splineTo(posePreConeDropOff.vec(), posePreConeDropOff.getHeading() + Math.PI)
+                .resetConstraints()
+                .build();
+
+        return trajSeq1.end();
     }
 }
