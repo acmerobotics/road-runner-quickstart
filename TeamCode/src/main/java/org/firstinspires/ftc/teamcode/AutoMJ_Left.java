@@ -86,8 +86,8 @@ public class AutoMJ_Left extends AutoMJ_Right {
          */
         if (!withDW) {
             preConeDropAdjust = new Pose2d(0.5, 0, 0);
-            poseConeStackAdjust = new Pose2d(0, -0.8, 0);
-            poseMJDropOffAdjust = new Pose2d(0.3, 0, 0);
+            poseConeStackAdjust = new Pose2d(0.8, -0.8, 0);
+            poseMJDropOffAdjust = new Pose2d(0, 0, 0);
         }
         else {
             preConeDropAdjust = new Pose2d(0, 0, 0);

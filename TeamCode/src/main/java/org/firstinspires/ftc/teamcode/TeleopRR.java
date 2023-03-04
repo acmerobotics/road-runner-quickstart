@@ -308,12 +308,15 @@ public class TeleopRR extends LinearOpMode {
 
             //back to cone base, only active at the beginning of 5sec teleop
             if ((gpButtons.backBase) && (runtime.seconds() < 5)) {
+                /*
                     mecanum.setMode(DriveConstants.with3DW? DcMotor.RunMode.RUN_WITHOUT_ENCODER : DcMotor.RunMode.RUN_USING_ENCODER);
                     Trajectory trajBack = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
                             .lineToLinearHeading(new Pose2d(-3 * Params.HALF_MAT, 0, Math.toRadians(180)))
                             .build();
                     mecanum.followTrajectory(trajBack);
                     mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                 */
             }
 
             if (debugFlag) {
