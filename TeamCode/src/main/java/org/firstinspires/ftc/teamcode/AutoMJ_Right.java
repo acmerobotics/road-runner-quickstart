@@ -119,7 +119,7 @@ public class AutoMJ_Right extends LinearOpMode {
     Vector2d poseMJDropOffAdjust = new Vector2d(1.2, 1.1);
      */
 
-    // average calibration values - good for the math in BC
+    // average calibration values - good for the match in BC
     Pose2d preConeDropAdjust = new Pose2d(-0.5, 0, 0);
     Pose2d poseConeStackAdjust = new Pose2d(0, -1.5, 0);
     Pose2d poseMJDropOffAdjust = new Pose2d(1, 1, 0);
@@ -195,8 +195,8 @@ public class AutoMJ_Right extends LinearOpMode {
 
         // compensationOn parameters
         if (!withDW) {
-            preConeDropAdjust = new Pose2d(-0.5, -0.5, 0);
-            poseConeStackAdjust = new Pose2d(0, -0.8, 0);
+            preConeDropAdjust = new Pose2d(1, -1.5, 0);
+            poseConeStackAdjust = new Pose2d(0.0, -0.8, 0);
             poseMJDropOffAdjust = new Pose2d(0, 0, 0);
         }
         else {
@@ -488,7 +488,7 @@ public class AutoMJ_Right extends LinearOpMode {
                 drive.setPoseEstimate(new Pose2d(vConeStackEst, drive.getPoseEstimate().getHeading())); // reset orientation
             }
             // load cone
-            rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop - 0.5);
+            rrLoadCone(Params.coneStack5th - Params.coneLoadStackGap * autoLoop);
 
             if (1 == junctionType) {
                 moveFromConeStackToJunction();
