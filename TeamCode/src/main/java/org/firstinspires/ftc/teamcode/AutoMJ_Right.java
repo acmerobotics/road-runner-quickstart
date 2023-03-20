@@ -196,7 +196,7 @@ public class AutoMJ_Right extends LinearOpMode {
         // compensationOn parameters
         if (!withDW) {
             preConeDropAdjust = new Pose2d(1, -1.5, 0);
-            poseConeStackAdjust = new Pose2d(0.0, -0.8, 0);
+            poseConeStackAdjust = new Pose2d(0.2, -0.8, 0);
             poseMJDropOffAdjust = new Pose2d(0, 0, 0);
         }
         else {
