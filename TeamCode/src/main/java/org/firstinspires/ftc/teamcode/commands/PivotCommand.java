@@ -8,18 +8,18 @@ import java.util.function.DoubleSupplier;
 
 public class PivotCommand extends CommandBase {
     private final PivotSubsystem pivotSubsystem;
-    private double power;
+    private final DoubleSupplier power;
 
     public PivotCommand(final PivotSubsystem pivot, final DoubleSupplier power) {
         pivotSubsystem = pivot;
-        this.power = power.getAsDouble();
+        this.power = power;
 
         addRequirements(pivotSubsystem);
     }
 
     @Override
     public void execute() {
-        pivotSubsystem.setPower(power);
+        pivotSubsystem.setPower(power.getAsDouble());
     }
 
 }
