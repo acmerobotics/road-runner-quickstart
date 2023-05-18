@@ -17,8 +17,7 @@ import com.qualcomm.robotcore.util.WebHandlerManager;
 import org.firstinspires.ftc.ftccommon.external.WebHandlerRegistrar;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
+import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
 import java.io.File;
@@ -66,23 +65,13 @@ public final class LogFiles {
         public double maxAngVel = DriveConstants.MAX_ANG_VEL;
         public double maxAngAccel = DriveConstants.MAX_ANG_ACCEL;
 
-        public double mecTransP = SampleMecanumDrive.TRANSLATIONAL_PID.kP;
-        public double mecTransI = SampleMecanumDrive.TRANSLATIONAL_PID.kI;
-        public double mecTransD = SampleMecanumDrive.TRANSLATIONAL_PID.kD;
-        public double mecHeadingP = SampleMecanumDrive.HEADING_PID.kP;
-        public double mecHeadingI = SampleMecanumDrive.HEADING_PID.kI;
-        public double mecHeadingD = SampleMecanumDrive.HEADING_PID.kD;
-        public double mecLateralMultiplier = SampleMecanumDrive.LATERAL_MULTIPLIER;
-
-        public double tankAxialP = SampleTankDrive.AXIAL_PID.kP;
-        public double tankAxialI = SampleTankDrive.AXIAL_PID.kI;
-        public double tankAxialD = SampleTankDrive.AXIAL_PID.kD;
-        public double tankCrossTrackP = SampleTankDrive.CROSS_TRACK_PID.kP;
-        public double tankCrossTrackI = SampleTankDrive.CROSS_TRACK_PID.kI;
-        public double tankCrossTrackD = SampleTankDrive.CROSS_TRACK_PID.kD;
-        public double tankHeadingP = SampleTankDrive.HEADING_PID.kP;
-        public double tankHeadingI = SampleTankDrive.HEADING_PID.kI;
-        public double tankHeadingD = SampleTankDrive.HEADING_PID.kD;
+        public double mecTransP = MecanumDrive.TRANSLATIONAL_PID.kP;
+        public double mecTransI = MecanumDrive.TRANSLATIONAL_PID.kI;
+        public double mecTransD = MecanumDrive.TRANSLATIONAL_PID.kD;
+        public double mecHeadingP = MecanumDrive.HEADING_PID.kP;
+        public double mecHeadingI = MecanumDrive.HEADING_PID.kI;
+        public double mecHeadingD = MecanumDrive.HEADING_PID.kD;
+        public double mecLateralMultiplier = MecanumDrive.LATERAL_MULTIPLIER;
 
         public double trackingTicksPerRev = StandardTrackingWheelLocalizer.TICKS_PER_REV;
         public double trackingWheelRadius = StandardTrackingWheelLocalizer.WHEEL_RADIUS;
