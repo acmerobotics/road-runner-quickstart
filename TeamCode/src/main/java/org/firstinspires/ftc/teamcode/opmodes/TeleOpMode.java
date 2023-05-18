@@ -20,7 +20,7 @@ public class TeleOpMode extends CommandOpMode {
     public void initialize() {
         this.driverController = new GamepadEx(gamepad1);
         this.driveSubsystem = new DriveSubsystem(hardwareMap);
-        this.driveCommand = new TeleOpDriveCommand(driveSubsystem, driverController::getLeftX, driverController::getLeftY, driverController::getRightX);
+        this.driveCommand = new TeleOpDriveCommand(driveSubsystem, driverController::getLeftY, driverController::getLeftX, driverController::getRightX);
 
         register(driveSubsystem);
 
