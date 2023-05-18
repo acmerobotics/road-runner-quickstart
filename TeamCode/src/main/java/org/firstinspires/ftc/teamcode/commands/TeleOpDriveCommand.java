@@ -14,11 +14,11 @@ public class TeleOpDriveCommand extends CommandBase {
     private final DoubleSupplier y;
     private final DoubleSupplier omega;
 
-    public TeleOpDriveCommand(final DriveSubsystem drive, final DoubleSupplier x, final DoubleSupplier y, final DoubleSupplier omega) {
+    public TeleOpDriveCommand(final DriveSubsystem drive, final DoubleSupplier y, final DoubleSupplier x, final DoubleSupplier omega) {
         this.drive = drive;
 
-        this.x = x;
         this.y = y;
+        this.x = x;
         this.omega = omega;
 
         addRequirements(drive);
@@ -26,6 +26,6 @@ public class TeleOpDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        drive.setWeightedDrivePower(new Pose2d(x.getAsDouble(), y.getAsDouble(), omega.getAsDouble()));
+        drive.setWeightedDrivePower(new Pose2d(-y.getAsDouble(), x.getAsDouble(), omega.getAsDouble()));
     }
 }
