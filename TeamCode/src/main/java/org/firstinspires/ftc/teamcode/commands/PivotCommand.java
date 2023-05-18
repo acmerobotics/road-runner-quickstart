@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 
 import java.util.function.DoubleSupplier;
@@ -20,6 +21,7 @@ public class PivotCommand extends CommandBase {
     @Override
     public void execute() {
         pivotSubsystem.setPower(power.getAsDouble());
+        pivotSubsystem.periodic();
     }
 
 }
