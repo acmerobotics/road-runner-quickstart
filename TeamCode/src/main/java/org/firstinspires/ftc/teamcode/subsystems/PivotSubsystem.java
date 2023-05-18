@@ -18,8 +18,8 @@ public class PivotSubsystem extends SubsystemBase {
         pivot.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
-    public void setVelocity(double velocity){
-        pivot.setPower(velocity);
+    public void setPower(double power){
+        pivot.setPower(power);
     }
 
     public double getVelocity(){
