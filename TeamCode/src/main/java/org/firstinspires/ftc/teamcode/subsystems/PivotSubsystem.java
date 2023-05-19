@@ -3,10 +3,13 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import androidx.annotation.NonNull;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -18,14 +21,19 @@ public class PivotSubsystem extends SubsystemBase {
     private final Telemetry telemetry;
 
     public double angle;
+    private static final PIDFCoefficients pivotPID = new PIDFCoefficients(0.0,0.0,0.0,0.0);
+
+    private final PIDFController pidf;
 
     private final double Kg = 0.02;
 
 
     public PivotSubsystem(HardwareMap hwMap, @NonNull Telemetry telemetry){
         pivot = hwMap.get(DcMotorEx.class, "pivot");
-        pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pivot.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pivotPID);
         pivot.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        pidf = new PIDFController(0,0,0,0);
 
         this.telemetry = telemetry;
     }
@@ -40,17 +48,22 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getAngle() {
-        return pivot.getCurrentPosition() * (1.0 / 2496 * 2 * Math.PI);
+        return pivot.getCurrentPosition() * (1.0 / (5184 * 2 * Math.PI));
     }
 
-//    public void setPosition(double angle){
-//        pivot.setTargetPosition(math.cos((angle / (320/3)) * 2 * math.PI));
-//    }
+    public double calculatePID(double desiredAngle) {
+       return pidf.calculate(getAngle(), desiredAngle);
+    }
+
+    public void setAngle(double angle){
+        pivot.setTargetPosition(angle);
+    }
 
 //    public int getPosition(){
 //        currentPosition = pivot.getCurrentPosition();
 //        return currentPosition;
 //    }
+
     @Override
     public void periodic() {
 
