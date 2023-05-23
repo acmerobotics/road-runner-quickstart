@@ -33,8 +33,9 @@ public class TeleOpMode extends CommandOpMode {
         this.feederSubsystem = new FeederSubsystem(hardwareMap);
 
         this.driveCommand = new TeleOpDriveCommand(driveSubsystem, driverController::getLeftY, driverController::getLeftX, driverController::getRightX);
-        this.pivotCommand = new PivotCommand(pivotSubsystem, () -> (driverController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - driverController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
-        this.feederCommand = new FeederCommand(feederSubsystem, (driverController.getButton(GamepadKeys.Button.A)) ? -0.5 : 0.5);
+//        this.pivotCommand = new PivotCommand(pivotSubsystem, () -> (driverController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - driverController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
+        this.pivotCommand = new PivotCommand(pivotSubsystem, driverController.getButton(GamepadKeys.Button.A) ? 10 : 0);
+        this.feederCommand = new FeederCommand(feederSubsystem, (driverController.getButton(GamepadKeys.Button.RIGHT_BUMPER)) ? -0.5 : 0.5);
 
         register(driveSubsystem);
         register(pivotSubsystem);

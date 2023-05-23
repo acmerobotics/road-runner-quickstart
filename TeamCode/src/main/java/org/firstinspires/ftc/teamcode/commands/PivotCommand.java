@@ -9,18 +9,20 @@ import java.util.function.DoubleSupplier;
 
 public class PivotCommand extends CommandBase {
     private final PivotSubsystem pivotSubsystem;
-    private final DoubleSupplier power;
+//    private final DoubleSupplier power;
+    private final double angle;
 
-    public PivotCommand(final PivotSubsystem pivot, final DoubleSupplier power) {
+    public PivotCommand(final PivotSubsystem pivot, final double angle) {
         pivotSubsystem = pivot;
-        this.power = power;
+//        this.power = power;
+        this.angle = angle;
 
         addRequirements(pivotSubsystem);
     }
 
     @Override
     public void execute() {
-        pivotSubsystem.setPower(power.getAsDouble());
+        pivotSubsystem.setAngle(angle);
         pivotSubsystem.periodic();
     }
 
