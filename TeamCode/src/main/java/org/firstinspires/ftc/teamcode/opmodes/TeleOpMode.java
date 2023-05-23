@@ -24,6 +24,11 @@ public class TeleOpMode extends CommandOpMode {
     private PivotCommand pivotCommand;
     private FeederCommand feederCommand;
     private GamepadEx driverController;
+    
+    private GamepadButton zeroPos;
+    private GamepadButton feedPos;
+    private GamedpadButton scorePos;
+    
 
     @Override
     public void initialize() {
@@ -31,11 +36,14 @@ public class TeleOpMode extends CommandOpMode {
         this.driveSubsystem = new DriveSubsystem(hardwareMap, telemetry);
         this.pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry);
         this.feederSubsystem = new FeederSubsystem(hardwareMap);
+        
+        this.zeroPos = new GamepadButton(driverController, GamepadKeys.Button.DPAD_UP);
+        this.feedPos = new GamepadButton(driverController, GamepadKeys.Button.DPAD_UP);
+        this.scorePos = new GamepadButton(driverController, GamepadKeys.Button.DPAD_UP);
 
         this.driveCommand = new TeleOpDriveCommand(driveSubsystem, driverController::getLeftY, driverController::getLeftX, driverController::getRightX);
 //        this.pivotCommand = new PivotCommand(pivotSubsystem, () -> (driverController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - driverController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
-        this.pivotCommand = new PivotCommand(pivotSubsystem, driverController.getButton(GamepadKeys.Button.A) ? 10 : 0);
-        this.feederCommand = new FeederCommand(feederSubsystem, (driverController.getButton(GamepadKeys.Button.RIGHT_BUMPER)) ? -0.5 : 0.5);
+        this.feederCommand = new FeederCommand(feederSubsystem, (driverController.getButton(GamepadKeys.Button.RIGHT_BUMPER)) ? -0.5 : 0.3);
 
         register(driveSubsystem);
         register(pivotSubsystem);
@@ -44,9 +52,17 @@ public class TeleOpMode extends CommandOpMode {
         setDefaultCommands();
     }
 
+  
+    private void configureButtonBindings(){
+        zeroPos.whenPressed(pivotCommand(pivotSubsystem, 0.0));
+        feedPos.whenPressed(pivotCommand(pivotSubsystem, 0.0));
+        scorePos.whenPressed(pivotCommand(pivotSubsystem, 0.0));
+    }
+    
+
     private void setDefaultCommands() {
         driveSubsystem.setDefaultCommand(driveCommand);
-        pivotSubsystem.setDefaultCommand(pivotCommand);
+  //      pivotSubsystem.setDefaultCommand(pivotCommand);
         feederSubsystem.setDefaultCommand(feederCommand);
     }
 
