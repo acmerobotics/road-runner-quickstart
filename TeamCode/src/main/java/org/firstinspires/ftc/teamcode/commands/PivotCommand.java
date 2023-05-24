@@ -23,7 +23,6 @@ public class PivotCommand extends CommandBase {
     @Override
     public void execute() {
         pivotSubsystem.setAngle(angle);
-        pivotSubsystem.periodic();
     }
 
 }

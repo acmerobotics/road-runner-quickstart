@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.FeederCommand;
@@ -27,7 +28,7 @@ public class TeleOpMode extends CommandOpMode {
     
     private GamepadButton zeroPos;
     private GamepadButton feedPos;
-    private GamedpadButton scorePos;
+    private GamepadButton scorePos;
     
 
     @Override
@@ -37,9 +38,9 @@ public class TeleOpMode extends CommandOpMode {
         this.pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry);
         this.feederSubsystem = new FeederSubsystem(hardwareMap);
         
-        this.zeroPos = new GamepadButton(driverController, GamepadKeys.Button.DPAD_UP);
-        this.feedPos = new GamepadButton(driverController, GamepadKeys.Button.DPAD_UP);
-        this.scorePos = new GamepadButton(driverController, GamepadKeys.Button.DPAD_UP);
+        this.zeroPos = new GamepadButton(driverController, GamepadKeys.Button.Y);
+        this.feedPos = new GamepadButton(driverController, GamepadKeys.Button.B);
+        this.scorePos = new GamepadButton(driverController, GamepadKeys.Button.X);
 
         this.driveCommand = new TeleOpDriveCommand(driveSubsystem, driverController::getLeftY, driverController::getLeftX, driverController::getRightX);
 //        this.pivotCommand = new PivotCommand(pivotSubsystem, () -> (driverController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - driverController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
@@ -50,13 +51,14 @@ public class TeleOpMode extends CommandOpMode {
         register(feederSubsystem);
 
         setDefaultCommands();
+        configureButtonBindings();
     }
 
   
     private void configureButtonBindings(){
-        zeroPos.whenPressed(pivotCommand(pivotSubsystem, 0.0));
-        feedPos.whenPressed(pivotCommand(pivotSubsystem, 0.0));
-        scorePos.whenPressed(pivotCommand(pivotSubsystem, 0.0));
+        zeroPos.whenPressed(new PivotCommand(pivotSubsystem, Math.toRadians(0)));
+        feedPos.whenPressed(new PivotCommand(pivotSubsystem, Math.toRadians(90)));
+        scorePos.whenPressed(new PivotCommand(pivotSubsystem, Math.toRadians(-30)));
     }
     
 

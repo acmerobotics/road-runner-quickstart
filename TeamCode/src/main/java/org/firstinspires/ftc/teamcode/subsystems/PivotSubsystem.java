@@ -20,7 +20,10 @@ public class PivotSubsystem extends SubsystemBase {
     private double currentAngle;
 
     public static PIDFCoefficients kPIDF = new PIDFCoefficients(0,0,0,0);
-    private final PIDFController controller;
+    public final PIDFController controller;
+    private double desiredAngle;
+
+    private double power;
 
     private final double Kg = 0.02;
 
@@ -29,10 +32,11 @@ public class PivotSubsystem extends SubsystemBase {
         pivot = hwMap.get(DcMotorEx.class, "pivot");
         pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pivot.setDirection(DcMotorSimple.Direction.FORWARD);
-        pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        controller = new PIDFController(kPIDF);
+        controller = new PIDFController(1,0,0,0);
         this.telemetry = telemetry;
+        this.desiredAngle = desiredAngle;
     }
 
     public void setPower(double power){
@@ -40,22 +44,25 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getAngle() {
-        currentAngle = pivot.getCurrentPosition() * (1.0 / (5184 * 2 * Math.PI));
+        currentAngle = (pivot.getCurrentPosition() * ((22 * 2 * Math.PI) / (28 * 81 * 66)));
         return currentAngle;
     }
 
-    public void setAngle(double desiredAngle){
-        double power;
+    public void setAngle(double angle){
+        desiredAngle = angle;
+    }
+
+    public void calculatePID() {
         power = controller.calculate(getAngle(), desiredAngle);
         pivot.setPower(power);
     }
 
     @Override
     public void periodic() {
+        calculatePID();
         telemetry.addLine("Pivot")
                 .addData("Encoder Ticks Pivot:", pivot.getCurrentPosition())
                 .addData("Pivot Angle", getAngle());
-
         telemetry.update();
     }
 
