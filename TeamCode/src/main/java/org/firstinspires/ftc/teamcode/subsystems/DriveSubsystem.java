@@ -13,7 +13,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final MecanumDrive drive;
     private final Telemetry telemetry;
 
-    public DriveSubsystem(final HardwareMap hardwareMap, @NonNull Telemetry telemetry) {
+    public DriveSubsystem(@NonNull HardwareMap hardwareMap, @NonNull Telemetry telemetry) {
         drive = new MecanumDrive(hardwareMap);
         this.telemetry = telemetry;
     }

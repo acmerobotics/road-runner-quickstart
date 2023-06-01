@@ -60,14 +60,13 @@ public class TrajectorySequenceRunner {
     private final FtcDashboard dashboard;
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
-    private VoltageSensor voltageSensor;
+    private final VoltageSensor voltageSensor;
 
-    private List<Integer> lastDriveEncPositions, lastDriveEncVels, lastTrackingEncPositions, lastTrackingEncVels;
+    private final List<Integer> lastDriveEncPositions, lastDriveEncVels;
 
     public TrajectorySequenceRunner(
             TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients, VoltageSensor voltageSensor,
-            List<Integer> lastDriveEncPositions, List<Integer> lastDriveEncVels, List<Integer> lastTrackingEncPositions, List<Integer> lastTrackingEncVels
-    ) {
+            List<Integer> lastDriveEncPositions, List<Integer> lastDriveEncVels) {
         this.follower = follower;
 
         turnController = new PIDFController(headingPIDCoefficients);
@@ -77,8 +76,6 @@ public class TrajectorySequenceRunner {
 
         this.lastDriveEncPositions = lastDriveEncPositions;
         this.lastDriveEncVels = lastDriveEncVels;
-        this.lastTrackingEncPositions = lastTrackingEncPositions;
-        this.lastTrackingEncVels = lastTrackingEncVels;
 
         clock = NanoClock.system();
 
@@ -213,8 +210,7 @@ public class TrajectorySequenceRunner {
         if (targetPose != null) {
             LogFiles.record(
                     targetPose, poseEstimate, voltage,
-                    lastDriveEncPositions, lastDriveEncVels, lastTrackingEncPositions, lastTrackingEncVels
-            );
+                    lastDriveEncPositions, lastDriveEncVels);
         }
 
         packet.put("x", poseEstimate.getX());

@@ -9,12 +9,10 @@ import java.util.function.DoubleSupplier;
 
 public class PivotCommand extends CommandBase {
     private final PivotSubsystem pivotSubsystem;
-//    private final DoubleSupplier power;
     private final double angle;
 
     public PivotCommand(final PivotSubsystem pivot, final double angle) {
         pivotSubsystem = pivot;
-//        this.power = power;
         this.angle = angle;
 
         addRequirements(pivotSubsystem);
@@ -23,6 +21,12 @@ public class PivotCommand extends CommandBase {
     @Override
     public void execute() {
         pivotSubsystem.setAngle(angle);
+        System.out.println("Pivot Position Execute");
     }
 
+    @Override
+    public boolean isFinished() {
+//        return pivotSubsystem.atSetpoint();
+        return false;
+    }
 }

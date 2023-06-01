@@ -1,14 +1,18 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.FeederCommand;
 import org.firstinspires.ftc.teamcode.commands.PivotCommand;
+import org.firstinspires.ftc.teamcode.commands.PivotPowerCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
@@ -22,7 +26,7 @@ public class TeleOpMode extends CommandOpMode {
     private FeederSubsystem feederSubsystem;
 
     private TeleOpDriveCommand driveCommand;
-    private PivotCommand pivotCommand;
+    private PivotPowerCommand pivotPowerCommand;
     private FeederCommand feederCommand;
     private GamepadEx driverController;
     
@@ -43,7 +47,7 @@ public class TeleOpMode extends CommandOpMode {
         this.scorePos = new GamepadButton(driverController, GamepadKeys.Button.X);
 
         this.driveCommand = new TeleOpDriveCommand(driveSubsystem, driverController::getLeftY, driverController::getLeftX, driverController::getRightX);
-//        this.pivotCommand = new PivotCommand(pivotSubsystem, () -> (driverController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - driverController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
+        this.pivotPowerCommand = new PivotPowerCommand(pivotSubsystem, () -> (driverController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - driverController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
         this.feederCommand = new FeederCommand(feederSubsystem, (driverController.getButton(GamepadKeys.Button.RIGHT_BUMPER)) ? -0.5 : 0.3);
 
         register(driveSubsystem);
@@ -64,7 +68,7 @@ public class TeleOpMode extends CommandOpMode {
 
     private void setDefaultCommands() {
         driveSubsystem.setDefaultCommand(driveCommand);
-  //      pivotSubsystem.setDefaultCommand(pivotCommand);
+        pivotSubsystem.setDefaultCommand(pivotPowerCommand);
         feederSubsystem.setDefaultCommand(feederCommand);
     }
 

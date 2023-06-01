@@ -18,7 +18,6 @@ import org.firstinspires.ftc.ftccommon.external.WebHandlerRegistrar;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,12 +72,6 @@ public final class LogFiles {
         public double mecHeadingD = MecanumDrive.HEADING_PID.kD;
         public double mecLateralMultiplier = MecanumDrive.LATERAL_MULTIPLIER;
 
-        public double trackingTicksPerRev = StandardTrackingWheelLocalizer.TICKS_PER_REV;
-        public double trackingWheelRadius = StandardTrackingWheelLocalizer.WHEEL_RADIUS;
-        public double trackingGearRatio = StandardTrackingWheelLocalizer.GEAR_RATIO;
-        public double trackingLateralDistance = StandardTrackingWheelLocalizer.LATERAL_DISTANCE;
-        public double trackingForwardOffset = StandardTrackingWheelLocalizer.FORWARD_OFFSET;
-
         public RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR = DriveConstants.LOGO_FACING_DIR;
         public RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR = DriveConstants.USB_FACING_DIR;
 
@@ -96,8 +89,6 @@ public final class LogFiles {
 
         public List<List<Integer>> driveEncPositions = new ArrayList<>();
         public List<List<Integer>> driveEncVels = new ArrayList<>();
-        public List<List<Integer>> trackingEncPositions = new ArrayList<>();
-        public List<List<Integer>> trackingEncVels = new ArrayList<>();
 
         public LogFile(String opModeName) {
             this.opModeName = opModeName;
@@ -106,8 +97,7 @@ public final class LogFiles {
 
     public static void record(
             Pose2d targetPose, Pose2d pose, double voltage,
-            List<Integer> lastDriveEncPositions, List<Integer> lastDriveEncVels, List<Integer> lastTrackingEncPositions, List<Integer> lastTrackingEncVels
-    ) {
+            List<Integer> lastDriveEncPositions, List<Integer> lastDriveEncVels) {
         long nsTime = System.nanoTime();
         if (nsTime - log.nsStart > 3 * 60 * 1_000_000_000L) {
             return;
@@ -131,24 +121,12 @@ public final class LogFiles {
         while (log.driveEncVels.size() < lastDriveEncVels.size()) {
             log.driveEncVels.add(new ArrayList<>());
         }
-        while (log.trackingEncPositions.size() < lastTrackingEncPositions.size()) {
-            log.trackingEncPositions.add(new ArrayList<>());
-        }
-        while (log.trackingEncVels.size() < lastTrackingEncVels.size()) {
-            log.trackingEncVels.add(new ArrayList<>());
-        }
 
         for (int i = 0; i < lastDriveEncPositions.size(); i++) {
             log.driveEncPositions.get(i).add(lastDriveEncPositions.get(i));
         }
         for (int i = 0; i < lastDriveEncVels.size(); i++) {
             log.driveEncVels.get(i).add(lastDriveEncVels.get(i));
-        }
-        for (int i = 0; i < lastTrackingEncPositions.size(); i++) {
-            log.trackingEncPositions.get(i).add(lastTrackingEncPositions.get(i));
-        }
-        for (int i = 0; i < lastTrackingEncVels.size(); i++) {
-            log.trackingEncVels.get(i).add(lastTrackingEncVels.get(i));
         }
     }
 
