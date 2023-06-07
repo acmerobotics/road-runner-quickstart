@@ -8,9 +8,9 @@ import java.util.function.DoubleSupplier;
 
 public class FeederCommand extends CommandBase {
     private final FeederSubsystem feederSubsystem;
-    private final double power;
+    private final DoubleSupplier power;
 
-    public FeederCommand(final FeederSubsystem feeder, final double power) {
+    public FeederCommand(final FeederSubsystem feeder, final DoubleSupplier power) {
         feederSubsystem = feeder;
         this.power = power;
 
@@ -19,7 +19,7 @@ public class FeederCommand extends CommandBase {
 
     @Override
     public void execute() {
-        feederSubsystem.setPower(power);
+        feederSubsystem.setPower(power.getAsDouble());
     }
 
 }
