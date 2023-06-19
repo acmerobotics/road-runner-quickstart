@@ -18,18 +18,22 @@ public class AutonomousMode extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap);
 
         Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
-                .forward(DISTANCE)
+                .forward(-5)
                 .build();
 
         Trajectory trajectoryBackward = drive.trajectoryBuilder(trajectoryForward.end())
-                .back(DISTANCE)
+                .back(-5)
+                .build();
+        Trajectory trajectoryLeft = drive.trajectoryBuilder(new Pose2d())
+                .strafeLeft(-5)
                 .build();
 
         waitForStart();
 
-        while (opModeIsActive() && !isStopRequested()) {
-            drive.followTrajectory(trajectoryForward);
-            drive.followTrajectory(trajectoryBackward);
-        }
+        drive.followTrajectory(trajectoryForward);
+        drive.followTrajectory(trajectoryBackward);
+        drive.followTrajectory(trajectoryLeft);
+        drive.followTrajectory(trajectoryForward);
+
     }
 }
