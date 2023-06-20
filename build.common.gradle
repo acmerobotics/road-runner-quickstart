@@ -56,7 +56,7 @@ android {
     defaultConfig {
         signingConfig signingConfigs.debug
         applicationId 'com.qualcomm.ftcrobotcontroller'
-        minSdkVersion 23
+        minSdkVersion 24
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
         multiDexEnabled !useProguard
@@ -139,11 +139,11 @@ android {
 }
 
 repositories {
+    mavenCentral()
     flatDir {
         dirs rootProject.file('libs')
     }
 }
-
 dependencies {
     implementation 'org.ftclib.ftclib:core:2.1.1'
     // the following is optional if you want vision
