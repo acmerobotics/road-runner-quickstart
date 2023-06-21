@@ -83,15 +83,15 @@ public class RobotHardware {
 
         voltageTimer = new ElapsedTime();
 
-        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "frontLeftMotor");
-        frontRightMotor = hardwareMap.get(DcMotorEx.class, "frontRightMotor");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class, "backLeftMotor");
-        backRightMotor = hardwareMap.get(DcMotorEx.class, "backRightMotor");
+        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "FLdrive");
+        frontRightMotor = hardwareMap.get(DcMotorEx.class, "FRDandROdo");
+        backLeftMotor = hardwareMap.get(DcMotorEx.class, "BLDandLOdo");
+        backRightMotor = hardwareMap.get(DcMotorEx.class, "BRdrive");
 
-        frontLeftServo = hardwareMap.get(CRServo.class, "frontLeftServo");
-        frontRightServo = hardwareMap.get(CRServo.class, "frontRightServo");
-        backLeftServo = hardwareMap.get(CRServo.class, "backLeftServo");
-        backRightServo = hardwareMap.get(CRServo.class, "backRightServo");
+        frontLeftServo = hardwareMap.get(CRServo.class, "FLturn");
+        frontRightServo = hardwareMap.get(CRServo.class, "FRturn");
+        backLeftServo = hardwareMap.get(CRServo.class, "BLturn");
+        backRightServo = hardwareMap.get(CRServo.class, "BRturn");
 
         frontLeftServo.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightServo.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -103,7 +103,7 @@ public class RobotHardware {
         backLeftEncoder = hardwareMap.get(AnalogInput.class, "backLeftEncoder");
         backRightEncoder = hardwareMap.get(AnalogInput.class, "backRightEncoder");
 
-        parallelPod = new MotorEx(hardwareMap, "backLeftMotor").encoder;
+        parallelPod = new MotorEx(hardwareMap, "BLDandLOdo").encoder;
         parallelPod.setDirection(Motor.Direction.REVERSE);
         perpindicularPod = new MotorEx(hardwareMap, "backRightMotor").encoder;
         perpindicularPod.setDirection(Motor.Direction.REVERSE);

@@ -1,4 +1,4 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-public class robot {
+public class BrainSTEMRobot {
 }
