@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.swerve;
+package org.firstinspires.ftc.teamcode.robot.swerve;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
@@ -25,7 +25,7 @@ import java.util.Locale;
 @Config
 public class SwerveModule {
     public static double P = 0.6, I = 0, D = 0.1;
-    public static double K_STATIC = 0.03;
+    public static double STATIC = 0.03;
 
     public static double MAX_SERVO = 1, MAX_MOTOR = 1;
 
@@ -85,7 +85,7 @@ public class SwerveModule {
 
         double power = Range.clip(rotationController.calculate(0, error), -MAX_SERVO, MAX_SERVO);
         if (Double.isNaN(power)) power = 0;
-        servo.setPower(power + (Math.abs(error) > 0.02 ? K_STATIC : 0) * Math.signum(power));
+        servo.setPower(power + (Math.abs(error) > 0.02 ? STATIC : 0) * Math.signum(power));
     }
 
     public double getTargetRotation() {

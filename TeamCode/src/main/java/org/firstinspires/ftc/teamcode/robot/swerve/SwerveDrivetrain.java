@@ -1,17 +1,13 @@
-package org.firstinspires.ftc.teamcode.swerve;
+package org.firstinspires.ftc.teamcode.robot.swerve;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.hypot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-
-
-import static org.firstinspires.ftc.teamcode.common.hardware.Globals.*;
-
-import static org.firstinspires.ftc.teamcode.common.hardware.Globals.*;
-
+import static org.firstinspires.ftc.teamcode.robot.Globals.*;
+import org.firstinspires.ftc.teamcode.robot.RobotHardware;
+import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
 
