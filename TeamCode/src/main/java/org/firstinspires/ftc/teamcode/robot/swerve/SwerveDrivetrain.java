@@ -5,7 +5,7 @@ import static java.lang.Math.hypot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import static org.firstinspires.ftc.teamcode.robot.Globals.*;
+import static org.firstinspires.ftc.teamcode.robot.Constants.*;
 import org.firstinspires.ftc.teamcode.robot.RobotHardware;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;

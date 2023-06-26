@@ -72,7 +72,7 @@ public class RobotHardware {
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
-        if (Globals.USING_IMU) {
+        if (Constants.USING_IMU) {
             synchronized (imuLock) {
                 imu = hardwareMap.get(BNO055IMU.class, "imu");
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -110,7 +110,7 @@ public class RobotHardware {
 
 
 
-        if (Globals.AUTO) {
+        if (Constants.AUTO) {
             backCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam-1"));
             backCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
                 @Override
@@ -177,7 +177,7 @@ public class RobotHardware {
     }
 
     public void startIMUThread(LinearOpMode opMode) {
-        if (Globals.USING_IMU) {
+        if (Constants.USING_IMU) {
             imuThread = new Thread(() -> {
                 while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
                     synchronized (imuLock) {
