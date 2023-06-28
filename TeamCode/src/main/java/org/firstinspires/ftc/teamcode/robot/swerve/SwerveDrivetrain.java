@@ -7,7 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import static org.firstinspires.ftc.teamcode.robot.Constants.*;
 import org.firstinspires.ftc.teamcode.robot.RobotHardware;
-import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
+import org.firstinspires.ftc.teamcode.util.hardware.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
 
@@ -22,14 +22,16 @@ public class SwerveDrivetrain implements Drivetrain {
 
     public static boolean maintainHeading = false;
 
-    double[] ws = new double[4];
-    double[] wa = new double[4];
+    double[] motor = new double[4];
+    double[] crServo = new double[4];
     double max = 0.0;
 
     public final double minPow = 0.1;
     public static double imuOffset = 0.0;
 
     private boolean locked = false;
+
+    private boolean restPosition = false;
 
     public SwerveDrivetrain(RobotHardware robot) {
         frontLeftModule = new SwerveModule(robot.frontLeftMotor, robot.frontLeftServo, new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(frontLeftOffset).setInverted(true));
@@ -57,22 +59,25 @@ public class SwerveDrivetrain implements Drivetrain {
                 d = y + head * (TRACK_WIDTH / R);
 
         if (locked) {
-            ws = new double[]{0, 0, 0, 0};
-            wa = new double[]{Math.PI / 4, -Math.PI / 4, Math.PI / 4, -Math.PI / 4};
+            motor = new double[]{0, 0, 0, 0};
+            crServo = new double[]{Math.PI / 4, -Math.PI / 4, Math.PI / 4, -Math.PI / 4};
+        } else if (restPosition) {
+            motor = new double[]{0, 0, 0, 0};
+            crServo = new double[]{0, 0, 0, 0};
         } else {
-            ws = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
-            if (!maintainHeading) wa = new double[]{atan2(b, c), atan2(b, d), atan2(a, d), atan2(a, c)};
+            motor = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
+            if (!maintainHeading) crServo = new double[]{atan2(b, c), atan2(b, d), atan2(a, d), atan2(a, c)};
         }
 
-        max = MathUtils.max(ws);
+        max = MathUtils.max(motor);
     }
 
     public void write() {
         for (int i = 0; i < 4; i++) {
-            SwerveModule m = modules[i];
-            if (Math.abs(max) > 1) ws[i] /= max;
-            m.setMotorPower(Math.abs(ws[i]) + ((USE_WHEEL_FEEDFORWARD) ? minPow * Math.signum(ws[i]) : 0));
-            m.setTargetRotation(MathUtils.norm(wa[i]));
+            SwerveModule modules = this.modules[i];
+            if (Math.abs(max) > 1) motor[i] /= max;
+            modules.setMotorPower(Math.abs(motor[i]) + ((USE_WHEEL_FEEDFORWARD) ? minPow * Math.signum(motor[i]) : 0));
+            modules.setTargetRotation(MathUtils.norm(crServo[i]));
         }
     }
 
@@ -84,8 +89,16 @@ public class SwerveDrivetrain implements Drivetrain {
         this.locked = locked;
     }
 
+    public void setReset(boolean restPosition) {
+        this.restPosition = restPosition;
+    }
+
     public boolean isLocked(){
         return locked;
+    }
+
+    public boolean isReset(){
+        return restPosition;
     }
 
     public String getTelemetry() {

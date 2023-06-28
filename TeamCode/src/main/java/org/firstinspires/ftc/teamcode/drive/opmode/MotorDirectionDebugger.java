@@ -6,9 +6,12 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.RobotHardware;
+import org.firstinspires.ftc.teamcode.util.hardware.AbsoluteAnalogEncoder;
 
 /**
  * This is a simple teleop routine for debugging your motor configuration.
@@ -38,15 +41,18 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  *
  * Uncomment the @Disabled tag below to use this opmode.
  */
-@Disabled
+// rip if a person had to make the text image above
+//@Disabled
 @Config
 @TeleOp(group = "drive")
 public class MotorDirectionDebugger extends LinearOpMode {
-    public static double MOTOR_POWER = 0.7;
+    public static double MOTOR_POWER = 0.2;
 
     @Override
     public void runOpMode() throws InterruptedException {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        RobotHardware robot = new RobotHardware();
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -70,6 +76,11 @@ public class MotorDirectionDebugger extends LinearOpMode {
             telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;A / X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Left</font>");
             telemetry.addLine();
 
+            AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(true);
+            AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(true);
+            AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(true);
+            AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(true);
+
             if(gamepad1.x) {
                 drive.setMotorPowers(MOTOR_POWER, 0, 0, 0);
                 telemetry.addLine("Running Motor: Front Left");
@@ -86,6 +97,11 @@ public class MotorDirectionDebugger extends LinearOpMode {
                 drive.setMotorPowers(0, 0, 0, 0);
                 telemetry.addLine("Running Motor: None");
             }
+
+            telemetry.addData("FL Encoder :", flE.getCurrentPosition());
+            telemetry.addData("FR Encoder :", frE.getCurrentPosition());
+            telemetry.addData("BL Encoder :", blE.getCurrentPosition());
+            telemetry.addData("BR Encoder :", brE.getCurrentPosition());
 
             telemetry.update();
         }

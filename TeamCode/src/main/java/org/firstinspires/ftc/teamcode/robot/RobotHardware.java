@@ -88,6 +88,11 @@ public class RobotHardware {
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "BLDandLOdo");
         backRightMotor = hardwareMap.get(DcMotorEx.class, "BRdrive");
 
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
         frontLeftServo = hardwareMap.get(CRServo.class, "FLturn");
         frontRightServo = hardwareMap.get(CRServo.class, "FRturn");
         backLeftServo = hardwareMap.get(CRServo.class, "BLturn");
@@ -111,17 +116,17 @@ public class RobotHardware {
 
 
         if (Constants.AUTO) {
-            backCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam-1"));
-            backCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-                @Override
-                public void onOpened() {
-                    backCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                }
-
-                @Override
-                public void onError(int errorCode) {
-                }
-            });
+//            backCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam-1"));
+//            backCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+//                @Override
+//                public void onOpened() {
+//                    backCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+//                }
+//
+//                @Override
+//                public void onError(int errorCode) {
+//                }
+//            });
         }
         voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
     }
@@ -151,7 +156,6 @@ public class RobotHardware {
     }
 
     public void write(SwerveDrivetrain drivetrain) {
-
         try {
             drivetrain.write();
 
@@ -189,9 +193,9 @@ public class RobotHardware {
         }
     }
 
-    public void stopCameraStream() {
-        backCamera.closeCameraDeviceAsync(() -> System.out.println("Stopped Back Camera"));
-    }
+//    public void stopCameraStream() {
+//        backCamera.closeCameraDeviceAsync(() -> System.out.println("Stopped Back Camera"));
+//    }
 
     public double getVoltage() {
         return voltage;

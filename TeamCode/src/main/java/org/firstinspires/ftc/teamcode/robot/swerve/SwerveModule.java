@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
+import org.firstinspires.ftc.teamcode.util.hardware.AbsoluteAnalogEncoder;
 
 import java.util.Locale;
 
