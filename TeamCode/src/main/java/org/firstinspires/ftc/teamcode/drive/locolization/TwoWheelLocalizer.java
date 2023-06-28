@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 
 
-import org.firstinspires.ftc.teamcode.robot.RobotHardware;
+import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
 
 import java.util.Arrays;
@@ -28,7 +28,7 @@ public class TwoWheelLocalizer extends TwoTrackingWheelLocalizer implements Swer
 
     private final DoubleSupplier horizontalPosition, lateralPosition, imuAngle;
 
-    public TwoWheelLocalizer(RobotHardware robot) {
+    public TwoWheelLocalizer(BrainSTEMRobot robot) {
 
         super(Arrays.asList(
                 new Pose2d(PARALLEL_X, PARALLEL_Y, 0),

@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,16 +10,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.locolization.TwoWheelLocalizer;
-import org.firstinspires.ftc.teamcode.robot.RobotHardware;
+import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
 
-@TeleOp(name = "Swerve Test", group = "drive")
 //@Disabled
+@TeleOp(name = "Localization Test (odo) ", group = "drive")
 public class LocalizationTest extends LinearOpMode {
 
     TwoWheelLocalizer swerveLocolizer;
 
-    private RobotHardware robot = RobotHardware.getInstance();
+    private BrainSTEMRobot robot = BrainSTEMRobot.getInstance();
 
     private ElapsedTime timer;
 
@@ -28,15 +29,22 @@ public class LocalizationTest extends LinearOpMode {
 
         swerveLocolizer = new TwoWheelLocalizer(robot);
 
-        swerveLocolizer.setPoseEstimate(new Pose2d(0,0,0));
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.startIMUThread(this);
+
 
         robot.reset();
 
         waitForStart();
+
+        while (opModeInInit()) {
+            swerveLocolizer.setPoseEstimate(new Pose2d(0,0,0));
+            robot.startIMUThread(this);
+            PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            PhotonCore.experimental.setMaximumParallelCommands(8);
+            PhotonCore.enable();
+        }
 
         while (!isStopRequested()) {
 

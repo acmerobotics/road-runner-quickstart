@@ -6,7 +6,7 @@ import static java.lang.Math.hypot;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import static org.firstinspires.ftc.teamcode.robot.Constants.*;
-import org.firstinspires.ftc.teamcode.robot.RobotHardware;
+import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
 import org.firstinspires.ftc.teamcode.util.hardware.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
@@ -33,7 +33,7 @@ public class SwerveDrivetrain implements Drivetrain {
 
     private boolean restPosition = false;
 
-    public SwerveDrivetrain(RobotHardware robot) {
+    public SwerveDrivetrain(BrainSTEMRobot robot) {
         frontLeftModule = new SwerveModule(robot.frontLeftMotor, robot.frontLeftServo, new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(frontLeftOffset).setInverted(true));
         backLeftModule = new SwerveModule(robot.backLeftMotor, robot.backLeftServo, new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).zero(backLeftOffset).setInverted(true));
         backRightModule = new SwerveModule(robot.backRightMotor, robot.backRightServo, new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).zero(backRightOffset).setInverted(true));
