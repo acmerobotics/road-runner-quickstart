@@ -44,6 +44,9 @@ import org.firstinspires.ftc.teamcode.util.hardware.AbsoluteAnalogEncoder;
 @Config
 @TeleOp(group = "drive")
 public class MotorDirectionDebugger extends LinearOpMode {
+
+    // NO ERRORS!!!
+    // RUNS WITH NO ISSUES
     public static double MOTOR_POWER = 0.2;
 
     @Override
@@ -57,9 +60,12 @@ public class MotorDirectionDebugger extends LinearOpMode {
         telemetry.addLine("Press play to begin the debugging opmode");
         telemetry.update();
 
+        robot.init(hardwareMap, telemetry);
+
         waitForStart();
 
         if (isStopRequested()) return;
+
 
         telemetry.clearAll();
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
@@ -74,10 +80,10 @@ public class MotorDirectionDebugger extends LinearOpMode {
             telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;A / X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Left</font>");
             telemetry.addLine();
 
-            AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(true);
-            AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(true);
-            AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(true);
-            AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(true);
+            AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
+            AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
+            AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
+            AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
 
             if(gamepad1.x) {
                 drive.setMotorPowers(MOTOR_POWER, 0, 0, 0);

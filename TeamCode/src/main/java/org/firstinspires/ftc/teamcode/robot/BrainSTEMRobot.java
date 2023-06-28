@@ -24,7 +24,7 @@ public class BrainSTEMRobot {
     public DcMotorEx frontLeftMotor;
     public DcMotorEx frontRightMotor;
     public DcMotorEx backLeftMotor;
-    public DcMotorEx backRightMotor;
+    public DcMotorEx THISONE;
 
     public CRServo frontLeftServo;
     public CRServo frontRightServo;
@@ -84,12 +84,12 @@ public class BrainSTEMRobot {
         frontLeftMotor = hardwareMap.get(DcMotorEx.class, "FLdrive");
         frontRightMotor = hardwareMap.get(DcMotorEx.class, "FRDandROdo");
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "BLDandLOdo");
-        backRightMotor = hardwareMap.get(DcMotorEx.class, "BRdrive");
+        THISONE = hardwareMap.get(DcMotorEx.class, "BRdrive");
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        THISONE.setDirection(DcMotorSimple.Direction.FORWARD);
 
         frontLeftServo = hardwareMap.get(CRServo.class, "FLturn");
         frontRightServo = hardwareMap.get(CRServo.class, "FRturn");
@@ -101,14 +101,14 @@ public class BrainSTEMRobot {
         backLeftServo.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        frontLeftEncoder = hardwareMap.get(AnalogInput.class, "frontLeftEncoder");
-        frontRightEncoder = hardwareMap.get(AnalogInput.class, "frontRightEncoder");
-        backLeftEncoder = hardwareMap.get(AnalogInput.class, "backLeftEncoder");
-        backRightEncoder = hardwareMap.get(AnalogInput.class, "backRightEncoder");
+        frontLeftEncoder = hardwareMap.get(AnalogInput.class, "FLE");
+        frontRightEncoder = hardwareMap.get(AnalogInput.class, "FRE");
+        backLeftEncoder = hardwareMap.get(AnalogInput.class, "BLE");
+        backRightEncoder = hardwareMap.get(AnalogInput.class, "BRE");
 
         parallelPod = new MotorEx(hardwareMap, "BLDandLOdo").encoder;
         parallelPod.setDirection(Motor.Direction.REVERSE);
-        perpindicularPod = new MotorEx(hardwareMap, "backRightMotor").encoder;
+        perpindicularPod = new MotorEx(hardwareMap, "BRdrive").encoder;
         perpindicularPod.setDirection(Motor.Direction.REVERSE);
 
 
@@ -126,7 +126,7 @@ public class BrainSTEMRobot {
 //                }
 //            });
         }
-        voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
+//        voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
     }
 
     public void loop(Pose drive, SwerveDrivetrain drivetrain) {
@@ -138,10 +138,10 @@ public class BrainSTEMRobot {
         } catch (Exception ignored) {
         }
 
-        if (voltageTimer.seconds() > 5) {
-            voltageTimer.reset();
-            voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
-        }
+//        if (voltageTimer.seconds() > 5) {
+//            voltageTimer.reset();
+//            voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
+//        }
     }
 
     public void read(SwerveDrivetrain drivetrain) {
@@ -195,9 +195,9 @@ public class BrainSTEMRobot {
 //        backCamera.closeCameraDeviceAsync(() -> System.out.println("Stopped Back Camera"));
 //    }
 
-    public double getVoltage() {
-        return voltage;
-    }
+//    public double getVoltage() {
+//        return voltage;
+//    }
 
     public void zero() {
 

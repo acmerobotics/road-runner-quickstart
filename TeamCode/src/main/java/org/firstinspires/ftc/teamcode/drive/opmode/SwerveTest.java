@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -38,15 +40,13 @@ public class SwerveTest extends LinearOpMode {
 
     private boolean lock_robot_heading = false;
 
+    private double targetHeading;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
 
         swerveLocolizer = new TwoWheelLocalizer(robot);
-
-
-
-
 
 
         robot.reset();
@@ -58,8 +58,8 @@ public class SwerveTest extends LinearOpMode {
             telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
             Constants.AUTO = false;
-            Constants.USING_IMU = true;
-            Constants.USE_WHEEL_FEEDFORWARD = false;
+//            Constants.USING_IMU = true;
+//            Constants.USE_WHEEL_FEEDFORWARD = false;
 
             robot.init(hardwareMap, telemetry);
 
@@ -72,9 +72,9 @@ public class SwerveTest extends LinearOpMode {
             strafe = new SlewRateLimiter(5);
 
 
-            PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-            PhotonCore.experimental.setMaximumParallelCommands(8);
-            PhotonCore.enable();
+//            PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+//            PhotonCore.experimental.setMaximumParallelCommands(8);
+//            PhotonCore.enable();
         }
 
         while (!isStopRequested()) {
@@ -83,7 +83,17 @@ public class SwerveTest extends LinearOpMode {
 
             double turn = gamepad1.right_stick_x;
 
-            double headingCorrection = -hController.calculate(0, error) * 12.4 / robot.getVoltage();
+            if (gamepad1.right_stick_y > 0.25) {
+                lock_robot_heading = true;
+                targetHeading = Math.PI - SwerveDrivetrain.imuOffset;
+            }
+            if (gamepad1.right_stick_y < -0.25) {
+                lock_robot_heading = true;
+                targetHeading = 0 - SwerveDrivetrain.imuOffset;
+            }
+
+            double error = normalizeRadians(normalizeRadians(targetHeading) - normalizeRadians(robot.getAngle()));
+            double headingCorrection = 0; /* -hController.calculate(0, error) * 12.4 / robot.getVoltage(); */
 
             if (Math.abs(headingCorrection) < 0.01) {
                 headingCorrection = 0;

@@ -18,7 +18,7 @@ public class SwerveDrivetrain implements Drivetrain {
 
     public static double TRACK_WIDTH = 9, WHEEL_BASE = 9;
     private final double R;
-    public static double frontLeftOffset = -0.05, frontRightOffset = 0, backLeftOffset = 0, backRightOffset = -0.055;
+    public static double frontLeftOffset = 5.7, frontRightOffset = 5.2, backLeftOffset = 3.6, backRightOffset = -2.7;
 
     public static boolean maintainHeading = false;
 
@@ -36,7 +36,7 @@ public class SwerveDrivetrain implements Drivetrain {
     public SwerveDrivetrain(BrainSTEMRobot robot) {
         frontLeftModule = new SwerveModule(robot.frontLeftMotor, robot.frontLeftServo, new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(frontLeftOffset).setInverted(true));
         backLeftModule = new SwerveModule(robot.backLeftMotor, robot.backLeftServo, new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).zero(backLeftOffset).setInverted(true));
-        backRightModule = new SwerveModule(robot.backRightMotor, robot.backRightServo, new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).zero(backRightOffset).setInverted(true));
+        backRightModule = new SwerveModule(robot.THISONE, robot.backRightServo, new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).zero(backRightOffset).setInverted(true));
         frontRightModule = new SwerveModule(robot.frontRightMotor, robot.frontRightServo, new AbsoluteAnalogEncoder(robot.frontRightEncoder, 3.3).zero(frontRightOffset).setInverted(true));
 
         modules = new SwerveModule[]{frontLeftModule, frontRightModule, backRightModule, backLeftModule};
