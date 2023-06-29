@@ -98,16 +98,6 @@ public class SwerveTest extends CommandOpMode {
         if (gamepad1.right_stick_button && Constants.USING_IMU)
             SwerveDrivetrain.imuOffset = robot.getAngle() + Math.PI;
 
-
-        if (gamepad1.right_stick_y > 0.25) {
-            lock_robot_heading = true;
-            targetHeading = Math.PI - SwerveDrivetrain.imuOffset;
-        }
-        if (gamepad1.right_stick_y < -0.25) {
-            lock_robot_heading = true;
-            targetHeading = 0 - SwerveDrivetrain.imuOffset;
-        }
-
         double turn = gamepad1.right_stick_x;
         if (Math.abs(turn) > 0.002) {
             lock_robot_heading = false;
