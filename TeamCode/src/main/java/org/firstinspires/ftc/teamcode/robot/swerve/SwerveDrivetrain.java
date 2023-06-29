@@ -5,11 +5,13 @@ import static java.lang.Math.hypot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import static org.firstinspires.ftc.teamcode.robot.Constants.*;
+
+
 import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
 import org.firstinspires.ftc.teamcode.util.hardware.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
+import static org.firstinspires.ftc.teamcode.robot.Constants.USE_WHEEL_FEEDFORWARD;
 
 @Config
 public class SwerveDrivetrain implements Drivetrain {
@@ -18,12 +20,12 @@ public class SwerveDrivetrain implements Drivetrain {
 
     public static double TRACK_WIDTH = 9, WHEEL_BASE = 9;
     private final double R;
-    public static double frontLeftOffset = 5.7, frontRightOffset = 5.2, backLeftOffset = 3.6, backRightOffset = -2.7;
+    public static double frontLeftOffset = 0, frontRightOffset = 0, backLeftOffset = 0, backRightOffset = 0;
 
     public static boolean maintainHeading = false;
 
-    double[] motor = new double[4];
-    double[] crServo = new double[4];
+    double[] ws = new double[4];
+    double[] wa = new double[4];
     double max = 0.0;
 
     public final double minPow = 0.1;
@@ -31,12 +33,10 @@ public class SwerveDrivetrain implements Drivetrain {
 
     private boolean locked = false;
 
-    private boolean restPosition = false;
-
     public SwerveDrivetrain(BrainSTEMRobot robot) {
         frontLeftModule = new SwerveModule(robot.frontLeftMotor, robot.frontLeftServo, new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(frontLeftOffset).setInverted(true));
         backLeftModule = new SwerveModule(robot.backLeftMotor, robot.backLeftServo, new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).zero(backLeftOffset).setInverted(true));
-        backRightModule = new SwerveModule(robot.THISONE, robot.backRightServo, new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).zero(backRightOffset).setInverted(true));
+        backRightModule = new SwerveModule(robot.backRightMotor, robot.backRightServo, new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).zero(backRightOffset).setInverted(true));
         frontRightModule = new SwerveModule(robot.frontRightMotor, robot.frontRightServo, new AbsoluteAnalogEncoder(robot.frontRightEncoder, 3.3).zero(frontRightOffset).setInverted(true));
 
         modules = new SwerveModule[]{frontLeftModule, frontRightModule, backRightModule, backLeftModule};
@@ -59,25 +59,22 @@ public class SwerveDrivetrain implements Drivetrain {
                 d = y + head * (TRACK_WIDTH / R);
 
         if (locked) {
-            motor = new double[]{0, 0, 0, 0};
-            crServo = new double[]{Math.PI / 4, -Math.PI / 4, Math.PI / 4, -Math.PI / 4};
-        } else if (restPosition) {
-            motor = new double[]{0, 0, 0, 0};
-            crServo = new double[]{0, 0, 0, 0};
+            ws = new double[]{0, 0, 0, 0};
+            wa = new double[]{Math.PI / 4, -Math.PI / 4, Math.PI / 4, -Math.PI / 4};
         } else {
-            motor = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
-            if (!maintainHeading) crServo = new double[]{atan2(b, c), atan2(b, d), atan2(a, d), atan2(a, c)};
+            ws = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
+            if (!maintainHeading) wa = new double[]{atan2(b, c), atan2(b, d), atan2(a, d), atan2(a, c)};
         }
 
-        max = MathUtils.max(motor);
+        max = MathUtils.max(ws);
     }
 
     public void write() {
         for (int i = 0; i < 4; i++) {
-            SwerveModule modules = this.modules[i];
-            if (Math.abs(max) > 1) motor[i] /= max;
-            modules.setMotorPower(Math.abs(motor[i]) + ((USE_WHEEL_FEEDFORWARD) ? minPow * Math.signum(motor[i]) : 0));
-            modules.setTargetRotation(MathUtils.norm(crServo[i]));
+            SwerveModule m = modules[i];
+            if (Math.abs(max) > 1) ws[i] /= max;
+            m.setMotorPower(Math.abs(ws[i]) + ((USE_WHEEL_FEEDFORWARD) ? minPow * Math.signum(ws[i]) : 0));
+            m.setTargetRotation(MathUtils.norm(wa[i]));
         }
     }
 
@@ -89,16 +86,8 @@ public class SwerveDrivetrain implements Drivetrain {
         this.locked = locked;
     }
 
-    public void setReset(boolean restPosition) {
-        this.restPosition = restPosition;
-    }
-
     public boolean isLocked(){
         return locked;
-    }
-
-    public boolean isReset(){
-        return restPosition;
     }
 
     public String getTelemetry() {

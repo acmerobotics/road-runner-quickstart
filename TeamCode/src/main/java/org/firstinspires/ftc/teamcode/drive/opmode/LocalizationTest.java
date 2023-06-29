@@ -19,13 +19,15 @@ public class LocalizationTest extends LinearOpMode {
 
     TwoWheelLocalizer swerveLocolizer;
 
-    private BrainSTEMRobot robot = BrainSTEMRobot.getInstance();
+//    private BrainSTEMRobot robot = BrainSTEMRobot.getInstance();
 
     private ElapsedTime timer;
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        BrainSTEMRobot robot = new BrainSTEMRobot();
 
         swerveLocolizer = new TwoWheelLocalizer(robot);
 
@@ -36,15 +38,17 @@ public class LocalizationTest extends LinearOpMode {
 
         robot.reset();
 
+        robot.init(hardwareMap, telemetry);
+
         waitForStart();
 
-        while (opModeInInit()) {
-            swerveLocolizer.setPoseEstimate(new Pose2d(0,0,0));
-            robot.startIMUThread(this);
-            PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-            PhotonCore.experimental.setMaximumParallelCommands(8);
-            PhotonCore.enable();
-        }
+//        while (opModeInInit()) {
+//            swerveLocolizer.setPoseEstimate(new Pose2d(0,0,0));
+//            robot.startIMUThread(this);
+//            PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+//            PhotonCore.experimental.setMaximumParallelCommands(8);
+//            PhotonCore.enable();
+//        }
 
         while (!isStopRequested()) {
 

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -81,9 +83,9 @@ public class MotorDirectionDebugger extends LinearOpMode {
             telemetry.addLine();
 
             AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
-            AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
-            AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
-            AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
+            AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontRightEncoder, 3.3).setInverted(false);
+            AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).setInverted(false);
+            AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).setInverted(false);
 
             if(gamepad1.x) {
                 drive.setMotorPowers(MOTOR_POWER, 0, 0, 0);
@@ -102,10 +104,10 @@ public class MotorDirectionDebugger extends LinearOpMode {
                 telemetry.addLine("Running Motor: None");
             }
 
-            telemetry.addData("FL Encoder :", flE.getCurrentPosition());
-            telemetry.addData("FR Encoder :", frE.getCurrentPosition());
-            telemetry.addData("BL Encoder :", blE.getCurrentPosition());
-            telemetry.addData("BR Encoder :", brE.getCurrentPosition());
+            telemetry.addData("FL Encoder :", normalizeRadians(flE.getCurrentPosition() - Math.PI));
+            telemetry.addData("FR Encoder :", normalizeRadians(frE.getCurrentPosition() - Math.PI));
+            telemetry.addData("BL Encoder :", normalizeRadians(blE.getCurrentPosition() - Math.PI));
+            telemetry.addData("BR Encoder :", normalizeRadians(brE.getCurrentPosition() - Math.PI));
 
             telemetry.update();
         }

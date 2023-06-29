@@ -9,22 +9,27 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+
 import org.firstinspires.ftc.teamcode.robot.swerve.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
 import org.openftc.easyopencv.OpenCvCamera;
+
 
 import javax.annotation.concurrent.GuardedBy;
 
 public class BrainSTEMRobot {
 
+
     public DcMotorEx frontLeftMotor;
     public DcMotorEx frontRightMotor;
     public DcMotorEx backLeftMotor;
-    public DcMotorEx THISONE;
+    public DcMotorEx backRightMotor;
+
 
     public CRServo frontLeftServo;
     public CRServo frontRightServo;
@@ -36,8 +41,6 @@ public class BrainSTEMRobot {
     public AnalogInput backLeftEncoder;
     public AnalogInput backRightEncoder;
 
-    public Motor.Encoder liftEncoder;
-    public Motor.Encoder intakeEncoder;
     public Motor.Encoder parallelPod;
     public Motor.Encoder perpindicularPod;
 
@@ -49,9 +52,9 @@ public class BrainSTEMRobot {
     private double imuOffset = 0;
     private double voltage = 0.0;
     private ElapsedTime voltageTimer;
+
     public OpenCvCamera backCamera;
 
-    public DigitalChannel clawSensor;
 
     private static BrainSTEMRobot instance = null;
 
@@ -69,7 +72,6 @@ public class BrainSTEMRobot {
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
-
         if (Constants.USING_IMU) {
             synchronized (imuLock) {
                 imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -81,15 +83,13 @@ public class BrainSTEMRobot {
 
         voltageTimer = new ElapsedTime();
 
+
         frontLeftMotor = hardwareMap.get(DcMotorEx.class, "FLdrive");
         frontRightMotor = hardwareMap.get(DcMotorEx.class, "FRDandROdo");
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "BLDandLOdo");
-        THISONE = hardwareMap.get(DcMotorEx.class, "BRdrive");
+        backRightMotor = hardwareMap.get(DcMotorEx.class, "BRdrive");
 
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        THISONE.setDirection(DcMotorSimple.Direction.FORWARD);
+
 
         frontLeftServo = hardwareMap.get(CRServo.class, "FLturn");
         frontRightServo = hardwareMap.get(CRServo.class, "FRturn");
@@ -106,27 +106,18 @@ public class BrainSTEMRobot {
         backLeftEncoder = hardwareMap.get(AnalogInput.class, "BLE");
         backRightEncoder = hardwareMap.get(AnalogInput.class, "BRE");
 
+
+
         parallelPod = new MotorEx(hardwareMap, "BLDandLOdo").encoder;
         parallelPod.setDirection(Motor.Direction.REVERSE);
-        perpindicularPod = new MotorEx(hardwareMap, "BRdrive").encoder;
+        perpindicularPod = new MotorEx(hardwareMap, "FRDandROdo").encoder;
         perpindicularPod.setDirection(Motor.Direction.REVERSE);
 
 
-
         if (Constants.AUTO) {
-//            backCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam-1"));
-//            backCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-//                @Override
-//                public void onOpened() {
-//                    backCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-//                }
-//
-//                @Override
-//                public void onError(int errorCode) {
-//                }
-//            });
+
         }
-//        voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
+        voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
     }
 
     public void loop(Pose drive, SwerveDrivetrain drivetrain) {
@@ -138,10 +129,11 @@ public class BrainSTEMRobot {
         } catch (Exception ignored) {
         }
 
-//        if (voltageTimer.seconds() > 5) {
-//            voltageTimer.reset();
-//            voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
-//        }
+
+        if (voltageTimer.seconds() > 5) {
+            voltageTimer.reset();
+            voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
+        }
     }
 
     public void read(SwerveDrivetrain drivetrain) {
@@ -154,6 +146,7 @@ public class BrainSTEMRobot {
     }
 
     public void write(SwerveDrivetrain drivetrain) {
+
         try {
             drivetrain.write();
 
@@ -191,13 +184,13 @@ public class BrainSTEMRobot {
         }
     }
 
-//    public void stopCameraStream() {
-//        backCamera.closeCameraDeviceAsync(() -> System.out.println("Stopped Back Camera"));
-//    }
+    public void stopCameraStream() {
+        backCamera.closeCameraDeviceAsync(() -> System.out.println("Stopped Back Camera"));
+    }
 
-//    public double getVoltage() {
-//        return voltage;
-//    }
+    public double getVoltage() {
+        return voltage;
+    }
 
     public void zero() {
 

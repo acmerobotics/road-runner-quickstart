@@ -3,16 +3,21 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.localization.Localizer;
+import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
 import org.firstinspires.ftc.teamcode.drive.locolization.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
 import org.firstinspires.ftc.teamcode.robot.Constants;
@@ -21,113 +26,146 @@ import org.firstinspires.ftc.teamcode.robot.swerve.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.math.Point;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
 
-//@Disabled
-@TeleOp(name = "Localization Test (swerve) ", group = "drive")
-public class SwerveTest extends LinearOpMode {
+import java.util.function.BooleanSupplier;
 
-    TwoWheelLocalizer swerveLocolizer;
-
-    private BrainSTEMRobot robot = BrainSTEMRobot.getInstance();
-
-
+@Config
+@TeleOp(name = "Swerve Tele Test")
+public class SwerveTest extends CommandOpMode {
     private ElapsedTime timer;
+    private double loopTime = 0;
 
-    private SwerveDrivetrain swerveDrive;
+    public static double position;
 
-    private SlewRateLimiter forward;
-
-    private SlewRateLimiter strafe;
-
-    private boolean lock_robot_heading = false;
-
+    private boolean pHeadingLock = true;
     private double targetHeading;
 
+    private final BrainSTEMRobot robot = BrainSTEMRobot.getInstance();
+    private SwerveDrivetrain drivetrain;
+//    private IntakeSubsystem intake;
+//    private LiftSubsystem lift;
+
+    private SlewRateLimiter fw;
+    private SlewRateLimiter str;
+    private final PIDFController hController = new PIDFController(0.5, 0, 0.1, 0);
+
+    public static double fw_r = 4;
+    public static double str_r = 4;
+    private boolean lock_robot_heading = false;
+
+    GamepadEx gamepadEx, gamepadEx2;
+    TwoWheelLocalizer localizer;
+
+    public static boolean autoGrabActive = false;
+
+
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void initialize() {
+        CommandScheduler.getInstance().reset();
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
+        Constants.AUTO = false;
+        Constants.USING_IMU = true;
+        Constants.USE_WHEEL_FEEDFORWARD = false;
 
-        swerveLocolizer = new TwoWheelLocalizer(robot);
+        robot.init(hardwareMap, telemetry);
+        drivetrain = new SwerveDrivetrain(robot);
 
+        gamepadEx = new GamepadEx(gamepad1);
+        gamepadEx2 = new GamepadEx(gamepad2);
+        localizer = new TwoWheelLocalizer(robot);
 
-        robot.reset();
+        robot.enabled = true;
 
-        waitForStart();
+        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        PhotonCore.experimental.setMaximumParallelCommands(8);
+        PhotonCore.enable();
 
-        while (opModeInInit()) {
+    }
 
-            telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-            Constants.AUTO = false;
-//            Constants.USING_IMU = true;
-//            Constants.USE_WHEEL_FEEDFORWARD = false;
-
-            robot.init(hardwareMap, telemetry);
-
-            robot.enabled = true;
-
-            swerveLocolizer.setPoseEstimate(new Pose2d(0,0,0));
+    @Override
+    public void run() {
+        super.run();
+        if (timer == null) {
+            timer = new ElapsedTime();
+            robot.reset();
             robot.startIMUThread(this);
-
-            forward = new SlewRateLimiter(5);
-            strafe = new SlewRateLimiter(5);
-
-
-//            PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-//            PhotonCore.experimental.setMaximumParallelCommands(8);
-//            PhotonCore.enable();
+            fw = new SlewRateLimiter(fw_r);
+            str = new SlewRateLimiter(str_r);
         }
 
-        while (!isStopRequested()) {
+        robot.read(drivetrain);
 
-            robot.read(swerveDrive);
-
-            double turn = gamepad1.right_stick_x;
-
-            if (gamepad1.right_stick_y > 0.25) {
-                lock_robot_heading = true;
-                targetHeading = Math.PI - SwerveDrivetrain.imuOffset;
-            }
-            if (gamepad1.right_stick_y < -0.25) {
-                lock_robot_heading = true;
-                targetHeading = 0 - SwerveDrivetrain.imuOffset;
-            }
-
-            double error = normalizeRadians(normalizeRadians(targetHeading) - normalizeRadians(robot.getAngle()));
-            double headingCorrection = 0; /* -hController.calculate(0, error) * 12.4 / robot.getVoltage(); */
-
-            if (Math.abs(headingCorrection) < 0.01) {
-                headingCorrection = 0;
-            }
+        if (gamepad1.right_stick_button && Constants.USING_IMU)
+            SwerveDrivetrain.imuOffset = robot.getAngle() + Math.PI;
 
 
-            double rotationAmount = (Constants.USING_IMU) ? robot.getAngle() - SwerveDrivetrain.imuOffset : 0;
-            Pose drive = new Pose(
-                    new Point(joystickScalar(gamepad1.left_stick_y, 0.001),
-                            joystickScalar(gamepad1.left_stick_x, 0.001)).rotate(rotationAmount),
-                    lock_robot_heading ? headingCorrection :
-                            joystickScalar(turn, 0.01)
-            );
-
-            drive = new Pose(
-                    forward.calculate(drive.x),
-                    strafe.calculate(drive.y),
-                    drive.heading
-            );
-
-            swerveLocolizer.periodic();
-            robot.loop(drive, swerveDrive);
-            robot.write(swerveDrive);
-
-
-            Pose poseEstimate = swerveLocolizer.getPos();
-            telemetry.addData("X Estimate :", poseEstimate.x);
-            telemetry.addData("Y Estimate :", poseEstimate.y);
-            telemetry.addData("Heading Estimate :", poseEstimate.heading);
-            telemetry.addLine("--------------------");
-            telemetry.update();
-
-            robot.clearBulkCache();
+        if (gamepad1.right_stick_y > 0.25) {
+            lock_robot_heading = true;
+            targetHeading = Math.PI - SwerveDrivetrain.imuOffset;
         }
+        if (gamepad1.right_stick_y < -0.25) {
+            lock_robot_heading = true;
+            targetHeading = 0 - SwerveDrivetrain.imuOffset;
+        }
+
+        double turn = gamepad1.right_stick_x;
+        if (Math.abs(turn) > 0.002) {
+            lock_robot_heading = false;
+        }
+
+        double error = normalizeRadians(normalizeRadians(targetHeading) - normalizeRadians(robot.getAngle()));
+        double headingCorrection = -hController.calculate(0, error) * 12.4 / robot.getVoltage();
+
+        if (Math.abs(headingCorrection) < 0.01) {
+            headingCorrection = 0;
+        }
+
+        SwerveDrivetrain.maintainHeading =
+                (Math.abs(gamepad1.left_stick_x) < 0.002 &&
+                        Math.abs(gamepad1.left_stick_y) < 0.002 &&
+                        Math.abs(turn) < 0.002) &&
+                        Math.abs(headingCorrection) < 0.02;
+
+
+        double rotationAmount = (Constants.USING_IMU) ? robot.getAngle() - SwerveDrivetrain.imuOffset : 0;
+        Pose DRIVE = new Pose(
+                new Point(gamepad1.left_stick_y,
+                        joystickScalar(gamepad1.left_stick_x, 0.001)).rotate(rotationAmount),
+                lock_robot_heading ? headingCorrection :
+                        turn
+        );
+
+        DRIVE = new Pose(
+                fw.calculate(DRIVE.x),
+                str.calculate(DRIVE.y),
+                DRIVE.heading
+        );
+
+
+        double leftY = gamepadEx2.getRightY();
+        if (Math.abs(leftY) > 0.1) {
+//            intake.setSlideFactor(joystickScalar(leftY, 0.1));
+        }
+
+        if (gamepad1.a) {
+            drivetrain.setLocked(true);
+        } else if (gamepad1.b) {
+            drivetrain.setLocked(false);
+        }
+
+
+        robot.loop(DRIVE, drivetrain);
+        robot.write(drivetrain);
+        localizer.periodic();
+
+        double loop = System.nanoTime();
+        telemetry.addData("hz ", 1000000000 / (loop - loopTime));
+        drivetrain.getTelemetry();
+//        telemetry.addData("height", intake.stackHeight);
+        loopTime = loop;
+        telemetry.update();
+
+        robot.clearBulkCache();
     }
 
     private double joystickScalar(double num, double min) {
@@ -141,5 +179,4 @@ public class SwerveTest extends LinearOpMode {
                         Math.pow(Math.abs(n), Math.log(l / a) / Math.log(l)) * Math.signum(n) :
                         n / a);
     }
-
 }
