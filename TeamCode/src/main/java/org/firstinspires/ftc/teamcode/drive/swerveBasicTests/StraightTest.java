@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
+package org.firstinspires.ftc.teamcode.drive.swerveBasicTests;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+import org.checkerframework.checker.index.qual.SameLen;
 import org.firstinspires.ftc.teamcode.drive.locolization.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
 import org.firstinspires.ftc.teamcode.robot.Constants;
@@ -29,8 +30,8 @@ import org.firstinspires.ftc.teamcode.util.math.Pose;
 import java.util.function.BooleanSupplier;
 
 @Config
-@TeleOp(name = "Swerve Tele Test")
-public class SwerveTest extends CommandOpMode {
+@TeleOp(name = "Straight Test")
+public class StraightTest extends CommandOpMode {
     private ElapsedTime timer;
     private double loopTime = 0;
 
@@ -39,10 +40,10 @@ public class SwerveTest extends CommandOpMode {
     private boolean pHeadingLock = true;
     private double targetHeading;
 
-    private final BrainSTEMRobot robot = BrainSTEMRobot.getInstance();
-    private SwerveDrivetrain drivetrain;
-//    private IntakeSubsystem intake;
-//    private LiftSubsystem lift;
+    private final TestingBrainSTEMRobot robot = TestingBrainSTEMRobot.getInstance();
+
+    private SampleSwerveDrive drivetrain;
+
 
     private SlewRateLimiter fw;
     private SlewRateLimiter str;
@@ -53,7 +54,7 @@ public class SwerveTest extends CommandOpMode {
     private boolean lock_robot_heading = false;
 
     GamepadEx gamepadEx, gamepadEx2;
-    TwoWheelLocalizer localizer;
+    TestingTwoWheelLocalizer localizer = new TestingTwoWheelLocalizer(robot);
 
     public static boolean autoGrabActive = false;
 
@@ -68,11 +69,9 @@ public class SwerveTest extends CommandOpMode {
         Constants.USE_WHEEL_FEEDFORWARD = false;
 
         robot.init(hardwareMap, telemetry);
-        drivetrain = new SwerveDrivetrain(robot);
 
         gamepadEx = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
-        localizer = new TwoWheelLocalizer(robot);
 
         robot.enabled = true;
 
@@ -95,34 +94,10 @@ public class SwerveTest extends CommandOpMode {
 
         robot.read(drivetrain);
 
-        if (gamepad1.right_stick_button && Constants.USING_IMU)
-            SwerveDrivetrain.imuOffset = robot.getAngle() + Math.PI;
-
-        double turn = gamepad1.right_stick_x;
-        if (Math.abs(turn) > 0.002) {
-            lock_robot_heading = false;
-        }
-
-        double error = normalizeRadians(normalizeRadians(targetHeading) - normalizeRadians(robot.getAngle()));
-        double headingCorrection = -hController.calculate(0, error) * 12.4 / robot.getVoltage();
-
-        if (Math.abs(headingCorrection) < 0.01) {
-            headingCorrection = 0;
-        }
-
-        SwerveDrivetrain.maintainHeading =
-                (Math.abs(gamepad1.left_stick_x) < 0.002 &&
-                        Math.abs(gamepad1.left_stick_y) < 0.002 &&
-                        Math.abs(turn) < 0.002) &&
-                        Math.abs(headingCorrection) < 0.02;
-
-
-        double rotationAmount = (Constants.USING_IMU) ? robot.getAngle() - SwerveDrivetrain.imuOffset : 0;
         Pose DRIVE = new Pose(
                 new Point(gamepad1.left_stick_y,
-                        joystickScalar(gamepad1.left_stick_x, 0.001)).rotate(rotationAmount),
-                lock_robot_heading ? headingCorrection :
-                        turn
+                        joystickScalar(gamepad1.left_stick_x, 0.001)).rotate(0),
+                0
         );
 
         DRIVE = new Pose(
@@ -131,18 +106,23 @@ public class SwerveTest extends CommandOpMode {
                 DRIVE.heading
         );
 
-
-        double leftY = gamepadEx2.getRightY();
-        if (Math.abs(leftY) > 0.1) {
-//            intake.setSlideFactor(joystickScalar(leftY, 0.1));
+        if (gamepad1.y) {
+            drivetrain.setStop(false);
+            drivetrain.setTurnLeft(false);
+            drivetrain.setStraight(true);
         }
 
-        if (gamepad1.a) {
-            drivetrain.setForward(true);
-        } else if (gamepad1.b) {
-            drivetrain.setForward(false);
+        if (gamepad1.x) {
+            drivetrain.setStop(false);
+            drivetrain.setStraight(false);
+            drivetrain.setTurnLeft(true);
         }
 
+        if (gamepad1.b) {
+            drivetrain.setStraight(false);
+            drivetrain.setTurnLeft(false);
+            drivetrain.setStop(true);
+        }
 
         robot.loop(DRIVE, drivetrain);
         robot.write(drivetrain);

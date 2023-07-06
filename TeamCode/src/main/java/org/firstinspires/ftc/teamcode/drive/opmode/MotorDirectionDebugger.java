@@ -104,12 +104,13 @@ public class MotorDirectionDebugger extends LinearOpMode {
                 telemetry.addLine("Running Motor: None");
             }
 
-            telemetry.addData("FL Encoder :", normalizeRadians(flE.getCurrentPosition() - Math.PI));
-            telemetry.addData("FR Encoder :", normalizeRadians(frE.getCurrentPosition() - Math.PI));
-            telemetry.addData("BL Encoder :", normalizeRadians(blE.getCurrentPosition() - Math.PI));
-            telemetry.addData("BR Encoder :", normalizeRadians(brE.getCurrentPosition() - Math.PI));
+            telemetry.addData("FL Encoder :", (normalizeRadians( (flE.getCurrentPosition()) )) );
+            telemetry.addData("FR Encoder :", (normalizeRadians( (frE.getCurrentPosition()) )) );
+            telemetry.addData("BL Encoder :", (normalizeRadians( (blE.getCurrentPosition()) )) );
+            telemetry.addData("BR Encoder :", (normalizeRadians( (brE.getCurrentPosition()) )) );
 
             telemetry.update();
         }
+
     }
 }

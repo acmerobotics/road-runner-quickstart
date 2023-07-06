@@ -100,11 +100,7 @@ public class SwerveModeTest extends LinearOpMode {
             swerveDrivetrain.set(drive);
 
 
-            if (gamepad1.right_trigger > 0.5 ) {
-                swerveDrivetrain.setLocked(true);
-            } else if (gamepad1.left_trigger > 0.5) {
-                swerveDrivetrain.setLocked(false);
-            }
+
 
 //            if (gamepad1.right_bumper) {
 //                swerveDrivetrain.setReset(true);
@@ -124,7 +120,7 @@ public class SwerveModeTest extends LinearOpMode {
 //            telemetry.addData("Y Estimate :", poseEstimate.y);
 //            telemetry.addData("Heading Estimate :", poseEstimate.heading);
             telemetry.addLine("--------------------");
-            telemetry.addData("swerve locked :",swerveDrivetrain.isLocked());
+            telemetry.addData("swerve Forward :",swerveDrivetrain.isForward());
 //            telemetry.addData("swerve reset :", swerveDrivetrain.isReset());
             telemetry.update();
 

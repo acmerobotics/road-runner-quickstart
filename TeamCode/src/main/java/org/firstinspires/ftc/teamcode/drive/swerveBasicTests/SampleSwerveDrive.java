@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.robot.swerve;
+package org.firstinspires.ftc.teamcode.drive.swerveBasicTests;
 
-import static org.firstinspires.ftc.teamcode.robot.Constants.USE_WHEEL_FEEDFORWARD;
 import static java.lang.Math.atan2;
 import static java.lang.Math.hypot;
 
@@ -8,23 +7,20 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
+import org.firstinspires.ftc.teamcode.robot.swerve.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.swerve.SwerveModule;
 import org.firstinspires.ftc.teamcode.util.hardware.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
 
 @Config
-public class SwerveDrivetrain implements Drivetrain {
+public class SampleSwerveDrive implements Drivetrain {
     public SwerveModule frontLeftModule, backLeftModule, backRightModule, frontRightModule;
     public SwerveModule[] modules;
     public static double TRACK_WIDTH = 9, WHEEL_BASE = 9;
     private final double R;
-
-//    public static double frontLeftOffset = 0.5, frontRightOffset = -2.79, backLeftOffset = 1.25, backRightOffset = 2.87;
+    public static double frontLeftOffset = -0.5, frontRightOffset = 2.79, backLeftOffset = -1.25, backRightOffset = -2.87;
     public static boolean maintainHeading = false;
-
-    public static double frontLeftOffset = 0.63, frontRightOffset = 1, backLeftOffset = 0, backRightOffset = 0;
-
     double[] ws = new double[4];
     double[] wa = new double[4];
     double max = 0.0;
@@ -32,9 +28,16 @@ public class SwerveDrivetrain implements Drivetrain {
     public final double minPow = 0.1;
     public static double imuOffset = 0.0;
 
-    private boolean forward = false;
+    private boolean turnLeft = false;
 
-    public SwerveDrivetrain(BrainSTEMRobot robot) {
+    private boolean straight = false;
+
+    private boolean stop = false;
+
+    private double speed = 0;
+
+
+    public SampleSwerveDrive(TestingBrainSTEMRobot robot) {
         frontLeftModule = new SwerveModule(robot.frontLeftMotor, robot.frontLeftServo, new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(frontLeftOffset).setInverted(true));
         backLeftModule = new SwerveModule(robot.backLeftMotor, robot.backLeftServo, new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).zero(backLeftOffset).setInverted(true));
         backRightModule = new SwerveModule(robot.backRightMotor, robot.backRightServo, new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).zero(backRightOffset).setInverted(true));
@@ -59,12 +62,18 @@ public class SwerveDrivetrain implements Drivetrain {
                 c = y - head * (TRACK_WIDTH / R),
                 d = y + head * (TRACK_WIDTH / R);
 
-        if (forward) {
+        if (turnLeft) {
             ws = new double[]{0.1, 0.1, 0.1, 0.1};
+            wa = new double[]{Math.PI / 2, -Math.PI / 2, Math.PI / 2, -Math.PI / 2};
+        } else if (straight) {
+            ws = new double[]{speed, speed, speed, speed};
             wa = new double[]{0, 0, 0, 0};
-        } else {
-            ws = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
-            if (!maintainHeading) wa = new double[]{atan2(b, c), atan2(b, d), atan2(a, d), atan2(a, c)};
+        } else if (stop) {
+            ws = new double[]{0, 0, 0, 0};
+            wa = new double[]{0, 0, 0, 0};
+        }else {
+//            ws = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
+//            if (!maintainHeading) wa = new double[]{atan2(b, c), atan2(b, d), atan2(a, d), atan2(a, c)};
         }
 
         max = MathUtils.max(ws);
@@ -74,8 +83,8 @@ public class SwerveDrivetrain implements Drivetrain {
         for (int i = 0; i < 4; i++) {
             SwerveModule m = modules[i];
             if (Math.abs(max) > 1) ws[i] /= max;
-            m.setMotorPower(Math.abs(ws[i]) + ((USE_WHEEL_FEEDFORWARD) ? minPow * Math.signum(ws[i]) : 0));
-//            m.setMotorPower(0);
+//            m.setMotorPower(Math.abs(ws[i]) + ((USE_WHEEL_FEEDFORWARD) ? minPow * Math.signum(ws[i]) : 0));
+            m.setMotorPower(0);
             m.setTargetRotation((MathUtils.norm(wa[i])) );
         }
     }
@@ -84,13 +93,11 @@ public class SwerveDrivetrain implements Drivetrain {
         for (SwerveModule m : modules) m.update();
     }
 
-    public void setForward(boolean forward){
-        this.forward = forward;
-    }
+    public void setTurnLeft(boolean turnLeft){this.turnLeft = turnLeft;}
 
-    public boolean isForward(){
-        return forward;
-    }
+    public void setStraight(boolean straight){this.straight = straight;}
+
+    public void setStop(boolean stop){this.stop = stop;}
 
     public String getTelemetry() {
         return frontLeftModule.getTelemetry("leftFrontModule") + "\n" + "-----------"  + "\n" +
