@@ -7,6 +7,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -73,19 +75,24 @@ public class MotorDirectionDebugger extends LinearOpMode {
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
 
         while (!isStopRequested()) {
-            telemetry.addLine("Press each button to turn on its respective motor");
-            telemetry.addLine();
-            telemetry.addLine("<font face=\"monospace\">Xbox/PS4 Button - Motor</font>");
-            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;X / ▢&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Front Left</font>");
-            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;Y / Δ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Front Right</font>");
-            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;B / O&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Right</font>");
-            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;A / X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Left</font>");
-            telemetry.addLine();
+//            telemetry.addLine("Press each button to turn on its respective motor");
+//            telemetry.addLine();
+//            telemetry.addLine("<font face=\"monospace\">Xbox/PS4 Button - Motor</font>");
+//            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;X / ▢&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Front Left</font>");
+//            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;Y / Δ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Front Right</font>");
+//            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;B / O&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Right</font>");
+//            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;A / X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Left</font>");
+//            telemetry.addLine();
 
             AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
             AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontRightEncoder, 3.3).setInverted(false);
             AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).setInverted(false);
             AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).setInverted(false);
+
+            CRServo frontLeftServo = hardwareMap.get(CRServo.class, "FLturn");
+            CRServo frontRightServo = hardwareMap.get(CRServo.class, "FRturn");
+            CRServo backLeftServo = hardwareMap.get(CRServo.class, "BLturn");
+            CRServo backRightServo = hardwareMap.get(CRServo.class, "BRturn");
 
             if(gamepad1.x) {
                 drive.setMotorPowers(MOTOR_POWER, 0, 0, 0);
@@ -104,6 +111,17 @@ public class MotorDirectionDebugger extends LinearOpMode {
                 telemetry.addLine("Running Motor: None");
             }
 
+//            if(gamepad1.left_stick_y > 0.2) {
+//
+//                while (flE.getCurrentPosition() < 0) {
+//                    frontLeftServo.setPower(0.5);
+//                    telemetry.addData("loop ", "while");
+//                    telemetry.update();
+//                }
+//                telemetry.addData("finished", "finished");
+//                telemetry.update();
+//            }
+
             telemetry.addData("FL Encoder :", (normalizeRadians( (flE.getCurrentPosition()) )) );
             telemetry.addData("FR Encoder :", (normalizeRadians( (frE.getCurrentPosition()) )) );
             telemetry.addData("BL Encoder :", (normalizeRadians( (blE.getCurrentPosition()) )) );
@@ -113,4 +131,6 @@ public class MotorDirectionDebugger extends LinearOpMode {
         }
 
     }
+
+
 }
