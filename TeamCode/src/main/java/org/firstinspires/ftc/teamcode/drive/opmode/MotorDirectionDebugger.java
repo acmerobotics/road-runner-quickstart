@@ -46,7 +46,7 @@ import org.firstinspires.ftc.teamcode.util.hardware.AbsoluteAnalogEncoder;
 // rip if a person had to make the text image above
 //@Disabled
 @Config
-@TeleOp(group = "drive")
+@TeleOp(name = "motion ddebugger", group = "drive")
 public class MotorDirectionDebugger extends LinearOpMode {
 
     // NO ERRORS!!!
@@ -84,10 +84,17 @@ public class MotorDirectionDebugger extends LinearOpMode {
 //            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;A / X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Left</font>");
 //            telemetry.addLine();
 
-            AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).setInverted(false);
-            AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontRightEncoder, 3.3).setInverted(false);
-            AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).setInverted(false);
-            AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).setInverted(false);
+//            AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(0.63).setInverted(false);
+//            AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontRightEncoder, 3.3).zero(1.05).setInverted(false);
+//            AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).zero(2.7).setInverted(false);
+//            AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).zero(-2.4).setInverted(false);
+
+
+            AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(0).setInverted(false);
+            AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontRightEncoder, 3.3).zero(0).setInverted(false);
+            AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).zero(0).setInverted(false);
+            AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).zero(0).setInverted(false);
+
 
             CRServo frontLeftServo = hardwareMap.get(CRServo.class, "FLturn");
             CRServo frontRightServo = hardwareMap.get(CRServo.class, "FRturn");
@@ -111,21 +118,11 @@ public class MotorDirectionDebugger extends LinearOpMode {
                 telemetry.addLine("Running Motor: None");
             }
 
-//            if(gamepad1.left_stick_y > 0.2) {
-//
-//                while (flE.getCurrentPosition() < 0) {
-//                    frontLeftServo.setPower(0.5);
-//                    telemetry.addData("loop ", "while");
-//                    telemetry.update();
-//                }
-//                telemetry.addData("finished", "finished");
-//                telemetry.update();
-//            }
 
-            telemetry.addData("FL Encoder :", (normalizeRadians( (flE.getCurrentPosition()) )) );
-            telemetry.addData("FR Encoder :", (normalizeRadians( (frE.getCurrentPosition()) )) );
-            telemetry.addData("BL Encoder :", (normalizeRadians( (blE.getCurrentPosition()) )) );
-            telemetry.addData("BR Encoder :", (normalizeRadians( (brE.getCurrentPosition()) )) );
+            telemetry.addData("FL Encoder :", (( (flE.getCurrentPosition())  )) );
+            telemetry.addData("FR Encoder :", (( (frE.getCurrentPosition())  )) );
+            telemetry.addData("BL Encoder :", (( (blE.getCurrentPosition())  )) );
+            telemetry.addData("BR Encoder :", (( (brE.getCurrentPosition())  )) );
 
             telemetry.update();
         }

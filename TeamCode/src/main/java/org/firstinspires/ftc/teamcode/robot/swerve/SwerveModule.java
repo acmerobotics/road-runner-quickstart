@@ -94,7 +94,7 @@ public class SwerveModule {
     }
 
     public double getModuleRotation() {
-        return normalizeRadians(position - Math.PI);
+        return normalizeRadians(position);
     }
 
     public void setMotorPower(double power) {
