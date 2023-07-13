@@ -18,6 +18,8 @@ public class AbsoluteAnalogEncoder {
     private double rotations = 0;
     private double previousAngle = 0;
 
+    private double modifier;
+
     private final static double GEAR_RATIO = 3.0;
 
 
@@ -35,28 +37,57 @@ public class AbsoluteAnalogEncoder {
         return ( ( 2 * Math.PI ) / GEAR_RATIO );
     }
 
-    public void updateRotations(Telemetry telemetry) {
-        double pos = updateCurrentPosition();
+//    public void updateRotations(Telemetry telemetry) {
+//        double pos = getCurrentPositionOld();
+//
+//        telemetry.addData("______ previousAngle", previousAngle);
+//        telemetry.addData("______ pos", pos);
+//        telemetry.addData("______ gearRatio (rad)", gearRatio());
+//
+//        if (pos > previousAngle &&
+//                  previousAngle < gearRatio() / 2 &&
+//                  pos > gearRatio() / 2 &&
+//                  pos - previousAngle > gearRatio() / 2) {
+////                    telemetry.addLine("ADDING ROTATION ");
+////                    telemetry.update();
+//                    rotations -= 1;
+//        } else if (pos < previousAngle &&
+//                   previousAngle > gearRatio() / 2 &&
+//                   pos < gearRatio() / 2 &&
+//                   previousAngle - pos > gearRatio() / 2) {
+//                    rotations += 1;
+////                    telemetry.addLine("DELETING ROTATION ");
+////                    telemetry.update();
+//        }
+//
+//        previousAngle = pos;
+//
+//        telemetry.addData("______ Rotations ", rotations  );
+//        telemetry.addData("______ Modifier ", (rotations ) * (Math.PI *2) );
+//    }
 
-        telemetry.addData("previousAngle", previousAngle);
-        telemetry.addData("pos", pos);
-        telemetry.addData("gearRatio", gearRatio());
+    public void updateRotations(Telemetry telemetry) throws InterruptedException {
+        double pos = getCurrentPositionOld();
 
-        if (pos > previousAngle &&
-                previousAngle < gearRatio() / 2 &&
-                pos > gearRatio() / 2 &&
-                pos - previousAngle > gearRatio() / 2) {
-            rotations += 1;
-        } else if (pos < previousAngle &&
-                previousAngle > gearRatio() / 2 &&
-                pos < gearRatio() / 2 &&
-                previousAngle - pos > gearRatio() / 2) {
+        telemetry.addData("______ previousAngle", previousAngle);
+        telemetry.addData("______ pos", pos);
+        telemetry.addData("______ gearRatio (rad)", gearRatio());
+
+        if (pos > previousAngle) {
+                    telemetry.addLine("ADDING ROTATION ");
+                    telemetry.update();
             rotations -= 1;
+        } else if (pos < previousAngle) {
+            rotations += 1;
+                    telemetry.addLine("DELETING ROTATION ");
+                    telemetry.update();
+
         }
 
         previousAngle = pos;
 
-        telemetry.addData("Rotations", rotations);
+        telemetry.addData("______ Rotations ", rotations  );
+        telemetry.addData("______ Modifier ", (rotations ) * (Math.PI *2) );
     }
 
     public AbsoluteAnalogEncoder zero(double off){
@@ -84,12 +115,33 @@ public class AbsoluteAnalogEncoder {
 
     private double updateCurrentPosition() {
         double radianAngle = updateCurrentRawReading() * ((2 * Math.PI) / GEAR_RATIO);
+//        double radianAngle = updateCurrentRawReading();
         return radianAngle;
     }
 
     public double getCurrentPosition() {
-        pastPosition = updateCurrentPosition() + (rotations * (2 * Math.PI) / GEAR_RATIO);
+//        pastPosition = updateCurrentPosition() + (rotations * (2 * Math.PI));
+        pastPosition = updateCurrentPosition() + ( ((rotations * 0)) * (2 * Math.PI) / GEAR_RATIO);
         return ((pastPosition));
+    }
+
+    public double getCurrentPositionOld() {
+        double pos = Angle.norm((!inverted ? 1 - getVoltage() / analogRange : getVoltage() / analogRange) * Math.PI*2 - offset);
+        //checks for crazy values when the encoder is close to zero
+        if(!VALUE_REJECTION || Math.abs(Angle.normDelta(pastPosition)) > 0.1 || Math.abs(Angle.normDelta(pos)) < 1) pastPosition = pos;
+        return ((pastPosition) );
+    }
+
+    public double positionModifier() {
+        if (rotations == 0) {
+            modifier = 0;
+        } else if (rotations > 0) {
+            modifier = (rotations ) * (Math.PI *2);
+        } else if (rotations < 0) {
+
+        }
+
+        return getCurrentPosition() + modifier;
     }
 
     public AnalogInput getEncoder() {

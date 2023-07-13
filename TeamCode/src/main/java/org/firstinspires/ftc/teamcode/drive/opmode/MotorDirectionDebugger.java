@@ -74,7 +74,7 @@ public class MotorDirectionDebugger extends LinearOpMode {
         telemetry.clearAll();
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
 
-        AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(1.24).setInverted(false);
+        AbsoluteAnalogEncoder flE = new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(3.3).setInverted(false);
         AbsoluteAnalogEncoder frE = new AbsoluteAnalogEncoder(robot.frontRightEncoder, 3.3).zero(0).setInverted(false);
         AbsoluteAnalogEncoder blE = new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).zero(0).setInverted(false);
         AbsoluteAnalogEncoder brE = new AbsoluteAnalogEncoder(robot.backRightEncoder, 3.3).zero(0).setInverted(false);
@@ -120,14 +120,16 @@ public class MotorDirectionDebugger extends LinearOpMode {
             flE.updateRotations(telemetry);
 
             telemetry.addData("FL Encoder :", (( (flE.getCurrentPosition())  )) );
-            telemetry.addData("FR Encoder :", (( (frE.getCurrentPosition())  )) );
-            telemetry.addData("BL Encoder :", (( (blE.getCurrentPosition())  )) );
-            telemetry.addData("BR Encoder :", (( (brE.getCurrentPosition())  )) );
+            telemetry.addData("FL Encoder OLD  :", (( (flE.getCurrentPositionOld())  )) );
+
+
+//            telemetry.addData("FR Encoder :", (( (frE.getCurrentPosition())  )) );
+//            telemetry.addData("BL Encoder :", (( (blE.getCurrentPosition())  )) );
+//            telemetry.addData("BR Encoder :", (( (brE.getCurrentPosition())  )) );
 
             telemetry.update();
         }
 
     }
-
 
 }
