@@ -37,51 +37,27 @@ public class AbsoluteAnalogEncoder {
         return ( ( 2 * Math.PI ) / GEAR_RATIO );
     }
 
-//    public void updateRotations(Telemetry telemetry) {
-//        double pos = getCurrentPositionOld();
-//
-//        telemetry.addData("______ previousAngle", previousAngle);
-//        telemetry.addData("______ pos", pos);
-//        telemetry.addData("______ gearRatio (rad)", gearRatio());
-//
-//        if (pos > previousAngle &&
-//                  previousAngle < gearRatio() / 2 &&
-//                  pos > gearRatio() / 2 &&
-//                  pos - previousAngle > gearRatio() / 2) {
-////                    telemetry.addLine("ADDING ROTATION ");
-////                    telemetry.update();
-//                    rotations -= 1;
-//        } else if (pos < previousAngle &&
-//                   previousAngle > gearRatio() / 2 &&
-//                   pos < gearRatio() / 2 &&
-//                   previousAngle - pos > gearRatio() / 2) {
-//                    rotations += 1;
-////                    telemetry.addLine("DELETING ROTATION ");
-////                    telemetry.update();
-//        }
-//
-//        previousAngle = pos;
-//
-//        telemetry.addData("______ Rotations ", rotations  );
-//        telemetry.addData("______ Modifier ", (rotations ) * (Math.PI *2) );
-//    }
-
-    public void updateRotations(Telemetry telemetry) throws InterruptedException {
+    public void updateRotations(Telemetry telemetry) {
         double pos = getCurrentPositionOld();
 
         telemetry.addData("______ previousAngle", previousAngle);
         telemetry.addData("______ pos", pos);
         telemetry.addData("______ gearRatio (rad)", gearRatio());
 
-        if (pos > previousAngle) {
-                    telemetry.addLine("ADDING ROTATION ");
-                    telemetry.update();
-            rotations -= 1;
-        } else if (pos < previousAngle) {
-            rotations += 1;
-                    telemetry.addLine("DELETING ROTATION ");
-                    telemetry.update();
-
+        if (pos > previousAngle &&
+                  previousAngle < gearRatio() / 2 &&
+                  pos > gearRatio() / 2 &&
+                  pos - previousAngle > gearRatio() / 2) {
+//                    telemetry.addLine("ADDING ROTATION ");
+//                    telemetry.update();
+                    rotations -= 1;
+        } else if (pos < previousAngle &&
+                   previousAngle > gearRatio() / 2 &&
+                   pos < gearRatio() / 2 &&
+                   previousAngle - pos > gearRatio() / 2) {
+                    rotations += 1;
+//                    telemetry.addLine("DELETING ROTATION ");
+//                    telemetry.update();
         }
 
         previousAngle = pos;
@@ -89,6 +65,8 @@ public class AbsoluteAnalogEncoder {
         telemetry.addData("______ Rotations ", rotations  );
         telemetry.addData("______ Modifier ", (rotations ) * (Math.PI *2) );
     }
+
+
 
     public AbsoluteAnalogEncoder zero(double off){
         offset = off;
@@ -141,7 +119,7 @@ public class AbsoluteAnalogEncoder {
 
         }
 
-        return getCurrentPosition() + modifier;
+        return (getCurrentPositionOld() + modifier) / 3;
     }
 
     public AnalogInput getEncoder() {

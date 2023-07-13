@@ -121,6 +121,9 @@ public class MotorDirectionDebugger extends LinearOpMode {
 
             telemetry.addData("FL Encoder :", (( (flE.getCurrentPosition())  )) );
             telemetry.addData("FL Encoder OLD  :", (( (flE.getCurrentPositionOld())  )) );
+            telemetry.addData("FL Encoder /w Modifier  :", (( (flE.positionModifier())  )) );
+
+
 
 
 //            telemetry.addData("FR Encoder :", (( (frE.getCurrentPosition())  )) );
