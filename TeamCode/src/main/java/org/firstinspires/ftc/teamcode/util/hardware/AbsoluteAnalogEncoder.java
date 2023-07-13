@@ -113,13 +113,17 @@ public class AbsoluteAnalogEncoder {
     public double positionModifier() {
         if (rotations == 0) {
             modifier = 0;
+            return (getCurrentPositionOld() + modifier) / 3;
         } else if (rotations > 0) {
             modifier = (rotations ) * (Math.PI *2);
+            return (getCurrentPositionOld() + modifier) / 3;
         } else if (rotations < 0) {
-
+            double newRotations = 3 + rotations;
+            modifier = (newRotations -1 ) * (Math.PI *2);
+            return (getCurrentPositionOld() + modifier) / 3;
         }
 
-        return (getCurrentPositionOld() + modifier) / 3;
+        return getCurrentPositionOld() / 3;
     }
 
     public AnalogInput getEncoder() {

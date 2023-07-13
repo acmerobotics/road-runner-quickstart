@@ -66,7 +66,7 @@ public class SwerveModule {
     }
 
     public void read() {
-        position = encoder.getCurrentPosition();
+        position = encoder.positionModifier();
     }
 
     public void update() {
