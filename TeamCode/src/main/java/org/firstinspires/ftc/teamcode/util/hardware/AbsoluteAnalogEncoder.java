@@ -20,7 +20,17 @@ public class AbsoluteAnalogEncoder {
 
     private double modifier;
 
+    private double rotationModifier;
+
     private final static double GEAR_RATIO = 3.0;
+
+    public enum OutputWheelPosition {
+        ONE,   TWO,     THREE
+     // 0-120  121-240  241-360
+    }
+
+    private OutputWheelPosition outputWheelPosition = OutputWheelPosition.ONE;
+
 
 
     public AbsoluteAnalogEncoder(AnalogInput enc){
@@ -64,6 +74,21 @@ public class AbsoluteAnalogEncoder {
 
         telemetry.addData("______ Rotations ", rotations  );
         telemetry.addData("______ Modifier ", (rotations ) * (Math.PI *2) );
+    }
+
+    public void updateWheelPosition(Telemetry telemetry) {
+        switch (outputWheelPosition) {
+            case ONE:
+                    telemetry.addData("Wheel Pose", "1");
+                break;
+            case TWO:
+                    telemetry.addData("Wheel Pose", "2");
+                break;
+            case THREE:
+                    telemetry.addData("Wheel Pose", "3");
+                break;
+
+        }
     }
 
 
@@ -113,16 +138,44 @@ public class AbsoluteAnalogEncoder {
     public double positionModifier() {
         if (rotations == 0) {
             modifier = 0;
+
+            outputWheelPosition = OutputWheelPosition.ONE;
+
             return (getCurrentPositionOld() + modifier) / 3;
         } else if (rotations > 0) {
-            modifier = (rotations ) * (Math.PI *2);
+
+            if (rotations > 3) {
+                rotationModifier = 3;
+            }
+
+            if ((rotations - rotationModifier) == 2) {
+                outputWheelPosition = OutputWheelPosition.TWO;
+            } else if ( (rotations - rotationModifier) == 3){
+                outputWheelPosition = OutputWheelPosition.THREE;
+            }
+
+            if (modifier > (Math.PI * GEAR_RATIO)) {
+                modifier = ((rotations ) * (Math.PI *2)) - (Math.PI * GEAR_RATIO);
+            } else {
+                modifier = (rotations ) * (Math.PI *2);
+            }
+
+
+
             return (getCurrentPositionOld() + modifier) / 3;
         } else if (rotations < 0) {
             double newRotations = 3 + rotations;
+
+            if (newRotations == 2) {
+                outputWheelPosition = OutputWheelPosition.TWO;
+            } else if (newRotations == 3){
+                outputWheelPosition = OutputWheelPosition.THREE;
+            }
+
             modifier = (newRotations -1 ) * (Math.PI *2);
             return (getCurrentPositionOld() + modifier) / 3;
-        }
 
+        }
         return getCurrentPositionOld() / 3;
     }
 
