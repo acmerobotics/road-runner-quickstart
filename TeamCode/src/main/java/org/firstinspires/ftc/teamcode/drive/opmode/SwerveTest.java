@@ -119,8 +119,8 @@ public class SwerveTest extends CommandOpMode {
 
         double rotationAmount = (Constants.USING_IMU) ? robot.getAngle() - SwerveDrivetrain.imuOffset : 0;
         Pose DRIVE = new Pose(
-                new Point(gamepad1.left_stick_y,
-                        joystickScalar(gamepad1.left_stick_x, 0.001)).rotate(rotationAmount),
+                new Point(gamepad1.left_stick_x,
+                        joystickScalar(gamepad1.left_stick_y, 0.001)).rotate(rotationAmount),
                 lock_robot_heading ? headingCorrection :
                         turn
         );
@@ -149,6 +149,7 @@ public class SwerveTest extends CommandOpMode {
         localizer.periodic();
 
         double loop = System.nanoTime();
+
         telemetry.addData("hz ", 1000000000 / (loop - loopTime));
 
         telemetry.addLine(drivetrain.getTelemetry());

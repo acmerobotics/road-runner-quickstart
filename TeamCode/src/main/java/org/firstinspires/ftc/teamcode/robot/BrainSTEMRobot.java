@@ -89,9 +89,6 @@ public class BrainSTEMRobot {
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "BLDandLOdo");
         backRightMotor = hardwareMap.get(DcMotorEx.class, "BRdrive");
 
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
 
         frontLeftServo = hardwareMap.get(CRServo.class, "FLturn");
         frontRightServo = hardwareMap.get(CRServo.class, "FRturn");
