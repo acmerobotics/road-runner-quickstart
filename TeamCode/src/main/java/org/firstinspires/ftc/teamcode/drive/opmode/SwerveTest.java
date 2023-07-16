@@ -103,19 +103,17 @@ public class SwerveTest extends CommandOpMode {
             lock_robot_heading = false;
         }
 
+
+
+
+
+
         double error = normalizeRadians(normalizeRadians(targetHeading) - normalizeRadians(robot.getAngle()));
         double headingCorrection = -hController.calculate(0, error) * 12.4 / robot.getVoltage();
 
         if (Math.abs(headingCorrection) < 0.01) {
             headingCorrection = 0;
         }
-
-        SwerveDrivetrain.maintainHeading =
-                (Math.abs(gamepad1.left_stick_x) < 0.002 &&
-                        Math.abs(gamepad1.left_stick_y) < 0.002 &&
-                        Math.abs(turn) < 0.002) &&
-                        Math.abs(headingCorrection) < 0.02;
-
 
         double rotationAmount = (Constants.USING_IMU) ? robot.getAngle() - SwerveDrivetrain.imuOffset : 0;
         Pose DRIVE = new Pose(
@@ -134,7 +132,6 @@ public class SwerveTest extends CommandOpMode {
 
         double leftY = gamepadEx2.getRightY();
         if (Math.abs(leftY) > 0.1) {
-//            intake.setSlideFactor(joystickScalar(leftY, 0.1));
         }
 
         if (gamepad1.a) {
@@ -150,8 +147,9 @@ public class SwerveTest extends CommandOpMode {
 
         double loop = System.nanoTime();
 
-        telemetry.addData("hz ", 1000000000 / (loop - loopTime));
-
+        telemetry.addData("loop hz :", 1000000000 / (loop - loopTime));
+        telemetry.addData("robot voltage :", robot.getVoltage());
+        telemetry.addLine("-------" + "\n");
         telemetry.addLine(drivetrain.getTelemetry());
 
         loopTime = loop;
