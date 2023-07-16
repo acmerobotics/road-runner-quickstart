@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.hardware.AbsoluteAnalogEncoder;
 
 import java.util.Locale;
@@ -32,7 +33,7 @@ public class SwerveModule {
     public static boolean MOTOR_FLIPPING = true;
 
     public static double WHEEL_RADIUS = 1.4; // in
-    public static double GEAR_RATIO = 1 / (3.5 * 1.5 * 2); // output (wheel) speed / input (motor) speed
+    public static double GEAR_RATIO = 3.0;
     public static final double TICKS_PER_REV = 28;
 
     private DcMotorEx motor;
@@ -43,6 +44,8 @@ public class SwerveModule {
     public boolean wheelFlipped = false;
     private double target = 0.0;
     private double position = 0.0;
+
+    private Telemetry telemetry;
 
     public SwerveModule(DcMotorEx m, CRServo s, AbsoluteAnalogEncoder e) {
         motor = m;
@@ -66,6 +69,7 @@ public class SwerveModule {
     }
 
     public void read() {
+        encoder.updateRotations();
         position = encoder.positionModifier();
     }
 

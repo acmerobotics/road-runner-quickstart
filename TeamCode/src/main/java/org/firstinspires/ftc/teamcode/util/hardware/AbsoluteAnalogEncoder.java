@@ -17,20 +17,11 @@ public class AbsoluteAnalogEncoder {
     private boolean inverted;
     private double rotations = 0;
     private double previousAngle = 0;
+    double newRotations = 0;
 
     private double modifier;
 
-    private double rotationModifier;
-
     private final static double GEAR_RATIO = 3.0;
-
-    public enum OutputWheelPosition {
-        ONE,   TWO,     THREE
-     // 0-120  121-240  241-360
-    }
-
-    private OutputWheelPosition outputWheelPosition = OutputWheelPosition.ONE;
-
 
 
     public AbsoluteAnalogEncoder(AnalogInput enc){
@@ -47,48 +38,41 @@ public class AbsoluteAnalogEncoder {
         return ( ( 2 * Math.PI ) / GEAR_RATIO );
     }
 
-    public void updateRotations(Telemetry telemetry) {
+    public void updateRotations() {
         double pos = getCurrentPositionOld();
 
-        telemetry.addData("______ previousAngle", previousAngle);
-        telemetry.addData("______ pos", pos);
-        telemetry.addData("______ gearRatio (rad)", gearRatio());
+//        telemetry.addData("______ previousAngle", previousAngle);
+//        telemetry.addData("______ pos", pos);
+//        telemetry.addData("______ gearRatio (rad)", gearRatio());
 
         if (pos > previousAngle &&
-                  previousAngle < gearRatio() / 2 &&
-                  pos > gearRatio() / 2 &&
-                  pos - previousAngle > gearRatio() / 2) {
+                previousAngle < gearRatio() / 2 &&
+                pos > gearRatio() / 2 &&
+                pos - previousAngle > gearRatio() / 2) {
 //                    telemetry.addLine("ADDING ROTATION ");
 //                    telemetry.update();
-                    rotations -= 1;
+            rotations -= 1;
         } else if (pos < previousAngle &&
-                   previousAngle > gearRatio() / 2 &&
-                   pos < gearRatio() / 2 &&
-                   previousAngle - pos > gearRatio() / 2) {
-                    rotations += 1;
+                previousAngle > gearRatio() / 2 &&
+                pos < gearRatio() / 2 &&
+                previousAngle - pos > gearRatio() / 2) {
+            rotations += 1;
 //                    telemetry.addLine("DELETING ROTATION ");
 //                    telemetry.update();
         }
 
         previousAngle = pos;
 
-        telemetry.addData("______ Rotations ", rotations  );
-        telemetry.addData("______ Modifier ", (rotations ) * (Math.PI *2) );
-    }
-
-    public void updateWheelPosition(Telemetry telemetry) {
-        switch (outputWheelPosition) {
-            case ONE:
-                    telemetry.addData("Wheel Pose", "1");
-                break;
-            case TWO:
-                    telemetry.addData("Wheel Pose", "2");
-                break;
-            case THREE:
-                    telemetry.addData("Wheel Pose", "3");
-                break;
-
+        if (rotations > 2){
+            rotations = rotations -3;
         }
+
+        if (rotations < 0 && rotations > -4) {
+            rotations = 3 + rotations;
+        }
+
+//        telemetry.addData("______ Rotations ", rotations  );
+//        telemetry.addData("______ Modifier ", (rotations ) * (Math.PI *2) );
     }
 
 
@@ -136,47 +120,16 @@ public class AbsoluteAnalogEncoder {
     }
 
     public double positionModifier() {
+
         if (rotations == 0) {
             modifier = 0;
+            return ((getCurrentPositionOld() + modifier) / 3);
 
-            outputWheelPosition = OutputWheelPosition.ONE;
-
-            return (getCurrentPositionOld() + modifier) / 3;
-        } else if (rotations > 0) {
-
-            if (rotations > 3) {
-                rotationModifier = 3;
-            }
-
-            if ((rotations - rotationModifier) == 2) {
-                outputWheelPosition = OutputWheelPosition.TWO;
-            } else if ( (rotations - rotationModifier) == 3){
-                outputWheelPosition = OutputWheelPosition.THREE;
-            }
-
-            if (modifier > (Math.PI * GEAR_RATIO)) {
-                modifier = ((rotations ) * (Math.PI *2)) - (Math.PI * GEAR_RATIO);
-            } else {
-                modifier = (rotations ) * (Math.PI *2);
-            }
-
-
-
-            return (getCurrentPositionOld() + modifier) / 3;
-        } else if (rotations < 0) {
-            double newRotations = 3 + rotations;
-
-            if (newRotations == 2) {
-                outputWheelPosition = OutputWheelPosition.TWO;
-            } else if (newRotations == 3){
-                outputWheelPosition = OutputWheelPosition.THREE;
-            }
-
-            modifier = (newRotations -1 ) * (Math.PI *2);
-            return (getCurrentPositionOld() + modifier) / 3;
+        } else {
+            modifier = (rotations ) * (Math.PI *2);
+            return ((getCurrentPositionOld() + modifier) / 3);
 
         }
-        return getCurrentPositionOld() / 3;
     }
 
     public AnalogInput getEncoder() {

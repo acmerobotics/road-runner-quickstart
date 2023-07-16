@@ -126,8 +126,8 @@ public class SwerveTest extends CommandOpMode {
         );
 
         DRIVE = new Pose(
-                fw.calculate(DRIVE.x),
-                str.calculate(DRIVE.y),
+                fw.calculate(DRIVE.y),
+                str.calculate(DRIVE.x),
                 DRIVE.heading
         );
 
