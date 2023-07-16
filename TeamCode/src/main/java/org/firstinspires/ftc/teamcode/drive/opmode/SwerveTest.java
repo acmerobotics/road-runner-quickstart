@@ -46,7 +46,7 @@ public class SwerveTest extends CommandOpMode {
 
     private SlewRateLimiter fw;
     private SlewRateLimiter str;
-    private final PIDFController hController = new PIDFController(0.5, 0, 0.1, 0);
+    private final PIDFController hController = new PIDFController(0.6, 0, 0.1, 0);
 
     public static double fw_r = 4;
     public static double str_r = 4;
