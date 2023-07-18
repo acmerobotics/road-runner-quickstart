@@ -108,7 +108,7 @@ public class BrainSTEMRobot {
 
 
         parallelPod = new MotorEx(hardwareMap, "BLDandLOdo").encoder;
-        parallelPod.setDirection(Motor.Direction.REVERSE);
+        parallelPod.setDirection(Motor.Direction.FORWARD);
         perpindicularPod = new MotorEx(hardwareMap, "FRDandROdo").encoder;
         perpindicularPod.setDirection(Motor.Direction.REVERSE);
 

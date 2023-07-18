@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.norm
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -18,6 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.locolization.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
 import org.firstinspires.ftc.teamcode.robot.Constants;
@@ -40,6 +42,9 @@ public class SwerveTest extends CommandOpMode {
     private double targetHeading;
 
     private final BrainSTEMRobot robot = BrainSTEMRobot.getInstance();
+
+    SampleMecanumDrive drive;
+
     private SwerveDrivetrain drivetrain;
 //    private IntakeSubsystem intake;
 //    private LiftSubsystem lift;
@@ -70,9 +75,16 @@ public class SwerveTest extends CommandOpMode {
         robot.init(hardwareMap, telemetry);
         drivetrain = new SwerveDrivetrain(robot);
 
+        Pose2d startPosition = new Pose2d(-0, 0, Math.toRadians(0));
+
+        drive = new SampleMecanumDrive(hardwareMap);
+
         gamepadEx = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
         localizer = new TwoWheelLocalizer(robot);
+
+        localizer.setPoseEstimate(startPosition);
+        drive.setPoseEstimate(new Pose2d(0,0,0));
 
         robot.enabled = true;
 
@@ -149,9 +161,15 @@ public class SwerveTest extends CommandOpMode {
 
         telemetry.addData("loop hz :", 1000000000 / (loop - loopTime));
         telemetry.addData("robot voltage :", robot.getVoltage());
+        telemetry.addLine("-------");
+        Pose2d poseEstimate = new Pose2d(localizer.getPos().x, localizer.getPos().y, localizer.getPos().heading);
+        telemetry.addData("x", localizer.getPos().x);
+        telemetry.addData("y", localizer.getPos().y);
+        telemetry.addData("heading", localizer.getPos().heading);
         telemetry.addLine("-------" + "\n");
         telemetry.addLine(drivetrain.getTelemetry());
-
+        drive.setPoseEstimate(poseEstimate);
+        drive.update();
         loopTime = loop;
 
         telemetry.update();

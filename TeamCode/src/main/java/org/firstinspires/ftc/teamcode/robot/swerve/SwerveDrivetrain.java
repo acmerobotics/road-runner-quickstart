@@ -59,7 +59,7 @@ public class SwerveDrivetrain implements Drivetrain {
                 d = y + head * (TRACK_WIDTH / R);
 
         if (forward) {
-            ws = new double[]{0.1, 0.1, 0.1, 0.1};
+            ws = new double[]{0.3, 0.3, 0.3, 0.3};
             wa = new double[]{0, 0, 0, 0};
         } else {
             ws = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
