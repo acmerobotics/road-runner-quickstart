@@ -9,10 +9,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -21,6 +19,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.locolization.TwoWheelLocalizer;
+import org.firstinspires.ftc.teamcode.global.Alliance;
 import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.swerve.SlewRateLimiter;
@@ -28,15 +27,16 @@ import org.firstinspires.ftc.teamcode.robot.swerve.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.math.Point;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
 
-import java.util.function.BooleanSupplier;
-
 @Config
-@TeleOp(name = "Swerve Tele Test")
+@TeleOp(name = "Swerve TeleOp")
 public class SwerveTest extends CommandOpMode {
     private ElapsedTime timer;
     private double loopTime = 0;
 
     public static double position;
+
+    private Pose2d startPosition;
+    private Alliance alliance = Alliance.RED;
 
     private boolean pHeadingLock = true;
     private double targetHeading;
@@ -75,7 +75,7 @@ public class SwerveTest extends CommandOpMode {
         robot.init(hardwareMap, telemetry);
         drivetrain = new SwerveDrivetrain(robot);
 
-        Pose2d startPosition = new Pose2d(-0, 0, Math.toRadians(0));
+
 
         drive = new SampleMecanumDrive(hardwareMap);
 
@@ -83,8 +83,7 @@ public class SwerveTest extends CommandOpMode {
         gamepadEx2 = new GamepadEx(gamepad2);
         localizer = new TwoWheelLocalizer(robot);
 
-        localizer.setPoseEstimate(startPosition);
-        drive.setPoseEstimate(new Pose2d(0,0,0));
+        drivetrain.setReset(true);
 
         robot.enabled = true;
 
@@ -92,6 +91,20 @@ public class SwerveTest extends CommandOpMode {
         PhotonCore.experimental.setMaximumParallelCommands(8);
         PhotonCore.enable();
 
+        while (opModeInInit()) {
+            if (gamepad1.b) {
+                alliance = Alliance.RED;
+                startPosition = new Pose2d(0, 0, Math.toRadians(90));
+            } else if (gamepad1.x) {
+                alliance = Alliance.BLUE;
+                startPosition = new Pose2d(0, 0, Math.toRadians(270));
+            }
+
+            telemetry.addData("Alliance :", alliance.toString());
+
+
+            telemetry.update();
+        }
     }
 
     @Override
@@ -103,6 +116,10 @@ public class SwerveTest extends CommandOpMode {
             robot.startIMUThread(this);
             fw = new SlewRateLimiter(fw_r);
             str = new SlewRateLimiter(str_r);
+
+            localizer.setPoseEstimate(startPosition);
+            drive.setPoseEstimate(startPosition);
+            drivetrain.setReset(false);
         }
 
         robot.read(drivetrain);
@@ -175,6 +192,10 @@ public class SwerveTest extends CommandOpMode {
         telemetry.update();
 
         robot.clearBulkCache();
+
+        if (isStopRequested()) {
+            drivetrain.setReset(true);
+        }
     }
 
     private double joystickScalar(double num, double min) {

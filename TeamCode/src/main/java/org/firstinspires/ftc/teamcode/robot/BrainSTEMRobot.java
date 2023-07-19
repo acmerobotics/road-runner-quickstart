@@ -117,6 +117,8 @@ public class BrainSTEMRobot {
 
         }
         voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
+
+        telemetry.addData("BrainSTEM Robot :", "Ready");
     }
 
     public void loop(Pose drive, SwerveDrivetrain drivetrain) {
@@ -185,6 +187,7 @@ public class BrainSTEMRobot {
 
     public void stopCameraStream() {
         backCamera.closeCameraDeviceAsync(() -> System.out.println("Stopped Back Camera"));
+
     }
 
     public double getVoltage() {

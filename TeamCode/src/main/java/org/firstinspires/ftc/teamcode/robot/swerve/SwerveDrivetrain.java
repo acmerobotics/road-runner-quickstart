@@ -33,6 +33,8 @@ public class SwerveDrivetrain implements Drivetrain {
 
     private boolean forward = false;
 
+    private boolean reset = false;
+
     public SwerveDrivetrain(BrainSTEMRobot robot) {
         frontLeftModule = new SwerveModule(robot.frontLeftMotor, robot.frontLeftServo, new AbsoluteAnalogEncoder(robot.frontLeftEncoder, 3.3).zero(frontLeftOffset).setInverted(true));
         backLeftModule = new SwerveModule(robot.backLeftMotor, robot.backLeftServo, new AbsoluteAnalogEncoder(robot.backLeftEncoder, 3.3).zero(backLeftOffset).setInverted(true));
@@ -59,9 +61,12 @@ public class SwerveDrivetrain implements Drivetrain {
                 d = y + head * (TRACK_WIDTH / R);
 
         if (forward) {
-            ws = new double[]{0.3, 0.3, 0.3, 0.3};
+            ws = new double[]{-0.3, -0.3, -0.3, -0.3};
             wa = new double[]{0, 0, 0, 0};
-        } else {
+        } else if (reset) {
+            ws = new double[]{0, 0, 0, 0};
+            wa = new double[]{0, 0, 0, 0};
+        }else {
             ws = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
             if (!maintainHeading) wa = new double[]{atan2(b, c), atan2(b, d), atan2(a, d), atan2(a, c)};
         }
@@ -87,9 +92,13 @@ public class SwerveDrivetrain implements Drivetrain {
         this.forward = forward;
     }
 
+    public void setReset(boolean reset){this.reset = reset;}
+
     public boolean isForward(){
         return forward;
     }
+
+    public boolean isReset() {return reset;}
 
     public String getTelemetry() {
         return frontLeftModule.getTelemetry("leftFrontModule") + "\n" + "-----------"  + "\n" +

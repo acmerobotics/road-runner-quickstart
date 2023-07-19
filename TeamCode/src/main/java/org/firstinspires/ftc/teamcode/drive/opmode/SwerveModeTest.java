@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.teamcode.robot.swerve.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.math.Point;
 import org.firstinspires.ftc.teamcode.util.math.Pose;
 
-//@Disabled
+@Disabled
 @TeleOp(name = "Swerve Mode Test", group = "drive")
 public class SwerveModeTest extends LinearOpMode {
 

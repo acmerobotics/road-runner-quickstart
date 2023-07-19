@@ -17,13 +17,13 @@ import java.util.function.DoubleSupplier;
 @Config
 public class TwoWheelLocalizer extends TwoTrackingWheelLocalizer implements SwerveLocalizer {
     public static double TICKS_PER_REV = 8192;
-    public static double WHEEL_RADIUS = 0.74488189;
+    public static double WHEEL_RADIUS = 0.748031;
     public static double GEAR_RATIO = 1;
 
-    public static double PARALLEL_X = -5.5;
+    public static double PARALLEL_X = -5.15748;
     public static double PARALLEL_Y = 0;
 
-    public static double PERPENDICULAR_X = 5.5;
+    public static double PERPENDICULAR_X = 4.92126;
     public static double PERPENDICULAR_Y = 0;
 
     private final DoubleSupplier horizontalPosition, lateralPosition, imuAngle;
