@@ -36,9 +36,9 @@ public class TrajectorySequenceRunner {
     public static String COLOR_INACTIVE_TURN = "#7c4dff7a";
     public static String COLOR_INACTIVE_WAIT = "#dd2c007a";
 
-    public static String COLOR_ACTIVE_TRAJECTORY = "#4CAF50";
+    public static String COLOR_ACTIVE_TRAJECTORY = "#a709b5";
     public static String COLOR_ACTIVE_TURN = "#7c4dff";
-    public static String COLOR_ACTIVE_WAIT = "#dd2c00";
+    public static String COLOR_ACTIVE_WAIT = "#b5092b";
 
     public static int POSE_HISTORY_LIMIT = 100;
 

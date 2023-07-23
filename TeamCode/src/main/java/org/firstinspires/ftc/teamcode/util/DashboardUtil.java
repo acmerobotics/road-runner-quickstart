@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DashboardUtil {
     private static final double DEFAULT_RESOLUTION = 2.0; // distance units; presumed inches
-    private static final double ROBOT_RADIUS = 9; // in
+    private static final double ROBOT_RADIUS = 4.5; // in
 
 
     public static void drawPoseHistory(Canvas canvas, List<Pose2d> poseHistory) {

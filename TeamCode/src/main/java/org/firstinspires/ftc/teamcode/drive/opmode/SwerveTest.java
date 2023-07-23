@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.controller.PIDFController;
@@ -35,7 +34,7 @@ public class SwerveTest extends CommandOpMode {
 
     public static double position;
 
-    private Pose2d startPosition;
+    private Pose2d startPosition = new Pose2d(0,0,0);
     private Alliance alliance = Alliance.RED;
 
     private boolean pHeadingLock = true;
@@ -76,14 +75,16 @@ public class SwerveTest extends CommandOpMode {
         drivetrain = new SwerveDrivetrain(robot);
 
 
-
         drive = new SampleMecanumDrive(hardwareMap);
+
+//        drive.setPoseEstimate(startPosition);
 
         gamepadEx = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
         localizer = new TwoWheelLocalizer(robot);
 
-        drivetrain.setReset(true);
+        localizer.setPoseEstimate(startPosition);
+
 
         robot.enabled = true;
 
@@ -94,10 +95,10 @@ public class SwerveTest extends CommandOpMode {
         while (opModeInInit()) {
             if (gamepad1.b) {
                 alliance = Alliance.RED;
-                startPosition = new Pose2d(0, 0, Math.toRadians(90));
+//                startPosition = new Pose2d(0, 0, Math.toRadians(90));
             } else if (gamepad1.x) {
                 alliance = Alliance.BLUE;
-                startPosition = new Pose2d(0, 0, Math.toRadians(270));
+//                startPosition = new Pose2d(0, 0, Math.toRadians(270));
             }
 
             telemetry.addData("Alliance :", alliance.toString());
@@ -117,9 +118,7 @@ public class SwerveTest extends CommandOpMode {
             fw = new SlewRateLimiter(fw_r);
             str = new SlewRateLimiter(str_r);
 
-            localizer.setPoseEstimate(startPosition);
-            drive.setPoseEstimate(startPosition);
-            drivetrain.setReset(false);
+
         }
 
         robot.read(drivetrain);
