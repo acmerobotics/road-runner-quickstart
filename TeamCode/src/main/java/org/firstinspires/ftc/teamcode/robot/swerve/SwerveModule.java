@@ -25,7 +25,7 @@ import java.util.Locale;
 
 @Config
 public class SwerveModule {
-    public static double P = 0.3, I = 0, D = 0.1;
+    public static double P = 1, I = 0.2, D = 0.1;
     public static double K_STATIC = 0.03;
 
     public static double MAX_SERVO = 1, MAX_MOTOR = 1;

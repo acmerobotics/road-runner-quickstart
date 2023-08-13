@@ -21,7 +21,7 @@ public class AbsoluteAnalogEncoder {
 
     private double modifier;
 
-    private final static double GEAR_RATIO = 3.0;
+    private final static double GEAR_RATIO = 1.0;
 
 
     public AbsoluteAnalogEncoder(AnalogInput enc){
@@ -108,7 +108,8 @@ public class AbsoluteAnalogEncoder {
 
     public double getCurrentPosition() {
 //        pastPosition = updateCurrentPosition() + (rotations * (2 * Math.PI));
-        pastPosition = updateCurrentPosition() + ( ((rotations * 0)) * (2 * Math.PI) / GEAR_RATIO);
+//        pastPosition = updateCurrentPosition() + ( ((rotations * 0)) * (2 * Math.PI) / GEAR_RATIO);
+        pastPosition = updateCurrentPosition();
         return ((pastPosition));
     }
 

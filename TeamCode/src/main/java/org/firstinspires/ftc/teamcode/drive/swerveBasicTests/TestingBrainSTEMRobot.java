@@ -84,10 +84,10 @@ public class TestingBrainSTEMRobot {
         voltageTimer = new ElapsedTime();
 
 
-        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "FLdrive");
-        frontRightMotor = hardwareMap.get(DcMotorEx.class, "FRDandROdo");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class, "BLDandLOdo");
-        backRightMotor = hardwareMap.get(DcMotorEx.class, "BRdrive");
+        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "FLDandFOdo");
+        frontRightMotor = hardwareMap.get(DcMotorEx.class, "FRdrive");
+        backLeftMotor = hardwareMap.get(DcMotorEx.class, "BLdrive");
+        backRightMotor = hardwareMap.get(DcMotorEx.class, "BRDandBOdo");
 
 
 

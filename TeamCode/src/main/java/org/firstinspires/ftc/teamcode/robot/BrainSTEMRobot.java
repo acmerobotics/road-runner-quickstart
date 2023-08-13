@@ -84,10 +84,10 @@ public class BrainSTEMRobot {
         voltageTimer = new ElapsedTime();
 
 
-        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "FLdrive");
-        frontRightMotor = hardwareMap.get(DcMotorEx.class, "FRDandROdo");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class, "BLDandLOdo");
-        backRightMotor = hardwareMap.get(DcMotorEx.class, "BRdrive");
+        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "FLDandFOdo");
+        frontRightMotor = hardwareMap.get(DcMotorEx.class, "FRdrive");
+        backLeftMotor = hardwareMap.get(DcMotorEx.class, "BLdrive");
+        backRightMotor = hardwareMap.get(DcMotorEx.class, "BRDandBOdo");
 
 
         frontLeftServo = hardwareMap.get(CRServo.class, "FLturn");
@@ -107,9 +107,9 @@ public class BrainSTEMRobot {
 
 
 
-        parallelPod = new MotorEx(hardwareMap, "BLDandLOdo").encoder;
+        parallelPod = new MotorEx(hardwareMap, "FLDandFOdo").encoder;
         parallelPod.setDirection(Motor.Direction.FORWARD);
-        perpindicularPod = new MotorEx(hardwareMap, "FRDandROdo").encoder;
+        perpindicularPod = new MotorEx(hardwareMap, "BRDandBOdo").encoder;
         perpindicularPod.setDirection(Motor.Direction.REVERSE);
 
 
