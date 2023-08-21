@@ -551,18 +551,13 @@ public class TrajectorySequenceBuilder {
 
         markers.sort(Comparator.comparingDouble(TrajectoryMarker::getTime));
 
-        double totalSequenceDuration = 0;
-        for (SequenceSegment segment : sequenceSegments) {
-            totalSequenceDuration += segment.getDuration();
-        }
-
         int segmentIndex = 0;
         double currentTime = 0;
 
         for (TrajectoryMarker marker : markers) {
             SequenceSegment segment = null;
 
-            double markerTime = Math.min(marker.getTime(), totalSequenceDuration);
+            double markerTime = marker.getTime();
             double segmentOffsetTime = 0;
 
             while (segmentIndex < sequenceSegments.size()) {
