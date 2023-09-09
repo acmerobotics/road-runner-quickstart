@@ -28,20 +28,38 @@ public class ObjectDetection extends OpenCvPipeline {
         UNKNOWN
     }
 
-    // TOPLEFT anchor point for the bounding box
-    private final Point SLEEVE_TOPLEFT_ANCHOR_POINT = new Point(140, 100);
+    // TOPLEFT anchor point for the 3 bounding boxes
+    private final Point BOX_ANCHOR_ONE = new Point(20, 100);
+    private final Point BOX_ANCHOR_TWO = new Point(140, 30);
+    private final Point BOX_ANCHOR_THREE = new Point(260, 100);
 
-    // Width and height for the bounding box
-    private final int SLEEVE_REGION_WIDTH = 30;
-    private final int SLEEVE_REGION_HEIGHT = 40;
+    // Width and height for the bounding boxes
+    private final int BOX_WIDTH = 40;
+    private final int BOX_HEIGHT = 60;
 
-    // Anchor point definitions
-    Point sleeve_pointA = new Point(
-            SLEEVE_TOPLEFT_ANCHOR_POINT.x,
-            SLEEVE_TOPLEFT_ANCHOR_POINT.y);
-    Point sleeve_pointB = new Point(
-            SLEEVE_TOPLEFT_ANCHOR_POINT.x + SLEEVE_REGION_WIDTH,
-            SLEEVE_TOPLEFT_ANCHOR_POINT.y + SLEEVE_REGION_HEIGHT);
+    // Anchor point definitions for 1st box
+    Point prop_pointA_one = new Point(
+            BOX_ANCHOR_ONE.x,
+            BOX_ANCHOR_ONE.y);
+    Point prop_pointB_one = new Point(
+            BOX_ANCHOR_ONE.x + BOX_WIDTH,
+            BOX_ANCHOR_ONE.y + BOX_HEIGHT);
+
+    // Anchor point definitions for 2nd box
+    Point prop_pointA_two = new Point(
+            BOX_ANCHOR_TWO.x,
+            BOX_ANCHOR_TWO.y);
+    Point prop_pointB_two = new Point(
+            BOX_ANCHOR_TWO.x + BOX_WIDTH,
+            BOX_ANCHOR_TWO.y + BOX_HEIGHT);
+
+    // Anchor point definitions for 3nd box
+    Point prop_pointA_three = new Point(
+            BOX_ANCHOR_THREE.x,
+            BOX_ANCHOR_THREE.y);
+    Point prop_pointB_three = new Point(
+            BOX_ANCHOR_THREE.x + BOX_WIDTH,
+            BOX_ANCHOR_THREE.y + BOX_HEIGHT);
 
     // Running variable storing the parking position
     private volatile ParkingLot parkingLot = ParkingLot.UNKNOWN;
@@ -92,8 +110,8 @@ public class ObjectDetection extends OpenCvPipeline {
         // draw a rectangle on sleeve.
         Imgproc.rectangle(
                     input,
-                    sleeve_pointA,
-                    sleeve_pointB,
+                    prop_pointA_one,
+                    prop_pointB_one,
                     brushColor,
                     2
         );
@@ -123,23 +141,27 @@ public class ObjectDetection extends OpenCvPipeline {
 
     private void sleeveColorDetect(Mat sleeveImageInput) {
         Logging.log("Start Opcv process to detect sleeve color.");
-        // Get the submat frame, and then sum all the values
-        Mat areaMat = sleeveImageInput.submat(new Rect(sleeve_pointA, sleeve_pointB));
-        Scalar sumColors = Core.sumElems(areaMat);
+        // Get the submat frames for 3 points, and then sum the color values for all 3
+        Mat areaMat_one = sleeveImageInput.submat(new Rect(prop_pointA_one, prop_pointB_one));
+        Mat areaMat_two = sleeveImageInput.submat(new Rect(prop_pointA_two, prop_pointB_two));
+        Mat areaMat_three = sleeveImageInput.submat(new Rect(prop_pointA_three, prop_pointB_three));
+        Scalar sumColors_one = Core.sumElems(areaMat_one);
+        Scalar sumColors_two = Core.sumElems(areaMat_two);
+        Scalar sumColors_three = Core.sumElems(areaMat_three);
 
         // Get the minimum RGB value from every single channel
-        double maxColor = Math.max(sumColors.val[0], Math.max(sumColors.val[1], sumColors.val[2]));
-        Logging.log("Sleeve max color = %.2f, %.2f, %.2f", sumColors.val[0], sumColors.val[1], sumColors.val[2]);
+        double maxColor = Math.max(sumColors_one.val[0], Math.max(sumColors_one.val[1], sumColors_one.val[2]));
+        Logging.log("Sleeve max color = %.2f, %.2f, %.2f", sumColors_one.val[0], sumColors_one.val[1], sumColors_one.val[2]);
 
         // Change the bounding box color based on the sleeve color
         if (maxColor < Math.ulp(0)){
             parkingLot = ParkingLot.UNKNOWN;
         }
-        else if (Math.abs(sumColors.val[0] - maxColor) < Math.ulp(0)) {
+        else if (Math.abs(sumColors_one.val[0] - maxColor) < Math.ulp(0)) {
             parkingLot = ParkingLot.LEFT;
             brushColor = RED;
             parkingLotDistance = -24;
-        } else if (Math.abs(sumColors.val[1] - maxColor) < Math.ulp(0)) {
+        } else if (Math.abs(sumColors_one.val[1] - maxColor) < Math.ulp(0)) {
             parkingLot = ParkingLot.CENTER;
             brushColor = GREEN;
             parkingLotDistance = 0;
@@ -151,27 +173,27 @@ public class ObjectDetection extends OpenCvPipeline {
         Logging.log("Sleeve position: %s", parkingLot.toString());
 
         // Release and return input
-        areaMat.release();
+        areaMat_one.release();
     }
 
     private void conePositionDetect(Mat inputCone) {
         // Get the submat frame, and then sum all the values
 
-        Mat areaMat = inputCone.submat(new Rect(pointA, pointB));
+        Mat areaMat_one = inputCone.submat(new Rect(pointA, pointB));
 
-        Mat doubleAreaMat = new Mat(areaMat.size(), 30); // CV_64FC3, CV_64FC4=30
-        areaMat.convertTo(doubleAreaMat, 30);
+        Mat doubleareaMat_one = new Mat(areaMat_one.size(), 30); // CV_64FC3, CV_64FC4=30
+        areaMat_one.convertTo(doubleareaMat_one, 30);
 
         int kernelSize = 32;
-        Mat destMat = new Mat(doubleAreaMat.rows(), doubleAreaMat.cols(), doubleAreaMat.type());
+        Mat destMat = new Mat(doubleareaMat_one.rows(), doubleareaMat_one.cols(), doubleareaMat_one.type());
 
-        double [] filterK = new double[doubleAreaMat.channels()];
-        for (int i = 0; i < doubleAreaMat.channels(); i++)
+        double [] filterK = new double[doubleareaMat_one.channels()];
+        for (int i = 0; i < doubleareaMat_one.channels(); i++)
         {
             filterK[i] = 1.0/kernelSize/kernelSize;
         }
 
-        Mat kernel = new Mat(kernelSize, kernelSize, doubleAreaMat.type() ) {
+        Mat kernel = new Mat(kernelSize, kernelSize, doubleareaMat_one.type() ) {
             {
                 for (int i = 0; i < kernelSize; i++) {
                     for (int j = 0; j < kernelSize; j++) {
@@ -181,7 +203,7 @@ public class ObjectDetection extends OpenCvPipeline {
             }
         };
 
-        Imgproc.filter2D(doubleAreaMat, destMat, -1, kernel);
+        Imgproc.filter2D(doubleareaMat_one, destMat, -1, kernel);
 
         Mat lineMatA = destMat.row(0);
         Mat lineM = new Mat(lineMatA.size(), lineMatA.type());
@@ -239,11 +261,11 @@ public class ObjectDetection extends OpenCvPipeline {
         );
 
         // Release and return input
-        areaMat.release();
+        areaMat_one.release();
         lineM.release();
         lineMatA.release();
         kernel.release();
-        doubleAreaMat.release();
+        doubleareaMat_one.release();
         destMat.release();
         lineRed.release();
         lineBlue.release();
