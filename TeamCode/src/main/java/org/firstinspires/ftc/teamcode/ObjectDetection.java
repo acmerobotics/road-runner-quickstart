@@ -126,15 +126,15 @@ public class ObjectDetection extends OpenCvPipeline {
 
     // Returns an enum being the current position where the robot will park
     public ParkingLot getParkingLot() {
+
         return parkingLot;
     }
 
-    // Returns an enum being the current position where the robot will park
     public double getParkingLotDistance() {
         return parkingLotDistance;
     }
 
-    // Returns an enum being the current position where the robot will park
+    // Returns bool indicating whether or not the prop is detected in ANY of the spike tape positions
     public boolean isConeDetected() {
         return coneDetected;
     }
