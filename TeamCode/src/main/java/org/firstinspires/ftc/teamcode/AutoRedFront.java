@@ -295,13 +295,15 @@ public class AutoRedFront extends LinearOpMode {
                 autoRedFrontCore();
                 break;
             case 2:
-                autoRedBackCore();
+                //autoRedBackCore();
+                autoRedFrontCore();
                 break;
             case 3:
                 autoBlueFrontCore();
                 break;
             case 4:
-                autoBlueBackCore();
+                //autoBlueBackCore();
+                autoBlueFrontCore();
                 break;
         }
     }
@@ -311,6 +313,12 @@ public class AutoRedFront extends LinearOpMode {
         // 1. move to central line
         Pose2d poseCenterLine = new Pose2d(-2.5 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 3 * Params.HALF_MAT, startPose.getHeading());
         poseLineEnd1  = new Pose2d(-3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.getHeading());
+
+        if (2 == startLoc) {
+            poseCenterLine = new Pose2d(-2.5 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, -1 * Params.HALF_MAT, startPose.getHeading());
+            poseLineEnd1 = new Pose2d(-3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.getHeading());
+        }
+
         poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
         Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
         Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
@@ -440,159 +448,22 @@ public class AutoRedFront extends LinearOpMode {
 
 
     }
-    private void autoRedBackCore() {
-        // 2 == startLoc
-        // 1. move to central line
-        poseLineEnd1 = new Pose2d(-3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.getHeading());
-        poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
-        Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
-        Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
 
 
-        traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(poseLineEnd1)
-                .build();
-        drive.followTrajectory(traj1);
-
-        if (1 == sparkMarkLoc) {// left
-
-            // 1. turn -90
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(90.0))
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 2. open claw to release purple pixel
-            armClaw.clawOpen();
-            sleep(100);
-
-            //3. close claw
-            armClaw.clawClose();
-            sleep(100);
-            armClaw.armLift();
-
-        }
-
-        if (2 == sparkMarkLoc) { // center
-
-            // 2. open claw, to release the purple pixel
-            armClaw.clawOpen();
-            sleep(100);
-
-            // 3. close claw to pick-up the yellow pixel
-            armClaw.clawClose();
-            sleep(100);
-
-        }
-
-        if (3 == sparkMarkLoc) // right
-        {
-            // 1. turn -90
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(-90.0))
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 2. open claw to release purple pixel
-            armClaw.clawOpen();
-            sleep(100);
-
-            //3. close claw
-            armClaw.clawClose();
-            sleep(100);
-            armClaw.armLift();
-
-        }
-
-        if (debug_flag) {
-            Logging.log("Autonomous time- ending traj1: " + runtime);
-
-            Logging.log("Arrived pre cone junction");
-            Logging.log("start pose: end x = %.2f,  y = %.2f, angle = %.2f",
-                    startPose.getX(), startPose.getY(), Math.toDegrees(startPose.getHeading()));
-
-            Logging.log("pre-cone pose trajSeq1: end x = %.2f,  y = %.2f, angle = %.2f",
-                    trajSeq1.end().getX(), trajSeq1.end().getY(), Math.toDegrees(trajSeq1.end().getHeading()));
-
-            Logging.log("pre-cone pose  trajSeq2: end x = %.2f,  y = %.2f, angle = %.2f",
-                    trajSeq2.end().getX(), trajSeq2.end().getY(), Math.toDegrees(trajSeq2.end().getHeading()));
-
-            Logging.log("pre-cone pose traj1: end x = %.2f,  y = %.2f, angle = %.2f",
-                    traj1.end().getX(), traj1.end().getY(), Math.toDegrees(traj1.end().getHeading()));
-
-            Logging.log("pre-cone pose estimate end x = %.2f,  y = %.2f, angle = %.2f",
-                    drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toDegrees(drive.getPoseEstimate().getHeading()));
-        }
-
-    }
-
-    // 3 = startLoc
+    // 3 = startLoc, or 4
     private void autoBlueFrontCore(){
         // 1. move to central line
         Pose2d poseLineEnd1 = new Pose2d(3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.getHeading());
-        Pose2d poseBlueBackDropCenter = new Pose2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
-        Pose2d poseBlueBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
-        Pose2d poseBlueBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
 
-        traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(poseLineEnd1)
-                .build();
-        drive.followTrajectory(traj1);
-
-        if (3 == sparkMarkLoc) {// right
-
-            // 1. turn -90
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(-90.0))
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 2. open claw to release purple pixel
-            armClaw.clawOpen();
-            sleep(100);
-
-            //3. close claw
-            armClaw.clawClose();
-            sleep(100);
-
-        }
-
-        if (2 == sparkMarkLoc) { // center
-
-            // 2. open claw, to release the purple pixel
-            armClaw.clawOpen();
-            sleep(100);
-
-            // 3. close claw to pick-up the yellow pixel
-            armClaw.clawClose();
-            sleep(100);
-
-        }
-
-        if (1 == sparkMarkLoc) // left
-        {
-            // 1. turn -90
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(90.0))
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 2. open claw to release purple pixel
-            armClaw.clawOpen();
-            sleep(100);
-
-            //3. close claw
-            armClaw.clawClose();
-            sleep(100);
-
-
-        }
-    }
-
-    private void autoBlueBackCore() {
-        // startLoc = 4
         // 1. move to central line
-        Pose2d poseLineEnd1 = new Pose2d(3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.getHeading());
+        Pose2d poseCenterLine = new Pose2d(2.5 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, 3 * Params.HALF_MAT, startPose.getHeading());
+        poseLineEnd1  = new Pose2d(3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.getHeading());
+
+        if (4 == startLoc) {
+            poseCenterLine = new Pose2d(2.5 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, -1 * Params.HALF_MAT, startPose.getHeading());
+            poseLineEnd1 = new Pose2d(3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.getHeading());
+        }
+        
         Pose2d poseBlueBackDropCenter = new Pose2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
         Pose2d poseBlueBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
         Pose2d poseBlueBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
@@ -617,7 +488,6 @@ public class AutoRedFront extends LinearOpMode {
             //3. close claw
             armClaw.clawClose();
             sleep(100);
-            armClaw.armLift();
 
         }
 
@@ -630,7 +500,6 @@ public class AutoRedFront extends LinearOpMode {
             // 3. close claw to pick-up the yellow pixel
             armClaw.clawClose();
             sleep(100);
-            armClaw.armLift();
 
         }
 
@@ -649,7 +518,7 @@ public class AutoRedFront extends LinearOpMode {
             //3. close claw
             armClaw.clawClose();
             sleep(100);
-            armClaw.armLift();
+
 
         }
     }
