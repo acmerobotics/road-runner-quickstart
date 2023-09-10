@@ -200,6 +200,12 @@ public class AutoRedFront extends LinearOpMode {
 
         coneSleeveDetect = new ObjectDetection();
 
+        if (startLoc <= 2) {
+            coneSleeveDetect.setColorFlag(ObjectDetection.ColorS.RED);
+        } else {
+            coneSleeveDetect.setColorFlag(ObjectDetection.ColorS.BLUE);
+        }
+
         if (isCameraInstalled) {
             camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(
                     WebcamName.class, webcamName), cameraMonitorViewId);

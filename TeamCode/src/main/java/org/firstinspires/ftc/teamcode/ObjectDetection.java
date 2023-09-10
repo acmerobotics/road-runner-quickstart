@@ -28,6 +28,11 @@ public class ObjectDetection extends OpenCvPipeline {
         UNKNOWN
     }
 
+    public enum ColorS {
+        RED,
+        BLUE
+    }
+
     // TOPLEFT anchor point for the 3 bounding boxes
     private final Point BOX_ANCHOR_ONE = new Point(43, 124  );
     private final Point BOX_ANCHOR_TWO = new Point(160, 112);
@@ -90,11 +95,17 @@ public class ObjectDetection extends OpenCvPipeline {
             Object_TOPLEFT_POINT.x + REGION_WIDTH,
             Object_TOPLEFT_POINT.y + REGION_HEIGHT);
 
+    private ColorS detectColor = ColorS.RED;
+
+    public void setColorFlag(ColorS nColor) {
+        detectColor = nColor;
+    }
+
 
     @Override
     public Mat processFrame(Mat input) {
         // detect sleeve color.
-        propDetectPos(input, RED);
+        propDetectPos(input, detectColor);
 
         // detect cone location
         if (!stopConeDetectPipeLine) {
@@ -144,7 +155,7 @@ public class ObjectDetection extends OpenCvPipeline {
     }
 
 
-    private void propDetectPos(Mat ImageInput, Scalar Color) {
+    private void propDetectPos(Mat ImageInput, ColorS Color) {
         Logging.log("Start Opcv process to detect sleeve color.");
         // Select three sections to search for prop of specified color
         Mat areaMat_one = ImageInput.submat(new Rect(prop_pointA_one, prop_pointB_one));
@@ -164,8 +175,15 @@ public class ObjectDetection extends OpenCvPipeline {
         double maxcolor3 = Math.max(sumColors_three.val[0], Math.max(sumColors_three.val[1], sumColors_three.val[2]));
         Logging.log("Sleeve max color = %.2f, %.2f, %.2f", sumColors_one.val[0], sumColors_one.val[1], sumColors_one.val[2]);
 
+        int colorChannelIndex = 0;
+        if (ColorS.RED == Color) {
+            colorChannelIndex = 0; // red
+        } else {
+            colorChannelIndex = 2; // blue
+        }
+
         // Change the bounding box 1 color based on the sleeve color
-        if (Math.abs(sumColors_one.val[0] - maxColor) < Math.ulp(0)) {
+        if (Math.abs(sumColors_one.val[colorChannelIndex] - maxColor) < Math.ulp(0)) {
             rectColor1 = RED;
             objectTrueFalse1 = true;
             PropPosDistance = -24;
@@ -173,7 +191,7 @@ public class ObjectDetection extends OpenCvPipeline {
             rectColor1 = GREY;
             PropPosDistance = 24;
         }
-        if (Math.abs(sumColors_two.val[0] - maxcolor2) < Math.ulp(0)) {
+        if (Math.abs(sumColors_two.val[colorChannelIndex] - maxcolor2) < Math.ulp(0)) {
             rectColor2 = RED;
             objectTrueFalse2 = true;
             PropPosDistance = -24;
@@ -181,7 +199,7 @@ public class ObjectDetection extends OpenCvPipeline {
             rectColor2 = GREY;
             PropPosDistance = 24;
         }
-        if (Math.abs(sumColors_three.val[0] - maxcolor3) < Math.ulp(0)) {
+        if (Math.abs(sumColors_three.val[colorChannelIndex] - maxcolor3) < Math.ulp(0)) {
             rectColor3 = RED;
             objectTrueFalse3 = true;
             PropPosDistance = -24;
