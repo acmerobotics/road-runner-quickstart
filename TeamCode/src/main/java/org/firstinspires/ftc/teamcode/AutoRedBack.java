@@ -54,32 +54,54 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.with2DW;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.with3DW;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import java.util.List;
 
 /**
- * Extended from AutonomousRight file.
- * Use this one for autonomous when robot located at left side of game field.
+ * Hardware config:
+ *      imu on control Hub:
+ *          "imu"
+ *
+ *      Four drive motors:
+ *          "FrontLeft"
+ *          "BackLeft"
+ *          "BackRight"
+ *          "FrontRight"
+ *
+ *      One servo motors:
+ *          "ArmServo"
+ *          "ClawServo"
+ *
+ *      Two cameras:
+ *          "Webcam 1"
+ *          "WebcamR"
  */
 
-@Autonomous(name="RR test 1 - precone", group="Concept")
+@Autonomous(name="Auto Red Back", group="Concept")
 //@Disabled
-public class AutoRRTest_PreCone extends AutoMJ_Right {
-
+public class AutoRedBack extends AutoRedFront {
     @Override
     public void setRobotLocation() {
-        //preConeDropAdjust = new Vector2d(0, 0);
-        //poseConeStackAdjust = new Vector2d(0, 0);
-        if (gamepad1.x || gamepad2.x) {
-            startLoc = -1;
-        }
-    }
-
-    @Override
-    public void autonomousCore() {
-        // drive to medium junction, lift sliders, arm to back
-        // move this code here to save the path build time during autonomous.
-
-        drive.followTrajectory(traj1);
-        sleep(15000);
+        startLoc = 2;
     }
 }
