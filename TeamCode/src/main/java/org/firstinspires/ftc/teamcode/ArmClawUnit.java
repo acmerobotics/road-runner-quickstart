@@ -235,5 +235,19 @@ public class ArmClawUnit
     public void armManualMoving(int updatePosition) {
         setArmCountPosition(armMotor.getCurrentPosition() + updatePosition);
     }
+
+    public void resetArmEncoder() {
+
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setArmCountPosition(0);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(0.9);
+    }
+
+    public void armLift() {
+        setArmCountPosition(100);
+    }
+
 }
 
