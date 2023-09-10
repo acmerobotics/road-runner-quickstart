@@ -42,47 +42,35 @@ public class Params {
     public static Pose2d currentPose = new Pose2d();
 
     //cone parameters
-    static final double CONE_WALL_THICKNESS = 0.5; // inch
     static final double coneLoadStackGap = 1.3;
 
     // autonomous driving distance
     static final double HALF_MAT = 12.0;
     static final double CHASSIS_HALF_WIDTH = 14 / 2.0;
-    static final double CHASSIS_LENGTH = 15;
-    static final double SWING_ARM_LENGTH = 12;
+    static final double CHASSIS_LENGTH = 17;
     static final double FLIP_ARM_LENGTH = 10;
-    static final double ARM_LOCATION_BIAS = 2.0; // Arm joint location to the center of chassis.
-    static final double BACK_V_TO_CENTER = 4; // distance from V to the center of the robot
-    static final double INIT_POSITION_TO_MAT_CENTER = 5 * HALF_MAT - CHASSIS_HALF_WIDTH;
-    static final double INIT_POSITION_TO_2ND_MAT_EDGE = 4 * HALF_MAT - CHASSIS_HALF_WIDTH;
-    static final double HIGH_JUNCTION_TO_CONE_STACK = 4 * HALF_MAT - SWING_ARM_LENGTH;
     static final double BASE_TO_JUNCTION = 3 * HALF_MAT - 18;
     static final double UNLOAD_DS_VALUE = 4.5;
-    static final double LOAD_DS_VALUE = 6;
 
     // moving distance variables
     static final double DISTANCE_PICK_UP = 1.0; // in INCH
-    static final double DISTANCE_DROP_OFF = 1.0; // in INC5
+    static final double GAP_DISTANCE = (HALF_MAT - CHASSIS_LENGTH / 2.0) / 2.0;
 
     // slider position variables
     static final double ARM_UNLOADING_LIFTING = 4.0;
     static final double ARM_UNLOADING_EXTENSION = 7.0;
     static final double GROUND_CONE_POSITION = 0.0;
     static final double coneStack5th = coneLoadStackGap * 4;
-    static final double GROUND_JUNCTION_POS = GROUND_CONE_POSITION + 1.0;
     static final double LOW_JUNCTION_POS = 13.5 - ARM_UNLOADING_LIFTING;
     static final double MEDIUM_JUNCTION_POS = 23.5 - ARM_UNLOADING_LIFTING;
     static final double HIGH_JUNCTION_POS = 33.5 - ARM_UNLOADING_LIFTING;
     static final double WALL_POSITION = 9.1;
     static final double GROUND_CONE_READY_POSITION = 4.8;
-    static final double COVER_POSITION = 4.0;
     static final double SLIDER_MOVE_DOWN_POSITION = 4.0;
-    static final double SLIDER_MOVE_OUT_CONE_STACK = WALL_POSITION - coneStack5th;
 
     //claw action time
     static final int CLAW_CLOSE_SLEEP = 150; // ms
     static final int CLAW_OPEN_SLEEP = 50; // ms
-    static final int WAIT_SHAKING_SLEEP = 100;
 
     // chassis power factors
     static final double POWER_LOW = 0.3;

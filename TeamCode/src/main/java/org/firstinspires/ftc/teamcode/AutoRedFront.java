@@ -162,23 +162,23 @@ public class AutoRedFront extends LinearOpMode {
     private void setPoses() {
         // road runner variables
         if (1 == startLoc) { // red front
-            startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_LENGTH / 2.0,
-                    3 * Params.HALF_MAT, Math.toRadians(0));
+            startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH,
+                    3 * Params.HALF_MAT, Math.toRadians(-90.0));
         }
 
         if (2 == startLoc) { // red back
-            startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_LENGTH / 2.0,
-                    -1 * Params.HALF_MAT, Math.toRadians(0));
+            startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH,
+                    -1 * Params.HALF_MAT, Math.toRadians(-90.0));
         }
 
         if (3 == startLoc) { //  blue front
-            startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_LENGTH / 2.0,
-                    3 * Params.HALF_MAT, Math.toRadians(180));
+            startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH,
+                    3 * Params.HALF_MAT, Math.toRadians(90.0));
         }
 
         if (4 == startLoc) { //  blue back
-            startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_LENGTH / 2.0,
-                    -1 * Params.HALF_MAT, Math.toRadians(180));
+            startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH,
+                    -1 * Params.HALF_MAT, Math.toRadians(90.0));
         }
     }
 
@@ -193,8 +193,8 @@ public class AutoRedFront extends LinearOpMode {
         setPoses();
 
         // camera for sleeve color detect, start camera at the beginning.
-        if (2 == startLoc) webcamName = "Webcam 1";
-        else webcamName = "WebcamR";
+        webcamName = "Webcam 1";
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
@@ -242,7 +242,8 @@ public class AutoRedFront extends LinearOpMode {
         sleep(500);
         armClaw.clawClose();
         sleep(500);
-        armClaw.armManualMoving(10);
+        armClaw.armManualMoving(15);
+        sleep(500);
 
         runtime.reset();
         while ((ObjectDetection.PropSide.UNKNOWN == myParkingLot) &&
@@ -308,21 +309,24 @@ public class AutoRedFront extends LinearOpMode {
     // 1 == startLoc
     private void autoRedFrontCore() {
         // 1. move to central line
-        poseLineEnd1 = new Pose2d(-3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.getHeading());
+        Pose2d poseCenterLine = new Pose2d(-2.5 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 3 * Params.HALF_MAT, startPose.getHeading());
+        poseLineEnd1  = new Pose2d(-3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.getHeading());
         poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
         Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
         Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
 
-        traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(poseLineEnd1)
-                .build();
-        drive.followTrajectory(traj1);
-
         if (1 == sparkMarkLoc) {// left
 
-            // 1. turn -90
+            // 0. drive to center
+            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(poseLineEnd1)
+                    .build();
+            drive.followTrajectory(traj1);
+
+            // 1. turn 180
             trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(90.0))
+                    .turn(Math.toRadians(180.0))
+                    .forward(Params.GAP_DISTANCE)
                     .build();
             drive.followTrajectorySequence(trajSeq1);
 
@@ -333,7 +337,7 @@ public class AutoRedFront extends LinearOpMode {
             //3. close claw
             armClaw.clawClose();
             sleep(100);
-
+/*
             // 4. turn 180
             trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .turn(Math.toRadians(180.0))
@@ -341,18 +345,30 @@ public class AutoRedFront extends LinearOpMode {
             drive.followTrajectorySequence(trajSeq1);
 
             // 4. move to Backdrop
-            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(poseRedBackDropCenter)
-                    .addDisplacementMarker(4*Params.HALF_MAT, () -> {
-                        armClaw.armLift();
-                    })
-                    .lineToLinearHeading(poseRedBackDropLeft)
+            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .forward(8 * Params.HALF_MAT)
+                    .addDisplacementMarker(4 * Params.HALF_MAT, armClaw::armLift)
+                    .strafeLeft(Params.HALF_MAT / 2.0)
                     .build();
-            drive.followTrajectory(traj1);
+            drive.followTrajectorySequence(trajSeq1);
             armClaw.clawOpen();
+           */
         }
 
         if (2 == sparkMarkLoc) { // center
+
+            // 0. drive to center
+            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(poseCenterLine)
+                    .build();
+            drive.followTrajectory(traj1);
+
+            // 1. turn 90 degrees
+            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .turn(Math.toRadians(90.0))
+                    .forward(Params.GAP_DISTANCE)
+                    .build();
+            drive.followTrajectorySequence(trajSeq1);
 
             // 2. open claw, to release the purple pixel
             armClaw.clawOpen();
@@ -361,6 +377,13 @@ public class AutoRedFront extends LinearOpMode {
             // 3. close claw to pick-up the yellow pixel
             armClaw.clawClose();
             sleep(100);
+/*
+            // 0. drive to center
+            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(poseLineEnd1)
+                    .build();
+            drive.followTrajectory(traj1);
+
             // 3. turn right 90 degree and move to backdrop
             trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .turn(Math.toRadians(-90.0))
@@ -373,24 +396,34 @@ public class AutoRedFront extends LinearOpMode {
 
             // 4. open claw to release the pixel.
             armClaw.clawOpen();
+
+ */
         }
 
         if (3 == sparkMarkLoc) // right
         {
-            // 1. turn -90
+            // 0. drive to center
+            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(poseCenterLine)
+                    .build();
+            drive.followTrajectory(traj1);
+
+            // 1. drive to tape
             trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(-90.0))
+                    .forward(Params.GAP_DISTANCE)
                     .build();
             drive.followTrajectorySequence(trajSeq1);
 
             // 2. open claw to release purple pixel
             armClaw.clawOpen();
-            sleep(100);
+            sleep(500);
 
             //3. close claw
             armClaw.clawClose();
             sleep(100);
+           // armClaw.armLift();
 
+/*
             // 4. move to Backdrop
             traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(poseRedBackDropCenter)
@@ -401,7 +434,11 @@ public class AutoRedFront extends LinearOpMode {
                     .build();
             drive.followTrajectory(traj1);
             armClaw.clawOpen();
+
+ */
         }
+
+
     }
     private void autoRedBackCore() {
         // 2 == startLoc
@@ -434,19 +471,6 @@ public class AutoRedFront extends LinearOpMode {
             sleep(100);
             armClaw.armLift();
 
-            // 4. turn 180
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(180.0))
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 4. move to Backdrop
-            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(poseRedBackDropCenter)
-                    .lineToLinearHeading(poseRedBackDropLeft)
-                    .build();
-            drive.followTrajectory(traj1);
-            armClaw.clawOpen();
         }
 
         if (2 == sparkMarkLoc) { // center
@@ -458,17 +482,7 @@ public class AutoRedFront extends LinearOpMode {
             // 3. close claw to pick-up the yellow pixel
             armClaw.clawClose();
             sleep(100);
-            armClaw.armLift();
 
-            // 3. turn right 90 degree and move to backdrop
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(-90.0))
-                    .lineToLinearHeading(poseRedBackDropCenter)
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 4. open claw to release the pixel.
-            armClaw.clawOpen();
         }
 
         if (3 == sparkMarkLoc) // right
@@ -488,13 +502,6 @@ public class AutoRedFront extends LinearOpMode {
             sleep(100);
             armClaw.armLift();
 
-            // 4. move to Backdrop
-            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(poseRedBackDropCenter)
-                    .lineToLinearHeading(poseRedBackDropRight)
-                    .build();
-            drive.followTrajectory(traj1);
-            armClaw.clawOpen();
         }
 
         if (debug_flag) {
@@ -548,22 +555,6 @@ public class AutoRedFront extends LinearOpMode {
             armClaw.clawClose();
             sleep(100);
 
-            // 4. turn 180
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(180.0))
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 4. move to Backdrop
-            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(poseBlueBackDropCenter)
-                    .addDisplacementMarker(4*Params.HALF_MAT, () -> {
-                        armClaw.armLift();
-                    })
-                    .lineToLinearHeading(poseBlueBackDropLeft)
-                    .build();
-            drive.followTrajectory(traj1);
-            armClaw.clawOpen();
         }
 
         if (2 == sparkMarkLoc) { // center
@@ -576,18 +567,6 @@ public class AutoRedFront extends LinearOpMode {
             armClaw.clawClose();
             sleep(100);
 
-            // 3. turn right 90 degree and move to backdrop
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(90.0))
-                    .addDisplacementMarker(4*Params.HALF_MAT, () -> {
-                        armClaw.armLift();
-                    })
-                    .lineToLinearHeading(poseBlueBackDropCenter)
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 4. open claw to release the pixel.
-            armClaw.clawOpen();
         }
 
         if (1 == sparkMarkLoc) // left
@@ -606,16 +585,7 @@ public class AutoRedFront extends LinearOpMode {
             armClaw.clawClose();
             sleep(100);
 
-            // 4. move to Backdrop
-            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(poseBlueBackDropCenter)
-                    .addDisplacementMarker(4*Params.HALF_MAT, () -> {
-                        armClaw.armLift();
-                    })
-                    .lineToLinearHeading(poseBlueBackDropRight)
-                    .build();
-            drive.followTrajectory(traj1);
-            armClaw.clawOpen();
+
         }
     }
 
@@ -649,19 +619,6 @@ public class AutoRedFront extends LinearOpMode {
             sleep(100);
             armClaw.armLift();
 
-            // 4. turn 180
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(180.0))
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 4. move to Backdrop
-            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(poseBlueBackDropCenter)
-                    .lineToLinearHeading(poseBlueBackDropLeft)
-                    .build();
-            drive.followTrajectory(traj1);
-            armClaw.clawOpen();
         }
 
         if (2 == sparkMarkLoc) { // center
@@ -675,15 +632,6 @@ public class AutoRedFront extends LinearOpMode {
             sleep(100);
             armClaw.armLift();
 
-            // 3. turn right 90 degree and move to backdrop
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(90.0))
-                    .lineToLinearHeading(poseBlueBackDropCenter)
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
-            // 4. open claw to release the pixel.
-            armClaw.clawOpen();
         }
 
         if (1 == sparkMarkLoc) // left
@@ -702,14 +650,7 @@ public class AutoRedFront extends LinearOpMode {
             armClaw.clawClose();
             sleep(100);
             armClaw.armLift();
-            // 4. move to Backdrop
-            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(poseBlueBackDropCenter)
-                    .lineToLinearHeading(poseBlueBackDropRight)
-                    .build();
-            drive.followTrajectory(traj1);
 
-            armClaw.clawOpen();
         }
     }
 }

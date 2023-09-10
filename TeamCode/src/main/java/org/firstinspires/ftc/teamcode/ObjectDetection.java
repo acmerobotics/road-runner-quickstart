@@ -34,9 +34,9 @@ public class ObjectDetection extends OpenCvPipeline {
     }
 
     // TOPLEFT anchor point for the 3 bounding boxes
-    private final Point BOX_ANCHOR_ONE = new Point(43, 124  );
-    private final Point BOX_ANCHOR_TWO = new Point(160, 112);
-    private final Point BOX_ANCHOR_THREE = new Point(295, 122);
+    private final Point BOX_ANCHOR_ONE = new Point(23, 124);
+    private final Point BOX_ANCHOR_TWO = new Point(158, 116);
+    private final Point BOX_ANCHOR_THREE = new Point(293, 124);
 
     // Width and height for the bounding boxes
     private final int BOX_WIDTH = 4;
