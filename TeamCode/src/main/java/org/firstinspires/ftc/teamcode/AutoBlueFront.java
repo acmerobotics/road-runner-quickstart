@@ -54,29 +54,54 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.with2DW;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.with3DW;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import java.util.List;
+
 /**
- * Extended from AutonomousRight file.
- * Use this one for autonomous when robot located at left side of game field.
+ * Hardware config:
+ *      imu on control Hub:
+ *          "imu"
+ *
+ *      Four drive motors:
+ *          "FrontLeft"
+ *          "BackLeft"
+ *          "BackRight"
+ *          "FrontRight"
+ *
+ *      One servo motors:
+ *          "ArmServo"
+ *          "ClawServo"
+ *
+ *      Two cameras:
+ *          "Webcam 1"
+ *          "WebcamR"
  */
 
-@Autonomous(name="Autonomous_Left", group="Concept")
-@Disabled
-public class AutonomousLeft extends AutonomousRight {
-
+@Autonomous(name="Auto Blue Front", group="Concept")
+//@Disabled
+public class AutoBlueFront extends AutoRedFront {
     @Override
     public void setRobotLocation() {
-        autonomousStartLocation = -1;
+        startLoc = 3;
     }
 }

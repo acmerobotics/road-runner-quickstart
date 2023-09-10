@@ -107,7 +107,7 @@ public class TeleopRR extends LinearOpMode {
     double moveOutJunctionDistance = 5.0; // in INCH
 
     // debug flags, turn it off for formal version to save time of logging
-    boolean debugFlag = true;
+    boolean debugFlag = false;
 
     @Override
     public void runOpMode() {
@@ -124,11 +124,11 @@ public class TeleopRR extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        slider.init(hardwareMap, "RightSlider", "LeftSlider");
+        //slider.init(hardwareMap, "RightSlider", "LeftSlider");
         slider.setCountPosition(slider.getPosition());
         slider.runToPosition();
 
-        armClaw.init(hardwareMap, "ArmServo", "ClawServo");
+        armClaw.init(hardwareMap, "ArmMotor", "ClawServo");
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -346,7 +346,6 @@ public class TeleopRR extends LinearOpMode {
         }
 
         // The motor stop on their own but power is still applied. Turn off motor.
-        slider.stop();
         mecanum.setMotorPowers(0.0,0.0,0.0,0.0);
     }
 
