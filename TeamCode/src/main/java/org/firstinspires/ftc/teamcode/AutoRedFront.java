@@ -106,18 +106,11 @@ public class AutoRedFront extends LinearOpMode {
     Pose2d poseConeStackAdjust = new Pose2d(0, 0, 0);
     Pose2d poseMJDropOffAdjust = new Pose2d(0, 0, 0);
 
-    double armLengthAdj = 0.0;
     boolean withDW = with2DW || with3DW; // with dead wheels
     boolean compensationOn = true;
-    double splineVelocity = 45.0;
-    double splineMAX_ACCEL = 45.0;
-
-    Pose2d poseHJPreConAdjust = new Pose2d(0, 0, 0);
-    Pose2d poseHJDropOffAdjust = new Pose2d(0, 0, 0);
 
     // 1 for Red Front, 2 for Red back, 3 for Blue Front, and 4 for Blue back
     public int startLoc = 2;
-    public int junctionType = 1; // 1 for medium junction, 2 for high junction
     public int sparkMarkLoc = 1; // 1 for left, 2 for center, and 3 for right
     boolean debug_flag = true;
 
@@ -170,22 +163,22 @@ public class AutoRedFront extends LinearOpMode {
         // road runner variables
         if (1 == startLoc) { // red front
             startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_LENGTH / 2.0,
-                    3 * Params.HALF_MAT, Math.toRadians(-90));
+                    3 * Params.HALF_MAT, Math.toRadians(0));
         }
 
         if (2 == startLoc) { // red back
             startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_LENGTH / 2.0,
-                    -1 * Params.HALF_MAT, Math.toRadians(-90));
+                    -1 * Params.HALF_MAT, Math.toRadians(0));
         }
 
         if (3 == startLoc) { //  blue front
             startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_LENGTH / 2.0,
-                    3 * Params.HALF_MAT, Math.toRadians(90));
+                    3 * Params.HALF_MAT, Math.toRadians(180));
         }
 
         if (4 == startLoc) { //  blue back
             startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_LENGTH / 2.0,
-                    -1 * Params.HALF_MAT, Math.toRadians(90));
+                    -1 * Params.HALF_MAT, Math.toRadians(180));
         }
     }
 
@@ -310,9 +303,9 @@ public class AutoRedFront extends LinearOpMode {
     private void autoRedFrontCore() {
         // 1. move to central line
         poseLineEnd1 = new Pose2d(-3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.getHeading());
-        poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-180.0));
-        Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-180.0));
-        Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-180.0));
+        poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
+        Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
+        Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
 
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(poseLineEnd1)
@@ -408,9 +401,9 @@ public class AutoRedFront extends LinearOpMode {
         // 2 == startLoc
         // 1. move to central line
         poseLineEnd1 = new Pose2d(-3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.getHeading());
-        poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-180.0));
-        Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-180.0));
-        Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-180.0));
+        poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
+        Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
+        Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
 
 
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -524,9 +517,9 @@ public class AutoRedFront extends LinearOpMode {
     private void autoBlueFrontCore(){
         // 1. move to central line
         Pose2d poseLineEnd1 = new Pose2d(3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.getHeading());
-        Pose2d poseBlueBackDropCenter = new Pose2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-180.0));
-        Pose2d poseBlueBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-180.0));
-        Pose2d poseBlueBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-180.0));
+        Pose2d poseBlueBackDropCenter = new Pose2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
+        Pose2d poseBlueBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
+        Pose2d poseBlueBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
 
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(poseLineEnd1)
@@ -624,9 +617,9 @@ public class AutoRedFront extends LinearOpMode {
         // startLoc = 4
         // 1. move to central line
         Pose2d poseLineEnd1 = new Pose2d(3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.getHeading());
-        Pose2d poseBlueBackDropCenter = new Pose2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-180.0));
-        Pose2d poseBlueBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-180.0));
-        Pose2d poseBlueBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-180.0));
+        Pose2d poseBlueBackDropCenter = new Pose2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
+        Pose2d poseBlueBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
+        Pose2d poseBlueBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
 
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(poseLineEnd1)

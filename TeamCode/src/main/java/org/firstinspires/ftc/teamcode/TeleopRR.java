@@ -61,6 +61,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
@@ -103,11 +104,13 @@ public class TeleopRR extends LinearOpMode {
     //claw and arm unit
     private final ArmClawUnit armClaw = new ArmClawUnit();
 
+    private Servo launchServo = null;
+
     // variables for auto load and unload cone
     double moveOutJunctionDistance = 5.0; // in INCH
 
     // debug flags, turn it off for formal version to save time of logging
-    boolean debugFlag = false;
+    boolean debugFlag = true;
 
     @Override
     public void runOpMode() {
@@ -117,6 +120,7 @@ public class TeleopRR extends LinearOpMode {
 
         mecanum = new SampleMecanumDrive(hardwareMap);
 
+
         mecanum.setPoseEstimate(Params.currentPose); // load the pose of the end of autonomous
 
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -125,6 +129,9 @@ public class TeleopRR extends LinearOpMode {
 
         armClaw.resetArmEncoder();
 
+        launchServo = hardwareMap.get(Servo.class, "LaunchServo");
+
+        launchServo.setPosition(0.3);
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -182,69 +189,22 @@ public class TeleopRR extends LinearOpMode {
                 armClaw.armManualMoving(gpButtons.armManualControl);
             }
 
-            //  auto driving, grip cone, and lift slider
-            if (gpButtons.autoLoadGroundCone) {
-                loadCone(Params.GROUND_CONE_POSITION); // Always on ground during teleop mode
+            if (gpButtons.launchOn) {
+                launchServo.setPosition(0.9);
             }
 
-            //  auto driving, grip cone, and lift slider
-            if (gpButtons.autoLoad34thConeStack) {
-                loadCone(Params.GROUND_CONE_POSITION + Params.coneLoadStackGap * 2); // Always on ground during teleop mode
+            if (gpButtons.armLift) {
+                armClaw.armLift();
             }
 
-            //  auto driving, grip cone, and lift slider
-            if (gpButtons.autoLoad45thConeStack) {
-                loadCone(Params.GROUND_CONE_POSITION + Params.coneLoadStackGap * 3); // Always on ground during teleop mode
+            if (gpButtons.armDown) {
+                armClaw.armDown();
             }
 
-            //  auto driving, grip cone, and lift slider
-            if (gpButtons.autoLoadThenJunction) {
-                loadConeThenDriving(); // Always on ground during teleop mode for special pickup
-            }
-
-            //  auto driving, unload cone
-            if (gpButtons.autoUnloadCone) {
-                unloadCone(moveOutJunctionDistance);
-            }
-
-            // loading cone then moving to high junction
-            if (gpButtons.autoUnloadThenBase) {
-                unloadConeThenDriving();
-            }
-
-            // auto drop off cone, moving to cone base, auto pick up cone, then moving to junction.
-            if (gpButtons.teapot) {
-                unloadConeThenDriving();
-                slider.waitRunningComplete();
-                loadConeThenDriving();
-            }
-
-            //back to cone base, only active at the beginning of 5sec teleop
-            if ((gpButtons.backBase) && (runtime.seconds() < 5)) {
-                /*
-                    mecanum.setMode(DriveConstants.with3DW? DcMotor.RunMode.RUN_WITHOUT_ENCODER : DcMotor.RunMode.RUN_USING_ENCODER);
-                    Trajectory trajBack = mecanum.trajectoryBuilder(mecanum.getPoseEstimate())
-                            .lineToLinearHeading(new Pose2d(-3 * Params.HALF_MAT, 0, Math.toRadians(180)))
-                            .build();
-                    mecanum.followTrajectory(trajBack);
-                    mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-                 */
-            }
 
             if (debugFlag) {
                 // claw arm servo log
                 telemetry.addData("Claw", "position %.2f", armClaw.getClawPosition());
-
-                telemetry.addData("Right slider", "current position %d",
-                        slider.RightSliderMotor.getCurrentPosition());
-                telemetry.addData("Left slider", "current position %d",
-                        slider.LeftSliderMotor.getCurrentPosition());
-
-                telemetry.addData("Right slider", "T position %d",
-                        slider.RightSliderMotor.getTargetPosition());
-                telemetry.addData("Left slider", "T position %d",
-                        slider.LeftSliderMotor.getTargetPosition());
 
                 telemetry.addData("RR", "imu Heading = %.1f",
                         Math.toDegrees(mecanum.getRawExternalHeading()));
@@ -253,9 +213,13 @@ public class TeleopRR extends LinearOpMode {
                 telemetry.addData("RR", "x = %.1f, y = %.1f, Heading = %.1f",
                         mecanum.getPoseEstimate().getX(), mecanum.getPoseEstimate().getY(),
                         Math.toDegrees(mecanum.getPoseEstimate().getHeading()));
+
+                telemetry.addData("Arm", "position = %.2f", armClaw.getArmPosition());
+
+                telemetry.addData("Claw", "position %.2f", armClaw.getClawPosition());
+
+                telemetry.update(); // update message at the end of while loop
             }
-            telemetry.addData("Arm", "position = %.2f", armClaw.getArmPosition());
-            telemetry.update(); // update message at the end of while loop
         }
 
         // The motor stop on their own but power is still applied. Turn off motor.

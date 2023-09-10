@@ -129,13 +129,6 @@ public class ObjectDetection extends OpenCvPipeline {
     }
 
     // Returns an enum being the current position where the robot will park
-    public double getConePosition() {
-        // Running variable storing the parking position
-        double objectPosition = 0;
-        return objectPosition;
-    }
-
-    // Returns an enum being the current position where the robot will park
     public PropSide getPropPos() {
         /*if (coneDetected == true) {
             PropPos = PropSide.RIGHT;
@@ -150,10 +143,6 @@ public class ObjectDetection extends OpenCvPipeline {
         return PropPosDistance;
     }
 
-    // Returns bool indicating whether or not the prop is detected in ANY of the spike tape positions
-    public boolean isConeDetected() {
-        return coneDetected;
-    }
 
     private void propDetectPos(Mat ImageInput, Scalar Color) {
         Logging.log("Start Opcv process to detect sleeve color.");
@@ -282,25 +271,7 @@ public class ObjectDetection extends OpenCvPipeline {
         }
 
         coneDetected = verifyObjectDetected(lineM, maxPixelLoc);
-    /*
-        if (coneDetected) {
-            objectPosition = (maxPixelLoc * 2.0 / lineM.cols()) * Math.tan(cameraViewAngle / 2) * cameraToConeDistance;
-            Imgproc.line(inputCone, new Point(maxPixelLoc, 0), new Point(maxPixelLoc, inputCone.rows()), GREEN);
-        }
-        else {
-            objectPosition = 0.0;
-        }
-        if (debug)
-            Logging.log(" location pixel is %d, distance is %.2f", maxPixelLoc, objectPosition);
 
-        Imgproc.rectangle(
-                inputCone,
-                pointA,
-                pointB,
-                GREEN,
-                2
-        );
-        */
         // Release and return input
         areaMat_one.release();
         lineM.release();
@@ -313,32 +284,6 @@ public class ObjectDetection extends OpenCvPipeline {
         lineSum.release();
     }
 
-    private void checkColorByHSV(Mat m) {
-
-        Mat hsvFrame, rgbFrame;//, inRangeMask, filteredFrame, hChannel;
-        rgbFrame = new Mat();
-        hsvFrame = new Mat();
-        // Convert the frame in the HSV color space, to be able to identify the color with the thresholds
-        Imgproc.cvtColor(m, rgbFrame, Imgproc.COLOR_RGBA2RGB); // Cant't convert directly rgba->hsv
-        Imgproc.cvtColor(rgbFrame, hsvFrame, Imgproc.COLOR_RGB2HSV);
-        Scalar hsvColors = Core.sumElems(hsvFrame);
-        hChannelAve = hsvColors.val[0] / m.rows() / m.cols();
-
-        if (hChannelAve > Math.ulp(0)) {
-            if (hChannelAve < 30 || hChannelAve > 130) {
-                PropPos = PropPos.LEFT;
-                rectColor1 = RED;
-                PropPosDistance = -24.0;
-            } else {
-                PropPos = PropPos.RIGHT;
-                rectColor1 = GREY;
-                PropPosDistance = 24.0;
-            }
-        }
-        Logging.log(" hChannelAve = %.2f", hChannelAve);
-        rgbFrame.release();
-        hsvFrame.release();
-    }
 
     private boolean verifyObjectDetected(@NonNull Mat lineM, int maxPixelLoc)
     {

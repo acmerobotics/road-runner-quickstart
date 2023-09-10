@@ -51,55 +51,38 @@ public class GamePadButtons {
     public float robotDrive;
     public float robotStrafe;
     public float robotTurn;
-    public float sliderUpDown;
     public boolean speedDown;
     public boolean speedUp;
-    public boolean sliderWallPosition;
-    public boolean sliderGroundJunction;
-    public boolean sliderGround;
-    public boolean sliderLowJunction;
-    public boolean sliderMediumJunction;
-    public boolean sliderHighJunction;
+    public boolean armLift;
+    public boolean armDown;
     public boolean clawClose;
     public boolean clawOpen;
-    public boolean armLeft;
-    public boolean armRight;
-    public boolean armForward;
-    public boolean armFrontLoad;
-    public boolean armFrontUnload;
-    public boolean armBackLoad;
-    public boolean armBackUnload;
+    public boolean launchOn;
     public int armManualControl;
     public boolean autoLoadGroundCone;
-    public boolean autoLoad34thConeStack;
-    public boolean autoLoad45thConeStack;
-    public boolean autoLoadThenJunction; // driving robot to high junction after loading cone
-    public boolean autoUnloadCone;
-    public boolean autoUnloadThenBase; // driving robot to cone loading base after unloading cone
-    public boolean teapot; // auto drop off cone, moving to cone base, auto pick up cone, then moving to junction.
-    public boolean backBase; // back to cone base when starting Teleop
 
     public void checkGamepadButtons(@NonNull Gamepad gamepad1, @NonNull Gamepad gamepad2) {
         //gamepad1 buttons
         robotDrive = gamepad1.left_stick_y;
         robotStrafe = gamepad1.left_stick_x;
         robotTurn = gamepad1.right_stick_x;
-        speedDown = gamepad1.dpad_left || gamepad1.x;
-        speedUp = gamepad1.dpad_right || gamepad1.b;
+
         autoLoadGroundCone = gamepad1.left_bumper;
-        autoLoad34thConeStack = gamepad1.dpad_up;
-        autoLoad45thConeStack = gamepad1.dpad_down;
-        autoUnloadCone = gamepad1.right_bumper;
-        autoLoadThenJunction = gamepad1.left_trigger > 0;
-        autoUnloadThenBase = gamepad1.right_trigger > 0;
-        teapot = gamepad1.y;
-        backBase = gamepad1.back;
+
+        // arm lift
+        armLift = gamepad1.y;
+        armDown = gamepad1.x;
+
+        // launch plane
+        launchOn = gamepad1.right_bumper;
 
         // gamepad1 and gamepad2
-        clawOpen = gamepad2.dpad_down || gamepad1.a;
+        clawOpen = gamepad1.dpad_down || gamepad2.dpad_down;
 
         // gamepad2 buttons
-        clawClose = gamepad2.dpad_up;
+        clawClose = gamepad1.dpad_up || gamepad2.dpad_up;;
+
+        //launchOn = gamepad1.y;
 
         armManualControl = (int) (-gamepad2.left_stick_y * 40);
     }
