@@ -131,7 +131,7 @@ public class TeleopRR extends LinearOpMode {
 
         launchServo = hardwareMap.get(Servo.class, "LaunchServo");
 
-        launchServo.setPosition(0.98);
+        launchServo.setPosition(0.5);
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);

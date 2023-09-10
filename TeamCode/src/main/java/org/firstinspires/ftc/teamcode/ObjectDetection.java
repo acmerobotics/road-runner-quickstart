@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 
 /**
- * Used to detect cone position, and sleeve color.
+ * Used to take 3 submats of image(1 for left, 2 for center, and 3 for right) and find/locate the prop
  */
 public class ObjectDetection extends OpenCvPipeline {
 
@@ -34,9 +34,9 @@ public class ObjectDetection extends OpenCvPipeline {
     }
 
     // TOPLEFT anchor point for the 3 bounding boxes
-    private final Point BOX_ANCHOR_ONE = new Point(23, 124);
+    private final Point BOX_ANCHOR_ONE = new Point(28, 124);
     private final Point BOX_ANCHOR_TWO = new Point(158, 116);
-    private final Point BOX_ANCHOR_THREE = new Point(293, 124);
+    private final Point BOX_ANCHOR_THREE = new Point(288, 124);
 
     // Width and height for the bounding boxes
     private final int BOX_WIDTH = 4;
@@ -165,16 +165,6 @@ public class ObjectDetection extends OpenCvPipeline {
         Scalar sumColors_two = Core.sumElems(areaMat_two);
         Scalar sumColors_three = Core.sumElems(areaMat_three);
 
-        boolean objectTrueFalse1 = false;
-        boolean objectTrueFalse2 = false;
-        boolean objectTrueFalse3 = false;
-
-        // Get the minimum RGB value from every single channel
-        double maxColor = Math.max(sumColors_one.val[0], Math.max(sumColors_one.val[1], sumColors_one.val[2]));
-        double maxcolor2 = Math.max(sumColors_two.val[0], Math.max(sumColors_two.val[1], sumColors_two.val[2]));
-        double maxcolor3 = Math.max(sumColors_three.val[0], Math.max(sumColors_three.val[1], sumColors_three.val[2]));
-        Logging.log("Sleeve max color = %.2f, %.2f, %.2f", sumColors_one.val[0], sumColors_one.val[1], sumColors_one.val[2]);
-
         int colorChannelIndex = 0;
         if (ColorS.RED == Color) {
             colorChannelIndex = 0; // red
@@ -182,46 +172,63 @@ public class ObjectDetection extends OpenCvPipeline {
             colorChannelIndex = 2; // blue
         }
 
-        // Change the bounding box 1 color based on the sleeve color
-        if (Math.abs(sumColors_one.val[colorChannelIndex] - maxColor) < Math.ulp(0)) {
+        // Boolean to see if a box is containing real colors or not(identifies between noise and actual red)
+        boolean boxNoise1 = false;
+        boolean boxNoise2 = false;
+        boolean boxNoise3 = false;
+
+        Logging.log("Box 1 RGB = %.2f, %.2f, %.2f", sumColors_one.val[0], sumColors_one.val[1], sumColors_one.val[2]);
+        Logging.log("Box 2 RGB = %.2f, %.2f, %.2f", sumColors_two.val[0], sumColors_two.val[1], sumColors_two.val[2]);
+        Logging.log("Box 3 RGB = %.2f, %.2f, %.2f", sumColors_three.val[0], sumColors_three.val[1], sumColors_three.val[2]);
+
+        // Get the average of the RGB Values from each box
+        double avgColor1 = (sumColors_one.val[0] + sumColors_one.val[1] + sumColors_one.val[2]) / 3;
+        double avgColor2 = (sumColors_two.val[0] + sumColors_two.val[1] + sumColors_two.val[2]) / 3;
+        double avgColor3 = (sumColors_three.val[0] + sumColors_three.val[1] + sumColors_three.val[2]) / 3;
+        Logging.log("Box 1 mean = %.2f", avgColor1);
+        Logging.log("Box 2 mean = %.2f", avgColor2);
+        Logging.log("Box 3 mean = %.2f", avgColor3);
+        
+        // Find the standard deviation for the red value of every box
+        double stColor1 = sumColors_one.val[colorChannelIndex] / avgColor1;
+        double stColor2 = sumColors_two.val[colorChannelIndex] / avgColor2;
+        double stColor3 = sumColors_three.val[colorChannelIndex] / avgColor3;
+        Logging.log("Box 1 red/blue st.deviation = %.2f", stColor1);
+        Logging.log("Box 2 red/blue st.deviation = %.2f", stColor2);
+        Logging.log("Box 3 red/blue st.deviation = %.2f", stColor3);
+        
+        // Differentiate between noise and color data
+        if (stColor1 >= 1.4) {
+            boxNoise1 = true;
             rectColor1 = RED;
-            objectTrueFalse1 = true;
-            PropPosDistance = -24;
-        } else {
-            rectColor1 = GREY;
-            PropPosDistance = 24;
         }
-        if (Math.abs(sumColors_two.val[colorChannelIndex] - maxcolor2) < Math.ulp(0)) {
+        if (stColor2 >= 1.4) {
+            boxNoise2 = true;
             rectColor2 = RED;
-            objectTrueFalse2 = true;
-            PropPosDistance = -24;
-        } else {
-            rectColor2 = GREY;
-            PropPosDistance = 24;
         }
-        if (Math.abs(sumColors_three.val[colorChannelIndex] - maxcolor3) < Math.ulp(0)) {
+        if (stColor3 >= 1.4) {
+            boxNoise3 = true;
             rectColor3 = RED;
-            objectTrueFalse3 = true;
-            PropPosDistance = -24;
-        } else {
-            rectColor3 = GREY;
-            PropPosDistance = 24;
         }
 
-        Logging.log("Sleeve position: %s", PropPos.toString());
+        // Log for noise
+        Logging.log("Box 1 obj detected: %d", boxNoise1?1:0);
+        Logging.log("Box 2 obj detected: %d", boxNoise2?1:0);
+        Logging.log("Box 3 obj detected: %d", boxNoise3?1:0);
+
+        // Change the prop location info based on standard deviation
+        if (stColor1 > stColor2 && stColor1 > stColor3) {
+            PropPos = PropSide.LEFT;
+        } else if (stColor2 > stColor1 && stColor2 > stColor3) {
+            PropPos = PropSide.CENTER;
+        } else if (stColor3 > stColor1 && stColor3 > stColor2) {
+            PropPos = PropSide.RIGHT;
+        } else {
+            PropPos = PropSide.UNKNOWN;
+        }
 
         // Release and return input
         areaMat_one.release();
-
-         if (objectTrueFalse1) {
-             PropPos = PropSide.LEFT;
-         } else if (objectTrueFalse2) {
-             PropPos = PropSide.CENTER;
-         } else if (objectTrueFalse3){
-             PropPos = PropSide.RIGHT;
-         } else {
-             PropPos = PropSide.UNKNOWN;
-         }
     }
 
     private void conePositionDetect(Mat inputCone) {

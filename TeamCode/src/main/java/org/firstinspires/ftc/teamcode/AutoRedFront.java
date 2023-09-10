@@ -282,6 +282,8 @@ public class AutoRedFront extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         if (opModeIsActive()) {
+            armClaw.armManualMoving(15);
+            sleep(150);
             autonomousCore();
             camera.closeCameraDevice(); // cost too times at the beginning to close camera about 300 ms
             Logging.log("Autonomous time - total Run Time: " + runtime);
@@ -463,10 +465,6 @@ public class AutoRedFront extends LinearOpMode {
             poseCenterLine = new Pose2d(2.5 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH, -1 * Params.HALF_MAT, startPose.getHeading());
             poseLineEnd1 = new Pose2d(3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.getHeading());
         }
-        
-        Pose2d poseBlueBackDropCenter = new Pose2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
-        Pose2d poseBlueBackDropRight = new Pose2d(poseRedBackDropCenter.getX() - Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
-        Pose2d poseBlueBackDropLeft = new Pose2d(poseRedBackDropCenter.getX() + Params.HALF_MAT, poseRedBackDropCenter.getY(), Math.toRadians(-90.0));
 
         traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(poseLineEnd1)
@@ -475,9 +473,9 @@ public class AutoRedFront extends LinearOpMode {
 
         if (3 == sparkMarkLoc) {// right
 
-            // 1. turn -90
+            // 1. close gap
             trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(-90.0))
+                    .forward(Params.GAP_DISTANCE)
                     .build();
             drive.followTrajectorySequence(trajSeq1);
 
@@ -493,6 +491,13 @@ public class AutoRedFront extends LinearOpMode {
 
         if (2 == sparkMarkLoc) { // center
 
+            // 1. Rotate 90 degrees
+            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .turn(Math.toRadians(90.0))
+                    //.forward(Params.GAP_DISTANCE)
+                    .build();
+            drive.followTrajectorySequence(trajSeq1);
+
             // 2. open claw, to release the purple pixel
             armClaw.clawOpen();
             sleep(100);
@@ -505,9 +510,10 @@ public class AutoRedFront extends LinearOpMode {
 
         if (1 == sparkMarkLoc) // left
         {
-            // 1. turn -90
+            // 1. turn 180
             trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(90.0))
+                    .turn(Math.toRadians(180.0))
+                    .forward(Params.GAP_DISTANCE)
                     .build();
             drive.followTrajectorySequence(trajSeq1);
 
