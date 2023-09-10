@@ -128,7 +128,7 @@ public class TeleopRR extends LinearOpMode {
         slider.setCountPosition(slider.getPosition());
         slider.runToPosition();
 
-        armClaw.init(hardwareMap, "ArmServo", "ClawServo");
+        armClaw.init(hardwareMap, "ArmMotor", "ClawServo");
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);

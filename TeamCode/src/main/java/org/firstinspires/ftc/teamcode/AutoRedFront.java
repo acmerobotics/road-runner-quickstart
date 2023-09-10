@@ -128,8 +128,8 @@ public class AutoRedFront extends LinearOpMode {
     public SampleMecanumDrive drive;
 
     // camera and sleeve color
-    ObjectDetection.ParkingLot myParkingLot = ObjectDetection.ParkingLot.UNKNOWN;
-    double parkingLotDis = 0;
+    ObjectDetection.PropSide myParkingLot = ObjectDetection.PropSide.UNKNOWN;
+
     ObjectDetection coneSleeveDetect;
     OpenCvCamera camera;
     String webcamName = "Webcam 1";
@@ -137,38 +137,13 @@ public class AutoRedFront extends LinearOpMode {
 
     // road runner variables
     Pose2d startPose;
-    
-    // medium junction
-    double dropOffAngle, dropOffAngle2;
-    double armX, armY;
-    double armX2, armY2;
-    // high junction
-    double dropOffAngleHJ;
-    double armXHJ;
-    double armYHJ;
 
     // pre cone to medium junction
     Pose2d poseLineEnd1, poseRedBackDropCenter;
-    Vector2d vPreConeDropOffEst;
-    // cone stack
-    Pose2d poseConeStack;
-    Vector2d vConeStackEst;
-    // medium junction pose
-    Pose2d poseMJDropOff;
-    Vector2d vMJDropOffEst;
-
-    // high junction pose
-    Pose2d poseHJPrecon;
-    Vector2d vHJPreCon;
-
-    Pose2d poseHJDropOff;
-    Vector2d vHJDropOffEst;
 
     Trajectory traj1;
     TrajectorySequence trajSeq1; // use circle path
     TrajectorySequence trajSeq2;
-    TrajectorySequence trajSeq3;
-    boolean heading0 = false; // the heading angle of start position
 
     /**
      * Set robot starting position: 1 for right and -1 for left.
@@ -261,7 +236,7 @@ public class AutoRedFront extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         Params.currentPose = startPose; // init storage pose.
 
-        armClaw.init(hardwareMap, "ArmServo", "ClawServo");
+        armClaw.init(hardwareMap, "ArmMotor", "ClawServo");
         armClaw.armFlipFrontLoad();
         sleep(500);
         armClaw.clawClose();
@@ -269,13 +244,12 @@ public class AutoRedFront extends LinearOpMode {
         armClaw.armFlipCenter();
 
         runtime.reset();
-        while ((ObjectDetection.ParkingLot.UNKNOWN == myParkingLot) &&
-                ((runtime.seconds()) < 3.0)) myParkingLot = coneSleeveDetect.getParkingLot();
+        while ((ObjectDetection.PropSide.UNKNOWN == myParkingLot) &&
+                ((runtime.seconds()) < 3.0)) myParkingLot = coneSleeveDetect.getPropPos();
         Logging.log("Parking Lot position: %s", myParkingLot.toString());
 
         while (!isStarted()) {
-            myParkingLot = coneSleeveDetect.getParkingLot();
-            parkingLotDis = coneSleeveDetect.getParkingLotDistance();
+            myParkingLot = coneSleeveDetect.getPropPos();
             telemetry.addData("Parking position: ", myParkingLot);
             telemetry.addData("robot position: ", startLoc > 0? "Right":"Left");
             telemetry.addData("RR", "imu Heading = %.1f",
@@ -286,6 +260,8 @@ public class AutoRedFront extends LinearOpMode {
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+
+
 
         waitForStart();
         runtime.reset();

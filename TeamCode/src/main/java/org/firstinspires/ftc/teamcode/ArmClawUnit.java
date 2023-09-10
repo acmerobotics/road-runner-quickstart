@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -66,6 +67,8 @@ public class ArmClawUnit
 
     // arm servo variables, not used in current prototype version.
     private Servo armServo = null;
+
+    public DcMotor armMotor = null;
     final double ARM_SWING_FORWARD = 0.395;
     final double ARM_SWING_LEFT = 0.73;
     final double ARM_SWING_RIGHT = 0.06;
@@ -91,6 +94,8 @@ public class ArmClawUnit
         Logging.log("init servo motors for arm and claw.");
         armServo = hardwareMap.get(Servo.class, armMotorName);
         clawServo = hardwareMap.get(Servo.class, clawMotorName);
+
+        armMotor = hardwareMap.get(DcMotor.class, armMotorName);
 
         setClawPosition(CLAW_OPEN_POS);
 
@@ -119,8 +124,14 @@ public class ArmClawUnit
      * set the target position of arm servo motor
      * @param armPos the target position value for arm servo motor
      */
+    public void setArmCountPosition(int armPos) {
+        int ARM_MIN_COUNT_POS = 0;
+        int ARM_MAX_COUNT_POS = 3000;
+        armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
+        armMotor.setTargetPosition(armPos);
+    }
+
     public void setArmPosition(double armPos) {
-        armPos = Range.clip(armPos, ARM_FLIP_FRONT_LOAD_POS, ARM_FLIP_BACK_LOAD_POS);
         armServo.setPosition(armPos);
     }
 
@@ -143,7 +154,7 @@ public class ArmClawUnit
      * @return the current arm servo motor position value
      */
     public double getArmPosition() {
-        return armServo.getPosition();
+        return armMotor.getCurrentPosition();
     }
 
     /**
@@ -221,9 +232,8 @@ public class ArmClawUnit
      * Manual control arm position
      * @param updatePosition the value needed to add to current arm servo position value.
      */
-    public void armManualMoving(double updatePosition) {
-        setArmPosition(armServo.getPosition() + updatePosition / 200);
+    public void armManualMoving(int updatePosition) {
+        setArmCountPosition(armMotor.getCurrentPosition() + updatePosition);
     }
-
 }
 

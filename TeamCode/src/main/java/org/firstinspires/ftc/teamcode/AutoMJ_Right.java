@@ -145,7 +145,7 @@ public class AutoMJ_Right extends LinearOpMode {
     public SampleMecanumDrive drive;
 
     // camera and sleeve color
-    ObjectDetection.PropPos myPropPos = ObjectDetection.PropPos.UNKNOWN;
+    ObjectDetection.PropSide myPropPos = ObjectDetection.PropSide.UNKNOWN;
     double PropPosDis = 0;
     ObjectDetection coneSleeveDetect;
     OpenCvCamera camera;
@@ -329,7 +329,7 @@ public class AutoMJ_Right extends LinearOpMode {
         armClaw.armFlipCenter();
 
         runtime.reset();
-        while ((ObjectDetection.PropPos.UNKNOWN == myPropPos) &&
+        while ((ObjectDetection.PropSide.UNKNOWN == myPropPos) &&
                 ((runtime.seconds()) < 3.0)) {
             myPropPos = coneSleeveDetect.getPropPos();
         }
@@ -619,7 +619,7 @@ public class AutoMJ_Right extends LinearOpMode {
         drive.followTrajectory(traj1);
     }
 
-    private void driveToPropPos(ObjectDetection.PropPos PropPos) {
+    private void driveToPropPos(ObjectDetection.PropSide PropPos) {
         double parkingY, parkingX, parkingH;
         Pose2d poseParking;
 

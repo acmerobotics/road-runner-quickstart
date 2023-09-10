@@ -105,7 +105,7 @@ public class AutonomousRight extends LinearOpMode {
     double MovingToMatCenter = matCenterToConeStack - Params.DISTANCE_PICK_UP - 3;
 
     // camera and sleeve color
-    ObjectDetection.PropPos myPropPos = ObjectDetection.PropPos.UNKNOWN;
+    ObjectDetection.PropSide myPropPos = ObjectDetection.PropSide.UNKNOWN;
     double PropPosDis = 0;
     ObjectDetection coneSleeveDetect;
     OpenCvCamera camera;
@@ -167,7 +167,7 @@ public class AutonomousRight extends LinearOpMode {
         armClaw.armFlipCenter();
 
         runtime.reset();
-        while ((ObjectDetection.PropPos.UNKNOWN == myPropPos) &&
+        while ((ObjectDetection.PropSide.UNKNOWN == myPropPos) &&
                 ((runtime.seconds()) < 3.0)) {
             myPropPos = coneSleeveDetect.getPropPos();
         }

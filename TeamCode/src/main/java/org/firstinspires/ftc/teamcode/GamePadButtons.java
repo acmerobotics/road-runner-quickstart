@@ -69,7 +69,7 @@ public class GamePadButtons {
     public boolean armFrontUnload;
     public boolean armBackLoad;
     public boolean armBackUnload;
-    public double armManualControl;
+    public int armManualControl;
     public boolean autoLoadGroundCone;
     public boolean autoLoad34thConeStack;
     public boolean autoLoad45thConeStack;
@@ -118,7 +118,7 @@ public class GamePadButtons {
             armFrontLoad = (gamepad2.left_stick_y < -0.2) && (Math.abs(gamepad2.left_stick_x) < Math.abs(gamepad2.left_stick_y));
             armBackUnload= (gamepad2.left_stick_y > 0.2) && (Math.abs(gamepad2.left_stick_x) < Math.abs(gamepad2.left_stick_y));
             if (Math.abs(gamepad2.left_stick_x) > Math.abs(gamepad2.left_stick_y)) {
-                armManualControl = gamepad2.left_stick_x;
+                armManualControl = (int)gamepad2.left_stick_x * 10;
             }
             else {
                 armManualControl = 0;
