@@ -101,6 +101,6 @@ public class GamePadButtons {
         // gamepad2 buttons
         clawClose = gamepad2.dpad_up;
 
-        armManualControl = (int) (gamepad2.left_stick_y * 40);
+        armManualControl = (int) (-gamepad2.left_stick_y * 40);
     }
 }
