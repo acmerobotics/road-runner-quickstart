@@ -66,8 +66,6 @@ public class ArmClawUnit
     final double CLAW_MIN_POS = 0;  // Minimum rotational position
 
     // arm servo variables, not used in current prototype version.
-    private Servo armServo = null;
-
     public DcMotor armMotor = null;
     final double ARM_SWING_FORWARD = 0.395;
     final double ARM_SWING_LEFT = 0.73;
@@ -92,7 +90,6 @@ public class ArmClawUnit
         this.hardwareMap = hardwareMap;
 
         Logging.log("init servo motors for arm and claw.");
-        armServo = hardwareMap.get(Servo.class, armMotorName);
         clawServo = hardwareMap.get(Servo.class, clawMotorName);
 
         armMotor = hardwareMap.get(DcMotor.class, armMotorName);
@@ -126,13 +123,12 @@ public class ArmClawUnit
      */
     public void setArmCountPosition(int armPos) {
         int ARM_MIN_COUNT_POS = 0;
-        int ARM_MAX_COUNT_POS = 3000;
+        int ARM_MAX_COUNT_POS = 150;
         armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
         armMotor.setTargetPosition(armPos);
     }
 
     public void setArmPosition(double armPos) {
-        armServo.setPosition(armPos);
     }
 
     /**
@@ -194,20 +190,6 @@ public class ArmClawUnit
     }
 
     /**
-     * turn the Flip arm to front unloading position
-     */
-    public void armFlipFrontUnload() {
-        setArmPosition(ARM_FLIP_FRONT_UNLOAD_POS);
-    }
-
-    /**
-     * turn the Flip arm to back loading position
-     */
-    public void armFlipBackLoad() {
-        setArmPosition(ARM_FLIP_BACK_LOAD_POS);
-    }
-
-    /**
      * turn the Flip arm to back preparing unloading position during Teleop, the art extend more farther.
      */
     public void armFlipBackUnloadPre() {
@@ -246,7 +228,7 @@ public class ArmClawUnit
     }
 
     public void armLift() {
-        setArmCountPosition(100);
+        setArmCountPosition(120);
     }
 
 }

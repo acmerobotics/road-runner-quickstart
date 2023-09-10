@@ -81,49 +81,26 @@ public class GamePadButtons {
 
     public void checkGamepadButtons(@NonNull Gamepad gamepad1, @NonNull Gamepad gamepad2) {
         //gamepad1 buttons
-        robotDrive              = gamepad1.left_stick_y;
-        robotStrafe             = gamepad1.left_stick_x;
-        robotTurn               = gamepad1.right_stick_x;
-        speedDown               = gamepad1.dpad_left || gamepad1.x;
-        speedUp                 = gamepad1.dpad_right || gamepad1.b;
-        autoLoadGroundCone      = gamepad1.left_bumper;
-        autoLoad34thConeStack   = gamepad1.dpad_up;
-        autoLoad45thConeStack   = gamepad1.dpad_down;
-        autoUnloadCone          = gamepad1.right_bumper;
-        autoLoadThenJunction    = gamepad1.left_trigger > 0;
-        autoUnloadThenBase      = gamepad1.right_trigger > 0;
-        teapot                  = gamepad1.y;
-        backBase                = gamepad1.back;
+        robotDrive = gamepad1.left_stick_y;
+        robotStrafe = gamepad1.left_stick_x;
+        robotTurn = gamepad1.right_stick_x;
+        speedDown = gamepad1.dpad_left || gamepad1.x;
+        speedUp = gamepad1.dpad_right || gamepad1.b;
+        autoLoadGroundCone = gamepad1.left_bumper;
+        autoLoad34thConeStack = gamepad1.dpad_up;
+        autoLoad45thConeStack = gamepad1.dpad_down;
+        autoUnloadCone = gamepad1.right_bumper;
+        autoLoadThenJunction = gamepad1.left_trigger > 0;
+        autoUnloadThenBase = gamepad1.right_trigger > 0;
+        teapot = gamepad1.y;
+        backBase = gamepad1.back;
 
         // gamepad1 and gamepad2
-        clawOpen                = gamepad2.dpad_down || gamepad1.a;
+        clawOpen = gamepad2.dpad_down || gamepad1.a;
 
         // gamepad2 buttons
-        clawClose               = gamepad2.dpad_up;
-        sliderUpDown            = gamepad2.right_stick_y;
-        sliderWallPosition      = gamepad2.x;
-        sliderLowJunction       = gamepad2.a;
-        sliderMediumJunction    = gamepad2.b;
-        sliderHighJunction      = gamepad2.y;
-        sliderGroundJunction    = gamepad2.right_bumper;
-        sliderGround            = (gamepad2.right_trigger > 0);
+        clawClose = gamepad2.dpad_up;
 
-        if (ArmClawUnit.ArmType.SWING == ArmClawUnit.armMode) {
-            armLeft = gamepad2.left_stick_x < -0.2;
-            armRight = gamepad2.left_stick_x > 0.2;
-            armForward = gamepad2.left_stick_y > 0.2;
-        }
-
-        if (ArmClawUnit.ArmType.FLIP == ArmClawUnit.armMode) {
-            armFrontLoad = (gamepad2.left_stick_y < -0.2) && (Math.abs(gamepad2.left_stick_x) < Math.abs(gamepad2.left_stick_y));
-            armBackUnload= (gamepad2.left_stick_y > 0.2) && (Math.abs(gamepad2.left_stick_x) < Math.abs(gamepad2.left_stick_y));
-            if (Math.abs(gamepad2.left_stick_x) > Math.abs(gamepad2.left_stick_y)) {
-                armManualControl = (int)gamepad2.left_stick_x * 10;
-            }
-            else {
-                armManualControl = 0;
-            }
-        }
+        armManualControl = (int) (gamepad2.left_stick_y * 40);
     }
-
 }

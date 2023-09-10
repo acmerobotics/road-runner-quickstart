@@ -121,14 +121,10 @@ public class TeleopRR extends LinearOpMode {
 
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        //slider.init(hardwareMap, "RightSlider", "LeftSlider");
-        slider.setCountPosition(slider.getPosition());
-        slider.runToPosition();
-
         armClaw.init(hardwareMap, "ArmMotor", "ClawServo");
+
+        armClaw.resetArmEncoder();
+
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -170,49 +166,6 @@ public class TeleopRR extends LinearOpMode {
                     )
             );
 
-            // use Y button to lift up the slider reaching high junction
-            if (gpButtons.sliderHighJunction) {
-                slider.setInchPosition(Params.HIGH_JUNCTION_POS);
-            }
-
-            // use B button to lift up the slider reaching medium junction
-            if (gpButtons.sliderMediumJunction) {
-                slider.setInchPosition(Params.MEDIUM_JUNCTION_POS);
-            }
-
-            // use A button to lift up the slider reaching low junction
-            if (gpButtons.sliderLowJunction) {
-                slider.setInchPosition(Params.LOW_JUNCTION_POS);
-            }
-
-            // use X button to move the slider for wall position
-            if (gpButtons.sliderWallPosition) {
-                slider.setInchPosition(Params.WALL_POSITION);
-            }
-            // use dpad left to get to the ground junction position
-            if (gpButtons.sliderGroundJunction) {
-                if (armClaw.getArmPosition() > armClaw.ARM_FLIP_CENTER) {
-                    armClaw.armFlipCenter();
-                }
-                slider.setInchPosition(Params.GROUND_JUNCTION_POS);
-            }
-
-            if (gpButtons.sliderGround) {
-                if (armClaw.getArmPosition() > armClaw.ARM_FLIP_CENTER) {
-                    armClaw.armFlipCenter();
-                }
-                slider.setInchPosition(slider.SLIDER_MIN_POS);
-            }
-
-            // use right stick_Y to lift or down slider continuously
-            if (Math.abs(gpButtons.sliderUpDown) > 0) {
-                telemetry.addData("gamepad", "%.2f", gpButtons.sliderUpDown);
-                if ((armClaw.getArmPosition() > armClaw.ARM_FLIP_CENTER) &&
-                        (slider.getPosition() < Params.WALL_POSITION * slider.COUNTS_PER_INCH)) {
-                    armClaw.armFlipCenter();
-                }
-                slider.manualControlPos(gpButtons.sliderUpDown);
-            }
 
             // Set position only when button is hit.
             if (gpButtons.clawClose) {
@@ -224,48 +177,8 @@ public class TeleopRR extends LinearOpMode {
                 armClaw.clawOpen();
             }
 
-            // turn arm left
-            if (gpButtons.armLeft) {
-                armClaw.armSwingTurnLeft();
-            }
 
-            // turn arm right
-            if (gpButtons.armRight) {
-                armClaw.armSwingTurnRight();
-            }
-
-            // turn arm forward
-            if (gpButtons.armForward) {
-                armClaw.armSwingTurnForward();
-            }
-
-            if (gpButtons.armFrontLoad) {
-                armClaw.armFlipFrontLoad();
-            }
-
-            if (gpButtons.armFrontUnload) {
-                armClaw.armFlipFrontUnload();
-            }
-
-            if (gpButtons.armBackLoad) {
-                if (slider.getPosition() < Params.WALL_POSITION * slider.COUNTS_PER_INCH) {
-                    slider.setInchPosition(Params.WALL_POSITION);
-                }
-                armClaw.armFlipBackLoad();
-            }
-
-            if (gpButtons.armBackUnload) {
-                if (slider.getPosition() < Params.WALL_POSITION * slider.COUNTS_PER_INCH) {
-                    slider.setInchPosition(Params.WALL_POSITION);
-                }
-                armClaw.armFlipBackUnloadPre();
-            }
-
-            // 0.2 is to avoid pressing button by mistake.
-            if(Math.abs(gpButtons.armManualControl) > 0.2) {
-                if (slider.getPosition() < Params.WALL_POSITION * slider.COUNTS_PER_INCH) {
-                    slider.setInchPosition(Params.WALL_POSITION);
-                }
+            if(Math.abs(gpButtons.armManualControl) > 0) {
                 armClaw.armManualMoving(gpButtons.armManualControl);
             }
 
