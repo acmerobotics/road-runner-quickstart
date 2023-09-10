@@ -123,8 +123,8 @@ public class ArmClawUnit
      * @param armPos the target position value for arm servo motor
      */
     public void setArmCountPosition(int armPos) {
-        int ARM_MIN_COUNT_POS = 0;
-        int ARM_MAX_COUNT_POS = 150;
+        int ARM_MIN_COUNT_POS = -5;
+        int ARM_MAX_COUNT_POS = 130;
         armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
         armMotor.setTargetPosition(armPos);
     }
@@ -227,7 +227,7 @@ public class ArmClawUnit
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        armMotor.setPower(0.9);
+        armMotor.setPower(0.95);
     }
 
     public void armLift() {

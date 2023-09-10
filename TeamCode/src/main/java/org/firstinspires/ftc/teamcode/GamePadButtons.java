@@ -59,7 +59,6 @@ public class GamePadButtons {
     public boolean clawOpen;
     public boolean launchOn;
     public int armManualControl;
-    public boolean autoLoadGroundCone;
 
     public void checkGamepadButtons(@NonNull Gamepad gamepad1, @NonNull Gamepad gamepad2) {
         //gamepad1 buttons
@@ -67,14 +66,12 @@ public class GamePadButtons {
         robotStrafe = gamepad1.left_stick_x;
         robotTurn = gamepad1.right_stick_x;
 
-        autoLoadGroundCone = gamepad1.left_bumper;
-
         // arm lift
         armLift = gamepad1.y;
         armDown = gamepad1.x;
 
         // launch plane
-        launchOn = gamepad1.right_bumper;
+        launchOn = gamepad1.right_bumper || gamepad2.right_bumper;
 
         // gamepad1 and gamepad2
         clawOpen = gamepad1.dpad_down || gamepad2.dpad_down;
