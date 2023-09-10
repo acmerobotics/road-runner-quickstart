@@ -20,8 +20,8 @@ public class ObjectDetection extends OpenCvPipeline {
 
     public boolean stopConeDetectPipeLine = true;
 
-    // for sleeve color detect
-    public enum ParkingLot {
+    // Enum that represents what side the prop is at
+    public enum PropSide {
         LEFT,
         CENTER,
         RIGHT,
@@ -62,8 +62,8 @@ public class ObjectDetection extends OpenCvPipeline {
             BOX_ANCHOR_THREE.y + BOX_HEIGHT);
 
     // Running variable storing the parking position
-    private volatile ParkingLot parkingLot = ParkingLot.UNKNOWN;
-    private volatile double parkingLotDistance = 0.0;
+    private volatile PropSide PropPos = PropSide.UNKNOWN;
+    private volatile double PropPosDistance = 0.0;
     private volatile boolean coneDetected = false;
     // Running variable storing the parking position
     private volatile double objectPosition = 0;
@@ -83,7 +83,6 @@ public class ObjectDetection extends OpenCvPipeline {
     // Color definitions
     private final Scalar
             RED   = new Scalar(255, 0, 0),
-            GREEN = new Scalar(0, 255, 0),
             BLUE  = new Scalar(0, 0, 255);
     private Scalar brushColor = new Scalar(0, 0, 0);
 
@@ -99,7 +98,7 @@ public class ObjectDetection extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         // detect sleeve color.
-        sleeveColorDetect(input);
+        propDetectPos(input, RED);
 
         // detect cone location
         if (!stopConeDetectPipeLine) {
@@ -125,13 +124,20 @@ public class ObjectDetection extends OpenCvPipeline {
     }
 
     // Returns an enum being the current position where the robot will park
-    public ParkingLot getParkingLot() {
+    public PropSide getPropPos() {
+        if (coneDetected == true) {
+            PropPos = PropSide.RIGHT;
 
-        return parkingLot;
+
+        }
+        else {
+            PropPos = PropSide.UNKNOWN;
+        }
+        return PropPos;
     }
 
-    public double getParkingLotDistance() {
-        return parkingLotDistance;
+    public double getPropPosDistance() {
+        return PropPosDistance;
     }
 
     // Returns bool indicating whether or not the prop is detected in ANY of the spike tape positions
@@ -139,15 +145,18 @@ public class ObjectDetection extends OpenCvPipeline {
         return coneDetected;
     }
 
-    private void sleeveColorDetect(Mat sleeveImageInput) {
+    private void propDetectPos(Mat ImageInput, Scalar Color) {
         Logging.log("Start Opcv process to detect sleeve color.");
-        // Get the submat frames for 3 points, and then sum the color values for all 3
-        Mat areaMat_one = sleeveImageInput.submat(new Rect(prop_pointA_one, prop_pointB_one));
-        Mat areaMat_two = sleeveImageInput.submat(new Rect(prop_pointA_two, prop_pointB_two));
-        Mat areaMat_three = sleeveImageInput.submat(new Rect(prop_pointA_three, prop_pointB_three));
+        // Select three sections to search for prop of specified color
+        Mat areaMat_one = ImageInput.submat(new Rect(prop_pointA_one, prop_pointB_one));
+        Mat areaMat_two = ImageInput.submat(new Rect(prop_pointA_two, prop_pointB_two));
+        Mat areaMat_three = ImageInput.submat(new Rect(prop_pointA_three, prop_pointB_three));
         Scalar sumColors_one = Core.sumElems(areaMat_one);
         Scalar sumColors_two = Core.sumElems(areaMat_two);
         Scalar sumColors_three = Core.sumElems(areaMat_three);
+
+        //converts matrix into image
+        
 
         // Get the minimum RGB value from every single channel
         double maxColor = Math.max(sumColors_one.val[0], Math.max(sumColors_one.val[1], sumColors_one.val[2]));
@@ -155,22 +164,18 @@ public class ObjectDetection extends OpenCvPipeline {
 
         // Change the bounding box color based on the sleeve color
         if (maxColor < Math.ulp(0)){
-            parkingLot = ParkingLot.UNKNOWN;
+            PropPos = PropSide.UNKNOWN;
         }
         else if (Math.abs(sumColors_one.val[0] - maxColor) < Math.ulp(0)) {
-            parkingLot = ParkingLot.LEFT;
+            PropPos = PropSide.LEFT;
             brushColor = RED;
-            parkingLotDistance = -24;
-        } else if (Math.abs(sumColors_one.val[1] - maxColor) < Math.ulp(0)) {
-            parkingLot = ParkingLot.CENTER;
-            brushColor = GREEN;
-            parkingLotDistance = 0;
+            PropPosDistance = -24;
         } else {
-            parkingLot = ParkingLot.RIGHT;
+            PropPos = PropSide.RIGHT;
             brushColor = BLUE;
-            parkingLotDistance = 24;
+            PropPosDistance = 24;
         }
-        Logging.log("Sleeve position: %s", parkingLot.toString());
+        Logging.log("Sleeve position: %s", PropPos.toString());
 
         // Release and return input
         areaMat_one.release();
@@ -241,7 +246,7 @@ public class ObjectDetection extends OpenCvPipeline {
         }
 
         coneDetected = verifyObjectDetected(lineM, maxPixelLoc);
-
+    /*
         if (coneDetected) {
             objectPosition = (maxPixelLoc * 2.0 / lineM.cols()) * Math.tan(cameraViewAngle / 2) * cameraToConeDistance;
             Imgproc.line(inputCone, new Point(maxPixelLoc, 0), new Point(maxPixelLoc, inputCone.rows()), GREEN);
@@ -259,7 +264,7 @@ public class ObjectDetection extends OpenCvPipeline {
                 GREEN,
                 2
         );
-
+        */
         // Release and return input
         areaMat_one.release();
         lineM.release();
@@ -285,17 +290,13 @@ public class ObjectDetection extends OpenCvPipeline {
 
         if (hChannelAve > Math.ulp(0)) {
             if (hChannelAve < 30 || hChannelAve > 130) {
-                parkingLot = ParkingLot.LEFT;
+                PropPos = PropPos.LEFT;
                 brushColor = RED;
-                parkingLotDistance = -24.0;
-            } else if (hChannelAve >= 30 && hChannelAve <= 100) {
-                parkingLot = ParkingLot.CENTER;
-                brushColor = GREEN;
-                parkingLotDistance = 0.0;
+                PropPosDistance = -24.0;
             } else {
-                parkingLot = ParkingLot.RIGHT;
+                PropPos = PropPos.RIGHT;
                 brushColor = BLUE;
-                parkingLotDistance = 24.0;
+                PropPosDistance = 24.0;
             }
         }
         Logging.log(" hChannelAve = %.2f", hChannelAve);

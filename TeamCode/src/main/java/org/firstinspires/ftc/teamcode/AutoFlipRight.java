@@ -124,8 +124,8 @@ public class AutoFlipRight extends AutonomousRight {
         chassis.runToPosition(-Params.HALF_MAT * autonomousStartLocation, false);
 
         // drive to final parking lot
-        chassis.runToPosition(parkingLotDis * autonomousStartLocation, true);
-        Logging.log("Autonomous - Arrived at parking lot Mat: %.2f", parkingLotDis);
+        chassis.runToPosition(PropPosDis * autonomousStartLocation, true);
+        Logging.log("Autonomous - Arrived at parking lot Mat: %.2f", PropPosDis);
 
         slider.waitRunningComplete();
         Logging.log("Autonomous - Autonomous complete.");

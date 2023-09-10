@@ -105,8 +105,8 @@ public class AutonomousRight extends LinearOpMode {
     double MovingToMatCenter = matCenterToConeStack - Params.DISTANCE_PICK_UP - 3;
 
     // camera and sleeve color
-    ObjectDetection.ParkingLot myParkingLot = ObjectDetection.ParkingLot.UNKNOWN;
-    double parkingLotDis = 0;
+    ObjectDetection.PropPos myPropPos = ObjectDetection.PropPos.UNKNOWN;
+    double PropPosDis = 0;
     ObjectDetection coneSleeveDetect;
     OpenCvCamera camera;
     String webcamName = "Webcam 1";
@@ -167,16 +167,16 @@ public class AutonomousRight extends LinearOpMode {
         armClaw.armFlipCenter();
 
         runtime.reset();
-        while ((ObjectDetection.ParkingLot.UNKNOWN == myParkingLot) &&
+        while ((ObjectDetection.PropPos.UNKNOWN == myPropPos) &&
                 ((runtime.seconds()) < 3.0)) {
-            myParkingLot = coneSleeveDetect.getParkingLot();
+            myPropPos = coneSleeveDetect.getPropPos();
         }
-        Logging.log("Parking Lot position: %s", myParkingLot.toString());
+        Logging.log("Parking Lot position: %s", myPropPos.toString());
 
         while (!isStarted()) {
-            myParkingLot = coneSleeveDetect.getParkingLot();
-            parkingLotDis = coneSleeveDetect.getParkingLotDistance();
-            telemetry.addData("Parking position: ", myParkingLot);
+            myPropPos = coneSleeveDetect.getPropPos();
+            PropPosDis = coneSleeveDetect.getPropPosDistance();
+            telemetry.addData("Parking position: ", myPropPos);
             telemetry.addData("robot position: ", autonomousStartLocation > 0? "Right":"Left");
             telemetry.addData("Front Center distance sensor", "%.2f", chassis.getFcDsValue());
             telemetry.addData("Back center distance sensor", "%.2f", chassis.getBcDsValue());
@@ -290,8 +290,8 @@ public class AutonomousRight extends LinearOpMode {
         armClaw.armFlipFrontLoad();
 
         // drive to final parking lot, -1 for arm extended out of chassis.
-        chassis.runToPosition(parkingLotDis * autonomousStartLocation - 1, true);
-        Logging.log("Autonomous - Arrived at parking lot Mat: %.2f", parkingLotDis);
+        chassis.runToPosition(PropPosDis * autonomousStartLocation - 1, true);
+        Logging.log("Autonomous - Arrived at parking lot Mat: %.2f", PropPosDis);
 
         slider.waitRunningComplete();
         Logging.log("Autonomous - Autonomous complete.");

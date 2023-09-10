@@ -140,8 +140,8 @@ public class AutoSwingRight extends AutonomousRight {
         slider.setInchPosition(Params.GROUND_CONE_POSITION);
 
         // drive to final parking lot
-        chassis.runToPosition(-(parkingLotDis * autonomousStartLocation + Params.HALF_MAT - Params.ARM_LOCATION_BIAS), true);
-        Logging.log("Autonomous - Arrived at parking lot Mat: %.2f", parkingLotDis);
+        chassis.runToPosition(-(PropPosDis * autonomousStartLocation + Params.HALF_MAT - Params.ARM_LOCATION_BIAS), true);
+        Logging.log("Autonomous - Arrived at parking lot Mat: %.2f", PropPosDis);
 
         slider.waitRunningComplete();
         Logging.log("Autonomous - Autonomous complete.");

@@ -145,8 +145,8 @@ public class AutoMJ_Right extends LinearOpMode {
     public SampleMecanumDrive drive;
 
     // camera and sleeve color
-    ObjectDetection.ParkingLot myParkingLot = ObjectDetection.ParkingLot.UNKNOWN;
-    double parkingLotDis = 0;
+    ObjectDetection.PropPos myPropPos = ObjectDetection.PropPos.UNKNOWN;
+    double PropPosDis = 0;
     ObjectDetection coneSleeveDetect;
     OpenCvCamera camera;
     String webcamName = "Webcam 1";
@@ -329,16 +329,16 @@ public class AutoMJ_Right extends LinearOpMode {
         armClaw.armFlipCenter();
 
         runtime.reset();
-        while ((ObjectDetection.ParkingLot.UNKNOWN == myParkingLot) &&
+        while ((ObjectDetection.PropPos.UNKNOWN == myPropPos) &&
                 ((runtime.seconds()) < 3.0)) {
-            myParkingLot = coneSleeveDetect.getParkingLot();
+            myPropPos = coneSleeveDetect.getPropPos();
         }
-        Logging.log("Parking Lot position: %s", myParkingLot.toString());
+        Logging.log("Parking Lot position: %s", myPropPos.toString());
 
         while (!isStarted()) {
-            myParkingLot = coneSleeveDetect.getParkingLot();
-            parkingLotDis = coneSleeveDetect.getParkingLotDistance();
-            telemetry.addData("Parking position: ", myParkingLot);
+            myPropPos = coneSleeveDetect.getPropPos();
+            PropPosDis = coneSleeveDetect.getPropPosDistance();
+            telemetry.addData("Parking position: ", myPropPos);
             telemetry.addData("robot position: ", startLoc > 0? "Right":"Left");
             telemetry.addData("RR", "imu Heading = %.1f",
                     Math.toDegrees(drive.getRawExternalHeading()));
@@ -515,7 +515,7 @@ public class AutoMJ_Right extends LinearOpMode {
         }
 
         // parking
-        driveToParkingLot(myParkingLot);
+        driveToPropPos(myPropPos);
 
         // storage robot pose of the end of autonomous
         Params.currentPose = drive.getPoseEstimate();
@@ -619,7 +619,7 @@ public class AutoMJ_Right extends LinearOpMode {
         drive.followTrajectory(traj1);
     }
 
-    private void driveToParkingLot(ObjectDetection.ParkingLot parkingLot) {
+    private void driveToPropPos(ObjectDetection.PropPos PropPos) {
         double parkingY, parkingX, parkingH;
         Pose2d poseParking;
 
@@ -641,7 +641,7 @@ public class AutoMJ_Right extends LinearOpMode {
                 })
                 .build();
 
-        switch (parkingLot) {
+        switch (PropPos) {
             case LEFT:
                 parkingX = -Params.HALF_MAT;
                 parkingY = (-3 * startLoc + 2) * Params.HALF_MAT - 1;
