@@ -29,13 +29,13 @@ public class ObjectDetection extends OpenCvPipeline {
     }
 
     // TOPLEFT anchor point for the 3 bounding boxes
-    private final Point BOX_ANCHOR_ONE = new Point(20, 100);
-    private final Point BOX_ANCHOR_TWO = new Point(140, 30);
-    private final Point BOX_ANCHOR_THREE = new Point(260, 100);
+    private final Point BOX_ANCHOR_ONE = new Point(43, 124  );
+    private final Point BOX_ANCHOR_TWO = new Point(160, 112);
+    private final Point BOX_ANCHOR_THREE = new Point(295, 122);
 
     // Width and height for the bounding boxes
-    private final int BOX_WIDTH = 40;
-    private final int BOX_HEIGHT = 60;
+    private final int BOX_WIDTH = 4;
+    private final int BOX_HEIGHT = 6;
 
     // Anchor point definitions for 1st box
     Point prop_pointA_one = new Point(
@@ -65,13 +65,7 @@ public class ObjectDetection extends OpenCvPipeline {
     private volatile PropSide PropPos = PropSide.UNKNOWN;
     private volatile double PropPosDistance = 0.0;
     private volatile boolean coneDetected = false;
-    // Running variable storing the parking position
-    private volatile double objectPosition = 0;
     public volatile double hChannelAve = 0;
-
-    //check if cone has been detected.
-    private final double cameraToConeDistance = 13.0; // inch
-    private final double cameraViewAngle = 0.67;
 
     // TOP-LEFT anchor point for the bounding box
     public Point Object_TOPLEFT_POINT = new Point(0, 0);
@@ -83,8 +77,10 @@ public class ObjectDetection extends OpenCvPipeline {
     // Color definitions
     private final Scalar
             RED   = new Scalar(255, 0, 0),
-            BLUE  = new Scalar(0, 0, 255);
-    private Scalar brushColor = new Scalar(0, 0, 0);
+            GREY  = new Scalar(0, 0, 255);
+    private Scalar rectColor1 = new Scalar(0, 0, 0);
+    private Scalar rectColor2 = new Scalar(0, 0, 0);
+    private Scalar rectColor3 = new Scalar(0, 0, 0);
 
     // Anchor point definitions
     Point pointA = new Point(
@@ -111,8 +107,22 @@ public class ObjectDetection extends OpenCvPipeline {
                     input,
                     prop_pointA_one,
                     prop_pointB_one,
-                    brushColor,
+                    rectColor1,
                     2
+        );
+        Imgproc.rectangle(
+                input,
+                prop_pointA_two,
+                prop_pointB_two,
+                rectColor2,
+                2
+        );
+        Imgproc.rectangle(
+                input,
+                prop_pointA_three,
+                prop_pointB_three,
+                rectColor3,
+                2
         );
 
         return input;
@@ -120,20 +130,20 @@ public class ObjectDetection extends OpenCvPipeline {
 
     // Returns an enum being the current position where the robot will park
     public double getConePosition() {
+        // Running variable storing the parking position
+        double objectPosition = 0;
         return objectPosition;
     }
 
     // Returns an enum being the current position where the robot will park
     public PropSide getPropPos() {
-        if (coneDetected == true) {
+        /*if (coneDetected == true) {
             PropPos = PropSide.RIGHT;
-
-
         }
         else {
             PropPos = PropSide.UNKNOWN;
         }
-        return PropPos;
+        */return PropPos;
     }
 
     public double getPropPosDistance() {
@@ -155,30 +165,56 @@ public class ObjectDetection extends OpenCvPipeline {
         Scalar sumColors_two = Core.sumElems(areaMat_two);
         Scalar sumColors_three = Core.sumElems(areaMat_three);
 
-        //converts matrix into image
-        
+        boolean objectTrueFalse1 = false;
+        boolean objectTrueFalse2 = false;
+        boolean objectTrueFalse3 = false;
 
         // Get the minimum RGB value from every single channel
         double maxColor = Math.max(sumColors_one.val[0], Math.max(sumColors_one.val[1], sumColors_one.val[2]));
+        double maxcolor2 = Math.max(sumColors_two.val[0], Math.max(sumColors_two.val[1], sumColors_two.val[2]));
+        double maxcolor3 = Math.max(sumColors_three.val[0], Math.max(sumColors_three.val[1], sumColors_three.val[2]));
         Logging.log("Sleeve max color = %.2f, %.2f, %.2f", sumColors_one.val[0], sumColors_one.val[1], sumColors_one.val[2]);
 
-        // Change the bounding box color based on the sleeve color
-        if (maxColor < Math.ulp(0)){
-            PropPos = PropSide.UNKNOWN;
-        }
-        else if (Math.abs(sumColors_one.val[0] - maxColor) < Math.ulp(0)) {
-            PropPos = PropSide.LEFT;
-            brushColor = RED;
+        // Change the bounding box 1 color based on the sleeve color
+        if (Math.abs(sumColors_one.val[0] - maxColor) < Math.ulp(0)) {
+            rectColor1 = RED;
+            objectTrueFalse1 = true;
             PropPosDistance = -24;
         } else {
-            PropPos = PropSide.RIGHT;
-            brushColor = BLUE;
+            rectColor1 = GREY;
             PropPosDistance = 24;
         }
+        if (Math.abs(sumColors_two.val[0] - maxcolor2) < Math.ulp(0)) {
+            rectColor2 = RED;
+            objectTrueFalse2 = true;
+            PropPosDistance = -24;
+        } else {
+            rectColor2 = GREY;
+            PropPosDistance = 24;
+        }
+        if (Math.abs(sumColors_three.val[0] - maxcolor3) < Math.ulp(0)) {
+            rectColor3 = RED;
+            objectTrueFalse3 = true;
+            PropPosDistance = -24;
+        } else {
+            rectColor3 = GREY;
+            PropPosDistance = 24;
+        }
+
         Logging.log("Sleeve position: %s", PropPos.toString());
 
         // Release and return input
         areaMat_one.release();
+
+         if (objectTrueFalse1) {
+             PropPos = PropSide.LEFT;
+         } else if (objectTrueFalse2) {
+             PropPos = PropSide.CENTER;
+         } else if (objectTrueFalse3){
+             PropPos = PropSide.RIGHT;
+         } else {
+             PropPos = PropSide.UNKNOWN;
+         }
     }
 
     private void conePositionDetect(Mat inputCone) {
@@ -291,11 +327,11 @@ public class ObjectDetection extends OpenCvPipeline {
         if (hChannelAve > Math.ulp(0)) {
             if (hChannelAve < 30 || hChannelAve > 130) {
                 PropPos = PropPos.LEFT;
-                brushColor = RED;
+                rectColor1 = RED;
                 PropPosDistance = -24.0;
             } else {
                 PropPos = PropPos.RIGHT;
-                brushColor = BLUE;
+                rectColor1 = GREY;
                 PropPosDistance = 24.0;
             }
         }
