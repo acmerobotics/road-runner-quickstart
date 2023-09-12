@@ -15,3 +15,8 @@ For more detailed instructions on getting Road Runner setup in your own project,
 ## Documentation
 
 Check out the new [online quickstart documentation](https://acme-robotics.gitbook.io/road-runner/quickstart/introduction).
+
+And
+
+Check out the [docs](https://rr.brott.dev/docs/v1-0/tuning/).
+

@@ -56,7 +56,7 @@ android {
     defaultConfig {
         signingConfig signingConfigs.debug
         applicationId 'com.qualcomm.ftcrobotcontroller'
-        minSdkVersion 23
+        minSdkVersion 24
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
         multiDexEnabled !useProguard
@@ -90,7 +90,6 @@ android {
         versionName vName
     }
 
-    // Advanced user code might just want to use Vuforia directly, so we set up the libs as needed
     // http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.BuildType.html
     //abiFilters "armeabi-v7a", "arm64-v8a"
     buildTypes {
@@ -140,8 +139,5 @@ android {
 }
 
 repositories {
-    flatDir {
-        dirs rootProject.file('libs')
-    }
 }
 
