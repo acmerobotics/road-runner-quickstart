@@ -30,7 +30,9 @@ repositories {
 }
 
 dependencies {
-
+    implementation 'org.openftc:easyopencv:1.7.0'
+    implementation 'com.acmerobotics.roadrunner:core:1.0.0-beta3'
+    implementation 'com.acmerobotics.roadrunner:actions:1.0.0-beta3'
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 
