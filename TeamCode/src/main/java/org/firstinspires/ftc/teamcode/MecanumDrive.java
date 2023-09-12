@@ -99,6 +99,8 @@ public final class MecanumDrive {
 
     public final IMU imu;
 
+    private List<DcMotorEx> motors;
+
     public final Localizer localizer;
     public Pose2d pose;
 
@@ -180,6 +182,8 @@ public final class MecanumDrive {
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
+        motors = Arrays.asList(leftFront, leftBack, rightBack, rightFront);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -429,4 +433,12 @@ public final class MecanumDrive {
                 0.25, 0.1
         );
     }
+
+    public void setMode(DcMotor.RunMode runMode) {
+        for (DcMotorEx motor : motors) {
+            motor.setMode(runMode);
+        }
+    }
+
+
 }
