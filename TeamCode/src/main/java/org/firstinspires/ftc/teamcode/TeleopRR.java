@@ -55,6 +55,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Trajectory;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -158,17 +159,13 @@ public class TeleopRR extends LinearOpMode {
             } else {
                 maxDrivePower = Params.POWER_NORMAL;
             }
-/*
-            mecanum.setWeightedDrivePower(
-                    new Pose2d(
+            mecanum.setDrivePowers(new PoseVelocity2d(
+                    new Vector2d(
                             gpButtons.robotDrive * maxDrivePower,
-                            gpButtons.robotStrafe * maxDrivePower,
-                            -gpButtons.robotTurn * maxDrivePower
-                    )
-            );
-
-
- */
+                            gpButtons.robotStrafe * maxDrivePower
+                    ),
+                    -gpButtons.robotTurn * maxDrivePower
+            ));
 
             // Set position only when button is hit.
             if (gpButtons.clawClose) {

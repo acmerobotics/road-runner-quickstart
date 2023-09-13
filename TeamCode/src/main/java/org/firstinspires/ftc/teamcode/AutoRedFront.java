@@ -232,8 +232,7 @@ public class AutoRedFront extends LinearOpMode {
             telemetry.addData("Parking position: ", myParkingLot);
             telemetry.addData("robot position: ", startLoc > 0? "Right":"Left");
             telemetry.addData("RR", "imu Heading = %.1f",
-                    //Math.toDegrees(drive.getRawExternalHeading())
-                    0); // need update
+                    Math.toDegrees(drive.pose.heading.log()));
             telemetry.update();
         }
 
@@ -290,20 +289,19 @@ public class AutoRedFront extends LinearOpMode {
 
     // 1 == startLoc
     private void autoRedFrontCore() {
-        /*
+
         // 1. move to central line
-        Pose2d poseCenterLine = new Pose2d(-2.5 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 3 * Params.HALF_MAT, startPose.getHeading());
-        poseLineEnd1  = new Pose2d(-3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.getHeading());
-startPose.heading.
+        Pose2d poseCenterLine = new Pose2d(-2.5 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 3 * Params.HALF_MAT, startPose.heading.log());
+        poseLineEnd1  = new Pose2d(-3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.heading.log());
         if (2 == startLoc) {
-            poseCenterLine = new Pose2d(-2.5 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, -1 * Params.HALF_MAT, startPose.getHeading());
-            poseLineEnd1 = new Pose2d(-3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.getHeading());
+            poseCenterLine = new Pose2d(-2.5 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, -1 * Params.HALF_MAT, startPose.heading.log());
+            poseLineEnd1 = new Pose2d(-3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.heading.log());
         }
 
         poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
         Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.position.x - Params.HALF_MAT, poseRedBackDropCenter.position.y, Math.toRadians(-90.0));
         Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.position.x + Params.HALF_MAT, poseRedBackDropCenter.position.y, Math.toRadians(-90.0));
-
+        /*
         if (1 == sparkMarkLoc) {// left
 
             // 0. drive to center

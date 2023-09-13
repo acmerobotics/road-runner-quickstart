@@ -48,17 +48,17 @@ import java.util.List;
 public final class MecanumDrive {
     public static class Params {
         // drive model parameters
-        public double inPerTick = 0;
-        public double lateralInPerTick = 1;
-        public double trackWidthTicks = 0;
+        public double inPerTick = 0.0221; // WHEEL_RADIUS(1.8898) * 2 * Math.PI / TICKS_PER_REV(537.6)
+        public double lateralInPerTick = 0.0187;
+        public double trackWidthTicks = 13.1;
 
         // feedforward parameters (in tick units)
         public double kS = 0;
-        public double kV = 0;
+        public double kV = 0.018; //  1.0 / rpmToVelocity(MAX_RPM); //0.018
         public double kA = 0;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 50;
+        public double maxWheelVel = 47; // 92% of tested value (47.5)
         public double minProfileAccel = -30;
         public double maxProfileAccel = 50;
 
@@ -178,10 +178,10 @@ public final class MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "FrontLeft");
+        leftBack = hardwareMap.get(DcMotorEx.class, "BackLeft");
+        rightBack = hardwareMap.get(DcMotorEx.class, "BackRight");
+        rightFront = hardwareMap.get(DcMotorEx.class, "FrontRight");
 
         motors = Arrays.asList(leftFront, leftBack, rightBack, rightFront);
 
@@ -190,9 +190,14 @@ public final class MecanumDrive {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
+
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
 
