@@ -40,6 +40,16 @@ The PR will be reviewed and then either modified or accepted
 
 Before you create a new branch for a new feature, make sure to pull the latest master so you have the most updated repo
 
-Then, after the acceptance of the PR, delete the old local branch like so:
+Then, after the acceptance of the PR, delete the old local branch like so.
+
+First pull to get the updated changes.
+
+`git pull`
+
+Then switch to the main branch.
+
+`git checkout master`
+
+Finally, to delete your feature branch, use the following command:
 
 `git branch -d <branch-name-here>`
