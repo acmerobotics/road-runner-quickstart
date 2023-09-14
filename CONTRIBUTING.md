@@ -7,7 +7,7 @@ The first step is to create a branch that will contain all of a certain feature'
 To do this, run the following command:
 
 `git checkout -b <name-of-branch>`
-
+ .
 This will create a new branch, and switch to the newly created branch.
 
 ## Committing and pushing upstream
