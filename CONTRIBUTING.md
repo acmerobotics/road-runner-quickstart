@@ -4,7 +4,7 @@
 
 The first step is to create a branch that will contain all of a certain feature's work.
 
-To do this run the following command:
+To do this, run the following command:
 
 `git checkout -b <name-of-branch>`
 
