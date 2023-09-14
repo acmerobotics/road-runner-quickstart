@@ -18,11 +18,11 @@ Follow these few steps:
 
 Make sure all files are added either by running `git add <filename>`
 
-Alternatively, run `git add .` to add all files
+Alternatively, run `git add .` to add all files. 
 
 Once added, commit the files and add a descriptive message like so:
 
-`git commit -m "MESSAGE GOES HERE""`
+`git commit -m "MESSAGE GOES HERE"`
 
 Finally, push the commit upstream with the following command:
 
