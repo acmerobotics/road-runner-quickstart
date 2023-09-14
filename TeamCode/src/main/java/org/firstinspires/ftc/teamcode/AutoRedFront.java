@@ -54,6 +54,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Trajectory;
@@ -125,19 +126,14 @@ public class AutoRedFront extends LinearOpMode {
     // pre cone to medium junction
     Pose2d poseLineEnd1, poseRedBackDropCenter;
 
-    Trajectory traj1;
-    //TrajectorySequence trajSeq1; // use circle path
-    //TrajectorySequence trajSeq2;
-
     /**
      * Set robot starting position: 1 for right and -1 for left.
      */
     public void setRobotLocation() {
         startLoc = 1;
-
     }
 
-    private void setPoses() {
+    private void setStartPoses() {
         // road runner variables
         if (1 == startLoc) { // red front
             startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH,
@@ -168,7 +164,7 @@ public class AutoRedFront extends LinearOpMode {
 
         setRobotLocation();
 
-        setPoses();
+        setStartPoses();
 
         // camera for sleeve color detect, start camera at the beginning.
         webcamName = "Webcam 1";
@@ -213,7 +209,6 @@ public class AutoRedFront extends LinearOpMode {
         Params.currentPose = startPose; // init storage pose.
 
         armClaw.init(hardwareMap, "ArmMotor", "ClawServo");
-
         armClaw.resetArmEncoder();
 
         sleep(500);
@@ -239,7 +234,6 @@ public class AutoRedFront extends LinearOpMode {
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-
 
         switch (myParkingLot) {
             case LEFT:
@@ -301,22 +295,16 @@ public class AutoRedFront extends LinearOpMode {
         poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
         Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.position.x - Params.HALF_MAT, poseRedBackDropCenter.position.y, Math.toRadians(-90.0));
         Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.position.x + Params.HALF_MAT, poseRedBackDropCenter.position.y, Math.toRadians(-90.0));
-        /*
+
         if (1 == sparkMarkLoc) {// left
-
-            // 0. drive to center
-            traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(poseLineEnd1)
-                    .build();
-            drive.followTrajectory(traj1);
-
-            // 1. turn 180
-            trajSeq1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .turn(Math.toRadians(180.0))
-                    .forward(Params.GAP_DISTANCE)
-                    .build();
-            drive.followTrajectorySequence(trajSeq1);
-
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .lineToXConstantHeading(poseLineEnd1.position.x)
+                            .turn(Math.PI)
+                            .lineToYConstantHeading(poseLineEnd1.position.y + Params.GAP_DISTANCE)
+                            .build());
+        }
+        /*
             // 2. open claw to release purple pixel
             armClaw.clawOpen();
             sleep(100);
