@@ -1,6 +1,6 @@
 public class SideAprilTagDetection {
 
-    public SideAprilTagDetection() {
+    public SideAprilTagDetection(HardwareMap hwMap) {
 
     }
 }
