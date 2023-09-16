@@ -30,6 +30,8 @@
 package org.firstinspires.ftc.teamcode.huskyteers;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
@@ -65,8 +67,8 @@ public class HuskyBot {
     private Pose2d initialPose = new Pose2d(0, 0, 0);
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
-    public HuskyBot(LinearOpMode opmode) {
-        myOpMode = opmode;
+    public HuskyBot(LinearOpMode opMode) {
+        myOpMode = opMode;
     }
 
     public void init() {
@@ -75,6 +77,17 @@ public class HuskyBot {
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
+    }
+
+    public void driveRobot(double drive, double strafe, double turn, double speed) {
+        PoseVelocity2d pw = new PoseVelocity2d(
+                new Vector2d(
+                        strafe * speed,
+                        drive * speed
+                ), turn * speed
+        );
+
+        this.drive.setDrivePowers(pw);
     }
 
 }
