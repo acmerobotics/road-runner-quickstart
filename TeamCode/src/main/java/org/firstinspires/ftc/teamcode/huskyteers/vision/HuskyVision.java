@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 public class HuskyVision {
+
+    private SideAprilTagDetection satd = null;
+
     public HuskyVision(HardwareMap hwMap) {
 
     }
