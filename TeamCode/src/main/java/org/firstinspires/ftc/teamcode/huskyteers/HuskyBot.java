@@ -33,6 +33,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.huskyteers.vision.HuskyVision;
+
 
 /*
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
@@ -60,6 +62,7 @@ public class HuskyBot {
 
     // Define hardware objects.
     private MecanumDrive drive = null;
+    private HuskyVision huskyVision = null;
 
     // Define Drive constants.
     private Pose2d initialPose = new Pose2d(0, 0, 0);
@@ -72,6 +75,7 @@ public class HuskyBot {
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         drive = new MecanumDrive(myOpMode.hardwareMap, initialPose);
+        huskyVision = new HuskyVision(myOpMode.hardwareMap);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
