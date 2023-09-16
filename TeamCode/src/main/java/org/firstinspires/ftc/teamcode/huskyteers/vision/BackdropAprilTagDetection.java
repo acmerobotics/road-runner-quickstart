@@ -43,6 +43,18 @@ public class BackdropAprilTagDetection {
 
         return closestTag;
     }
+    public AprilTagDetection getAprilTagById(int id){
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        AprilTagDetection detectedTag = null;
+
+        for(AprilTagDetection detection : currentDetections){
+            if(detection.id == id ){
+                detectedTag = detection;
+                break;
+            }
+        }
+        return detectedTag;
+    }
 
     private void initAprilTag() {
         aprilTag = new AprilTagProcessor.Builder().build();
