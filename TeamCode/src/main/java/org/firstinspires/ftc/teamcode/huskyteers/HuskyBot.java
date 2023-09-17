@@ -64,7 +64,7 @@ public class HuskyBot {
 
     // Define hardware objects.
     private MecanumDrive drive = null;
-    private HuskyVision huskyVision = null;
+    public HuskyVision huskyVision = null;
 
     // Define Drive constants.
     private Pose2d initialPose = new Pose2d(0, 0, 0);
@@ -93,5 +93,4 @@ public class HuskyBot {
 
         this.drive.setDrivePowers(pw);
     }
-
 }

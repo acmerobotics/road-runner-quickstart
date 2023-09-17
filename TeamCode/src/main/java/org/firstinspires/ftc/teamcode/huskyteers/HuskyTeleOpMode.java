@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 @Config
 @TeleOp(name = "Husky TeleOp Mode" , group = "Teleop")
 public class HuskyTeleOpMode extends LinearOpMode {
-
     @Override
     public void runOpMode() {
 
@@ -34,6 +33,9 @@ public class HuskyTeleOpMode extends LinearOpMode {
                     currentGamepad1.right_stick_x,
                     (0.35 + 0.5 * currentGamepad1.left_trigger));
 
+            telemetry.addData("Closest April Tag Range", huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose.range);
+            telemetry.addData("April Tag ID 1:", huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1).ftcPose.range);
+            telemetry.update();
         }
         // endregion
 
