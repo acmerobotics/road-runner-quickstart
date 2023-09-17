@@ -118,6 +118,11 @@ public final class MecanumDrive {
             rightRear = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
             rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
 
+            leftFront.setDirection(DcMotor.Direction.REVERSE);
+            leftRear.setDirection(DcMotor.Direction.REVERSE);
+            rightFront.setDirection(DcMotor.Direction.FORWARD);
+            rightRear.setDirection(DcMotor.Direction.FORWARD);
+
             lastLeftFrontPos = leftFront.getPositionAndVelocity().position;
             lastLeftRearPos = leftRear.getPositionAndVelocity().position;
             lastRightRearPos = rightRear.getPositionAndVelocity().position;
@@ -201,8 +206,8 @@ public final class MecanumDrive {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
          */
         leftFront.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         imu = hardwareMap.get(IMU.class, "imu");
