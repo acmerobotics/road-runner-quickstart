@@ -70,10 +70,10 @@ public class BackdropAprilTagDetection {
                 .build();
 
         // Manually set the camera gain and exposure.
-        ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-        exposureControl.setExposure((long)6, TimeUnit.MILLISECONDS);
-        GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-        gainControl.setGain(250);
+//        ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+//        exposureControl.setExposure((long)6, TimeUnit.MILLISECONDS);
+//        GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+//        gainControl.setGain(250);
     }
 }
 
