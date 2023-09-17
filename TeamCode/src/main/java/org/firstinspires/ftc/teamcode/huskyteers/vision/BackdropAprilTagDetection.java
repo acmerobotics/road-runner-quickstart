@@ -53,9 +53,10 @@ public class BackdropAprilTagDetection {
         AprilTagDetection detectedTag = null;
 
         for(AprilTagDetection detection : currentDetections){
-            if(detection.id == id ){
-                detectedTag = detection;
-                break;
+            if(detection.metadata != null) {
+                if (detection.id == id) {
+                    detectedTag = detection;
+                }
             }
         }
         return detectedTag;
