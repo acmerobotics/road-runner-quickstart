@@ -33,8 +33,13 @@ public class HuskyTeleOpMode extends LinearOpMode {
                     currentGamepad1.right_stick_x,
                     (0.35 + 0.5 * currentGamepad1.left_trigger));
 
-            telemetry.addData("Closest April Tag Range", huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose.range);
-            telemetry.addData("April Tag ID 1:", huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1).ftcPose.range);
+
+            if(huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag() != null)
+                telemetry.addData("Closest April Tag Range", huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose.range);
+
+            if(huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1) != null)
+                telemetry.addData("April Tag ID 1:", huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1).ftcPose.range);
+
             telemetry.update();
         }
         // endregion
