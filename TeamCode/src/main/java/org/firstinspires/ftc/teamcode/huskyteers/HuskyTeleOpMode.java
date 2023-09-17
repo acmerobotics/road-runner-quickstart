@@ -25,6 +25,9 @@ public class HuskyTeleOpMode extends LinearOpMode {
 
         // region TELEOP LOOP
         while (opModeIsActive() && !isStopRequested()) {
+            currentGamepad1 = gamepad1;
+            currentGamepad2 = gamepad2;
+
             huskyBot.driveRobot(
                     -currentGamepad1.left_stick_y,
                     currentGamepad1.left_stick_x,
