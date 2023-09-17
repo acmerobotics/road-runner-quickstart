@@ -127,7 +127,7 @@ public class TeleopRR extends LinearOpMode {
                             gpButtons.robotDrive * maxDrivePower,
                             gpButtons.robotStrafe * maxDrivePower
                     ),
-                    -gpButtons.robotTurn * maxDrivePower
+                    gpButtons.robotTurn * maxDrivePower
             ));
 
             // Set position only when button is hit.

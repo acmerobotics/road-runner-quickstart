@@ -62,9 +62,9 @@ public class GamePadButtons {
 
     public void checkGamepadButtons(@NonNull Gamepad gamepad1, @NonNull Gamepad gamepad2) {
         //gamepad1 buttons
-        robotDrive = gamepad1.left_stick_y;
-        robotStrafe = gamepad1.left_stick_x;
-        robotTurn = gamepad1.right_stick_x;
+        robotDrive = -gamepad1.left_stick_y;
+        robotStrafe = -gamepad1.left_stick_x;
+        robotTurn = -gamepad1.right_stick_x;
 
         // arm lift
         armLift = gamepad1.y;
