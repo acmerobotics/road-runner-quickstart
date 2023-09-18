@@ -1,6 +1,8 @@
 
 package org.firstinspires.ftc.teamcode.huskyteers.vision;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -53,9 +55,11 @@ public class BackdropAprilTagDetection {
         AprilTagDetection detectedTag = null;
 
         for(AprilTagDetection detection : currentDetections){
-            if(detection.id == id ){
-                detectedTag = detection;
-                break;
+            if(detection.metadata != null) {
+                if (detection.id == id) {
+                    detectedTag = detection;
+                    break;
+                }
             }
         }
         return detectedTag;
@@ -66,14 +70,15 @@ public class BackdropAprilTagDetection {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
+                .setCameraResolution(new Size(1280,720))
                 .addProcessor(aprilTag)
                 .build();
 
         // Manually set the camera gain and exposure.
-//        ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-//        exposureControl.setExposure((long)6, TimeUnit.MILLISECONDS);
-//        GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-//        gainControl.setGain(250);
+        // ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+        // exposureControl.setExposure((long)6, TimeUnit.MILLISECONDS);
+        // GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+        // gainControl.setGain(250);
     }
 }
 
