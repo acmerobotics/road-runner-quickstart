@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
 @Config
 @TeleOp(name = "Husky TeleOp Mode" , group = "Teleop")
 public class HuskyTeleOpMode extends LinearOpMode {
@@ -39,7 +41,7 @@ public class HuskyTeleOpMode extends LinearOpMode {
             if(huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag() != null)
                 telemetry.addData("Closest April Tag Range", huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose.range);
 
-            if(huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1) != null)
+            if(huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1) != null )
                 telemetry.addData("April Tag ID 1:", huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1).ftcPose.range);
 
             telemetry.update();

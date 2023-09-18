@@ -115,7 +115,9 @@ public class HuskyBot {
 
     public PoseVelocity2d alignWithAprilTag(int aprilTagID){
         AprilTagDetection desiredTag = huskyVision.backdropAprilTagDetection.getAprilTagById(aprilTagID);
-
+        if (desiredTag == null || desiredTag.id != aprilTagID) {
+            return new PoseVelocity2d(new Vector2d(0, 0), 0);
+        }
         double SPEED_GAIN = 0.02;
         double STRAFE_GAIN = 0.01;
         double TURN_GAIN = 0.01;
