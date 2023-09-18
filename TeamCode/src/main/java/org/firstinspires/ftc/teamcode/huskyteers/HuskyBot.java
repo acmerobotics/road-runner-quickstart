@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.huskyteers;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -60,11 +61,11 @@ import org.firstinspires.ftc.teamcode.huskyteers.vision.HuskyVision;
 public class HuskyBot {
 
     /* Declare OpMode members. */
-    private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
+    private LinearOpMode myOpMode;   // gain access to methods in the calling OpMode.
 
     // Define hardware objects.
-    private MecanumDrive drive = null;
-    public HuskyVision huskyVision = null;
+    private MecanumDrive drive;
+    public HuskyVision huskyVision;
 
     // Define Drive constants.
     private Pose2d initialPose = new Pose2d(0, 0, 0);
@@ -108,6 +109,10 @@ public class HuskyBot {
         double rotatedY = gamepadLeftStickX * Math.sin(angle) + gamepadLeftStickY * Math.cos(angle);
 
         driveRobot(rotatedY, rotatedX, gamepadRightStickX, speed);
+    }
+
+    public void setCurrentHeadingAsForward() {
+        this.drive.pose = new Pose2d(this.drive.pose.position, Rotation2d.exp(0));
     }
 
 }
