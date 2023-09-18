@@ -65,6 +65,7 @@ public class HuskyBot {
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define hardware objects.
+
     private MecanumDrive drive = null;
     public HuskyVision huskyVision = null;
 
