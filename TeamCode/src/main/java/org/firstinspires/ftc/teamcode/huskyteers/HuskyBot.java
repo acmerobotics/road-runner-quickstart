@@ -58,10 +58,10 @@ import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 public class HuskyBot {
 
     /* Declare OpMode members. */
-    private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
+    private LinearOpMode myOpMode;   // gain access to methods in the calling OpMode.
 
     // Define hardware objects.
-    private MecanumDrive drive = null;
+    private MecanumDrive drive;
 
     // Define Drive constants.
     private Pose2d initialPose = new Pose2d(0, 0, 0);

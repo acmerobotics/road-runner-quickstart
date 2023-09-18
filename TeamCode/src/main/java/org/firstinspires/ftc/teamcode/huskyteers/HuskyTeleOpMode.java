@@ -16,8 +16,8 @@ public class HuskyTeleOpMode extends LinearOpMode {
         HuskyBot huskyBot = new HuskyBot(this);
         huskyBot.init();
 
-        Gamepad currentGamepad1 = new Gamepad();
-        Gamepad currentGamepad2 = new Gamepad();
+        Gamepad currentGamepad1;
+        Gamepad currentGamepad2;
 
         waitForStart();
         if (isStopRequested()) return;
