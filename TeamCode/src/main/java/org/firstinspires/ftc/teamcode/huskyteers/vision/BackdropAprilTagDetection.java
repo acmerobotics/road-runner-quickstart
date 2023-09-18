@@ -1,6 +1,8 @@
 
 package org.firstinspires.ftc.teamcode.huskyteers.vision;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -68,6 +70,7 @@ public class BackdropAprilTagDetection {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
+                .setCameraResolution(new Size(1280,720))
                 .addProcessor(aprilTag)
                 .build();
 
