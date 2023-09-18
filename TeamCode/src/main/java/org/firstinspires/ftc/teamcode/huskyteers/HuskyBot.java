@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.huskyteers;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -104,6 +105,10 @@ public class HuskyBot {
         double rotatedY = gamepadLeftStickX * Math.sin(angle) + gamepadLeftStickY * Math.cos(angle);
 
         driveRobot(rotatedY, rotatedX, gamepadRightStickX, speed);
+    }
+
+    public void setCurrentHeadingAsForward() {
+        this.drive.pose = new Pose2d(this.drive.pose.position, Rotation2d.exp(0));
     }
 
 }
