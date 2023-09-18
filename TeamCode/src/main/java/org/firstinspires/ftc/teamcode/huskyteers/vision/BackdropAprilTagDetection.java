@@ -70,7 +70,7 @@ public class BackdropAprilTagDetection {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
-                .setCameraResolution(new Size(1280,720))
+                .setCameraResolution(new Size(640, 480))
                 .addProcessor(aprilTag)
                 .build();
 
