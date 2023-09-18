@@ -132,9 +132,6 @@ public class HuskyBot {
         double turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
         double strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
-        return new PoseVelocity2d(
-                new Vector2d(strafe, drive),
-                turn
-        );
+        return new PoseVelocity2d(new Vector2d(strafe, drive), turn);
     }
 }

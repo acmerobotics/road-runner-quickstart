@@ -28,21 +28,13 @@ public class HuskyTeleOpMode extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             currentGamepad1 = gamepad1;
             currentGamepad2 = gamepad2;
-            if(gamepad1.left_bumper){
-              PoseVelocity2d pw = huskyBot.alignWithAprilTag(1);
-                huskyBot.driveRobot(pw.component1().y,pw.component1().x,pw.component2(),1.0);
-            }
-            else {
 
-                huskyBot.fieldCentricDriveRobot(
-                        -currentGamepad1.left_stick_y,
-                        currentGamepad1.left_stick_x,
-                        currentGamepad1.right_stick_x,
-                        (0.35 + 0.5 * currentGamepad1.left_trigger));
-            }
+            PoseVelocity2d pw = huskyBot.alignWithAprilTag(1);
+            huskyBot.driveRobot(pw.component1().y, pw.component1().x, pw.component2(), 1.0);
 
-            // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
-
+            telemetry.addData("Drive", pw.component1().y);
+            telemetry.addData("Strafe", pw.component1().x);
+            telemetry.addData("Turn", pw.component2());
 
             if(huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag() != null)
                 telemetry.addData("Closest April Tag Range", huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose.range);
@@ -53,7 +45,6 @@ public class HuskyTeleOpMode extends LinearOpMode {
             telemetry.update();
         }
         // endregion
-
     }
 
 }
