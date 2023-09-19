@@ -1,87 +1,54 @@
-
 package org.firstinspires.ftc.teamcode.huskyteers.vision;
 
-import android.util.Size;
-
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
-import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 
 public class BackdropAprilTagDetection {
     // Backdrop April Tag IDs
     // Blue Left: 1, Blue Center: 2, Blue Right: 3
     // Red Left: 4, Red Center 5, Red Right: 6
 
-    private VisionPortal visionPortal;
-    private AprilTagProcessor aprilTag;
-    private final HardwareMap hwMap;
+    public AprilTagProcessor aprilTag;
 
-    public BackdropAprilTagDetection(HardwareMap hwMap){
-        this.hwMap = hwMap;
-
-        initAprilTag();
+    public BackdropAprilTagDetection() {
+        aprilTag = new AprilTagProcessor.Builder().setDrawTagOutline(true).build();
     }
 
-    public AprilTagDetection closestAprilTag() {
+    public Optional<AprilTagDetection> closestAprilTag() {
         // Step through the list of detected tags and look for closest one.
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        //return null if no detections are found
-        if(currentDetections.isEmpty())
-            return null;
+        if (currentDetections.isEmpty())
+            return Optional.empty();
 
 
         AprilTagDetection closestTag = currentDetections.get(0);
 
         for (AprilTagDetection detection : currentDetections) {
-            if ((detection.metadata != null)){
-                if(detection.ftcPose.range < closestTag.ftcPose.range){
+            if ((detection.metadata != null)) {
+                if (detection.ftcPose.range < closestTag.ftcPose.range) {
                     closestTag = detection;
                 }
             }
         }
 
-        return closestTag;
+        return Optional.of(closestTag);
     }
 
-    public AprilTagDetection getAprilTagById(int id) {
+    public Optional<AprilTagDetection> getAprilTagById(int id) {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        AprilTagDetection detectedTag = null;
 
-        for(AprilTagDetection detection : currentDetections){
-            if(detection.metadata != null) {
+        for (AprilTagDetection detection : currentDetections) {
+            if (detection.metadata != null) {
                 if (detection.id == id) {
-                    detectedTag = detection;
-                    break;
+                    return Optional.of(detection);
                 }
             }
         }
-        // Handle case where no tag with the specified ID is found
-        return detectedTag;
+        return Optional.empty();
     }
 
-    private void initAprilTag() {
-        aprilTag = new AprilTagProcessor.Builder().setDrawTagOutline(true).build();
-
-        visionPortal = new VisionPortal.Builder()
-                .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
-                .setCameraResolution(new Size(640, 480))
-                .enableLiveView(true)
-                .addProcessor(aprilTag)
-                .build();
-
-        // Manually set the camera gain and exposure.
-        // ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-        // exposureControl.setExposure((long)6, TimeUnit.MILLISECONDS);
-        // GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-        // gainControl.setGain(250);
-    }
 }
 
