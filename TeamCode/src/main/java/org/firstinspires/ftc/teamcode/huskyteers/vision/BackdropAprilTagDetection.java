@@ -33,7 +33,8 @@ public class BackdropAprilTagDetection {
     public AprilTagDetection closestAprilTag() {
         // Step through the list of detected tags and look for closest one.
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        if(currentDetections.size() == 0)
+        //return null if no detections are found
+        if(currentDetections.isEmpty())
             return null;
 
 
