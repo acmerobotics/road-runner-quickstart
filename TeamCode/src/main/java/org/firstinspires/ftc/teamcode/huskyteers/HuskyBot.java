@@ -69,6 +69,7 @@ public class HuskyBot {
     private MecanumDrive drive = null;
     public HuskyVision huskyVision = null;
 
+
     // Define Drive constants.
     private Pose2d initialPose = new Pose2d(0, 0, 0);
 
