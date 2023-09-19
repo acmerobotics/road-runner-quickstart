@@ -72,7 +72,7 @@ public class HuskyBot {
     public HuskyVision huskyVision = null;
 
     // Define Drive constants.
-    private Pose2d initialPose = new Pose2d(0, 0, 0);
+    private final Pose2d initialPose = new Pose2d(0, 0, 0);
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public HuskyBot(LinearOpMode opMode) {
