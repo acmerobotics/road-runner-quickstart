@@ -66,11 +66,12 @@ public class BackdropAprilTagDetection {
     }
 
     private void initAprilTag() {
-        aprilTag = new AprilTagProcessor.Builder().build();
+        aprilTag = new AprilTagProcessor.Builder().setDrawTagOutline(true).build();
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
                 .setCameraResolution(new Size(640, 480))
+                .enableLiveView(true)
                 .addProcessor(aprilTag)
                 .build();
 
