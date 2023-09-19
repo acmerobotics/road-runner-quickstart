@@ -46,7 +46,7 @@ public class HuskyTeleOpMode extends LinearOpMode {
                 }
             }
             if (huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1) != null) {
-                if (huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose == null) {
+                if (huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1).ftcPose == null) {
                     telemetry.addData("Error: ", "April tag has no pose");
                 } else
                     telemetry.addData("April Tag ID 1:", huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1).ftcPose.range);
