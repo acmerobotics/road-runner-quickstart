@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.huskyteers.vision;
 
-import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
@@ -13,16 +12,9 @@ public class BackdropAprilTagDetection {
     // Red Left: 4, Red Center 5, Red Right: 6
 
     public AprilTagProcessor aprilTag;
-    private VisionPortal visionPortal;
 
     public BackdropAprilTagDetection() {
         aprilTag = new AprilTagProcessor.Builder().setDrawTagOutline(true).build();
-
-        // Manually set the camera gain and exposure.
-        // ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-        // exposureControl.setExposure((long)6, TimeUnit.MILLISECONDS);
-        // GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-        // gainControl.setGain(250);
     }
 
     public Optional<AprilTagDetection> closestAprilTag() {

@@ -37,6 +37,9 @@ public class HuskyVisionTestingAuto extends LinearOpMode {
             aprilTag1.ifPresent(aprilTagDetection -> telemetry.addData("April Tag ID 1:", aprilTagDetection.ftcPose.range));
 
             telemetry.update();
+
+            // share the cpu
+            sleep(20);
         }
         // endregion
     }
