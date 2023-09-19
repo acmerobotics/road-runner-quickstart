@@ -26,7 +26,7 @@ public class HuskyVisionTestingAuto extends LinearOpMode {
 
         // region TELEOP LOOP
         while (opModeIsActive() && !isStopRequested()) {
-            PoseVelocity2d pw = huskyBot.alignWithAprilTag(1);
+            PoseVelocity2d pw = huskyBot.alignWithAprilTag(583);
             huskyBot.driveRobot(pw.component1().y, pw.component1().x, -pw.component2(), 1.0);
 
             telemetry.addData("Drive", pw.component1().y);
