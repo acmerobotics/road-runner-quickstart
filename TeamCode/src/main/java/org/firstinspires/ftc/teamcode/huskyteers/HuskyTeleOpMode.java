@@ -37,7 +37,6 @@ public class HuskyTeleOpMode extends LinearOpMode {
                     currentGamepad1.right_stick_x,
                     (0.35 + 0.5 * currentGamepad1.left_trigger));
         }
-        telemetry.update();
     }
         // endregion
 }
