@@ -117,6 +117,10 @@ public class HuskyBot {
         driveRobot(rotatedY, rotatedX, gamepadRightStickX, speed);
     }
 
+    public void setCurrentHeadingAsForward() {
+        this.drive.pose = new Pose2d(this.drive.pose.position, Rotation2d.exp(0));
+    }
+
     public PoseVelocity2d alignWithAprilTag(int aprilTagID) {
         Optional<AprilTagDetection> desiredTag = huskyVision.backdropAprilTagDetection.getAprilTagById(aprilTagID);
         if (!desiredTag.isPresent()) {

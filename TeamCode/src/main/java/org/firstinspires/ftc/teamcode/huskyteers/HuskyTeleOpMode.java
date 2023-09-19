@@ -31,6 +31,10 @@ public class HuskyTeleOpMode extends LinearOpMode {
             currentGamepad1 = gamepad1;
             currentGamepad2 = gamepad2;
 
+            if (currentGamepad1.start) {
+                huskyBot.setCurrentHeadingAsForward();
+            }
+
             huskyBot.fieldCentricDriveRobot(
                     -currentGamepad1.left_stick_y,
                     currentGamepad1.left_stick_x,
