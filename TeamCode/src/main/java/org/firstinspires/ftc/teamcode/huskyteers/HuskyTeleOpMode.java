@@ -19,8 +19,8 @@ public class HuskyTeleOpMode extends LinearOpMode {
         HuskyBot huskyBot = new HuskyBot(this);
         huskyBot.init();
 
-        Gamepad currentGamepad1 = new Gamepad();
-        Gamepad currentGamepad2 = new Gamepad();
+        Gamepad currentGamepad1;
+        Gamepad currentGamepad2;
 
         waitForStart();
         if (isStopRequested()) return;
@@ -31,26 +31,15 @@ public class HuskyTeleOpMode extends LinearOpMode {
             currentGamepad1 = gamepad1;
             currentGamepad2 = gamepad2;
 
-            PoseVelocity2d pw = huskyBot.alignWithAprilTag(1);
-            if (pw.component1().x == 0 && pw.component1().y == 0 && pw.component2() == 0) {
-                // This means the AprilTag was not detected.
-                // Handle it, e.g., stop the robot.
-                // huskyBot.driveRobot(0, 0, 0, 1.0);
-                telemetry.addData("Status", "AprilTag not detected");
-            } else {
-                huskyBot.driveRobot(pw.component1().y, pw.component1().x, -pw.component2(), 1.0);
-                telemetry.addData("Drive", pw.component1().y);
-                telemetry.addData("Strafe", pw.component1().x);
-                telemetry.addData("Turn", pw.component2());
-            }
-            if (huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag() != null) {
-                if (huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose == null) {
-                    telemetry.addData("Error: ", "Closest April tag has no pose");
-                } else {
-                    telemetry.addData("Closest April Tag Range", huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose.range);
-                }
-            }
+            huskyBot.fieldCentricDriveRobot(
+                    -currentGamepad1.left_stick_y,
+                    currentGamepad1.left_stick_x,
+                    currentGamepad1.right_stick_x,
+                    (0.35 + 0.5 * currentGamepad1.left_trigger));
 
+
+            if(huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag() != null)
+                telemetry.addData("Closest April Tag Range", huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose.range);
 
             if (huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1) != null) {
                 if (huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(1).ftcPose == null) {

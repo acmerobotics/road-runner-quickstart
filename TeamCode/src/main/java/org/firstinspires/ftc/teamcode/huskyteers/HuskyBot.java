@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.huskyteers;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.Range;
@@ -64,7 +65,7 @@ import java.util.Optional;
 public class HuskyBot {
 
     /* Declare OpMode members. */
-    private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
+    private LinearOpMode myOpMode;   // gain access to methods in the calling OpMode.
 
     // Define hardware objects.
 
