@@ -1,79 +1,22 @@
-
 package org.firstinspires.ftc.teamcode.huskyteers.vision;
 
-import android.util.Size;
-
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 
 public class BackdropAprilTagDetection {
     // Backdrop April Tag IDs
     // Blue Left: 1, Blue Center: 2, Blue Right: 3
     // Red Left: 4, Red Center 5, Red Right: 6
 
+    public AprilTagProcessor aprilTag;
     private VisionPortal visionPortal;
-    private AprilTagProcessor aprilTag;
-    private final HardwareMap hwMap;
 
-    public BackdropAprilTagDetection(HardwareMap hwMap){
-        this.hwMap = hwMap;
-
-        initAprilTag();
-    }
-
-    public AprilTagDetection closestAprilTag() {
-        // Step through the list of detected tags and look for closest one.
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        if(currentDetections.size() == 0)
-            return null;
-
-
-        AprilTagDetection closestTag = currentDetections.get(0);
-
-        for (AprilTagDetection detection : currentDetections) {
-            if ((detection.metadata != null)){
-                if(detection.ftcPose.range < closestTag.ftcPose.range){
-                    closestTag = detection;
-                }
-            }
-        }
-
-        return closestTag;
-    }
-
-    public AprilTagDetection getAprilTagById(int id) {
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        AprilTagDetection detectedTag = null;
-
-        for(AprilTagDetection detection : currentDetections){
-            if(detection.metadata != null) {
-                if (detection.id == id) {
-                    detectedTag = detection;
-                    break;
-                }
-            }
-        }
-        return detectedTag;
-    }
-
-    private void initAprilTag() {
+    public BackdropAprilTagDetection() {
         aprilTag = new AprilTagProcessor.Builder().setDrawTagOutline(true).build();
-
-        visionPortal = new VisionPortal.Builder()
-                .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
-                .setCameraResolution(new Size(640, 480))
-                .enableLiveView(true)
-                .addProcessor(aprilTag)
-                .build();
 
         // Manually set the camera gain and exposure.
         // ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
@@ -81,5 +24,39 @@ public class BackdropAprilTagDetection {
         // GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
         // gainControl.setGain(250);
     }
+
+    public Optional<AprilTagDetection> closestAprilTag() {
+        // Step through the list of detected tags and look for closest one.
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        if (currentDetections.isEmpty())
+            return Optional.empty();
+
+
+        AprilTagDetection closestTag = currentDetections.get(0);
+
+        for (AprilTagDetection detection : currentDetections) {
+            if ((detection.metadata != null)) {
+                if (detection.ftcPose.range < closestTag.ftcPose.range) {
+                    closestTag = detection;
+                }
+            }
+        }
+
+        return Optional.of(closestTag);
+    }
+
+    public Optional<AprilTagDetection> getAprilTagById(int id) {
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+
+        for (AprilTagDetection detection : currentDetections) {
+            if (detection.metadata != null) {
+                if (detection.id == id) {
+                    return Optional.of(detection);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
 }
 

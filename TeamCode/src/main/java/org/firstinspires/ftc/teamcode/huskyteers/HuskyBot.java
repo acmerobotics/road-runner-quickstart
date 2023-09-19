@@ -35,9 +35,11 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.huskyteers.vision.HuskyVision;
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
+import java.util.Optional;
 
 
 /*
@@ -101,7 +103,7 @@ public class HuskyBot {
         this.drive.setDrivePowers(pw);
     }
 
-    public void fieldCentricDriveRobot(double gamepadLeftStickY, double gamepadLeftStickX,double gamepadRightStickX, double speed) {
+    public void fieldCentricDriveRobot(double gamepadLeftStickY, double gamepadLeftStickX, double gamepadRightStickX, double speed) {
         updateDrivePose();
 
         Vector2d angleVector = this.drive.pose.heading.vec();
@@ -113,11 +115,12 @@ public class HuskyBot {
         driveRobot(rotatedY, rotatedX, gamepadRightStickX, speed);
     }
 
-    public PoseVelocity2d alignWithAprilTag(int aprilTagID){
-        AprilTagDetection desiredTag = huskyVision.backdropAprilTagDetection.getAprilTagById(aprilTagID);
-        if (desiredTag == null || desiredTag.id != aprilTagID) {
+    public PoseVelocity2d alignWithAprilTag(int aprilTagID) {
+        Optional<AprilTagDetection> desiredTag = huskyVision.backdropAprilTagDetection.getAprilTagById(aprilTagID);
+        if (!desiredTag.isPresent()) {
             return new PoseVelocity2d(new Vector2d(0, 0), 0);
         }
+        AprilTagDetection tag = desiredTag.get();
         double SPEED_GAIN = 0.02;
         double STRAFE_GAIN = 0.01;
         double TURN_GAIN = 0.01;
@@ -126,12 +129,12 @@ public class HuskyBot {
         double MAX_AUTO_TURN = 0.3;
         double MAX_AUTO_STRAFE = 0.5;
 
-        double rangeError = (desiredTag.ftcPose.range - 12);
-        double headingError = desiredTag.ftcPose.bearing;
-        double yawError = desiredTag.ftcPose.yaw;
+        double rangeError = (tag.ftcPose.range - 12);
+        double headingError = tag.ftcPose.bearing;
+        double yawError = tag.ftcPose.yaw;
 
         double drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-        double turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+        double turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
         double strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
         return new PoseVelocity2d(new Vector2d(strafe, drive), turn);
