@@ -44,7 +44,7 @@ public class HuskyTeleOpMode extends LinearOpMode {
                 telemetry.addData("Turn", pw.component2());
             }
             if (huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag() != null) {
-                AprilTagDetection closestTag = huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag();    if (huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose == null) {
+                if (huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose == null) {
                     telemetry.addData("Error: ", "Closest April tag has no pose");
                 } else {
                     telemetry.addData("Closest April Tag Range", huskyBot.huskyVision.backdropAprilTagDetection.closestAprilTag().ftcPose.range);
