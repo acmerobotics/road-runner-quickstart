@@ -65,7 +65,7 @@ import java.util.Optional;
 public class HuskyBot {
 
     /* Declare OpMode members. */
-    private LinearOpMode myOpMode;   // gain access to methods in the calling OpMode.
+    private final LinearOpMode myOpMode;   // gain access to methods in the calling OpMode.
 
     // Define hardware objects.
 

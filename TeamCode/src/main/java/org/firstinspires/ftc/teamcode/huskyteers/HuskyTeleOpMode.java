@@ -1,13 +1,9 @@
 package org.firstinspires.ftc.teamcode.huskyteers;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @Config
 @TeleOp(name = "Husky TeleOp Mode", group = "Teleop")
