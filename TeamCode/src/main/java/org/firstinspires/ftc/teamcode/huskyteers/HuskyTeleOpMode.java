@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.huskyteers;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -30,13 +31,22 @@ public class HuskyTeleOpMode extends LinearOpMode {
             if (currentGamepad1.start) {
                 huskyBot.setCurrentHeadingAsForward();
             }
+            if(currentGamepad1.left_bumper && huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(583).isPresent()){
+                PoseVelocity2d pw = huskyBot.alignWithAprilTag(583);
+                huskyBot.driveRobot(pw.component1().y, pw.component1().x, -pw.component2(), 1.0);
+            }
+            else{
+                huskyBot.fieldCentricDriveRobot(
+                        -currentGamepad1.left_stick_y,
+                        currentGamepad1.left_stick_x,
+                        currentGamepad1.right_stick_x,
+                        (0.35 + 0.5 * currentGamepad1.left_trigger));
+            }
 
-            huskyBot.fieldCentricDriveRobot(
-                    -currentGamepad1.left_stick_y,
-                    currentGamepad1.left_stick_x,
-                    currentGamepad1.right_stick_x,
-                    (0.35 + 0.5 * currentGamepad1.left_trigger));
+            telemetry.addData("Left Bumper", currentGamepad1.left_bumper);
+            telemetry.addData("April Detected", huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(583).isPresent());
+            telemetry.update();
         }
     }
-        // endregion
+    // endregion
 }
