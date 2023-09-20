@@ -39,34 +39,17 @@ import com.acmerobotics.roadrunner.Pose2d;
  */
 public class Params {
     // road runner
-    public static Pose2d currentPose = new Pose2d(0,0,0);
+    static Pose2d currentPose = new Pose2d(0,0,0);
 
-    //cone parameters
-    static final double coneLoadStackGap = 1.3;
-
-    // autonomous driving distance
+    //game field parameters
     static final double HALF_MAT = 12.0;
+
+    // robot size
     static final double CHASSIS_HALF_WIDTH = 14 / 2.0;
     static final double CHASSIS_LENGTH = 17;
-    static final double FLIP_ARM_LENGTH = 10;
-    static final double BASE_TO_JUNCTION = 3 * HALF_MAT - 18;
-    static final double UNLOAD_DS_VALUE = 4.5;
 
-    // moving distance variables
-    static final double DISTANCE_PICK_UP = 1.0; // in INCH
+    // additional moving distance variables
     static final double GAP_DISTANCE = (HALF_MAT - CHASSIS_LENGTH / 2.0) / 2.0;
-
-    // slider position variables
-    static final double ARM_UNLOADING_LIFTING = 4.0;
-    static final double ARM_UNLOADING_EXTENSION = 7.0;
-    static final double GROUND_CONE_POSITION = 0.0;
-    static final double coneStack5th = coneLoadStackGap * 4;
-    static final double LOW_JUNCTION_POS = 13.5 - ARM_UNLOADING_LIFTING;
-    static final double MEDIUM_JUNCTION_POS = 23.5 - ARM_UNLOADING_LIFTING;
-    static final double HIGH_JUNCTION_POS = 33.5 - ARM_UNLOADING_LIFTING;
-    static final double WALL_POSITION = 9.1;
-    static final double GROUND_CONE_READY_POSITION = 4.8;
-    static final double SLIDER_MOVE_DOWN_POSITION = 4.0;
 
     //claw action time
     static final int CLAW_CLOSE_SLEEP = 150; // ms

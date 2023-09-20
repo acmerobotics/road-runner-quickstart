@@ -63,7 +63,7 @@ public class SlidersWith2Motors
     final double manualUpdatePos = COUNTS_PER_INCH / 1.1;
 
     // slider position variables
-    final int FOUR_STAGE_SLIDER_MAX_POS = (int)(COUNTS_PER_INCH * Params.HIGH_JUNCTION_POS * 1.05);
+    final int FOUR_STAGE_SLIDER_MAX_POS = 2600;
     final int SLIDER_MIN_POS = 0;
 
     /**
