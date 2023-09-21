@@ -37,7 +37,7 @@ public class HuskyTeleOpMode extends LinearOpMode {
                 telemetry.addData("drive" ,pw.component1().y );
                 telemetry.addData("strafe" , pw.component1().x);
                 telemetry.addData("turn" , pw.component2());
-                huskyBot.driveRobot(pw.component1().y, pw.component1().x, -pw.component2(), 1.0);
+                huskyBot.driveRobot(pw.component1().y, pw.component1().x, pw.component2(), 1.0);
 
             }
             else{
