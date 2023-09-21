@@ -34,7 +34,11 @@ public class HuskyTeleOpMode extends LinearOpMode {
 
             if(currentGamepad1.left_bumper && huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(583).isPresent()){
                 PoseVelocity2d pw = huskyBot.alignWithAprilTag(583);
+                telemetry.addData("drive" ,pw.component1().y );
+                telemetry.addData("strafe" , pw.component1().x);
+                telemetry.addData("turn" , pw.component2());
                 huskyBot.driveRobot(pw.component1().y, pw.component1().x, -pw.component2(), 1.0);
+
             }
             else{
                 huskyBot.fieldCentricDriveRobot(
