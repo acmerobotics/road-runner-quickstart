@@ -74,7 +74,8 @@ public class HuskyBot {
 
 
     // Define Drive constants.
-    private final Pose2d initialPose = new Pose2d(0, 0, 0);
+    private final Pose2d INITIAL_POSE = new Pose2d(0, 0, 0);
+    private final double DESIRED_DISTANCE_FROM_APRILTAG = 12.0;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public HuskyBot(LinearOpMode opMode) {
@@ -83,14 +84,14 @@ public class HuskyBot {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        drive = new MecanumDrive(myOpMode.hardwareMap, initialPose);
+        drive = new MecanumDrive(myOpMode.hardwareMap, INITIAL_POSE);
         huskyVision = new HuskyVision(myOpMode.hardwareMap);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
     }
 
-    public void updateDrivePose() {
+    public void updateDrivePoseEstimate() {
         this.drive.updatePoseEstimate();
     }
 
@@ -106,7 +107,7 @@ public class HuskyBot {
     }
 
     public void fieldCentricDriveRobot(double gamepadLeftStickY, double gamepadLeftStickX, double gamepadRightStickX, double speed) {
-        updateDrivePose();
+        updateDrivePoseEstimate();
 
         Vector2d angleVector = this.drive.pose.heading.vec();
         double angle = -Math.atan2(angleVector.y, angleVector.x);
@@ -135,7 +136,7 @@ public class HuskyBot {
         double MAX_AUTO_TURN = 0.3;
         double MAX_AUTO_STRAFE = 0.5;
 
-        double rangeError = (tag.ftcPose.range - 12);
+        double rangeError = (tag.ftcPose.range - DESIRED_DISTANCE_FROM_APRILTAG);
         double headingError = tag.ftcPose.bearing;
         double yawError = tag.ftcPose.yaw;
 
