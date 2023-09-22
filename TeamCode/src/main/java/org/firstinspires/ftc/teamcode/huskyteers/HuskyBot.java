@@ -91,6 +91,13 @@ public class HuskyBot {
         myOpMode.telemetry.update();
     }
 
+    public void setMotorPowers(float leftBack, float leftFront, float rightBack, float rightFront) {
+        this.drive.leftBack.setPower(leftBack);
+        this.drive.leftFront.setPower(leftFront);
+        this.drive.rightBack.setPower(rightBack);
+        this.drive.rightFront.setPower(rightFront);
+    }
+
     public void updateDrivePoseEstimate() {
         this.drive.updatePoseEstimate();
     }
@@ -130,7 +137,7 @@ public class HuskyBot {
         AprilTagDetection tag = desiredTag.get();
         double SPEED_GAIN = 0.02;
         double STRAFE_GAIN = 0.01;
-        double TURN_GAIN = 0.01;
+        double TURN_GAIN = 0.04;
 
         double MAX_AUTO_SPEED = 0.5;
         double MAX_AUTO_TURN = 0.3;
