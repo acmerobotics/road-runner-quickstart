@@ -80,6 +80,7 @@ public class HuskyBot {
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public HuskyBot(LinearOpMode opMode) {
         myOpMode = opMode;
+        TelemetryUtils.telemetry = opMode.telemetry;
     }
 
     public void init() {
