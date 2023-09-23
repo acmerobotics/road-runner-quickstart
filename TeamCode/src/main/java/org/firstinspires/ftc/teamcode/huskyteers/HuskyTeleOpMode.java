@@ -25,11 +25,10 @@ public class HuskyTeleOpMode extends LinearOpMode {
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
 
-        AtomicBoolean usingFieldCentric = new AtomicBoolean(false);
-        gamepadUtils.addRisingEdge(new GamepadUtils.Detector("a", d -> {
+        AtomicBoolean usingFieldCentric = new AtomicBoolean(true);
+        gamepadUtils.addRisingEdge("a", d -> {
             usingFieldCentric.set(!usingFieldCentric.get());
-            return null;
-        }));
+        });
 
         // region TELEOP LOOP
         while (opModeIsActive() && !isStopRequested()) {

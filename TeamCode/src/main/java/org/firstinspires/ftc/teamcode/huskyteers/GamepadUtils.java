@@ -5,21 +5,21 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 public class GamepadUtils {
-    public static class Detector {
-        Function<Boolean, Void> callback;
+    private static class Detector {
+        Consumer<Boolean> callback;
         String button;
 
-        Detector(String button, Function<Boolean, Void> callback) {
+        Detector(String button, Consumer<Boolean> callback) {
             this.callback = callback;
             this.button = button;
         }
     }
 
-    private Gamepad currentGamepad1 = new Gamepad();
-    private Gamepad previousGamepad1 = new Gamepad();
+    private final Gamepad currentGamepad1 = new Gamepad();
+    private final Gamepad previousGamepad1 = new Gamepad();
 
     private final List<Detector> risingEdgeDetectors;
     private final List<Detector> fallingEdgeDetectors;
@@ -42,29 +42,32 @@ public class GamepadUtils {
     /**
      * Watches both rising edge and falling edge.
      *
-     * @param detector The Detector with the watched button and callback
+     * @param button   The button to watch
+     * @param callback The callback to the function when pressed or released
      */
-    public void addHoldDetector(Detector detector) {
-        risingEdgeDetectors.add(detector);
-        fallingEdgeDetectors.add(detector);
+    public void addHoldDetector(String button, Consumer<Boolean> callback) {
+        risingEdgeDetectors.add(new Detector(button, callback));
+        fallingEdgeDetectors.add(new Detector(button, callback));
     }
 
     /**
      * Add a detector for detecting a button press
      *
-     * @param detector The Detector with the watched button and callback
+     * @param button   The button to watch
+     * @param callback The callback to the function when pressed
      */
-    public void addRisingEdge(Detector detector) {
-        risingEdgeDetectors.add(detector);
+    public void addRisingEdge(String button, Consumer<Boolean> callback) {
+        risingEdgeDetectors.add(new Detector(button, callback));
     }
 
     /**
      * Add a detector for detecting a button release
      *
-     * @param detector The Detector with the watched button and callback
+     * @param button   The button to watch
+     * @param callback The callback to the function when released
      */
-    public void addFallingEdge(Detector detector) {
-        fallingEdgeDetectors.add(detector);
+    public void addFallingEdge(String button, Consumer<Boolean> callback) {
+        fallingEdgeDetectors.add(new Detector(button, callback));
     }
 
     public void processUpdates(Gamepad gamepad) {
@@ -72,12 +75,12 @@ public class GamepadUtils {
         currentGamepad1.copy(gamepad);
         for (Detector detector : risingEdgeDetectors) {
             if (getButton(detector.button, currentGamepad1) && !getButton(detector.button, previousGamepad1)) {
-                detector.callback.apply(true);
+                detector.callback.accept(true);
             }
         }
         for (Detector detector : fallingEdgeDetectors) {
             if (getButton(detector.button, currentGamepad1) && !getButton(detector.button, previousGamepad1)) {
-                detector.callback.apply(false);
+                detector.callback.accept(false);
             }
         }
     }
