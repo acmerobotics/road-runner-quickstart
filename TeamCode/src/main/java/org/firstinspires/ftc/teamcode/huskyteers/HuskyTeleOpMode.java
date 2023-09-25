@@ -26,9 +26,7 @@ public class HuskyTeleOpMode extends LinearOpMode {
         Gamepad currentGamepad2 = new Gamepad();
 
         AtomicBoolean usingFieldCentric = new AtomicBoolean(true);
-        gamepadUtils.addRisingEdge("a", d -> {
-            usingFieldCentric.set(!usingFieldCentric.get());
-        });
+        gamepadUtils.addRisingEdge("a", d -> usingFieldCentric.set(!usingFieldCentric.get()));
 
         // region TELEOP LOOP
         while (opModeIsActive() && !isStopRequested()) {
@@ -47,16 +45,18 @@ public class HuskyTeleOpMode extends LinearOpMode {
                 huskyBot.driveRobot(pw.component1().y, pw.component1().x, pw.component2(), 1.0);
             } else {
                 if (usingFieldCentric.get()) {
+                    telemetry.addLine("Currently using field centric");
                     huskyBot.fieldCentricDriveRobot(
                             -currentGamepad1.left_stick_y,
                             currentGamepad1.left_stick_x,
                             currentGamepad1.right_stick_x,
                             (0.35 + 0.5 * currentGamepad1.left_trigger));
                 } else {
+                    telemetry.addLine("Currently using tank drive");
                     huskyBot.driveRobot(
                             -currentGamepad1.left_stick_y,
                             currentGamepad1.left_stick_x,
-                            currentGamepad1.right_stick_y,
+                            currentGamepad1.right_stick_x,
                             (0.35 + 0.5 * currentGamepad1.left_trigger));
                 }
             }
