@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class HuskyTeleOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
-
         // region INITIALIZATION
         HuskyBot huskyBot = new HuskyBot(this);
         GamepadUtils gamepadUtils = new GamepadUtils();
@@ -26,7 +25,10 @@ public class HuskyTeleOpMode extends LinearOpMode {
         Gamepad currentGamepad2 = new Gamepad();
 
         AtomicBoolean usingFieldCentric = new AtomicBoolean(true);
-        gamepadUtils.addRisingEdge("a", d -> usingFieldCentric.set(!usingFieldCentric.get()));
+        gamepadUtils.addRisingEdge("a", d -> {
+            usingFieldCentric.set(!usingFieldCentric.get());
+            gamepad1.runRumbleEffect(new Gamepad.RumbleEffect.Builder().addStep(1, 1, 200).build());
+        });
 
         // region TELEOP LOOP
         while (opModeIsActive() && !isStopRequested()) {
