@@ -49,15 +49,15 @@ public class HuskyTeleOpMode extends LinearOpMode {
                 if (usingFieldCentric.get()) {
                     telemetry.addLine("Currently using field centric");
                     huskyBot.fieldCentricDriveRobot(
-                            -currentGamepad1.left_stick_y,
-                            currentGamepad1.left_stick_x,
+                            currentGamepad1.left_stick_y,
+                            -currentGamepad1.left_stick_x,
                             currentGamepad1.right_stick_x,
                             (0.35 + 0.5 * currentGamepad1.left_trigger));
                 } else {
                     telemetry.addLine("Currently using tank drive");
                     huskyBot.driveRobot(
-                            -currentGamepad1.left_stick_y,
-                            currentGamepad1.left_stick_x,
+                            currentGamepad1.left_stick_y,
+                            -currentGamepad1.left_stick_x,
                             currentGamepad1.right_stick_x,
                             (0.35 + 0.5 * currentGamepad1.left_trigger));
                 }
@@ -65,6 +65,7 @@ public class HuskyTeleOpMode extends LinearOpMode {
 
             huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(583).ifPresent(
                     TelemetryUtils::AprilTagDetection);
+            TelemetryUtils.Gamepad(currentGamepad1);
             telemetry.update();
         }
     }

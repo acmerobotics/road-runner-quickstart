@@ -106,9 +106,9 @@ public class HuskyBot {
     public void driveRobot(double drive, double strafe, double turn, double speed) {
         PoseVelocity2d pw = new PoseVelocity2d(
                 new Vector2d(
-                        strafe * speed,
-                        drive * speed
-                ), turn * speed
+                        -drive * speed,
+                        strafe * speed
+                ), -turn * speed
         );
 
         this.drive.setDrivePowers(pw);

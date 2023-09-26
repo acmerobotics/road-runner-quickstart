@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.huskyteers;
 import android.annotation.SuppressLint;
 
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -27,6 +28,12 @@ public class TelemetryUtils {
             telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
             telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
         }
+    }
+
+    @SuppressLint("DefaultLocale")
+    static void Gamepad(Gamepad gamepad) {
+        telemetry.addLine(String.format("Left Stick X: %.2f %.2f", gamepad.left_stick_x, gamepad.left_stick_y));
+        telemetry.addLine(String.format("Right Stick X: %.2f %.2f", gamepad.right_stick_x, gamepad.right_stick_y));
     }
 
 }
