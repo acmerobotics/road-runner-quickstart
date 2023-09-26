@@ -38,6 +38,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -52,7 +53,7 @@ import java.util.List;
 public final class MecanumDrive {
     public static class Params {
         // drive model parameters
-        public double inPerTick = 0;
+        public double inPerTick = 92.0/1861.5;
         public double lateralInPerTick = 1;
         public double trackWidthTicks = 0;
 
@@ -120,6 +121,9 @@ public final class MecanumDrive {
             rightRear = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
             rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
 
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
             lastLeftFrontPos = leftFront.getPositionAndVelocity().position;
             lastLeftRearPos = leftRear.getPositionAndVelocity().position;
             lastRightRearPos = rightRear.getPositionAndVelocity().position;
@@ -184,6 +188,7 @@ public final class MecanumDrive {
         leftBack = hardwareMap.get(DcMotorEx.class, "rear_left_drive");
         rightBack = hardwareMap.get(DcMotorEx.class, "rear_right_drive");
         rightFront = hardwareMap.get(DcMotorEx.class, "front_right_drive");
+
         //reverse motors
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
