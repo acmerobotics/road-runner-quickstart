@@ -10,9 +10,8 @@ import org.firstinspires.ftc.teamcode.util.Mechanism;
 public class Arm extends Mechanism {
     Servo arm;
     public String armName = "arm";
-    public String arm2Name = "arm2";
-    int extend = 1;
-    int reduce = 0;
+    double extend = 1;
+    double reduce = 0;
 
     @Override
     public void init(HardwareMap hwMap) {
