@@ -1,24 +1,4 @@
-/*
- * Copyright (c) 2020 OpenFTC Team
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-/* Copyright (c) 2017 FIRST. All rights reserved.
+/* Copyright (c) 2023 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -45,9 +25,8 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/*
+ *
+ *
  * PID controller and IMU codes are copied from
  * https://stemrobotics.cs.pdx.edu/node/7268%3Froot=4196.html
  */
@@ -57,8 +36,6 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Pose2d;
-//import com.acmerobotics.roadrunner.Vector2d;
-//import com.acmerobotics.roadrunner.Trajectory;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -95,8 +72,6 @@ import java.util.List;
 //@Disabled
 public class AutoRedFront extends LinearOpMode {
 
-    boolean compensationOn = true;
-
     // 1 for Red Front, 2 for Red back, 3 for Blue Front, and 4 for Blue back
     public int startLoc = 2;
     public int spikeMarkLoc = 1; // 1 for left, 2 for center, and 3 for right
@@ -109,9 +84,9 @@ public class AutoRedFront extends LinearOpMode {
     public MecanumDrive drive;
 
     // camera and sleeve color
-    ObjectDetection.PropSide myParkingLot = ObjectDetection.PropSide.UNKNOWN;
+    ObjectDetection.PropSide propLocation = ObjectDetection.PropSide.UNKNOWN;
 
-    ObjectDetection coneSleeveDetect;
+    ObjectDetection propDetect;
     OpenCvCamera camera;
     String webcamName = "Webcam 1";
     boolean isCameraInstalled = true;
@@ -120,7 +95,7 @@ public class AutoRedFront extends LinearOpMode {
     Pose2d startPose;
 
     // pre cone to medium junction
-    Pose2d poseLineEnd1, poseRedBackDropCenter;
+    Pose2d poseRedBackDropCenter;
 
     /**
      * Set robot starting position: 1 for right and -1 for left.
@@ -168,19 +143,19 @@ public class AutoRedFront extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
-        coneSleeveDetect = new ObjectDetection();
+        propDetect = new ObjectDetection();
 
         if (startLoc <= 2) {
-            coneSleeveDetect.setColorFlag(ObjectDetection.ColorS.RED);
+            propDetect.setColorFlag(ObjectDetection.ColorS.RED);
         } else {
-            coneSleeveDetect.setColorFlag(ObjectDetection.ColorS.BLUE);
+            propDetect.setColorFlag(ObjectDetection.ColorS.BLUE);
         }
 
         if (isCameraInstalled) {
             camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(
                     WebcamName.class, webcamName), cameraMonitorViewId);
 
-            camera.setPipeline(coneSleeveDetect);
+            camera.setPipeline(propDetect);
 
             camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
                 @Override
@@ -214,14 +189,15 @@ public class AutoRedFront extends LinearOpMode {
         sleep(500);
 
         runtime.reset();
-        while ((ObjectDetection.PropSide.UNKNOWN == myParkingLot) &&
-                ((runtime.seconds()) < 3.0)) myParkingLot = coneSleeveDetect.getPropPos();
-        Logging.log("Parking Lot position: %s", myParkingLot.toString());
+        while ((ObjectDetection.PropSide.UNKNOWN == propLocation) &&
+                ((runtime.seconds()) < 3.0)) {
+            propLocation = propDetect.getPropPos();
+        }
+        Logging.log("Parking Lot position: %s", propLocation.toString());
 
         while (!isStarted()) {
-            myParkingLot = coneSleeveDetect.getPropPos();
-            telemetry.addData("Parking position: ", myParkingLot);
-            telemetry.addData("robot position: ", startLoc > 0? "Right":"Left");
+            propLocation = propDetect.getPropPos();
+            telemetry.addData("Detected Prop location: ", propLocation);
             telemetry.addData("RR", "imu Heading = %.1f",
                     Math.toDegrees(drive.pose.heading.log()));
             telemetry.update();
@@ -231,7 +207,7 @@ public class AutoRedFront extends LinearOpMode {
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
 
-        switch (myParkingLot) {
+        switch (propLocation) {
             case LEFT:
                 spikeMarkLoc = 1;
                 break;
