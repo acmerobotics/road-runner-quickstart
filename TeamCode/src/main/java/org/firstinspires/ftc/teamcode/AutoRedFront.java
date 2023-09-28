@@ -54,10 +54,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.Trajectory;
+//import com.acmerobotics.roadrunner.Vector2d;
+//import com.acmerobotics.roadrunner.Trajectory;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -94,16 +95,11 @@ import java.util.List;
 //@Disabled
 public class AutoRedFront extends LinearOpMode {
 
-    // average calibration values - good for the match in BC
-    Pose2d preConeDropAdjust = new Pose2d(0, 0, 0);
-    Pose2d poseConeStackAdjust = new Pose2d(0, 0, 0);
-    Pose2d poseMJDropOffAdjust = new Pose2d(0, 0, 0);
-
     boolean compensationOn = true;
 
     // 1 for Red Front, 2 for Red back, 3 for Blue Front, and 4 for Blue back
     public int startLoc = 2;
-    public int sparkMarkLoc = 1; // 1 for left, 2 for center, and 3 for right
+    public int spikeMarkLoc = 1; // 1 for left, 2 for center, and 3 for right
     boolean debug_flag = true;
 
     // Declare OpMode members.
@@ -237,14 +233,14 @@ public class AutoRedFront extends LinearOpMode {
 
         switch (myParkingLot) {
             case LEFT:
-                sparkMarkLoc = 1;
+                spikeMarkLoc = 1;
                 break;
             case CENTER:
             case UNKNOWN:
-                sparkMarkLoc = 2;
+                spikeMarkLoc = 2;
                 break;
                 case RIGHT:
-                sparkMarkLoc = 3;
+                spikeMarkLoc = 3;
                 break;
         }
 
@@ -281,24 +277,31 @@ public class AutoRedFront extends LinearOpMode {
         }
     }
 
-    // 1 == startLoc
+
     private void autoRedFrontCore() {
 
         // 1. move to central line
-        Pose2d poseMatCenter = new Pose2d(-3 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 3 * Params.HALF_MAT, startPose.heading.log());
+        //Pose2d poseMatCenter = new Pose2d(-3 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 3 * Params.HALF_MAT, startPose.heading.log());
+        Vector2d poseMatCenter = new Vector2d(-3 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 3 * Params.HALF_MAT);
+        Vector2d poseBackdropRed = new Vector2d(-3 * Params.HALF_MAT, poseMatCenter.y - Params.BACK_DISTANCE);
+        Vector2d poseQRCode4 = new Vector2d(-35, 6);
+        Vector2d poseQRCode5 = new Vector2d(-3 * Params.HALF_MAT , -6 * Params.HALF_MAT - Params.BACKDROP_FORWARD);
+        Vector2d poseQRCode6 = new Vector2d(-3 * Params.HALF_MAT + Params.BACKDROP_SIDEWAYS, (-4 * Params.HALF_MAT - Params.BACKDROP_FORWARD) / 12);
         if (2 == startLoc) {
-            poseMatCenter = new Pose2d(-3 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, -1 * Params.HALF_MAT, startPose.heading.log());
+            poseMatCenter = new Vector2d(-3 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, -1 * Params.HALF_MAT);
         }
         poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
-        Pose2d poseRedBackDropRight = new Pose2d(poseRedBackDropCenter.position.x - Params.HALF_MAT, poseRedBackDropCenter.position.y, Math.toRadians(-90.0));
-        Pose2d poseRedBackDropLeft = new Pose2d(poseRedBackDropCenter.position.x + Params.HALF_MAT, poseRedBackDropCenter.position.y, Math.toRadians(-90.0));
+        Logging.log("red backdrop pose y: %2f", poseBackdropRed.y);
+        Logging.log("code number 4 x: %2f", poseQRCode4.x);
+        Logging.log("code number 4 y: %2f", poseQRCode4.y);
 
-        if (1 == sparkMarkLoc) {// left
+
+        if (1 == spikeMarkLoc) {// left
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
-                            .lineToXConstantHeading(poseMatCenter.position.x)
+                            .strafeTo(poseMatCenter)
                             .turn(Math.PI)
-                            .lineToYConstantHeading(poseMatCenter.position.y + Params.GAP_DISTANCE)
+                            //.lineToYConstantHeading(poseMatCenter.y + Params.SPIKE_GAP)
                             .build());
 
             // 2. open claw to release purple pixel
@@ -308,6 +311,16 @@ public class AutoRedFront extends LinearOpMode {
             //3. close claw
             armClaw.clawClose();
             sleep(100);
+
+            //4. back to center
+            /*Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .turn(Math.PI)
+                            .lineToYConstantHeading(poseMatCenter.y)
+                            .build());
+
+             */
+
 
              /*
             Actions.runBlocking(
@@ -336,11 +349,11 @@ public class AutoRedFront extends LinearOpMode {
         }
 
 
-        if (2 == sparkMarkLoc) {
+        if (2 == spikeMarkLoc) {
             // center
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
-                            .lineToXConstantHeading(poseMatCenter.position.x + Params.GAP_DISTANCE)
+                            .strafeTo(poseMatCenter)
                             .turn(Math.PI / 2.0)
                             .build());
 
@@ -351,6 +364,16 @@ public class AutoRedFront extends LinearOpMode {
             // 3. close claw to pick-up the yellow pixel
             armClaw.clawClose();
             sleep(100);
+
+            // 4. back to center
+            /*Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .lineToXConstantHeading(poseMatCenter.x)
+                            .turn(- Math.PI / 2.0)
+                            .build());
+
+             */
+
 
             /*
             // 0. drive to center
@@ -375,12 +398,12 @@ public class AutoRedFront extends LinearOpMode {
         }
 
 
-        if (3 == sparkMarkLoc) // right
+        if (3 == spikeMarkLoc) // right
         {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
-                            .lineToXConstantHeading(poseMatCenter.position.x)
-                            .lineToYConstantHeading(poseMatCenter.position.y - Params.GAP_DISTANCE)
+                            .strafeTo(poseMatCenter)
+                            .lineToYConstantHeading(poseMatCenter.y - Params.SPIKE_GAP)
                             .build());
 
             // 2. open claw to release purple pixel
@@ -390,7 +413,54 @@ public class AutoRedFront extends LinearOpMode {
             //3. close claw
             armClaw.clawClose();
             sleep(100);
+
+            //4. back to center position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .lineToYConstantHeading(poseMatCenter.y)
+                            .build());
+
+
         }
+        //go to backdrop location
+        sleep(250);
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .lineToYConstantHeading(poseBackdropRed.y / 12)
+                        .build()
+        );
+
+        sleep(4000);
+        //go to drop position
+        if (1 == spikeMarkLoc) //mark number 4
+        {
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .lineToY(-67)
+                            //.strafeTo(poseQRCode4)
+                            .build()
+            );
+        }
+        if (2 == spikeMarkLoc) //mark number 5
+        {
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .lineToYConstantHeading(poseQRCode5.y)
+                            .build()
+            );
+        }
+        if (3 == spikeMarkLoc) //mark number 6
+        {
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .lineToYConstantHeading(-poseQRCode6.y)
+                            .strafeTo(poseQRCode6)
+                            .build()
+            );
+        }
+        armClaw.clawOpen();
+
+
     }
 
 
@@ -404,11 +474,11 @@ public class AutoRedFront extends LinearOpMode {
             poseMatCenter = new Pose2d(3 * Params.HALF_MAT, -1 * Params.HALF_MAT, startPose.heading.log());
         }
 
-        if (3 == sparkMarkLoc) {// right
+        if (3 == spikeMarkLoc) {// right
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .lineToXConstantHeading(poseMatCenter.position.x)
-                            .lineToYConstantHeading(poseMatCenter.position.y + Params.GAP_DISTANCE)
+                            .lineToYConstantHeading(poseMatCenter.position.y + Params.SPIKE_GAP)
                             .build());
 
             // 2. open claw to release purple pixel
@@ -420,10 +490,10 @@ public class AutoRedFront extends LinearOpMode {
             sleep(100);
         }
 
-        if (2 == sparkMarkLoc) { // center
+        if (2 == spikeMarkLoc) { // center
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
-                            .lineToXConstantHeading(poseMatCenter.position.x - Params.GAP_DISTANCE)
+                            .lineToXConstantHeading(poseMatCenter.position.x - Params.SPIKE_GAP)
                             .turn(Math.toRadians(90.0))
                             .build());
 
@@ -437,13 +507,13 @@ public class AutoRedFront extends LinearOpMode {
 
         }
 
-        if (1 == sparkMarkLoc) // left
+        if (1 == spikeMarkLoc) // left
         {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .lineToXConstantHeading(poseMatCenter.position.x)
                             .turn(Math.toRadians(180.0))
-                            .lineToYConstantHeading(poseMatCenter.position.y - Params.GAP_DISTANCE)
+                            .lineToYConstantHeading(poseMatCenter.position.y - Params.SPIKE_GAP)
                             .build());
 
             // 2. open claw to release purple pixel
