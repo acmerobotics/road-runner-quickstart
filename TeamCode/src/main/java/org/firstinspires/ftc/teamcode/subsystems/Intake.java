@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 public class Intake extends Mechanism {
 
-    CRServo intake;
+    CRServo intake; // Intake declaration
 
-    public String intakeName = "intake";
+    public String intakeName = "intake"; // Reference to name in config
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -26,5 +26,32 @@ public class Intake extends Mechanism {
         } else {
             intake.setPower(0);
         }
+    }
+
+    /**
+     * Turns on the intake at the certain speed
+     *
+     * @param speed The speed that the intake will intake at. Will always end up
+     *              positive
+     */
+    public void intake(double speed) {
+        intake.setPower(Math.abs(speed));
+    }
+
+    /**
+     * Turns on the outtake at the certain speed
+     *
+     * @param speed The speed that the intake will outtake at. Will always end up
+     *              negative
+     */
+    public void outtake(double speed) {
+        intake.setPower(-Math.abs(speed));
+    }
+
+    /**
+     * Stops the intake
+     */
+    public void stop() {
+        intake.setPower(0);
     }
 }
