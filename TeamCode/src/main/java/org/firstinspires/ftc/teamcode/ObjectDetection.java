@@ -84,6 +84,8 @@ public class ObjectDetection extends OpenCvPipeline {
         detectColor = nColor;
     }
 
+    private boolean debug_flag = false;
+
     @Override
     public Mat processFrame(Mat input) {
         // detect sleeve color.
@@ -121,7 +123,10 @@ public class ObjectDetection extends OpenCvPipeline {
     }
 
     private void propDetectPos(Mat ImageInput, ColorS Color) {
-        Logging.log("Start OpCV process to detect prop location.");
+        if (debug_flag) {
+            Logging.log("Start OpCV process to detect prop location.");
+        }
+
         // Select three sections to search for prop of specified color
         Mat areaMat_one = ImageInput.submat(new Rect(prop_pointA_one, prop_pointB_one));
         Mat areaMat_two = ImageInput.submat(new Rect(prop_pointA_two, prop_pointB_two));
@@ -142,26 +147,32 @@ public class ObjectDetection extends OpenCvPipeline {
         boolean boxNoise2 = false;
         boolean boxNoise3 = false;
 
-        Logging.log("Box 1 RGB = %.2f, %.2f, %.2f", sumColors_one.val[0], sumColors_one.val[1], sumColors_one.val[2]);
-        Logging.log("Box 2 RGB = %.2f, %.2f, %.2f", sumColors_two.val[0], sumColors_two.val[1], sumColors_two.val[2]);
-        Logging.log("Box 3 RGB = %.2f, %.2f, %.2f", sumColors_three.val[0], sumColors_three.val[1], sumColors_three.val[2]);
-
+        if (debug_flag) {
+            Logging.log("Box 1 RGB = %.2f, %.2f, %.2f", sumColors_one.val[0], sumColors_one.val[1], sumColors_one.val[2]);
+            Logging.log("Box 2 RGB = %.2f, %.2f, %.2f", sumColors_two.val[0], sumColors_two.val[1], sumColors_two.val[2]);
+            Logging.log("Box 3 RGB = %.2f, %.2f, %.2f", sumColors_three.val[0], sumColors_three.val[1], sumColors_three.val[2]);
+        }
         // Get the average of the RGB Values from each box
         double avgColor1 = (sumColors_one.val[0] + sumColors_one.val[1] + sumColors_one.val[2]) / 3;
         double avgColor2 = (sumColors_two.val[0] + sumColors_two.val[1] + sumColors_two.val[2]) / 3;
         double avgColor3 = (sumColors_three.val[0] + sumColors_three.val[1] + sumColors_three.val[2]) / 3;
-        Logging.log("Box 1 mean = %.2f", avgColor1);
-        Logging.log("Box 2 mean = %.2f", avgColor2);
-        Logging.log("Box 3 mean = %.2f", avgColor3);
-        
+
+        if (debug_flag) {
+            Logging.log("Box 1 mean = %.2f", avgColor1);
+            Logging.log("Box 2 mean = %.2f", avgColor2);
+            Logging.log("Box 3 mean = %.2f", avgColor3);
+        }
         // Find the standard deviation for the red value of every box
         double stColor1 = sumColors_one.val[colorChannelIndex] / avgColor1;
         double stColor2 = sumColors_two.val[colorChannelIndex] / avgColor2;
         double stColor3 = sumColors_three.val[colorChannelIndex] / avgColor3;
-        Logging.log("Box 1 red/blue st.deviation = %.2f", stColor1);
-        Logging.log("Box 2 red/blue st.deviation = %.2f", stColor2);
-        Logging.log("Box 3 red/blue st.deviation = %.2f", stColor3);
-        
+
+        if (debug_flag) {
+            Logging.log("Box 1 red/blue st.deviation = %.2f", stColor1);
+            Logging.log("Box 2 red/blue st.deviation = %.2f", stColor2);
+            Logging.log("Box 3 red/blue st.deviation = %.2f", stColor3);
+        }
+
         // Differentiate between noise and color data
         if (stColor1 >= 1.4) {
             boxNoise1 = true;
@@ -177,10 +188,11 @@ public class ObjectDetection extends OpenCvPipeline {
         }
 
         // Log for noise
-        Logging.log("Box 1 obj detected: %d", boxNoise1?1:0);
-        Logging.log("Box 2 obj detected: %d", boxNoise2?1:0);
-        Logging.log("Box 3 obj detected: %d", boxNoise3?1:0);
-
+        if (debug_flag) {
+            Logging.log("Box 1 obj detected: %d", boxNoise1 ? 1 : 0);
+            Logging.log("Box 2 obj detected: %d", boxNoise2 ? 1 : 0);
+            Logging.log("Box 3 obj detected: %d", boxNoise3 ? 1 : 0);
+        }
         // Change the prop location info based on standard deviation
         if (stColor1 > stColor2 && stColor1 > stColor3) {
             PropPos = PropSide.LEFT;

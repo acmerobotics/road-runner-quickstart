@@ -242,42 +242,33 @@ public class AutoRedFront extends LinearOpMode {
 
         switch (startLoc) {
             case 1:
-                autoRedFrontCore();
-                break;
             case 2:
-                //autoRedBackCore();
-                autoRedFrontCore();
+                autoRedCore();
                 break;
             case 3:
-                autoBlueFrontCore();
-                break;
             case 4:
-                //autoBlueBackCore();
-                autoBlueFrontCore();
+                autoBlueCore();
                 break;
         }
     }
 
 
-    private void autoRedFrontCore() {
+    private void autoRedCore() {
         // 1. move to central line
         Pose2d pMatCenter = new Pose2d(startPose.position.x - 2 * Params.CHASSIS_HALF_WIDTH + 4 * Params.HALF_MAT, startPose.position.y, startPose.heading.log());
-        Vector2d vBackdropRed = new Vector2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
-        Vector2d vAprilTag4 = new Vector2d(vBackdropRed.x + Params.BACKDROP_SIDEWAYS, vBackdropRed.y);
-        Vector2d vAprilTag5 = new Vector2d(vBackdropRed.x , vBackdropRed.y - Params.BACKDROP_FORWARD);
-        Vector2d vAprilTag6 = new Vector2d(vBackdropRed.x - Params.BACKDROP_SIDEWAYS, vBackdropRed.y - Params.BACKDROP_FORWARD);
-        if (2 == startLoc) {
-            pMatCenter = new Pose2d(-3 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, -1 * Params.HALF_MAT, startPose.heading.log());
-        }
+        Vector2d vBackdrop = new Vector2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT - Params.BACKDROP_FORWARD);
+
+        Vector2d vAprilTag4 = new Vector2d(vBackdrop.x + Params.BACKDROP_SIDEWAYS, vBackdrop.y);
+        Vector2d vAprilTag5 = new Vector2d(vBackdrop.x , vBackdrop.y);
+        Vector2d vAprilTag6 = new Vector2d(vBackdrop.x - Params.BACKDROP_SIDEWAYS, vBackdrop.y);
+
         poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
-        Logging.log("red backdrop pose y: %2f", vBackdropRed.y);
+        Logging.log("red backdrop pose y: %2f", vBackdrop.y);
         Logging.log("code number 4 x: %2f", vAprilTag4.x);
         Logging.log("code number 4 y: %2f", vAprilTag4.y);
 
         Logging.log("robot drive: before strafe pos heading : %.2f", Math.toDegrees(drive.pose.heading.log()));
         Logging.log("robot drive: before strafe imu heading : %.2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        
-        spikeMarkLoc = 3;
 
         if (1 == spikeMarkLoc) { // left
             Actions.runBlocking(
@@ -347,16 +338,27 @@ public class AutoRedFront extends LinearOpMode {
         // move to the center of second mat.
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(vBackdropRed.x, drive.pose.position.y))
+                        .strafeTo(new Vector2d(vBackdrop.x, drive.pose.position.y))
                         .build()
         );
+
+        // correct heading
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .turn(-drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS))
+                        .build());
+        Logging.log("robot drive: after turn correction pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
+        Logging.log("robot drive: after turn correction imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
         // move forward to backdrop board
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .lineToY(vAprilTag5.y)
+                        .lineToYConstantHeading(vAprilTag5.y)
+                        //.lineToY(vAprilTag5.y)
                         .build()
         );
+        Logging.log("robot drive: arrive backdrop pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
+        Logging.log("robot drive: arrive backdrop imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
         // shift to AprilTag
         if (1 == spikeMarkLoc) // left, mark number 4
@@ -383,115 +385,7 @@ public class AutoRedFront extends LinearOpMode {
 
 
     // 3 = startLoc, or 4
-    private void autoBlueFrontCore(){
+    private void autoBlueCore(){
 
-        // 1. move to central line
-        //Pose2d pMatCenter = new Pose2d(3 * Params.HALF_MAT, 3 * Params.HALF_MAT, startPose.heading.log());
-        Vector2d pMatCenter = new Vector2d(3 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH, 3 * Params.HALF_MAT);
-        Vector2d poseBackdropBlue = new Vector2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
-        Vector2d vectorAprilTag1 = new Vector2d(3 * Params.HALF_MAT + Params.BACKDROP_SIDEWAYS, -4 * Params.HALF_MAT - Params.BACKDROP_FORWARD);
-        Vector2d vectorAprilTag2 = new Vector2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT - Params.BACKDROP_FORWARD);
-        Vector2d vectorAprilTag3 = new Vector2d(3 * Params.HALF_MAT - Params.BACKDROP_SIDEWAYS, -4 * Params.HALF_MAT - Params.BACKDROP_FORWARD);
-        spikeMarkLoc = 1;
-        if (3 == spikeMarkLoc) {// right
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .strafeTo(pMatCenter)
-                            //.lineToYConstantHeading(pMatCenter.y + Params.SPIKE_GAP)
-                            .build());
-
-            // 2. open claw to release purple pixel
-            armClaw.clawOpen();
-            sleep(100);
-
-            //3. close claw
-            armClaw.clawClose();
-            sleep(100);
-
-            //4. line up to go to backdrop
-            Actions.runBlocking(
-              drive.actionBuilder(drive.pose)
-                      .turn(Math.PI)
-                      .build()
-            );
-        }
-
-        if (2 == spikeMarkLoc) { // center
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .strafeTo(pMatCenter)
-                            //.lineToXConstantHeading(pMatCenter.x - Params.SPIKE_GAP)
-                            .turn(Math.toRadians(90.0))
-                            .build());
-
-            // 2. open claw, to release the purple pixel
-            armClaw.clawOpen();
-            sleep(100);
-
-            // 3. close claw to pick-up the yellow pixel
-            armClaw.clawClose();
-            sleep(100);
-
-            //4. line up to go to backdrop
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .turn(Math.toRadians(90))
-                            .build()
-            );
-        }
-
-        if (1 == spikeMarkLoc) // left
-        {
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .strafeTo(pMatCenter)
-                            .turn(Math.PI)
-
-                            //.lineToYConstantHeading(pMatCenter.y - Params.SPIKE_GAP)
-                            .build());
-
-            // 2. open claw to release purple pixel
-            armClaw.clawOpen();
-            sleep(100);
-
-            //3. close claw
-            armClaw.clawClose();
-            sleep(100);
-
-
-        }
-        sleep(250);
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .lineToYConstantHeading(poseBackdropBlue.y)
-                        .build()
-        );
-        if (1 == spikeMarkLoc) //mark number 1
-        {
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .lineToY(vectorAprilTag1.y)
-                            .strafeTo(vectorAprilTag1)
-                            .build()
-            );
-        }
-        if (2 == spikeMarkLoc) //mark number 2
-        {
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .lineToY(vectorAprilTag2.y)
-                            .build()
-            );
-        }
-        if (3 == spikeMarkLoc) //mark number 3
-        {
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .lineToY(vectorAprilTag3.y)
-                            .strafeTo(vectorAprilTag3)
-                            .build()
-            );
-        }
-        armClaw.clawOpen();
     }
 }
