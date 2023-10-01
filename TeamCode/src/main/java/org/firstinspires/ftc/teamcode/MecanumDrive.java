@@ -50,12 +50,12 @@ public final class MecanumDrive {
         // drive model parameters
         public double inPerTick = 0.02208155454144; // WHEEL_RADIUS(1.8898) * 2 * Math.PI / TICKS_PER_REV(537.6)
         //public double inPerTick = 0.09;
-        public double lateralInPerTick = 0.0227365002;
-        public double trackWidthTicks = 21.8166156;
+        public double lateralInPerTick = 0.019;
+        public double trackWidthTicks = 700;
 
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0.018; //  1.0 / rpmToVelocity(MAX_RPM); //0.018
+        public double kS = 0;//0.83;
+        public double kV = 0.0052; //  1.0 / rpmToVelocity(MAX_RPM); //0.018
         public double kA = 0;
 
         // path profile parameters (in inches)
@@ -196,20 +196,12 @@ public final class MecanumDrive {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        /*
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-         */
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
+
+        //resetEncodes();
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -461,5 +453,10 @@ public final class MecanumDrive {
         }
     }
 
+    public void resetEncodes() {
+        for (DcMotorEx motor : motors) {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+    }
 
 }
