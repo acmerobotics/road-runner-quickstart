@@ -51,7 +51,7 @@ public final class MecanumDrive {
         public double inPerTick = 0.02208155454144; // WHEEL_RADIUS(1.8898) * 2 * Math.PI / TICKS_PER_REV(537.6)
         //public double inPerTick = 0.09;
         public double lateralInPerTick = 0.019;
-        public double trackWidthTicks = 700;
+        public double trackWidthTicks = 650;
 
         // feedforward parameters (in tick units)
         public double kS = 0;//0.83;
@@ -201,13 +201,15 @@ public final class MecanumDrive {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
 
-        //resetEncodes();
+        resetEncodes();
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
+
+        imu.resetYaw();
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
@@ -456,6 +458,7 @@ public final class MecanumDrive {
     public void resetEncodes() {
         for (DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
