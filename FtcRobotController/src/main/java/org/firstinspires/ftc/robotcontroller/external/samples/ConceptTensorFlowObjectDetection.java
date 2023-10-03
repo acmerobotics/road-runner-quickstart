@@ -104,8 +104,13 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      */
     private void initTfod() {
 
+
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
+
+
+
+
 
             // Use setModelAssetName() if the TF Model is built in as an asset.
             // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.

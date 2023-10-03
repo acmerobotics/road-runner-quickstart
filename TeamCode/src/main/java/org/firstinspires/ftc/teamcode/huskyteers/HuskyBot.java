@@ -87,6 +87,7 @@ public class HuskyBot {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         drive = new MecanumDrive(myOpMode.hardwareMap, INITIAL_POSE);
         huskyVision = new HuskyVision(myOpMode.hardwareMap);
+        huskyVision.setExposure();
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();

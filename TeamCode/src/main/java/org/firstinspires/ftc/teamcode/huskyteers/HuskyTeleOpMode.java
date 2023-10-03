@@ -6,6 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.vision.VisionPortal;
+
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Config
@@ -60,6 +65,7 @@ public class HuskyTeleOpMode extends LinearOpMode {
                             (0.35 + 0.5 * currentGamepad1.left_trigger));
                 }
             }
+
 
             huskyBot.huskyVision.backdropAprilTagDetection.getAprilTagById(583).ifPresent(
                     TelemetryUtils::AprilTagDetection);
