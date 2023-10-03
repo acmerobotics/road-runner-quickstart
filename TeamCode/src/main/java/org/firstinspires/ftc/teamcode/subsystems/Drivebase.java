@@ -28,10 +28,10 @@ public class Drivebase extends Mechanism {
     public void loop(Gamepad gamepad) {
         drive.setDrivePowers(new PoseVelocity2d(
                 new Vector2d(
-                        -gamepad.left_stick_x * VX_WEIGHT,
-                        -gamepad.left_stick_y * VY_WEIGHT
+                        poweredInput(-gamepad.left_stick_x * VX_WEIGHT),
+                        poweredInput(-gamepad.left_stick_y * VY_WEIGHT)
                 ),
-                -gamepad.right_stick_x * VRX_WEIGHT
+                poweredInput(-gamepad.right_stick_x * VRX_WEIGHT)
         ));
     }
 
