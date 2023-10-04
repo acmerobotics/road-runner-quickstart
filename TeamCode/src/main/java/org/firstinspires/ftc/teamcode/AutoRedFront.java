@@ -39,7 +39,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
+//import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -77,7 +77,7 @@ public class AutoRedFront extends LinearOpMode {
     // 1 for Red Front, 2 for Red back, 3 for Blue Front, and 4 for Blue back
     public int startLoc = 1;
     public int spikeMarkLoc = 1; // 1 for left, 2 for center, and 3 for right
-    boolean debug_flag = true;
+    // USE LATER: boolean debug_flag = true;
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
@@ -95,9 +95,6 @@ public class AutoRedFront extends LinearOpMode {
 
     // road runner variables
     Pose2d startPose;
-
-    // pre cone to medium junction
-    Pose2d poseRedBackDropCenter;
 
     /**
      * Set robot starting position: 1 for right and -1 for left.
@@ -262,7 +259,6 @@ public class AutoRedFront extends LinearOpMode {
         Vector2d vAprilTag5 = new Vector2d(vBackdrop.x , vBackdrop.y);
         Vector2d vAprilTag6 = new Vector2d(vBackdrop.x - Params.BACKDROP_SIDEWAYS, vBackdrop.y);
 
-        poseRedBackDropCenter = new Pose2d(-3 * Params.HALF_MAT, -4 * Params.HALF_MAT, Math.toRadians(-90.0));
         Logging.log("red backdrop pose y: %2f", vBackdrop.y);
         Logging.log("code number 4 x: %2f", vAprilTag4.x);
         Logging.log("code number 4 y: %2f", vAprilTag4.y);
@@ -386,6 +382,131 @@ public class AutoRedFront extends LinearOpMode {
 
     // 3 = startLoc, or 4
     private void autoBlueCore(){
+        Pose2d pMatCenter = new Pose2d(startPose.position.x + 2 * Params.CHASSIS_HALF_WIDTH - 4 * Params.HALF_MAT, startPose.position.y, startPose.heading.log());
+        Vector2d vBackdrop = new Vector2d(3 * Params.HALF_MAT, -4 * Params.HALF_MAT - Params.BACKDROP_FORWARD);
 
+        Vector2d vAprilTag1 = new Vector2d(vBackdrop.x + Params.BACKDROP_SIDEWAYS, vBackdrop.y);
+        Vector2d vAprilTag2 = new Vector2d(vBackdrop.x , vBackdrop.y);
+        Vector2d vAprilTag3 = new Vector2d(vBackdrop.x - Params.BACKDROP_SIDEWAYS, vBackdrop.y);
+
+        Logging.log("Blue backdrop pose y: %2f", vBackdrop.y);
+        Logging.log("code number 4 x: %2f", vAprilTag1.x);
+        Logging.log("code number 4 y: %2f", vAprilTag1.y);
+
+        Logging.log("robot drive: before strafe pos heading : %.2f", Math.toDegrees(drive.pose.heading.log()));
+        Logging.log("robot drive: before strafe imu heading : %.2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
+        if (1 == spikeMarkLoc) { // left
+            Actions.runBlocking(
+                    drive.actionBuilder(startPose)
+                            .strafeTo(pMatCenter.position)
+                            .turn(Math.PI)
+                            .build());
+        }
+
+        if (2 == spikeMarkLoc) { // center
+            Actions.runBlocking(
+                    drive.actionBuilder(startPose)
+                            .strafeTo(pMatCenter.position)
+                            .turn(Math.PI / 2.0)
+                            .build());
+        }
+
+        if (3 == spikeMarkLoc) // right
+        {
+            Actions.runBlocking(
+                    drive.actionBuilder(startPose)
+                            .strafeTo(pMatCenter.position)
+                            .build());
+        }
+        telemetry.addData("left front pos", drive.leftFront.getCurrentPosition());
+        telemetry.addData("left back pos", drive.leftBack.getCurrentPosition());
+        telemetry.addData("right front pos", drive.rightFront.getCurrentPosition());
+        telemetry.addData("right back pos", drive.rightBack.getCurrentPosition());
+        telemetry.update();
+
+
+        Logging.log("robot drive: after strafe pos x : %.2f", drive.pose.position.x);
+        Logging.log("robot drive: after strafe pos y : %.2f", drive.pose.position.y);
+
+        Logging.log("robot drive: after turn pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
+        Logging.log("robot drive: after turn imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
+        // 2. open claw to release purple pixel
+        armClaw.clawOpen();
+        sleep(500);
+
+        //3. close claw
+        armClaw.clawClose();
+        sleep(100);
+
+        // turn back and facing to backdrop board
+        if (2 == spikeMarkLoc) { // center
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            /* there exists a bug somewhere in turn()
+                               function that makes it so when turning PI/2, it actually turn PI */
+                            .turn(-Math.PI * 1.5 + 0.0001 /* -Math.PI / 2*/)
+                            .build());
+        }
+        if (3 == spikeMarkLoc) { // right
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .turn(Math.PI)
+                            .build()
+            );
+        }
+
+        Logging.log("robot drive: after turn back pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
+        Logging.log("robot drive: after turn back imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
+        // move to the center of second mat.
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .strafeTo(new Vector2d(vBackdrop.x, drive.pose.position.y))
+                        .build()
+        );
+
+        // correct heading straight towards backdrop
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .turn(Math.PI - drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS))
+                        .build());
+
+        Logging.log("robot drive: after turn correction pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
+        Logging.log("robot drive: after turn correction imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
+        // move forward to backdrop board
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .lineToYConstantHeading(vAprilTag2.y)
+                        .build()
+        );
+        Logging.log("robot drive: arrive backdrop pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
+        Logging.log("robot drive: arrive backdrop imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        sleep(200);
+
+        // shift to AprilTag
+        if (1 == spikeMarkLoc) // left, tag number 1
+        {
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeTo(vAprilTag1)
+                            .build()
+            );
+        }
+
+        if (3 == spikeMarkLoc) // right, tag number 3
+        {
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeTo(vAprilTag3)
+                            .build()
+            );
+        }
+
+        // drop pixel
+        armClaw.armLift();
+        armClaw.clawOpen();
     }
 }
