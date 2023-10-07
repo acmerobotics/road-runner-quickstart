@@ -446,7 +446,7 @@ public class AutoRedFront extends LinearOpMode {
                     drive.actionBuilder(drive.pose)
                             /* there exists a bug somewhere in turn()
                                function that makes it so when turning PI/2, it actually turn PI */
-                            .turn(-Math.PI * 1.5 + 0.0001 /* -Math.PI / 2*/)
+                            .turn(Math.PI / 2 -  0.0001 /* -Math.PI / 2*/)
                             .build());
         }
         if (3 == spikeMarkLoc) { // right
@@ -468,9 +468,11 @@ public class AutoRedFront extends LinearOpMode {
         );
 
         // correct heading straight towards backdrop
+        double imuAngle = drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        Logging.log("correction angle: %2f", Math.copySign(Math.PI, imuAngle) - imuAngle);
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .turn(Math.PI - drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS))
+                        .turn(Math.copySign(Math.PI, imuAngle) -imuAngle)
                         .build());
 
         Logging.log("robot drive: after turn correction pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
