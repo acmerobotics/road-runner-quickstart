@@ -33,10 +33,9 @@ dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 
+    implementation "com.acmerobotics.roadrunner:ftc:0.1.3"
+
     // FTC22312: Added per installation instructions of FTCLib
     implementation 'org.ftclib.ftclib:vision:2.1.0' // vision
     implementation 'org.ftclib.ftclib:core:2.1.1' // core
-
-    implementation "com.acmerobotics.roadrunner:ftc:0.1.6"
-    implementation "com.acmerobotics.dashboard:dashboard:0.4.13"
 }

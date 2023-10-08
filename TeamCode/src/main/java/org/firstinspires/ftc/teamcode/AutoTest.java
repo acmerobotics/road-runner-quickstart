@@ -10,7 +10,6 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 @Autonomous (name="Robot: Auto Test--BE CAREFUL!!", group="Robot")
@@ -30,8 +29,6 @@ public class AutoTest extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            runBlocking(trajectory); //TODO: make brainSTEM robot class
-        }
+        runBlocking(trajectory); //TODO: make brainSTEM robot class
     }
 }
