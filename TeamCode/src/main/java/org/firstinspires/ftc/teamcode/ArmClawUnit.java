@@ -124,7 +124,7 @@ public class ArmClawUnit
      */
     public void setArmCountPosition(int armPos) {
         int ARM_MIN_COUNT_POS = -5;
-        int ARM_MAX_COUNT_POS = 130;
+        int ARM_MAX_COUNT_POS = 230;
         armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
         armMotor.setTargetPosition(armPos);
     }
