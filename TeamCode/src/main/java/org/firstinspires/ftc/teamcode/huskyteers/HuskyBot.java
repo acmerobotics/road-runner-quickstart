@@ -108,7 +108,7 @@ public class HuskyBot {
                 new Vector2d(
                         -drive * speed,
                         strafe * speed
-                ), -turn * speed
+                ), turn * speed
         );
 
         this.drive.setDrivePowers(pw);
