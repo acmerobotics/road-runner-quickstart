@@ -53,7 +53,7 @@ import java.util.List;
 public final class MecanumDrive {
     public static class Params {
         // drive model parameters
-        public double inPerTick = 92.0/1861.5;
+        public double inPerTick = 92.0 / 1861.5;
         public double lateralInPerTick = 1;
         public double trackWidthTicks = 0;
 
@@ -122,9 +122,9 @@ public final class MecanumDrive {
             rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
 
             leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-            leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
+            leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
             rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
+            rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
             lastLeftFrontPos = leftFront.getPositionAndVelocity().position;
             lastLeftRearPos = leftRear.getPositionAndVelocity().position;
