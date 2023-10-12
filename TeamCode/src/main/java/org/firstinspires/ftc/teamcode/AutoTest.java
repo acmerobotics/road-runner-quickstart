@@ -24,6 +24,7 @@ public class AutoTest extends ActionOpMode {
     @Override
     public void runOpMode()  {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        drive.pose = new Pose2d(0,0,0);
         Action trajectory =
                 drive.actionBuilder(drive.pose)
                         .lineToX(20)   //TODO: lineTo vs splineTo??
