@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="mecanumDriveTester", group="Samples")
+@TeleOp(name="mecanumDriveTesterSimple", group="Samples")
 
-public class mecanumDriveTester extends OpMode {
+public class mecanumDriveTesterSimple extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     public MecanumHardware mecanumHardware = new MecanumHardware();

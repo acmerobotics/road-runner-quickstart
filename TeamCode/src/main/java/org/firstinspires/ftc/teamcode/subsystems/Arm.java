@@ -8,21 +8,36 @@ import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 
 public class Arm extends Mechanism {
-    Servo arm;
-    public String armName = "arm";
-    double extend = 1;
-    double reduce = 0;
+    Servo leftArm;
+    Servo rightArm;
+    public String leftName = "leftArm";
+    public String rightName = "rightArm";
+    double extendedPosition = 1;
+    double retractedPosition = 0;
+
+    public boolean isExtended = false;
+
+    public boolean isRetracted = false;
 
     @Override
     public void init(HardwareMap hwMap) {
-        arm = hwMap.get(Servo.class, armName);
+        leftArm = hwMap.get(Servo.class, leftName);
+        rightArm = hwMap.get(Servo.class, rightName);
+    }
+
+    @Override
+    public void loop(Gamepad gamepad) {
+        isExtended = leftArm.getPosition() == extendedPosition && rightArm.getPosition() == extendedPosition;
+        isRetracted = leftArm.getPosition() == retractedPosition && rightArm.getPosition() == retractedPosition;
     }
 
     public void extend() {
-        arm.setPosition(extend);
+        leftArm.setPosition(extendedPosition);
+        rightArm.setPosition(extendedPosition);
     }
 
-    public void rescind() {
-        arm.setPosition(reduce);
+    public void stage() {
+        leftArm.setPosition(retractedPosition);
+        rightArm.setPosition(retractedPosition);
     }
 }

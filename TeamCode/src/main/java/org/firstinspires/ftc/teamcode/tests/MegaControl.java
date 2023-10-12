@@ -1,38 +1,37 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.util.RunToPositionMotorUtil;
 
+
+@TeleOp(name="MegaControl", group="Samples")
 public class MegaControl extends OpMode {
 
-    Servo intake; // Intake declaration
+    RunToPositionMotorUtil motorUtil = new RunToPositionMotorUtil();
+
+    CRServo intake; // Intake declaration
     public String intakeName = "intake";
 
-    DcMotor arm;
-    DcMotor arm2;
-    public String armName = "arm";
-    double extend = 1;
-    double reduce = 0;
+    CRServo leftClawPositioner;
+    CRServo rightClawPositioner;
+    public String leftClawPositionerName = "leftClawPositioner";
+    public String rightClawPositionerName = "rightClawPositioner";
 
-    Servo clawHookLeft;
-    Servo clawHookRight;
+    DcMotorEx leftArm;
+    DcMotorEx rightArm;
+    public String leftArmName = "leftArm";
+    public String rightArmName = "rightArm";
 
-    Servo clawLifter;
-    Servo clawLifter2;
-
-    Servo clawRotator;
-
-
-    public String clawName = "clawDustpan";
-
-
-    //private ElapsedTime runtime = new ElapsedTime();
     public MecanumHardware mecanumHardware = new MecanumHardware();
 
     double deadzone = .3;
@@ -41,21 +40,35 @@ public class MegaControl extends OpMode {
     double y = 0;
     double rx = 0;
 
-    public HardwareMap hwMap = null;
+
+
+    int lastLeftPos = 0;
+    int lastRightPos = 0;
+
 
     @Override
     public void init() {
-        intake = hwMap.get(Servo.class, intakeName);
-        arm = hwMap.get(DcMotor.class, armName);
-        arm2 = hwMap.get(DcMotor.class, armName);
-        clawHookLeft = hwMap.get(Servo.class, clawName);
-        clawHookRight= hwMap.get(Servo.class, clawName);
-        clawLifter = hwMap.get(Servo.class, clawName);
-        clawLifter2 = hwMap.get(Servo.class, clawName);
-        clawRotator = hwMap.get(Servo.class, clawName);
-        MecanumHardware mecanumHardware = new MecanumHardware();
+        intake = hardwareMap.get(CRServo.class, intakeName);
+        leftClawPositioner = hardwareMap.get(CRServo.class, leftClawPositionerName);
+        rightClawPositioner = hardwareMap.get(CRServo.class, rightClawPositionerName);
 
+        rightClawPositioner.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftArm = hardwareMap.get(DcMotorEx.class, leftArmName);
+        rightArm = hardwareMap.get(DcMotorEx.class, rightArmName);
+
+        rightArm.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftArm.setTargetPositionTolerance(1);
+        rightArm.setTargetPositionTolerance(1);
         mecanumHardware.init(hardwareMap);
+
         mecanumHardware.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         mecanumHardware.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         mecanumHardware.leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -71,69 +84,41 @@ public class MegaControl extends OpMode {
     @Override
     public void loop() {
         //INTAKE
-        if (gamepad1.a) {
-            intake.setPosition(1);
+        if (gamepad1.x) {
+            intake.setPower(1);
         } else if (gamepad1.b) {
-            intake.setPosition(-1);
+            intake.setPower(-1);
         } else {
-            intake.setPosition(0);
+            intake.setPower(0);
         }
 
-        //ARMs
-        if (gamepad1.a) {
-            arm.setPower(1);
-            arm2.setPower(1);
-        } else if (gamepad1.b) {
-            arm.setPower(-1);
-            arm2.setPower(-1);
-        } else
-            arm.setPower(0);
-            arm2.setPower(0);
-
-        //CLAWHOOKS
-
-        //LEFT
-        if (gamepad1.a) {
-            clawHookLeft.setPosition(1);
-        } else if (gamepad1.b) {
-            clawHookLeft.setPosition(1);
+        //ARM Code to keep the arm in place when there is no power applied to it.
+        if (gamepad1.y) {
+            leftArm.setPower(1);
+            rightArm.setPower(1);
+            lastLeftPos = leftArm.getCurrentPosition();
+            lastRightPos = rightArm.getCurrentPosition();
+        } else if (gamepad1.a) {
+            leftArm.setPower(-1);
+            rightArm.setPower(-1);
+            lastLeftPos = leftArm.getCurrentPosition();
+            lastRightPos = rightArm.getCurrentPosition();
         } else {
-            clawHookLeft.setPosition(1);
-        }
-
-        //RIGHT
-        if (gamepad1.a) {
-            clawHookRight.setPosition(1);
-        } else if (gamepad1.b) {
-            clawHookRight.setPosition(1);
-        } else {
-            clawHookRight.setPosition(1);
+            motorUtil.motorToPosition(leftArm, 1, lastLeftPos);
+            motorUtil.motorToPosition(rightArm, 1, lastRightPos);
         }
 
         //CLAW LIFTER
-        if (gamepad1.a) {
-            clawLifter.setPosition(1);
-            clawLifter2.setPosition(1);
-        } else if (gamepad1.b) {
-            clawLifter.setPosition(-1);
-            clawLifter2.setPosition(-1);
-
+        if (gamepad1.right_bumper) {
+            leftClawPositioner.setPower(1);
+            rightClawPositioner.setPower(1);
+        } else if (gamepad1.left_bumper) {
+            leftClawPositioner.setPower(-1);
+            rightClawPositioner.setPower(-1);
         } else {
-            clawLifter.setPosition(0);
-            clawLifter2.setPosition(0);
+            leftClawPositioner.setPower(0);
+            rightClawPositioner.setPower(0);
         }
-
-
-        //CLAW ROTATOR
-        if (gamepad1.a) {
-            clawRotator.setPosition(1);
-        } else if (gamepad1.b) {
-            clawRotator.setPosition(-1);
-        } else {
-            clawRotator.setPosition(0);
-        }
-
-
 
         double frontLeftPower;
         double backLeftPower;

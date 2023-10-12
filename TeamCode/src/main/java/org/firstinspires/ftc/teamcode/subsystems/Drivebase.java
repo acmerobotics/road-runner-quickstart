@@ -13,12 +13,6 @@ public class Drivebase extends Mechanism {
 
     MecanumDrive drive;
 
-    final static int EXPONENT_MODIFIER = 2;
-
-    final static double VX_WEIGHT = .8;
-    final static double VY_WEIGHT = .8;
-    final static double VRX_WEIGHT = .8;
-
     @Override
     public void init(HardwareMap hwMap) {
         drive = new MecanumDrive(hwMap, new Pose2d(0, 0, 0));
@@ -28,18 +22,26 @@ public class Drivebase extends Mechanism {
     public void loop(Gamepad gamepad) {
         drive.setDrivePowers(new PoseVelocity2d(
                 new Vector2d(
-                        poweredInput(-gamepad.left_stick_x * VX_WEIGHT),
-                        poweredInput(-gamepad.left_stick_y * VY_WEIGHT)
+                        poweredInput(stickValWithDeadzone(-gamepad.left_stick_y) * GamepadSettings.VY_WEIGHT),
+                        poweredInput(stickValWithDeadzone(-gamepad.left_stick_x) * GamepadSettings.VX_WEIGHT)
                 ),
-                poweredInput(-gamepad.right_stick_x * VRX_WEIGHT)
+                poweredInput(stickValWithDeadzone(-gamepad.right_stick_x) * GamepadSettings.VRX_WEIGHT)
         ));
     }
 
     public double poweredInput(double base) {
-        if (EXPONENT_MODIFIER % 2 == 0) {
-            return Math.pow(base, EXPONENT_MODIFIER) * Math.signum(base);
+        if (GamepadSettings.EXPONENT_MODIFIER % 2 == 0) {
+            return Math.pow(base, GamepadSettings.EXPONENT_MODIFIER) * Math.signum(base);
         } else {
-            return Math.pow(base, EXPONENT_MODIFIER);
+            return Math.pow(base, GamepadSettings.EXPONENT_MODIFIER);
+        }
+    }
+
+    public double stickValWithDeadzone(double stickVal) {
+        if (Math.abs(stickVal) > GamepadSettings.GP1_STICK_DEADZONE) {
+            return stickVal;
+        } else {
+            return 0;
         }
     }
 }

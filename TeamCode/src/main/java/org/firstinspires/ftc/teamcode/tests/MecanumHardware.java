@@ -23,10 +23,10 @@ public class MecanumHardware {
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftFront = hwMap.get(DcMotorEx.class, "front_left_drive");
-        rightFront = hwMap.get(DcMotorEx.class, "front_right_drive");
-        leftRear = hwMap.get(DcMotorEx.class, "back_left_drive");
-        rightRear = hwMap.get(DcMotorEx.class, "back_right_drive");
+        leftFront = hwMap.get(DcMotorEx.class, "fld");
+        rightFront = hwMap.get(DcMotorEx.class, "frd");
+        leftRear = hwMap.get(DcMotorEx.class, "bld");
+        rightRear = hwMap.get(DcMotorEx.class, "brd");
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
