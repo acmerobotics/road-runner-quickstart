@@ -53,13 +53,13 @@ import java.util.List;
 public final class MecanumDrive {
     public static class Params {
         // drive model parameters
-        public double inPerTick = 92.0 / 1861.5;
-        public double lateralInPerTick = 1;
-        public double trackWidthTicks = 0;
+        public double inPerTick = 100.0 / 4346.75;
+        public double lateralInPerTick = 50.0 / 2115.1;
+        public double trackWidthTicks = 1307.131663666348;
 
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0;
+        public double kS = 0.004191311342206821;
+        public double kV = 0.7556992151662811;
         public double kA = 0;
 
         // path profile parameters (in inches)
@@ -194,8 +194,9 @@ public final class MecanumDrive {
         //reverse motors
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
+
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
