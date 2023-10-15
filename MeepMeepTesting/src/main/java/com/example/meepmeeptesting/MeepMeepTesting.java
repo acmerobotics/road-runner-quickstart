@@ -58,13 +58,13 @@ public class MeepMeepTesting {
                         .splineTo(new Vector2d(48, -36),Math.toRadians(0))
                         .waitSeconds(1)
 
-                        // Goto alliance partner's robot and collect their pixels
+                        // go to alliance partner's robot and collect their pixels
 
-                        // Drop their yellow pixel to the correct spike
+                        // drop their yellow pixel to the right spike
 
-                        // Place their purple pixel to the Backdrop (same location as yours)
+                        // place their purple pixel to the backdrop
 
-                        // Park
+                        // park
 
                         .build();
 

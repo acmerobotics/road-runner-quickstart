@@ -24,15 +24,32 @@ public class AutoTest extends ActionOpMode {
     @Override
     public void runOpMode()  {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        drive.pose = new Pose2d(0,0,0);
+        drive.pose = new Pose2d(-36,-61,Math.toRadians(90));
         Action trajectory =
                 drive.actionBuilder(drive.pose)
-                        .lineToX(20)   //TODO: lineTo vs splineTo??
-//                        .turn(Math.PI / 2)
-//                        .splineTo(new Vector2d(20, 20), Math.toRadians(45))
-//                        .waitSeconds(1)
-//                        .strafeTo(new Vector2d(20, 10))
-//                        .endTrajectory()
+                        .lineToY(-33)
+                        .waitSeconds(1)
+
+                        // Goto Backdrop to place your purple pixel
+                        .setReversed(true)
+                        .splineToLinearHeading(new Pose2d(-36,-36,Math.toRadians(0)),Math.toRadians(0))
+                        .lineToX(48)
+                        .waitSeconds(1)
+
+                        // Goto stack and collect 2 white pixels
+                        .setReversed(true)
+                        .setTangent(Math.toRadians(180))
+                        .splineTo(new Vector2d(12, -12),Math.toRadians(180))
+                        .lineToX(-61)
+                        .waitSeconds(1)
+
+                        // Goto Backstage and drop 2 white pixels
+                        .setReversed(false)
+                        .lineToX(12)
+                        .setTangent(Math.toRadians(0))
+                        .splineTo(new Vector2d(48, -36),Math.toRadians(0))
+                        .waitSeconds(1)
+
                         .build();
 
         telemetry.addLine("Trajectory built");
