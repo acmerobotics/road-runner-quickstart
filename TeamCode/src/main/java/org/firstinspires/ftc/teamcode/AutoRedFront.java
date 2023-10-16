@@ -40,8 +40,10 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -93,6 +95,10 @@ public class AutoRedFront extends LinearOpMode {
     String webcamName = "Webcam 1";
     boolean isCameraInstalled = true;
 
+    // sensing april tag tools
+    private AprilTagTest tag = null;
+    private int desiredTagNum = -1;
+
     // road runner variables
     Pose2d startPose;
 
@@ -135,9 +141,6 @@ public class AutoRedFront extends LinearOpMode {
         setRobotLocation();
 
         setStartPoses();
-
-        // camera for sleeve color detect, start camera at the beginning.
-        webcamName = "Webcam 1";
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -199,28 +202,35 @@ public class AutoRedFront extends LinearOpMode {
 
         while (!isStarted()) {
             propLocation = propDetect.getPropPos();
+
+            switch (propLocation) {
+                case LEFT:
+                    spikeMarkLoc = 1;
+                    desiredTagNum = 1 + (startLoc > 2? 3 : 0);
+                    break;
+                case CENTER:
+                case UNKNOWN:
+                    spikeMarkLoc = 2;
+                    desiredTagNum = 2 + (startLoc > 2? 3 : 0);
+                    break;
+                case RIGHT:
+                    spikeMarkLoc = 3;
+                    desiredTagNum = 3 + (startLoc > 2? 3 : 0);
+                    break;
+            }
+
             telemetry.addData("Detected Prop location: ", propLocation);
+            telemetry.addData("Desired Tag ID: ", "%d", desiredTagNum);
             telemetry.addData("RR", "imu Heading Yaw = %.1f",
                     drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.update();
         }
 
+        tag = new AprilTagTest(drive, hardwareMap, desiredTagNum, webcamName);
+
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-
-        switch (propLocation) {
-            case LEFT:
-                spikeMarkLoc = 1;
-                break;
-            case CENTER:
-            case UNKNOWN:
-                spikeMarkLoc = 2;
-                break;
-                case RIGHT:
-                spikeMarkLoc = 3;
-                break;
-        }
 
         waitForStart();
         runtime.reset();
@@ -236,7 +246,8 @@ public class AutoRedFront extends LinearOpMode {
     }
 
     public void autonomousCore() {
-
+        camera.closeCameraDevice();
+        tag.initAprilTag();
         switch (startLoc) {
             case 1:
             case 2:
@@ -248,7 +259,6 @@ public class AutoRedFront extends LinearOpMode {
                 break;
         }
     }
-
 
     private void autoRedCore() {
         // 1. move to central line
@@ -375,6 +385,9 @@ public class AutoRedFront extends LinearOpMode {
             );
         }
 
+        tag.detectTag();
+        tag.driveToTag();
+
         // drop pixel
         armClaw.clawOpen();
     }
@@ -489,7 +502,7 @@ public class AutoRedFront extends LinearOpMode {
         sleep(200);
 
         // shift to AprilTag
-        if (1 == spikeMarkLoc) // left, tag number 1
+        /*if (1 == spikeMarkLoc) // left, tag number 1
         {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
@@ -505,6 +518,13 @@ public class AutoRedFront extends LinearOpMode {
                             .strafeTo(vAprilTag3)
                             .build()
             );
+        }
+
+         */
+        tag.detectTag();
+        while(tag.targetFound){
+            tag.detectTag();
+            tag.driveToTag();
         }
 
         // drop pixel
