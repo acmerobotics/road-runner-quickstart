@@ -12,24 +12,24 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Camera extends Mechanism {
-
-    private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
-    private static final int DESIRED_TAG_ID = 0;     // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
-
+    boolean targetFound = false;
     private String webcamName = "Ray";
-
-    boolean isStreaming = false;
-
     int exposureMS = 6;
-
     int gain = 250;
 
+    public final int BLUE_LEFT_ID = 1;
+    public final int BLUE_MIDDLE_ID = 2;
+    public final int BLUE_RIGHT_ID = 3;
+    public final int RED_LEFT_ID = 4;
+    public final int RED_MIDDLE_ID = 5;
+    public final int RED_RIGHT_ID = 6;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -50,5 +50,25 @@ public class Camera extends Mechanism {
         exposureControl.setExposure((long) exposureMS, TimeUnit.MILLISECONDS);
         GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
         gainControl.setGain(gain);
+    }
+
+    public void checkAndSetDesiredTag(int desiredTagID) {
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            // Look to see if we have size info on this tag.
+            if (detection.metadata != null) {
+                //  Check to see if we want to track towards this tag.
+                if ((desiredTagID < 0) || (detection.id == desiredTagID)) {
+                    // Yes, we want to use this tag.
+                    targetFound = true;
+                    desiredTag = detection;
+                    break;  // don't look any further.
+                } else {
+                    // This tag is in the library, but we do not want to track it right now.
+                }
+            } else {
+                // This tag is NOT in the library, so we don't have enough information to track to it.
+            }
+        }
     }
 }
