@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AprilTagTest {
     private static boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
-    private static int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
+    private int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
     public boolean targetFound = false;    // Set to true when an AprilTag target is detected
     private final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
 
@@ -80,7 +80,7 @@ public class AprilTagTest {
         }
 
         if (USE_WEBCAM) {
-            //setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+            setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
         }
         Logging.log("finished init");
     }
@@ -104,10 +104,11 @@ public class AprilTagTest {
                 } else {
                     // This tag is in the library, but we do not want to track it right now.
                     //telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                    Logging.log("Tag not found. Detected tag ID: %d. Desired ID: %d", detection.id, DESIRED_TAG_ID);
                 }
             } else {
                 // This tag is NOT in the library, so we don't have enough information to track to it.
-                //telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                Logging.log("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
             }
         }
 
@@ -124,7 +125,6 @@ public class AprilTagTest {
 
     public void driveToTag() {
         if (targetFound) {
-
             // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
             double  rangeError      = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
             double  headingError    = desiredTag.ftcPose.bearing;
@@ -134,9 +134,6 @@ public class AprilTagTest {
             drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
             strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-            Logging.log("Driving to target");
-            moveRobot(drive, strafe, turn);
-            Logging.log("Drove to target");
             //telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
         } else {
             // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
@@ -147,15 +144,16 @@ public class AprilTagTest {
             //telemetry.update();
         }
 
+        Logging.log("Driving to target");
+        moveRobot(drive, strafe, turn);
+        Logging.log("Drove to target");
         // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
         //drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
         //strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
         //turn   = -gamepad1.right_stick_x / 2.0;  // Reduce turn rate to 50%.
         //telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
         //telemetry.update();
-
         // Apply desired axes motions to the drivetrain.
-
     }
     private void moveRobot(double x, double y, double yaw) {
         // Calculate wheel powers.
@@ -188,23 +186,35 @@ public class AprilTagTest {
     This can only be called AFTER calling initAprilTag(), and only works for Webcams;
     */
     private void setManualExposure(int exposureMS, int gain) {
-        // Wait for the camera to be open, then use the controls
+            // Wait for the camera to be open, then use the controls
+            if (visionPortal == null) {
+                return;
+            }
 
-        if (visionPortal == null) {
-            return;
-        }
+            // Make sure camera is streaming before we try to set the exposure controls
+            if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+                Logging.log("Camera", "Waiting");
+                while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+                    sleep(20);
+                }
+                Logging.log("Camera", "Ready");
+            }
 
-        ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-        if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
-            exposureControl.setMode(ExposureControl.Mode.Manual);
-            sleep(50);
+            // Set camera controls unless we are stopping.
+            //if (!isStopRequested())
+            {
+                ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+                if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+                    exposureControl.setMode(ExposureControl.Mode.Manual);
+                    sleep(50);
+                }
+                exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
+                sleep(20);
+                GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+                gainControl.setGain(gain);
+                sleep(20);
+            }
         }
-        exposureControl.setExposure((long) exposureMS, TimeUnit.MILLISECONDS);
-        sleep(20);
-        GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-        gainControl.setGain(gain);
-        sleep(20);
-    }
 
     public final void sleep(long milliseconds) {
         try {

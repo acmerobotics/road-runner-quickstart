@@ -202,20 +202,21 @@ public class AutoRedFront extends LinearOpMode {
 
         while (!isStarted()) {
             propLocation = propDetect.getPropPos();
+            propLocation = ObjectDetection.PropSide.LEFT; // for test
 
             switch (propLocation) {
                 case LEFT:
                     spikeMarkLoc = 1;
-                    desiredTagNum = 1 + (startLoc > 2? 3 : 0);
+                    desiredTagNum = 1 + (startLoc < 3 ? 3 : 0);
                     break;
                 case CENTER:
                 case UNKNOWN:
                     spikeMarkLoc = 2;
-                    desiredTagNum = 2 + (startLoc > 2? 3 : 0);
+                    desiredTagNum = 2 + (startLoc < 3 ? 3 : 0);
                     break;
                 case RIGHT:
                     spikeMarkLoc = 3;
-                    desiredTagNum = 3 + (startLoc > 2? 3 : 0);
+                    desiredTagNum = 3 + (startLoc < 3 ? 3 : 0);
                     break;
             }
 
@@ -521,10 +522,22 @@ public class AutoRedFront extends LinearOpMode {
         }
 
          */
-        tag.detectTag();
+        double startTime = runtime.milliseconds();
+
+        while(!tag.targetFound && (runtime.milliseconds() - startTime < 100)){
+            tag.detectTag();
+        }
+        Logging.log("April 1st Tag found? %s ", tag.targetFound? "Yes" : "No");
+
+
         while(tag.targetFound){
             tag.detectTag();
             tag.driveToTag();
+            while(!tag.targetFound && (runtime.milliseconds() - startTime < 100)){
+                tag.detectTag();
+            }
+            startTime = runtime.milliseconds();
+            Logging.log("April Tag found? %s ", tag.targetFound? "Yes" : "No");
         }
 
         // drop pixel
