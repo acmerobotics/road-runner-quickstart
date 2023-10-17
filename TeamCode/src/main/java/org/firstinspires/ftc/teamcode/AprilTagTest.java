@@ -26,17 +26,6 @@ public class AprilTagTest {
     public boolean targetFound = false;    // Set to true when an AprilTag target is detected
     private final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
 
-    //for driving
-    private double drive = 0;        // Desired forward power/speed (-1 to +1)
-    private double strafe = 0;        // Desired strafe power/speed (-1 to +1)
-    private double turn = 0;        // Desired turning power/speed (-1 to +1)
-    private final double SPEED_GAIN = 0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    private final double STRAFE_GAIN = 0.015 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
-    private final double TURN_GAIN = 0.01  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
-    private final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
-    private final double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
-    private final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
-
     //Objects
     private HardwareMap hardwareMap = null;
     //public Telemetry telemetry = new TelemetryImpl((OpMode) this);
@@ -85,7 +74,7 @@ public class AprilTagTest {
         Logging.log("finished init");
     }
 
-    public void detectTag() {
+    private void detectTag() {
         targetFound = false;
         desiredTag  = null;
         Logging.log("Starting detection");
@@ -113,17 +102,28 @@ public class AprilTagTest {
         }
 
         if (targetFound) {
-            //telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
-            //telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-            //telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
-            //telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
-            //telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
+            Logging.log("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+            Logging.log("Range",  "%5.1f inches", desiredTag.ftcPose.range);
+            Logging.log("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+            Logging.log("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
         } else {
             //telemetry.addData("\n>","Drive using joysticks to find valid target\n");
         }
     }
 
-    public void driveToTag() {
+    private boolean driveToTag() {
+
+        //for driving
+        double drive;           // Desired forward power/speed (-1 to +1)
+        double strafe;          // Desired strafe power/speed (-1 to +1)
+        double turn;            // Desired turning power/speed (-1 to +1)
+        double SPEED_GAIN = 0.05;   //0.02;     //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        double STRAFE_GAIN = 0.04;  //0.015;    //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+        double TURN_GAIN = 0.02;    //0.01;     //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+        double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_STRAFE= 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_TURN  = 0.4;   //  Clip the turn speed to this max value (adjust for your robot)
+
         if (targetFound) {
             // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
             double  rangeError      = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
@@ -134,18 +134,16 @@ public class AprilTagTest {
             drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
             strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-            //telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-        } else {
-            // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-            //drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
-            //strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
-            //turn   = -gamepad1.right_stick_x / 2.0;  // Reduce turn rate to 50%.
-            //telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-            //telemetry.update();
+            Logging.log("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+        }
+        else {
+            drive = 0;
+            turn = 0;
+            strafe = 0;
         }
 
         Logging.log("Driving to target");
-        moveRobot(drive, strafe, turn);
+        boolean reachTarget = moveRobot(drive, strafe, turn);
         Logging.log("Drove to target");
         // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
         //drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
@@ -154,8 +152,10 @@ public class AprilTagTest {
         //telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
         //telemetry.update();
         // Apply desired axes motions to the drivetrain.
+
+        return reachTarget;
     }
-    private void moveRobot(double x, double y, double yaw) {
+    private boolean moveRobot(double x, double y, double yaw) {
         // Calculate wheel powers.
         double leftFrontPower    =  x -y -yaw;
         double rightFrontPower   =  x +y +yaw;
@@ -166,6 +166,10 @@ public class AprilTagTest {
         double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
         max = Math.max(max, Math.abs(rightBackPower));
+
+        if (0 < max && max < 0.05) {
+            return true;
+        }
 
         if (max > 1.0) {
             leftFrontPower /= max;
@@ -179,6 +183,7 @@ public class AprilTagTest {
         driveMC.rightFront.setPower(rightFrontPower);
         driveMC.leftBack.setPower(leftBackPower);
         driveMC.rightBack.setPower(rightBackPower);
+        return false;
     }
 
     /*
@@ -186,45 +191,64 @@ public class AprilTagTest {
     This can only be called AFTER calling initAprilTag(), and only works for Webcams;
     */
     private void setManualExposure(int exposureMS, int gain) {
-            // Wait for the camera to be open, then use the controls
-            if (visionPortal == null) {
-                return;
-            }
-
-            // Make sure camera is streaming before we try to set the exposure controls
-            if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-                Logging.log("Camera", "Waiting");
-                while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-                    sleep(20);
-                }
-                Logging.log("Camera", "Ready");
-            }
-
-            // Set camera controls unless we are stopping.
-            //if (!isStopRequested())
-            {
-                ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-                if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
-                    exposureControl.setMode(ExposureControl.Mode.Manual);
-                    sleep(50);
-                }
-                exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
-                sleep(20);
-                GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-                gainControl.setGain(gain);
-                sleep(20);
-            }
+        // Wait for the camera to be open, then use the controls
+        if (visionPortal == null) {
+            return;
         }
 
-    public final void sleep(long milliseconds) {
+        // Make sure camera is streaming before we try to set the exposure controls
+        if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            Logging.log("Camera", "Waiting");
+            while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+                sleep(20);
+            }
+            Logging.log("Camera", "Ready");
+        }
+
+        // Set camera controls unless we are stopping.
+        //if (!isStopRequested())
+        {
+            ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+                exposureControl.setMode(ExposureControl.Mode.Manual);
+                sleep(50);
+            }
+            exposureControl.setExposure((long) exposureMS, TimeUnit.MILLISECONDS);
+            sleep(20);
+            GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+            gainControl.setGain(gain);
+            sleep(20);
+        }
+    }
+
+    private void sleep(long milliseconds) {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
-}
 
-/**
- * Set robot starting position: 1 for right and -1 for left.
- */
+    public void autoDriveToAprilTag() {
+        boolean reachedTarget = false;
+        int detectCount = 0;
+
+        // exit while loop when reached target or cannot found target in 500 ms.
+        while ((!reachedTarget) && (detectCount < 99)) {
+            detectTag();
+            if (!targetFound) {
+                for (detectCount = 0; detectCount < 100; detectCount++) {
+                    detectTag();
+                    sleep(5);
+                    if (targetFound) {
+                        break;
+                    }
+                }
+            }
+            reachedTarget = driveToTag();
+
+            Logging.log("April Tag found? %s ", targetFound ? "Yes" : "No");
+            Logging.log("Reached Tag? %s ", reachedTarget ? "Yes" : "No");
+        }
+    }
+}

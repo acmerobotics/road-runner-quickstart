@@ -40,10 +40,8 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -83,7 +81,7 @@ public class AutoRedFront extends LinearOpMode {
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
-    private final ArmClawUnit armClaw = new ArmClawUnit();
+    private final intakeUnit intake = new intakeUnit(hardwareMap, "ArmMotor", "ClawServo", "launchServo");
 
     public MecanumDrive drive;
 
@@ -187,11 +185,9 @@ public class AutoRedFront extends LinearOpMode {
         telemetry.addData("right back pos", drive.rightBack.getCurrentPosition());
         telemetry.update();
 
-        armClaw.init(hardwareMap, "ArmMotor", "ClawServo");
-        armClaw.resetArmEncoder();
+        intake.resetArmEncoder();
 
         sleep(500);
-        armClaw.clawClose();
 
         runtime.reset();
         while ((ObjectDetection.PropSide.UNKNOWN == propLocation) &&
@@ -238,7 +234,7 @@ public class AutoRedFront extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         if (opModeIsActive()) {
-            armClaw.armManualMoving(15);
+            intake.armManualMoving(15);
             sleep(150);
             autonomousCore();
             camera.closeCameraDevice(); // cost too times at the beginning to close camera about 300 ms
@@ -314,11 +310,9 @@ public class AutoRedFront extends LinearOpMode {
         Logging.log("robot drive: after turn imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
         // 2. open claw to release purple pixel
-        armClaw.clawOpen();
         sleep(500);
 
         //3. close claw
-        armClaw.clawClose();
         sleep(100);
 
         // turn back and facing to backdrop board
@@ -386,11 +380,8 @@ public class AutoRedFront extends LinearOpMode {
             );
         }
 
-        tag.detectTag();
-        tag.driveToTag();
-
+        tag.autoDriveToAprilTag();
         // drop pixel
-        armClaw.clawOpen();
     }
 
 
@@ -447,11 +438,9 @@ public class AutoRedFront extends LinearOpMode {
         Logging.log("robot drive: after turn imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
         // 2. open claw to release purple pixel
-        armClaw.clawOpen();
         sleep(500);
 
         //3. close claw
-        armClaw.clawClose();
         sleep(100);
 
         // turn back and facing to backdrop board
@@ -522,26 +511,27 @@ public class AutoRedFront extends LinearOpMode {
         }
 
          */
-        double startTime = runtime.milliseconds();
 
+/*
+        double startTime = runtime.milliseconds();
         while(!tag.targetFound && (runtime.milliseconds() - startTime < 100)){
-            tag.detectTag();
+            tag.autoDriveToAprilTag();
         }
         Logging.log("April 1st Tag found? %s ", tag.targetFound? "Yes" : "No");
 
 
         while(tag.targetFound){
-            tag.detectTag();
-            tag.driveToTag();
+            tag.autoDriveToAprilTag();
             while(!tag.targetFound && (runtime.milliseconds() - startTime < 100)){
-                tag.detectTag();
+                tag.autoDriveToAprilTag();
             }
             startTime = runtime.milliseconds();
             Logging.log("April Tag found? %s ", tag.targetFound? "Yes" : "No");
         }
 
+ */
+        tag.autoDriveToAprilTag();
+
         // drop pixel
-        armClaw.armLift();
-        armClaw.clawOpen();
     }
 }

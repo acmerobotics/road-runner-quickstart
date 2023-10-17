@@ -48,18 +48,9 @@ public class Params {
     static final double CHASSIS_HALF_WIDTH = 14 / 2.0;
     static final double CHASSIS_LENGTH = 17;
 
-
-    // additional moving distance variables
     // moving distance variables
-    static final double DISTANCE_PICK_UP = 1.0; // in INCH
-    static final double SPIKE_GAP = (HALF_MAT - CHASSIS_LENGTH / 2.0) / 2.0;
-    static final double BACK_DISTANCE = HALF_MAT * 7;
     static final double BACKDROP_FORWARD = HALF_MAT - (CHASSIS_LENGTH / 2 - 2);
     static final double BACKDROP_SIDEWAYS = 7.0;
-
-    //claw action time
-    static final int CLAW_CLOSE_SLEEP = 150; // ms
-    static final int CLAW_OPEN_SLEEP = 50; // ms
 
     // chassis power factors
     static final double POWER_LOW = 0.3;

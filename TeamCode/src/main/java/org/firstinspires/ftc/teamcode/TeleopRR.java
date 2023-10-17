@@ -66,9 +66,9 @@ public class TeleopRR extends LinearOpMode {
     MecanumDrive mecanum;
 
     //claw and arm unit
-    private final ArmClawUnit armClaw = new ArmClawUnit();
+    private final intakeUnit intake = new intakeUnit(hardwareMap, "ArmMotor", "ClawServo", "LaunchServo");
 
-    private Servo launchServo = null;
+    private Servo launchServo = hardwareMap.get(Servo.class, "LaunchServo");;
 
     // debug flags, turn it off for formal version to save time of logging
     boolean debugFlag = true;
@@ -83,13 +83,9 @@ public class TeleopRR extends LinearOpMode {
 
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        armClaw.init(hardwareMap, "ArmMotor", "ClawServo");
+        intake.resetArmEncoder();
 
-        armClaw.resetArmEncoder();
-
-        launchServo = hardwareMap.get(Servo.class, "LaunchServo");
-
-        launchServo.setPosition(0.5);
+        launchServo.setPosition(0.0);
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -102,11 +98,6 @@ public class TeleopRR extends LinearOpMode {
         telemetry.update();
         waitForStart();
         runtime.reset();
-
-        // move slider to wall position just when starting.
-        if (opModeIsActive()) {
-            //slider.setInchPosition(Params.WALL_POSITION);
-        }
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -131,17 +122,25 @@ public class TeleopRR extends LinearOpMode {
             ));
 
             // Set position only when button is hit.
-            if (gpButtons.clawClose) {
-                armClaw.clawClose();
+            if (gpButtons.wristDown) {
+                intake.wristDown();
             }
 
             // Set position only when button is hit.
-            if (gpButtons.clawOpen) {
-                armClaw.clawOpen();
+            if (gpButtons.wristUp) {
+                intake.wristUp();
             }
 
-            if(Math.abs(gpButtons.armManualControl) > 0) {
-                armClaw.armManualMoving(gpButtons.armManualControl);
+            if (gpButtons.fingerOuttake) {
+                intake.fingerOuttake();
+            }
+
+            if (gpButtons.fingerStop) {
+                intake.fingerStop();
+            }
+
+            if (gpButtons.fingerIntake) {
+                intake.fingerIntake();
             }
 
             if (gpButtons.launchOn) {
@@ -149,21 +148,20 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if (gpButtons.armLift) {
-                armClaw.armLift();
+                intake.armLift();
             }
 
             if (gpButtons.armDown) {
-                armClaw.armDown();
+                intake.armDown();
             }
 
             if (debugFlag) {
                 // claw arm servo log
-                telemetry.addData("Claw", "position %.2f", armClaw.getClawPosition());
+                telemetry.addData("Claw", "position %.2f", intake.getWristPosition());
 
+                telemetry.addData("Arm", "position = %.2f", intake.getArmPosition());
 
-                telemetry.addData("Arm", "position = %.2f", armClaw.getArmPosition());
-
-                telemetry.addData("Claw", "position %.2f", armClaw.getClawPosition());
+                telemetry.addData("Claw", "position %.2f", intake.getWristPosition());
 
                 telemetry.addData("Launch", "position %.2f", launchServo.getPosition());
 

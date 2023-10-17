@@ -49,14 +49,15 @@ public final class MecanumDrive {
     public static class Params {
         // drive model parameters
         // Gobilda odometry: 48mm diameter(1.89 inch), 2048 tick per revolution, inPerTick = 0.0029.
-        public double inPerTick = 0.00294;//0.02208155454144; // WHEEL_RADIUS(1.8898) * 2 * Math.PI / TICKS_PER_REV(537.6)
-        public double lateralInPerTick = 0.002621639136230116; // 0.0019
-        public double trackWidthTicks = 4799.137772874604; // 650
+        public boolean useDeadWheel = false;
+        public double inPerTick = useDeadWheel? 0.00294 : 0.02208155454144; // WHEEL_RADIUS(1.8898) * 2 * Math.PI / TICKS_PER_REV(537.6)
+        public double lateralInPerTick = useDeadWheel? 0.002621639136230116 : 0.0019;
+        public double trackWidthTicks = useDeadWheel? 4799.137772874604 : 650;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.24257680481252297;//0.0
-        public double kV = 0.0007154768810151011; //  0.0025
-        public double kA = 0.00012; // 0.0
+        public double kS = useDeadWheel? 0.24257680481252297 : 0.0;
+        public double kV = useDeadWheel? 0.0007154768810151011 : 0.0025;
+        public double kA = useDeadWheel? 0.00012 : 0.0;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -210,9 +211,11 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        //localizer = new DriveLocalizer();
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
-
+        if (PARAMS.useDeadWheel){
+            localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
+        } else {
+            localizer = new DriveLocalizer();
+        }
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }

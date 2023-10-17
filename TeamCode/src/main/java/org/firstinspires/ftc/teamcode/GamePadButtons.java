@@ -55,16 +55,22 @@ public class GamePadButtons {
     public boolean speedUp;
     public boolean armLift;
     public boolean armDown;
-    public boolean clawClose;
-    public boolean clawOpen;
+
+    public boolean wristUp;
+    public boolean wristDown;
+
+    public boolean fingerOuttake;
+    public boolean fingerIntake;
+    public boolean fingerStop;
+
     public boolean launchOn;
     public int armManualControl;
 
     public void checkGamepadButtons(@NonNull Gamepad gamepad1, @NonNull Gamepad gamepad2) {
         //gamepad1 buttons
-        robotDrive = -gamepad1.left_stick_y;
-        robotStrafe = -gamepad1.left_stick_x;
-        robotTurn = -gamepad1.right_stick_x;
+        robotDrive = gamepad1.left_stick_y;
+        robotStrafe = gamepad1.left_stick_x;
+        robotTurn = gamepad1.right_stick_x;
 
         // arm lift
         armLift = gamepad1.y;
@@ -73,14 +79,18 @@ public class GamePadButtons {
         // launch plane
         launchOn = gamepad1.right_bumper || gamepad2.right_bumper;
 
-        // gamepad1 and gamepad2
-        clawOpen = gamepad1.dpad_down || gamepad2.dpad_down;
+        fingerIntake = gamepad1.dpad_down || gamepad2.dpad_down;
 
-        // gamepad2 buttons
-        clawClose = gamepad1.dpad_up || gamepad2.dpad_up;;
+        fingerStop = gamepad1.dpad_left || gamepad2.dpad_left;
+
+        fingerOuttake = gamepad1.dpad_up || gamepad2.dpad_up;;
+
+        wristUp = gamepad1.b;
+
+        wristDown = gamepad1.a;
 
         //launchOn = gamepad1.y;
 
-        armManualControl = (int) (-gamepad2.left_stick_y * 40);
+        //armManualControl = (int) (-gamepad2.left_stick_y * 40);
     }
 }

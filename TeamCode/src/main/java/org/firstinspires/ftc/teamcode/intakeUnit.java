@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.Range;
 
 
@@ -41,26 +42,19 @@ import com.qualcomm.robotcore.util.Range;
  *
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are case sensitive.
- * Motors type: Servo motors for arm and claw.
+ * Motors type: motors for arm and wrist, finger.
  *
  * 1. Arm servo motor: ArmServo
- * 2. Claw servo motor: ClawServo
+ * 2. wrist servo motor: wristServo
  */
-public class ArmClawUnit
+public class intakeUnit
 {
     //private
     HardwareMap hardwareMap =  null;
 
-    // for arm mode
-    public enum ArmType {
-        FLIP,
-        SWING
-    }
-
-    public static ArmType armMode = ArmType.FLIP;
-
-    // claw servo motor variables
-    private Servo clawServo = null;
+    // wrist servo motor variables
+    private Servo wristServo = null;
+    private Servo fingerServo = null;
     final double CLAW_OPEN_POS = 0.0;
     final double CLAW_CLOSE_POS = 0.47;
     final double CLAW_MAX_POS = 1; // Maximum rotational position
@@ -84,38 +78,27 @@ public class ArmClawUnit
      * Init slider motors hardware, and set their behaviors.
      * @param hardwareMap the Hardware Mappings.
      * @param armMotorName the name string for arm servo motor
-     * @param clawMotorName the name string for claw servo motor
+     * @param wristMotorName the name string for wrist servo motor
      */
-    public void init(HardwareMap hardwareMap, String armMotorName, String clawMotorName) {
+    public intakeUnit(HardwareMap hardwareMap, String armMotorName, String wristMotorName, String fingerMotorName) {
         // Save reference to Hardware map
         this.hardwareMap = hardwareMap;
 
-        Logging.log("init servo motors for arm and claw.");
-        clawServo = hardwareMap.get(Servo.class, clawMotorName);
-
+        Logging.log("init motors for arm and wrist.");
         armMotor = hardwareMap.get(DcMotor.class, armMotorName);
 
-        setClawPosition(CLAW_OPEN_POS);
+        wristServo = hardwareMap.get(Servo.class, wristMotorName);
 
-        switch (armMode) {
-            case FLIP:
-                setArmPosition(ARM_FLIP_CENTER);
-                break;
-            case SWING:
-                setArmPosition(ARM_SWING_FORWARD);
-                break;
-            default:
-                break;
-        }
+        fingerServo = hardwareMap.get(Servo.class, fingerMotorName);
     }
 
     /**
-     * set the target position of claw servo motor
-     * @param clawPos the target position value for claw servo motor
+     * set the target position of wrist servo motor
+     * @param wristPos the target position value for wrist servo motor
      */
-    private void setClawPosition(double clawPos) {
-        clawPos = Range.clip(clawPos, CLAW_MIN_POS, CLAW_MAX_POS);
-        clawServo.setPosition(clawPos);
+    private void setWristPosition(double wristPos) {
+        wristPos = Range.clip(wristPos, CLAW_MIN_POS, CLAW_MAX_POS);
+        wristServo.setPosition(wristPos);
     }
 
     /**
@@ -123,8 +106,8 @@ public class ArmClawUnit
      * @param armPos the target position value for arm servo motor
      */
     public void setArmCountPosition(int armPos) {
-        int ARM_MIN_COUNT_POS = -5;
-        int ARM_MAX_COUNT_POS = 230;
+        int ARM_MIN_COUNT_POS = -2000;
+        int ARM_MAX_COUNT_POS = 2000;
         armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
         armMotor.setTargetPosition(armPos);
     }
@@ -133,19 +116,28 @@ public class ArmClawUnit
     }
 
     /**
-     * set the claw servo motor position to open the claw
+     * set the wrist servo motor position to open the wrist
      */
-    public void clawOpen() {
-        setClawPosition(CLAW_OPEN_POS);
+    public void wristUp() {
+        setWristPosition(wristServo.getPosition() + 0.01);
     }
 
     /**
-     * set the claw servo motor position to close the claw
+     * set the wrist servo motor position to close the wrist
      */
-    public void clawClose() {
-        setClawPosition(CLAW_CLOSE_POS);
+    public void wristDown() {
+        setWristPosition(wristServo.getPosition() - 0.01);
     }
 
+    public void fingerIntake() {
+        fingerServo.setPosition(0);
+    }
+    public void fingerStop() {
+        fingerServo.setPosition(0.5);
+    }
+    public void fingerOuttake() {
+        fingerServo.setPosition(1.0);
+    }
     /**
      * Get the arm servo motor current position value
      * @return the current arm servo motor position value
@@ -155,60 +147,11 @@ public class ArmClawUnit
     }
 
     /**
-     * Get the claw servo motor current position value
-     * @return the current claw servo motor position value
+     * Get the wrist servo motor current position value
+     * @return the current wrist servo motor position value
      */
-    public double getClawPosition() {
-        return clawServo.getPosition();
-    }
-
-    /**
-     * turn the Swing ARM servo motor position to left
-     */
-    public void armSwingTurnLeft() {
-        setArmPosition(ARM_SWING_LEFT);
-    }
-
-    /**
-     * turn the Swing ARM servo motor position to right
-     */
-    public void armSwingTurnRight() {
-        setArmPosition(ARM_SWING_RIGHT);
-    }
-
-    /**
-     * turn the Swing ARM position to forward
-     */
-    public void armSwingTurnForward() {
-        setArmPosition(ARM_SWING_FORWARD);
-    }
-
-    /**
-     * turn the Flip arm to front loading position
-     */
-    public void armFlipFrontLoad() {
-        setArmPosition(ARM_FLIP_FRONT_LOAD_POS);
-    }
-
-    /**
-     * turn the Flip arm to back preparing unloading position during Teleop, the art extend more farther.
-     */
-    public void armFlipBackUnloadPre() {
-        setArmPosition(ARM_FLIP_BACK_UNLOAD_PRE);
-    }
-
-    /**
-     * turn the Flip arm to center position
-     */
-    public void armFlipCenter() {
-        setArmPosition(ARM_FLIP_CENTER);
-    }
-
-    /**
-     * turn the Flip arm to back unloading position
-     */
-    public void armFlipBackUnload() {
-        setArmPosition(ARM_FLIP_BACK_UNLOAD_POS);
+    public double getWristPosition() {
+        return wristServo.getPosition();
     }
 
     /**
@@ -220,7 +163,6 @@ public class ArmClawUnit
     }
 
     public void resetArmEncoder() {
-
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setArmCountPosition(0);
@@ -231,13 +173,10 @@ public class ArmClawUnit
     }
 
     public void armLift() {
-        setArmCountPosition(120);
+        setArmCountPosition(armMotor.getCurrentPosition() + 40);
     }
 
     public void armDown() {
-        setArmCountPosition(0);
+        setArmCountPosition(armMotor.getCurrentPosition() - 40);
     }
-
-
 }
-
