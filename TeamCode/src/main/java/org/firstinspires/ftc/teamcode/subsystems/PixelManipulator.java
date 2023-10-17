@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.ThermalEquilibrium.homeostasis.Utils.WPILibMotionProfile;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.subsystems.developmental.PIDSlides;
 import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 public class PixelManipulator extends Mechanism {
@@ -50,7 +52,7 @@ public class PixelManipulator extends Mechanism {
                     claw.clampServo(claw.leftProng);
                 }
                 if (isPixelsLoaded) {
-                    setActiveScoringState(ScoringState.POSITIONING);
+                    setActiveScoringState(ScoringState.PIXELSLOADED);
                 }
                 break;
 
