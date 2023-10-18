@@ -66,9 +66,9 @@ public class TeleopRR extends LinearOpMode {
     MecanumDrive mecanum;
 
     //claw and arm unit
-    private final intakeUnit intake = new intakeUnit(hardwareMap, "ArmMotor", "ClawServo", "LaunchServo");
+    private intakeUnit intake;
 
-    private Servo launchServo = hardwareMap.get(Servo.class, "LaunchServo");;
+    private Servo launchServo;
 
     // debug flags, turn it off for formal version to save time of logging
     boolean debugFlag = true;
@@ -79,13 +79,18 @@ public class TeleopRR extends LinearOpMode {
 
         GamePadButtons gpButtons = new GamePadButtons();
 
+
         mecanum = new MecanumDrive(hardwareMap, Params.currentPose);
 
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo", "FingerServo");
+
         intake.resetArmEncoder();
 
-        launchServo.setPosition(0.0);
+        //launchServo = hardwareMap.get(Servo.class, "LaunchServo");
+
+        //launchServo.setPosition(0.0);
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -157,15 +162,18 @@ public class TeleopRR extends LinearOpMode {
 
             if (debugFlag) {
                 // claw arm servo log
-                telemetry.addData("Claw", "position %.2f", intake.getWristPosition());
+                telemetry.addData("Wrist", "position %.2f", intake.getWristPosition());
 
                 telemetry.addData("Arm", "position = %.2f", intake.getArmPosition());
 
-                telemetry.addData("Claw", "position %.2f", intake.getWristPosition());
+                telemetry.addData("Finger", "position %.2f", intake.getFingerPosition());
 
-                telemetry.addData("Launch", "position %.2f", launchServo.getPosition());
+                //telemetry.addData("Launch", "position %.2f", launchServo.getPosition());
 
                 telemetry.update(); // update message at the end of while loop
+
+                Logging.log("Wrist position %.2f", intake.getWristPosition());
+
             }
         }
 

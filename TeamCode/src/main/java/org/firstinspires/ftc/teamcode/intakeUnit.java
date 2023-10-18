@@ -55,24 +55,11 @@ public class intakeUnit
     // wrist servo motor variables
     private Servo wristServo = null;
     private Servo fingerServo = null;
-    final double CLAW_OPEN_POS = 0.0;
-    final double CLAW_CLOSE_POS = 0.47;
-    final double CLAW_MAX_POS = 1; // Maximum rotational position
-    final double CLAW_MIN_POS = 0;  // Minimum rotational position
+    final double WRIST_MAX_POS = +0.2; // Maximum rotational position
+    final double WRIST_MIN_POS = -0.2;  // Minimum rotational position
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
-    final double ARM_SWING_FORWARD = 0.395;
-    final double ARM_SWING_LEFT = 0.73;
-    final double ARM_SWING_RIGHT = 0.06;
-
-    final double ARM_LOCATION_ADJ = 0.135;
-    final double ARM_FLIP_FRONT_LOAD_POS = ARM_LOCATION_ADJ + 0.25;
-    final double ARM_FLIP_FRONT_UNLOAD_POS = ARM_LOCATION_ADJ + 0.35;
-    final double ARM_FLIP_CENTER = ARM_LOCATION_ADJ + 0.62;
-    final double ARM_FLIP_BACK_UNLOAD_PRE = ARM_LOCATION_ADJ + 0.83;
-    final double ARM_FLIP_BACK_UNLOAD_POS = ARM_LOCATION_ADJ + 0.87;
-    final double ARM_FLIP_BACK_LOAD_POS = 1.0;
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -90,6 +77,8 @@ public class intakeUnit
         wristServo = hardwareMap.get(Servo.class, wristMotorName);
 
         fingerServo = hardwareMap.get(Servo.class, fingerMotorName);
+
+        fingerStop();
     }
 
     /**
@@ -97,7 +86,7 @@ public class intakeUnit
      * @param wristPos the target position value for wrist servo motor
      */
     private void setWristPosition(double wristPos) {
-        wristPos = Range.clip(wristPos, CLAW_MIN_POS, CLAW_MAX_POS);
+        wristPos = Range.clip(wristPos, WRIST_MIN_POS, WRIST_MAX_POS);
         wristServo.setPosition(wristPos);
     }
 
@@ -106,8 +95,8 @@ public class intakeUnit
      * @param armPos the target position value for arm servo motor
      */
     public void setArmCountPosition(int armPos) {
-        int ARM_MIN_COUNT_POS = -2000;
-        int ARM_MAX_COUNT_POS = 2000;
+        int ARM_MIN_COUNT_POS = -5000;
+        int ARM_MAX_COUNT_POS = 5000;
         armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
         armMotor.setTargetPosition(armPos);
     }
@@ -119,24 +108,24 @@ public class intakeUnit
      * set the wrist servo motor position to open the wrist
      */
     public void wristUp() {
-        setWristPosition(wristServo.getPosition() + 0.01);
+        setWristPosition(wristServo.getPosition() + 0.001);
     }
 
     /**
      * set the wrist servo motor position to close the wrist
      */
     public void wristDown() {
-        setWristPosition(wristServo.getPosition() - 0.01);
+        setWristPosition(wristServo.getPosition() - 0.001);
     }
 
     public void fingerIntake() {
-        fingerServo.setPosition(0);
+        fingerServo.setPosition(0.2);
     }
     public void fingerStop() {
         fingerServo.setPosition(0.5);
     }
     public void fingerOuttake() {
-        fingerServo.setPosition(1.0);
+        fingerServo.setPosition(0.8);
     }
     /**
      * Get the arm servo motor current position value
@@ -153,6 +142,11 @@ public class intakeUnit
     public double getWristPosition() {
         return wristServo.getPosition();
     }
+
+    public double getFingerPosition() {
+        return fingerServo.getPosition();
+    }
+
 
     /**
      * Manual control arm position

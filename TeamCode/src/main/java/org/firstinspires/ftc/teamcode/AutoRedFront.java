@@ -81,7 +81,7 @@ public class AutoRedFront extends LinearOpMode {
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
-    private final intakeUnit intake = new intakeUnit(hardwareMap, "ArmMotor", "ClawServo", "launchServo");
+    private intakeUnit intake;
 
     public MecanumDrive drive;
 
@@ -185,7 +185,8 @@ public class AutoRedFront extends LinearOpMode {
         telemetry.addData("right back pos", drive.rightBack.getCurrentPosition());
         telemetry.update();
 
-        intake.resetArmEncoder();
+        //intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo", "FingerServo");
+        //intake.resetArmEncoder();
 
         sleep(500);
 
@@ -234,7 +235,7 @@ public class AutoRedFront extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         if (opModeIsActive()) {
-            intake.armManualMoving(15);
+            //intake.armManualMoving(15);
             sleep(150);
             autonomousCore();
             camera.closeCameraDevice(); // cost too times at the beginning to close camera about 300 ms

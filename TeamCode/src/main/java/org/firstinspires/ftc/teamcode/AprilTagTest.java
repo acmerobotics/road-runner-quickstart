@@ -97,15 +97,15 @@ public class AprilTagTest {
                 }
             } else {
                 // This tag is NOT in the library, so we don't have enough information to track to it.
-                Logging.log("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                Logging.log("Unknown Tag ID %d is not in TagLibrary", detection.id);
             }
         }
 
         if (targetFound) {
-            Logging.log("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-            Logging.log("Range",  "%5.1f inches", desiredTag.ftcPose.range);
-            Logging.log("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
-            Logging.log("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
+            Logging.log("Found ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+            Logging.log("Range %5.1f inches", desiredTag.ftcPose.range);
+            Logging.log("Bearing %3.0f degrees", desiredTag.ftcPose.bearing);
+            Logging.log("Yaw %3.0f degrees", desiredTag.ftcPose.yaw);
         } else {
             //telemetry.addData("\n>","Drive using joysticks to find valid target\n");
         }
@@ -117,12 +117,12 @@ public class AprilTagTest {
         double drive;           // Desired forward power/speed (-1 to +1)
         double strafe;          // Desired strafe power/speed (-1 to +1)
         double turn;            // Desired turning power/speed (-1 to +1)
-        double SPEED_GAIN = 0.05;   //0.02;     //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-        double STRAFE_GAIN = 0.04;  //0.015;    //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
-        double TURN_GAIN = 0.02;    //0.01;     //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
-        double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
-        double MAX_AUTO_STRAFE= 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
-        double MAX_AUTO_TURN  = 0.4;   //  Clip the turn speed to this max value (adjust for your robot)
+        double SPEED_GAIN = 0.02;   //0.02;     //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        double STRAFE_GAIN = 0.015;  //0.015;    //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+        double TURN_GAIN = 0.01;    //0.01;     //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+        double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
 
         if (targetFound) {
             // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
@@ -134,7 +134,7 @@ public class AprilTagTest {
             drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
             strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-            Logging.log("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+            Logging.log("Auto Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
         }
         else {
             drive = 0;
@@ -167,7 +167,8 @@ public class AprilTagTest {
         max = Math.max(max, Math.abs(leftBackPower));
         max = Math.max(max, Math.abs(rightBackPower));
 
-        if (0 < max && max < 0.05) {
+        Logging.log(" Max power setting = % 2.2f", max);
+        if (0 < max && max < 0.1) {
             return true;
         }
 
@@ -198,11 +199,11 @@ public class AprilTagTest {
 
         // Make sure camera is streaming before we try to set the exposure controls
         if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            Logging.log("Camera", "Waiting");
+            Logging.log("Camera is Waiting");
             while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
                 sleep(20);
             }
-            Logging.log("Camera", "Ready");
+            Logging.log("Camera is Ready");
         }
 
         // Set camera controls unless we are stopping.
@@ -249,6 +250,11 @@ public class AprilTagTest {
 
             Logging.log("April Tag found? %s ", targetFound ? "Yes" : "No");
             Logging.log("Reached Tag? %s ", reachedTarget ? "Yes" : "No");
+
+            driveMC.updatePoseEstimate();
+
+            Logging.log("Drive Heading = %2.2f", Math.toDegrees(driveMC.pose.heading.log()));
+            Logging.log("Drive position x = %2.2f, y = %2.2f", driveMC.pose.position.x, driveMC.pose.position.y);
         }
     }
 }
