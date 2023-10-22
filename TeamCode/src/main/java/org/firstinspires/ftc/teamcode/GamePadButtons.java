@@ -63,6 +63,7 @@ public class GamePadButtons {
     public boolean fingerIntake;
     public boolean fingerStop;
 
+    public boolean readyToIntake;
     public boolean launchOn;
     public int armManualControl;
 
@@ -88,6 +89,7 @@ public class GamePadButtons {
         wristUp = gamepad1.b;
 
         wristDown = gamepad1.a;
+        readyToIntake = gamepad1.left_bumper;
 
         //launchOn = gamepad1.y;
 

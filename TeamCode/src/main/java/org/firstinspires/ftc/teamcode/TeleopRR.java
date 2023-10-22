@@ -81,12 +81,11 @@ public class TeleopRR extends LinearOpMode {
 
 
         mecanum = new MecanumDrive(hardwareMap, Params.currentPose);
-
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo", "FingerServo");
 
-        intake.resetArmEncoder();
+        //intake.resetArmEncoder();
 
         //launchServo = hardwareMap.get(Servo.class, "LaunchServo");
 
@@ -149,7 +148,7 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if (gpButtons.launchOn) {
-                launchServo.setPosition(0);
+                //launchServo.setPosition(0);
             }
 
             if (gpButtons.armLift) {
@@ -159,6 +158,11 @@ public class TeleopRR extends LinearOpMode {
             if (gpButtons.armDown) {
                 intake.armDown();
             }
+
+            if(gpButtons.readyToIntake) {
+                intake.intakePositions();
+            }
+
 
             if (debugFlag) {
                 // claw arm servo log
