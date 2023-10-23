@@ -14,19 +14,19 @@ import java.util.concurrent.TimeUnit;
 
 public class HuskyVision {
 
-    public BackdropAprilTagDetection backdropAprilTagDetection;
+    public AprilTagDetector aprilTagDetector;
     public PixelDetection pixelDetection;
     public VisionPortal visionPortal;
 
     public HuskyVision(HardwareMap hwMap) {
-        backdropAprilTagDetection = new BackdropAprilTagDetection();
+        aprilTagDetector = new AprilTagDetector();
         pixelDetection = new PixelDetection();
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
                 .setCameraResolution(new Size(640, 480))
                 .enableLiveView(true)
-                .addProcessors(backdropAprilTagDetection.aprilTag, pixelDetection.tfodProcessor)
+                .addProcessors(aprilTagDetector.aprilTag, pixelDetection.tfodProcessor)
                 .build();
 
         // Manually set the camera gain and exposure.
