@@ -55,9 +55,18 @@ public class intakeUnit
     // wrist servo motor variables
     private Servo wristServo = null;
     private Servo fingerServo = null;
+
+    private Servo switchServo = null;
+
+    final double SWITCH_CLOSE_POS = 0.13;
+
+    final double SWITCH_LEASE_ONE_POS = 0.19;
+
+    final double SWITCH_RELEASE_TWO_POS = 0.25;
+
     final double WRIST_MAX_POS = 1.0; // Maximum rotational position
     final double WRIST_MIN_POS = 0.0;  // Minimum rotational position
-    final double WRIST_POS_INTAKE = 0.3;
+    final double WRIST_POS_INTAKE = 0.38;
     final double WRIST_POS_INIT = 0.1;
 
     // arm servo variables, not used in current prototype version.
@@ -71,17 +80,21 @@ public class intakeUnit
      * @param armMotorName the name string for arm servo motor
      * @param wristMotorName the name string for wrist servo motor
      */
-    public intakeUnit(HardwareMap hardwareMap, String armMotorName, String wristMotorName, String fingerMotorName) {
+    public intakeUnit(HardwareMap hardwareMap, String armMotorName, String wristMotorName, String fingerMotorName, String switchMotorName) {
         // Save reference to Hardware map
         this.hardwareMap = hardwareMap;
 
         Logging.log("init motors for finger, wrist and arm.");
+        switchServo = hardwareMap.get(Servo.class, switchMotorName);
+        switchServo.setPosition(SWITCH_CLOSE_POS);
+
+
         fingerServo = hardwareMap.get(Servo.class, fingerMotorName);
         fingerStop();
 
         wristServo = hardwareMap.get(Servo.class, wristMotorName);
         wristServo.setDirection(Servo.Direction.FORWARD);
-        //wristServo.setPosition(WRIST_POS_INIT);
+        wristServo.setPosition(WRIST_POS_INTAKE);
         sleep(200);
 
         armMotor = hardwareMap.get(DcMotor.class, armMotorName);
@@ -111,6 +124,7 @@ public class intakeUnit
     public void intakePositions() {
         setArmCountPosition(ARM_POS_INTAKE);
         wristServo.setPosition(WRIST_POS_INTAKE);
+        switchServoClose();
     }
 
     /**
@@ -125,6 +139,13 @@ public class intakeUnit
      */
     public void wristDown() {
         setWristPosition(wristServo.getPosition() - 0.001);
+    }
+
+    public void switchServoOpen() {
+        switchServo.setPosition(switchServo.getPosition() + 0.0005);
+    }
+    public void switchServoClose() {
+        switchServo.setPosition(SWITCH_CLOSE_POS);
     }
 
     public void fingerIntake() {
@@ -156,6 +177,9 @@ public class intakeUnit
         return fingerServo.getPosition();
     }
 
+    public double getSwitchPosition() {
+        return switchServo.getPosition();
+    }
 
     public void resetArmEncoder() {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -165,11 +189,11 @@ public class intakeUnit
     }
 
     public void armLift() {
-        setArmCountPosition(armMotor.getCurrentPosition() + 40);
+        setArmCountPosition(armMotor.getCurrentPosition() + 10);
     }
 
     public void armDown() {
-        setArmCountPosition(armMotor.getCurrentPosition() - 40);
+        setArmCountPosition(armMotor.getCurrentPosition() - 10);
     }
 
     private void sleep(long milliseconds) {
