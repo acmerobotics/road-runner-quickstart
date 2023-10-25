@@ -53,17 +53,14 @@ public class intakeUnit
     HardwareMap hardwareMap =  null;
 
     // wrist servo motor variables
-    private Servo wristServo = null;
     private Servo fingerServo = null;
 
     private Servo switchServo = null;
-
     final double SWITCH_CLOSE_POS = 0.13;
-
-    final double SWITCH_LEASE_ONE_POS = 0.19;
-
+    final double SWITCH_RELEASE_ONE_POS = 0.19;
     final double SWITCH_RELEASE_TWO_POS = 0.25;
 
+    private Servo wristServo = null;
     final double WRIST_MAX_POS = 1.0; // Maximum rotational position
     final double WRIST_MIN_POS = 0.0;  // Minimum rotational position
     final double WRIST_POS_INTAKE = 0.38;
@@ -71,7 +68,7 @@ public class intakeUnit
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
-    final int ARM_POS_INTAKE = 0;
+    final int ARM_POS_INTAKE = 70;
     final int ARM_POS_INT = 3350;
 
     /**
@@ -101,6 +98,19 @@ public class intakeUnit
         resetArmEncoder();
     }
 
+    private void setSwitchPosition(double switchPos) {
+        switchPos = Range.clip(switchPos, SWITCH_CLOSE_POS, SWITCH_RELEASE_TWO_POS);
+        switchServo.setPosition(switchPos);
+    }
+
+
+    public void switchServoOpen() {
+        setSwitchPosition(switchServo.getPosition() + 0.0005);
+    }
+    public void switchServoClose() {
+        setSwitchPosition(SWITCH_CLOSE_POS);
+    }
+
     /**
      * set the target position of wrist servo motor
      * @param wristPos the target position value for wrist servo motor
@@ -109,24 +119,6 @@ public class intakeUnit
         wristPos = Range.clip(wristPos, WRIST_MIN_POS, WRIST_MAX_POS);
         wristServo.setPosition(wristPos);
     }
-
-    /**
-     * set the target position of arm servo motor
-     * @param armPos the target position value for arm servo motor
-     */
-    public void setArmCountPosition(int armPos) {
-        int ARM_MIN_COUNT_POS = -5000;
-        int ARM_MAX_COUNT_POS = 5000;
-        armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
-        armMotor.setTargetPosition(armPos);
-    }
-
-    public void intakePositions() {
-        setArmCountPosition(ARM_POS_INTAKE);
-        wristServo.setPosition(WRIST_POS_INTAKE);
-        switchServoClose();
-    }
-
     /**
      * set the wrist servo motor position to open the wrist
      */
@@ -141,13 +133,6 @@ public class intakeUnit
         setWristPosition(wristServo.getPosition() - 0.001);
     }
 
-    public void switchServoOpen() {
-        switchServo.setPosition(switchServo.getPosition() + 0.0005);
-    }
-    public void switchServoClose() {
-        switchServo.setPosition(SWITCH_CLOSE_POS);
-    }
-
     public void fingerIntake() {
         fingerServo.setPosition(0);
     }
@@ -157,6 +142,39 @@ public class intakeUnit
     public void fingerOuttake() {
         fingerServo.setPosition(1.0);
     }
+
+    /**
+     * set the target position of arm servo motor
+     * @param armPos the target position value for arm servo motor
+     */
+    private void setArmCountPosition(int armPos) {
+        int ARM_MIN_COUNT_POS = 0;
+        int ARM_MAX_COUNT_POS = 5000;
+        armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
+        armMotor.setTargetPosition(armPos);
+    }
+
+    public void resetArmEncoder() {
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setArmCountPosition(0);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(0.95);
+    }
+
+    public void armLift() {
+        setArmCountPosition(armMotor.getCurrentPosition() + 10);
+    }
+
+    public void armDown() {
+        setArmCountPosition(armMotor.getCurrentPosition() - 10);
+    }
+
+    public void intakePositions() {
+        setArmCountPosition(ARM_POS_INTAKE);
+        wristServo.setPosition(WRIST_POS_INTAKE);
+        switchServoClose();
+    }
+
     /**
      * Get the arm servo motor current position value
      * @return the current arm servo motor position value
@@ -181,20 +199,6 @@ public class intakeUnit
         return switchServo.getPosition();
     }
 
-    public void resetArmEncoder() {
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setArmCountPosition(0);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(0.95);
-    }
-
-    public void armLift() {
-        setArmCountPosition(armMotor.getCurrentPosition() + 10);
-    }
-
-    public void armDown() {
-        setArmCountPosition(armMotor.getCurrentPosition() - 10);
-    }
 
     private void sleep(long milliseconds) {
         try {
