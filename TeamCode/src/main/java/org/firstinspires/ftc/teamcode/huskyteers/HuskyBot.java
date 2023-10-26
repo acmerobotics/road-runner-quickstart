@@ -132,7 +132,7 @@ public class HuskyBot {
     }
 
     public PoseVelocity2d alignWithAprilTag(int aprilTagID) {
-        Optional<AprilTagDetection> desiredTag = huskyVision.aprilTagDetector.getAprilTagById(aprilTagID);
+        Optional<AprilTagDetection> desiredTag = huskyVision.AprilTagDetector.getAprilTagById(aprilTagID);
         if (!desiredTag.isPresent()) {
             return new PoseVelocity2d(new Vector2d(0, 0), 0);
         }

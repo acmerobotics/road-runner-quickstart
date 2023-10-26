@@ -49,7 +49,7 @@ public class HuskyTeleOpMode extends LinearOpMode {
             }
 
             if (currentGamepad1.left_bumper &&
-                    huskyBot.huskyVision.aprilTagDetector.getAprilTagById(583).isPresent()) {
+                    huskyBot.huskyVision.AprilTagDetector.getAprilTagById(583).isPresent()) {
                 PoseVelocity2d pw = huskyBot.alignWithAprilTag(583);
                 TelemetryUtils.PoseVelocity2d(pw);
                 huskyBot.driveRobot(pw.component1().y, pw.component1().x, pw.component2(), 1.0);
@@ -71,7 +71,7 @@ public class HuskyTeleOpMode extends LinearOpMode {
                 }
             }
 
-            huskyBot.huskyVision.aprilTagDetector.getAprilTagById(583).ifPresent(
+            huskyBot.huskyVision.AprilTagDetector.getAprilTagById(583).ifPresent(
                     TelemetryUtils::AprilTagDetection);
             TelemetryUtils.Gamepad(currentGamepad1);
             telemetry.update();
