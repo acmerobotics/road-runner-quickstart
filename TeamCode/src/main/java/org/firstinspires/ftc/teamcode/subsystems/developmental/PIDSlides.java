@@ -1,18 +1,23 @@
 package org.firstinspires.ftc.teamcode.subsystems.developmental;
 
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.NoFeedback;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedforward.FeedforwardEx;
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedforward.NoFeedforward;
 import com.ThermalEquilibrium.homeostasis.Filters.Estimators.LowPassEstimator;
+import com.ThermalEquilibrium.homeostasis.Filters.Estimators.RawValue;
 import com.ThermalEquilibrium.homeostasis.Parameters.FeedforwardCoefficientsEx;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.ThermalEquilibrium.homeostasis.Systems.BasicSystem;
 import com.ThermalEquilibrium.homeostasis.Utils.WPILibMotionProfile;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 import org.firstinspires.ftc.teamcode.util.RunToPositionMotorUtil;
@@ -21,52 +26,53 @@ import java.util.function.DoubleSupplier;
 
 
 public class PIDSlides extends Mechanism{
-    double kP = 0;
-    double kI = 0;
-    double kD = 0;
-    double integralSumMax = 0;
-    double stabilityThreshold = 0;
-    double lowPassGain = 0;
+    private static final double KP = 0;
+    private static final double KI = 0;
+    private static final double KD = 0;
+    private static final double INTEGRAL_SUM_MAX = 0;
+    private static final double STABILITY_THRESHOLD = 0;
+    private static final double LOW_PASS_GAIN = 0;
 
-    double kV = 0;
-    double kA = 0;
-    double kStatic = 0;
-    double kG = 0;
-    double kCos = 0;
+    private static final double KV = 0;
+    private static final double KA = 0;
+    private static final double KSTATIC = 0;
+    private static final double KG = 0;
+    private static final double KCOS = 0;
 
-    double a = 0;
-    PIDCoefficientsEx pidCoefficientsEx = new PIDCoefficientsEx(kP, kI, kD, integralSumMax, stabilityThreshold, lowPassGain);
-    PIDEx PIDController = new PIDEx(pidCoefficientsEx);
+    private static final double FILTER_LOW_PASS_GAIN = 0;
+    private PIDCoefficientsEx pidCoefficientsEx;
+    private PIDEx PIDController;
 
-    FeedforwardCoefficientsEx feedforwardCoefficientsEx = new FeedforwardCoefficientsEx(kV, kA, kStatic, kG, kCos);
-    FeedforwardEx FeedforwardController = new FeedforwardEx(feedforwardCoefficientsEx);
+    private FeedforwardCoefficientsEx feedforwardCoefficientsEx;
+    private FeedforwardEx FeedforwardController;
 
-    DoubleSupplier positionSupplier = this::getAverageSlidesPosition;
-    LowPassEstimator lowPassFilter = new LowPassEstimator(positionSupplier, a);
-
-    BasicSystem basicSystem = new BasicSystem(lowPassFilter, PIDController, FeedforwardController);
-
-    public WPILibMotionProfile motionProfile;
-    WPILibMotionProfile.Constraints profileConstraints = new WPILibMotionProfile.Constraints(20, 20);
-    public final ElapsedTime profileTimer = new ElapsedTime();
-
+    private final DoubleSupplier positionSupplier = this::getSlidesPosition;
+    private LowPassEstimator lowPassFilter;
+    private final RawValue noFilter = new RawValue(positionSupplier);
+    private final NoFeedback noFeedback = new NoFeedback();
+    private final NoFeedforward noFeedforward = new NoFeedforward();
+    private BasicSystem basicSystem;
     public boolean isResettingLifts = false;
 
-    DcMotorEx leftSlide;
-    DcMotorEx rightSlide;
+    private DcMotorEx leftSlide;
+    private DcMotorEx rightSlide;
 
-    int lastLeftPos;
-    int lastRightPos;
-    double lastVelo;
+    private int lastEncoderMotorPos;
+    private double lastVelo;
 
     public double releaseSpeedLimit = 0.25;
 
-    public String leftSlideName = "leftSlide";
-    public String rightSlideName = "rightSlide";
+    private final String leftSlideName = "leftSlide";
+    private final String rightSlideName = "rightSlide";
 
-    public boolean isSpeeding = false;
+    private boolean isSpeeding = false;
+    private boolean isReset = true;
 
-    public boolean isReset = true;
+    private final DcMotorEx encoderMotor;
+
+    PIDSlides(DcMotorEx encoderMotor) {
+        this.encoderMotor = encoderMotor;
+    }
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -75,19 +81,45 @@ public class PIDSlides extends Mechanism{
         setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        pidCoefficientsEx = new PIDCoefficientsEx(KP, KI, KD, INTEGRAL_SUM_MAX, STABILITY_THRESHOLD, LOW_PASS_GAIN);
+        PIDController = new PIDEx(pidCoefficientsEx);
+
+        feedforwardCoefficientsEx = new FeedforwardCoefficientsEx(KV, KA, KSTATIC, KG, KCOS);
+        FeedforwardController = new FeedforwardEx(feedforwardCoefficientsEx);
+
+        lowPassFilter = new LowPassEstimator(positionSupplier, FILTER_LOW_PASS_GAIN);
+
+        basicSystem = new BasicSystem(noFilter, PIDController, noFeedforward);
     }
 
     @Override
     public void loop(Gamepad gamepad) {
-        isSpeeding = getAverageSlidesSpeed() > releaseSpeedLimit;
-        isReset = getAverageSlidesPosition() == 0;
-        lastVelo = getAverageSlidesVelocity();
+        isSpeeding = getSlidesPower() > releaseSpeedLimit;
+        isReset = getLastPosition() == 0;
+        lastVelo = getSlidesVelocity();
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+//        telemetry.addData("kG", kG);
+        telemetry.addData("leftSlidePos", leftSlide.getCurrentPosition());
+        telemetry.addData("rightSlidePos", rightSlide.getCurrentPosition());
+        telemetry.addData("leftSlideVelo", leftSlide.getVelocity());
+        telemetry.addData("rightSlideVelo", rightSlide.getVelocity());
+        telemetry.addData("leftSlidePower", leftSlide.getPower());
+        telemetry.addData("rightSlidePower", rightSlide.getPower());
+        telemetry.addData("isSpeeding", isSpeeding);
+        telemetry.addData("isReset", isReset);
+        telemetry.addData("isResettingLifts", isResettingLifts);
+
     }
 
     public void setPower(double power) {
         leftSlide.setPower(power);
         rightSlide.setPower(power);
-        setLastSlidesPosition();
+        setLastPosition();
     }
 
     public void stop() {
@@ -105,51 +137,43 @@ public class PIDSlides extends Mechanism{
     }
 
     public void holdPosition() {
-        double power = basicSystem.update(getAverageLastSlidesPosition());
+        double power = basicSystem.update(getLastPosition());
         setPower(power);
     }
 
     public void setSlidesTargetPosition(int targetPosition) {
-        WPILibMotionProfile.State goal = new WPILibMotionProfile.State(targetPosition, 0);
-        WPILibMotionProfile.State initial = new WPILibMotionProfile.State(getAverageSlidesPosition(), getAverageSlidesVelocity());
-        motionProfile = new WPILibMotionProfile(profileConstraints, goal, initial);
-        profileTimer.reset();
+        basicSystem.update(targetPosition);
     }
     public void resetSlidesPosition() {
         isResettingLifts = true;
         setSlidesTargetPosition(0);
     }
 
-    public boolean isProfileFinished() {
-        if (motionProfile != null) {
-            return motionProfile.isFinished(profileTimer.seconds());
-        } else {
-            return true;
-        }
+    public int getSlidesPosition() {
+        return encoderMotor.getCurrentPosition();
     }
 
-
-
-
-
-    public int getAverageSlidesPosition() {
-        return (leftSlide.getCurrentPosition() + rightSlide.getCurrentPosition())/2;
+    public double getSlidesVelocity() {
+        return encoderMotor.getVelocity();
     }
 
-    public double getAverageSlidesVelocity() {
-        return (leftSlide.getVelocity() + rightSlide.getVelocity())/2;
+    public double getSlidesPower() {
+        return encoderMotor.getPower();
     }
 
-    public double getAverageSlidesSpeed() {
-        return (leftSlide.getPower() + rightSlide.getPower())/2;
+    public void setLastPosition() {
+        lastEncoderMotorPos = encoderMotor.getCurrentPosition();
     }
 
-    public void setLastSlidesPosition() {
-        lastLeftPos = leftSlide.getCurrentPosition();
-        lastRightPos = rightSlide.getCurrentPosition();
+    public double getLastPosition() {
+        return lastEncoderMotorPos;
     }
 
-    public int getAverageLastSlidesPosition() {
-        return (lastLeftPos + lastRightPos)/2;
+    public boolean isReset() {
+        return isReset;
+    }
+
+    public boolean isSpeeding() {
+        return isSpeeding;
     }
 }

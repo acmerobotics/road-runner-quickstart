@@ -24,5 +24,7 @@ public class DrivebaseSubsystemTester extends OpMode {
     @Override
     public void loop() {
         drivebase.loop(gamepad1);
+        drivebase.telemetry(telemetry);
+        telemetry.update();
     }
 }
