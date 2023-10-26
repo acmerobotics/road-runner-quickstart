@@ -61,14 +61,16 @@ public class intakeUnit
     final double SWITCH_RELEASE_TWO_POS = 0.25;
 
     private Servo wristServo = null;
-    final double WRIST_MAX_POS = 1.0; // Maximum rotational position
+    final double WRIST_MAX_POS = 0.6; // Maximum rotational position
     final double WRIST_MIN_POS = 0.0;  // Minimum rotational position
     final double WRIST_POS_INTAKE = 0.38;
     final double WRIST_POS_INIT = 0.1;
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
-    final int ARM_POS_INTAKE = 70;
+    final int ARM_MIN_COUNT_POS = -3500;
+    final int ARM_MAX_COUNT_POS = 0;
+    final int ARM_POS_INTAKE = -20;
     final int ARM_POS_INT = 3350;
 
     /**
@@ -148,8 +150,6 @@ public class intakeUnit
      * @param armPos the target position value for arm servo motor
      */
     private void setArmCountPosition(int armPos) {
-        int ARM_MIN_COUNT_POS = 0;
-        int ARM_MAX_COUNT_POS = 5000;
         armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
         armMotor.setTargetPosition(armPos);
     }
@@ -158,6 +158,9 @@ public class intakeUnit
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setArmCountPosition(0);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Logging.log("Arm Motor mode = %s",  armMotor.getMode());
+        Logging.log("Arm Motor curr position = %d",  armMotor.getCurrentPosition());
+        Logging.log("Arm Motor target position = %d",  armMotor.getTargetPosition());
         armMotor.setPower(0.95);
     }
 

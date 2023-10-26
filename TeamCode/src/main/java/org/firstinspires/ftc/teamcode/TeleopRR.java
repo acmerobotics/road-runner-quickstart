@@ -120,8 +120,8 @@ public class TeleopRR extends LinearOpMode {
             }
             mecanum.setDrivePowers(new PoseVelocity2d(
                     new Vector2d(
-                            gpButtons.robotDrive * maxDrivePower,
-                            gpButtons.robotStrafe * maxDrivePower
+                            -gpButtons.robotDrive * maxDrivePower,
+                            -gpButtons.robotStrafe * maxDrivePower
                     ),
                     gpButtons.robotTurn * maxDrivePower
             ));
