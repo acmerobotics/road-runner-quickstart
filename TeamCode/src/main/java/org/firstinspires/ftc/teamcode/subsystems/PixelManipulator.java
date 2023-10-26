@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsystems.developmental.PIDSlides;
+import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
 import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 public class PixelManipulator extends Mechanism {
@@ -12,7 +13,7 @@ public class PixelManipulator extends Mechanism {
     Arm arm;
     Claw claw;
     Intake intake;
-    Slides slides;
+    PIDSlides slides;
 
 
     enum ScoringState {
@@ -26,7 +27,7 @@ public class PixelManipulator extends Mechanism {
         intake = new Intake();
         claw = new Claw();
         arm = new Arm();
-        slides = new Slides();
+        slides = new PIDSlides();
 
         intake.init(hwMap);
         claw.init(hwMap);
@@ -39,9 +40,9 @@ public class PixelManipulator extends Mechanism {
 
         boolean isPixelsLoaded = claw.isLeftClamped && claw.isRightClamped;
 
-        boolean isRelseasable = claw.isRotatorInPosition && !slides.isSpeeding;
+        boolean isRelseasable = claw.isRotatorInPosition && !slides.isSpeeding();
 
-        boolean isReset = arm.isRetracted && slides.isReset;
+        boolean isReset = arm.isRetracted && slides.isReset();
 
         switch (activeScoringState) {
             case PICKINGUP:
@@ -109,7 +110,7 @@ public class PixelManipulator extends Mechanism {
                 claw.setActiveTiltState(Claw.TiltState.CENTER);
                 if (claw.isRotatorInPosition) {
                     arm.stage();
-                    slides.resetSlidesPosition(1);
+                    slides.resetSlidesPosition();
                     if (isReset) {
                         setActiveScoringState(ScoringState.PICKINGUP);
                     }
