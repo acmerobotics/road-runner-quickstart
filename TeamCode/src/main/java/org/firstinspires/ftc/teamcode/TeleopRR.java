@@ -152,12 +152,23 @@ public class TeleopRR extends LinearOpMode {
                 //launchServo.setPosition(0);
             }
 
-            if (gpButtons.armLift) {
-                intake.armLift();
-            }
+            if (gpButtons.accelorate) {
+                if (gpButtons.armLift) {
+                    intake.armLiftAcc();
+                }
 
-            if (gpButtons.armDown) {
-                intake.armDown();
+                if (gpButtons.armDown) {
+                    intake.armDownAcc();
+                }
+            }
+            else {
+                if (gpButtons.armLift) {
+                    intake.armLift();
+                }
+
+                if (gpButtons.armDown) {
+                    intake.armDown();
+                }
             }
 
             if(gpButtons.readyToIntake) {
@@ -170,6 +181,10 @@ public class TeleopRR extends LinearOpMode {
 
             if(gpButtons.switchClose) {
                 intake.switchServoClose();
+            }
+
+            if(gpButtons.dropPosition) {
+                intake.dropPositions();
             }
 
 

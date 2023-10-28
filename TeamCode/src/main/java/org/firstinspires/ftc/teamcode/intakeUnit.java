@@ -58,11 +58,12 @@ public class intakeUnit
     private Servo switchServo = null;
     final double SWITCH_CLOSE_POS = 0.14;
     final double SWITCH_RELEASE_ONE_POS = 0.19;
-    final double SWITCH_RELEASE_TWO_POS = 0.25;
+    final double SWITCH_RELEASE_TWO_POS = 0.27;
 
     private Servo wristServo = null;
     final double WRIST_MAX_POS = 0.95; // Maximum rotational position
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
+    final double WRIST_POS_DROP = 0.36;
     final double WRIST_POS_INTAKE = 0.44;
     final double WRIST_POS_AUTO = 0.87;
 
@@ -70,8 +71,9 @@ public class intakeUnit
     public DcMotor armMotor = null;
     final int ARM_MIN_COUNT_POS = -3500;
     final int ARM_MAX_COUNT_POS = 0;
-    final int ARM_POS_INTAKE = -15;
+    final int ARM_POS_INTAKE = -30;
     final int ARM_POS_AUTO = 3450;
+    final int ARM_POS_DROP = -860;
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -165,12 +167,21 @@ public class intakeUnit
     }
 
     public void armLift() {
-        setArmCountPosition(armMotor.getCurrentPosition() + 10);
+        setArmCountPosition(armMotor.getCurrentPosition() + 5);
     }
 
     public void armDown() {
-        setArmCountPosition(armMotor.getCurrentPosition() - 10);
+        setArmCountPosition(armMotor.getCurrentPosition() - 5);
     }
+
+    public void armLiftAcc() {
+        setArmCountPosition(armMotor.getCurrentPosition() + 50);
+    }
+
+    public void armDownAcc() {
+        setArmCountPosition(armMotor.getCurrentPosition() - 50);
+    }
+
 
     public void intakePositions() {
         setArmCountPosition(ARM_POS_INTAKE);
@@ -179,10 +190,11 @@ public class intakeUnit
     }
 
 
-    public void autoPositions() {
-        setArmCountPosition(ARM_POS_AUTO);
-        wristServo.setPosition(WRIST_POS_AUTO);
+    public void dropPositions() {
+        setArmCountPosition(ARM_POS_DROP);
+        wristServo.setPosition(WRIST_POS_DROP);
         switchServoClose();
+        fingerStop();
     }
     /**
      * Get the arm servo motor current position value
