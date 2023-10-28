@@ -56,22 +56,22 @@ public class intakeUnit
     private Servo fingerServo = null;
 
     private Servo switchServo = null;
-    final double SWITCH_CLOSE_POS = 0.13;
+    final double SWITCH_CLOSE_POS = 0.14;
     final double SWITCH_RELEASE_ONE_POS = 0.19;
     final double SWITCH_RELEASE_TWO_POS = 0.25;
 
     private Servo wristServo = null;
-    final double WRIST_MAX_POS = 0.6; // Maximum rotational position
-    final double WRIST_MIN_POS = 0.0;  // Minimum rotational position
-    final double WRIST_POS_INTAKE = 0.38;
-    final double WRIST_POS_INIT = 0.1;
+    final double WRIST_MAX_POS = 0.95; // Maximum rotational position
+    final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
+    final double WRIST_POS_INTAKE = 0.44;
+    final double WRIST_POS_AUTO = 0.87;
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
     final int ARM_MIN_COUNT_POS = -3500;
     final int ARM_MAX_COUNT_POS = 0;
-    final int ARM_POS_INTAKE = -20;
-    final int ARM_POS_INT = 3350;
+    final int ARM_POS_INTAKE = -15;
+    final int ARM_POS_AUTO = 3450;
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -178,6 +178,12 @@ public class intakeUnit
         switchServoClose();
     }
 
+
+    public void autoPositions() {
+        setArmCountPosition(ARM_POS_AUTO);
+        wristServo.setPosition(WRIST_POS_AUTO);
+        switchServoClose();
+    }
     /**
      * Get the arm servo motor current position value
      * @return the current arm servo motor position value
