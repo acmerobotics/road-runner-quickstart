@@ -66,11 +66,12 @@ public class GamePadButtons {
     public boolean switchOpen;
     public boolean switchClose;
 
-    public boolean accelorate;
+    public boolean speedCtrl;
 
     public boolean readyToIntake;
-    public boolean dropPosition;
-    public boolean launchOn;
+    public boolean readyToDrop;
+    public boolean launchPlane;
+    public boolean hangingRobot;
 
     public void checkGamepadButtons(@NonNull Gamepad gamepad1, @NonNull Gamepad gamepad2) {
         //gamepad1 buttons
@@ -81,9 +82,6 @@ public class GamePadButtons {
         // arm lift
         armLift = gamepad1.x;
         armDown = gamepad1.y;
-
-        // launch plane
-        launchOn = gamepad1.right_bumper || gamepad2.right_bumper;
 
         fingerIntake = gamepad1.dpad_down || gamepad2.dpad_down;
         fingerStop = gamepad1.dpad_left || gamepad2.dpad_left;
@@ -97,9 +95,14 @@ public class GamePadButtons {
 
         readyToIntake = gamepad1.left_bumper;
 
-        dropPosition = gamepad1.right_bumper;
+        readyToDrop = gamepad1.right_bumper;
 
-        accelorate = gamepad1.back;
+        speedCtrl = gamepad1.back;
 
+        speedDown = speedCtrl;
+
+        // game pad 2
+        launchPlane = gamepad2.a;
+        hangingRobot = gamepad2.left_bumper;
     }
 }

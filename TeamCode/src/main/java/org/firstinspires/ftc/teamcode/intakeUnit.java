@@ -54,6 +54,10 @@ public class intakeUnit
 
     // wrist servo motor variables
     private Servo fingerServo = null;
+    final double FINGER_INTAKE_POS = 0;
+
+    final double FINGER_STOP_POS = 0.5;
+    final double FINGER_OUTTAKE_POS = 1.0;
 
     private Servo switchServo = null;
     final double SWITCH_CLOSE_POS = 0.14;
@@ -72,8 +76,9 @@ public class intakeUnit
     final int ARM_MIN_COUNT_POS = -3500;
     final int ARM_MAX_COUNT_POS = 0;
     final int ARM_POS_INTAKE = -30;
-    final int ARM_POS_AUTO = 3450;
+    final int ARM_POS_AUTO = -3450;
     final int ARM_POS_DROP = -860;
+    final int ARM_POS_HANG = -3000;
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -137,14 +142,15 @@ public class intakeUnit
         setWristPosition(wristServo.getPosition() - 0.001);
     }
 
+    // Finger servo control methods.
     public void fingerIntake() {
-        fingerServo.setPosition(0);
+        fingerServo.setPosition(FINGER_INTAKE_POS);
     }
     public void fingerStop() {
-        fingerServo.setPosition(0.5);
+        fingerServo.setPosition(FINGER_STOP_POS);
     }
     public void fingerOuttake() {
-        fingerServo.setPosition(1.0);
+        fingerServo.setPosition(FINGER_OUTTAKE_POS);
     }
 
     /**
@@ -182,13 +188,16 @@ public class intakeUnit
         setArmCountPosition(armMotor.getCurrentPosition() - 50);
     }
 
-
+    public void hangingrobot() {
+        setArmCountPosition(ARM_POS_HANG);
+    }
+    // auto setting positions
     public void intakePositions() {
         setArmCountPosition(ARM_POS_INTAKE);
         wristServo.setPosition(WRIST_POS_INTAKE);
         switchServoClose();
+        fingerIntake();
     }
-
 
     public void dropPositions() {
         setArmCountPosition(ARM_POS_DROP);
@@ -196,6 +205,7 @@ public class intakeUnit
         switchServoClose();
         fingerStop();
     }
+
     /**
      * Get the arm servo motor current position value
      * @return the current arm servo motor position value
