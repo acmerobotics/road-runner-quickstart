@@ -83,8 +83,8 @@ public class TeleopRR extends LinearOpMode {
         mecanum = new MecanumDrive(hardwareMap, Params.currentPose);
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo",
-                "FingerServo", "SwitchServo");
+        intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo", "FingerServo", "SwitchServo");
+        //intake = new intakeUnit();
 
         //intake.resetArmEncoder();
 
@@ -184,7 +184,7 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if (gpButtons.hangingRobot) {
-                intake.hangingrobot();
+                intake.hangingRobot();
             }
 
             if (gpButtons.launchPlane) {

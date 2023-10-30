@@ -60,24 +60,28 @@ public class intakeUnit
     final double FINGER_OUTTAKE_POS = 1.0;
 
     private Servo switchServo = null;
-    final double SWITCH_CLOSE_POS = 0.14;
-    final double SWITCH_RELEASE_ONE_POS = 0.19;
-    final double SWITCH_RELEASE_TWO_POS = 0.27;
+    final double SWITCH_CLOSE_POS = 0.20;
+    final double SWITCH_RELEASE_ONE_POS = 0.27;
+    final double SWITCH_RELEASE_TWO_POS = 0.35;
 
     private Servo wristServo = null;
     final double WRIST_MAX_POS = 0.95; // Maximum rotational position
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
     final double WRIST_POS_DROP = 0.36;
+    final double WRIST_POS_DROP_ONE = 0.38;
+
     final double WRIST_POS_INTAKE = 0.44;
-    final double WRIST_POS_AUTO = 0.87;
+    final double WRIST_POS_AUTO = 0.88;
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
     final int ARM_MIN_COUNT_POS = -3500;
     final int ARM_MAX_COUNT_POS = 0;
     final int ARM_POS_INTAKE = -30;
-    final int ARM_POS_AUTO = -3450;
+    final int ARM_POS_AUTO = -3430;
     final int ARM_POS_DROP = -860;
+    final int ARM_POS_DROP_ONE = -290;
+
     final int ARM_POS_HANG = -3000;
 
     /**
@@ -188,7 +192,7 @@ public class intakeUnit
         setArmCountPosition(armMotor.getCurrentPosition() - 50);
     }
 
-    public void hangingrobot() {
+    public void hangingRobot() {
         setArmCountPosition(ARM_POS_HANG);
     }
     // auto setting positions
@@ -202,6 +206,13 @@ public class intakeUnit
     public void dropPositions() {
         setArmCountPosition(ARM_POS_DROP);
         wristServo.setPosition(WRIST_POS_DROP);
+        switchServoClose();
+        fingerStop();
+    }
+
+    public void autonomousInit() {
+        setArmCountPosition(ARM_POS_AUTO);
+        wristServo.setPosition(WRIST_POS_AUTO);
         switchServoClose();
         fingerStop();
     }

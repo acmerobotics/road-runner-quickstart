@@ -185,10 +185,14 @@ public class AutoRedFront extends LinearOpMode {
         telemetry.addData("right back pos", drive.rightBack.getCurrentPosition());
         telemetry.update();
 
+        intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo",
+                "FingerServo", "SwitchServo");
+
         //intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo", "FingerServo");
-        //intake.resetArmEncoder();
+        intake.resetArmEncoder();
 
         sleep(500);
+        intake.autonomousInit();
 
         runtime.reset();
         while ((ObjectDetection.PropSide.UNKNOWN == propLocation) &&
@@ -237,7 +241,10 @@ public class AutoRedFront extends LinearOpMode {
         if (opModeIsActive()) {
             //intake.armManualMoving(15);
             sleep(150);
-            autonomousCore();
+            //autonomousCore();
+            intake.intakePositions(); // temp code
+            sleep(2000);
+
             camera.closeCameraDevice(); // cost too times at the beginning to close camera about 300 ms
             Logging.log("Autonomous time - total Run Time: " + runtime);
         }
