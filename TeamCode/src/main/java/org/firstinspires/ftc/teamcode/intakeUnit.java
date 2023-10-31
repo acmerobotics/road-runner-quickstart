@@ -108,7 +108,7 @@ public class intakeUnit
         sleep(200);
 
         armMotor = hardwareMap.get(DcMotor.class, armMotorName);
-        resetArmEncoder();
+        //resetArmEncoder();
     }
 
     private void setSwitchPosition(double switchPos) {
@@ -166,14 +166,18 @@ public class intakeUnit
         armMotor.setTargetPosition(armPos);
     }
 
+    public void setArmModeRunToPosition(int armPos) {
+        setArmCountPosition(armPos);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(0.95);
+    }
     public void resetArmEncoder() {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setArmCountPosition(0);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setArmModeRunToPosition(0);
+
         Logging.log("Arm Motor mode = %s",  armMotor.getMode());
         Logging.log("Arm Motor curr position = %d",  armMotor.getCurrentPosition());
         Logging.log("Arm Motor target position = %d",  armMotor.getTargetPosition());
-        armMotor.setPower(0.95);
     }
 
     public void armLift() {
@@ -221,7 +225,7 @@ public class intakeUnit
      * Get the arm servo motor current position value
      * @return the current arm servo motor position value
      */
-    public double getArmPosition() {
+    public int getArmPosition() {
         return armMotor.getCurrentPosition();
     }
 

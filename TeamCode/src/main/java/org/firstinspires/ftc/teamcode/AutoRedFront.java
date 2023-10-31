@@ -188,7 +188,6 @@ public class AutoRedFront extends LinearOpMode {
         intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo",
                 "FingerServo", "SwitchServo");
 
-        //intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo", "FingerServo");
         intake.resetArmEncoder();
 
         sleep(500);
