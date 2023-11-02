@@ -45,8 +45,8 @@ public class Params {
     static final double HALF_MAT = 12.0;
 
     // robot size
-    static final double CHASSIS_HALF_WIDTH = 14 / 2.0;
-    static final double CHASSIS_LENGTH = 17;
+    static final double CHASSIS_HALF_WIDTH = 18 / 2.0;
+    static final double CHASSIS_LENGTH = 18;
 
     // moving distance variables
     static final double BACKDROP_FORWARD = HALF_MAT - (CHASSIS_LENGTH / 2 - 2);

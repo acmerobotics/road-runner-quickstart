@@ -61,13 +61,13 @@ import java.util.List;
  *          "BackRight"
  *          "FrontRight"
  *
- *      One servo motors:
- *          "ArmServo"
- *          "ClawServo"
+ *      Servo motors:
+ *          "FingerServo"
+ *          "WristServo"
+ *          "SwitchServo"
  *
- *      Two cameras:
+ *      One cameras:
  *          "Webcam 1"
- *          "WebcamR"
  */
 
 @Autonomous(name="Auto Red Front", group="Concept")
@@ -120,13 +120,13 @@ public class AutoRedFront extends LinearOpMode {
         }
 
         if (3 == startLoc) { //  blue front
-            startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH,
+            startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_LENGTH / 2,
                     3 * Params.HALF_MAT, Math.toRadians(180.0));
         }
 
         if (4 == startLoc) { //  blue back
-            startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH,
-                    -1 * Params.HALF_MAT, Math.toRadians(90.0));
+            startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_LENGTH / 2,
+                    -1 * Params.HALF_MAT, Math.toRadians(180.0));
         }
     }
 
@@ -202,7 +202,7 @@ public class AutoRedFront extends LinearOpMode {
 
         while (!isStarted()) {
             propLocation = propDetect.getPropPos();
-            propLocation = ObjectDetection.PropSide.LEFT; // for test
+            propLocation = ObjectDetection.PropSide.LEFT; // TODO: remove after temp test
 
             switch (propLocation) {
                 case LEFT:
@@ -241,7 +241,7 @@ public class AutoRedFront extends LinearOpMode {
             //intake.armManualMoving(15);
             sleep(150);
             //autonomousCore();
-            intake.intakePositions(); // temp code
+            intake.intakePositions(); // Motors are at intake positions at the beginning of Tele-op
             sleep(2000);
 
             camera.closeCameraDevice(); // cost too times at the beginning to close camera about 300 ms
@@ -285,6 +285,7 @@ public class AutoRedFront extends LinearOpMode {
                         .lineToXConstantHeading(pMatCenter.position.x)
                         .build()
         );
+
         if (1 == spikeMarkLoc) { // left
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
@@ -316,11 +317,8 @@ public class AutoRedFront extends LinearOpMode {
         Logging.log("robot drive: after turn pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
         Logging.log("robot drive: after turn imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
-        // 2. open claw to release purple pixel
-        sleep(500);
-
-        //3. close claw
-        sleep(100);
+        // drop off the purple pixel by arm and wrist actions
+        dropPurpleAction();
 
         // turn back and facing to backdrop board
         if (1 == spikeMarkLoc) // left
@@ -550,5 +548,15 @@ public class AutoRedFront extends LinearOpMode {
         tag.autoDriveToAprilTag();
 
         // drop pixel
+    }
+
+    private void dropPurpleAction() {
+        // 1. arm and wrist at correct position
+        intake.readyToDropPurple();
+        sleep(500);
+
+        // 2. open switch
+        intake.setSwitchPosition(intake.SWITCH_RELEASE_PURPLE);
+        sleep(500);
     }
 }
