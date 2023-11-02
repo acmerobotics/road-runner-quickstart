@@ -118,7 +118,7 @@ public class TeleopRR extends LinearOpMode {
                             -gpButtons.robotDrive * maxDrivePower,
                             -gpButtons.robotStrafe * maxDrivePower
                     ),
-                    gpButtons.robotTurn * maxDrivePower
+                    -gpButtons.robotTurn * maxDrivePower
             ));
 
             // Set position only when button is hit.
@@ -144,7 +144,7 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if (!gpButtons.speedCtrl) {
-                if (gpButtons.armLift) {
+                if (gpButtons.armUp) {
                     intake.armLiftAcc();
                 }
 
@@ -153,8 +153,8 @@ public class TeleopRR extends LinearOpMode {
                 }
             }
             else {
-                if (gpButtons.armLift) {
-                    intake.armLift();
+                if (gpButtons.armUp) {
+                    intake.armUp();
                 }
 
                 if (gpButtons.armDown) {

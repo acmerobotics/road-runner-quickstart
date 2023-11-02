@@ -110,18 +110,18 @@ public class AutoRedFront extends LinearOpMode {
     private void setStartPoses() {
         // road runner variables
         if (1 == startLoc) { // red front
-            startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH,
-                    3 * Params.HALF_MAT, Math.toRadians(-90.0));
+            startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_LENGTH / 2,
+                    3 * Params.HALF_MAT, Math.toRadians(0.0));
         }
 
         if (2 == startLoc) { // red back
-            startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_HALF_WIDTH,
-                    -1 * Params.HALF_MAT, Math.toRadians(-90.0));
+            startPose = new Pose2d(-6 * Params.HALF_MAT + Params.CHASSIS_LENGTH / 2,
+                    -1 * Params.HALF_MAT, Math.toRadians(0.0));
         }
 
         if (3 == startLoc) { //  blue front
             startPose = new Pose2d(6 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH,
-                    3 * Params.HALF_MAT, Math.toRadians(90.0));
+                    3 * Params.HALF_MAT, Math.toRadians(180.0));
         }
 
         if (4 == startLoc) { //  blue back
@@ -280,27 +280,27 @@ public class AutoRedFront extends LinearOpMode {
         Logging.log("robot drive: before strafe pos heading : %.2f", Math.toDegrees(drive.pose.heading.log()));
         Logging.log("robot drive: before strafe imu heading : %.2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
+        Actions.runBlocking(
+                drive.actionBuilder(startPose)
+                        .lineToXConstantHeading(pMatCenter.position.x)
+                        .build()
+        );
         if (1 == spikeMarkLoc) { // left
             Actions.runBlocking(
-                    drive.actionBuilder(startPose)
-                            .strafeTo(pMatCenter.position)
-                            .turn(Math.PI)
+                    drive.actionBuilder(drive.pose)
+                            .turn(Math.PI / 2)
                             .build());
         }
         
         if (2 == spikeMarkLoc) { // center
-            Actions.runBlocking(
-                    drive.actionBuilder(startPose)
-                            .strafeTo(pMatCenter.position)
-                            .turn(Math.PI / 2.0)
-                            .build());
+            //left empty because already executed
         }
 
         if (3 == spikeMarkLoc) // right
         {
             Actions.runBlocking(
-                    drive.actionBuilder(startPose)
-                            .strafeTo(pMatCenter.position)
+                    drive.actionBuilder(drive.pose)
+                            .turn(- Math.PI / 2.0)
                             .build());
         }
         telemetry.addData("left front pos", drive.leftFront.getCurrentPosition());
@@ -378,6 +378,15 @@ public class AutoRedFront extends LinearOpMode {
             );
         }
 
+        if(2 == spikeMarkLoc) //center, mark number 5
+        {
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .lineToYConstantHeading(vAprilTag5.y)
+                            .build()
+            );
+        }
+
         if (3 == spikeMarkLoc) // right, mark number 6
         {
             Actions.runBlocking(
@@ -408,27 +417,28 @@ public class AutoRedFront extends LinearOpMode {
         Logging.log("robot drive: before strafe pos heading : %.2f", Math.toDegrees(drive.pose.heading.log()));
         Logging.log("robot drive: before strafe imu heading : %.2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
+        Actions.runBlocking(
+                drive.actionBuilder(startPose)
+                        .lineToXConstantHeading(pMatCenter.position.x)
+                        .build()
+        );
+
         if (1 == spikeMarkLoc) { // left
             Actions.runBlocking(
                     drive.actionBuilder(startPose)
-                            .strafeTo(pMatCenter.position)
-                            .turn(Math.PI)
+                            .turn(Math.PI / 2)
                             .build());
         }
 
         if (2 == spikeMarkLoc) { // center
-            Actions.runBlocking(
-                    drive.actionBuilder(startPose)
-                            .strafeTo(pMatCenter.position)
-                            .turn(Math.PI / 2.0)
-                            .build());
+            // left empty because already executed
         }
 
         if (3 == spikeMarkLoc) // right
         {
             Actions.runBlocking(
                     drive.actionBuilder(startPose)
-                            .strafeTo(pMatCenter.position)
+                            .turn(- Math.PI / 2)
                             .build());
         }
         telemetry.addData("left front pos", drive.leftFront.getCurrentPosition());

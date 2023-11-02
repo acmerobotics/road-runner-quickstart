@@ -70,14 +70,14 @@ public class intakeUnit
     final double WRIST_POS_DROP = 0.36;
     final double WRIST_POS_DROP_ONE = 0.38;
 
-    final double WRIST_POS_INTAKE = 0.44;
+    final double WRIST_POS_INTAKE = 0.42;
     final double WRIST_POS_AUTO = 0.88;
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
     final int ARM_MIN_COUNT_POS = -3500;
     final int ARM_MAX_COUNT_POS = 0;
-    final int ARM_POS_INTAKE = -30;
+    final int ARM_POS_INTAKE = -20;
     final int ARM_POS_AUTO = -3430;
     final int ARM_POS_DROP = -860;
     final int ARM_POS_DROP_ONE = -290;
@@ -180,7 +180,7 @@ public class intakeUnit
         Logging.log("Arm Motor target position = %d",  armMotor.getTargetPosition());
     }
 
-    public void armLift() {
+    public void armUp() {
         setArmCountPosition(armMotor.getCurrentPosition() + 5);
     }
 
