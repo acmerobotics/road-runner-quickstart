@@ -51,7 +51,7 @@ public final class MecanumDrive {
         // Gobilda odometry: 48mm diameter(1.89 inch), 2048 tick per revolution, inPerTick = 0.0029.
         public boolean useDeadWheel = false;
         public double inPerTick = useDeadWheel? 0.00294 : 0.02208155454144; // WHEEL_RADIUS(1.8898) * 2 * Math.PI / TICKS_PER_REV(537.6)
-        public double lateralInPerTick = useDeadWheel? 0.002621639136230116 : 0.0019;
+        public double lateralInPerTick = useDeadWheel? 0.002621639136230116 : 0.019;
         public double trackWidthTicks = useDeadWheel? 4799.137772874604 : 650;
 
         // feedforward parameters (in tick units)

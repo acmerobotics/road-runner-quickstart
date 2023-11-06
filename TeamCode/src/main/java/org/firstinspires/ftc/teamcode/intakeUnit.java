@@ -61,28 +61,30 @@ public class intakeUnit
 
     private Servo switchServo = null;
     final double SWITCH_CLOSE_POS = 0.20;
-    final double SWITCH_RELEASE_PURPLE = 0.27;
-    final double SWITCH_RELEASE_TWO_POS = 0.35;
+    final double SWITCH_RELEASE_PURPLE = 0.25;
+    final double SWITCH_RELEASE_YELLOW = 0.72;
 
     private Servo wristServo = null;
     final double WRIST_MAX_POS = 0.95; // Maximum rotational position
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
     final double WRIST_POS_DROP = 0.36;
-    final double WRIST_POS_DROP_PURPLE = 0.38;
+    final double WRIST_POS_DROP_PURPLE = 0.29;
+    final double WRIST_POS_DROP_YELLOW = 0.34;
 
     final double WRIST_POS_INTAKE = 0.42;
     final double WRIST_POS_AUTO = 0.88;
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
-    final int ARM_MIN_COUNT_POS = -3500;
-    final int ARM_MAX_COUNT_POS = 0;
-    final int ARM_POS_INTAKE = -20;
-    final int ARM_POS_AUTO = -3430;
-    final int ARM_POS_DROP = -860;
-    final int ARM_POS_DROP_PURPLE = -290;
+    final int ARM_MIN_COUNT_POS = 0;
+    final int ARM_MAX_COUNT_POS = 3800;
+    final int ARM_POS_INTAKE = 35200;
+    final int ARM_POS_AUTO = 0;
+    final int ARM_POS_DROP = 3250;
+    final int ARM_POS_DROP_PURPLE = 3290;
+    final int ARM_POS_DROP_YELLOW = 2775;
 
-    final int ARM_POS_HANG = -3000;
+    final int ARM_POS_HANG = 500;
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -104,7 +106,7 @@ public class intakeUnit
 
         wristServo = hardwareMap.get(Servo.class, wristMotorName);
         wristServo.setDirection(Servo.Direction.FORWARD);
-        wristServo.setPosition(WRIST_POS_INTAKE);
+        //wristServo.setPosition(WRIST_POS_INTAKE);
         sleep(200);
 
         armMotor = hardwareMap.get(DcMotor.class, armMotorName);
@@ -112,7 +114,7 @@ public class intakeUnit
     }
 
     public void setSwitchPosition(double switchPos) {
-        switchPos = Range.clip(switchPos, SWITCH_CLOSE_POS, SWITCH_RELEASE_TWO_POS);
+        switchPos = Range.clip(switchPos, SWITCH_CLOSE_POS, SWITCH_RELEASE_YELLOW);
         switchServo.setPosition(switchPos);
     }
 
@@ -216,7 +218,7 @@ public class intakeUnit
 
     public void autonomousInit() {
         setArmCountPosition(ARM_POS_AUTO);
-        wristServo.setPosition(WRIST_POS_AUTO);
+        //wristServo.setPosition(WRIST_POS_AUTO);
         switchServoClose();
         fingerStop();
     }
@@ -224,8 +226,18 @@ public class intakeUnit
     public void readyToDropPurple() {
         setArmCountPosition(ARM_POS_DROP_PURPLE);
         wristServo.setPosition(WRIST_POS_DROP_PURPLE);
+        //switchServoClose();
+        fingerStop();
+    }
+    public void readyToDropYellow(){
+        setArmCountPosition(ARM_POS_DROP_YELLOW);
+        wristServo.setPosition(WRIST_POS_DROP_YELLOW);
         switchServoClose();
         fingerStop();
+    }
+    public void underTheBeam(){
+        setArmCountPosition(3000);
+        wristServo.setPosition(0.4);
     }
 
     /**

@@ -29,7 +29,7 @@ public class ObjectDetection extends OpenCvPipeline {
 
     // TOPLEFT anchor point for the 3 bounding boxes
     private final Point BOX_ANCHOR_ONE = new Point(28, 124);
-    private final Point BOX_ANCHOR_TWO = new Point(158, 116);
+    private final Point BOX_ANCHOR_TWO = new Point(158, 100);
     private final Point BOX_ANCHOR_THREE = new Point(288, 124);
 
     // Width and height for the bounding boxes
