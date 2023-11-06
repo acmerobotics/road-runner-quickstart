@@ -60,28 +60,30 @@ public class intakeUnit
     final double FINGER_OUTTAKE_POS = 1.0;
 
     private Servo switchServo = null;
-    final double SWITCH_CLOSE_POS = 0.20;
+    final double SWITCH_CLOSE_POS = 0.21;
     final double SWITCH_RELEASE_PURPLE = 0.25;
-    final double SWITCH_RELEASE_YELLOW = 0.72;
+    final double SWITCH_RELEASE_YELLOW = 0.34;
 
     private Servo wristServo = null;
     final double WRIST_MAX_POS = 0.95; // Maximum rotational position
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
-    final double WRIST_POS_DROP = 0.36;
+    final double WRIST_POS_DROP = 0.37;
     final double WRIST_POS_DROP_PURPLE = 0.29;
     final double WRIST_POS_DROP_YELLOW = 0.34;
 
     final double WRIST_POS_INTAKE = 0.42;
-    final double WRIST_POS_AUTO = 0.88;
+    final double WRIST_POS_AUTO = 0.33;
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
     final int ARM_MIN_COUNT_POS = 0;
-    final int ARM_MAX_COUNT_POS = 3800;
-    final int ARM_POS_INTAKE = 35200;
+    final int ARM_MAX_COUNT_POS = 3620;
+    final int ARM_POS_INTAKE = 3590;
     final int ARM_POS_AUTO = 0;
-    final int ARM_POS_DROP = 3250;
+    final int ARM_POS_DROP = 2750;
     final int ARM_POS_DROP_PURPLE = 3290;
+
+    final int ARM_POS_UNDER_BEAM = 3000;
     final int ARM_POS_DROP_YELLOW = 2775;
 
     final int ARM_POS_HANG = 500;
@@ -91,6 +93,7 @@ public class intakeUnit
      * @param hardwareMap the Hardware Mappings.
      * @param armMotorName the name string for arm servo motor
      * @param wristMotorName the name string for wrist servo motor
+     * @param switchMotorName the name string for switch servo motor
      */
     public intakeUnit(HardwareMap hardwareMap, String armMotorName, String wristMotorName, String fingerMotorName, String switchMotorName) {
         // Save reference to Hardware map
@@ -209,6 +212,13 @@ public class intakeUnit
         fingerIntake();
     }
 
+    public void parkingPositions() {
+        setArmCountPosition(ARM_POS_INTAKE);
+        wristServo.setPosition(WRIST_POS_INTAKE);
+        switchServoClose();
+        fingerStop();
+    }
+
     public void dropPositions() {
         setArmCountPosition(ARM_POS_DROP);
         wristServo.setPosition(WRIST_POS_DROP);
@@ -218,7 +228,7 @@ public class intakeUnit
 
     public void autonomousInit() {
         setArmCountPosition(ARM_POS_AUTO);
-        //wristServo.setPosition(WRIST_POS_AUTO);
+        wristServo.setPosition(WRIST_POS_AUTO);
         switchServoClose();
         fingerStop();
     }
@@ -226,7 +236,7 @@ public class intakeUnit
     public void readyToDropPurple() {
         setArmCountPosition(ARM_POS_DROP_PURPLE);
         wristServo.setPosition(WRIST_POS_DROP_PURPLE);
-        //switchServoClose();
+        switchServoClose();
         fingerStop();
     }
     public void readyToDropYellow(){
@@ -236,8 +246,8 @@ public class intakeUnit
         fingerStop();
     }
     public void underTheBeam(){
-        setArmCountPosition(3000);
-        wristServo.setPosition(0.4);
+        setArmCountPosition(ARM_POS_UNDER_BEAM);
+        wristServo.setPosition(WRIST_POS_INTAKE);
     }
 
     /**

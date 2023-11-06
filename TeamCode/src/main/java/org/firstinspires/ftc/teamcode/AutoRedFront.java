@@ -265,7 +265,7 @@ public class AutoRedFront extends LinearOpMode {
             //sleep(150);
 
             autonomousCore();
-            intake.intakePositions(); // Motors are at intake positions at the beginning of Tele-op
+            intake.parkingPositions(); // Motors are at intake positions at the beginning of Tele-op
             sleep(2000);
 
             camera.closeCameraDevice(); // cost too times at the beginning to close camera about 300 ms
@@ -280,9 +280,9 @@ public class AutoRedFront extends LinearOpMode {
 
     private void autoCore() {
         // 1. move to central line
-        double centerPoseX = blueOrRed * 2.8 * Params.HALF_MAT; // x destination for center spike
-        Pose2d pMatCenter = new Pose2d(3.5 * blueOrRed * Params.HALF_MAT, startPose.position.y, startPose.heading.log());
-        Vector2d vParkPos = new Vector2d(blueOrRed * 0.5 * Params.HALF_MAT, -4 * Params.HALF_MAT + 3);
+        double centerPoseX = blueOrRed * (3.5 * Params.HALF_MAT - 1); // x destination for center spike
+        Pose2d pMatCenter = new Pose2d(3 * blueOrRed * Params.HALF_MAT, startPose.position.y, startPose.heading.log());
+        Vector2d vParkPos = new Vector2d(blueOrRed * (0.5 * Params.HALF_MAT - 3), -3.5 * Params.HALF_MAT);
         Vector2d vBackdrop = new Vector2d(3 * blueOrRed * Params.HALF_MAT, -4 * Params.HALF_MAT - Params.BACKDROP_FORWARD);
 
         Vector2d vAprilTag4 = new Vector2d(vBackdrop.x + Params.BACKDROP_SIDEWAYS, vBackdrop.y);
@@ -296,12 +296,7 @@ public class AutoRedFront extends LinearOpMode {
         Logging.log("robot drive: before strafe pos heading : %.2f", Math.toDegrees(drive.pose.heading.log()));
         Logging.log("robot drive: before strafe imu heading : %.2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
-        Actions.runBlocking(
-                drive.actionBuilder(startPose)
-                        .lineToXConstantHeading(pMatCenter.position.x)
-                        .build()
-        );
-
+        // move forward
         if (1 == spikeMarkLoc) { // left
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
@@ -310,7 +305,11 @@ public class AutoRedFront extends LinearOpMode {
         }
 
         if (2 == spikeMarkLoc) { // center
-            //left empty because already executed
+            Actions.runBlocking(
+                    drive.actionBuilder(startPose)
+                            .lineToXConstantHeading(centerPoseX)
+                            .build()
+            );
         }
 
         if (3 == spikeMarkLoc) // right
@@ -335,7 +334,7 @@ public class AutoRedFront extends LinearOpMode {
 
         // drop off the purple pixel by arm and wrist actions
         dropPurpleAction();
-        sleep(2000);
+        sleep(1000);
         intake.underTheBeam();
 
         // turn back and facing to backdrop board
@@ -365,23 +364,24 @@ public class AutoRedFront extends LinearOpMode {
         }
         Logging.log("robot drive: after turn back pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
         Logging.log("robot drive: after turn back imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        drive.updatePoseEstimate();
+        //drive.updatePoseEstimate();
         Logging.log("robot drive: after turn back x position: %2f", drive.pose.position.x);
 
         // move to the center of second mat.
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(centerPoseX, drive.pose.position.y))
+                        .strafeTo(new Vector2d(pMatCenter.position.x, drive.pose.position.y))
                         .build()
         );
 
-        // correct heading
+        // fine tune heading angle
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .turn(-drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)-Math.PI / 2)
                         .build());
         Logging.log("robot drive: after turn correction pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
         Logging.log("robot drive: after turn correction imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
         // move forward to backdrop board
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
@@ -736,6 +736,8 @@ public class AutoRedFront extends LinearOpMode {
         intake.readyToDropYellow();
         sleep(500);
         intake.setSwitchPosition(intake.SWITCH_RELEASE_YELLOW);
+        sleep(500);
+        intake.setSwitchPosition(intake.getArmPosition() - 500);
         sleep(500);
     }
 }
