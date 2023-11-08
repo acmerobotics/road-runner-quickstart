@@ -30,15 +30,18 @@ public class SlidesTest extends OpMode {
 
     @Override
     public void loop() {
-//        if (gamepad1.dpad_up) {
-//            slides.kG += 0.01;
-//        } else if (gamepad1.dpad_down) {
-//            slides.kG -= 0.01;
-//        }
         if (Math.abs(gamepad1.left_stick_y) > GamepadSettings.GP2_STICK_DEADZONE) {
-            slides.setPower(-gamepad1.left_stick_y);
+            slides.setPower(gamepad1.left_stick_y);
+            slides.setLastPosition();
+        } else if (gamepad1.a) {
+            slides.update(-600);
+            slides.setLastPosition();
+        } else if (gamepad1.b) {
+            slides.update(-1200);
+            slides.setLastPosition();
         } else {
-            slides.holdPosition();
+//            slides.holdPosition();
+            slides.stop();
         }
         slides.loop(gamepad1);
         slides.telemetry(telemetry);

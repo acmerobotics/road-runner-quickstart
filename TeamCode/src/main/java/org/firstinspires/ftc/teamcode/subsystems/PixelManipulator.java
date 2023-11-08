@@ -17,10 +17,10 @@ public class PixelManipulator extends Mechanism {
 
 
     enum ScoringState {
-        PICKINGUP, PIXELSLOADED, POSITIONING, RELEASINGLEFT, RELEASINGRIGHT, RESETTING
+        PICKINGUP, PIXELSLOADED, POSITIONING, RELEASINGLEFT, RELEASINGRIGHT, RESETTING_STAGE_ONE, RESETTING_STAGE_TWO
     }
 
-    ScoringState activeScoringState = ScoringState.RESETTING;
+    ScoringState activeScoringState = ScoringState.RESETTING_STAGE_TWO;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -37,12 +37,14 @@ public class PixelManipulator extends Mechanism {
 
     @Override
     public void loop(Gamepad gamepad, Gamepad gamepad2) {
+        intake.loop(gamepad);
+        claw.loop(gamepad);
+        arm.loop(gamepad);
+        slides.loop(gamepad);
 
         boolean isPixelsLoaded = claw.isLeftClamped && claw.isRightClamped;
 
         boolean isRelseasable = claw.isRotatorInPosition && !slides.isSpeeding();
-
-        boolean isReset = arm.isRetracted && slides.isReset();
 
         switch (activeScoringState) {
             case PICKINGUP:
@@ -52,22 +54,26 @@ public class PixelManipulator extends Mechanism {
                 } else if (gamepad2.right_trigger > GamepadSettings.GP2_TRIGGER_DEADZONE) {
                     claw.clampServo(claw.leftProng);
                 }
-                if (isPixelsLoaded) {
+                if (isPixelsLoaded && gamepad2.a) {
                     setActiveScoringState(ScoringState.PIXELSLOADED);
                 }
                 break;
 
             case PIXELSLOADED:
                 intake.stop();
-                arm.extend();
-                if (arm.isExtended) {
-                    setActiveScoringState(ScoringState.POSITIONING);
+                slides.update(PIDSlides.SAFE_EXTENSION_POS);
+                if (slides.isAtTargetPosition()) {
+                    arm.extend();
+                    if (arm.isExtended && gamepad2.a) {
+                        setActiveScoringState(ScoringState.POSITIONING);
+                    }
                 }
+                break;
 
 
             case POSITIONING:
                 if (Math.abs(gamepad2.left_stick_y) > GamepadSettings.GP2_STICK_DEADZONE) {
-                    slides.setPower(-gamepad2.left_stick_y);
+                    slides.setPower(gamepad2.left_stick_y);
                 } else {
                     slides.holdPosition();
                 }
@@ -89,7 +95,7 @@ public class PixelManipulator extends Mechanism {
             case RELEASINGLEFT:
                 claw.releaseServo(claw.leftProng);
                 if (claw.isLeftReleased && claw.isRightReleased) {
-                    activeScoringState = ScoringState.RESETTING;
+                    activeScoringState = ScoringState.RESETTING_STAGE_ONE;
                 }
                 if (gamepad2.right_trigger > GamepadSettings.GP2_TRIGGER_DEADZONE && isRelseasable) {
                     setActiveScoringState(ScoringState.RELEASINGRIGHT);
@@ -99,23 +105,29 @@ public class PixelManipulator extends Mechanism {
             case RELEASINGRIGHT:
                 claw.releaseServo(claw.rightProng);
                 if (claw.isLeftReleased && claw.isRightReleased) {
-                    activeScoringState = ScoringState.RESETTING;
+                    activeScoringState = ScoringState.RESETTING_STAGE_ONE;
                 }
                 if (gamepad2.left_trigger > GamepadSettings.GP2_TRIGGER_DEADZONE && isRelseasable) {
                     setActiveScoringState(ScoringState.RELEASINGLEFT);
                 }
                 break;
 
-            case RESETTING:
+            case RESETTING_STAGE_ONE:
                 claw.setActiveTiltState(Claw.TiltState.CENTER);
-                if (claw.isRotatorInPosition) {
-                    arm.stage();
+                slides.update(PIDSlides.SAFE_RETRACTION_POS);
+                if (slides.isAtTargetPosition() && claw.isRotatorInPosition && gamepad.a) {
+                    setActiveScoringState(ScoringState.RESETTING_STAGE_TWO);
+                }
+                break;
+
+            case RESETTING_STAGE_TWO:
+                arm.retract();
+                if (arm.isRetracted && gamepad2.a) {
                     slides.resetSlidesPosition();
-                    if (isReset) {
+                    if (slides.isAtTargetPosition()) {
                         setActiveScoringState(ScoringState.PICKINGUP);
                     }
                 }
-
         }
     }
 

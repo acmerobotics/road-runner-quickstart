@@ -20,13 +20,7 @@ public class Intake extends Mechanism {
 
     @Override
     public void loop(Gamepad gamepad) {
-        if (gamepad.a) {
-            intake(1);
-        } else if (gamepad.b) {
-            outtake(-1);
-        } else {
-            stop();
-        }
+
     }
 
     /**

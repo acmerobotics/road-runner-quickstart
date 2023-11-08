@@ -27,7 +27,7 @@ import java.util.function.DoubleSupplier;
 
 
 public class PIDSlides extends Mechanism{
-    private static final double KP = 0;
+    private static final double KP = 0.0005;
     private static final double KI = 0;
     private static final double KD = 0;
     private static final double INTEGRAL_SUM_MAX = 0;
@@ -67,13 +67,14 @@ public class PIDSlides extends Mechanism{
     private final String rightSlideName = "rightSlide";
 
     private boolean isSpeeding = false;
-    private boolean isReset = true;
 
-    private final DcMotorEx encoderMotor;
+    private DcMotorEx encoderMotor;
+    public double targetPos;
 
-    PIDSlides(DcMotorEx encoderMotor) {
-        this.encoderMotor = encoderMotor;
-    }
+    public static final double PROXIMITY_THRESHOLD = 10;
+
+    public static final int SAFE_EXTENSION_POS = -1200;
+    public static final int SAFE_RETRACTION_POS = -1200;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -82,7 +83,7 @@ public class PIDSlides extends Mechanism{
         setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
         pidCoefficientsEx = new PIDCoefficientsEx(KP, KI, KD, INTEGRAL_SUM_MAX, STABILITY_THRESHOLD, LOW_PASS_GAIN);
         PIDController = new PIDEx(pidCoefficientsEx);
@@ -93,33 +94,31 @@ public class PIDSlides extends Mechanism{
         lowPassFilter = new LowPassEstimator(positionSupplier, FILTER_LOW_PASS_GAIN);
 
         basicSystem = new BasicSystem(noFilter, PIDController, noFeedforward);
+        encoderMotor = leftSlide;
     }
 
     @Override
     public void loop(Gamepad gamepad) {
         isSpeeding = getSlidesPower() > releaseSpeedLimit;
-        isReset = getLastPosition() == 0;
         lastVelo = getSlidesVelocity();
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
-//        telemetry.addData("kG", kG);
         telemetry.addData("leftSlidePos", leftSlide.getCurrentPosition());
         telemetry.addData("rightSlidePos", rightSlide.getCurrentPosition());
+        telemetry.addData("Target Position", targetPos);
         telemetry.addData("leftSlideVelo", leftSlide.getVelocity());
         telemetry.addData("rightSlideVelo", rightSlide.getVelocity());
         telemetry.addData("leftSlidePower", leftSlide.getPower());
         telemetry.addData("rightSlidePower", rightSlide.getPower());
         telemetry.addData("isSpeeding", isSpeeding);
-        telemetry.addData("isReset", isReset);
         telemetry.addData("isResettingLifts", isResettingLifts);
     }
 
     public void setPower(double power) {
         leftSlide.setPower(power);
         rightSlide.setPower(power);
-        setLastPosition();
     }
 
     public void stop() {
@@ -137,16 +136,21 @@ public class PIDSlides extends Mechanism{
     }
 
     public void holdPosition() {
-        double power = basicSystem.update(getLastPosition());
-        setPower(power);
+        update(getLastPosition());
     }
 
-    public void setSlidesTargetPosition(int targetPosition) {
-        basicSystem.update(targetPosition);
+    private double setSlidesTargetPosition(double targetPosition) {
+        return basicSystem.update(targetPosition);
     }
     public void resetSlidesPosition() {
         isResettingLifts = true;
-        setSlidesTargetPosition(0);
+        update(0);
+    }
+
+    public void update(double targetPosition) {
+        double power = setSlidesTargetPosition(targetPosition);
+        targetPos = targetPosition;
+        setPower(power);
     }
 
     public int getSlidesPosition() {
@@ -169,11 +173,11 @@ public class PIDSlides extends Mechanism{
         return lastEncoderMotorPos;
     }
 
-    public boolean isReset() {
-        return isReset;
-    }
-
     public boolean isSpeeding() {
         return isSpeeding;
+    }
+
+    public boolean isAtTargetPosition() {
+        return Math.abs(getSlidesPosition() - targetPos) < PROXIMITY_THRESHOLD;
     }
 }
