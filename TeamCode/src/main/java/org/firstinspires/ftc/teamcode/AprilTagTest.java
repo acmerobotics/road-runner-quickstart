@@ -230,7 +230,7 @@ public class AprilTagTest {
         }
     }
 
-    public void autoDriveToAprilTag() {
+    public boolean autoDriveToAprilTag() {
         boolean reachedTarget = false;
         int detectCount = 0;
 
@@ -256,5 +256,7 @@ public class AprilTagTest {
             Logging.log("Drive Heading = %2.2f", Math.toDegrees(driveMC.pose.heading.log()));
             Logging.log("Drive position x = %2.2f, y = %2.2f", driveMC.pose.position.x, driveMC.pose.position.y);
         }
+
+        return reachedTarget;
     }
 }
