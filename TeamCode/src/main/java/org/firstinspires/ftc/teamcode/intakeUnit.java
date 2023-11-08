@@ -55,7 +55,6 @@ public class intakeUnit
     // wrist servo motor variables
     private Servo fingerServo = null;
     final double FINGER_INTAKE_POS = 0;
-
     final double FINGER_STOP_POS = 0.5;
     final double FINGER_OUTTAKE_POS = 1.0;
 
@@ -65,28 +64,25 @@ public class intakeUnit
     final double SWITCH_RELEASE_YELLOW = 0.34;
 
     private Servo wristServo = null;
-    final double WRIST_MAX_POS = 0.95; // Maximum rotational position
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
-    final double WRIST_POS_DROP = 0.37;
-    final double WRIST_POS_DROP_PURPLE = 0.29;
-    final double WRIST_POS_DROP_YELLOW = 0.34;
-
-    final double WRIST_POS_INTAKE = 0.42;
+    final double WRIST_MAX_POS = 0.95; // Maximum rotational position
+    final double WRIST_POS_DROP_PURPLE = 0.34;
     final double WRIST_POS_AUTO = 0.33;
+    final double WRIST_POS_DROP_YELLOW = 0.34;
+    final double WRIST_POS_DROP = 0.43;
+    final double WRIST_POS_INTAKE = 0.42;
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
     final int ARM_MIN_COUNT_POS = 0;
     final int ARM_MAX_COUNT_POS = 3620;
-    final int ARM_POS_INTAKE = 3590;
-    final int ARM_POS_AUTO = 0;
-    final int ARM_POS_DROP = 2750;
-    final int ARM_POS_DROP_PURPLE = 3290;
-
-    final int ARM_POS_UNDER_BEAM = 3000;
-    final int ARM_POS_DROP_YELLOW = 2775;
-
+    final int ARM_POS_AUTO = 20;
     final int ARM_POS_HANG = 500;
+    final int ARM_POS_DROP = 2500;
+    final int ARM_POS_DROP_YELLOW = 2775;
+    final int ARM_POS_UNDER_BEAM = 3100;
+    final int ARM_POS_DROP_PURPLE = 3250;
+    final int ARM_POS_INTAKE = 3580;
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -109,11 +105,9 @@ public class intakeUnit
 
         wristServo = hardwareMap.get(Servo.class, wristMotorName);
         wristServo.setDirection(Servo.Direction.FORWARD);
-        //wristServo.setPosition(WRIST_POS_INTAKE);
         sleep(200);
 
         armMotor = hardwareMap.get(DcMotor.class, armMotorName);
-        //resetArmEncoder();
     }
 
     public void setSwitchPosition(double switchPos) {
@@ -121,9 +115,9 @@ public class intakeUnit
         switchServo.setPosition(switchPos);
     }
 
-
     public void switchServoOpen() {
-        setSwitchPosition(switchServo.getPosition() + 0.0005);
+        //setSwitchPosition(switchServo.getPosition() + 0.0005);
+        setSwitchPosition(SWITCH_RELEASE_YELLOW);
     }
     public void switchServoClose() {
         setSwitchPosition(SWITCH_CLOSE_POS);

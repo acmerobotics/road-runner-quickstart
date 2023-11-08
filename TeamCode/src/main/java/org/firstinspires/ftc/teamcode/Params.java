@@ -50,7 +50,7 @@ public class Params {
 
     // moving distance variables
     static final double BACKDROP_FORWARD = HALF_MAT - (CHASSIS_LENGTH / 2 + 1.5);
-    static final double BACKDROP_SIDEWAYS = 7.0;
+    static final double BACKDROP_SIDEWAYS = 6.0;
 
     // chassis power factors
     static final double POWER_LOW = 0.3;

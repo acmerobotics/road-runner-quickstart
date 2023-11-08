@@ -261,11 +261,10 @@ public class AutoRedFront extends LinearOpMode {
         if (opModeIsActive()) {
             camera.closeCameraDevice(); // close camera for spike mark location checking
 
-            //sleep(150);
-
             autonomousCore();
+
             intake.parkingPositions(); // Motors are at intake positions at the beginning of Tele-op
-            sleep(2000);
+            sleep(1000);
 
             camera.closeCameraDevice(); // cost too times at the beginning to close camera about 300 ms
             Logging.log("Autonomous time - total Run Time: " + runtime);
@@ -279,7 +278,8 @@ public class AutoRedFront extends LinearOpMode {
 
     private void autoCore() {
         // 1. move to central line
-        double centerPoseX = blueOrRed * (3 * Params.HALF_MAT + 5); // x destination for center spike
+        double centerPoseX = blueOrRed * (3 * Params.HALF_MAT + 4); // x destination for center spike
+        double pausePoseY = -2 * Params.HALF_MAT;
         Pose2d pMatCenter = new Pose2d(blueOrRed * 3 * Params.HALF_MAT, startPose.position.y, startPose.heading.log());
         Vector2d vParkPos = new Vector2d(blueOrRed * (Params.HALF_MAT), -3.5 * Params.HALF_MAT);
         Vector2d vBackdrop = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
@@ -287,6 +287,16 @@ public class AutoRedFront extends LinearOpMode {
         Vector2d vAprilTag4 = new Vector2d(vBackdrop.x + Params.BACKDROP_SIDEWAYS, vBackdrop.y);
         Vector2d vAprilTag5 = new Vector2d(vBackdrop.x , vBackdrop.y);
         Vector2d vAprilTag6 = new Vector2d(vBackdrop.x - Params.BACKDROP_SIDEWAYS, vBackdrop.y);
+
+        Vector2d vAprilTag = null;
+        Vector2d vCheckingAprilTagPose = null;
+        if (blueOrRed > 0) {
+            vAprilTag = new Vector2d(vBackdrop.x + (desiredTagNum - 2) * Params.BACKDROP_SIDEWAYS, vBackdrop.y);
+        }
+        else {
+            vAprilTag = new Vector2d(vBackdrop.x + (5 - desiredTagNum) * Params.BACKDROP_SIDEWAYS, vBackdrop.y);
+        }
+        vCheckingAprilTagPose = new Vector2d(vAprilTag.x, vAprilTag.y + 10);
 
         Logging.log("red backdrop pose y: %2f", vBackdrop.y);
         Logging.log("code number 4 x: %2f", vAprilTag4.x);
@@ -338,7 +348,6 @@ public class AutoRedFront extends LinearOpMode {
 
         // drop off the purple pixel by arm and wrist actions
         dropPurpleAction();
-        sleep(1000);
         intake.underTheBeam();
 
         // turn back and facing to backdrop board
@@ -374,14 +383,14 @@ public class AutoRedFront extends LinearOpMode {
         // move to the center of second mat.
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(pMatCenter.position.x, drive.pose.position.y)) // 5 when lateralGain=1.0 is based on testing
+                        .strafeTo(new Vector2d(pMatCenter.position.x, drive.pose.position.y))
                         .build()
         );
 
         // fine tune heading angle
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .turn(-drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)-Math.PI / 2)
+                        .turn(-drive.pose.heading.log() - Math.PI / 2)
                         .build());
         Logging.log("robot drive: after strafe to mat center x position: %2f", drive.pose.position.x);
 
@@ -391,16 +400,16 @@ public class AutoRedFront extends LinearOpMode {
         // move forward to backdrop board
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .lineToYConstantHeading(vAprilTag5.y + 10)
+                        //.lineToYConstantHeading(vAprilTag5.y + 10)
                         //.lineToY(vAprilTag5.y)
+                        .lineToYConstantHeading(pausePoseY)
+                        .strafeTo(vCheckingAprilTagPose)
                         .build()
         );
 
         Logging.log("robot drive: check april tag x position: %2f", drive.pose.position.x);
         Logging.log("robot drive: check april tag y position: %2f", drive.pose.position.y);
-        Logging.log("robot drive: check april tag required y position: %2f", vAprilTag5.y + 10);
-
-
+        Logging.log("robot drive: check april tag required y position: %2f", vCheckingAprilTagPose.y);
 
         Logging.log("robot drive: arrive backdrop pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
         Logging.log("robot drive: arrive backdrop imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
@@ -423,8 +432,7 @@ public class AutoRedFront extends LinearOpMode {
             {
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
-                                .strafeTo(vAprilTag5)
-                                .lineToYConstantHeading(vAprilTag5.y)
+                                .strafeTo(vAprilTag)
                                 .build()
                 );
             }
@@ -439,12 +447,10 @@ public class AutoRedFront extends LinearOpMode {
             }
         }
         Logging.log("robot drive: arrive backdrop x position: %2f", drive.pose.position.x);
-        Logging.log("robot drive: arrive backdrop require x position: %2f", vAprilTag5.x);
-
+        Logging.log("robot drive: arrive backdrop require x position: %2f", vAprilTag.x);
 
         Logging.log("robot drive: arrive backdrop y position: %2f", drive.pose.position.y);
-        Logging.log("robot drive: arrive backdrop required y position: %2f", vAprilTag5.y);
-
+        Logging.log("robot drive: arrive backdrop required y position: %2f", vAprilTag.y);
 
         // drop pixel
         dropYellowAction();
@@ -457,8 +463,6 @@ public class AutoRedFront extends LinearOpMode {
         );
 
         Logging.log("robot drive: parking x position: %2f", drive.pose.position.x);
-
-
     }
 
     private void autoRedCore() {
@@ -752,7 +756,7 @@ public class AutoRedFront extends LinearOpMode {
     private void dropPurpleAction() {
         // 1. arm and wrist at correct positions
         intake.readyToDropPurple();
-        sleep(2500);
+        sleep(2000);
 
         // 2. open switch
         intake.setSwitchPosition(intake.SWITCH_RELEASE_PURPLE);
