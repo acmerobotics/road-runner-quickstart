@@ -28,9 +28,9 @@ public class ObjectDetection extends OpenCvPipeline {
     }
 
     // TOPLEFT anchor point for the 3 bounding boxes
-    private final Point BOX_ANCHOR_ONE = new Point(28, 124);
-    private final Point BOX_ANCHOR_TWO = new Point(158, 100);
-    private final Point BOX_ANCHOR_THREE = new Point(288, 124);
+    private final Point BOX_ANCHOR_ONE = new Point(15, 175);
+    private final Point BOX_ANCHOR_TWO = new Point(158, 165);
+    private final Point BOX_ANCHOR_THREE = new Point(300, 175);
 
     // Width and height for the bounding boxes
     private final int BOX_WIDTH = 4;
@@ -62,13 +62,6 @@ public class ObjectDetection extends OpenCvPipeline {
 
     // Running variable storing the parking position
     private volatile PropSide PropPos = PropSide.UNKNOWN;
-
-    // TOP-LEFT anchor point for the bounding box
-    public Point Object_TOPLEFT_POINT = new Point(0, 0);
-
-    // Width and height for the bounding box
-    public int REGION_WIDTH = 320;
-    public int REGION_HEIGHT = 240;
 
     // Color definitions
     private final Scalar

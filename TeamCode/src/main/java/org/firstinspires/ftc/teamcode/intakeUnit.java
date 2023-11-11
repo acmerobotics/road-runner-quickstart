@@ -59,30 +59,31 @@ public class intakeUnit
     final double FINGER_OUTTAKE_POS = 1.0;
 
     private Servo switchServo = null;
-    final double SWITCH_CLOSE_POS = 0.21;
-    final double SWITCH_RELEASE_PURPLE = 0.25;
-    final double SWITCH_RELEASE_YELLOW = 0.34;
-
+    final double SWITCH_CLOSE_POS = 0.15;
+    final double SWITCH_RELEASE_PURPLE = 0.19;
+    final double SWITCH_RELEASE_YELLOW = 0.27;
     private Servo wristServo = null;
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
     final double WRIST_MAX_POS = 0.95; // Maximum rotational position
     final double WRIST_POS_DROP_PURPLE = 0.34;
-    final double WRIST_POS_AUTO = 0.33;
-    final double WRIST_POS_DROP_YELLOW = 0.34;
-    final double WRIST_POS_DROP = 0.43;
-    final double WRIST_POS_INTAKE = 0.42;
+    final double WRIST_POS_AUTO = 0.34;
+    final double WRIST_POS_DROP_YELLOW = 0.36;
+    final double WRIST_POS_DROP = 0.45;
+    final double WRIST_POS_INTAKE = 0.455;
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
     final int ARM_MIN_COUNT_POS = 0;
     final int ARM_MAX_COUNT_POS = 3620;
-    final int ARM_POS_AUTO = 20;
+    final int ARM_POS_AUTO = 40;
     final int ARM_POS_HANG = 500;
+    final int ARM_POS_READY_FOR_HANG = 1800;
     final int ARM_POS_DROP = 2500;
-    final int ARM_POS_DROP_YELLOW = 2775;
+    final int ARM_POS_DROP_YELLOW = 2800;
     final int ARM_POS_UNDER_BEAM = 3100;
-    final int ARM_POS_DROP_PURPLE = 3250;
-    final int ARM_POS_INTAKE = 3580;
+    final int ARM_POS_DROP_PURPLE = 3260;
+    final int ARM_POS_PUSH_PROP = 3400;
+    final int ARM_POS_INTAKE = 3565;
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -116,8 +117,8 @@ public class intakeUnit
     }
 
     public void switchServoOpen() {
-        //setSwitchPosition(switchServo.getPosition() + 0.0005);
-        setSwitchPosition(SWITCH_RELEASE_YELLOW);
+        setSwitchPosition(switchServo.getPosition() + 0.0005);
+        //setSwitchPosition(SWITCH_RELEASE_YELLOW);
     }
     public void switchServoClose() {
         setSwitchPosition(SWITCH_CLOSE_POS);
@@ -224,7 +225,7 @@ public class intakeUnit
         setArmCountPosition(ARM_POS_AUTO);
         wristServo.setPosition(WRIST_POS_AUTO);
         switchServoClose();
-        fingerStop();
+        fingerIntake();
     }
 
     public void readyToDropPurple() {
@@ -233,6 +234,14 @@ public class intakeUnit
         switchServoClose();
         fingerStop();
     }
+
+    public void pushPropPose() {
+        setArmCountPosition(ARM_POS_PUSH_PROP);
+        wristServo.setPosition(WRIST_POS_INTAKE);
+        switchServoClose();
+        fingerStop();
+    }
+
     public void readyToDropYellow(){
         setArmCountPosition(ARM_POS_DROP_YELLOW);
         wristServo.setPosition(WRIST_POS_DROP_YELLOW);
@@ -241,7 +250,8 @@ public class intakeUnit
     }
     public void underTheBeam(){
         setArmCountPosition(ARM_POS_UNDER_BEAM);
-        wristServo.setPosition(WRIST_POS_INTAKE);
+        wristServo.setPosition(WRIST_POS_DROP_PURPLE);
+        setSwitchPosition(SWITCH_CLOSE_POS);
     }
 
     /**
