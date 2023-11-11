@@ -65,9 +65,9 @@ public class intakeUnit
     private Servo wristServo = null;
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
     final double WRIST_MAX_POS = 0.95; // Maximum rotational position
-    final double WRIST_POS_DROP_PURPLE = 0.34;
+    final double WRIST_POS_DROP_PURPLE = 0.33;
     final double WRIST_POS_AUTO = 0.34;
-    final double WRIST_POS_DROP_YELLOW = 0.36;
+    final double WRIST_POS_DROP_YELLOW = 0.40;
     final double WRIST_POS_DROP = 0.45;
     final double WRIST_POS_INTAKE = 0.455;
 
@@ -75,13 +75,13 @@ public class intakeUnit
     public DcMotor armMotor = null;
     final int ARM_MIN_COUNT_POS = 0;
     final int ARM_MAX_COUNT_POS = 3620;
-    final int ARM_POS_AUTO = 40;
+    final int ARM_POS_AUTO = 60;
     final int ARM_POS_HANG = 500;
     final int ARM_POS_READY_FOR_HANG = 1800;
     final int ARM_POS_DROP = 2500;
     final int ARM_POS_DROP_YELLOW = 2800;
     final int ARM_POS_UNDER_BEAM = 3100;
-    final int ARM_POS_DROP_PURPLE = 3260;
+    final int ARM_POS_DROP_PURPLE = 3300;
     final int ARM_POS_PUSH_PROP = 3400;
     final int ARM_POS_INTAKE = 3565;
 
@@ -239,7 +239,6 @@ public class intakeUnit
         setArmCountPosition(ARM_POS_PUSH_PROP);
         wristServo.setPosition(WRIST_POS_INTAKE);
         switchServoClose();
-        fingerStop();
     }
 
     public void readyToDropYellow(){

@@ -280,7 +280,7 @@ public class AutoRedFront extends LinearOpMode {
         Vector2d vBackdrop = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
 
         Vector2d vAprilTag = null;
-        double rightBucketShift = 1.5; // yellow pixel is in the right bucket.
+        double rightBucketShift = 2.0; // yellow pixel is in the right bucket.
         if (blueOrRed > 0) {
             vAprilTag = new Vector2d(vBackdrop.x + (desiredTagNum - 2) * Params.BACKDROP_SIDEWAYS, vBackdrop.y);
         }
@@ -294,49 +294,40 @@ public class AutoRedFront extends LinearOpMode {
         double xDelta = -3.0;
         double yDelta = 10.0;
 
-        switch (desiredTagNum) {
+        switch (checkStatus) {
             case 1:
                 if (frontOrBack > 0) {
 
                 }
-                else {
+                break;
+            case -1:
                     xDelta = 9.0;
                     yDelta = 10.0;
-                }
                 break;
 
             case 5:
+            case -5:
             case 2:
-                xDelta = 4.0;
-                yDelta = (frontOrBack > 0)? 3.0 : 0; // move 3.0 inch far from gate to avoid hitting
+            case -2:
+                xDelta = 5.5;
+                yDelta = (frontOrBack > 0)? 5.0 : 0;
                 break;
-
             case 3:
-                if (frontOrBack > 0) {
-                }
-                else {
-                }
+            case -3:
                 break;
 
             case 4:
-                if (frontOrBack > 0) {
                     xDelta = 8.0;
-                    yDelta = 11.0;
-                }
-                else {
-                    xDelta = -3;
-                    yDelta = -10.0;
-                }
+                    yDelta = 8.5;
                 break;
+            case -4:
             case 6:
-                if (frontOrBack > 0) {
                     xDelta = -3;
                     yDelta = -10.0;
-                }
-                else {
+                break;
+            case -6:
                     xDelta = 8.0;
                     yDelta = 15.0;
-                }
                 break;
         }
         vDropPurple = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + xDelta), startPose.position.y + frontOrBack * yDelta);
@@ -402,16 +393,8 @@ public class AutoRedFront extends LinearOpMode {
                             .build());
         }
 
-        /*
-        if (3 == spikeMarkLoc && blueOrRed < 0){
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .turn(Math.PI)
-                            .build()
-            );
-        }
-
-         */
+        intake.underTheBeam();
+        sleep(500);
 
         Logging.log("robot drive: after turn back pos heading : %2f", Math.toDegrees(drive.pose.heading.log()));
         Logging.log("robot drive: after turn back imu heading : %2f", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
@@ -426,6 +409,8 @@ public class AutoRedFront extends LinearOpMode {
                             .build()
             );
         }
+
+        sleep(1000);
 
         // fine tune heading angle
         Actions.runBlocking(
@@ -445,8 +430,6 @@ public class AutoRedFront extends LinearOpMode {
         // move forward to backdrop board
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        //.lineToYConstantHeading(vAprilTag5.y + 10)
-                        //.lineToY(vAprilTag5.y)
                         .lineToYConstantHeading(pausePoseY)
                         .strafeTo(vCheckingAprilTagPose)
                         .build()

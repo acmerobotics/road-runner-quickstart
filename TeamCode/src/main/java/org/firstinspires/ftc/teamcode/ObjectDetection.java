@@ -27,14 +27,15 @@ public class ObjectDetection extends OpenCvPipeline {
         BLUE
     }
 
-    // TOPLEFT anchor point for the 3 bounding boxes
-    private final Point BOX_ANCHOR_ONE = new Point(15, 175);
-    private final Point BOX_ANCHOR_TWO = new Point(158, 165);
-    private final Point BOX_ANCHOR_THREE = new Point(300, 175);
-
     // Width and height for the bounding boxes
     private final int BOX_WIDTH = 4;
+    private final int BOX_WIDTH_CENTER = 20;
     private final int BOX_HEIGHT = 6;
+
+    // TOPLEFT anchor point for the 3 bounding boxes
+    private final Point BOX_ANCHOR_ONE = new Point(15, 175);
+    private final Point BOX_ANCHOR_TWO = new Point(160 - BOX_WIDTH_CENTER / 2.0, 165);
+    private final Point BOX_ANCHOR_THREE = new Point(300, 175);
 
     // Anchor point definitions for 1st box
     Point prop_pointA_one = new Point(
@@ -49,7 +50,7 @@ public class ObjectDetection extends OpenCvPipeline {
             BOX_ANCHOR_TWO.x,
             BOX_ANCHOR_TWO.y);
     Point prop_pointB_two = new Point(
-            BOX_ANCHOR_TWO.x + BOX_WIDTH,
+            BOX_ANCHOR_TWO.x + BOX_WIDTH_CENTER,
             BOX_ANCHOR_TWO.y + BOX_HEIGHT);
 
     // Anchor point definitions for 3nd box
