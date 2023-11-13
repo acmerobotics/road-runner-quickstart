@@ -12,11 +12,10 @@ import java.util.Map;
 public class Lift {
     private Telemetry telemetry;
     private DcMotorEx liftMotor1;
-    private DcMotorEx liftMotor2;
     private Map stateMap;
     private PIDController liftController;
     //Create Strings for StateMap Lift Control
-    public final String LIFT_SYSTEM_NAME = "LIFT_SYSTEM";
+    public final String LIFT_SYSTEM_NAME = "LIFT_SYSTEM_NAME";
     public final String LIFT_GROUND_STATE = "LIFT_GROUND_STATE";
     public final String LIFT_LOW_STATE = "LIFT_LOW_STATE";
     public final String LIFT_MIDDLE_STATE = "LIFT_MIDDLE_STATE";
@@ -39,22 +38,12 @@ public class Lift {
         this.stateMap = stateMap;
         liftController = new PIDController(0,0,0);
         liftMotor1 = hwMap.get(DcMotorEx.class, "LiftMotor1");
-        liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
 
         liftMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         liftMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         liftController.setInputBounds(LIFT_GROUND_STATE_POSITION, LIFT_HIGH_STATE_POSITION);
         liftController.setOutputBounds(0,1);
-    }
-
-    public int getAvgPosition(){
-        int avgPosition = (liftMotor1.getCurrentPosition() + liftMotor2.getCurrentPosition())/2;
-        telemetry.addData("Lift Average", avgPosition);
-        return avgPosition;
     }
 
     public void setState(){
@@ -73,7 +62,7 @@ public class Lift {
 
     private String getCurrentState() {
         String state = TRANSITION_STATE;
-        int currentPosition = getAvgPosition();
+        int currentPosition = liftMotor1.getCurrentPosition();
         if(inHeightTolerance(currentPosition,LIFT_GROUND_STATE_POSITION)){
             state = LIFT_GROUND_STATE;
         } else if(inHeightTolerance(currentPosition,LIFT_LOW_STATE_POSITION)){
@@ -97,27 +86,29 @@ public class Lift {
         switch (desiredState){
             case LIFT_GROUND_STATE:{
                 moveToPID(LIFT_GROUND_STATE_POSITION);
+                break;
             }
             case LIFT_LOW_STATE:{
                 moveToPID(LIFT_LOW_STATE_POSITION);
+                break;
             }
             case LIFT_MIDDLE_STATE:{
                 moveToPID(LIFT_MIDDLE_STATE_POSITION);
+                break;
             }
             case LIFT_HIGH_STATE:{
                 moveToPID(LIFT_HIGH_STATE_POSITION);
+                break;
             }
         }
     }
 
     private void moveToPID(int desiredTickPosition){
-        int currentPosition = getAvgPosition();
+        int currentPosition = liftMotor1.getCurrentPosition();
         int error = Math.abs(currentPosition - desiredTickPosition);
         if(error < 7){
             liftMotor1.setTargetPosition(desiredTickPosition);
-            liftMotor2.setTargetPosition(desiredTickPosition);
             liftMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             setRawPower(1.0);
         }else{
             setMotorPIDPower(desiredTickPosition, currentPosition);
@@ -139,8 +130,6 @@ public class Lift {
 
     public void setRawPower(double power) {
         liftMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotor2.setPower(power);
         liftMotor1.setPower(power);
     }
 }
