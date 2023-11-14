@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.huskyteers;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Rotation2d;
@@ -62,18 +63,28 @@ import java.util.Optional;
  *
  */
 
+@Config
 public abstract class HuskyBot extends LinearOpMode {
 
 
     // Define hardware objects.
 
     private MecanumDrive drive = null;
+    private Claw claw = null;
     public HuskyVision huskyVision = null;
 
 
     // Define Drive constants.
     private final Pose2d INITIAL_POSE = new Pose2d(0, 0, 0);
-    private final double DESIRED_DISTANCE_FROM_APRILTAG = 12.0;
+    public static double DESIRED_DISTANCE_FROM_APRILTAG = 12.0;
+
+    public static double SPEED_GAIN = 0.02;
+    public static double STRAFE_GAIN = 0.01;
+    public static double TURN_GAIN = 0.04;
+
+    public static double MAX_AUTO_SPEED = 0.5;
+    public static double MAX_AUTO_TURN = 0.3;
+    public static double MAX_AUTO_STRAFE = 0.5;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public HuskyBot() {
@@ -83,18 +94,12 @@ public abstract class HuskyBot extends LinearOpMode {
     public void initializeHardware() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         drive = new MecanumDrive(hardwareMap, INITIAL_POSE);
+        claw = new Claw(hardwareMap);
         huskyVision = new HuskyVision(hardwareMap);
         huskyVision.setExposure();
 
         telemetry.addData(">", "Hardware Initialized");
         telemetry.update();
-    }
-
-    public void setMotorPowers(float leftBack, float leftFront, float rightBack, float rightFront) {
-        this.drive.leftBack.setPower(leftBack);
-        this.drive.leftFront.setPower(leftFront);
-        this.drive.rightBack.setPower(rightBack);
-        this.drive.rightFront.setPower(rightFront);
     }
 
     public void updateDrivePoseEstimate() {
@@ -110,6 +115,36 @@ public abstract class HuskyBot extends LinearOpMode {
         );
 
         this.drive.setDrivePowers(pw);
+    }
+
+    public void moveClawToBottom() {
+        throw new UnsupportedOperationException();
+        // TODO: Set position of the claw to the bottom
+        // this.claw.clawRotator.setPosition(0);
+    }
+
+    public void moveClawToTop() {
+        throw new UnsupportedOperationException();
+        // TODO: Set position of the claw to the top
+        // this.claw.clawRotator.setPosition(1);
+    }
+
+    public void moveClawToBackdropPosition() {
+        throw new UnsupportedOperationException();
+        // TODO: Set position of the claw to the backdrop position, possibly with sensor.
+        // this.claw.clawRotator.setPosition(0.5);
+    }
+
+    public void openClaw() {
+        throw new UnsupportedOperationException();
+        // TODO: Open claw
+        // this.claw.clawGrabber.setPosition(0);
+    }
+
+    public void closeClaw() {
+        throw new UnsupportedOperationException();
+        // TODO: Close claw
+        // this.claw.clawGrabber.setPosition(1);
     }
 
     public void fieldCentricDriveRobot(double gamepadLeftStickY, double gamepadLeftStickX, double gamepadRightStickX, double speed) {
@@ -128,14 +163,6 @@ public abstract class HuskyBot extends LinearOpMode {
         this.drive.pose = new Pose2d(this.drive.pose.position, Rotation2d.exp(0));
     }
 
-
-    double SPEED_GAIN = 0.02;
-    double STRAFE_GAIN = 0.01;
-    double TURN_GAIN = 0.04;
-
-    double MAX_AUTO_SPEED = 0.5;
-    double MAX_AUTO_TURN = 0.3;
-    double MAX_AUTO_STRAFE = 0.5;
 
     public PoseVelocity2d errorsToPoseVelocity2d(double rangeError, double headingError, double yawError) {
         double drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);

@@ -18,6 +18,9 @@ public class HuskyVision {
 
     public VisionPortal visionPortal;
     public TensorflowDetection tensorflowdetection;
+    public final static int WIDTH = 640;
+    public final static int HEIGHT = 480;
+
 
     public HuskyVision(HardwareMap hwMap) {
         AprilTagDetector = new AprilTagDetector();
@@ -26,7 +29,7 @@ public class HuskyVision {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
-                .setCameraResolution(new Size(640, 480))
+                .setCameraResolution(new Size(WIDTH, HEIGHT))
                 .enableLiveView(true)
                 .addProcessors(AprilTagDetector.aprilTag, tensorflowdetection.tfod)
                 .build();
