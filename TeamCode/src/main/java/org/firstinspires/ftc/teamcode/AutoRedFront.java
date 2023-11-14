@@ -115,7 +115,7 @@ public class AutoRedFront extends LinearOpMode {
     // road runner variables
     Pose2d startPose;
 
-    final int WAIT_ALLIANCE_SECONDS = 1;
+    final int WAIT_ALLIANCE_SECONDS = 3;
 
     /**
      * Set robot starting location on the field:
@@ -277,7 +277,7 @@ public class AutoRedFront extends LinearOpMode {
 
         double pausePoseY = -2 * Params.HALF_MAT - 6;
         Vector2d vMatCenter = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, startPose.position.y);
-        Vector2d vParkPos = new Vector2d(blueOrRed * ((3 - 2 * frontOrBack) * Params.HALF_MAT + 2), -3.5 * Params.HALF_MAT);
+        Vector2d vParkPos = new Vector2d(blueOrRed * ((3 - 2 * frontOrBack) * Params.HALF_MAT), -3.5 * Params.HALF_MAT);
         Vector2d vBackdrop = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
 
         Vector2d vAprilTag = null;
@@ -301,27 +301,27 @@ public class AutoRedFront extends LinearOpMode {
             case 2:
             case -2:
                 // pass the test
-                xDelta = 5.5;
-                yDelta = (frontOrBack > 0)? 5.0 : 0;
+                xDelta = 5.0;
+                yDelta = (frontOrBack > 0) ? 5.0 : 0;
                 break;
             case -1:
             case 4:
                 // pass the test
-                    xDelta = 8.0;
-                    yDelta = 10.0;
+                xDelta = 8.0;
+                yDelta = 10.0;
                 break;
             case -3:
             case 1:
             case -4:
             case 6:
-                    xDelta = 0;
-                    yDelta = 5;
+                xDelta = 0;
+                yDelta = 5;
                 break;
             case 3:
             case -6:
                 // pass the test
                 xDelta = 8.0;
-                    yDelta = 15.0;
+                yDelta = 15.0;
                 break;
         }
         vDropPurple = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + xDelta), startPose.position.y + frontOrBack * yDelta);
@@ -416,23 +416,42 @@ public class AutoRedFront extends LinearOpMode {
 
         // fine tune heading angle
         Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .turn(-drive.pose.heading.log() - Math.PI / 2)
-                        .build());
+                new ParallelAction(
+                        // Paral 1. turn on camera for april tag detect
+                        new TurnOnCamera(),
+
+                        // Paral 2.
+                        new SequentialAction(
+                                // Seq a. fine tune heading angle before long travel
+                                drive.actionBuilder(drive.pose)
+                                        .turn(-drive.pose.heading.log() - Math.PI / 2)
+                                        .build(),
+
+                                // Seq b. waiting alliance move out the way if at front side
+                                new SleepAction((frontOrBack > 0)? WAIT_ALLIANCE_SECONDS : 0),
+
+                                // Seq c. strafe to april tag pose to check april tag
+                                drive.actionBuilder(drive.pose)
+                                        .lineToYConstantHeading(pausePoseY)
+                                        .strafeTo(vCheckingAprilTagPose)
+                                        .build()
+                        )
+                )
+        );
         logRobotHeading("robot drive: fine turn for heading correction");
 
-        if (frontOrBack > 0) {
-            sleep(WAIT_ALLIANCE_SECONDS * 100);
-        }
-        tag.initAprilTag();
+        //tag.initAprilTag();
 
         // move forward to backdrop board
+        /*
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .lineToYConstantHeading(pausePoseY)
                         .strafeTo(vCheckingAprilTagPose)
                         .build()
         );
+
+         */
 
         logVector("robot drive: drive.pose check april tag", drive.pose.position);
         logVector("robot drive: check april tag required", vCheckingAprilTagPose);
@@ -484,7 +503,7 @@ public class AutoRedFront extends LinearOpMode {
         sleep(500);
         intake.setSwitchPosition(intake.SWITCH_RELEASE_YELLOW);
         sleep(500);
-        intake.setSwitchPosition(intake.getArmPosition() - 500);
+        intake.setArmCountPosition(intake.getArmPosition() - 500);
         sleep(500);
     }
 
@@ -501,8 +520,7 @@ public class AutoRedFront extends LinearOpMode {
     public class TurnOnCamera implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            //tag.initAprilTag();
-            intake.fingerIntake();
+            tag.initAprilTag();
             return false;
         }
     }

@@ -161,7 +161,7 @@ public class intakeUnit
      * set the target position of arm servo motor
      * @param armPos the target position value for arm servo motor
      */
-    private void setArmCountPosition(int armPos) {
+    public void setArmCountPosition(int armPos) {
         armPos = Range.clip(armPos, ARM_MIN_COUNT_POS, ARM_MAX_COUNT_POS);
         armMotor.setTargetPosition(armPos);
     }
