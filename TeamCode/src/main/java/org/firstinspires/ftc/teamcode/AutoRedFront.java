@@ -33,13 +33,19 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-//import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -267,6 +273,8 @@ public class AutoRedFront extends LinearOpMode {
     }
 
     private void autoCore() {
+        Vector2d startArmFlip = new Vector2d(startPose.position.x - blueOrRed * 6, startPose.position.y);
+
         double pausePoseY = -2 * Params.HALF_MAT - 6;
         Vector2d vMatCenter = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, startPose.position.y);
         Vector2d vParkPos = new Vector2d(blueOrRed * ((3 - 2 * frontOrBack) * Params.HALF_MAT + 2), -3.5 * Params.HALF_MAT);
@@ -321,18 +329,19 @@ public class AutoRedFront extends LinearOpMode {
         Logging.log("check status = %d, xDelta = %.2f, yDelta = %.2f ", checkStatus, xDelta, yDelta);
         logVector("Back drop pose", vBackdrop);
         logVector("April tag", vAprilTag);
-        
+
         logRobotHeading("robot drive: before strafe");
         logVector("robot drive: start position", drive.pose.position);
 
         // move forward
         Actions.runBlocking(
                 drive.actionBuilder(startPose)
-                        .lineToXConstantHeading(startPose.position.x - blueOrRed * 6) // drive forward 6 inch to leave wall
+                        .lineToXConstantHeading(startArmFlip.x) // drive forward 6 inch to leave wall
                         .build()
         );
 
         logVector("robot drive: arm to push pose", drive.pose.position);
+        logVector("robot drive: start Arm Flip pose required", startArmFlip);
 
         intake.pushPropPose();
         sleep(2000);
@@ -346,6 +355,7 @@ public class AutoRedFront extends LinearOpMode {
         logVector("robot drive: drop purple pose", drive.pose.position);
         logVector("robot drive: drop purple pose required", vDropPurple);
 
+        // Near gate cases
         if((6 == checkStatus) || (-3 == checkStatus) || (1 == checkStatus) || (-4 == checkStatus)) {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
@@ -362,10 +372,11 @@ public class AutoRedFront extends LinearOpMode {
 
         if ((2 == checkStatus) || (5 == checkStatus)) {
             intake.setArmModeRunToPosition(intake.ARM_POS_READY_FOR_HANG);
+            sleep(1000);
         } else {
             intake.underTheBeam();
+            sleep(300);
         }
-        sleep(1000);
 
         // there is a bug somewhere in turn() function when using PI/2, it actually turn PI */
         double turnAngleToDrop = 0;
@@ -384,8 +395,12 @@ public class AutoRedFront extends LinearOpMode {
             logVector("robot drive: turn after drop purple", drive.pose.position);
             logVector("robot drive: turn after drop purple required", vDropPurple);
         }
-        intake.underTheBeam();
-        sleep(500);
+
+        // flip down the arm to get ready to go through the gate
+        if ((2 == checkStatus) || (5 == checkStatus)) {
+            intake.underTheBeam();
+            sleep(500);
+        }
 
         // move to the center of second mat to go through gate.
         if (frontOrBack > 0) {
@@ -398,8 +413,6 @@ public class AutoRedFront extends LinearOpMode {
             logVector("robot drive: drive.pose move to 2nd mat center", drive.pose.position);
             logVector("robot drive: move to 2nd mat center required", vMatCenter);
         }
-
-        sleep(1000);
 
         // fine tune heading angle
         Actions.runBlocking(
@@ -483,5 +496,14 @@ public class AutoRedFront extends LinearOpMode {
     private void logRobotHeading(String sTag) {
         Logging.log("%s drive.pose: %.2f", sTag, Math.toDegrees(drive.pose.heading.log()));
         Logging.log("%s imu: %.2f", sTag, drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - Math.toDegrees(startPose.heading.log()));
+    }
+
+    public class TurnOnCamera implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            //tag.initAprilTag();
+            intake.fingerIntake();
+            return false;
+        }
     }
 }
