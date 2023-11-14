@@ -1,11 +1,7 @@
 package org.firstinspires.ftc.teamcode.huskyteers.vision;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
-import java.util.List;
 public class TensorflowDetection {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -15,7 +11,7 @@ public class TensorflowDetection {
     private static final String TFOD_MODEL_ASSET = "model_20231019_154144.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
-    //private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
+//    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20231019_154144.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
             "HuskyProp",
@@ -29,9 +25,6 @@ public class TensorflowDetection {
     /**
      * The variable to store our instance of the vision portal.
      */
-
-
-
 
 
     /**
@@ -64,8 +57,6 @@ public class TensorflowDetection {
         // Create the vision portal by using a builder.
 
 
-
-
         // Choose a camera resolution. Not all cameras support all resolutions.
         //builder.setCameraResolution(new Size(640, 480));
 
@@ -81,7 +72,6 @@ public class TensorflowDetection {
         //builder.setAutoStopLiveView(false);
 
 
-
         // Set confidence threshold for TFOD recognitions, at any time.
         tfod.setMinResultConfidence(0.6f);
 
@@ -93,7 +83,6 @@ public class TensorflowDetection {
     /**
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
      */
-
 
 
 }   // end method telemetryTfod()
