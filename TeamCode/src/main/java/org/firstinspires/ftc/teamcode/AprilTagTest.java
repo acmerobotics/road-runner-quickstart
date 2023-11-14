@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -24,7 +25,7 @@ public class AprilTagTest {
     private static boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
     private int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
     public boolean targetFound = false;    // Set to true when an AprilTag target is detected
-    private final double DESIRED_DISTANCE = 10.0; //  this is how close the camera should get to the target (inches)
+    private final double DESIRED_DISTANCE = 7.5; //  this is how close the camera should get to the target (inches)
 
     //Objects
     private HardwareMap hardwareMap = null;
@@ -258,5 +259,29 @@ public class AprilTagTest {
         }
 
         return reachedTarget;
+    }
+
+    public Vector2d updatePoseAprilTag() {
+        int detectCount = 0;
+        Vector2d aprilTagPos = new Vector2d(0,0);
+
+        // exit while loop when reached target or cannot found target in 500 ms.
+        detectTag();
+        if (!targetFound) {
+            for (detectCount = 0; detectCount < 20; detectCount++) {
+                detectTag();
+                sleep(5);
+                if (targetFound) {
+                    break;
+                }
+            }
+        }
+
+        Logging.log("April Tag found? %s ", targetFound ? "Yes" : "No");
+        if (targetFound) {
+            aprilTagPos = new Vector2d(desiredTag.ftcPose.x, desiredTag.ftcPose.y);
+        }
+
+        return aprilTagPos;
     }
 }

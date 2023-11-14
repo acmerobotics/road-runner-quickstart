@@ -94,7 +94,8 @@ public class AutoRedFront extends LinearOpMode {
      */
     private int desiredTagNum = 0; // blue: 1,2,3; red: 4,5,6
     private int checkStatus = 0;
-    private double bucketShift = 2.0; // yellow pixel is in the right bucket.
+    final private double BUCKET_SHIFT = 2.0; // yellow pixel is in the right bucket.
+    final double DESIRED_DISTANCE = 7.5; //  this is how close the camera should get to the target (inches)
 
     // USE LATER: boolean debug_flag = true;
 
@@ -289,7 +290,7 @@ public class AutoRedFront extends LinearOpMode {
             vAprilTag = new Vector2d(vBackdrop.x + (5 - desiredTagNum) * Params.BACKDROP_SIDEWAYS, vBackdrop.y);
         }
         Vector2d vCheckingAprilTagPose = new Vector2d(vAprilTag.x, vAprilTag.y + 10);
-        Vector2d vDropYellow = new Vector2d(vAprilTag.x + bucketShift, vAprilTag.y);
+        Vector2d vDropYellow = new Vector2d(vAprilTag.x + BUCKET_SHIFT, vAprilTag.y);
 
         Vector2d vDropPurple = null;
         double xDelta = -3.0;
@@ -439,45 +440,40 @@ public class AutoRedFront extends LinearOpMode {
                 )
         );
         logRobotHeading("robot drive: fine turn for heading correction");
-
-        //tag.initAprilTag();
-
-        // move forward to backdrop board
-        /*
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .lineToYConstantHeading(pausePoseY)
-                        .strafeTo(vCheckingAprilTagPose)
-                        .build()
-        );
-
-         */
-
         logVector("robot drive: drive.pose check april tag", drive.pose.position);
         logVector("robot drive: check april tag required", vCheckingAprilTagPose);
         logRobotHeading("robot drive: check april tag");
 
-        intake.readyToDropYellow();
+
+        intake.setArmCountPosition(intake.getArmPosition() - 600); // lift arm to avoid blocking camera
+        sleep(500);
+        Vector2d aprilTagPose = tag.updatePoseAprilTag();
+        logVector("robot drive: april tag location from camera", aprilTagPose);
+        logVector("robot drive: drop yellow pose required before adjust", vDropYellow);
 
         // if can not move based on April tag, moved by road runner.
-        //if (!tag.autoDriveToAprilTag()) {
-        if (true) {
-            // shift to AprilTag
-                Actions.runBlocking(
-                        drive.actionBuilder(drive.pose)
-                                .strafeTo(vDropYellow)
-                                .build()
-                );
-            logVector("robot drive: drive.pose drop yellow", drive.pose.position);
-            logVector("robot drive: check drop yellow required", vDropYellow);
+        if (tag.targetFound) {
+            // adjust yellow drop-off position according to april tag location info from camera
+            vDropYellow = new Vector2d(drive.pose.position.x - aprilTagPose.x + BUCKET_SHIFT, drive.pose.position.y - aprilTagPose.y + DESIRED_DISTANCE);
+            logVector("robot drive: drop yellow pose required after april tag adjust", vDropYellow);
+
         }
+
+        intake.readyToDropYellow();
+
+        // shift to AprilTag
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .strafeTo(vDropYellow)
+                        .build()
+        );
+        logVector("robot drive: drive.pose drop yellow", drive.pose.position);
+        logVector("robot drive: check drop yellow required", vDropYellow);
+
         logVector("robot drive: april tag required", vAprilTag);
 
         // drop pixel
         dropYellowAction();
-
-        intake.setArmModeRunToPosition(intake.ARM_POS_DROP); // lift arm to ensure yellow pixel is dropped.
-        sleep(500);
 
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
@@ -492,15 +488,15 @@ public class AutoRedFront extends LinearOpMode {
     private void dropPurpleAction() {
         // 1. arm and wrist at correct positions
         intake.readyToDropPurple();
-        sleep(2000);
+        sleep(500);
 
         // 2. open switch
         intake.setSwitchPosition(intake.SWITCH_RELEASE_PURPLE);
-        sleep(1500);
+        sleep(500);
     }
     private void dropYellowAction(){
         intake.readyToDropYellow();
-        sleep(500);
+        sleep(100);
         intake.setSwitchPosition(intake.SWITCH_RELEASE_YELLOW);
         sleep(500);
         intake.setArmCountPosition(intake.getArmPosition() - 500);
