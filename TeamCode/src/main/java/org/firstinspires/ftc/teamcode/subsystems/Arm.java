@@ -13,12 +13,13 @@ public class Arm extends Mechanism {
     public Servo rightArm;
     public String leftName = "leftArm";
     public String rightName = "rightArm";
-    double extendedPosition = 0.3;
-    double retractedPosition = 0.09;
+    double extendedPosition = 0;
+    double retractedPosition = 0.28;
+    double safeRetractedPosition = 0.28;
 
     public boolean isExtended = false;
-
     public boolean isRetracted = false;
+    public boolean isSafeRetracted = false;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -29,14 +30,17 @@ public class Arm extends Mechanism {
 
     @Override
     public void loop(Gamepad gamepad) {
-        isExtended = leftArm.getPosition() == extendedPosition && rightArm.getPosition() == extendedPosition;
-        isRetracted = leftArm.getPosition() == retractedPosition && rightArm.getPosition() == retractedPosition;
+        isExtended = Math.abs(leftArm.getPosition() - extendedPosition) < 0.01 && Math.abs(rightArm.getPosition() - extendedPosition) < 0.01;
+        isRetracted = Math.abs(leftArm.getPosition() - retractedPosition) < 0.01 && Math.abs(rightArm.getPosition() - retractedPosition) < 0.01;
+        isSafeRetracted = Math.abs(leftArm.getPosition() - safeRetractedPosition) < 0.01 && Math.abs(rightArm.getPosition() - safeRetractedPosition) < 0.01;
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
         telemetry.addData("Left Arm Position:", leftArm.getPosition());
         telemetry.addData("Right Arm Position:", rightArm.getPosition());
+        telemetry.addData("isExtended: ", isExtended);
+        telemetry.addData("isRetracted: ", isRetracted);
     }
 
     public void extend() {
@@ -47,5 +51,10 @@ public class Arm extends Mechanism {
     public void retract() {
         leftArm.setPosition(retractedPosition);
         rightArm.setPosition(retractedPosition);
+    }
+
+    public void safeRetract() {
+        leftArm.setPosition(safeRetractedPosition);
+        rightArm.setPosition(safeRetractedPosition);
     }
 }

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
-import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -23,7 +21,7 @@ public class Drivebase extends Mechanism {
     private Camera camera;
     private MecanumDrive drive;
 
-    private double speedClamp = 1;
+    final double speedClamp = 1;
 
     private static final double MAX_AUTO_SPEED = 0.65;
     private static final double MAX_AUTO_TURN = 0.5;

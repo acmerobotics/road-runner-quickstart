@@ -3,9 +3,7 @@ package org.firstinspires.ftc.teamcode.tests;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
-import org.firstinspires.ftc.teamcode.subsystems.developmental.PIDSlides;
 import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
 
 @TeleOp(name="ClawTest", group="Tests")

@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
 
-@TeleOp(name="ArmTest", group="Tests")
-public class ArmTest extends OpMode {
+@TeleOp(name="ArmPositionFinder", group="Tests")
+public class ArmPositionFinder extends OpMode {
 
     Arm arm;
 

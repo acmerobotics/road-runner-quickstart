@@ -14,6 +14,9 @@ public class Robot extends Mechanism {
     public void init(HardwareMap hwMap) {
         pixelManipulator = new PixelManipulator();
         drivebase = new Drivebase();
+
+        pixelManipulator.init(hwMap);
+        drivebase.init(hwMap);
     }
 
     @Override

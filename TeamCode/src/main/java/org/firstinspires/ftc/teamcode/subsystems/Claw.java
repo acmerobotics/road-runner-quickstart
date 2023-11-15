@@ -19,7 +19,8 @@ public class Claw extends Mechanism {
         public double tiltedLeftPos = 0.27;
         public double straight = 0.52;
         public double releasePosition = 0.1;
-        public double clampPosition = 0;
+        public double leftReleasePosition = 0.2;
+        public double clampPosition = 0.015;
 
         public boolean isLeftClamped = false;
         public boolean isLeftReleased = true;
@@ -64,10 +65,10 @@ public class Claw extends Mechanism {
 
             isRotatorInPosition = rotator.getPosition() == targetTilt;
 
-            isLeftClamped = leftProng.getPosition() == clampPosition;
-            isRightClamped = rightProng.getPosition() == clampPosition;
-            isLeftReleased = leftProng.getPosition() == releasePosition;
-            isRightReleased = rightProng.getPosition() == releasePosition;
+            isLeftClamped = Math.abs(leftProng.getPosition() - clampPosition) < 0.01;
+            isRightClamped = Math.abs(rightProng.getPosition() - clampPosition) < 0.01;
+            isLeftReleased = Math.abs(leftProng.getPosition() - leftReleasePosition) < 0.01;
+            isRightReleased = Math.abs(rightProng.getPosition() - releasePosition) < 0.01;
         }
 
         @Override
@@ -94,6 +95,10 @@ public class Claw extends Mechanism {
 
         public void releaseServo(Servo servo) {
             servo.setPosition(releasePosition);
+        }
+
+        public void releaseLeftServo(Servo servo) {
+            servo.setPosition(leftReleasePosition);
         }
 
         public void setActiveTiltState(TiltState tiltState) {

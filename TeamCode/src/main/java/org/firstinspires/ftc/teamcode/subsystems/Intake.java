@@ -9,13 +9,13 @@ import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 public class Intake extends Mechanism {
 
-    DcMotorEx intake; // Intake declaration
+    CRServo intake; // Intake declaration
 
     public String intakeName = "intake"; // Reference to name in config
 
     @Override
     public void init(HardwareMap hwMap) {
-        intake = hwMap.get(DcMotorEx.class, intakeName);
+        intake = hwMap.get(CRServo.class, intakeName);
     }
 
     @Override

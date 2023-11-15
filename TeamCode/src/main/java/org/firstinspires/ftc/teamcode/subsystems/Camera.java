@@ -1,19 +1,19 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.util.Mechanism;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class Camera extends Mechanism {
@@ -22,9 +22,9 @@ public class Camera extends Mechanism {
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     boolean targetFound = false;
   
-    private final String webcamName = "Ray";
-    private final int exposureMS = 4;
-    private final int gain = 250;
+    final String webcamName = "Ray";
+    final int exposureMS = 4;
+    final int gain = 250;
 
     public static final int BLUE_LEFT_ID = 1;
     public static final int BLUE_CENTER_ID = 2;
@@ -33,36 +33,26 @@ public class Camera extends Mechanism {
     public static final int RED_CENTER_ID = 5;
     public static final int RED_RIGHT_ID = 6;
 
+    private TfodProcessor tfod;
+
     @Override
     public void init(HardwareMap hwMap) {
         aprilTag = new AprilTagProcessor.Builder().build();
+        tfod = new TfodProcessor.Builder().build();
         visionPortal = new VisionPortal.Builder()
             .setCamera(hwMap.get(WebcamName.class, webcamName))
             .addProcessor(aprilTag)
+            .addProcessor(tfod)
             .build();
         aprilTag.setDecimation(3);
         setManualExposure(exposureMS, gain);
+        tfod.setMinResultConfidence(0.75f);
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
-        if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
-            if (targetFound) {
-                telemetry.addData("Tag ID ", desiredTag.id);
-                telemetry.addData("Tag Name ", desiredTag.metadata.name);
-                telemetry.addData("Tag X ", desiredTag.ftcPose.x);
-                telemetry.addData("Tag Y ", desiredTag.ftcPose.y);
-                telemetry.addData("Tag Z ", desiredTag.ftcPose.z);
-                telemetry.addData("Tag Pitch ", desiredTag.ftcPose.pitch);
-                telemetry.addData("Tag Roll ", desiredTag.ftcPose.roll);
-                telemetry.addData("Tag Yaw ", desiredTag.ftcPose.yaw);
-                telemetry.addData("Tag Range ", desiredTag.ftcPose.range);
-                telemetry.addData("Tag Bearing ", desiredTag.ftcPose.bearing);
-                telemetry.addData("Tag Elevation ", desiredTag.ftcPose.elevation);
-            } else {
-                telemetry.addLine("No TAG");
-            }
-        }
+        telemetryTag(telemetry);
+        telemetryTfod(telemetry);
     }
 
     public void setManualExposure(int exposureMS, int gain) {
@@ -123,5 +113,43 @@ public class Camera extends Mechanism {
 
     public List<AprilTagDetection> getDetections() {
         return aprilTag.getDetections();
+    }
+
+    private void telemetryTag(Telemetry telemetry) {
+        if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
+            if (targetFound) {
+                telemetry.addData("Tag ID ", desiredTag.id);
+                telemetry.addData("Tag Name ", desiredTag.metadata.name);
+                telemetry.addData("Tag X ", desiredTag.ftcPose.x);
+                telemetry.addData("Tag Y ", desiredTag.ftcPose.y);
+                telemetry.addData("Tag Z ", desiredTag.ftcPose.z);
+                telemetry.addData("Tag Pitch ", desiredTag.ftcPose.pitch);
+                telemetry.addData("Tag Roll ", desiredTag.ftcPose.roll);
+                telemetry.addData("Tag Yaw ", desiredTag.ftcPose.yaw);
+                telemetry.addData("Tag Range ", desiredTag.ftcPose.range);
+                telemetry.addData("Tag Bearing ", desiredTag.ftcPose.bearing);
+                telemetry.addData("Tag Elevation ", desiredTag.ftcPose.elevation);
+            } else {
+                telemetry.addLine("No TAG");
+            }
+        }
+    }
+
+    private void telemetryTfod(Telemetry telemetry) {
+
+        List<Recognition> currentRecognitions = tfod.getRecognitions();
+        telemetry.addData("# Objects Detected", currentRecognitions.size());
+
+        // Step through the list of recognitions and display info for each one.
+        for (Recognition recognition : currentRecognitions) {
+            double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
+            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
+
+            telemetry.addData(""," ");
+            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
+            telemetry.addData("- Position", "%.0f / %.0f", x, y);
+            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+        }   // end for() loop
+
     }
 }

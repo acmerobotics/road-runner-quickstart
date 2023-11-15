@@ -14,7 +14,7 @@ public class mecanumDriveTesterSimple extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     public MecanumHardware mecanumHardware = new MecanumHardware();
     double deadzone = .3;
-    double maxSpeed = .8;
+    double maxSpeed = 1;
     double x = 0;
     double y = 0;
     double rx = 0;
