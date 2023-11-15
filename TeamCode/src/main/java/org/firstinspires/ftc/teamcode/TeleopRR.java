@@ -27,6 +27,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -68,10 +69,15 @@ public class TeleopRR extends LinearOpMode {
     //claw and arm unit
     private intakeUnit intake;
 
-    private Servo launchServo;
+    private Servo DroneServo;
 
     // debug flags, turn it off for formal version to save time of logging
     boolean debugFlag = true;
+
+    private AprilTagTest tag = null;
+
+    final double DESIRED_DISTANCE = 3.0;
+
 
     @Override
     public void runOpMode() {
@@ -83,9 +89,16 @@ public class TeleopRR extends LinearOpMode {
         mecanum = new MecanumDrive(hardwareMap, Params.currentPose);
         mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        tag = new AprilTagTest(mecanum, hardwareMap, 0, "Webcam 1");
+
+        tag.initAprilTag();
+
         intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo", "FingerServo", "SwitchServo");
 
         intake.setArmModeRunToPosition(intake.getArmPosition());
+
+        DroneServo = hardwareMap.get(Servo.class, "Drone");
+        DroneServo.setPosition(0.5);
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -170,6 +183,10 @@ public class TeleopRR extends LinearOpMode {
                 intake.switchServoOpen();
             }
 
+            if(gpButtons.switchDropOne) {
+                intake.switchServoDropOne();
+            }
+
             if(gpButtons.switchClose) {
                 intake.switchServoClose();
             }
@@ -182,8 +199,50 @@ public class TeleopRR extends LinearOpMode {
                 intake.hangingRobot();
             }
 
-            if (gpButtons.launchPlane) {
-                //launchServo.setPosition(0);
+            if (gpButtons.droneLaunch) {
+                DroneServo.setPosition(0);
+            }
+
+            if (gpButtons.moveToLeftTag) {
+                if(intake.getArmPosition() > intake.ARM_POS_CAMERA_READ) {
+                    intake.setArmCountPosition(intake.ARM_POS_CAMERA_READ); // lift arm to avoid blocking camera
+                    sleep(500);
+                }
+
+                tag.updateDesiredTagNum(1);
+                Vector2d aprilTagPose = tag.updatePoseAprilTag();
+
+                // if can not move based on April tag, moved by road runner.
+                if (tag.targetFound) {
+                    mecanum.updatePoseEstimate();
+                    // adjust yellow drop-off position according to april tag location info from camera
+                    Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.x, mecanum.pose.position.y - aprilTagPose.y + DESIRED_DISTANCE);
+                    logVector("robot drive: drop yellow pose required after april tag adjust", desiredMove);
+
+                    intake.dropPositions();
+
+                    mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                    // shift to AprilTag
+                    Actions.runBlocking(
+                            mecanum.actionBuilder(mecanum.pose)
+                                    .strafeTo(desiredMove)
+                                    .build()
+                    );
+
+                    mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+                }
+            }
+
+            if (gpButtons.moveToCenterTag) {
+                tag.updateDesiredTagNum(2);
+
+            }
+
+            if (gpButtons.moveToRightTag) {
+                tag.updateDesiredTagNum(3);
             }
 
             if (debugFlag) {
@@ -197,7 +256,7 @@ public class TeleopRR extends LinearOpMode {
                 telemetry.addData("switch", "position %.2f", intake.getSwitchPosition());
 
 
-                //telemetry.addData("Launch", "position %.2f", launchServo.getPosition());
+                telemetry.addData("Drone", "position %.2f", DroneServo.getPosition());
 
                 telemetry.update(); // update message at the end of while loop
 
@@ -207,6 +266,11 @@ public class TeleopRR extends LinearOpMode {
         }
 
         // The motor stop on their own but power is still applied. Turn off motor.
+    }
+
+    private void logVector(String sTag, Vector2d vXY) {
+        String vectorName = vXY.toString();
+        Logging.log("%s: %s", sTag, vectorName);
     }
 
 }

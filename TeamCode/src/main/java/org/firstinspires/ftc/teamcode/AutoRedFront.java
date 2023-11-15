@@ -444,9 +444,10 @@ public class AutoRedFront extends LinearOpMode {
         logVector("robot drive: check april tag required", vCheckingAprilTagPose);
         logRobotHeading("robot drive: check april tag");
 
-
-        intake.setArmCountPosition(intake.getArmPosition() - 600); // lift arm to avoid blocking camera
-        sleep(500);
+        if(intake.getArmPosition() > intake.ARM_POS_CAMERA_READ) {
+            intake.setArmCountPosition(intake.ARM_POS_CAMERA_READ); // lift arm to avoid blocking camera
+            sleep(500);
+        }
         Vector2d aprilTagPose = tag.updatePoseAprilTag();
         logVector("robot drive: april tag location from camera", aprilTagPose);
         logVector("robot drive: drop yellow pose required before adjust", vDropYellow);

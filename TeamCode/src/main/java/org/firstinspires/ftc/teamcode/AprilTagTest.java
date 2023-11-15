@@ -43,6 +43,10 @@ public class AprilTagTest {
         this.webcamName = tagCamName;
     }
 
+    public void updateDesiredTagNum(int tagN) {
+        this.DESIRED_TAG_ID = tagN;
+    }
+
     public void initAprilTag() {
         // Create the AprilTag processor by using a builder.
         aprilTag = new AprilTagProcessor.Builder().build();

@@ -79,11 +79,12 @@ public class intakeUnit
     final int ARM_POS_HANG = 500;
     final int ARM_POS_READY_FOR_HANG = 1800;
     final int ARM_POS_DROP = 2500;
+    final int ARM_POS_CAMERA_READ = 2500;
     final int ARM_POS_DROP_YELLOW = 2800;
     final int ARM_POS_UNDER_BEAM = 3100;
-    final int ARM_POS_DROP_PURPLE = 3300;
-    final int ARM_POS_PUSH_PROP = 3400;
-    final int ARM_POS_INTAKE = 3565;
+    final int ARM_POS_DROP_PURPLE = 3400;
+    final int ARM_POS_PUSH_PROP = 3480;
+    final int ARM_POS_INTAKE = 3575;
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -117,9 +118,14 @@ public class intakeUnit
     }
 
     public void switchServoOpen() {
-        setSwitchPosition(switchServo.getPosition() + 0.0005);
-        //setSwitchPosition(SWITCH_RELEASE_YELLOW);
+        //setSwitchPosition(switchServo.getPosition() + 0.0005);
+        setSwitchPosition(SWITCH_RELEASE_YELLOW);
     }
+
+    public void switchServoDropOne() {
+        setSwitchPosition(SWITCH_RELEASE_PURPLE);
+    }
+
     public void switchServoClose() {
         setSwitchPosition(SWITCH_CLOSE_POS);
     }
