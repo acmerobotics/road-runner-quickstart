@@ -85,6 +85,9 @@ public class intakeUnit
     final int ARM_POS_DROP_PURPLE = 3400;
     final int ARM_POS_PUSH_PROP = 3480;
     final int ARM_POS_INTAKE = 3575;
+    final int ARM_POS_INTAKE2 = ARM_POS_INTAKE - 20;
+    final int ARM_POS_INTAKE3 = ARM_POS_INTAKE - 40;
+    final int ARM_POS_INTAKE4 = ARM_POS_INTAKE - 60;
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -212,6 +215,24 @@ public class intakeUnit
         switchServoClose();
         fingerIntake();
     }
+    public void intakePositions2() {
+        setArmCountPosition(ARM_POS_INTAKE2);
+        wristServo.setPosition(WRIST_POS_INTAKE);
+        switchServoClose();
+        fingerIntake();
+    }
+    public void intakePositions3() {
+        setArmCountPosition(ARM_POS_INTAKE3);
+        wristServo.setPosition(WRIST_POS_INTAKE);
+        switchServoClose();
+        fingerIntake();
+    }public void intakePositions4() {
+    setArmCountPosition(ARM_POS_INTAKE4);
+    wristServo.setPosition(WRIST_POS_INTAKE);
+    switchServoClose();
+    fingerIntake();
+}
+
 
     public void parkingPositions() {
         setArmCountPosition(ARM_POS_INTAKE);

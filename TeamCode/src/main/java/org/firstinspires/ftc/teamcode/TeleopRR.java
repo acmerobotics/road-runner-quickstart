@@ -178,6 +178,15 @@ public class TeleopRR extends LinearOpMode {
             if(gpButtons.readyToIntake) {
                 intake.intakePositions();
             }
+            if(gpButtons.readyToIntake2nd) {
+                intake.intakePositions2();
+            }
+            if(gpButtons.readyToIntake3rd) {
+                intake.intakePositions3();;
+            }
+            if(gpButtons.readyToIntake4th) {
+                intake.intakePositions4();
+            }
 
             if(gpButtons.switchOpen) {
                 intake.switchServoOpen();

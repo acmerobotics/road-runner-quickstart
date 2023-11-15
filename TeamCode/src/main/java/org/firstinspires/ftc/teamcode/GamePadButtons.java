@@ -71,7 +71,7 @@ public class GamePadButtons {
     public boolean readyToIntake;
     public boolean readyToIntake2nd;
     public boolean readyToIntake3rd;
-    public boolean readyToIntake4rd;
+    public boolean readyToIntake4th;
     public boolean readyToDrop;
     public boolean droneLaunch;
     public boolean hangingRobot;
@@ -121,12 +121,15 @@ public class GamePadButtons {
         //both
 
         //fingers
-        fingerIntake = gamepad1.dpad_down || gamepad2.dpad_down;
-        fingerStop = gamepad1.dpad_left || gamepad2.dpad_left;
-        fingerOuttake = gamepad1.dpad_up || gamepad2.dpad_up;
+        fingerIntake =  gamepad2.dpad_down;
+        fingerStop =  gamepad2.dpad_left;
+        fingerOuttake =  gamepad2.dpad_up;
 
         //preset positions
         readyToIntake = gamepad1.left_bumper || gamepad2.left_bumper;
+        readyToIntake2nd = gamepad1.dpad_up;
+        readyToIntake3rd = gamepad1.dpad_left;
+        readyToIntake4th = gamepad1.dpad_down;
         readyToDrop = gamepad1.right_bumper || gamepad2.right_bumper;
     }
 }
