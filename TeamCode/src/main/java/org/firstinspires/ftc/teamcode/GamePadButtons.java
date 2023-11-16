@@ -93,11 +93,9 @@ public class GamePadButtons {
         speedCtrl = gamepad1.back;
         speedDown = speedCtrl;
 
-        /*
         moveToLeftTag = gamepad1.x;
         moveToCenterTag = gamepad1.y;
         moveToRightTag = gamepad1.b;
-         */
 
         // game pad 2
 

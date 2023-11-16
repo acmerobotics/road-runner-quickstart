@@ -25,6 +25,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -214,45 +215,16 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if (gpButtons.moveToLeftTag) {
-                if(intake.getArmPosition() > intake.ARM_POS_CAMERA_READ) {
-                    intake.setArmCountPosition(intake.ARM_POS_CAMERA_READ); // lift arm to avoid blocking camera
-                    sleep(500);
-                }
+                moveByAprilTag(1 + ((Params.blueOrRed > 0)? 0 : 3));
 
-                tag.updateDesiredTagNum(1);
-                Vector2d aprilTagPose = tag.updatePoseAprilTag();
-
-                // if can not move based on April tag, moved by road runner.
-                if (tag.targetFound) {
-                    mecanum.updatePoseEstimate();
-                    // adjust yellow drop-off position according to april tag location info from camera
-                    Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.x, mecanum.pose.position.y - aprilTagPose.y + Params.TELEOP_DISTANCE_TO_TAG);
-                    logVector("robot drive: drop yellow pose required after april tag adjust", desiredMove);
-
-                    intake.dropPositions();
-
-                    mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-                    // shift to AprilTag
-                    Actions.runBlocking(
-                            mecanum.actionBuilder(mecanum.pose)
-                                    .strafeTo(desiredMove)
-                                    .build()
-                    );
-
-                    mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-                }
             }
 
             if (gpButtons.moveToCenterTag) {
-                tag.updateDesiredTagNum(2);
-
+                moveByAprilTag(2 + ((Params.blueOrRed > 0)? 0 : 3));
             }
 
             if (gpButtons.moveToRightTag) {
-                tag.updateDesiredTagNum(3);
+                moveByAprilTag(3 + ((Params.blueOrRed > 0)? 0 : 3));
             }
 
             if (debugFlag) {
@@ -275,12 +247,53 @@ public class TeleopRR extends LinearOpMode {
             }
         }
 
+        intake.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         // The motor stop on their own but power is still applied. Turn off motor.
     }
 
     private void logVector(String sTag, Vector2d vXY) {
         String vectorName = vXY.toString();
         Logging.log("%s: %s", sTag, vectorName);
+    }
+
+    private void moveByAprilTag(int tagNum) {
+        intake.dropPositions();
+        sleep(300); // make sure arm is out of camera sight
+
+        tag.updateDesiredTagNum(tagNum);
+        Pose2d aprilTagPose = tag.updatePoseAprilTag();
+
+        // if can not move based on April tag, moved by road runner.
+        if (tag.targetFound) {
+            mecanum.updatePoseEstimate();
+            mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            // turn
+            Actions.runBlocking(
+                    mecanum.actionBuilder(mecanum.pose)
+                            .turn(aprilTagPose.heading.log())
+                            .build());
+
+            aprilTagPose = tag.updatePoseAprilTag(); // update position values after turn
+
+            Logging.log("yaw = %.2f", aprilTagPose.heading.log());
+            logVector("robot drive: distance from camera to april tag", aprilTagPose.position);
+            if (tag.targetFound) {
+
+                // adjust yellow drop-off position according to april tag location info from camera
+                Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.position.x,
+                        mecanum.pose.position.y - aprilTagPose.position.y + Params.TELEOP_DISTANCE_TO_TAG);
+                logVector("robot drive: move to tag distance", desiredMove);
+
+                // shift to AprilTag
+                Actions.runBlocking(
+                        mecanum.actionBuilder(mecanum.pose)
+                                .strafeTo(desiredMove)
+                                .build()
+                );
+            }
+            mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
     }
 
 }

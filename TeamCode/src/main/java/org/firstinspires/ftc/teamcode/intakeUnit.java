@@ -113,6 +113,7 @@ public class intakeUnit
         sleep(200);
 
         armMotor = hardwareMap.get(DcMotor.class, armMotorName);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void setSwitchPosition(double switchPos) {

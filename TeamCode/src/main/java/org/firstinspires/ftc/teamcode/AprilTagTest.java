@@ -265,9 +265,9 @@ public class AprilTagTest {
         return reachedTarget;
     }
 
-    public Vector2d updatePoseAprilTag() {
+    public Pose2d updatePoseAprilTag() {
         int detectCount = 0;
-        Vector2d aprilTagPos = new Vector2d(0,0);
+        Pose2d aprilTagPos = new Pose2d(0,0, 0);
 
         // exit while loop when reached target or cannot found target in 500 ms.
         detectTag();
@@ -283,7 +283,7 @@ public class AprilTagTest {
 
         Logging.log("April Tag found? %s ", targetFound ? "Yes" : "No");
         if (targetFound) {
-            aprilTagPos = new Vector2d(desiredTag.ftcPose.x, desiredTag.ftcPose.y);
+            aprilTagPos = new Pose2d(desiredTag.ftcPose.x, desiredTag.ftcPose.y, Math.toRadians(desiredTag.ftcPose.yaw));
         }
 
         return aprilTagPos;
