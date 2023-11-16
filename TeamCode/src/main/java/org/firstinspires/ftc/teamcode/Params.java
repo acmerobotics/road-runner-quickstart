@@ -41,6 +41,8 @@ public class Params {
     // road runner
     static Pose2d currentPose = new Pose2d(0,0,0);
 
+    static int blueOrRed = 0;
+
     //game field parameters
     static final double HALF_MAT = 12.0;
 
@@ -49,8 +51,10 @@ public class Params {
     static final double CHASSIS_LENGTH = 20;
 
     // moving distance variables
-    static final double BACKDROP_FORWARD = HALF_MAT - (CHASSIS_LENGTH / 2 + 1.5);
-    static final double BACKDROP_SIDEWAYS = 6.0;
+    static final double AUTO_DISTANCE_TO_TAG = 7.5; //this is how close the camera should get to the target (inches)
+    static final double TELEOP_DISTANCE_TO_TAG = 3.5;
+
+    static final double BACKDROP_SIDEWAYS = 7.0; // 1 inch more to side tage
 
     // chassis power factors
     static final double POWER_LOW = 0.3;

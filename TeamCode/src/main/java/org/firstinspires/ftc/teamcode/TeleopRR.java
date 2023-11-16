@@ -107,7 +107,8 @@ public class TeleopRR extends LinearOpMode {
         }
 
         // Wait for the game to start (driver presses PLAY)
-        telemetry.addData("Mode", "waiting for start");
+        telemetry.addData("Mode", "waiting for start: %s", (Params.blueOrRed > 0)? "Blue" : "Red");
+
         telemetry.update();
         waitForStart();
         runtime.reset();
@@ -225,7 +226,7 @@ public class TeleopRR extends LinearOpMode {
                 if (tag.targetFound) {
                     mecanum.updatePoseEstimate();
                     // adjust yellow drop-off position according to april tag location info from camera
-                    Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.x, mecanum.pose.position.y - aprilTagPose.y + DESIRED_DISTANCE);
+                    Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.x, mecanum.pose.position.y - aprilTagPose.y + Params.TELEOP_DISTANCE_TO_TAG);
                     logVector("robot drive: drop yellow pose required after april tag adjust", desiredMove);
 
                     intake.dropPositions();

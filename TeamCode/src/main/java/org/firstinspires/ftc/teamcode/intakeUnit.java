@@ -60,8 +60,8 @@ public class intakeUnit
 
     private Servo switchServo = null;
     final double SWITCH_CLOSE_POS = 0.15;
-    final double SWITCH_RELEASE_PURPLE = 0.19;
-    final double SWITCH_RELEASE_YELLOW = 0.27;
+    final double SWITCH_RELEASE_PURPLE = 0.18;
+    final double SWITCH_RELEASE_YELLOW = 0.25;
     private Servo wristServo = null;
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
     final double WRIST_MAX_POS = 0.95; // Maximum rotational position
@@ -69,7 +69,7 @@ public class intakeUnit
     final double WRIST_POS_AUTO = 0.34;
     final double WRIST_POS_DROP_YELLOW = 0.40;
     final double WRIST_POS_DROP = 0.45;
-    final double WRIST_POS_INTAKE = 0.455;
+    final double WRIST_POS_INTAKE = 0.44;
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
@@ -82,9 +82,9 @@ public class intakeUnit
     final int ARM_POS_CAMERA_READ = 2500;
     final int ARM_POS_DROP_YELLOW = 2800;
     final int ARM_POS_UNDER_BEAM = 3100;
-    final int ARM_POS_DROP_PURPLE = 3400;
-    final int ARM_POS_PUSH_PROP = 3480;
-    final int ARM_POS_INTAKE = 3575;
+    final int ARM_POS_DROP_PURPLE = 3380;
+    final int ARM_POS_PUSH_PROP = 3490;
+    final int ARM_POS_INTAKE = 3560;
     final int ARM_POS_INTAKE2 = ARM_POS_INTAKE - 20;
     final int ARM_POS_INTAKE3 = ARM_POS_INTAKE - 40;
     final int ARM_POS_INTAKE4 = ARM_POS_INTAKE - 60;

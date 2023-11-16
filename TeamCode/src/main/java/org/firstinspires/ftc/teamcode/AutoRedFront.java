@@ -46,6 +46,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -95,8 +96,6 @@ public class AutoRedFront extends LinearOpMode {
     private int desiredTagNum = 0; // blue: 1,2,3; red: 4,5,6
     private int checkStatus = 0;
     final private double BUCKET_SHIFT = 2.0; // yellow pixel is in the right bucket.
-    final double DESIRED_DISTANCE = 7.5; //  this is how close the camera should get to the target (inches)
-
     // USE LATER: boolean debug_flag = true;
 
     // Declare OpMode members.
@@ -206,6 +205,7 @@ public class AutoRedFront extends LinearOpMode {
         // init drive with road runner
         drive = new MecanumDrive(hardwareMap, startPose);
         Params.currentPose = startPose; // init storage pose.
+        Params.blueOrRed = blueOrRed;
 
         intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo",
                 "FingerServo", "SwitchServo");
@@ -260,6 +260,7 @@ public class AutoRedFront extends LinearOpMode {
 
             autonomousCore();
 
+            Params.currentPose = drive.pose; // storage end pose of autonomous
             intake.parkingPositions(); // Motors are at intake positions at the beginning of Tele-op
             intake.fingerStop();
             sleep(1000);
@@ -271,6 +272,7 @@ public class AutoRedFront extends LinearOpMode {
 
     private void autonomousCore() {
         autoCore();
+        intake.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     private void autoCore() {
@@ -278,7 +280,7 @@ public class AutoRedFront extends LinearOpMode {
 
         double pausePoseY = -2 * Params.HALF_MAT - 6;
         Vector2d vMatCenter = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, startPose.position.y);
-        Vector2d vParkPos = new Vector2d(blueOrRed * ((3 - 2 * frontOrBack) * Params.HALF_MAT), -3.5 * Params.HALF_MAT);
+        Vector2d vParkPos = new Vector2d(blueOrRed * ((3 - 2 * frontOrBack) * Params.HALF_MAT - frontOrBack * ((frontOrBack > 0)? 0 : 3)), -3.5 * Params.HALF_MAT);
         Vector2d vBackdrop = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
 
         Vector2d vAprilTag = null;
@@ -315,8 +317,9 @@ public class AutoRedFront extends LinearOpMode {
             case 1:
             case -4:
             case 6:
-                xDelta = 0;
-                yDelta = 5;
+                xDelta = -4; // 0;
+                yDelta = 3;//5;
+                startArmFlip = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + xDelta), startPose.position.y + frontOrBack * 10);
                 break;
             case 3:
             case -6:
@@ -332,17 +335,29 @@ public class AutoRedFront extends LinearOpMode {
         logVector("April tag", vAprilTag);
 
         logRobotHeading("robot drive: before strafe");
-        logVector("robot drive: start position", drive.pose.position);
+        logVector("robot drive: start position", startPose.position);
 
         // move forward
         Actions.runBlocking(
                 drive.actionBuilder(startPose)
-                        .lineToXConstantHeading(startArmFlip.x) // drive forward 6 inch to leave wall
+                        .strafeTo(startArmFlip) // drive forward several inch to leave wall
                         .build()
         );
 
         logVector("robot drive: arm to push pose", drive.pose.position);
         logVector("robot drive: start Arm Flip pose required", startArmFlip);
+
+        // Near gate cases
+        if((6 == checkStatus) || (-3 == checkStatus) || (1 == checkStatus) || (-4 == checkStatus)) {
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .turn(Math.PI / 2 * frontOrBack * blueOrRed)
+                            .build()
+            );
+            logRobotHeading("robot drive: after turn before arm flip");
+            logVector("robot drive: after turn pose starting Arm Flip required", drive.pose.position);
+            logVector("robot drive: after turn pose starting Arm Flip required", startArmFlip);
+        }
 
         intake.pushPropPose();
         sleep(2000);
@@ -355,18 +370,6 @@ public class AutoRedFront extends LinearOpMode {
 
         logVector("robot drive: drop purple pose", drive.pose.position);
         logVector("robot drive: drop purple pose required", vDropPurple);
-
-        // Near gate cases
-        if((6 == checkStatus) || (-3 == checkStatus) || (1 == checkStatus) || (-4 == checkStatus)) {
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .turn(Math.PI / 2 * frontOrBack * blueOrRed)
-                            .build()
-            );
-            logRobotHeading("robot drive: turn before drop purple");
-            logVector("robot drive: turn before drop purple", drive.pose.position);
-            logVector("robot drive: turn before drop purple required", vDropPurple);
-        }
 
         // drop off the purple pixel by arm and wrist actions
         dropPurpleAction();
@@ -382,7 +385,15 @@ public class AutoRedFront extends LinearOpMode {
         // there is a bug somewhere in turn() function when using PI/2, it actually turn PI */
         double turnAngleToDrop = 0;
         if((-4 == checkStatus) || (-3 == checkStatus)) {
-            turnAngleToDrop = Math.PI + 0.00001;
+            turnAngleToDrop = -blueOrRed * (Math.PI + 0.00001);
+
+            // move back a little bit before turn to avoid hitting gate
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .lineToYConstantHeading(drive.pose.position.y - 5)
+                            .build());
+            logVector("robot drive: back after drop purple", drive.pose.position);
+            logVector("robot drive: back after drop purple required", vDropPurple);
         } else {
             turnAngleToDrop = (Math.PI / 2) * blueOrRed + 0.00001;
         }
@@ -455,7 +466,7 @@ public class AutoRedFront extends LinearOpMode {
         // if can not move based on April tag, moved by road runner.
         if (tag.targetFound) {
             // adjust yellow drop-off position according to april tag location info from camera
-            vDropYellow = new Vector2d(drive.pose.position.x - aprilTagPose.x + BUCKET_SHIFT, drive.pose.position.y - aprilTagPose.y + DESIRED_DISTANCE);
+            vDropYellow = new Vector2d(drive.pose.position.x - aprilTagPose.x + BUCKET_SHIFT, drive.pose.position.y - aprilTagPose.y + Params.AUTO_DISTANCE_TO_TAG);
             logVector("robot drive: drop yellow pose required after april tag adjust", vDropYellow);
 
         }
