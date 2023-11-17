@@ -178,16 +178,16 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if(gpButtons.readyToIntake) {
-                intake.intakePositions();
+                intake.intakePositions(intake.ARM_POS_INTAKE);
             }
             if(gpButtons.readyToIntake2nd) {
-                intake.intakePositions2();
+                intake.intakePositions(intake.ARM_POS_INTAKE2);
             }
             if(gpButtons.readyToIntake3rd) {
-                intake.intakePositions3();;
+                intake.intakePositions(intake.ARM_POS_INTAKE3);;
             }
             if(gpButtons.readyToIntake4th) {
-                intake.intakePositions4();
+                intake.intakePositions(intake.ARM_POS_INTAKE4);
             }
 
             if(gpButtons.switchOpen) {
@@ -260,8 +260,7 @@ public class TeleopRR extends LinearOpMode {
         intake.dropPositions();
         sleep(300); // make sure arm is out of camera sight
 
-        tag.updateDesiredTagNum(tagNum);
-        Pose2d aprilTagPose = tag.updatePoseAprilTag();
+        Pose2d aprilTagPose = tag.updatePoseAprilTag(tagNum);
 
         // if can not move based on April tag, moved by road runner.
         if (tag.targetFound) {
@@ -274,7 +273,7 @@ public class TeleopRR extends LinearOpMode {
                             .turn(aprilTagPose.heading.log())
                             .build());
 
-            aprilTagPose = tag.updatePoseAprilTag(); // update position values after turn
+            aprilTagPose = tag.updatePoseAprilTag(tagNum); // update position values after turn
 
             Logging.log("yaw = %.2f", aprilTagPose.heading.log());
             logVector("robot drive: distance from camera to april tag", aprilTagPose.position);

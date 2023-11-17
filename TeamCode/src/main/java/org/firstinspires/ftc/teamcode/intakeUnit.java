@@ -84,7 +84,7 @@ public class intakeUnit
     final int ARM_POS_UNDER_BEAM = 3100;
     final int ARM_POS_DROP_PURPLE = 3380;
     final int ARM_POS_PUSH_PROP = 3490;
-    final int ARM_POS_INTAKE = 3560;
+    final int ARM_POS_INTAKE = 3600;
     final int ARM_POS_INTAKE2 = ARM_POS_INTAKE - 20;
     final int ARM_POS_INTAKE3 = ARM_POS_INTAKE - 40;
     final int ARM_POS_INTAKE4 = ARM_POS_INTAKE - 60;
@@ -210,30 +210,12 @@ public class intakeUnit
         setArmCountPosition(ARM_POS_HANG);
     }
     // auto setting positions
-    public void intakePositions() {
-        setArmCountPosition(ARM_POS_INTAKE);
+    public void intakePositions(int armPosition) {
+        setArmCountPosition(armPosition);
         wristServo.setPosition(WRIST_POS_INTAKE);
         switchServoClose();
         fingerIntake();
     }
-    public void intakePositions2() {
-        setArmCountPosition(ARM_POS_INTAKE2);
-        wristServo.setPosition(WRIST_POS_INTAKE);
-        switchServoClose();
-        fingerIntake();
-    }
-    public void intakePositions3() {
-        setArmCountPosition(ARM_POS_INTAKE3);
-        wristServo.setPosition(WRIST_POS_INTAKE);
-        switchServoClose();
-        fingerIntake();
-    }public void intakePositions4() {
-    setArmCountPosition(ARM_POS_INTAKE4);
-    wristServo.setPosition(WRIST_POS_INTAKE);
-    switchServoClose();
-    fingerIntake();
-}
-
 
     public void parkingPositions() {
         setArmCountPosition(ARM_POS_INTAKE);

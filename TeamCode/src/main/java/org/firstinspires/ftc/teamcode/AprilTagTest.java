@@ -43,10 +43,6 @@ public class AprilTagTest {
         this.webcamName = tagCamName;
     }
 
-    public void updateDesiredTagNum(int tagN) {
-        this.DESIRED_TAG_ID = tagN;
-    }
-
     public void initAprilTag() {
         // Create the AprilTag processor by using a builder.
         aprilTag = new AprilTagProcessor.Builder().build();
@@ -265,9 +261,11 @@ public class AprilTagTest {
         return reachedTarget;
     }
 
-    public Pose2d updatePoseAprilTag() {
+    public Pose2d updatePoseAprilTag(int desiredTagNumber) {
         int detectCount = 0;
         Pose2d aprilTagPos = new Pose2d(0,0, 0);
+
+        this.DESIRED_TAG_ID = desiredTagNumber;
 
         // exit while loop when reached target or cannot found target in 500 ms.
         detectTag();
