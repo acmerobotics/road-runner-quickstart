@@ -286,4 +286,33 @@ public class AprilTagTest {
 
         return aprilTagPos;
     }
+
+    public Pose2d updatePoseAprilTag_new(int desiredTagNumber) {
+        int detectCount = 0;
+        Pose2d aprilTagPos = new Pose2d(0,0, 0);
+
+        this.DESIRED_TAG_ID = desiredTagNumber;
+
+        // exit while loop when reached target or cannot found target in 500 ms.
+        detectTag();
+        if (!targetFound) {
+            for (detectCount = 0; detectCount < 20; detectCount++) {
+                detectTag();
+                sleep(5);
+                if (targetFound) {
+                    break;
+                }
+            }
+        }
+
+        Logging.log("April Tag found? %s ", targetFound ? "Yes" : "No");
+        if (targetFound) {
+            double poseX = desiredTag.ftcPose.range * Math.cos(Math.toRadians(90 - desiredTag.ftcPose.yaw - desiredTag.ftcPose.bearing));
+            double poseY = desiredTag.ftcPose.range * Math.sin(Math.toRadians(90 - desiredTag.ftcPose.yaw - desiredTag.ftcPose.bearing));
+
+            aprilTagPos = new Pose2d(poseX, poseY, Math.toRadians(desiredTag.ftcPose.yaw));
+        }
+
+        return aprilTagPos;
+    }
 }

@@ -27,6 +27,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -220,7 +221,8 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if (gpButtons.moveToCenterTag) {
-                moveByAprilTag(2 + ((Params.blueOrRed > 0)? 0 : 3));
+                //moveByAprilTag(2 + ((Params.blueOrRed > 0)? 0 : 3));
+                moveByAprilTag_new(2 + ((Params.blueOrRed > 0)? 0 : 3));
             }
 
             if (gpButtons.moveToRightTag) {
@@ -291,6 +293,36 @@ public class TeleopRR extends LinearOpMode {
                                 .build()
                 );
             }
+            mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+
+    private void moveByAprilTag_new(int tagNum) {
+        intake.dropPositions();
+        sleep(300); // make sure arm is out of camera sight
+
+        Pose2d aprilTagPose = tag.updatePoseAprilTag_new(tagNum);
+
+        // if can not move based on April tag, moved by road runner.
+        if (tag.targetFound) {
+            mecanum.updatePoseEstimate();
+            mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            Logging.log("yaw = %.2f", aprilTagPose.heading.log());
+            logVector("robot drive: distance from camera to april tag", aprilTagPose.position);
+
+            // adjust yellow drop-off position according to april tag location info from camera
+            Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.position.x,
+                    mecanum.pose.position.y - aprilTagPose.position.y + Params.TELEOP_DISTANCE_TO_TAG);
+            logVector("robot drive: move to tag distance", desiredMove);
+
+            // shift to AprilTag
+            Actions.runBlocking(
+                    mecanum.actionBuilder(mecanum.pose)
+                            .strafeToLinearHeading(desiredMove, mecanum.pose.heading.log() + aprilTagPose.heading.log())
+                            .build()
+            );
+
             mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
