@@ -9,10 +9,10 @@ import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 public class PixelManipulator extends Mechanism {
 
-    Arm arm;
-    Claw claw;
-    Intake intake;
-    PIDSlides slides;
+    public Arm arm;
+    public Claw claw;
+    public Intake intake;
+    public PIDSlides slides;
 
 
     enum ScoringState {

@@ -15,11 +15,15 @@ import org.firstinspires.ftc.vision.VisionPortal;
 
 public class Drivebase extends Mechanism {
 
+    private static final double STARTING_X = 0;
+    private static final double STARTING_Y = 0;
+    private static final double STARTING_HEADING = 0;
+
     private static final double RANGE_KP = 0.02;
     private static final double YAW_KP = 0.03;
 
     private Camera camera;
-    private MecanumDrive drive;
+    public MecanumDrive drive;
 
     final double speedClamp = 1;
 
@@ -31,10 +35,9 @@ public class Drivebase extends Mechanism {
 
     private boolean isCameraControlling = false;
 
-
     @Override
     public void init(HardwareMap hwMap) {
-        drive = new MecanumDrive(hwMap, new Pose2d(0, 0, 0));
+        drive = new MecanumDrive(hwMap, new Pose2d(STARTING_X, STARTING_Y, STARTING_HEADING));
         camera = new Camera();
         camera.init(hwMap);
     }

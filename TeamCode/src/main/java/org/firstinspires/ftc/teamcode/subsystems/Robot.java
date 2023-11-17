@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 public class Robot extends Mechanism {
 
-    PixelManipulator pixelManipulator;
-    Drivebase drivebase;
+    public PixelManipulator pixelManipulator;
+    public Drivebase drivebase;
     @Override
     public void init(HardwareMap hwMap) {
         pixelManipulator = new PixelManipulator();

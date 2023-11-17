@@ -14,8 +14,8 @@ public class Arm extends Mechanism {
     public String leftName = "leftArm";
     public String rightName = "rightArm";
     double extendedPosition = 0;
-    double retractedPosition = 0.28;
-    double safeRetractedPosition = 0.28;
+    double retractedPosition = 0.22;
+    double safeRetractedPosition = 0.22;
 
     public boolean isExtended = false;
     public boolean isRetracted = false;
