@@ -78,7 +78,7 @@ public class intakeUnit
     final int ARM_POS_AUTO = 60;
     final int ARM_POS_HANG = 500;
     final int ARM_POS_READY_FOR_HANG = 1800;
-    final int ARM_POS_DROP = 2500;
+    final int ARM_POS_DROP = 2550;
     final int ARM_POS_CAMERA_READ = 2500;
     final int ARM_POS_DROP_YELLOW = 2800;
     final int ARM_POS_UNDER_BEAM = 3100;

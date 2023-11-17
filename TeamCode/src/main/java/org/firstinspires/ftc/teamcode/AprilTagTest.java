@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
@@ -281,7 +282,11 @@ public class AprilTagTest {
 
         Logging.log("April Tag found? %s ", targetFound ? "Yes" : "No");
         if (targetFound) {
+            AprilTagPoseFtc ftcP = desiredTag.ftcPose;
+
             aprilTagPos = new Pose2d(desiredTag.ftcPose.x, desiredTag.ftcPose.y, Math.toRadians(desiredTag.ftcPose.yaw));
+
+            Logging.log("ftc pose position x = %2.2f, y = %2.2f, brear = %.2f, yaw = %.2f", ftcP.x, ftcP.y, ftcP.bearing, ftcP.yaw);
         }
 
         return aprilTagPos;
@@ -307,10 +312,19 @@ public class AprilTagTest {
 
         Logging.log("April Tag found? %s ", targetFound ? "Yes" : "No");
         if (targetFound) {
-            double poseX = desiredTag.ftcPose.range * Math.cos(Math.toRadians(90 - desiredTag.ftcPose.yaw - desiredTag.ftcPose.bearing));
-            double poseY = desiredTag.ftcPose.range * Math.sin(Math.toRadians(90 - desiredTag.ftcPose.yaw - desiredTag.ftcPose.bearing));
+            AprilTagPoseFtc ftcP = desiredTag.ftcPose;
 
-            aprilTagPos = new Pose2d(poseX, poseY, Math.toRadians(desiredTag.ftcPose.yaw));
+            double y2 = ftcP.y + Params.CHASSIS_LENGTH / 2.0;
+            double range2 = Math.sqrt(y2 * y2 + ftcP.x * ftcP.x);
+            double bear2 = Math.atan(ftcP.x / y2);
+            double beta = bear2 + Math.toRadians(ftcP.yaw);
+            double poseX = range2 * Math.sin(beta);
+            double poseY = range2 * Math.cos(beta) - Params.CHASSIS_LENGTH / 2.0 - Params.TELEOP_DISTANCE_TO_TAG;
+
+            aprilTagPos = new Pose2d(poseX, poseY, Math.toRadians(ftcP.yaw));
+
+            Logging.log("ftc pose position x = %2.2f, y = %2.2f, brear = %.2f, yaw = %.2f", ftcP.x, ftcP.y, ftcP.bearing, ftcP.yaw);
+            Logging.log("calculation results: range2 = %.2f, bear2 = %.2f, beta = %.2f",range2, bear2, beta);
         }
 
         return aprilTagPos;

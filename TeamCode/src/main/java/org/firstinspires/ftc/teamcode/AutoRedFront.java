@@ -204,7 +204,7 @@ public class AutoRedFront extends LinearOpMode {
 
         // init drive with road runner
         drive = new MecanumDrive(hardwareMap, startPose);
-        Params.currentPose = startPose; // init storage pose.
+        Params.startPose = startPose; // init storage pose.
         Params.blueOrRed = blueOrRed;
 
         intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo",
@@ -317,8 +317,9 @@ public class AutoRedFront extends LinearOpMode {
             case 1:
             case -4:
             case 6:
+                // near gate cases
                 xDelta = -4; // 0;
-                yDelta = 3;//5;
+                yDelta = 4;//5;
                 startArmFlip = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + xDelta), startPose.position.y + frontOrBack * 10);
                 break;
             case 3:

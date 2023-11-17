@@ -80,6 +80,7 @@ public class GamePadButtons {
     public boolean moveToCenterTag;
     public boolean moveToRightTag;
 
+    public boolean goThroughGate;
 
     public void checkGamepadButtons(@NonNull Gamepad gamepad1, @NonNull Gamepad gamepad2) {
         //game pad 1 buttons
@@ -96,6 +97,8 @@ public class GamePadButtons {
         moveToLeftTag = gamepad1.x;
         moveToCenterTag = gamepad1.y;
         moveToRightTag = gamepad1.b;
+
+        goThroughGate = (gamepad1.right_trigger > 0);
 
         // game pad 2
 

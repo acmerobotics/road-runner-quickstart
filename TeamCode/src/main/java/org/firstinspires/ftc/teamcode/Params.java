@@ -39,6 +39,7 @@ import com.acmerobotics.roadrunner.Pose2d;
  */
 public class Params {
     // road runner
+    static Pose2d startPose = new Pose2d(0,0,0);
     static Pose2d currentPose = new Pose2d(0,0,0);
 
     static int blueOrRed = 0;
@@ -52,7 +53,7 @@ public class Params {
 
     // moving distance variables
     static final double AUTO_DISTANCE_TO_TAG = 7.5; //this is how close the camera should get to the target (inches)
-    static final double TELEOP_DISTANCE_TO_TAG = 3.5;
+    static final double TELEOP_DISTANCE_TO_TAG = 4.5;
 
     static final double BACKDROP_SIDEWAYS = 7.0; // 1 inch more to side tage
 
