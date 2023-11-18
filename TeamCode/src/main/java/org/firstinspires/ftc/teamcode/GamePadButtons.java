@@ -79,7 +79,7 @@ public class GamePadButtons {
     public boolean moveToLeftTag;
     public boolean moveToCenterTag;
     public boolean moveToRightTag;
-    public boolean centerOnRightTag;
+    public boolean moveToFront;
 
     public boolean goThroughGate;
 
@@ -98,7 +98,7 @@ public class GamePadButtons {
         moveToLeftTag = gamepad1.x;
         moveToCenterTag = gamepad1.y;
         moveToRightTag = gamepad1.b;
-        centerOnRightTag = gamepad1.right_bumper;
+        moveToFront = gamepad1.a;
 
         goThroughGate = (gamepad1.right_trigger > 0);
 

@@ -232,15 +232,13 @@ public class TeleopRR extends LinearOpMode {
             if (gpButtons.goThroughGate) {
                 moveForward(6 * Params.HALF_MAT);
             }
-            if (gpButtons.centerOnRightTag) {
+
+            if (gpButtons.moveToFront) {
                 lineWithAprilTag(2 + ((Params.blueOrRed > 0) ? 0 : 3));
-                Actions.runBlocking(
-                        mecanum.actionBuilder(mecanum.pose)
-                                .turn(Math.PI / 2 * Params.blueOrRed)
-                                .build()
-                );
             }
 
+            mecanum.updatePoseEstimate();
+            Params.currentPose = mecanum.pose;
             if (debugFlag) {
                 // claw arm servo log
                 telemetry.addData("Wrist", "position %.2f", intake.getWristPosition());
@@ -338,7 +336,6 @@ public class TeleopRR extends LinearOpMode {
 
             logVector("robot drive: move to tag pose required", desiredMove);
             logRobotHeading("before moving to april tag");
-
             // shift to AprilTag
             Actions.runBlocking(
                     mecanum.actionBuilder(mecanum.pose)
@@ -355,34 +352,42 @@ public class TeleopRR extends LinearOpMode {
         intake.dropPositions();
         sleep(300); // make sure arm is out of camera sight
 
-        Pose2d aprilTagPose = tag.updatePoseAprilTag_new(tagNum);
+        Actions.runBlocking(
+                mecanum.actionBuilder(mecanum.pose)
+                        .lineToY(mecanum.pose.position.y + 1.5 * Params.HALF_MAT)
+                        .build()
+        );
 
+        logVector("intial moving done. position:",mecanum.pose.position);
+        //sleep(850);
+        Pose2d aprilTagPose = tag.updatePoseAprilTag_new(tagNum);
         // if can not move based on April tag, moved by road runner.
         if (tag.targetFound) {
             mecanum.updatePoseEstimate();
             mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            Logging.log("yaw in new = %.2f", Math.toDegrees(aprilTagPose.heading.log()));
+            Logging.log("tag target found.");
             logVector("robot drive: distance from camera to april tag", aprilTagPose.position);
 
             // adjust yellow drop-off position according to april tag location info from camera
             Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.position.x,
-                    3 * Params.HALF_MAT);
-            logVector("robot drive: before move to tag pose", mecanum.pose.position);
-
-            logVector("robot drive: move to tag pose required", desiredMove);
-            logRobotHeading("before moving to april tag");
-
-            // shift to AprilTag
+                    mecanum.pose.position.y + 7 * Params.HALF_MAT);
+            logVector("robot drive: before move to pose", mecanum.pose.position);
+            intake.armMotor.setPower(0.5);
+            intake.underTheBeam();
             Actions.runBlocking(
                     mecanum.actionBuilder(mecanum.pose)
-                            .strafeToLinearHeading(desiredMove, mecanum.pose.heading.log() + aprilTagPose.heading.log())
+                            .strafeToLinearHeading(new Vector2d(desiredMove.x, mecanum.pose.position.y), -Math.PI / 2)
+                            .strafeTo(desiredMove)
+                            .turn(-Math.PI / 2 * Params.blueOrRed)
                             .build()
             );
+            logVector("robot drive: move to tag pose required", desiredMove);
             logRobotHeading("after moving to april tag");
-
-
+            intake.armMotor.setPower(1);
             mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        } else {
+            Logging.log("new command: april tag not detected");
         }
     }
 
@@ -401,10 +406,12 @@ public class TeleopRR extends LinearOpMode {
         logVector("robot drive: current drive pose", mecanum.pose.position);
         logRobotHeading("before moving to back area");
 
+        double turnAngle = -mecanum.pose.heading.log() - Math.PI / 2.0;
+        turnAngle = (Math.abs(turnAngle) > Math.PI)? (turnAngle - Math.signum(turnAngle) * 2 * Math.PI) :  turnAngle;
         // shift to AprilTag
         Actions.runBlocking(
                 mecanum.actionBuilder(mecanum.pose)
-                        .turn(-mecanum.pose.heading.log() - Math.PI / 2.0)
+                        .turn(turnAngle)
                         .lineToYLinearHeading(mecanum.pose.position.y - moveDistance, -Math.PI / 2.0)
                         .build()
         );
