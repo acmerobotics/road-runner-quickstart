@@ -232,6 +232,14 @@ public class TeleopRR extends LinearOpMode {
             if (gpButtons.goThroughGate) {
                 moveForward(6 * Params.HALF_MAT);
             }
+            if (gpButtons.centerOnRightTag) {
+                lineWithAprilTag(2 + ((Params.blueOrRed > 0) ? 0 : 3));
+                Actions.runBlocking(
+                        mecanum.actionBuilder(mecanum.pose)
+                                .turn(Math.PI / 2 * Params.blueOrRed)
+                                .build()
+                );
+            }
 
             if (debugFlag) {
                 // claw arm servo log
@@ -326,6 +334,40 @@ public class TeleopRR extends LinearOpMode {
             // adjust yellow drop-off position according to april tag location info from camera
             Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.position.x,
                     mecanum.pose.position.y - aprilTagPose.position.y);
+            logVector("robot drive: before move to tag pose", mecanum.pose.position);
+
+            logVector("robot drive: move to tag pose required", desiredMove);
+            logRobotHeading("before moving to april tag");
+
+            // shift to AprilTag
+            Actions.runBlocking(
+                    mecanum.actionBuilder(mecanum.pose)
+                            .strafeToLinearHeading(desiredMove, mecanum.pose.heading.log() + aprilTagPose.heading.log())
+                            .build()
+            );
+            logRobotHeading("after moving to april tag");
+
+
+            mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+    private void lineWithAprilTag(int tagNum) {
+        intake.dropPositions();
+        sleep(300); // make sure arm is out of camera sight
+
+        Pose2d aprilTagPose = tag.updatePoseAprilTag_new(tagNum);
+
+        // if can not move based on April tag, moved by road runner.
+        if (tag.targetFound) {
+            mecanum.updatePoseEstimate();
+            mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            Logging.log("yaw in new = %.2f", Math.toDegrees(aprilTagPose.heading.log()));
+            logVector("robot drive: distance from camera to april tag", aprilTagPose.position);
+
+            // adjust yellow drop-off position according to april tag location info from camera
+            Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.position.x,
+                    3 * Params.HALF_MAT);
             logVector("robot drive: before move to tag pose", mecanum.pose.position);
 
             logVector("robot drive: move to tag pose required", desiredMove);
