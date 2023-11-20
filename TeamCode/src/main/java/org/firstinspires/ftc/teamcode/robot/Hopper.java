@@ -20,6 +20,8 @@ public class Hopper {
     public final String HOPPER_ONE_PIXEL = "HOPPER_ONE_PIXEL";
     public final String HOPPER_TWO_PIXELS = "HOPPER_TWO_PIXELS";
     private final float gain = 10;
+
+    private Constants constants = new Constants();
     ElapsedTime waitTime = new ElapsedTime();
 
     public Hopper(HardwareMap hwMap, Telemetry telemetry, Map stateMap){
@@ -39,11 +41,26 @@ public class Hopper {
         telemetry.addData("Color sensor 2 distance", (((DistanceSensor) colorSensor2).getDistance(DistanceUnit.CM)));
         boolean pixelSensor1 = (((DistanceSensor) colorSensor1).getDistance(DistanceUnit.CM)) < 0.65;
         boolean pixelSensor2 = (((DistanceSensor) colorSensor2).getDistance(DistanceUnit.CM)) < 0.65;
-        if(!pixelSensor1 && !pixelSensor2){
+
+        if(!pixelSensor1){
             stateMap.put(HOPPER_SYSTEM_NAME, HOPPER_NO_PIXELS);
         }
-        if(pixelSensor1 && pixelSensor2 && waitTime.seconds() > 0.025){
-            stateMap.put(HOPPER_SYSTEM_NAME, HOPPER_TWO_PIXELS);
+
+        if(pixelSensor1 && !pixelSensor2) {
+            stateMap.put(HOPPER_SYSTEM_NAME, HOPPER_ONE_PIXEL);
+            if (stateMap.get(constants.HOPPER_2_PIXELS_TIME) == null) {
+                stateMap.put(constants.HOPPER_2_PIXELS_TIME, System.currentTimeMillis());
+            }
+        }
+
+        if(stateMap.get(constants.HOPPER_2_PIXELS_TIME) !=  null){
+            long hopperEndTime = (long) stateMap.get(constants.HOPPER_2_PIXELS_TIME) + 250;
+            telemetry.addData("Current time", System.currentTimeMillis());
+            telemetry.addData("End time", hopperEndTime);
+            if(System.currentTimeMillis() > hopperEndTime && pixelSensor2){
+                stateMap.put(HOPPER_SYSTEM_NAME, HOPPER_TWO_PIXELS);
+                stateMap.put(constants.HOPPER_2_PIXELS_TIME, null);
+            }
         }
     }
 }

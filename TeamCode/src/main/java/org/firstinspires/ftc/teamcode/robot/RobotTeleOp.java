@@ -15,6 +15,7 @@ public class RobotTeleOp extends LinearOpMode {
         BrainSTEMRobot robot = new BrainSTEMRobot(hardwareMap, telemetry, stateMap);
         stateMap.put(robot.intake.INTAKE_SYSTEM_NAME, robot.intake.INTAKE_IDLE_STATE);
         stateMap.put(robot.hopper.HOPPER_SYSTEM_NAME, robot.hopper.HOPPER_NO_PIXELS);
+        stateMap.put(robot.fulcrum.FULCRUM_SYSTEM_NAME, robot.fulcrum.FULCRUM_DOWN);
 
         stateMap.put(constants.NUMBER_OF_PIXELS, constants.PIXEL_PICKUP_2_PIXELS);
 
@@ -25,6 +26,10 @@ public class RobotTeleOp extends LinearOpMode {
             if(gamepad1.right_trigger > 0.5){
                 stateMap.put(constants.PIXEL_CYCLE, constants.PIXEL_CYCLE_STATE_IN_PROGRESS);
 //                robot.intake.intakeMotor.setPower(gamepad1.right_trigger);
+            }
+
+            if(gamepad1.b){
+                stateMap.put(robot.fulcrum.FULCRUM_SYSTEM_NAME, robot.fulcrum.FULCRUM_UP);
             }
             robot.updateSystems();
             telemetry.update();

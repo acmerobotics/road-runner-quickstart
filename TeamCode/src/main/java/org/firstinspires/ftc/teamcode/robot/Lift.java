@@ -30,12 +30,16 @@ public class Lift {
     private int LIFT_MIDDLE_STATE_POSITION;
     private int LIFT_HIGH_STATE_POSITION;
 
+    private Arm arm;
+
     //Other important variables
     private int heightTolerance = 5;
 
-    public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap){
+    public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap, Arm arm){
         this.telemetry = telemetry;
         this.stateMap = stateMap;
+        this.arm = arm;
+
         liftController = new PIDController(0,0,0);
         liftMotor1 = hwMap.get(DcMotorEx.class, "LiftMotor1");
 
@@ -59,6 +63,7 @@ public class Lift {
             selectTransition(desiredLevel);
         }
     }
+
 
     private String getCurrentState() {
         String state = TRANSITION_STATE;
