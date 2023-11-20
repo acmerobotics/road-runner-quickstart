@@ -126,7 +126,7 @@ public class AutoRedFront extends LinearOpMode {
     }
 
     /**
-     * Set robot starting position variables according to start locations:
+     * Set robot starting position, and blueOrRed, frontOrBack variables:
      * @param startLocation : the value of robot location in the field.
      *                      1 for Red Front, 2 for Red back,
      *                      3 for Blue Front, and 4 for Blue back
@@ -168,6 +168,9 @@ public class AutoRedFront extends LinearOpMode {
         setRobotLocation();
 
         setStartPoses(startLoc);
+
+        // use slow mode if starting from front
+        updateProfileAccel(frontOrBack > 0);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -280,15 +283,14 @@ public class AutoRedFront extends LinearOpMode {
 
         double pausePoseY = -2 * Params.HALF_MAT - 6;
         Vector2d vMatCenter = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, startPose.position.y);
-        Vector2d vParkPos = new Vector2d(blueOrRed * ((3 - 2 * frontOrBack) * Params.HALF_MAT - frontOrBack * ((frontOrBack > 0)? 0 : 3)), -3.5 * Params.HALF_MAT);
+        Vector2d vParkPos = new Vector2d(blueOrRed * ((3 - 2 * frontOrBack) * Params.HALF_MAT - frontOrBack * ((frontOrBack > 0) ? 0 : 3)), -3.5 * Params.HALF_MAT);
         Vector2d vBackdrop = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
 
         Vector2d vAprilTag = null;
 
         if (blueOrRed > 0) {
             vAprilTag = new Vector2d(vBackdrop.x + (2 - desiredTagNum) * Params.BACKDROP_SIDEWAYS, vBackdrop.y);
-        }
-        else {
+        } else {
             vAprilTag = new Vector2d(vBackdrop.x + (5 - desiredTagNum) * Params.BACKDROP_SIDEWAYS, vBackdrop.y);
         }
         Vector2d vCheckingAprilTagPose = new Vector2d(vAprilTag.x, vAprilTag.y + 10);
@@ -349,7 +351,7 @@ public class AutoRedFront extends LinearOpMode {
         logVector("robot drive: start Arm Flip pose required", startArmFlip);
 
         // Near gate cases
-        if((6 == checkStatus) || (-3 == checkStatus) || (1 == checkStatus) || (-4 == checkStatus)) {
+        if ((6 == checkStatus) || (-3 == checkStatus) || (1 == checkStatus) || (-4 == checkStatus)) {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .turn(Math.PI / 2 * frontOrBack * blueOrRed)
@@ -385,7 +387,7 @@ public class AutoRedFront extends LinearOpMode {
 
         // there is a bug somewhere in turn() function when using PI/2, it actually turn PI */
         double turnAngleToDrop = 0;
-        if((-4 == checkStatus) || (-3 == checkStatus)) {
+        if ((-4 == checkStatus) || (-3 == checkStatus)) {
             turnAngleToDrop = -blueOrRed * (Math.PI + 0.00001);
 
             // move back a little bit before turn to avoid hitting gate
@@ -399,7 +401,7 @@ public class AutoRedFront extends LinearOpMode {
             turnAngleToDrop = (Math.PI / 2) * blueOrRed + 0.00001;
         }
 
-        if((6 != checkStatus) && (1 != checkStatus)) {
+        if ((6 != checkStatus) && (1 != checkStatus)) {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .turn(turnAngleToDrop)
@@ -427,6 +429,9 @@ public class AutoRedFront extends LinearOpMode {
             logVector("robot drive: move to 2nd mat center required", vMatCenter);
         }
 
+        if (frontOrBack < 0) {
+            intake.setArmCountPosition(intake.ARM_POS_CAMERA_READ  + 20); // lift arm to avoid blocking camera
+        }
         // fine tune heading angle
         Actions.runBlocking(
                 new ParallelAction(
@@ -434,18 +439,23 @@ public class AutoRedFront extends LinearOpMode {
                         new TurnOnCamera(),
 
                         // Paral 2.
-                        new SequentialAction(
-                                // Seq a. fine tune heading angle before long travel
-                                drive.actionBuilder(drive.pose)
-                                        .turn(-drive.pose.heading.log() - Math.PI / 2)
-                                        .build(),
+                        (frontOrBack > 0) ?
+                                (new SequentialAction(
+                                        // Seq a. fine tune heading angle before long travel
+                                        drive.actionBuilder(drive.pose)
+                                                .turn(-drive.pose.heading.log() - Math.PI / 2)
+                                                .build(),
 
-                                // Seq b. waiting alliance move out the way if at front side
-                                new SleepAction((frontOrBack > 0)? WAIT_ALLIANCE_SECONDS : 0),
+                                        // Seq b. waiting alliance move out the way if at front side
+                                        new SleepAction((frontOrBack > 0) ? WAIT_ALLIANCE_SECONDS : 0),
 
-                                // Seq c. strafe to april tag pose to check april tag
+                                        // Seq c. strafe to april tag pose to check april tag
+                                        drive.actionBuilder(drive.pose)
+                                                .lineToYConstantHeading(pausePoseY)
+                                                .strafeTo(vCheckingAprilTagPose)
+                                                .build())
+                                ) : (
                                 drive.actionBuilder(drive.pose)
-                                        .lineToYConstantHeading(pausePoseY)
                                         .strafeTo(vCheckingAprilTagPose)
                                         .build()
                         )
@@ -456,7 +466,7 @@ public class AutoRedFront extends LinearOpMode {
         logVector("robot drive: check april tag required", vCheckingAprilTagPose);
         logRobotHeading("robot drive: check april tag");
 
-        if(intake.getArmPosition() > intake.ARM_POS_CAMERA_READ) {
+        if (intake.getArmPosition() > intake.ARM_POS_CAMERA_READ) {
             intake.setArmCountPosition(intake.ARM_POS_CAMERA_READ); // lift arm to avoid blocking camera
             sleep(500);
         }
@@ -501,7 +511,7 @@ public class AutoRedFront extends LinearOpMode {
     private void dropPurpleAction() {
         // 1. arm and wrist at correct positions
         intake.readyToDropPurple();
-        sleep(500);
+        sleep(100);
 
         // 2. open switch
         intake.setSwitchPosition(intake.SWITCH_RELEASE_PURPLE);
@@ -526,11 +536,18 @@ public class AutoRedFront extends LinearOpMode {
         Logging.log("%s imu: %.2f", sTag, drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - Math.toDegrees(startPose.heading.log()));
     }
 
-    public class TurnOnCamera implements Action {
+    private class TurnOnCamera implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             tag.initAprilTag();
             return false;
+        }
+    }
+
+    private void updateProfileAccel(boolean slowMode) {
+        if (slowMode) {
+            MecanumDrive.PARAMS.minProfileAccel = -20;
+            MecanumDrive.PARAMS.maxProfileAccel = 30;
         }
     }
 }

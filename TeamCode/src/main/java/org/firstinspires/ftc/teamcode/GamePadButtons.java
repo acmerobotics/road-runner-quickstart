@@ -61,7 +61,7 @@ public class GamePadButtons {
     public boolean fingerOuttake;
     public boolean fingerIntake;
     public boolean fingerStop;
-
+    public boolean dropAndBack;
     public boolean switchOpen;
     public boolean switchDropOne;
     public boolean switchClose;
@@ -75,7 +75,7 @@ public class GamePadButtons {
     public boolean readyToDrop;
     public boolean droneLaunch;
     public boolean hangingRobot;
-
+    public boolean readyToHang;
     public boolean moveToLeftTag;
     public boolean moveToCenterTag;
     public boolean moveToRightTag;
@@ -92,7 +92,7 @@ public class GamePadButtons {
         robotTurn = gamepad1.right_stick_x;
 
         //speed controls
-        speedCtrl = gamepad1.back;
+        speedCtrl = gamepad1.back || gamepad2.back;
         speedDown = speedCtrl;
 
         moveToLeftTag = gamepad1.x;
@@ -102,16 +102,26 @@ public class GamePadButtons {
 
         goThroughGate = (gamepad1.right_trigger > 0);
 
+        //preset positions
+        readyToIntake = gamepad1.left_bumper;
+        readyToIntake2nd = gamepad1.dpad_up;
+        readyToIntake3rd = gamepad1.dpad_left;
+        readyToIntake4th = gamepad1.dpad_down;
+        readyToDrop = gamepad1.right_bumper || gamepad2.right_bumper;
+
         // game pad 2
 
         //special presets
         droneLaunch = (gamepad2.right_trigger > 0);
+
+        readyToHang = gamepad2.left_bumper;
         hangingRobot = (gamepad2.left_trigger > 0);
 
         //back switches
         switchOpen = gamepad2.b;
         switchClose = gamepad2.a;
         switchDropOne = gamepad2.x;
+        dropAndBack = gamepad2.y;
         
         //arms
         armUp = gamepad2.right_stick_y < 0;
@@ -121,18 +131,9 @@ public class GamePadButtons {
         wristUp = gamepad2.left_stick_y < 0;
         wristDown = gamepad2.left_stick_y > 0;
 
-        //both
-
         //fingers
         fingerIntake =  gamepad2.dpad_down;
         fingerStop =  gamepad2.dpad_left;
         fingerOuttake =  gamepad2.dpad_up;
-
-        //preset positions
-        readyToIntake = gamepad1.left_bumper || gamepad2.left_bumper;
-        readyToIntake2nd = gamepad1.dpad_up;
-        readyToIntake3rd = gamepad1.dpad_left;
-        readyToIntake4th = gamepad1.dpad_down;
-        readyToDrop = gamepad1.right_bumper || gamepad2.right_bumper;
     }
 }

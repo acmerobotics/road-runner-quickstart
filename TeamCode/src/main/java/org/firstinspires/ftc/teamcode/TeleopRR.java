@@ -196,6 +196,12 @@ public class TeleopRR extends LinearOpMode {
                 intake.switchServoOpen();
             }
 
+            if (gpButtons.dropAndBack) {
+                intake.switchServoOpen();
+                moveBack(Params.HALF_MAT * 1.5);
+            }
+
+
             if (gpButtons.switchDropOne) {
                 intake.switchServoDropOne();
             }
@@ -206,6 +212,10 @@ public class TeleopRR extends LinearOpMode {
 
             if (gpButtons.readyToDrop) {
                 intake.dropPositions();
+            }
+
+            if (gpButtons.readyToHang) {
+                intake.setArmCountPosition(intake.ARM_POS_READY_FOR_HANG);
             }
 
             if (gpButtons.hangingRobot) {
@@ -352,13 +362,15 @@ public class TeleopRR extends LinearOpMode {
         intake.dropPositions();
         sleep(300); // make sure arm is out of camera sight
 
+        /*  // do back when switch to drop automatically.
         Actions.runBlocking(
                 mecanum.actionBuilder(mecanum.pose)
                         .lineToY(mecanum.pose.position.y + 1.5 * Params.HALF_MAT)
                         .build()
         );
+         */
 
-        logVector("intial moving done. position:",mecanum.pose.position);
+        logVector("initial moving done. position:",mecanum.pose.position);
         //sleep(850);
         Pose2d aprilTagPose = tag.updatePoseAprilTag_new(tagNum);
         // if can not move based on April tag, moved by road runner.
@@ -371,7 +383,7 @@ public class TeleopRR extends LinearOpMode {
 
             // adjust yellow drop-off position according to april tag location info from camera
             Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.position.x,
-                    mecanum.pose.position.y + 7 * Params.HALF_MAT);
+                    mecanum.pose.position.y + 6.5 * Params.HALF_MAT);
             logVector("robot drive: before move to pose", mecanum.pose.position);
             intake.armMotor.setPower(0.5);
             intake.underTheBeam();
@@ -413,6 +425,24 @@ public class TeleopRR extends LinearOpMode {
                 mecanum.actionBuilder(mecanum.pose)
                         .turn(turnAngle)
                         .lineToYLinearHeading(mecanum.pose.position.y - moveDistance, -Math.PI / 2.0)
+                        .build()
+        );
+        logRobotHeading("after moving to back area");
+        logVector("robot drive: arrive back area, drive pose", mecanum.pose.position);
+        mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    private void moveBack(double moveDistance) {
+        mecanum.updatePoseEstimate();
+        mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        logVector("robot drive: current drive pose", mecanum.pose.position);
+        logRobotHeading("before moving to back area");
+
+        // shift to AprilTag
+        Actions.runBlocking(
+                mecanum.actionBuilder(mecanum.pose)
+                        .lineToYLinearHeading(mecanum.pose.position.y + moveDistance, -Math.PI / 2.0)
                         .build()
         );
         logRobotHeading("after moving to back area");

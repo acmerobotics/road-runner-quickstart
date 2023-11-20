@@ -75,7 +75,7 @@ public class intakeUnit
     public DcMotor armMotor = null;
     final int ARM_MIN_COUNT_POS = 0;
     final int ARM_MAX_COUNT_POS = 3620;
-    final int ARM_POS_AUTO = 60;
+    final int ARM_POS_AUTO = 80;
     final int ARM_POS_HANG = 500;
     final int ARM_POS_READY_FOR_HANG = 1800;
     final int ARM_POS_DROP = 2550;
@@ -209,6 +209,7 @@ public class intakeUnit
     public void hangingRobot() {
         setArmCountPosition(ARM_POS_HANG);
     }
+
     // auto setting positions
     public void intakePositions(int armPosition) {
         setArmCountPosition(armPosition);

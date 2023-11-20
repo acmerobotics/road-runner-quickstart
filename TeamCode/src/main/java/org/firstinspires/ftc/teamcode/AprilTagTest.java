@@ -71,7 +71,7 @@ public class AprilTagTest {
         }
 
         if (USE_WEBCAM) {
-            setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+            //setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
         }
         Logging.log("finished init");
     }
