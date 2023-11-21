@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -79,6 +80,9 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
 
+    public Servo leftGripServo, rightGripServo;
+    public DcMotorEx slideLeft, slideRight, slideTop;
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -92,6 +96,27 @@ public class SampleMecanumDrive extends MecanumDrive {
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
+        // TODO: If the hub containing the IMU you are using is mounted so that the "REV" logo does
+        // not face up, remap the IMU axes so that the z-axis points upward (normal to the floor.)
+        //
+        //             | +Z axis
+        //             |
+        //             |
+        //             |
+        //      _______|_____________     +Y axis
+        //     /       |_____________/|__________
+        //    /   REV / EXPANSION   //
+        //   /       / HUB         //
+        //  /_______/_____________//
+        // |_______/_____________|/
+        //        /
+        //       / +X axis
+        //
+        // This diagram is derived from the axes in section 3.4 https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf
+        // and the placement of the dot/orientation from https://docs.revrobotics.com/rev-control-system/control-system-overview/dimensions#imu-location
+        //
+        // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
+        // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
 
         // TODO: adjust the names of the following hardware devices to match your configuration
         imu = hardwareMap.get(IMU.class, "imu");
@@ -104,7 +129,30 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
+        leftGripServo = hardwareMap.servo.get("leftGripServo");
+        rightGripServo = hardwareMap.servo.get("rightGripServo");
+
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
+        slideTop = hardwareMap.get(DcMotorEx.class, "slideTop");
+
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        if (RUN_USING_ENCODER) {
+            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+        }
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -307,5 +355,66 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
+    }
+    // Custom code from this point on
+
+    // Iterate over a list of motors and set them to a give mode
+    private void setMotorMode(DcMotorEx.RunMode mode, DcMotorEx... motors) {
+        // Iterate over each DcMotor object and set their motor mode
+        for (DcMotorEx motor : motors) {
+            motor.setMode(mode);
+        }
+    }
+
+    // Call setMotorMode() to turn off and reset the encoders on all slide motors
+    public void stopAndResetMotors() {
+        setMotorMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER, slideLeft, slideRight, slideTop);
+    }
+
+    // Call setMotorMode() to turn on all slide motors
+    public void restartMotors() {
+        setMotorMode(DcMotorEx.RunMode.RUN_TO_POSITION, slideLeft, slideRight, slideTop);
+    }
+
+    // Bundles all the functions needed to initialize the arm controls
+    public void initArm() {
+        stopAndResetMotors();
+        setGrip(false);
+        setSlideVelocity(0, slideLeft, slideRight, slideTop);
+        setHeight(0);
+        setExtension(0);
+        restartMotors();
+    }
+
+    // Set the target encoder position of the vertical slides
+    public void setHeight(int height) {
+        slideLeft.setTargetPosition(height);
+        slideRight.setTargetPosition(-height);
+    }
+
+    // Set the target encoders position of the horizontal slide
+    public void setExtension(int ext) {
+        slideTop.setTargetPosition(-ext);
+    }
+
+    // Iterate over a list of motors and set them to a provided velocity in ticks/second
+    public void setSlideVelocity(int vel, DcMotorEx... motors) {
+        for (DcMotorEx motor : motors) {
+            motor.setVelocity(vel);
+        }
+    }
+
+    // Takes a boolean grip value and does the math to convert it to a servo position
+    public void setGrip(boolean grip) {
+        double leftOpen = 0.0, leftClosed = 105.0;
+        double rightOpen = 270.0, rightClosed = 175.0;
+
+        if (grip) {
+            leftGripServo.setPosition(leftClosed / 270);
+            rightGripServo.setPosition(rightClosed / 270);
+        } else if (!grip) {
+            leftGripServo.setPosition(leftOpen / 270);
+            rightGripServo.setPosition(rightOpen / 270);
+        }
     }
 }
