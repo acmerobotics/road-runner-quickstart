@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -13,9 +17,9 @@ public class Arm extends Mechanism {
     public Servo rightArm;
     public String leftName = "leftArm";
     public String rightName = "rightArm";
-    double extendedPosition = 0;
-    double retractedPosition = 0.22;
-    double safeRetractedPosition = 0.22;
+    double extendedPosition = .28;
+    double retractedPosition = 0.04;
+    double safeRetractedPosition = 0.04;
 
     public boolean isExtended = false;
     public boolean isRetracted = false;
@@ -25,7 +29,7 @@ public class Arm extends Mechanism {
     public void init(HardwareMap hwMap) {
         leftArm = hwMap.get(Servo.class, leftName);
         rightArm = hwMap.get(Servo.class, rightName);
-        leftArm.setDirection(Servo.Direction.REVERSE);
+        rightArm.setDirection(Servo.Direction.REVERSE);
     }
 
     @Override
@@ -56,5 +60,10 @@ public class Arm extends Mechanism {
     public void safeRetract() {
         leftArm.setPosition(safeRetractedPosition);
         rightArm.setPosition(safeRetractedPosition);
+    }
+
+    public void setPower(double input) {
+        leftArm.setPosition(extendedPosition + input);
+        rightArm.setPosition(extendedPosition + input);
     }
 }

@@ -17,7 +17,7 @@ public class DrivebaseSubsystemTester extends OpMode {
 
     @Override
     public void init() {
-        drivebase = new Drivebase();
+        drivebase = new Drivebase(true);
         drivebase.init(hardwareMap);
     }
 

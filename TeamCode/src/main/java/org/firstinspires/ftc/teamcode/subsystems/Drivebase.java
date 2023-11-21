@@ -15,14 +15,14 @@ import org.firstinspires.ftc.vision.VisionPortal;
 
 public class Drivebase extends Mechanism {
 
-    private static final double STARTING_X = 0;
-    private static final double STARTING_Y = 0;
-    private static final double STARTING_HEADING = 0;
+    private static final double STARTING_X = 12;
+    private static double STARTING_Y = -63;
+    private static double STARTING_HEADING = Math.PI/2;
 
     private static final double RANGE_KP = 0.02;
     private static final double YAW_KP = 0.03;
 
-    private Camera camera;
+    public Camera camera;
     public MecanumDrive drive;
 
     final double speedClamp = 1;
@@ -34,6 +34,16 @@ public class Drivebase extends Mechanism {
     private static final double DETECTION_ZONE = 24.0;
 
     private boolean isCameraControlling = false;
+
+    public Drivebase(boolean isRedAlliance) {
+        if (isRedAlliance) {
+            STARTING_HEADING = Math.PI/2;
+            STARTING_Y = -63;
+        } else {
+            STARTING_HEADING = 3*Math.PI/2;
+            STARTING_Y = 63;
+        }
+    }
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -49,7 +59,8 @@ public class Drivebase extends Mechanism {
             camera.checkAndSetDesiredTag(-1);
         }
         updateIsCameraControlling(gamepad.a);
-        drive.setDrivePowers(clampSpeeds(-gamepad.left_stick_y, -gamepad.left_stick_x, -gamepad.right_stick_x));
+//        drive.setDrivePowers(clampSpeeds(-gamepad.left_stick_y, -gamepad.left_stick_x, -gamepad.right_stick_x));
+        drive.setDrivePowers(stickOnly(-gamepad.left_stick_y, -gamepad.left_stick_x, -gamepad.right_stick_x));
     }
 
     @Override
@@ -103,6 +114,10 @@ public class Drivebase extends Mechanism {
                 isCameraControlling = false;
             }
         }
+        return stickOnly(y, x, rx);
+    }
+
+    public PoseVelocity2d stickOnly(double y, double x, double rx) {
         return new PoseVelocity2d(
                 new Vector2d(
                         poweredInput(stickValWithDeadzone(y) * GamepadSettings.VY_WEIGHT),

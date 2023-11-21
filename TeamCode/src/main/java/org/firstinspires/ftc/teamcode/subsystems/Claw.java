@@ -1,4 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -48,20 +52,20 @@ public class Claw extends Mechanism {
 
         @Override
         public void loop(Gamepad gamepad) {
-            switch (activeTiltState) {
-                case LEFT:
-                    targetTilt = tiltedLeftPos;
-                    tilt(tiltedLeftPos);
-                    break;
-                case RIGHT:
-                    targetTilt = tiltedRightPos;
-                    tilt(tiltedRightPos);
-                    break;
-                case CENTER:
-                    targetTilt = straight;
-                    tilt(straight);
-                    break;
-            }
+//            switch (activeTiltState) {
+//                case LEFT:
+//                    targetTilt = tiltedLeftPos;
+//                    tilt(tiltedLeftPos);
+//                    break;
+//                case RIGHT:
+//                    targetTilt = tiltedRightPos;
+//                    tilt(tiltedRightPos);
+//                    break;
+//                case CENTER:
+//                    targetTilt = straight;
+//                    tilt(straight);
+//                    break;
+//            }
 
             isRotatorInPosition = rotator.getPosition() == targetTilt;
 

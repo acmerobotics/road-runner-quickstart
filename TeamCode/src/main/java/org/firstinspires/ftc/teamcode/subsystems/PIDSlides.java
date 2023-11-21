@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.annotation.NonNull;
+
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.NoFeedback;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedforward.FeedforwardEx;
@@ -9,6 +11,8 @@ import com.ThermalEquilibrium.homeostasis.Filters.Estimators.RawValue;
 import com.ThermalEquilibrium.homeostasis.Parameters.FeedforwardCoefficientsEx;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.ThermalEquilibrium.homeostasis.Systems.BasicSystem;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -70,7 +74,7 @@ public class PIDSlides extends Mechanism{
     public static final int RESET_POS = 0;
 
     public static final int SAFE_EXTENSION_POS = -1900;
-    public static final int SAFE_RETRACTION_POS = -1500;
+    public static final int SAFE_RETRACTION_POS = -1700;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -172,5 +176,15 @@ public class PIDSlides extends Mechanism{
 
     public boolean isAtTargetPosition() {
         return Math.abs(getSlidesPosition() - targetPos) < PROXIMITY_THRESHOLD;
+    }
+
+    public Action updateAction(int pos) {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                update(pos);
+                return isAtTargetPosition();
+            }
+        };
     }
 }

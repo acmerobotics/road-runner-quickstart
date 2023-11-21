@@ -35,10 +35,20 @@ public class Camera extends Mechanism {
 
     private TfodProcessor tfod;
 
+    private static final String TFOD_MODEL_ASSET = "CenterStage.tflite";
+
+    private static final String[] LABELS = {
+        "Pixel"
+    };
+
     @Override
     public void init(HardwareMap hwMap) {
-        aprilTag = new AprilTagProcessor.Builder().build();
-        tfod = new TfodProcessor.Builder().build();
+        aprilTag = new AprilTagProcessor.Builder()
+                .build();
+        tfod = new TfodProcessor.Builder()
+                .setModelAssetName(TFOD_MODEL_ASSET)
+                .setModelLabels(LABELS)
+                .build();
         visionPortal = new VisionPortal.Builder()
             .setCamera(hwMap.get(WebcamName.class, webcamName))
             .addProcessor(aprilTag)
@@ -151,5 +161,23 @@ public class Camera extends Mechanism {
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
         }   // end for() loop
 
+    }
+
+    public int getTfodElementPos() {
+        List<Recognition> currentRecognitions = tfod.getRecognitions();
+        for (Recognition recognition : currentRecognitions) {
+            if (recognition.getLabel().equals("Pixel")) {
+                double x = (recognition.getLeft() + recognition.getRight()) / 2;
+                double y = (recognition.getTop() + recognition.getBottom()) / 2;
+                if (x < 213) {
+                    return 1;
+                } else if (x < 427) {
+                    return 2;
+                } else {
+                    return 3;
+                }
+            }
+        }
+        return 1;
     }
 }

@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
 
 @TeleOp(name="SystemsCheck", group="AAA_COMPETITION")
 public class SystemsCheck extends LinearOpMode {
-    Drivebase drivebase = new Drivebase();
+    Drivebase drivebase = new Drivebase(true);
     Odometry odometry = new Odometry();
     Camera camera = new Camera();
     Claw claw = new Claw();
