@@ -85,6 +85,8 @@ public class NewNewManualOp extends OpMode {
             To move side to side, each pair of diagonal motors moves together, but the motors on each side move opposite each other
             To rotate, each side must move opposite each other, but each side must move with each other
          */
+
+        //TODO I'll need to work on motor rotations
         final double leftFront = y + x + rot;
         final double leftRear = y - x + rot;
         final double rightFront = y - x - rot;
@@ -124,9 +126,12 @@ public class NewNewManualOp extends OpMode {
         telemetry.addData("claw", gripInput);
 
         telemetry.update();
+        //TODO hope this works if not then curl up in a ball and cry also check for d bounce problems
         if (base.leftBumper()) {
+
             wristInput++;
         }
+
         if (wristInput % 2 == 0) {
             robot.setWrist(true);
         } else {
