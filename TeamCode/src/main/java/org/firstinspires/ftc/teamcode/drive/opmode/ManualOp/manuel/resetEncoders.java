@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,3 +14,5 @@ public class resetEncoders extends LinearOpMode {
         slides.initArm();
     }
 }
+
+ */

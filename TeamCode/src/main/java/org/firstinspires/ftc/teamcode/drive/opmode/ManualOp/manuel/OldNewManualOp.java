@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller;
 import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Robot;
-import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide;
+import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Slide;
 
 @TeleOp(name = "Manual Op")
-public class NewManualOp extends OpMode {
+public class OldNewManualOp extends OpMode {
     // Create new robot and controller objects from the classes we defined
     private Robot robot;
     private Slide slides;

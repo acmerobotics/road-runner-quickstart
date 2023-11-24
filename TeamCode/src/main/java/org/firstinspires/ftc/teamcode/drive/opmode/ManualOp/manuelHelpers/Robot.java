@@ -37,7 +37,7 @@ public class Robot {
     private final IMU imu;
 
     // Create servo objects
-    private final Servo leftGripServo, rightGripServo;
+    private final Servo leftGripServo, rightGripServo, wristGripServo;
 
     // Create variables for headless operation
     private double headingOffset = 0.0;  // Allows headless mode to correct for rotation
@@ -107,6 +107,7 @@ public class Robot {
         // Ask the Driver Hub which port each servo is attached to based on robot config
         leftGripServo = hardwareMap.servo.get("leftGripServo");
         rightGripServo = hardwareMap.servo.get("rightGripServo");
+        wristGripServo = hardwareMap.servo.get("wristServo");
     }
 
     // This function is used to update the RunMode of multiples DcMotors at once
@@ -242,7 +243,7 @@ public class Robot {
     // This functions opens and closes our gripper based on a boolean value
 
     //TODO this is where we need to change the values and probably the names
-    public void setGrip(boolean grip) {
+    public void setGrip(boolean grip_) {
         // Hardcode our opened and closed servo positions (in degrees)
         double leftOpen = 0.0, leftClosed = 105.0;
         double rightOpen = 270.0, rightClosed = 175.0;
@@ -253,13 +254,23 @@ public class Robot {
             and our particular servos have a range of 270°
             Dividing by 270 converts our degrees to a value from 0 to 1
          */
-        if (grip) {
+        if (grip_) {
             leftGripServo.setPosition(leftClosed / 270);
             rightGripServo.setPosition(rightClosed / 270);
-        } else if (!grip) {
+        } else if (!grip_) {
             leftGripServo.setPosition(leftOpen / 270);
             rightGripServo.setPosition(rightOpen / 270);
         }
+    }
+    public void setWrist (boolean wrist_) {
+        double intakePos = 0.0 , backDropPos = 100;
+
+        if (wrist_) {
+            wristGripServo.setPosition(backDropPos);
+        } else if (!wrist_) {
+            wristGripServo.setPosition(intakePos);
+        }
+
     }
 }
 
