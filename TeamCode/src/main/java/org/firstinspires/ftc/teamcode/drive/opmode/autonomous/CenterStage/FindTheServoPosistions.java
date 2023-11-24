@@ -21,6 +21,7 @@ public class FindTheServoPosistions extends LinearOpMode {
             telemetry.addData("Servo Posistion ", drive.leftGripServo.getPosition());
             telemetry.addData("claw Posistion" , drive.rightGripServo.getPosition());
             telemetry.addData("claw Posistion" , drive.wristGripServo.getPosition());
+            telemetry.addData("slide",drive.slideLeft.getCurrentPosition());
             telemetry.update();
         }
         drive.setWrist(true);
