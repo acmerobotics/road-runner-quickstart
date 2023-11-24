@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.helpers;
+package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 

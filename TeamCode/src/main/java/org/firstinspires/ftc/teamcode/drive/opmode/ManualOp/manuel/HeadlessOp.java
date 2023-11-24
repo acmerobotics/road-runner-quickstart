@@ -1,365 +1,201 @@
-/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
+package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel;
 
-import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.vision.parkingZoneFinder;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
+import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller;
+import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Robot;
 
-@Config
-@Autonomous (name= "RightMEDStack", group = "comepetition")
-public class Revamp extends LinearOpMode {
-    private final Pose2d startPose = new Pose2d(35, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
-    // later be called in our first trajectories
+/**
+ * Mecanum teleop (with an optional headless mode)
+ * * Left stick controls x/y translation.
+ * * Triggers control rotation about the z axis
+ * * When headless mode is enabled (press "cross"), translation direction
+ * becomes relative to the field as opposed to the robot. You can
+ * reset the forward heading by pressing "square".
+ */
+@TeleOp(name = "HeadlessOpTEST")
 
-    //score pose is the x and y that our IMU tries to go too and the engocders goathers position data. The heading should looking at the nearest high junction
-    private final Pose2d highJun = new Pose2d(37, -11, Math.toRadians(145));
+public class HeadlessOp extends OpMode {
 
-    // stack pose is what we point to when calling in our function so that we dont have to constantly put the same code in different trajectories. Stack pose
-    // just slightly changes the postion of the robot while mainly just being a turn the change is y is for allowing the trjectory to build properly
-    private final Pose2d stackPose = new Pose2d(48, -13, Math.toRadians(-5));
-    // restrictions both in m/s
+    // Create new Robot object named robot
+    private Robot robot;
+    // Create two new Controller objects, one for each gamepad
+    private Controller controller1, controller2;
 
-    private final Pose2d smalljun = new Pose2d(37, -13, Math.toRadians(290));
+    // Set up some useful variables
+    private boolean headlessMode = false;   // Allows us to toggle headless mode on and off
+    private boolean grip = false;           // Controls how far open or closed the gripper is
 
-   // private final Pose2d medjun1=new Pose2d(1,-11, Math.toRadians(290));
+    private final double mainMultiplier = 0.7;
+    private final double adjustMultiplier = 0.25;
+    private double multiplier = mainMultiplier;        // Allows us to scale down the motor speed
 
-    private final Pose2d medjun2= new Pose2d(38,-13, Math.toRadians(220));
-
-    //orgianl 45 , 30
-    private final double travelSpeed = 45.0, travelAccel = 30.0;
-    // the three different parking locations in poses
-    private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
-            -20, Math.toRadians(90)), new Pose2d(64, -15, Math.toRadians(90))};
-    // camera images sizes 1280 pixles
-
-
-    SampleMecanumDrive drive;
-
-    private final int width = 1280, height = 720;
-
-    OpenCvWebcam adjustCamera = null;
-
-    // this is just our pipeline creating the filter of color on the signal sleeve
-    parkingZoneFinder parkingZonePipeline = new parkingZoneFinder();
-    parkingZoneFinder.parkingZone zone;
-
+    // This code will run when the init button is pressed on the Driver Hub
     @Override
-    public void runOpMode() throws InterruptedException {   //when we start to run
-        drive = new SampleMecanumDrive(hardwareMap);  // maps our moters to the robot
+    public void init() {
+        // Basic setup
+        robot = new Robot(hardwareMap, telemetry);  // Initialize our robot class
+        robot.runWithoutEncoders();                   // Tell our drive motors to use encoders
+        robot.runSlideWithoutEncoders();            // Tell our slide motors not to use encoders
+        controller1 = new Controller(gamepad1);     // Initialize controller1
+        controller2 = new Controller(gamepad2);     // Initialize controller2
 
-        // Initialize arm
-        drive.initArm();
+        robot.runWithBrakes();  // Tell our driv motors to use brakes
+    }
 
-        // Tell the robot where it is based on a pose created earlier
-        drive.setPoseEstimate(startPose);
+    // This code will after the init block and will loop until the start button is pressed
+    @Override
+    public void init_loop() {
+        // Check for controller updates
+        controller1.update();
+        controller2.update();
 
-        // Create the first trajectory to be run when the round starts
-// this is a trajectory we are telling the robot when goToStack is called to go from our stack pose to the score pose in a spline that looks like an s
-        TrajectorySequence goToStack = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(highJun,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-
-
-        // Set up the webcam
-        WebcamName adjustCameraName = hardwareMap.get(WebcamName.class, "adjustCamera");
-        adjustCamera = OpenCvCameraFactory.getInstance().createWebcam(adjustCameraName);
-
-        // Set the camera's pipeline
-        adjustCamera.setPipeline(parkingZonePipeline);
-
-        // Open the camera
-        adjustCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                adjustCamera.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-
-            }
-        });
-
-        while (!isStarted()) {
-            zone = parkingZonePipeline.getParkingZone();
-            telemetry.addData("Parking Zone", zone);
-            telemetry.update();
+        // Toggle headless mode when cross is pressed on base driver's controller
+        if (controller1.crossOnce()) {
+            headlessMode = ! headlessMode;
         }
 
-        adjustCamera.stopStreaming();
-        adjustCamera.closeCameraDevice();
-
-        drive.setSlideVelocity(4000, drive.slideRight, drive.slideLeft, drive.slideTop);
-
-        // Close the grip and move the slide up a small amount
-        drive.setGrip(true);
-        sleep(250);
-        drive.setHeight(200);
-        drive.setExtension(50);
-
-        // The sleep is necessary to wait for certain arm actions to finish
-        sleep(250);
-
-        // Increase the height of the slide and increase its velocity
-        drive.setHeight(4200);
-        drive.setExtension(750);
-
-        drive.followTrajectorySequence(goToStack);
-
-        TrajectorySequence tostack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(stackPose,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-
-
-        // Without waiting, run the trajectory we prepared earlier
-        // This will take us to our cycle location
-
-        // Update roadrunner's idea of where the robot is after we ran the trajectory
-
-        // Wait for arm to be in position
-        sleep(250);
-
-        // Open grip to drop cone
-        drive.setGrip(false);
-
-        // Wait for grip to fully open and cone to drop
-        sleep(500);
-
-
-
-        //to stack is right
-        drive.followTrajectorySequence(tostack);
-        drive.setHeight(845);
-        sleep(2000);
-        drive.setGrip(true);
-
-        drive.updatePoseEstimate();
-                TrajectorySequence toSMALL = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(smalljun,
-                                SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                        DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                        )
-                        .build();
-
-         drive.updatePoseEstimate();
-                TrajectorySequence toMED2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(medjun2,
-                                SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                        DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                        )
-                        .build();
-
-
-        //TODO THIS IS THE END OF THE FIRST CYCLE
-
-        for(int i = 5; i>1;i--){
-            if (i>3)
-            {
-                scoresmall(drive,i, toSMALL, tostack);
-            }
-            else
-            {
-                scoremed (drive,i,toMED2, tostack);
-            }
-
+        // Reset heading when base driver presses square
+        if (controller1.squareOnce()) {
+            robot.resetHeading();
         }
-        if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
-        else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
-        else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
-        else { parkBot(drive, 1, parkingSpots); }
 
+        // Add some telemetry information for convenience
+        telemetry.addData("Gyro Ready?", robot.isGyroCalibrated() ? "yes" : "no");
+        telemetry.addData("Headless Mode (cross)", headlessMode ? "yes" : "no");
+        telemetry.update();
+    }
 
+    // This code will run once the start button is pressed
+    @Override
+    public void loop() {
+        // Check controllers for updates
+        controller1.update();
+        controller2.update();
+        // Update robot heading
+        robot.loop();
 
+        // Reset heading when base driver presses square
+        if (controller1.squareOnce()) {
+            robot.resetHeading();
+        }
 
-        //grab the 5th cone of the stack
+        // Toggle headless when base driver presses cross
+        if (controller1.crossOnce()) {
+            headlessMode = !headlessMode;
+        }
 
+        // Change drive multiplier when base driver presses circle
+        if (controller1.circleOnce()) {
+            multiplier = multiplier == mainMultiplier ? adjustMultiplier : mainMultiplier;
+        }
+
+        // Set grippers to open when the left trigger is pressed
+        if (controller2.leftTriggerOnce()) {
+            grip = false;
+        }
+        // Set grippers to close when the right trigger is pressed
+        if (controller2.rightTriggerOnce()) {
+            grip = true;
+        }
+
+        // Add telemetry for convenience
+        telemetry.addData("Headless Mode (cross)", headlessMode ? "yes" : "no");
+        telemetry.addData("Heading (reset: square)", robot.getHeadingDegrees());
+        telemetry.update();
+
+        // This large if/else block allows the arm driver to take control of the base to make fine
+        // adjustments. This cuts down on communication slowdowns in some cases
+        if (controller2.Circle() || controller2.Cross() ||
+                controller2.Square() || controller2.Triangle()) {
+            if (controller2.Triangle()) {
+                robot.setMotors(0.75f, 0.75f, 0.75f,
+                        0.75f, 1);
+            }
+            if (controller2.Cross()) {
+                robot.setMotors(-0.75f, -0.75f, -0.75f,
+                        -0.75f, 1);
+            }
+            if (controller2.Square()) {
+                robot.setMotors(-0.75f, 0.75f, 0.75f,
+                        -0.75f, 1);
+            }
+            if (controller2.Circle()) {
+                robot.setMotors(0.75f, -0.75f, -0.75f,
+                        0.75f, 1);
+            }
+        }
+        else if (controller2.dpadDown() || controller2.dpadUp() ||
+                controller2.dpadLeft() || controller2.dpadRight()) {
+            if (controller2.dpadUp()) {
+                robot.setMotors(0.1f, 0.1f, 0.1f,
+                        0.1f, 1);
+            }
+            if (controller2.dpadDown()) {
+                robot.setMotors(-0.1f, -0.1f, -0.1f,
+                        -0.1f, 1);
+            }
+            if (controller2.dpadLeft()) {
+                robot.setMotors(-0.1f, 0.1f, 0.1f,
+                        -0.1f, 1);
+            }
+            if (controller2.dpadRight()) {
+                robot.setMotors(0.1f, -0.1f, -0.1f,
+                        0.11f, 1);
+            }
+        }
+        else if (controller2.rightBumper()) {
+            robot.setMotors(0.25, 0.25, -0.25, -0.25, 1);
+        }
+        else if (controller2.leftBumper()) {
+            robot.setMotors(-0.3f, -0.3f, 0.3f, 0.3f, 1);
+        }
+        // When the arm driver isn't overriding base controls, this code controls the motor
+        else {
+            // Get input from the base driver's left stick and take it to
+            // the third power to increase low-range resolution
+            final double x = -Math.pow(controller1.left_stick_x, 3.0);
+            final double y = Math.pow(controller1.left_stick_y, 3.0);
+            final double rotation = Math.pow(controller1.right_trigger - controller1.left_trigger, 3.0);
+
+            // get direction as the counterclockwise angle from the x-axis to point (x, y)
+            // then compensate for reference angle by adding current heading
+            final double direction = Math.atan2(x, y) + (headlessMode ? robot.getHeading() : 0.0);
+            // determine speed using pythagorean theorem
+            final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
+
+            // another attempt at making sense of this headless stuff
+            // basically splitting apart everything into basic x and y again, but with direction,
+            // then doing it like normal? idk man it's 3am and i'm confused
+            final double y_proc = -1 * speed * Math.sin(direction + Math.PI / 2.0);
+            final double x_proc = speed * Math.cos(direction + Math.PI / 2.0);
+
+            // This is Mecanum stuff, I'll do my best to explain
         /*
-        drive.updatePoseEstimate();
+            To move forward and backward, you apply the same rotation to all motors
+            To move side to side, each pair of diagonal motors moves together,
+            but the motors on each side move opposite each other
+            The rotation is different from normal for some strange reason. I have no clue why. Sorry.
+         */
+            final double leftFront = y_proc + x_proc + rotation;
+            final double leftRear = y_proc - x_proc - rotation;
+            final double rightFront = y_proc - x_proc + rotation;
+            final double rightRear = y_proc + x_proc - rotation;
 
-        for(int i=0;i>2;i++) {
-            TrajectorySequence toSMALL = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineToSplineHeading(smalljun,
-                            SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                    DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                    )
-                    .build();
-
-
-            drive.updatePoseEstimate();
-            drive.followTrajectorySequence(toSMALL);
-            drive.updatePoseEstimate();
-            TrajectorySequence tostack2 = drive.trajectorySequenceBuilder(smalljun)
-                    .lineToLinearHeading(stackPose,
-                            SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                    DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                    )
-                    .build();
-
-            drive.setGrip(false);
-            drive.setHeight(1500);
-            sleep(2000);
-
-            drive.updatePoseEstimate();
-           drive.followTrajectorySequence(tostack2);
-
-            drive.updatePoseEstimate();
+            // Set all of the drive motors
+            robot.setMotors(leftFront, rightFront, leftRear, rightRear, multiplier);
         }
 
+        // Set up all of the arm values
+        final double slideLeft = Math.pow(controller2.left_stick_y, 3.0);
+        final double slideRight = Math.pow(controller2.left_stick_y, 3.0);
+        final double slideTop = Math.pow(controller2.right_stick_y, 3.0);
+        final boolean gripPower = grip;
 
-        TrajectorySequence toMED1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(medjun1,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-        sleep(2000);
-        drive.updatePoseEstimate();
-        drive.followTrajectorySequence(toMED1);
-        sleep(2000);
-        drive.updatePoseEstimate();
-
-
-
-        TrajectorySequence tostack3 = drive.trajectorySequenceBuilder(medjun1)
-                .lineToLinearHeading(stackPose,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-        drive.updatePoseEstimate();
-        drive.followTrajectorySequence(tostack3);
-
-
-        for(int i = 0 ; i<2 ; i++){
-            sleep(2000);
-            drive.updatePoseEstimate();
-            TrajectorySequence toMED2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineToSplineHeading(medjun2,
-                            SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                    DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                    )
-                    .build();
-            drive.followTrajectorySequence(toMED2);
-            TrajectorySequence tostack4 = drive.trajectorySequenceBuilder(medjun2)
-                    .lineToLinearHeading(stackPose,
-                            SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                    DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                    )
-                    .build();
-            drive.updatePoseEstimate();
-            drive.followTrajectorySequence(tostack4);
-        }
-
-
-
-
-
-        // for liip to repeate 3 timss
-        // calles totrack fuction that turns around grabs a cone and then stops
-        // then calls score cone that goes from stack to target junction
-        // commented out
-
-        if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
-        else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
-        else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
-        else { parkBot(drive, 1, parkingSpots); }
-
-     */
-
-//  }
-
-//  public void scoresmall(SampleMecanumDrive _drive, int h, TrajectorySequence small, TrajectorySequence stack){
-
-//    _drive.setHeight(1500);
-
-//    _drive.followTrajectorySequence(small);
-
-
-//      _drive.followTrajectorySequence(stack);
-//     _drive.setHeight(1350-(h*150));
-//     sleep(500);
-//      _drive.setGrip(true);
-//      sleep(250);
-
-//  }
-
-// mj - middle junction
-//  public void scoremed(SampleMecanumDrive _drive,int h,TrajectorySequence med,TrajectorySequence stack){
-//      _drive.setHeight(2000);
-//      _drive.updatePoseEstimate();
-
-//     _drive.followTrajectorySequence(toMED2);
-//     _drive.setGrip(false);
-//            _drive.updatePoseEstimate();
-       /* TrajectorySequence tostack4 = _drive.trajectorySequenceBuilder(medjun2)
-                .lineToLinearHeading(stackPose,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-                       _drive.updatePoseEstimate();
-
-        _drive.followTrajectorySequence(tostack4);
-        _drive.setHeight(1050-(h*150));
-        _drive.setGrip(false);
-        sleep(250);
+        // Apply power to slide motors and gripper
+        robot.setSlideMotors(slideLeft, slideRight, slideTop);
+        robot.setGrip(gripPower);
 
     }
-
-    //high junction
-    public void hj (){
-
-    }
-
-    // low junction
-    public void lj() {
-
-    }
-
-    private void parkBot(SampleMecanumDrive _drive, int _zone, Pose2d[] locations) {
-        _drive.updatePoseEstimate();
-        Trajectory moveToPark = _drive.trajectoryBuilder(_drive.getPoseEstimate())
-                .lineToLinearHeading(locations[_zone])
-                .build();
-
-        _drive.setGrip(false);
-        _drive.setExtension(50);
-        _drive.setHeight(4400);
-        _drive.setSlideVelocity(4000, _drive.slideLeft, _drive.slideRight, _drive.slideTop);
-
-        _drive.followTrajectory(moveToPark);
-
-        _drive.setHeight(100);
-    }
-
 }
-*/

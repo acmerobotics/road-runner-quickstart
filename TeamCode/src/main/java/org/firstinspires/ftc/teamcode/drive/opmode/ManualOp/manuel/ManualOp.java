@@ -6,11 +6,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller;
+import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller;
 
 //@Disabled
+
+/** this is What WORKS **/
+
+
 @TeleOp(name = "THIS IS WHAT WORKS - Manual Op")
 public class ManualOp extends OpMode {
+
+    //Here we are creating all the parts what we will manipulate
     DcMotor leftFront;
     DcMotor rightFront;
     DcMotor leftRear;
@@ -20,7 +26,7 @@ public class ManualOp extends OpMode {
     DcMotor slideTop;
     Servo gripServo;
 
-    Controller controller1, controller2;
+
 
 
     public void init() {
@@ -63,11 +69,15 @@ public class ManualOp extends OpMode {
         telemetry.addData("servo speed: ", servoSpeed);
         telemetry.update();
 
-      /*  if (controller2.crossOnce()){
-            slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-*/
+
+        //These are the breaks
+        //the way these are called will be different in the classes with the helpers
+
+        slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+
         gripServo.setPosition(servoSpeed);
 
     }

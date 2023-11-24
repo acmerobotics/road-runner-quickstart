@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller;
-import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot;
+import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller;
+import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Robot;
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide;
 
 @TeleOp(name = "Manual Op")

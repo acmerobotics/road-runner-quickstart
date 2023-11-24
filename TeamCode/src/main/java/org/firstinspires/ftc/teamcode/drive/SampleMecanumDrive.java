@@ -403,7 +403,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             motor.setVelocity(vel);
         }
     }
-
+//TODO : WE need to change all the setGrip Functions this is found in like 3 other classes
     // Takes a boolean grip value and does the math to convert it to a servo position
     public void setGrip(boolean grip) {
         double leftOpen = 0.0, leftClosed = 105.0;
@@ -415,6 +415,16 @@ public class SampleMecanumDrive extends MecanumDrive {
         } else if (!grip) {
             leftGripServo.setPosition(leftOpen / 270);
             rightGripServo.setPosition(rightOpen / 270);
+        }
+    }
+
+    // this is just a setup for the wrist these are random numbers I think we can get the numbers from a demo auto
+    //ill make the auto
+    public void setWrist (boolean grip) {
+        double WristOpen = 0, WristClose = 100 ;
+        if (grip) {
+
+            leftGripServo.setPosition(WristClose/270);
         }
     }
 }

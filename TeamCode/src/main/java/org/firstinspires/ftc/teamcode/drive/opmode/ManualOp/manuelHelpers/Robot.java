@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.helpers;
+package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -68,7 +68,9 @@ public class Robot {
         imu.initialize(
                 new IMU.Parameters(
                         new RevHubOrientationOnRobot(
-                                RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP)
+                                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                                RevHubOrientationOnRobot.UsbFacingDirection.UP
+                        )
                 )
         );
 
@@ -238,6 +240,8 @@ public class Robot {
     }
 
     // This functions opens and closes our gripper based on a boolean value
+
+    //TODO this is where we need to change the values and probably the names
     public void setGrip(boolean grip) {
         // Hardcode our opened and closed servo positions (in degrees)
         double leftOpen = 0.0, leftClosed = 105.0;

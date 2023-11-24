@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+
+
 /**
  * "THIS IS JUST AN EXPERIMENT NOT SOMETHING IMPORTANT"
  * SAWYER PUTNAM
@@ -10,9 +12,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(group = "beta")
 public class linearHeadlessOp extends LinearOpMode {
-    private org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot robot;
-    private org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide slides;
-    private org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller controller1, controller2;
+    private org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Robot robot;
+    private org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Slide slides;
+    private org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller controller1, controller2;
 
     private boolean headlessMode = false;
     private boolean grip = false;
@@ -23,10 +25,10 @@ public class linearHeadlessOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot(hardwareMap, telemetry);
-        slides = new org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide(hardwareMap, telemetry);
-        controller1 = new org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller(gamepad1);
-        controller2 = new org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller(gamepad2);
+        robot = new org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Robot(hardwareMap, telemetry);
+        slides = new org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Slide(hardwareMap, telemetry);
+        controller1 = new org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller(gamepad1);
+        controller2 = new org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller(gamepad2);
 
         robot.runWithoutEncoders();
         robot.runWithBrakes();
@@ -131,11 +133,11 @@ public class linearHeadlessOp extends LinearOpMode {
             slides.setGrip(grip);
 
             if (controller2.dpadUpOnce()) {
-                slides.goToJunction(org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide.heights.HIGH);
+                slides.goToJunction(org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Slide.heights.HIGH);
             } else if (controller2.dpadRightOnce()) {
-                slides.goToJunction(org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide.heights.MID);
+                slides.goToJunction(org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Slide.heights.MID);
             } else if (controller2.dpadDownOnce()) {
-                slides.goToJunction(org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide.heights.LOW);
+                slides.goToJunction(org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Slide.heights.LOW);
             }
         }
     }
