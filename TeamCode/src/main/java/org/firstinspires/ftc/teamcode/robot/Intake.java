@@ -27,10 +27,12 @@ public class Intake {
     public ElapsedTime cycleSpitTime = new ElapsedTime();
     private Hopper hopper;
 
+    public ElapsedTime timeBetweenIntakeSpit = new ElapsedTime();
+
     public Intake(HardwareMap hwMap, Telemetry telemetry, Map stateMap, Hopper hopper){
         this.telemetry = telemetry;
         this.stateMap = stateMap;
-        intakeMotor = hwMap.get(DcMotorEx.class, "IntakeMotor");
+        intakeMotor = hwMap.get(DcMotorEx.class, "intakeMotor");
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -69,9 +71,11 @@ public class Intake {
         String hopperState = (String)stateMap.get(hopper.HOPPER_SYSTEM_NAME);
         if(hopperState.equalsIgnoreCase(hopper.HOPPER_ONE_PIXEL) && numOfPixels == 1){
             stateMap.put(constants.PIXEL_CYCLE_INTAKE_INTAKING, constants.PIXEL_CYCLE_STATE_COMPLETE);
+            timeBetweenIntakeSpit.reset();
         }
         if(hopperState.equalsIgnoreCase(hopper.HOPPER_TWO_PIXELS) && numOfPixels == 2) {
             stateMap.put(constants.PIXEL_CYCLE_INTAKE_INTAKING, constants.PIXEL_CYCLE_STATE_COMPLETE);
+            timeBetweenIntakeSpit.reset();
         }
     }
 

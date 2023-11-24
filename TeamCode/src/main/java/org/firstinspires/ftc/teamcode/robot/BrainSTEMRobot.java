@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -8,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Map;
+import java.util.function.LongFunction;
+
 public class BrainSTEMRobot {
     private ElapsedTime elapsedTime = new ElapsedTime();
     private Telemetry telemetry;
@@ -16,10 +19,12 @@ public class BrainSTEMRobot {
     public Hopper hopper;
     public Fulcrum fulcrum;
     public Intake intake;
+    public Drawbridge drawbridge;
+
     public MecanumDrive drive;
+    public Arm arm;
     private Map stateMap;
     Constants constants = new Constants();
-
     public BrainSTEMRobot(HardwareMap hardwareMap, Telemetry telemetry, Map stateMap){
         this.telemetry = telemetry;
         this.stateMap =  stateMap;
@@ -28,7 +33,11 @@ public class BrainSTEMRobot {
         hopper = new Hopper(hardwareMap, telemetry, stateMap);
         intake = new Intake(hardwareMap, telemetry, stateMap, hopper);
         fulcrum = new Fulcrum(hardwareMap, telemetry, stateMap);
-//        drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
+        drawbridge = new Drawbridge(hardwareMap, telemetry, stateMap);
+        arm = new Arm(hardwareMap, telemetry, stateMap);
+        lift = new Lift(hardwareMap, telemetry,stateMap);
+
+        drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
         stateMap.put(constants.PIXEL_CYCLE, constants.PIXEL_CYCLE_STATE_NOT_STARTED);
         stateMap.put(constants.PIXEL_CYCLE_INTAKE_INTAKING, constants.PIXEL_CYCLE_STATE_NOT_STARTED);
@@ -49,6 +58,9 @@ public class BrainSTEMRobot {
             hopper.setState();
             intake.setState();
             fulcrum.setState();
+            drawbridge.setState();
+            arm.setState();
+//            lift.setState();
         }
     }
 
@@ -69,7 +81,7 @@ public class BrainSTEMRobot {
     private boolean startIntakeSpit(){
         String pixelCycleIntakeState = (String) stateMap.get(constants.PIXEL_CYCLE_INTAKE_INTAKING);
         String pixelCycleSpittingState = (String) stateMap.get(constants.PIXEL_CYCLE_INTAKE_SPITTING);
-        if(pixelCycleIntakeState.equals(constants.PIXEL_CYCLE_STATE_COMPLETE) && pixelCycleSpittingState.equals(constants.PIXEL_CYCLE_STATE_NOT_STARTED)){
+        if(pixelCycleIntakeState.equals(constants.PIXEL_CYCLE_STATE_COMPLETE) && pixelCycleSpittingState.equals(constants.PIXEL_CYCLE_STATE_NOT_STARTED) && intake.timeBetweenIntakeSpit.seconds() > 0.5){
             return true;
         }
         return false;

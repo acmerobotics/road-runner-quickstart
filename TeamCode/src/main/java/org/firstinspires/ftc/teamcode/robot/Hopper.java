@@ -28,8 +28,8 @@ public class Hopper {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
 
-        colorSensor1 = hwMap.get(NormalizedColorSensor.class, "colorSensor1");
-        colorSensor2 = hwMap.get(NormalizedColorSensor.class, "colorSensor2");
+        colorSensor1 = hwMap.get(NormalizedColorSensor.class, "bottomHopperColorSensor");
+        colorSensor2 = hwMap.get(NormalizedColorSensor.class, "upperHopperColorSensor");
 
         colorSensor1.setGain(gain);
         colorSensor2.setGain(gain);
