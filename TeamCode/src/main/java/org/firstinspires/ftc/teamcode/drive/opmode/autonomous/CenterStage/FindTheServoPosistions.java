@@ -7,16 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous
+@Autonomous (name = "Servo Finder test")
 @Config
 public class FindTheServoPosistions extends LinearOpMode {
 
     private SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-    private Pose2d startPose = new Pose2d(3,4,Math.toRadians(80));
-
-    private Pose2d endPose = new Pose2d(15,4,Math.toRadians(70));
-
 
 
     @Override
@@ -25,8 +20,12 @@ public class FindTheServoPosistions extends LinearOpMode {
         while (!isStarted()) {
             telemetry.addData("Servo Posistion ", drive.leftGripServo.getPosition());
             telemetry.addData("claw Posistion" , drive.rightGripServo.getPosition());
+            telemetry.addData("claw Posistion" , drive.wristGripServo.getPosition());
             telemetry.update();
         }
+        drive.setWrist(true);
+        sleep(2000);
+        drive.setWrist(false);
 
     }
 

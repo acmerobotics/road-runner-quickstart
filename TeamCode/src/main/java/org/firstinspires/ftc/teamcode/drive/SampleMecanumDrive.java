@@ -80,7 +80,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
 
-    public Servo leftGripServo, rightGripServo;
+    public Servo leftGripServo, rightGripServo,wristGripServo;
     public DcMotorEx slideLeft, slideRight, slideTop;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
@@ -131,6 +131,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         leftGripServo = hardwareMap.servo.get("leftGripServo");
         rightGripServo = hardwareMap.servo.get("rightGripServo");
+        wristGripServo = hardwareMap.servo.get("wristServo");
 
         slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
         slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
@@ -420,11 +421,14 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     // this is just a setup for the wrist these are random numbers I think we can get the numbers from a demo auto
     //ill make the auto
-    public void setWrist (boolean grip) {
-        double WristOpen = 0, WristClose = 100 ;
-        if (grip) {
+    public void setWrist (boolean wrist_) {
+        double intakePos = 0.0 , backDropPos = 100;
 
-            leftGripServo.setPosition(WristClose/270);
+        if (wrist_) {
+            wristGripServo.setPosition(backDropPos);
+        } else if (!wrist_) {
+            wristGripServo.setPosition(intakePos);
         }
+
     }
 }
