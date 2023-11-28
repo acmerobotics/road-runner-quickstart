@@ -95,7 +95,7 @@ public class AutoRedFront extends LinearOpMode {
      * blue: 1,2,3; red: 4,5,6
      */
     private int desiredTagNum = 0; // blue: 1,2,3; red: 4,5,6
-    private int checkStatus = 0;
+    private int checkStatus = 1;
     final private double BUCKET_SHIFT = 2.0; // yellow pixel is in the right bucket.
     // USE LATER: boolean debug_flag = true;
 
@@ -226,33 +226,34 @@ public class AutoRedFront extends LinearOpMode {
             propLocation = propDetect.getPropPos();
         }
 
+        int spikeMarkLoc = 1; // 1 for left, 2 for center, and 3 for right
+
         while (!isStarted()) {
             propLocation = propDetect.getPropPos();
-            //propLocation = ObjectDetection.PropSide.LEFT; // TODO: remove after temp test
-
-            int spikeMarkLoc = 1; // 1 for left, 2 for center, and 3 for right
-            switch (propLocation) {
-                case LEFT:
-                    spikeMarkLoc = 1;
-                    break;
-                case CENTER:
-                case UNKNOWN:
-                    spikeMarkLoc = 2;
-                    break;
-                case RIGHT:
-                    spikeMarkLoc = 3;
-                    break;
-            }
-            desiredTagNum = spikeMarkLoc + (3 - blueOrRed * 3) / 2; // blue: 1,2,3; red: 4,5,6
-            checkStatus = desiredTagNum * frontOrBack;
-
+            sleep(10);
             telemetry.addData("Detected Prop location: ", propLocation);
-            telemetry.addData("Desired Tag ID: ", "%d", desiredTagNum);
-            telemetry.addData("RR", "imu Heading Yaw = %.1f",
-                    drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            telemetry.update();
         }
 
+        switch (propLocation) {
+            case LEFT:
+                spikeMarkLoc = 1;
+                break;
+            case CENTER:
+            case UNKNOWN:
+                spikeMarkLoc = 2;
+                break;
+            case RIGHT:
+                spikeMarkLoc = 3;
+                break;
+        }
+        desiredTagNum = spikeMarkLoc + ((blueOrRed > 0)? 0 : 3); // blue: 1,2,3; red: 4,5,6
+        telemetry.addData("Desired Tag ID: ", "%d", desiredTagNum);
+        telemetry.addData("RR", "imu Heading Yaw = %.1f",
+                drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        telemetry.update();
+
+        checkStatus = desiredTagNum * frontOrBack;
+        Logging.log("checkStatus = %d, desiredTagNum = %d", checkStatus, desiredTagNum);
         tag = new AprilTagTest(drive, hardwareMap, desiredTagNum, webcamName);
 
         // bulk reading setting - auto refresh mode
@@ -356,12 +357,15 @@ public class AutoRedFront extends LinearOpMode {
         logVector("robot drive: arm to push pose", drive.pose.position);
         logVector("robot drive: start Arm Flip pose required", startArmFlip);
 
+        double tAngle = Math.PI / 2.0 * frontOrBack * blueOrRed;
+        Logging.log("frontOrBack = %d, blueOrRed = %d, angle = %f", frontOrBack, blueOrRed, tAngle);
+
         // Near gate cases
         if (((6 == checkStatus) || (-3 == checkStatus) || (1 == checkStatus) || (-4 == checkStatus)) &&
-                (Math.PI / 2 * frontOrBack * blueOrRed != 0.0)) {
+                (tAngle != 0.0)) {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
-                            .turn(Math.PI / 2 * frontOrBack * blueOrRed)
+                            .turn(tAngle)
                             .build()
             );
             logRobotHeading("robot drive: after turn before arm flip");
@@ -525,7 +529,7 @@ public class AutoRedFront extends LinearOpMode {
 
         // 2. open switch
         intake.setSwitchPosition(intake.SWITCH_RELEASE_PURPLE);
-        sleep(500);
+        sleep(1000);
     }
     private void dropYellowAction(){
         intake.readyToDropYellow();

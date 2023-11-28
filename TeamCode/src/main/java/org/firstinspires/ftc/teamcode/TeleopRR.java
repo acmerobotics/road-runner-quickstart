@@ -203,6 +203,9 @@ public class TeleopRR extends LinearOpMode {
                 moveBack(Params.HALF_MAT * 1.5);
             }
 
+            if(gpButtons.toggleDropPos){
+                intake.underTheBeam();
+            }
 
             if (gpButtons.switchDropOne) {
                 intake.switchServoDropOne();

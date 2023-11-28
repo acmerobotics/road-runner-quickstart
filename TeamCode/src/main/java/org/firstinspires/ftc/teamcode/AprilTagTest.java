@@ -79,7 +79,7 @@ public class AprilTagTest {
     private void detectTag() {
         targetFound = false;
         desiredTag  = null;
-        Logging.log("Starting detection");
+        Logging.log("Starting detection, DESIRED_TAG_ID = %d", DESIRED_TAG_ID);
         // Step through the list of detected tags and look for a matching tag
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections) {

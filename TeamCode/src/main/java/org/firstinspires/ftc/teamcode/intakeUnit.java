@@ -62,7 +62,7 @@ public class intakeUnit
     final double SWITCH_CLOSE_POS = 0.18;
     final double SWITCH_RELEASE_PURPLE = 0.215;
     final double SWITCH_RELEASE_YELLOW = 0.25;
-    private Servo wristServo = null;
+    public Servo wristServo = null;
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
     final double WRIST_MAX_POS = 0.95; // Maximum rotational position
     final double WRIST_POS_DROP_PURPLE = 0.33;
@@ -140,7 +140,7 @@ public class intakeUnit
      * set the target position of wrist servo motor
      * @param wristPos the target position value for wrist servo motor
      */
-    private void setWristPosition(double wristPos) {
+    public void setWristPosition(double wristPos) {
         wristPos = Range.clip(wristPos, WRIST_MIN_POS, WRIST_MAX_POS);
         wristServo.setPosition(wristPos);
     }

@@ -50,6 +50,7 @@ public class GamePadButtons {
     public float robotDrive;
     public float robotStrafe;
     public float robotTurn;
+    public boolean toggleDropPos;
     public boolean speedDown;
     public boolean speedUp;
     public boolean armUp;
@@ -111,9 +112,10 @@ public class GamePadButtons {
         readyToIntake4th = gamepad1.dpad_right;
         readyToIntake5th = gamepad1.dpad_down;
 
-        readyToDrop = gamepad1.right_bumper || gamepad2.right_bumper;
+        readyToDrop = gamepad1.right_bumper;
 
         // game pad 2
+        toggleDropPos = gamepad2.right_bumper;
 
         //special presets
         droneLaunch = (gamepad2.right_trigger > 0);
