@@ -101,7 +101,7 @@ public class TeleopRR extends LinearOpMode {
         intake.setArmModeRunToPosition(intake.getArmPosition());
 
         DroneServo = hardwareMap.get(Servo.class, "Drone");
-        DroneServo.setPosition(0);
+        DroneServo.setPosition(DroneServo.getPosition());
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -186,12 +186,14 @@ public class TeleopRR extends LinearOpMode {
             }
             if (gpButtons.readyToIntake3rd) {
                 intake.intakePositions(intake.ARM_POS_INTAKE3);
-                ;
             }
             if (gpButtons.readyToIntake4th) {
                 intake.intakePositions(intake.ARM_POS_INTAKE4);
             }
 
+            if (gpButtons.readyToIntake5th) {
+                intake.intakePositions(intake.ARM_POS_INTAKE5);
+            }
             if (gpButtons.switchOpen) {
                 intake.switchServoOpen();
             }
@@ -255,15 +257,17 @@ public class TeleopRR extends LinearOpMode {
 
                 telemetry.addData("Arm", "position = %d", intake.getArmPosition());
 
-                telemetry.addData("Finger", "position %.2f", intake.getFingerPosition());
+                telemetry.addData("Finger", "position %.3f", intake.getFingerPosition());
 
-                telemetry.addData("switch", "position %.2f", intake.getSwitchPosition());
+                telemetry.addData("switch", "position %.3f", intake.getSwitchPosition());
 
                 telemetry.addData("Drone", "position %.2f", DroneServo.getPosition());
 
                 telemetry.addData("heading", " %.2f", Math.toDegrees(mecanum.pose.heading.log()));
 
                 telemetry.addData("location", " %s", mecanum.pose.position.toString());
+
+                telemetry.addData("motor velocity = ", " %.3f", mecanum.leftFront.getVelocity());
 
                 telemetry.update(); // update message at the end of while loop
             }
@@ -349,7 +353,7 @@ public class TeleopRR extends LinearOpMode {
             // shift to AprilTag
             Actions.runBlocking(
                     mecanum.actionBuilder(mecanum.pose)
-                            .strafeToLinearHeading(desiredMove, mecanum.pose.heading.log() + aprilTagPose.heading.log())
+                            .strafeToLinearHeading(desiredMove, mecanum.pose.heading.toDouble() + aprilTagPose.heading.toDouble())
                             .build()
             );
             logRobotHeading("after moving to april tag");

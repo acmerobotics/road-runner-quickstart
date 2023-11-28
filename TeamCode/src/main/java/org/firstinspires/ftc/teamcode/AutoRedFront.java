@@ -47,6 +47,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -102,6 +103,8 @@ public class AutoRedFront extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private intakeUnit intake;
     private MecanumDrive drive;
+
+    private Servo DroneServo;
 
     // camera and sleeve color
     ObjectDetection.PropSide propLocation = ObjectDetection.PropSide.UNKNOWN;
@@ -164,6 +167,9 @@ public class AutoRedFront extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         Logging.log("Status - Initialized");
+
+        DroneServo = hardwareMap.get(Servo.class, "Drone");
+        DroneServo.setPosition(0);
 
         setRobotLocation();
 
@@ -351,7 +357,8 @@ public class AutoRedFront extends LinearOpMode {
         logVector("robot drive: start Arm Flip pose required", startArmFlip);
 
         // Near gate cases
-        if ((6 == checkStatus) || (-3 == checkStatus) || (1 == checkStatus) || (-4 == checkStatus)) {
+        if (((6 == checkStatus) || (-3 == checkStatus) || (1 == checkStatus) || (-4 == checkStatus)) &&
+                (Math.PI / 2 * frontOrBack * blueOrRed != 0.0)) {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .turn(Math.PI / 2 * frontOrBack * blueOrRed)
@@ -388,7 +395,7 @@ public class AutoRedFront extends LinearOpMode {
         // there is a bug somewhere in turn() function when using PI/2, it actually turn PI */
         double turnAngleToDrop = 0;
         if ((-4 == checkStatus) || (-3 == checkStatus)) {
-            turnAngleToDrop = -blueOrRed * (Math.PI + 0.00001);
+            turnAngleToDrop = -blueOrRed * (Math.PI + 0.0001);
 
             // move back a little bit before turn to avoid hitting gate
             Actions.runBlocking(
@@ -398,10 +405,10 @@ public class AutoRedFront extends LinearOpMode {
             logVector("robot drive: back after drop purple", drive.pose.position);
             logVector("robot drive: back after drop purple required", vDropPurple);
         } else {
-            turnAngleToDrop = (Math.PI / 2) * blueOrRed + 0.00001;
+            turnAngleToDrop = (Math.PI / 2) * blueOrRed + 0.0001;
         }
 
-        if ((6 != checkStatus) && (1 != checkStatus)) {
+        if ((6 != checkStatus) && (1 != checkStatus) && (turnAngleToDrop != 0.0)) {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .turn(turnAngleToDrop)
@@ -433,6 +440,9 @@ public class AutoRedFront extends LinearOpMode {
             intake.setArmCountPosition(intake.ARM_POS_CAMERA_READ  + 20); // lift arm to avoid blocking camera
         }
         // fine tune heading angle
+
+        double turnAngle = -drive.pose.heading.toDouble() - Math.PI / 2;
+        turnAngle = (turnAngle != 0.0)? turnAngle : 0.01;
         Actions.runBlocking(
                 new ParallelAction(
                         // Paral 1. turn on camera for april tag detect
@@ -443,7 +453,7 @@ public class AutoRedFront extends LinearOpMode {
                                 (new SequentialAction(
                                         // Seq a. fine tune heading angle before long travel
                                         drive.actionBuilder(drive.pose)
-                                                .turn(-drive.pose.heading.log() - Math.PI / 2)
+                                                .turn(turnAngle)
                                                 .build(),
 
                                         // Seq b. waiting alliance move out the way if at front side

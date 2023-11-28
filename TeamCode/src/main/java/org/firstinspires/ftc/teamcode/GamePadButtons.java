@@ -72,6 +72,8 @@ public class GamePadButtons {
     public boolean readyToIntake2nd;
     public boolean readyToIntake3rd;
     public boolean readyToIntake4th;
+    public boolean readyToIntake5th;
+
     public boolean readyToDrop;
     public boolean droneLaunch;
     public boolean hangingRobot;
@@ -106,7 +108,9 @@ public class GamePadButtons {
         readyToIntake = gamepad1.left_bumper;
         readyToIntake2nd = gamepad1.dpad_up;
         readyToIntake3rd = gamepad1.dpad_left;
-        readyToIntake4th = gamepad1.dpad_down;
+        readyToIntake4th = gamepad1.dpad_right;
+        readyToIntake5th = gamepad1.dpad_down;
+
         readyToDrop = gamepad1.right_bumper || gamepad2.right_bumper;
 
         // game pad 2

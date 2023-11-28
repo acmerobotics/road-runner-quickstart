@@ -42,7 +42,7 @@ public class Params {
     static Pose2d startPose = new Pose2d(0,0,0);
     static Pose2d currentPose = new Pose2d(0,0,0);
 
-    static int blueOrRed = 0;
+    static int blueOrRed = 1;
 
     //game field parameters
     static final double HALF_MAT = 12.0;
@@ -59,7 +59,7 @@ public class Params {
 
     // chassis power factors
     static final double POWER_LOW = 0.3;
-    static final double POWER_NORMAL = 0.75;
+    static final double POWER_NORMAL = 0.80;
     static final double POWER_HIGH = 1.0;
 }
 

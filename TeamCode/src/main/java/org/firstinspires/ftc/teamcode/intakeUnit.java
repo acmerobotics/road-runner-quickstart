@@ -88,6 +88,8 @@ public class intakeUnit
     final int ARM_POS_INTAKE2 = ARM_POS_INTAKE - 20;
     final int ARM_POS_INTAKE3 = ARM_POS_INTAKE - 40;
     final int ARM_POS_INTAKE4 = ARM_POS_INTAKE - 60;
+    final int ARM_POS_INTAKE5 = ARM_POS_INTAKE - 80;
+
 
     /**
      * Init slider motors hardware, and set their behaviors.
@@ -234,7 +236,7 @@ public class intakeUnit
 
     public void autonomousInit() {
         setArmCountPosition(ARM_POS_AUTO);
-        wristServo.setPosition(WRIST_POS_AUTO);
+        // wristServo.setPosition(WRIST_POS_AUTO);
         switchServoClose();
         fingerIntake();
     }
