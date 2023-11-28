@@ -20,7 +20,7 @@ public class HeadlessOp extends OpMode {
 
     // Create new Robot object named robot
     private Robot robot;
-    // Create two new Controller objects, one for each gamepad
+    // Create two new Controlle-r objects, one for each gamepad
     private Controller controller1, controller2;
 
     // Set up some useful variables
