@@ -203,8 +203,8 @@ public class TeleopRR extends LinearOpMode {
                 moveBack(Params.HALF_MAT * 1.5);
             }
 
-            if(gpButtons.toggleDropPos){
-                intake.underTheBeam();
+            if(gpButtons.lowDropPos){
+                intake.readyToDropYellow(intake.ARM_POS_DROP_YELLOW);
             }
 
             if (gpButtons.switchDropOne) {

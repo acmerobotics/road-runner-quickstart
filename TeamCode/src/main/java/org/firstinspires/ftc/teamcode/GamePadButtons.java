@@ -50,7 +50,7 @@ public class GamePadButtons {
     public float robotDrive;
     public float robotStrafe;
     public float robotTurn;
-    public boolean toggleDropPos;
+    public boolean lowDropPos;
     public boolean speedDown;
     public boolean speedUp;
     public boolean armUp;
@@ -98,33 +98,34 @@ public class GamePadButtons {
         speedCtrl = gamepad1.back || gamepad2.back;
         speedDown = speedCtrl;
 
+        // auto moving during Teleop
         moveToLeftTag = gamepad1.x;
         moveToCenterTag = gamepad1.y;
         moveToRightTag = gamepad1.b;
-        moveToFront = gamepad1.a;
+        //moveToFront = gamepad1.a;
 
-        goThroughGate = (gamepad1.right_trigger > 0);
 
-        //preset positions
+        //preset ARM positions for intake
         readyToIntake = gamepad1.left_bumper;
         readyToIntake2nd = gamepad1.dpad_up;
         readyToIntake3rd = gamepad1.dpad_left;
         readyToIntake4th = gamepad1.dpad_right;
         readyToIntake5th = gamepad1.dpad_down;
 
+        // preset ARM positions for drop
         readyToDrop = gamepad1.right_bumper;
+        lowDropPos = (gamepad1.right_trigger > 0);
 
         // game pad 2
-        toggleDropPos = gamepad2.right_bumper;
 
         //special presets
-        droneLaunch = (gamepad2.right_trigger > 0);
+        droneLaunch = (gamepad2.right_trigger > 0) || (gamepad1.left_trigger > 0);
 
         readyToHang = gamepad2.left_bumper;
         hangingRobot = (gamepad2.left_trigger > 0);
 
         //back switches
-        switchOpen = gamepad2.b;
+        switchOpen = gamepad2.b  || gamepad1.a;
         switchClose = gamepad2.a;
         switchDropOne = gamepad2.x;
         dropAndBack = gamepad2.y;

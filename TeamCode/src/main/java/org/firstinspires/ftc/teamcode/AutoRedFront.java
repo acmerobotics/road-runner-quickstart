@@ -231,7 +231,10 @@ public class AutoRedFront extends LinearOpMode {
         while (!isStarted()) {
             propLocation = propDetect.getPropPos();
             sleep(10);
+            telemetry.addData("Robot location: ", ((blueOrRed >0)? "Blue - " : "Red - "),((frontOrBack >0)? "front" : "back"));
+
             telemetry.addData("Detected Prop location: ", propLocation);
+            telemetry.update();
         }
 
         switch (propLocation) {
@@ -247,13 +250,8 @@ public class AutoRedFront extends LinearOpMode {
                 break;
         }
         desiredTagNum = spikeMarkLoc + ((blueOrRed > 0)? 0 : 3); // blue: 1,2,3; red: 4,5,6
-        telemetry.addData("Desired Tag ID: ", "%d", desiredTagNum);
-        telemetry.addData("RR", "imu Heading Yaw = %.1f",
-                drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        telemetry.update();
-
         checkStatus = desiredTagNum * frontOrBack;
-        Logging.log("checkStatus = %d, desiredTagNum = %d", checkStatus, desiredTagNum);
+
         tag = new AprilTagTest(drive, hardwareMap, desiredTagNum, webcamName);
 
         // bulk reading setting - auto refresh mode
@@ -265,6 +263,10 @@ public class AutoRedFront extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         if (opModeIsActive()) {
+            Logging.log("checkStatus = %d, desiredTagNum = %d", checkStatus, desiredTagNum);
+            Logging.log("frontOrBack = %d, blueOrRed = %d", frontOrBack, blueOrRed);
+
+
             intake.autonomousInit();
             camera.closeCameraDevice(); // close camera for spike mark location checking
 
@@ -357,8 +359,8 @@ public class AutoRedFront extends LinearOpMode {
         logVector("robot drive: arm to push pose", drive.pose.position);
         logVector("robot drive: start Arm Flip pose required", startArmFlip);
 
-        double tAngle = Math.PI / 2.0 * frontOrBack * blueOrRed;
-        Logging.log("frontOrBack = %d, blueOrRed = %d, angle = %f", frontOrBack, blueOrRed, tAngle);
+        double tAngle = Math.PI / 2.0 * frontOrBack * blueOrRed + 0.0001; // add 0.0001 to avoid 0 degree turning.
+        Logging.log("frontOrBack = %d, blueOrRed = %d, turn angle = %f", frontOrBack, blueOrRed, tAngle);
 
         // Near gate cases
         if (((6 == checkStatus) || (-3 == checkStatus) || (1 == checkStatus) || (-4 == checkStatus)) &&
@@ -388,12 +390,16 @@ public class AutoRedFront extends LinearOpMode {
         // drop off the purple pixel by arm and wrist actions
         dropPurpleAction();
 
+        double armPower = intake.armMotor.getPower();
+        intake.armMotor.setPower(0.1); // use slow speed
+        intake.underTheBeam();
+        sleep(300);
+        intake.armMotor.setPower(armPower);
+        intake.switchServoClose();
+
         if ((2 == checkStatus) || (5 == checkStatus)) {
             intake.setArmModeRunToPosition(intake.ARM_POS_READY_FOR_HANG);
             sleep(1000);
-        } else {
-            intake.underTheBeam();
-            sleep(300);
         }
 
         // there is a bug somewhere in turn() function when using PI/2, it actually turn PI */
@@ -411,6 +417,9 @@ public class AutoRedFront extends LinearOpMode {
         } else {
             turnAngleToDrop = (Math.PI / 2) * blueOrRed + 0.0001;
         }
+
+        Logging.log("turn angle = %f", turnAngleToDrop);
+
 
         if ((6 != checkStatus) && (1 != checkStatus) && (turnAngleToDrop != 0.0)) {
             Actions.runBlocking(
@@ -445,8 +454,9 @@ public class AutoRedFront extends LinearOpMode {
         }
         // fine tune heading angle
 
-        double turnAngle = -drive.pose.heading.toDouble() - Math.PI / 2;
-        turnAngle = (turnAngle != 0.0)? turnAngle : 0.01;
+        double turnAngle = -drive.pose.heading.toDouble() - Math.PI / 2 + 0.0001;
+        turnAngle = (turnAngle != 0.0)? turnAngle : 0.0001;
+        Logging.log("turn angle = %f", turnAngle);
         Actions.runBlocking(
                 new ParallelAction(
                         // Paral 1. turn on camera for april tag detect
@@ -496,7 +506,11 @@ public class AutoRedFront extends LinearOpMode {
             logVector("robot drive: drop yellow pose required after april tag adjust", vDropYellow);
         }
 
-        intake.readyToDropYellow();
+        if (frontOrBack > 0) {
+            intake.readyToDropYellow(intake.ARM_POS_DROP_YELLOW);
+        } else {
+            intake.readyToDropYellow(intake.ARM_POS_DROP_YELLOW + 100); // lower for back to avoid pixel jump away
+        }
 
         // shift to AprilTag
         Actions.runBlocking(
@@ -532,8 +546,6 @@ public class AutoRedFront extends LinearOpMode {
         sleep(1000);
     }
     private void dropYellowAction(){
-        intake.readyToDropYellow();
-        sleep(100);
         intake.setSwitchPosition(intake.SWITCH_RELEASE_YELLOW);
         sleep(500);
         intake.setArmCountPosition(intake.getArmPosition() - 500);

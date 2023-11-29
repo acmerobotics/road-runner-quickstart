@@ -254,8 +254,8 @@ public class intakeUnit
         switchServoClose();
     }
 
-    public void readyToDropYellow(){
-        setArmCountPosition(ARM_POS_DROP_YELLOW);
+    public void readyToDropYellow(int armPosition){
+        setArmCountPosition(armPosition);
         wristServo.setPosition(WRIST_POS_DROP_YELLOW);
         switchServoClose();
         fingerStop();
@@ -263,7 +263,6 @@ public class intakeUnit
     public void underTheBeam(){
         setArmCountPosition(ARM_POS_UNDER_BEAM);
         wristServo.setPosition(WRIST_POS_DROP_PURPLE);
-        setSwitchPosition(SWITCH_CLOSE_POS);
     }
 
     /**
