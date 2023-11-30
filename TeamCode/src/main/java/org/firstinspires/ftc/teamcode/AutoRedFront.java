@@ -169,7 +169,7 @@ public class AutoRedFront extends LinearOpMode {
         Logging.log("Status - Initialized");
 
         DroneServo = hardwareMap.get(Servo.class, "Drone");
-        DroneServo.setPosition(0);
+        DroneServo.setPosition(Params.DRONE_START);
 
         setRobotLocation();
 
@@ -231,7 +231,7 @@ public class AutoRedFront extends LinearOpMode {
         while (!isStarted()) {
             propLocation = propDetect.getPropPos();
             sleep(10);
-            telemetry.addData("Robot location: ", ((blueOrRed >0)? "Blue - " : "Red - "),((frontOrBack >0)? "front" : "back"));
+            telemetry.addData( ((blueOrRed >0)? "Blue - " : "Red - "),((frontOrBack >0)? "front" : "back"));
 
             telemetry.addData("Detected Prop location: ", propLocation);
             telemetry.update();
@@ -265,7 +265,6 @@ public class AutoRedFront extends LinearOpMode {
         if (opModeIsActive()) {
             Logging.log("checkStatus = %d, desiredTagNum = %d", checkStatus, desiredTagNum);
             Logging.log("frontOrBack = %d, blueOrRed = %d", frontOrBack, blueOrRed);
-
 
             intake.autonomousInit();
             camera.closeCameraDevice(); // close camera for spike mark location checking

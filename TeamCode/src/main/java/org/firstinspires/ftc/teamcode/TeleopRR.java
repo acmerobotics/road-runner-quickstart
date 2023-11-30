@@ -101,7 +101,7 @@ public class TeleopRR extends LinearOpMode {
         intake.setArmModeRunToPosition(intake.getArmPosition());
 
         DroneServo = hardwareMap.get(Servo.class, "Drone");
-        DroneServo.setPosition(DroneServo.getPosition());
+        DroneServo.setPosition(Params.DRONE_START);
 
         // bulk reading setting - auto refresh mode
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -228,7 +228,7 @@ public class TeleopRR extends LinearOpMode {
             }
 
             if (gpButtons.droneLaunch) {
-                DroneServo.setPosition(0.5);
+                DroneServo.setPosition(Params.DRONE_LAUNCH);
             }
 
             if (gpButtons.moveToLeftTag) {
@@ -250,6 +250,10 @@ public class TeleopRR extends LinearOpMode {
 
             if (gpButtons.moveToFront) {
                 lineWithAprilTag(2 + ((Params.blueOrRed > 0) ? 0 : 3));
+            }
+
+            if (gpButtons.armReset) {
+                intake.resetArmPositions(intake.getArmPosition());
             }
 
             mecanum.updatePoseEstimate();

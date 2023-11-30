@@ -55,7 +55,7 @@ public class GamePadButtons {
     public boolean speedUp;
     public boolean armUp;
     public boolean armDown;
-
+    public boolean armReset;
     public boolean wristUp;
     public boolean wristDown;
 
@@ -133,6 +133,7 @@ public class GamePadButtons {
         //arms
         armUp = gamepad2.right_stick_y < 0;
         armDown = gamepad2.right_stick_y > 0;
+        armReset = gamepad2.start;
 
         //wrists
         wristUp = gamepad2.left_stick_y < 0;
