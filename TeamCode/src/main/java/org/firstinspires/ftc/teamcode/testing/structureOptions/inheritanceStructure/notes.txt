@@ -1,0 +1,8 @@
+This didn't work because it doesn't make sense for each to implement the previous level.
+This is especially obvious when working on two features that don't require each other, or features that must interact with each other in both ways.
+
+DT -> MecanumDT
+This is good!
+
+IMUDT & WebcamDT
+These are unclear since one can't clearly extend the other and one may want to use data from both.

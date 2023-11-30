@@ -1,0 +1,5 @@
+I highly doubt that interfaces were made to be used this way.
+
+Mostly doesn't work because interfaces can't contain data.
+
+Also probably would have problems with interaction between multiple interfaces, such as camera/imu/telemetry tracking.
