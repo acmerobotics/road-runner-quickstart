@@ -614,14 +614,13 @@ public class TrajectorySequenceBuilder {
                     return currentTime + timeInSegment;
                 } else {
                     currentDisplacement += segmentLength;
-                    currentTime += thisSegment.getTrajectory().duration();
                 }
-            } else {
-                currentTime += segment.getDuration();
             }
+
+            currentTime += segment.getDuration();
         }
 
-        return 0.0;
+        return currentTime;
     }
 
     private Double pointToTime(List<SequenceSegment> sequenceSegments, Vector2d point) {
