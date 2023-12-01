@@ -314,12 +314,12 @@ public class AprilTagTest {
         if (targetFound) {
             AprilTagPoseFtc ftcP = desiredTag.ftcPose;
 
-            double y2 = ftcP.y + Params.CHASSIS_LENGTH / 2.0;
+            double y2 = ftcP.y + Params.CHASSIS_HALF_LENGTH;
             double range2 = Math.sqrt(y2 * y2 + ftcP.x * ftcP.x);
             double bear2 = Math.atan(ftcP.x / y2);
             double beta = bear2 + Math.toRadians(ftcP.yaw);
             double poseX = range2 * Math.sin(beta);
-            double poseY = range2 * Math.cos(beta) - Params.CHASSIS_LENGTH / 2.0 - Params.TELEOP_DISTANCE_TO_TAG;
+            double poseY = range2 * Math.cos(beta) - Params.CHASSIS_HALF_LENGTH - Params.TELEOP_DISTANCE_TO_TAG;
 
             aprilTagPos = new Pose2d(poseX, poseY, Math.toRadians(ftcP.yaw));
 

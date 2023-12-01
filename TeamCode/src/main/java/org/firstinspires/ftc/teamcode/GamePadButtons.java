@@ -66,9 +66,7 @@ public class GamePadButtons {
     public boolean switchOpen;
     public boolean switchDropOne;
     public boolean switchClose;
-
     public boolean speedCtrl;
-
     public boolean readyToIntake;
     public boolean readyToIntake2nd;
     public boolean readyToIntake3rd;

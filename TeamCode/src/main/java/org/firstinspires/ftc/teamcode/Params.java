@@ -50,6 +50,7 @@ public class Params {
     // robot size
     static final double CHASSIS_HALF_WIDTH = 18 / 2.0;
     static final double CHASSIS_LENGTH = 20;
+    static final double CHASSIS_HALF_LENGTH = CHASSIS_LENGTH / 2.0;
 
     // moving distance variables
     static final double AUTO_DISTANCE_TO_TAG = 7.5; //this is how close the camera should get to the target (inches)

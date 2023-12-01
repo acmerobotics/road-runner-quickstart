@@ -157,7 +157,7 @@ public class AutoRedFront extends LinearOpMode {
                 frontOrBack = -1;
                 break;
         }
-        startPose = new Pose2d((6 * Params.HALF_MAT - Params.CHASSIS_LENGTH / 2) * blueOrRed,
+        startPose = new Pose2d((6 * Params.HALF_MAT - Params.CHASSIS_HALF_LENGTH) * blueOrRed,
                 //Params.HALF_MAT + (3 * Params.HALF_MAT - Params.CHASSIS_HALF_WIDTH) * frontOrBack,
                 Params.HALF_MAT + 2 * Params.HALF_MAT * frontOrBack,
                 Math.toRadians(90.0 + 90.0 * blueOrRed));
@@ -216,8 +216,8 @@ public class AutoRedFront extends LinearOpMode {
         Params.startPose = startPose; // init storage pose.
         Params.blueOrRed = blueOrRed;
 
-        intake = new intakeUnit(hardwareMap, "ArmMotor", "WristServo",
-                "FingerServo", "SwitchServo");
+        intake = new intakeUnit(hardwareMap, "Arm", "Wrist",
+                "Finger", "Switch");
         intake.resetArmEncoder();
 
         runtime.reset();
@@ -290,7 +290,7 @@ public class AutoRedFront extends LinearOpMode {
         Vector2d startArmFlip = new Vector2d(startPose.position.x - blueOrRed * 6, startPose.position.y);
 
         double pausePoseY = -2 * Params.HALF_MAT - 6;
-        Vector2d vMatCenter = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, startPose.position.y);
+        Vector2d vMatCenter = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + 0.75), startPose.position.y);
         Vector2d vParkPos = new Vector2d(blueOrRed * ((3 - 2 * frontOrBack) * Params.HALF_MAT - frontOrBack * ((frontOrBack > 0) ? 0 : 3)), -3.5 * Params.HALF_MAT);
         Vector2d vBackdrop = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
 
@@ -329,7 +329,7 @@ public class AutoRedFront extends LinearOpMode {
             case 6:
                 // near gate cases
                 xDelta = -4; // 0;
-                yDelta = 4;//5;
+                yDelta = 5;
                 startArmFlip = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + xDelta), startPose.position.y + frontOrBack * 10);
                 break;
             case 3:
