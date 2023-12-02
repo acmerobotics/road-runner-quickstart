@@ -183,7 +183,7 @@ public class a_TeleOpBest extends LinearOpMode
                 yPress = true;
             } else if (gamepad1.y && yPress == true) {
                 claw_servo.setPosition(clawClosePos);
-                sleep(150);
+                sleep(1000);
                 desiredPos = slideZeroPos + base;
                 viperSlideLeft.setTargetPosition(desiredPos);
                 viperSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);

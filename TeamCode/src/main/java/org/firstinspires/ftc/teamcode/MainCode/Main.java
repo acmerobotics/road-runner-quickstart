@@ -19,7 +19,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@TeleOp(name="Main", group="Linear Opmode")
+//@TeleOp(name="Main", group="Linear Opmode")
 
 public class Main extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
