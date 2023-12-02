@@ -182,6 +182,7 @@ public class a_TeleOpBest extends LinearOpMode
                 sleep(200);
                 yPress = true;
             } else if (gamepad1.y && yPress == true) {
+                claw_servo.setPosition(clawClosePos);
                 desiredPos = slideZeroPos + base;
                 viperSlideLeft.setTargetPosition(desiredPos);
                 viperSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -189,7 +190,6 @@ public class a_TeleOpBest extends LinearOpMode
                 while (desiredPos < viperSlideLeft.getCurrentPosition() - offsetNumSlide || desiredPos > viperSlideLeft.getCurrentPosition() + offsetNumSlide) {
                     telemetry(viperSlideLeft.getCurrentPosition(), desiredPos, elbow_servo.getPosition(), claw_servo.getPosition(), desiredPosElServ, desiredPosClawServ, base);
                 }
-                claw_servo.setPosition(clawClosePos);
                 sleep(200);
                 yPress = false;
             }
