@@ -47,8 +47,6 @@ public class a_TeleOpBest extends LinearOpMode
 
     //Elbow Servo
     public static double desiredPosElServ;
-    public static double elservoFirstUp = .447;
-
     public static double elservoFirstUp = .455;
     public static double elServoZeroPos = .4955;
 
@@ -185,7 +183,7 @@ public class a_TeleOpBest extends LinearOpMode
                 yPress = true;
             } else if (gamepad1.y && yPress == true) {
                 claw_servo.setPosition(clawClosePos);
-                sleep(1000);
+                sleep(550);
                 desiredPos = slideZeroPos + base;
                 viperSlideLeft.setTargetPosition(desiredPos);
                 viperSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);

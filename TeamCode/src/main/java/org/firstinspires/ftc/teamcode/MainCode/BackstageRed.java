@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @Config
-@TeleOp(name="autonomousMain", group="Linear Opmode")
+@TeleOp(name="br", group="Linear Opmode")
 
 public final class BackstageRed extends LinearOpMode {
     public static String start = "BR";
