@@ -1,0 +1,20 @@
+A: Moves the arm to "up" position to drop pixels
+B: Moves the arm to "down" position to pick up pixels
+X: Opens claw, after a moment automatically closes
+Y: Opens claw a larger amount and lowers slightly, meant to catch pixels in down position. Click again to close
+
+Left Stick click in: Sets the up position to 1700, the higher height. (Default)
+Right Stick click in: Sets the up position to 1200, the lower height.
+
+Dpad Up: Adjusts "base" by 10
+Dpad Down: Adjusts "base" by -10
+Dpad Right: Set base
+
+Base is added to everything, including resting position of the arm. Basically, raise and lower the arm slightly.
+
+Dpad Left: (Failsafe, probably won't need.) When going from up or down positions, a variable switches so you don't accidentally try to break robot. If need be, this button switches that variable.
+
+Left Bumper: Speed 50%
+Right Bumper: Speed 100%
+
+Sticks: Moving

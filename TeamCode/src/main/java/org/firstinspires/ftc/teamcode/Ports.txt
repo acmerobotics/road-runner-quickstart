@@ -1,4 +1,13 @@
+Main Hub
 Port 0 - leftfront_drive
 Port 1 - rightfront_drive
 Port 2 - leftback_drive
 Port 3 - rightback_drive
+Servo port 0 - elbow_servo
+Servo port 1 - claw_servo
+
+Expansion Hub
+Port 0 - viper_slide_right
+Port 1 - viper_slide_left
+
+All DcMotors are GoBILDA 5202/3/4 series
