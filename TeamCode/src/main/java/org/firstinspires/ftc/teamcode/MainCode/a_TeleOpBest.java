@@ -31,7 +31,7 @@ import java.util.List;
 @Config
 public class a_TeleOpBest extends LinearOpMode
 {
-    public static int base;
+    public static int base = 10;
     public static double power = .5;
     public static int offsetNumSlide = 50;
     public static double offsetNumServo;
@@ -40,10 +40,10 @@ public class a_TeleOpBest extends LinearOpMode
 
     //Slide
     public static int desiredPos;
-    public static int slideFirstUp = 200;
+    public static int slideFirstUp = 220;
     public static int slideSecondUp = 1700;
     public static int slideFirstDown = 800;
-    public static int slideZeroPos = 50;
+    public static int slideZeroPos = 100;
 
     //Elbow Servo
     public static double desiredPosElServ;
@@ -235,11 +235,11 @@ public class a_TeleOpBest extends LinearOpMode
                 claw_servo.setPosition(clawClosePos);
             }
             if (gamepad1.dpad_down) {
-                base = base - 10;
+                base = base - 20;
                 sleep(800);
             }
             if (gamepad1.dpad_up) {
-                base = base + 10;
+                base = base + 20;
                 sleep(800);
             }
             if (gamepad1.dpad_left) {
