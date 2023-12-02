@@ -48,11 +48,13 @@ public class a_TeleOpBest extends LinearOpMode
     //Elbow Servo
     public static double desiredPosElServ;
     public static double elservoFirstUp = .447;
+
+    public static double elservoFirstUp = .455;
     public static double elServoZeroPos = .4955;
 
     //Claw Servo
     public static double desiredPosClawServ;
-    public static double clawCatchPos = .19;
+    public static double clawCatchPos = .13;
     public static double clawDropPos = 0.1;
     public static double clawClosePos = 0.04;
     public static int catchDrop = 30;
@@ -134,7 +136,7 @@ public class a_TeleOpBest extends LinearOpMode
 
         while(opModeIsActive()) {
             if (gamepad1.left_stick_button){
-                slideSecondUp = 1500;
+                slideSecondUp = 1200;
             }
             if (gamepad1.right_stick_button){
                 slideSecondUp = 900;
