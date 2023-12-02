@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="Viper slide test", group="Linear Opmode")
+//@TeleOp(name="Viper slide test", group="Linear Opmode")
 
 public class LinearSlideTest extends LinearOpMode {
 

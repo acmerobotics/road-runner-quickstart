@@ -76,7 +76,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  * Finally, choose the two correct parameters to define how your Hub is mounted and edit this OpMode
  * to use those parameters.
  */
-@TeleOp(name = "Sensor: IMU Orthogonal", group = "Sensor")
+//@TeleOp(name = "Sensor: IMU Orthogonal", group = "Sensor")
 //@Disabled   // Comment this out to add to the OpMode list
 public class SensorIMUOrthogonal extends LinearOpMode
 {

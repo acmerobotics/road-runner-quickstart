@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name="Hardware example", group="Linear Opmode")
+//@TeleOp(name="Hardware example", group="Linear Opmode")
 
 public class hardwareExample extends LinearOpMode {
 

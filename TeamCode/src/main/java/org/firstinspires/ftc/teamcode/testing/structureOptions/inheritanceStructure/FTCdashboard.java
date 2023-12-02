@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name="Dashboard test", group="Linear Opmode")
+//@TeleOp(name="Dashboard test", group="Linear Opmode")
 public class FTCdashboard extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry telemetry = dashboard.getTelemetry();

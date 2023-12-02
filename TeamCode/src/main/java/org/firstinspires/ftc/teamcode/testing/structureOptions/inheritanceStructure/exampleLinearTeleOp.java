@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
-@TeleOp(name="Example linear OpMode", group="Linear Opmode")
+//@TeleOp(name="Example linear OpMode", group="Linear Opmode")
 
 public class exampleLinearTeleOp extends LinearOpMode {
 

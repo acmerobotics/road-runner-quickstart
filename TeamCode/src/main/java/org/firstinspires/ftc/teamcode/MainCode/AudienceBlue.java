@@ -2,19 +2,19 @@ package org.firstinspires.ftc.teamcode.MainCode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.TankDrive;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
+
 @Config
 @TeleOp(name="autonomousMain", group="Linear Opmode")
-public final class autonomousMain extends LinearOpMode {
-    public static String start = "";
-    public static String lcr = "";
+
+public final class AudienceBlue extends LinearOpMode {
+    public static String start = "AB";
+    public static String lcr = "c";
     public void runOpMode() throws InterruptedException {
         Pose2d startingPose;
         Pose2d nextPose;
