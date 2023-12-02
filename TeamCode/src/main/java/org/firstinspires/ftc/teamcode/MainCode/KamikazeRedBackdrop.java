@@ -21,7 +21,7 @@ public final class KamikazeRedBackdrop extends LinearOpMode {
 
         waitForStart();
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) { //BackstageRed
-            startingPose = new Pose2d(34, -64, Math.PI / 2);
+            startingPose = new Pose2d(12, -64, Math.PI / 2);
             drive = new MecanumDrive(hardwareMap, startingPose);
 
             nextPose = new Pose2d(64, -64, 0);
