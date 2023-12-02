@@ -41,7 +41,7 @@ public class a_TeleOpBest extends LinearOpMode
     //Slide
     public static int desiredPos;
     public static int slideFirstUp = 220;
-    public static int slideSecondUp = 1700;
+    public static int slideSecondUp = 900;
     public static int slideFirstDown = 800;
     public static int slideZeroPos = 100;
 
@@ -134,10 +134,10 @@ public class a_TeleOpBest extends LinearOpMode
 
         while(opModeIsActive()) {
             if (gamepad1.left_stick_button){
-                slideSecondUp = 1700;
+                slideSecondUp = 1500;
             }
             if (gamepad1.right_stick_button){
-                slideSecondUp = 1200;
+                slideSecondUp = 900;
             }
             if (gamepad1.a && up == false) {
                 desiredPos = slideFirstUp + base;
