@@ -47,7 +47,7 @@ public class a_TeleOpBest extends LinearOpMode
 
     //Elbow Servo
     public static double desiredPosElServ;
-    public static double elservoFirstUp = .45;
+    public static double elservoFirstUp = .447;
     public static double elServoZeroPos = .4955;
 
     //Claw Servo
