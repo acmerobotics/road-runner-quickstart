@@ -41,9 +41,9 @@ public class a_TeleOpBest extends LinearOpMode
     //Slide
     public static int desiredPos;
     public static int slideFirstUp = 220;
-    public static int slideSecondUp = 900;
+    public static int slideSecondUp = 1000;
     public static int slideFirstDown = 800;
-    public static int slideZeroPos = 100;
+    public static int slideZeroPos = 75;
 
     //Elbow Servo
     public static double desiredPosElServ;
@@ -52,7 +52,7 @@ public class a_TeleOpBest extends LinearOpMode
 
     //Claw Servo
     public static double desiredPosClawServ;
-    public static double clawCatchPos = .13;
+    public static double clawCatchPos = .125;
     public static double clawDropPos = 0.1;
     public static double clawClosePos = 0.04;
     public static int catchDrop = 30;
@@ -134,10 +134,10 @@ public class a_TeleOpBest extends LinearOpMode
 
         while(opModeIsActive()) {
             if (gamepad1.left_stick_button){
-                slideSecondUp = 1200;
+                slideSecondUp = 1300;
             }
             if (gamepad1.right_stick_button){
-                slideSecondUp = 900;
+                slideSecondUp = 1000;
             }
             if (gamepad1.a && up == false) {
                 desiredPos = slideFirstUp + base;

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 public final class AudeinceRed extends LinearOpMode {
     public static String start = "AR";
-    public static String lcr = "c";
+    public static String lcr = "l";
     public void runOpMode() throws InterruptedException {
         Pose2d startingPose;
         Pose2d nextPose;

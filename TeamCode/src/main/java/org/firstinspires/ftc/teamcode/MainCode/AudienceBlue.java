@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 public final class AudienceBlue extends LinearOpMode {
     public static String start = "AB";
-    public static String lcr = "c";
+    public static String lcr = "l";
     public void runOpMode() throws InterruptedException {
         Pose2d startingPose;
         Pose2d nextPose;
