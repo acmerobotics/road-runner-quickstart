@@ -15,7 +15,7 @@ public class ReadAprilTags extends LinearOpMode {
     public void runOpMode(){
       initialize();
       waitForStart();
-      AprilTagDetection detection=assignID("Left", "Red");6
+      AprilTagDetection detection=assignID("Left", "Red");
       telemetryDetection (detection);
     }
     public void initialize(){
