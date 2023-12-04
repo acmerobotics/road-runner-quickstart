@@ -9,7 +9,10 @@ import java.util.List;
 
 @Autonomous(name="ReadAprilTags", group = "testing")
 
-
+/** ToDo
+ *  - telemetry.update()
+ *  - sleep()
+ */
 public class ReadAprilTags extends LinearOpMode {
   AutoFluffy autoFluffy;
     public void runOpMode(){
