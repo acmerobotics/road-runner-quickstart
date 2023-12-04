@@ -15,13 +15,15 @@ public class ReadAprilTags extends LinearOpMode {
     public void runOpMode(){
       initialize();
       waitForStart();
+      AprilTagDetection detection=assignID("Left", "Red");6
+      telemetryDetection (detection);
     }
     public void initialize(){
         autoFluffy=new AutoFluffy(this);
     }
 
 
-    AprilTagDetection myMethod (String propLocation, String side){
+    AprilTagDetection assignID (String propLocation, String side){
       int idNum=0;
 
       if (side== "Blue"){
@@ -48,6 +50,15 @@ public class ReadAprilTags extends LinearOpMode {
         }
       }
       return null;
+    }
+
+    public void telemetryDetection (AprilTagDetection detection){
+      if (detection.metadata!= null){
+        telemetry.addData("ID: ", detection.id);
+        telemetry.addData("Range(Distance from board): ", detection.ftcPose.range);
+        telemetry.addData("Yaw: ", detection.ftcPose.yaw);
+        telemetry.addData("Bearing: ", detection.ftcPose.bearing);
+      }
     }
 }
 
