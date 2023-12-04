@@ -9,14 +9,13 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigInfo;
 import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 
 public class Arm extends Mechanism {
     public Servo leftArm;
     public Servo rightArm;
-    public String leftName = "leftArm";
-    public String rightName = "rightArm";
     double extendedPosition = .28;
     double retractedPosition = 0.04;
     double safeRetractedPosition = 0.04;
@@ -27,8 +26,8 @@ public class Arm extends Mechanism {
 
     @Override
     public void init(HardwareMap hwMap) {
-        leftArm = hwMap.get(Servo.class, leftName);
-        rightArm = hwMap.get(Servo.class, rightName);
+        leftArm = hwMap.get(Servo.class, ConfigInfo.leftArm.getDeviceName());
+        rightArm = hwMap.get(Servo.class, ConfigInfo.rightArm.getDeviceName());
         rightArm.setDirection(Servo.Direction.REVERSE);
     }
 

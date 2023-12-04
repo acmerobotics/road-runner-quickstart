@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opModes.teleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
 
 @TeleOp(name="SystemsCheck", group="AAA_COMPETITION")
-public class SystemsCheck extends LinearOpMode {
+public class SystemsCheck extends OpMode {
     Drivebase drivebase = new Drivebase(true);
     Odometry odometry = new Odometry();
     Camera camera = new Camera();
@@ -29,9 +30,9 @@ public class SystemsCheck extends LinearOpMode {
     }
 
     TestingState activeTestingState = TestingState.DRIVEBASE;
-    @Override
-    public void runOpMode() {
 
+    @Override
+    public void init() {
         drivebase.init(hardwareMap);
         odometry.init(hardwareMap);
         camera.init(hardwareMap);
@@ -39,54 +40,56 @@ public class SystemsCheck extends LinearOpMode {
         arm.init(hardwareMap);
         intake.init(hardwareMap);
         slides.init(hardwareMap);
-
-        waitForStart();
-
-        while (opModeIsActive()) {
-            switch (activeTestingState) {
-                case DRIVEBASE:
-                    drivebaseTest();
-                    break;
-                case ODOMETRY:
-                    odoTest();
-                    break;
-                case CAMERA:
-                    cameraTest();
-                    break;
-                case CLAW:
-                    clawTest();
-                    break;
-                case ARM:
-                    armTest();
-                    break;
-                case INTAKE:
-                    intakeTest();
-                    break;
-                case SLIDES:
-                    slidesTest();
-                    break;
-            }
-        }
     }
+
+    @Override
+    public void loop() {
+        switch (activeTestingState) {
+            case DRIVEBASE:
+                drivebaseTest();
+                break;
+            case ODOMETRY:
+                odoTest();
+                break;
+            case CAMERA:
+                cameraTest();
+                break;
+            case CLAW:
+                clawTest();
+                break;
+            case ARM:
+                armTest();
+                break;
+            case INTAKE:
+                intakeTest();
+                break;
+            case SLIDES:
+                slidesTest();
+                break;
+        }
+        telemetry.addData("Current Testing State", activeTestingState);
+        telemetry.update();
+    }
+
 
     public void drivebaseTest() {
         drivebase.loop(gamepad1);
         drivebase.telemetry(telemetry);
-        if (gamepad2.a) {
+        if (gamepad1.a && gamepad2.a) {
             activeTestingState = TestingState.ODOMETRY;
         }
     }
 
     public void odoTest() {
         odometry.telemetry(telemetry);
-        if (gamepad2.a) {
+        if (gamepad1.a && gamepad2.a) {
             activeTestingState = TestingState.CAMERA;
         }
     }
 
     public void cameraTest() {
         // TODO: Add camera test
-        if (gamepad2.a) {
+        if (gamepad1.a && gamepad2.a) {
             activeTestingState = TestingState.CLAW;
         }
     }
@@ -108,7 +111,7 @@ public class SystemsCheck extends LinearOpMode {
         } else {
             claw.tilt(claw.straight);
         }
-        if (gamepad2.a) {
+        if (gamepad1.a && gamepad2.a) {
             activeTestingState = TestingState.ARM;
         }
     }
@@ -121,14 +124,14 @@ public class SystemsCheck extends LinearOpMode {
         } else if (gamepad1.y){
             arm.extend();
         }
-        if (gamepad2.a) {
+        if (gamepad1.a && gamepad2.a) {
             activeTestingState = TestingState.INTAKE;
         }
     }
 
     public void intakeTest() {
         // TODO: Add intake test
-        if (gamepad2.a) {
+        if (gamepad1.a && gamepad2.a) {
             activeTestingState = TestingState.SLIDES;
         }
     }
@@ -145,7 +148,7 @@ public class SystemsCheck extends LinearOpMode {
         } else {
             slides.holdPosition();
         }
-        if (gamepad2.a) {
+        if (gamepad1.a && gamepad2.a) {
             activeTestingState = TestingState.DRIVEBASE;
         }
     }

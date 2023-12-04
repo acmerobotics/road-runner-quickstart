@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigInfo;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -177,10 +178,10 @@ public final class MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "fld");
-        leftBack = hardwareMap.get(DcMotorEx.class, "bld");
-        rightBack = hardwareMap.get(DcMotorEx.class, "brd");
-        rightFront = hardwareMap.get(DcMotorEx.class, "frd");
+        leftFront = hardwareMap.get(DcMotorEx.class, ConfigInfo.leftFront.getDeviceName());
+        leftBack = hardwareMap.get(DcMotorEx.class, ConfigInfo.leftBack.getDeviceName());
+        rightBack = hardwareMap.get(DcMotorEx.class, ConfigInfo.rightBack.getDeviceName());
+        rightFront = hardwareMap.get(DcMotorEx.class, ConfigInfo.rightFront.getDeviceName());
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);

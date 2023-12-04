@@ -5,17 +5,16 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigInfo;
 import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 public class Intake extends Mechanism {
 
     CRServo intake; // Intake declaration
 
-    public String intakeName = "intake"; // Reference to name in config
-
     @Override
     public void init(HardwareMap hwMap) {
-        intake = hwMap.get(CRServo.class, intakeName);
+        intake = hwMap.get(CRServo.class, ConfigInfo.intake.getDeviceName());
     }
 
     @Override

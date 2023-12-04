@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import androidx.annotation.NonNull;
-
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.NoFeedback;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedforward.FeedforwardEx;
@@ -11,8 +9,6 @@ import com.ThermalEquilibrium.homeostasis.Filters.Estimators.RawValue;
 import com.ThermalEquilibrium.homeostasis.Parameters.FeedforwardCoefficientsEx;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.ThermalEquilibrium.homeostasis.Systems.BasicSystem;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -21,6 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigInfo;
 import org.firstinspires.ftc.teamcode.util.Mechanism;
 
 import java.util.function.DoubleSupplier;
@@ -60,10 +57,6 @@ public class PIDSlides extends Mechanism{
     double lastVelo;
 
     public double releaseSpeedLimit = 0.25;
-
-    final String leftSlideName = "leftSlide";
-    final String rightSlideName = "rightSlide";
-
     private boolean isSpeeding = false;
 
     private DcMotorEx encoderMotor;
@@ -78,8 +71,8 @@ public class PIDSlides extends Mechanism{
 
     @Override
     public void init(HardwareMap hwMap) {
-        leftSlide = hwMap.get(DcMotorEx.class, leftSlideName);
-        rightSlide = hwMap.get(DcMotorEx.class, rightSlideName);
+        leftSlide = hwMap.get(DcMotorEx.class, ConfigInfo.leftSlide.getDeviceName());
+        rightSlide = hwMap.get(DcMotorEx.class, ConfigInfo.rightSlide.getDeviceName());
         setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -176,15 +169,5 @@ public class PIDSlides extends Mechanism{
 
     public boolean isAtTargetPosition() {
         return Math.abs(getSlidesPosition() - targetPos) < PROXIMITY_THRESHOLD;
-    }
-
-    public Action updateAction(int pos) {
-        return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                update(pos);
-                return isAtTargetPosition();
-            }
-        };
     }
 }

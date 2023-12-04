@@ -8,16 +8,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigInfo;
 import org.firstinspires.ftc.teamcode.util.Mechanism;
 public class Claw extends Mechanism {
 
         public Servo rotator;
         public Servo leftProng;
         public Servo rightProng;
-
-        public String rotatorName = "rotator";
-        public String leftProngName = "leftProng";
-        public String rightProngName = "rightProng";
 
         public double tiltedRightPos = 0.77;
         public double tiltedLeftPos = 0.27;
@@ -43,9 +40,9 @@ public class Claw extends Mechanism {
 
         @Override
         public void init(HardwareMap hwMap) {
-            rotator = hwMap.get(Servo.class, rotatorName);
-            leftProng = hwMap.get(Servo.class, leftProngName);
-            rightProng = hwMap.get(Servo.class, rightProngName);
+            rotator = hwMap.get(Servo.class, ConfigInfo.rotator.getDeviceName());
+            leftProng = hwMap.get(Servo.class, ConfigInfo.leftProng.getDeviceName());
+            rightProng = hwMap.get(Servo.class, ConfigInfo.rightProng.getDeviceName());
             leftProng.setDirection(Servo.Direction.REVERSE);
             targetTilt = straight;
         }

@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigInfo;
 import org.firstinspires.ftc.teamcode.util.Mechanism;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -21,8 +22,6 @@ public class Camera extends Mechanism {
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     boolean targetFound = false;
-  
-    final String webcamName = "Ray";
     final int exposureMS = 4;
     final int gain = 250;
 
@@ -50,7 +49,7 @@ public class Camera extends Mechanism {
                 .setModelLabels(LABELS)
                 .build();
         visionPortal = new VisionPortal.Builder()
-            .setCamera(hwMap.get(WebcamName.class, webcamName))
+            .setCamera(hwMap.get(WebcamName.class, ConfigInfo.camera.getDeviceName()))
             .addProcessor(aprilTag)
             .addProcessor(tfod)
             .build();
