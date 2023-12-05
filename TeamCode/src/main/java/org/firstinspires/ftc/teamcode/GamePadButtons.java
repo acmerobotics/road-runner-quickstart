@@ -97,9 +97,9 @@ public class GamePadButtons {
         speedDown = speedCtrl;
 
         // auto moving during Teleop
-        moveToLeftTag = gamepad1.x;
-        moveToCenterTag = gamepad1.y;
-        moveToRightTag = gamepad1.b;
+        //moveToLeftTag = gamepad1.x;
+        //moveToCenterTag = gamepad1.y;
+        //moveToRightTag = gamepad1.b;
         //moveToFront = gamepad1.a;
 
 
