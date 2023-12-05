@@ -5,6 +5,7 @@ import android.util.Size;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -22,9 +23,9 @@ import java.util.List;
 
 @Config
 public class AutoFluffy {
-    OpMode op;
+    LinearOpMode op;
     DcMotor liftMotor;
-    Servo grabberRot, finger, hangerLatch, dronePusher;
+    Servo grabberRot, finger, hangerLatch, dronePusher, leftPurple, rightPurple;
 
     MecanumDrive drive;
     VisionPortal visionPortal;
@@ -38,13 +39,15 @@ public class AutoFluffy {
     public static double GRABBER_UP=0.3;
     public static double GRABBER_DOWN=GRABBER_ROT_INIT;
     public static double FINGER_UP = 0;
-    public static double FINGER_MIDDLE = .2;
     public static double FINGER_DOWN = .4;
     public static double FINGER_INIT = FINGER_DOWN;
-    public static double HANGER_LATCH_INIT=0.87;
-    public static double HANGER_LATCH_RELEASE=0.835;
 
-    public AutoFluffy(OpMode op) {
+    public static double HANGER_LATCH_INIT=0.87;
+
+    public static double PURPLE_RELEASE = 0;
+    public static double PURPLE_GRAB = 0;
+
+    public AutoFluffy(LinearOpMode op) {
         this.op=op;
         this.init();
     }
@@ -96,6 +99,14 @@ public class AutoFluffy {
 
     List<AprilTagDetection> findDetections(){
         return aprilTag.getDetections();
+    }
+
+    public void deliverPurple(){
+        leftPurple.setPosition(PURPLE_RELEASE);
+        rightPurple.setPosition(PURPLE_RELEASE);
+        op.sleep(1000);
+        leftPurple.setPosition(PURPLE_GRAB);
+        rightPurple.setPosition(PURPLE_GRAB);
     }
     /*
     public void setGrabberOpen(){
