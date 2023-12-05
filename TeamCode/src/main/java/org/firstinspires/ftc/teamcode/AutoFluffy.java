@@ -30,8 +30,8 @@ public class AutoFluffy {
     VisionPortal visionPortal;
     AprilTagProcessor aprilTag;
     TfodProcessor tfod;
-    final int RESOLUTION_WIDTH = 640;
-    final int RESOLUTION_HEIGHT = 480;
+    final int RESOLUTION_WIDTH = 960;
+    final int RESOLUTION_HEIGHT = 740;
     public static double DRONE_PUSHER_RESET = 0.85;
     public static double DRONE_PUSHER_INIT=0.8;
     public static double GRABBER_ROT_INIT= 0.07;

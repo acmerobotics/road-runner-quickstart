@@ -11,7 +11,7 @@ import java.util.List;
 
 /** ToDo
  *  - telemetry.update()
- *  - sleep()
+ *  - press B to continue
  */
 public class ReadAprilTags extends LinearOpMode {
   AutoFluffy autoFluffy;
@@ -20,6 +20,7 @@ public class ReadAprilTags extends LinearOpMode {
       waitForStart();
       AprilTagDetection detection=assignID("Left", "Red");
       telemetryDetection (detection);
+      sleep(10000);
     }
     public void initialize(){
         autoFluffy=new AutoFluffy(this);
@@ -32,6 +33,7 @@ public class ReadAprilTags extends LinearOpMode {
       if (side== "Blue"){
         if (propLocation=="Left"){
           idNum=1;
+
         }else if (propLocation=="Center"){
           idNum = 2;
         }else if (propLocation=="Right"){
@@ -56,12 +58,19 @@ public class ReadAprilTags extends LinearOpMode {
     }
 
     public void telemetryDetection (AprilTagDetection detection){
+      if (detection==null){
+        return;
+      }
       if (detection.metadata!= null){
         telemetry.addData("ID: ", detection.id);
         telemetry.addData("Range(Distance from board): ", detection.ftcPose.range);
         telemetry.addData("Yaw: ", detection.ftcPose.yaw);
         telemetry.addData("Bearing: ", detection.ftcPose.bearing);
+      }else{
+        telemetry.addData("ID: ", detection.id);
+        return;
       }
+      telemetry.update();
     }
 }
 
