@@ -46,10 +46,20 @@ public class AutoFluffy {
 
     public static double PURPLE_RELEASE = 0;
     public static double PURPLE_GRAB = 0;
+    String side = "Red";
 
+    String[] RED_LABELS = {"redprop"};
+    String[] BLUE_LABELS = {"blueprop"};
     public AutoFluffy(LinearOpMode op) {
         this.op=op;
         this.init();
+    }
+
+    public AutoFluffy(LinearOpMode op, String side){
+        this.op = op;
+        this.side = side;
+        this.init();
+
     }
 
     public void init() {
@@ -80,8 +90,17 @@ public class AutoFluffy {
         // -----------------------------------------------------------------------------------------
         // TFOD Configuration
         // -----------------------------------------------------------------------------------------
-
+        String[] LABELS;
+        if (side.equals ("Red")){
+            LABELS=RED_LABELS;
+        }
+         else {
+             LABELS=BLUE_LABELS;
+        }
         tfod = new TfodProcessor.Builder()
+                .setModelFileName("redprop.tflite")
+                .setModelAspectRatio(960/720)  //verify with grace
+                .setModelLabels(LABELS)
                 .build();
 
         // -----------------------------------------------------------------------------------------
