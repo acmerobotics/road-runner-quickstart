@@ -101,7 +101,7 @@ public class AutoFluffy {
         }
         tfod = new TfodProcessor.Builder()
                 .setModelFileName("redprop.tflite")
-                .setModelAspectRatio(RESOLUTION_HEIGHT/RESOLUTION_WIDTH)  //verify with grace
+                .setModelAspectRatio(RESOLUTION_HEIGHT/RESOLUTION_WIDTH)  //JRC: should be width / height!
                 .setModelLabels(LABELS)
                 .build();
 
