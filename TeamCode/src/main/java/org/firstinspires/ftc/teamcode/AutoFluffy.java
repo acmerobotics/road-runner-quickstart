@@ -32,7 +32,7 @@ public class AutoFluffy {
     AprilTagProcessor aprilTag;
     TfodProcessor tfod;
     final int RESOLUTION_WIDTH = 960;
-    final int RESOLUTION_HEIGHT = 740;
+    final int RESOLUTION_HEIGHT = 720;
     public static double DRONE_PUSHER_RESET = 0.85;
     public static double DRONE_PUSHER_INIT=0.8;
     public static double GRABBER_ROT_INIT= 0.07;
@@ -99,7 +99,7 @@ public class AutoFluffy {
         }
         tfod = new TfodProcessor.Builder()
                 .setModelFileName("redprop.tflite")
-                .setModelAspectRatio(960/720)  //verify with grace
+                .setModelAspectRatio(RESOLUTION_HEIGHT/RESOLUTION_WIDTH)  //verify with grace
                 .setModelLabels(LABELS)
                 .build();
 
