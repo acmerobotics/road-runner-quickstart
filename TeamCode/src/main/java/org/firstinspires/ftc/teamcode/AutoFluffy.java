@@ -25,7 +25,7 @@ public class AutoFluffy {
     DcMotor liftMotor;
     Servo grabberRot, finger, hangerLatch, dronePusher, leftPurple, rightPurple;
 
-    MecanumDrive drive;
+    public MecanumDrive drive;
     VisionPortal visionPortal;
     AprilTagProcessor aprilTag;
     TfodProcessor tfod;
@@ -44,7 +44,10 @@ public class AutoFluffy {
 
     public static double PURPLE_RELEASE = 0;
     public static double PURPLE_GRAB = 0;
-    String side;
+
+    boolean isGrabberUp = false;
+    String side = "Red";
+
     String propLocation;
 
     String[] RED_LABELS = {"redprop"};
@@ -175,5 +178,10 @@ public class AutoFluffy {
     }
     public List<Recognition> getRecognitions(){
         return tfod.getRecognitions();
+    }
+
+    public void raiseGrabber(){
+        grabberRot.setPosition(GRABBER_UP);
+        isGrabberUp=true;
     }
 }
