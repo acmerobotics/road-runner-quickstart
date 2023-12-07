@@ -117,7 +117,7 @@ public class GamePadButtons {
         // game pad 2
 
         //special presets
-        droneLaunch = (gamepad2.right_trigger > 0);// || (gamepad1.left_trigger > 0);
+        droneLaunch = (gamepad2.right_trigger > 0) && (gamepad2.dpad_right);// || (gamepad1.left_trigger > 0);
 
         readyToHang = gamepad2.left_bumper;
         hangingRobot = (gamepad2.left_trigger > 0);
