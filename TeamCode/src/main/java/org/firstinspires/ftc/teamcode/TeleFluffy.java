@@ -186,6 +186,13 @@ public class TeleFluffy {
         rightFront.setMode(mode);
         rightBack.setMode(mode);
     }
+
+    public void reportDriveMotors() {
+        op.telemetry.addData("Left Front: ", leftFront.getCurrentPosition());
+        op.telemetry.addData("Right Front: ", rightFront.getCurrentPosition());
+        op.telemetry.addData("Left Back: ", leftBack.getCurrentPosition());
+        op.telemetry.addData("Right Back: ", rightBack.getCurrentPosition());
+    }
     public void raiseGrabber(){
         grabberRot.setPosition(GRABBER_UP);
         isGrabberUp=true;

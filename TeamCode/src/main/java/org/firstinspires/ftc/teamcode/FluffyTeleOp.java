@@ -49,6 +49,7 @@ public class FluffyTeleOp extends OpMode {
         double strafe = gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
         myBot.setTeleOpDrive(forward, strafe, turn);
+        myBot.reportDriveMotors();
     }
     public void setTeleOpLift(){
         double liftMotorPower = (-gamepad2.left_stick_y);

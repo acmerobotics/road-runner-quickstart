@@ -67,20 +67,28 @@ public class RedRight extends LinearOpMode {
     public void deliverPurpleLeft(){
         Actions.runBlocking(
            fluffy.drive.actionBuilder(fluffy.drive.pose)
-                   .splineTo(new Vector2d(29.5, -9.23), .21)
+                   //.splineTo(new Vector2d(29.5,9.23), .21)
+                   .lineToX(20.5)
+                   .strafeTo( new Vector2d(26.5,-17))
                    .build());
 
     }
     public void deliverPurpleCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .splineTo(new Vector2d(27.93, -10.81), -91.4)
+                        //.splineTo(new Vector2d(27.93, -10.81), -91.4)
+                        .lineToX(25)
+                        .turnTo(Math.toRadians(-90))
                         .build());
     }
     public void deliverPurpleRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .splineTo(new Vector2d(30.12, -2.61), 177.5)
+                        //.splineTo(new Vector2d(25, -15), -90)
+                        .lineToX(25)
+                        //.strafeTo(new Vector2d(25,-15))
+                        .turnTo(Math.toRadians(-90))
+                        .lineToY(-15)
                         .build());
     }
 
