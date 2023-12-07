@@ -23,8 +23,8 @@ public class ReadAprilTags extends LinearOpMode {
       sleep(10000);
     }
     public void initialize(){
-        autoFluffy=new AutoFluffy(this);
-    }  // JRC: should include side
+      autoFluffy=new AutoFluffy(this, "Red");
+    }
 
 
     AprilTagDetection assignID (String propLocation, String side){
