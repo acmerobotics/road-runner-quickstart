@@ -6,14 +6,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -47,7 +44,8 @@ public class AutoFluffy {
 
     public static double PURPLE_RELEASE = 0;
     public static double PURPLE_GRAB = 0;
-    String side = "Red";
+    String side;
+    String propLocation;
 
     String[] RED_LABELS = {"redprop"};
     String[] BLUE_LABELS = {"blueprop"};
@@ -62,6 +60,52 @@ public class AutoFluffy {
         this.side = side;
         this.init();
 
+    }
+
+    AprilTagDetection assignID (String propLocation, String side){
+        int idNum=0;
+
+        if (side== "Blue"){
+            if (propLocation=="Left"){
+                idNum=1;
+
+            }else if (propLocation=="Center"){
+                idNum = 2;
+            }else if (propLocation=="Right"){
+                idNum= 3;
+            }
+        }else if (side== "Red"){
+            if (propLocation=="Left"){
+                idNum= 4;
+            }else if (propLocation=="Center"){
+                idNum=5;
+            }else if (propLocation=="Right"){
+                idNum=6;
+            }
+        }
+        List<org.firstinspires.ftc.vision.apriltag.AprilTagDetection> currentDetections = findDetections();
+        for (org.firstinspires.ftc.vision.apriltag.AprilTagDetection detection : currentDetections){
+            if (detection.id == idNum){
+                return detection;
+            }
+        }
+        return null;
+    }
+
+    public void telemetryDetection (AprilTagDetection detection){
+        if (detection==null){
+            return;
+        }
+        if (detection.metadata!= null){
+            op.telemetry.addData("ID: ", detection.id);
+            op.telemetry.addData("Range(Distance from board): ", detection.ftcPose.range);
+            op.telemetry.addData("Yaw: ", detection.ftcPose.yaw);
+            op.telemetry.addData("Bearing: ", detection.ftcPose.bearing);
+        }else{
+            op.telemetry.addData("ID: ", detection.id);
+            return;
+        }
+        op.telemetry.update();
     }
 
 

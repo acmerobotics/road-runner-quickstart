@@ -18,8 +18,8 @@ public class ReadAprilTags extends LinearOpMode {
     public void runOpMode(){
       initialize();
       waitForStart();
-      AprilTagDetection detection=assignID("Left", "Red");
-      telemetryDetection (detection);
+      AprilTagDetection detection=autoFluffy.assignID("Left", "Red");
+      autoFluffy.telemetryDetection (detection);
       sleep(10000);
     }
     public void initialize(){
@@ -27,7 +27,7 @@ public class ReadAprilTags extends LinearOpMode {
     }
 
 
-    AprilTagDetection assignID (String propLocation, String side){
+    /*AprilTagDetection assignID (String propLocation, String side){
       int idNum=0;
 
       if (side== "Blue"){
@@ -72,6 +72,8 @@ public class ReadAprilTags extends LinearOpMode {
       }
       telemetry.update();
     }
+
+     */
 }
 
 
