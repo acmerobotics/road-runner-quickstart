@@ -289,53 +289,6 @@ public class TeleopRR extends LinearOpMode {
         Logging.log("%s: %s", sTag, vectorName);
     }
 
-    private void moveByAprilTag(int tagNum) {
-        intake.dropPositions();
-        sleep(300); // make sure arm is out of camera sight
-
-        Pose2d aprilTagPose = tag.updatePoseAprilTag(tagNum);
-
-        // if can not move based on April tag, moved by road runner.
-        if (tag.targetFound) {
-            mecanum.updatePoseEstimate();
-            mecanum.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            logRobotHeading("before turn");
-            // turn
-            Actions.runBlocking(
-                    mecanum.actionBuilder(mecanum.pose)
-                            .turn(aprilTagPose.heading.log())
-                            .build());
-
-            aprilTagPose = tag.updatePoseAprilTag(tagNum); // update position values after turn
-
-            Logging.log("yaw = %.2f", Math.toDegrees(aprilTagPose.heading.log()));
-            logVector("robot drive: distance from camera to april tag", aprilTagPose.position);
-            logRobotHeading("after turn");
-
-            if (tag.targetFound) {
-
-                // adjust yellow drop-off position according to april tag location info from camera
-                Vector2d desiredMove = new Vector2d(mecanum.pose.position.x - aprilTagPose.position.x,
-                        mecanum.pose.position.y - aprilTagPose.position.y + Params.TELEOP_DISTANCE_TO_TAG);
-                logVector("robot drive: current pose", mecanum.pose.position);
-
-                // shift to AprilTag
-                Actions.runBlocking(
-                        mecanum.actionBuilder(mecanum.pose)
-                                .strafeTo(desiredMove)
-                                .build()
-                );
-                logVector("robot drive: move to tag distance required", desiredMove);
-                logVector("robot drive: after move to tag distance", mecanum.pose.position);
-                logRobotHeading("after moving to april tag");
-
-
-            }
-            mecanum.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-    }
-
     private void moveByAprilTag_new(int tagNum) {
         intake.dropPositions();
         sleep(300); // make sure arm is out of camera sight

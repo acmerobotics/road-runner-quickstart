@@ -73,8 +73,8 @@ public class intakeUnit
 
     // arm servo variables, not used in current prototype version.
     public DcMotor armMotor = null;
-    int ARM_POS_INTAKE = 3560;//3600;
-    int ARM_MIN_COUNT_POS = ARM_POS_INTAKE - 3560; //0;
+    int ARM_POS_INTAKE = 3600;//3600; 3560 for finger down, 3600 for finger up
+    int ARM_MIN_COUNT_POS = ARM_POS_INTAKE - 3600; //0;
     int ARM_MAX_COUNT_POS = ARM_POS_INTAKE + 100; //3620;
     int ARM_POS_AUTO = ARM_POS_INTAKE - 3480; //80;
     int ARM_POS_HANG = ARM_POS_INTAKE - 3060; //500;
@@ -300,8 +300,8 @@ public class intakeUnit
 
     public void resetArmPositions(int intakePos) {
         ARM_POS_INTAKE = intakePos;
-        ARM_MIN_COUNT_POS = ARM_POS_INTAKE - 3560; //0;
-        ARM_MAX_COUNT_POS = ARM_POS_INTAKE + 100; //3620;
+        ARM_MIN_COUNT_POS = ARM_POS_INTAKE - 3600; //0;
+        ARM_MAX_COUNT_POS = ARM_POS_INTAKE + 100; //3620; 
         ARM_POS_AUTO = ARM_POS_INTAKE - 3480; //80;
         ARM_POS_HANG = ARM_POS_INTAKE - 3060; //500;
         ARM_POS_READY_FOR_HANG = ARM_POS_INTAKE - 1760; // 1800

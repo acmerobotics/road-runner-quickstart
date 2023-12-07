@@ -493,11 +493,12 @@ public class AutoRedFront extends LinearOpMode {
             intake.setArmCountPosition(intake.ARM_POS_CAMERA_READ); // lift arm to avoid blocking camera
             sleep(500);
         }
+        Logging.log("Autonomous - Start April tag detect");
         Pose2d aprilTagPose = tag.updatePoseAprilTag(desiredTagNum);
         logVector("robot drive: april tag location from camera", aprilTagPose.position);
         logVector("robot drive: drop yellow pose required before adjust", vDropYellow);
 
-        // if can not move based on April tag, moved by road runner.
+        // if can not move based on April tag, move by road runner encode.
         if (tag.targetFound) {
             // adjust yellow drop-off position according to april tag location info from camera
             vDropYellow = new Vector2d(drive.pose.position.x - aprilTagPose.position.x + BUCKET_SHIFT,
