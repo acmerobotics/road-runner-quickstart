@@ -27,7 +27,7 @@ public class TeleFluffy {
     // Lift Constants//
     public static double LIFT_MOTOR_MAX = 900;
     public static double LIFT_MOTOR_MIN = -20;
-    public static int INCREMENT = 25;
+    public static int INCREMENT = 45;
     //  Drone Constants
     public static double DRONE_PUSHER_INIT=0.8;
     public static double DRONE_PUSHER_LAUNCH = 1;
