@@ -1,15 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.AutoFluffy.GRABBER_UP;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
@@ -57,8 +52,12 @@ public class RedRight extends LinearOpMode {
         telemetry.addData("y", fluffy.drive.pose.position.y);
         telemetry.addData("heading (deg)", Math.toDegrees(fluffy.drive.pose.heading.toDouble()));
         telemetry.update();
-        sleep(20000);
+        sleep(10000);
+
+        fluffy.deliverPurple();
     }
+
+
     public void initialize(){
         fluffy = new AutoFluffy(this, "Red");
         fluffy.raiseGrabber();
