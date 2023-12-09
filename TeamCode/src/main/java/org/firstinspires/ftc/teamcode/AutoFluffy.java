@@ -100,7 +100,7 @@ public class AutoFluffy {
             LABELS = BLUE_LABELS;
         }
         tfod = new TfodProcessor.Builder()
-                .setModelFileName("redprop.tflite")
+                .setModelFileName("model_20231209_112710.tflite")
                 .setModelAspectRatio(RESOLUTION_HEIGHT/RESOLUTION_WIDTH)  //verify with grace
                 .setModelLabels(LABELS)
                 .build();
