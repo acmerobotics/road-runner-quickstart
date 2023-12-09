@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.List;
-
 @Config
 @Autonomous(name = "RedRight", group = "robot")
 public class RedRight extends LinearOpMode {
@@ -54,7 +53,8 @@ public class RedRight extends LinearOpMode {
         telemetry.update();
         sleep(10000);
 
-        fluffy.deliverPurple();
+        //fluffy.deliverPurple();
+        //sleep(5000)
     }
 
 
@@ -84,10 +84,12 @@ public class RedRight extends LinearOpMode {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         //.splineTo(new Vector2d(25, -15), -90)
-                        .lineToX(25)
-                        //.strafeTo(new Vector2d(25,-15))
-                        .turnTo(Math.toRadians(-90))
-                        .lineToY(-15)
+                        .lineToX(12)
+                        //.lineToXLinearHeading(20, Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(20,-28), Math.toRadians(-85))
+                        //.turnTo(Math.toRadians(-90))
+                        //.lineToY(-15)
+                        //.lineToY(-15)
                         .build());
     }
 
