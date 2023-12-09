@@ -18,8 +18,8 @@ public class ReadAprilTags extends LinearOpMode {
     public void runOpMode(){
       initialize();
       waitForStart();
-      AprilTagDetection detection=autoFluffy.assignID("Left", "Red");
-      autoFluffy.telemetryDetection (detection);
+      AprilTagDetection detection = autoFluffy.assignID("Left", "Red");
+      autoFluffy.telemetryDetection(detection);
       sleep(10000);
     }
     public void initialize(){

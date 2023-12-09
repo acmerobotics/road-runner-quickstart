@@ -65,11 +65,15 @@ public class AutoFluffy {
 
     }
 
+    public AutoFluffy() {
+
+    }
+
     AprilTagDetection assignID (String propLocation, String side){
         int idNum=0;
 
-        if (side== "Blue"){
-            if (propLocation=="Left"){
+        if (side == "Blue"){
+            if (propLocation == "Left"){
                 idNum=1;
 
             }else if (propLocation=="Center"){
@@ -148,7 +152,7 @@ public class AutoFluffy {
         }
         tfod = new TfodProcessor.Builder()
                 .setModelFileName("model_20231209_112710.tflite")
-                .setModelAspectRatio(RESOLUTION_HEIGHT/RESOLUTION_WIDTH)  //verify with grace
+                .setModelAspectRatio(RESOLUTION_WIDTH/RESOLUTION_HEIGHT)  //verify with grace
                 .setModelLabels(LABELS)
                 .build();
 
