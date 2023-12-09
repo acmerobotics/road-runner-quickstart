@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class TeleFluffy {
     DcMotor leftFront, leftBack, rightFront, rightBack, liftMotor, hangerMotor;
     DcMotorEx droneMotor;
-    Servo grabberRot, finger, dronePusher, hangerLatch;
+    Servo grabberRot, finger, dronePusher, hangerLatch, purpleRight, purpleLeft;
 
     public static double THRESHOLD = .15;
     OpMode op;
@@ -51,6 +51,8 @@ public class TeleFluffy {
     //slow approach
     public static final double APPROACH_SPEED = .23;
 
+    public static double PURPLE_LEFT_UP =1;
+    public static double PURPLE_LEFT_DOWN =.0;
 
 
 
@@ -74,6 +76,9 @@ public class TeleFluffy {
         grabberRot=op.hardwareMap.servo.get("grabberRot");
         dronePusher=op.hardwareMap.servo.get("dronePusher");
         hangerLatch =op.hardwareMap.servo.get("hangerLatch");
+        purpleLeft =op.hardwareMap.servo.get("rightPurple");
+        //purpleRight =op.hardwareMap.servo.get("rightPurple");
+        purpleLeft.setDirection(Servo.Direction.REVERSE);
 
         //setting direction for drive motors/resetting encoders
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -248,6 +253,12 @@ public class TeleFluffy {
         rightFront.setPower(APPROACH_SPEED*2.5);
         leftBack.setPower(APPROACH_SPEED*2.5);
         rightBack.setPower(-APPROACH_SPEED*2.5);
+    }
+    public void purpleLeftUp(){
+        purpleLeft.setPosition(PURPLE_LEFT_UP);
+    }
+    public void purpleLeftDown(){
+        purpleLeft.setPosition(PURPLE_LEFT_DOWN);
     }
 }
 

@@ -42,6 +42,7 @@ public class FluffyTeleOp extends OpMode {
         setHanger();
         setLauncher();
         setSlowApproach();
+        purpleLeft();
     }
 
     public void setTeleOpDrive(){
@@ -206,5 +207,12 @@ public class FluffyTeleOp extends OpMode {
             myBot.slowLeft();
         }
         }
-
+    public void purpleLeft(){
+        if(gamepad1.y){
+            myBot.purpleLeftUp();
+        }
+        if(gamepad1.a){
+            myBot.purpleLeftDown();
+        }
+    }
 }
