@@ -64,26 +64,11 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
 
         @java.lang.Override
         public Object processFrame(Mat frame, long captureTimeNanos) {
-            return null;
-        }
-
-        @java.lang.Override
-        public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
-
-        }
-        // of left is more than THRESHOLD than
-        // mean red of right, then left is the side.
-
-        @interface Override
-        public void init() {
-        }
-
-        public Object processFrame(Mat frame, long captureTimeNanos) {
             if (frame == null) {
                 return null;
             }
             Mat workingMat = new Mat();
-            Imgproc.cvtColor(frame, workingMat, Imgproc.RGB2YCrCb);
+            Imgproc.cvtColor(frame, workingMat, Imgproc.RGB2YCrCb);   // Possibly: Use HSV.  Use inRange() to convert to binary matrix.
             Mat leftCrop = workingMat.submat(LEFT_WINDOW);
             Core.extractChannel(leftCrop, leftCrop, RED_CHANNEL);
 
@@ -108,27 +93,9 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             return frame;
         }
 
-// convert a camera rectangle (x,y,width,height) into a screen rectangle
-// (left, top, right, bottom)
-
-        private android.graphics.Rect makeGraphicsRect(Rect rect, float scaleBmpPxToCanvasPx) {
-            int left = Math.round(rect.x * scaleBmpPxToCanvasPx);
-            int top = Math.round(rect.y * scaleBmpPxToCanvasPx);
-            int right = Math.round(left + rect.width * scaleBmpPxToCanvasPx);
-            int bottom = Math.round(top + rect.height * scaleBmpPxToCanvasPx);
-
-            return new android.graphics.Rect(left, top, right, bottom);
-        }
-
-
-
-        @Override
-        public void onDrawFrame(Canvas canvas,
-                                int onscreenWidth,
-                                int onscreenHeight,
-                                float scaleBmpPxToCanvasPx,
-                                float scaleCanvasDensity, Object userContext) {
-            paint leftPaint = new Paint();
+        @java.lang.Override
+        public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+		paint leftPaint = new Paint();
             if side.equals(“Left”) {
                 leftPaint.setColor(Color.RED);
             }
@@ -149,8 +116,25 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             rightPaint.setStyle(Paint.Style.STROKE); 38 rightPaint.setStrokeWidth(scaleCanvasDensity * 4);
 
             canvas.drawRect(makeGraphicsRect(RIGHT_WINDOW, scaleBmpPxToCanvasPx), rightPaint);
+        
         }
-    }
+        // of left is more than THRESHOLD than
+        // mean red of right, then left is the side.
+
+
+// convert a camera rectangle (x,y,width,height) into a screen rectangle
+// (left, top, right, bottom)
+
+        private android.graphics.Rect makeGraphicsRect(Rect rect, float scaleBmpPxToCanvasPx) {
+            int left = Math.round(rect.x * scaleBmpPxToCanvasPx);
+            int top = Math.round(rect.y * scaleBmpPxToCanvasPx);
+            int right = Math.round(left + rect.width * scaleBmpPxToCanvasPx);
+            int bottom = Math.round(top + rect.height * scaleBmpPxToCanvasPx);
+
+            return new android.graphics.Rect(left, top, right, bottom);
+        }
+
+
 
 
 
