@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
@@ -15,6 +17,8 @@ import org.opencv.imgproc.Imgproc;
 /* ToDO - fix communication of values.  leftValues, centerValues, rightValues stay at 0.0
 
  */
+
+@Config
 public class ConceptOpenCVHSV implements VisionProcessor {
 
     public static Boolean showOutput = false;   // for config purposes - can view output rather than input.
@@ -50,9 +54,9 @@ public class ConceptOpenCVHSV implements VisionProcessor {
         Mat rightCrop = workingMat.submat(rightWindow);
 
         // these values don't get back to parent object.
-        leftValues = Core.mean(leftCrop).val.clone();
-        centerValues = Core.mean(centerCrop).val.clone();
-        rightValues = Core.mean(rightCrop).val.clone();
+        populateValues(Core.mean(leftCrop).val, leftValues);
+        populateValues(Core.mean(centerCrop).val,centerValues);
+        populateValues(Core.mean(rightCrop).val,rightValues);
 
         leftCrop.release();
         centerCrop.release();
@@ -118,6 +122,12 @@ public class ConceptOpenCVHSV implements VisionProcessor {
         int bottom = Math.round(top + rect.height * scaleBmpPxToCanvasPx);
 
         return new android.graphics.Rect(left, top, right, bottom);
+    }
+
+    private void populateValues(double[] source, double[] dest) {
+        for (int i = 0; i < 3; i++) {
+            dest[i] = source[i];
+        }
     }
 
 

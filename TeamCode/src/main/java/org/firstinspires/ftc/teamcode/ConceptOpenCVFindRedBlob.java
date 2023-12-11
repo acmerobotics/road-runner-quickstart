@@ -30,24 +30,30 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
     WebcamName webcamName;
     VisionPortal visionPortal;
     OpenCVProcessor visionProcessor;
-    final static int RESOLUTION_WIDTH = 640;
-    final static int RESOLUTION_HEIGHT = 480;
+    final static int RESOLUTION_WIDTH = 1920;
+    final static int RESOLUTION_HEIGHT = 1080;
 
-    public static int LW_LEFT = 2;
-    public static int LW_TOP = 2;
-    public static int LW_WIDTH = RESOLUTION_WIDTH / 2 - 4;
-    public static int LW_HEIGHT = RESOLUTION_HEIGHT - 2;
+    public static int LW_LEFT = 0;
+    public static int LW_TOP = 0;
+    public static int LW_WIDTH = RESOLUTION_WIDTH / 3;
+    public static int LW_HEIGHT = RESOLUTION_HEIGHT ;
 
-    public static int RW_LEFT = RESOLUTION_WIDTH / 2 + 2;
-    public static int RW_TOP = 2;
-    public static int RW_WIDTH = RESOLUTION_WIDTH / 2 - 4;
-    public static int RW_HEIGHT = RESOLUTION_HEIGHT - 2;
+    public static int CW_LEFT=RESOLUTION_WIDTH / 3;
+    public static int CW_TOP=0;
+    public static int CW_WIDTH= RESOLUTION_WIDTH/3;
+    public static int CW_HEIGHT= RESOLUTION_HEIGHT;
+
+
+    public static int RW_LEFT = 2*RESOLUTION_WIDTH/3;
+    public static int RW_TOP = 0;
+    public static int RW_WIDTH = RESOLUTION_WIDTH/3 ;
+    public static int RW_HEIGHT = RESOLUTION_HEIGHT;
 
     public static double THRESHOLD = 5.0;
 
 
-    //Rect uses left x, top y, width, height in camera coodinates
-    Rect leftWindow, rightWindow;
+    //Rect uses left x, top y, width, height in camera coordinates
+    Rect leftWindow, centerWindow, rightWindow;
 
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -62,6 +68,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             telemetry.addLine("Hit Y to see input frame, A to see output frame");
             telemetry.addData("Red blob on side: ", visionProcessor.getSide());
             telemetry.addData("mean red on left side: ", visionProcessor.leftMean);
+            telemetry.addData("mean red on center side: ", visionProcessor.centerMean);
             telemetry.addData("mean red on right side: ", visionProcessor.rightMean);
             telemetry.update();
             if (gamepad1.y) {
@@ -79,7 +86,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
         public final int BLUE_CHANNEL = 1;
         public final int RED_CHANNEL = 2;
         public String side = "None";            // accessible side ID
-        public double leftMean, rightMean;        // accessible mean red metrics
+        public double leftMean, centerMean, rightMean;        // accessible mean red metrics
         // if the mean red of one side is greater than THRESHOLD + mean of the other, that side is "Red"
         //public static double THRESHOLD = 5.0;
         public Boolean INPUT = true;
@@ -112,6 +119,12 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             if (LW_LEFT + LW_WIDTH >= workingMat.width()) {
                 LW_WIDTH = workingMat.width() - LW_LEFT - 1;
             }
+            if(CW_TOP + CW_HEIGHT>= workingMat.height()){
+                CW_HEIGHT = workingMat.height() - CW_TOP-1;
+            }
+            if(CW_TOP + CW_HEIGHT>= workingMat.height()){
+                CW_WIDTH = workingMat.width() - CW_LEFT-1;
+            }
 
             if (RW_TOP + RW_HEIGHT >= workingMat.height()) {
                 RW_HEIGHT = workingMat.height() - RW_TOP -1;
@@ -121,26 +134,33 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             }
 
             leftWindow = new Rect(LW_LEFT, LW_TOP, LW_WIDTH, LW_HEIGHT);
+            centerWindow= new Rect(CW_LEFT, LW_TOP, CW_WIDTH, CW_HEIGHT);
             rightWindow = new Rect(RW_LEFT, RW_TOP, RW_WIDTH, RW_HEIGHT);
+
             Mat leftCrop = workingMat.submat(leftWindow);
             Core.extractChannel(leftCrop, leftCrop, RED_CHANNEL);
+
+            Mat centerCrop= workingMat.submat(centerWindow);
+            Core.extractChannel(centerCrop, centerCrop, RED_CHANNEL);
 
             Mat rightCrop = workingMat.submat(rightWindow);
             Core.extractChannel(rightCrop, rightCrop, RED_CHANNEL);
 
             leftMean = Core.mean(leftCrop).val[0];
+            centerMean= Core.mean(centerCrop).val[0];
             rightMean = Core.mean(rightCrop).val[0];
 
-            if (leftMean - rightMean > THRESHOLD) {
+            if (leftMean > rightMean && leftMean > centerMean ) {
                 side = "Left";
-            } else if (rightMean - leftMean > THRESHOLD) {
-                side = "Right";
+            } else if (centerMean > leftMean && centerMean > rightMean) {
+                side = "Center";
             } else {
-                side = "None";
+                side = "Right";
             }
 
 // release all created matrices!  Otherwise a memory leak will occur.
             leftCrop.release();
+            centerCrop.release();
             rightCrop.release();
             if (inOut) {
                 workingMat.release();
@@ -165,6 +185,15 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             leftPaint.setStrokeWidth(scaleCanvasDensity * 4);
             canvas.drawRect(makeGraphicsRect(leftWindow, scaleBmpPxToCanvasPx), leftPaint);
 
+            Paint centerPaint = new Paint();
+            if (side.equals("Center")) {
+                centerPaint.setColor(Color.RED);
+            } else {
+                centerPaint.setColor(Color.GREEN);
+            }
+            centerPaint.setStyle(Paint.Style.STROKE);
+            centerPaint.setStrokeWidth(scaleCanvasDensity * 4);
+            canvas.drawRect(makeGraphicsRect(centerWindow, scaleBmpPxToCanvasPx), centerPaint);
 
 
             Paint rightPaint = new Paint();
