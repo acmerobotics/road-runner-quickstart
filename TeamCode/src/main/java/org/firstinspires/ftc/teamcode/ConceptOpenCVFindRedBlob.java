@@ -17,7 +17,9 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 //TODO: test
@@ -25,7 +27,7 @@ import org.opencv.imgproc.Imgproc;
 @Autonomous(name = "ConceptOpenCVFindRedBlob", group= "Concept")
 public class ConceptOpenCVFindRedBlob extends LinearOpMode {
 
-    WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    WebcamName webcamName;
     VisionPortal visionPortal;
     OpenCVProcessor visionProcessor;
     final static int RESOLUTION_WIDTH = 640;
@@ -50,6 +52,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         visionProcessor = new OpenCVProcessor();
+        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         visionPortal = new VisionPortal.Builder()
                 .setCamera(webcamName)
                 .addProcessors((VisionProcessor) visionProcessor)
@@ -60,7 +63,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             telemetry.addData("Red blob on side: ", visionProcessor.getSide());
             telemetry.addData("mean red on left side: ", visionProcessor.leftMean);
             telemetry.addData("mean red on right side: ", visionProcessor.rightMean);
-            telemetry.addData("THRESHOLD: ", THRESHOLD);
+            telemetry.update();
             if (gamepad1.y) {
                 visionProcessor.setView(visionProcessor.INPUT);
             }
@@ -77,9 +80,8 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
         public final int RED_CHANNEL = 2;
         public String side = "None";            // accessible side ID
         public double leftMean, rightMean;        // accessible mean red metrics
-        public final int THRESHOLD = 5;   // sets sensitivity of detector.  
         // if the mean red of one side is greater than THRESHOLD + mean of the other, that side is "Red"
-
+        //public static double THRESHOLD = 5.0;
         public Boolean INPUT = true;
         public Boolean OUTPUT = false;
         Boolean inOut = INPUT;
@@ -102,9 +104,24 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
                 return null;
             }
             Mat workingMat = new Mat();
+            Imgproc.cvtColor(frame, workingMat, Imgproc.COLOR_BGR2YCrCb);   // Possibly: Use HSV.  Use inRange() to convert to binary matrix.
+
+            if (LW_TOP + LW_HEIGHT >= workingMat.height()) {
+                LW_HEIGHT = workingMat.height() - LW_TOP -1;
+            }
+            if (LW_LEFT + LW_WIDTH >= workingMat.width()) {
+                LW_WIDTH = workingMat.width() - LW_LEFT - 1;
+            }
+
+            if (RW_TOP + RW_HEIGHT >= workingMat.height()) {
+                RW_HEIGHT = workingMat.height() - RW_TOP -1;
+            }
+            if (RW_LEFT + RW_WIDTH >= workingMat.width()) {
+                RW_WIDTH = workingMat.width() - RW_LEFT - 1;
+            }
+
             leftWindow = new Rect(LW_LEFT, LW_TOP, LW_WIDTH, LW_HEIGHT);
             rightWindow = new Rect(RW_LEFT, RW_TOP, RW_WIDTH, RW_HEIGHT);
-            Imgproc.cvtColor(frame, workingMat, Imgproc.COLOR_BGR2YCrCb);   // Possibly: Use HSV.  Use inRange() to convert to binary matrix.
             Mat leftCrop = workingMat.submat(leftWindow);
             Core.extractChannel(leftCrop, leftCrop, RED_CHANNEL);
 
@@ -149,6 +166,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             canvas.drawRect(makeGraphicsRect(leftWindow, scaleBmpPxToCanvasPx), leftPaint);
 
 
+
             Paint rightPaint = new Paint();
             if (side.equals("Right")) {
                 rightPaint.setColor(Color.RED);
@@ -159,6 +177,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             rightPaint.setStrokeWidth(scaleCanvasDensity * 4);
 
             canvas.drawRect(makeGraphicsRect(rightWindow, scaleBmpPxToCanvasPx), rightPaint);
+
 
         }
 
