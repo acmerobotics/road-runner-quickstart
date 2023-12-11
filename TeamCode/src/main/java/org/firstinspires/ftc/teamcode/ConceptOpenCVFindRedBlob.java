@@ -33,21 +33,21 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
     final static int RESOLUTION_WIDTH = 1920;
     final static int RESOLUTION_HEIGHT = 1080;
 
-    public static int LW_LEFT = 0;
-    public static int LW_TOP = 0;
-    public static int LW_WIDTH = RESOLUTION_WIDTH / 3;
-    public static int LW_HEIGHT = RESOLUTION_HEIGHT ;
+    public static int LW_LEFT = 300;
+    public static int LW_TOP = 400;
+    public static int LW_WIDTH = 340;
+    public static int LW_HEIGHT = 500 ;
 
-    public static int CW_LEFT=RESOLUTION_WIDTH / 3;
-    public static int CW_TOP=0;
-    public static int CW_WIDTH= RESOLUTION_WIDTH/3;
-    public static int CW_HEIGHT= RESOLUTION_HEIGHT;
+    public static int CW_LEFT=800;
+    public static int CW_TOP=400;
+    public static int CW_WIDTH= 580;
+    public static int CW_HEIGHT= 300;
 
 
-    public static int RW_LEFT = 2*RESOLUTION_WIDTH/3;
-    public static int RW_TOP = 0;
-    public static int RW_WIDTH = RESOLUTION_WIDTH/3 ;
-    public static int RW_HEIGHT = RESOLUTION_HEIGHT;
+    public static int RW_LEFT = 1460;
+    public static int RW_TOP = 400;
+    public static int RW_WIDTH = 350 ;
+    public static int RW_HEIGHT = 500;
 
     public static double THRESHOLD = 5.0;
 
