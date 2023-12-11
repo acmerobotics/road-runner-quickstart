@@ -27,11 +27,22 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
     final int RESOLUTION_WIDTH= 640;
     final int RESOLUTION_HEIGHT=480;
 
-    //Rect uses left x, top y, width, height in camera coodinates
-    final Rect LEFT_WINDOW =new Rect(2,2,316,476);
-    final Rect RIGHT_WINDOW = new Rect(322, 2, 316, 476);
+    public static int LW_LEFT = 2;
+    public static int LW_TOP = 2;
+    public static int LW_WIDTH = RESOLUTION_WIDTH/2 - 4;
+    public static int LW_HEIGHT = RESOLUTION_HEIGHT - 2;
 
+    public static int RW_LEFT = RESOLUTION_WIDTH/2 + 2;
+    public static int RW_TOP = 2;
+    public static int RW_WIDTH = RESOLUTION_WIDTH/2 - 4;
+    public static int RW_HEIGHT = RESOLUTION_HEIGHT - 2;
+
+  
+    //Rect uses left x, top y, width, height in camera coodinates
+    Rect leftWindow, rightWindow; 
+	
     public void runOpMode() {
+	telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         visionProcessor = new OpenCVProcessor();
         visionPortal = new VisionPortal.Builder()
 			    .setCamera(webcamName)
@@ -40,6 +51,9 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
                 .build();
         while (!isStarted() && !isStopRequested()) {
             telemetry.addData("Red blob on side: ", visionProcessor.getSide());
+	    telemetry.addData("mean red on left side: ", visionProcessor.leftMean);
+	    telemetry.addData("mean red on right side: ", visionProcessor.rightMean);
+	    telemetry.addData("THRESHOLD: ", THRESHOLD);
         }
     }
 
@@ -51,10 +65,11 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
         public final int RED_CHANNEL = 2;
         public String side = "None";  			// accessible side ID
         public float leftMean, rightMean; 		// accessible mean red metrics
-        public final int THRESHOLD = 5;   // sets sensitivity of detector.  If the mean red
+        public final int THRESHOLD = 5;   // sets sensitivity of detector.  
+	    				// if the mean red of one side is greater than THRESHOLD + mean of the other, that side is "Red"
 
         public String getSide() {
-        }
+        	return side;
         }
 
         @java.lang.Override
@@ -68,20 +83,22 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
                 return null;
             }
             Mat workingMat = new Mat();
+	    leftWindow = new Rect(LW_LEFT, LW_TOP, LW_WIDTH, LW_HEIGHT);
+	    rightWindow = new Rect(RW_LEFT, RW_TOP, RW_WIDTH, RW_HEIGHT);
             Imgproc.cvtColor(frame, workingMat, Imgproc.RGB2YCrCb);   // Possibly: Use HSV.  Use inRange() to convert to binary matrix.
-            Mat leftCrop = workingMat.submat(LEFT_WINDOW);
+            Mat leftCrop = workingMat.submat(leftWindow);
             Core.extractChannel(leftCrop, leftCrop, RED_CHANNEL);
 
-            rightCrop = workingMat.submat(RIGHT_WINDOW);
+            rightCrop = workingMat.submat(rightWindow);
             Core.extractChannel(rightCrop, rightCrop, RED_CHANNEL);
 
-            leftAvg = Core.mean(leftCrop).val[0];
-            rightAvg = Core.mean(rightCrop).val[0];
+            leftMean = Core.mean(leftCrop).val[0];
+            rightMean = Core.mean(rightCrop).val[0];
 
-            if (leftAvg - rightAvg > THRESHOLD) {
+            if (leftMean - rightMean > THRESHOLD) {
                 side = “Left”;
             }
-            else if (rightAvg - leftAvg > THRESHOLD) {
+            else if (rightMean - leftMean > THRESHOLD) {
                 side = “Right”;
             }
             else {side = “None”;}
@@ -104,7 +121,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             }
             leftPaint.setStyle(Paint.Style.STROKE); 38 leftPaint.setStrokeWidth(scaleCanvasDensity * 4);
 
-            canvas.drawRect(makeGraphicsRect(LEFT_WINDOW, scaleBmpPxToCanvasPx), leftPaint);
+            canvas.drawRect(makeGraphicsRect(leftWindow, scaleBmpPxToCanvasPx), leftPaint);
 
             paint rightPaint = new Paint();
             if side.equals(“Right”) {
@@ -115,11 +132,10 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             }
             rightPaint.setStyle(Paint.Style.STROKE); 38 rightPaint.setStrokeWidth(scaleCanvasDensity * 4);
 
-            canvas.drawRect(makeGraphicsRect(RIGHT_WINDOW, scaleBmpPxToCanvasPx), rightPaint);
+            canvas.drawRect(makeGraphicsRect(rightWindow, scaleBmpPxToCanvasPx), rightPaint);
         
         }
-        // of left is more than THRESHOLD than
-        // mean red of right, then left is the side.
+        
 
 
 // convert a camera rectangle (x,y,width,height) into a screen rectangle
