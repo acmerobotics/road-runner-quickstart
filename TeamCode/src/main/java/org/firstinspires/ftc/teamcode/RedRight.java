@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static com.sun.tools.doclint.Entity.delta;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -15,11 +17,12 @@ public class RedRight extends LinearOpMode {
     //BRING GRABBER UP FIRST THING
     AutoFluffy fluffy;
     public static String PATH = "Center";
+    public static double delta = 1;
     List<Recognition> currentRecognitions;
     public void runOpMode(){
         initialize();
         while(!isStarted() && !isStopRequested()){
-            currentRecognitions=fluffy.getRecognitions();
+            //currentRecognitions=fluffy.getRecognitions();
             if(gamepad1.x){
                 PATH = "Left";
                 telemetry.addData("TargetPosition: ", PATH);
@@ -51,15 +54,16 @@ public class RedRight extends LinearOpMode {
         telemetry.addData("y", fluffy.drive.pose.position.y);
         telemetry.addData("heading (deg)", Math.toDegrees(fluffy.drive.pose.heading.toDouble()));
         telemetry.update();
-        sleep(10000);
+        sleep(5000);
 
-        //fluffy.deliverPurple();
-        //sleep(5000)
+        fluffy.deliverPurple();
+        sleep(5000);
     }
 
 
     public void initialize(){
         fluffy = new AutoFluffy(this, "Red");
+        fluffy.init();
         fluffy.raiseGrabber();
     }
 
@@ -76,8 +80,9 @@ public class RedRight extends LinearOpMode {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         //.splineTo(new Vector2d(27.93, -10.81), -91.4)
-                        .lineToX(25)
-                        .turnTo(Math.toRadians(-90))
+                        .lineToX(29)
+                        //.lineToXLinearHeading(25, Math.toRadians(-90))
+                        .turnTo(Math.toRadians(-91))
                         .build());
     }
     public void deliverPurpleRight(){
@@ -93,5 +98,27 @@ public class RedRight extends LinearOpMode {
                         .build());
     }
 
+    public void deliverYellow(){
+        fluffy.raiseLift();
+        sleep (5000); //fix values
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .lineToY(fluffy.drive.pose.position.y - 6)
+                        .build()); //fix values
+        fluffy.raiseFinger();
+        sleep (300); //fix values
+
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .setReversed(true)
+                        .lineToY(fluffy.drive.pose.position.y + 6)
+                        .setReversed(false)
+                        .build()); //fix values
+        fluffy.grabberDown();
+        sleep(300); //fix values
+        fluffy.lowerLift();
+        sleep(5000); //fix values
+
+    }
 
 }

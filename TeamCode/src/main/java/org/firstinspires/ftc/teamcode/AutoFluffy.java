@@ -42,8 +42,15 @@ public class AutoFluffy {
 
     public static double HANGER_LATCH_INIT = 0.87;
 
-    public static double PURPLE_RELEASE = 0;
-    public static double PURPLE_GRAB = 0;
+    public static double LEFT_PURPLE_RELEASE = .75;
+    public static double LEFT_PURPLE_GRAB = .05;
+    public static double RIGHT_PURPLE_RELEASE = 0;
+    public static double RIGHT_PURPLE_GRAB = 1;
+    public static double LEFT_PURPLE_INIT = LEFT_PURPLE_GRAB;
+    public static double RIGHT_PURPLE_INIT = RIGHT_PURPLE_GRAB;
+    public static int LIFT_UP = 0;  //fix values
+    public static int LIFT_DOWN = 0;  //fix values
+    public static double LIFT_POWER = 1;  //fix values
 
     boolean isGrabberUp = false;
     String side = "Red";
@@ -135,16 +142,19 @@ public class AutoFluffy {
         hangerLatch = op.hardwareMap.servo.get("hangerLatch");
         hangerLatch.setPosition(HANGER_LATCH_INIT);
 
+        leftPurple = op.hardwareMap.servo.get("leftPurple");
+        leftPurple.setPosition(LEFT_PURPLE_INIT);
 
+        rightPurple = op.hardwareMap.servo.get("rightPurple");
+        rightPurple.setPosition(RIGHT_PURPLE_INIT);
 
-
-        aprilTag = new AprilTagProcessor.Builder()
-                .build();
+        /*aprilTag = new AprilTagProcessor.Builder()
+                .build();*/
 
         // -----------------------------------------------------------------------------------------
         // TFOD Configuration
         // -----------------------------------------------------------------------------------------
-        String[] LABELS;
+        /*String[] LABELS;
         if (side.equals("Red")) {
             LABELS = RED_LABELS;
         } else {
@@ -155,17 +165,17 @@ public class AutoFluffy {
                 .setModelAspectRatio(RESOLUTION_WIDTH/RESOLUTION_HEIGHT)  //verify with grace
                 .setModelLabels(LABELS)
                 .build();
-
+        */
         // -----------------------------------------------------------------------------------------
         // Camera Configuration
         // -----------
 
         drive = new MecanumDrive(op.hardwareMap, new Pose2d(new Vector2d(0, 0), 0));
-        visionPortal = new VisionPortal.Builder()
+        /*visionPortal = new VisionPortal.Builder()
                 .setCamera(op.hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .addProcessors(tfod, aprilTag)
                 .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
-                .build();
+                .build();*/
 
     }
 
@@ -174,12 +184,10 @@ public class AutoFluffy {
     }
 
     public void deliverPurple() {
-        leftPurple.setPosition(PURPLE_RELEASE);
-        rightPurple.setPosition(PURPLE_RELEASE);
-        op.sleep(1000);
-        leftPurple.setPosition(PURPLE_GRAB);
-        rightPurple.setPosition(PURPLE_GRAB);
+        leftPurple.setPosition(LEFT_PURPLE_RELEASE);
+        rightPurple.setPosition(RIGHT_PURPLE_RELEASE);
     }
+
     public List<Recognition> getRecognitions(){
         return tfod.getRecognitions();
     }
@@ -188,4 +196,31 @@ public class AutoFluffy {
         grabberRot.setPosition(GRABBER_UP);
         isGrabberUp=true;
     }
+
+
+        public void lowerGrabber(){
+            grabberRot.setPosition(GRABBER_DOWN);
+            isGrabberUp=false;
+        }
+
+        public void setFingerUp(){finger.setPosition(FINGER_UP);
+        }
+        public void setFingerDown(){
+            finger.setPosition(FINGER_DOWN);
+        }
+        public void raiseLift(){
+        liftMotor.setTargetPosition(LIFT_UP);
+        liftMotor.setPower(LIFT_POWER);
+        }
+        public void raiseFinger(){
+        finger.setPosition(FINGER_UP);
+        }
+        public void grabberDown(){
+        grabberRot.setPosition(GRABBER_DOWN);
+        }
+        public void lowerLift(){
+        liftMotor.setTargetPosition(LIFT_DOWN);
+        liftMotor.setPower(LIFT_POWER);
+        }
+
 }
