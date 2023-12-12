@@ -83,6 +83,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
 
     class OpenCVProcessor implements VisionProcessor {
 
+        // JRC: These are switched?!
         public final int BLUE_CHANNEL = 1;
         public final int RED_CHANNEL = 2;
         public String side = "None";            // accessible side ID
@@ -111,6 +112,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
                 return null;
             }
             Mat workingMat = new Mat();
+            // JRC: Pretty sure this should be COLOR_RGB2YCrCb
             Imgproc.cvtColor(frame, workingMat, Imgproc.COLOR_BGR2YCrCb);   // Possibly: Use HSV.  Use inRange() to convert to binary matrix.
 
             if (LW_TOP + LW_HEIGHT >= workingMat.height()) {

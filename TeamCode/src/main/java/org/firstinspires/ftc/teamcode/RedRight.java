@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static com.sun.tools.doclint.Entity.delta;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -23,7 +21,7 @@ public class RedRight extends LinearOpMode {
         initialize();
         while(!isStarted() && !isStopRequested()){
             //currentRecognitions=fluffy.getRecognitions();
-            /*if(gamepad1.x){
+            if(gamepad1.x){
                 PATH = "Left";
                 telemetry.addData("TargetPosition: ", PATH);
             }
@@ -37,8 +35,8 @@ public class RedRight extends LinearOpMode {
             }
             //telemetry.addData("TargetPosition: ", PATH);
             telemetry.update();
-            sleep(5000);*/
-            PATH= fluffy.getSide();
+            //sleep(5000);*/
+            //PATH= fluffy.getSide();
             telemetry.addData("Side: ", PATH );
             telemetry.update();
 
@@ -47,10 +45,13 @@ public class RedRight extends LinearOpMode {
 
         if(PATH == "Left"){
             deliverPurpleLeft();
+            yellowLeft();
         } else if(PATH == "Right"){
             deliverPurpleRight();
+            yellowRight();
         }else{
             deliverPurpleCenter();
+            yellowCenter();
         }
 
         telemetry.addData("x", fluffy.drive.pose.position.x);
@@ -59,8 +60,6 @@ public class RedRight extends LinearOpMode {
         telemetry.update();
         sleep(5000);
 
-        fluffy.deliverPurple();
-        sleep(5000);
     }
 
 
@@ -75,29 +74,51 @@ public class RedRight extends LinearOpMode {
            fluffy.drive.actionBuilder(fluffy.drive.pose)
                    //.splineTo(new Vector2d(29.5,9.23), .21)
                    .lineToX(20.5)
-                   .strafeTo( new Vector2d(26.5,-17))
+                   .strafeTo( new Vector2d(29.5,10.5))
                    .build());
+        fluffy.deliverPurple();
 
     }
     public void deliverPurpleCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         //.splineTo(new Vector2d(27.93, -10.81), -91.4)
-                        .lineToX(29)
-                        //.lineToXLinearHeading(25, Math.toRadians(-90))
-                        .turnTo(Math.toRadians(-91))
+                        //.lineToX(29)
+                        .strafeToLinearHeading(new Vector2d(36.25, -.5), Math.toRadians(-90))
+                        //.turnTo(Math.toRadians(-91))
                         .build());
+        fluffy.deliverPurple();
     }
     public void deliverPurpleRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         //.splineTo(new Vector2d(25, -15), -90)
-                        .lineToX(12)
+                        //.lineToX(12)
                         //.lineToXLinearHeading(20, Math.toRadians(-90))
-                        .strafeToLinearHeading(new Vector2d(20,-28), Math.toRadians(-85))
+                        .strafeToLinearHeading(new Vector2d(20,-5), Math.toRadians(-90))
                         //.turnTo(Math.toRadians(-90))
                         //.lineToY(-15)
                         //.lineToY(-15)
+                        .build());
+        fluffy.deliverPurple();
+    }
+
+    public void yellowLeft(){
+        Actions.runBlocking(
+              fluffy.drive.actionBuilder(fluffy.drive.pose)
+                      .strafeToLinearHeading(new Vector2d(34.4, -26), Math.toRadians(-90))
+                      .build());
+    }
+    public void yellowCenter(){
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeToLinearHeading(new Vector2d(34.4, -31), Math.toRadians(-90))
+                        .build());
+    }
+    public void yellowRight(){
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeToLinearHeading(new Vector2d(34.4, -38), Math.toRadians(-90))
                         .build());
     }
 

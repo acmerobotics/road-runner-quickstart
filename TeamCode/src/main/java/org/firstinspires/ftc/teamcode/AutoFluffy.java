@@ -153,7 +153,7 @@ public class AutoFluffy {
         aprilTag = new AprilTagProcessor.Builder()
                 .build();
 
-        redFinder = new RedFinder();
+        //redFinder = new RedFinder();
 
 
         // -----------------------------------------------------------------------------------------
@@ -179,7 +179,8 @@ public class AutoFluffy {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(op.hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .addProcessors(redFinder, aprilTag)
+                //.addProcessors(redFinder, aprilTag)
+                .addProcessor(aprilTag)
                 .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
                 .build();
 
@@ -196,6 +197,7 @@ public class AutoFluffy {
     public void deliverPurple() {
         leftPurple.setPosition(LEFT_PURPLE_RELEASE);
         rightPurple.setPosition(RIGHT_PURPLE_RELEASE);
+        op.sleep(1000);
     }
 
     public List<Recognition> getRecognitions(){
