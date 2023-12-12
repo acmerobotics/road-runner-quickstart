@@ -14,9 +14,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-/* ToDO - fix communication of values.  leftValues, centerValues, rightValues stay at 0.0
-
- */
 
 @Config
 public class ConceptOpenCVHSV implements VisionProcessor {
@@ -24,15 +21,34 @@ public class ConceptOpenCVHSV implements VisionProcessor {
     public static Boolean showOutput = false;   // for config purposes - can view output rather than input.
                                                 // DOES NOT PLAY NICELY WITH OTHER VISION PROCESSORS THAT EXPECT THE INPUT STREAM
 
-    Rect leftWindow, centerWindow, rightWindow;
-    public static int LW_LEFT = 2, LW_RIGHT = 200, LW_TOP = 2, LW_BOTTOM = 400;
-    public static int CW_LEFT = 202, CW_RIGHT = 400, CW_TOP = 2, CW_BOTTOM = 400;
 
-    public static int RW_LEFT = 402, RW_RIGHT = 600, RW_TOP = 2, RW_BOTTOM = 400;
+    Rect leftWindow, centerWindow, rightWindow;
+    public static int LW_LEFT = 300;
+    public static int LW_TOP = 400;
+    public static int LW_RIGHT = 640;
+    public static int LW_BOTTOM = 900 ;
+
+    public static int CW_LEFT=800;
+    public static int CW_TOP=400;
+    public static int CW_RIGHT = 1380;
+    public static int CW_BOTTOM= 700;
+
+
+    public static int RW_LEFT = 1460;
+    public static int RW_TOP = 400;
+    public static int RW_RIGHT = 1810 ;
+    public static int RW_BOTTOM = 900;
+
+    public static int MIN_HUE = 0, MAX_HUE = 255;
+    public static int MIN_SAT = 0, MAX_SAT = 255;
+    public static int MIN_VALUE = 0, MAX_VALUE = 255;
 
     public static double leftH = 0.0;
 
-    public double[] leftValues = new double[3], centerValues = new double[3], rightValues = new double[3];
+    public double[] leftCb = new double[3], centerCb = new double[3], rightCb = new double[3];
+    public double[] leftHSValues = new double[3], centerHSValues = new double[3], rightHSValues = new double[3];
+    public double[] leftHSVBinary = new double[3], centerHSVBinary = new double[3], rightHSVBinary = new double[3];
+
     @java.lang.Override
     public void init(int width, int height, CameraCalibration calibration) {
 
@@ -40,36 +56,52 @@ public class ConceptOpenCVHSV implements VisionProcessor {
 
     @java.lang.Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
-        Mat workingMat = new Mat();
-        Imgproc.cvtColor(frame, workingMat, Imgproc.COLOR_RGB2HSV);
-        leftWindow = new Rect(LW_LEFT, LW_TOP, LW_RIGHT- LW_LEFT, LW_BOTTOM - LW_TOP);
-        trimRect(workingMat, leftWindow);
-        centerWindow = new Rect(CW_LEFT, CW_TOP, CW_RIGHT- CW_LEFT, CW_BOTTOM - CW_TOP);
-        trimRect(workingMat, centerWindow);
-        rightWindow = new Rect(RW_LEFT, RW_TOP, RW_RIGHT- RW_LEFT, RW_BOTTOM - RW_TOP);
-        trimRect(workingMat, rightWindow);
+        Mat workingHSVMat = new Mat();
+        Mat workingYCrCbMat = new Mat();
+        //Mat workingHSVBinaryMat = new Mat();
 
-        Mat leftCrop = workingMat.submat(leftWindow);
-        Mat centerCrop = workingMat.submat(centerWindow);
-        Mat rightCrop = workingMat.submat(rightWindow);
+        Imgproc.cvtColor(frame, workingHSVMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(frame, workingYCrCbMat, Imgproc.COLOR_RGB2YCrCb);
+
+        // create binary image - see https://docs.wpilib.org/en/stable/docs/software/vision-processing/wpilibpi/image-thresholding.html
+        //workingHSVBinaryMat = Imgproc.inRange()
+
+        leftWindow = new Rect(LW_LEFT, LW_TOP, LW_RIGHT- LW_LEFT, LW_BOTTOM - LW_TOP);
+        trimRect(workingHSVMat, leftWindow);
+        centerWindow = new Rect(CW_LEFT, CW_TOP, CW_RIGHT- CW_LEFT, CW_BOTTOM - CW_TOP);
+        trimRect(workingHSVMat, centerWindow);
+        rightWindow = new Rect(RW_LEFT, RW_TOP, RW_RIGHT- RW_LEFT, RW_BOTTOM - RW_TOP);
+        trimRect(workingHSVMat, rightWindow);
+
+        Mat leftHSVCrop = workingHSVMat.submat(leftWindow);
+        Mat centerHSVCrop = workingHSVMat.submat(centerWindow);
+        Mat rightHSVCrop = workingHSVMat.submat(rightWindow);
 
         // these values don't get back to parent object.
-        populateValues(Core.mean(leftCrop).val, leftValues);
-        populateValues(Core.mean(centerCrop).val,centerValues);
-        populateValues(Core.mean(rightCrop).val,rightValues);
+        populateValues(Core.mean(leftHSVCrop).val, leftHSValues);
+        populateValues(Core.mean(centerHSVCrop).val,centerHSValues);
+        populateValues(Core.mean(rightHSVCrop).val,rightHSValues);
 
-        leftCrop.release();
-        centerCrop.release();
-        rightCrop.release();
+        leftHSVCrop.release();
+        centerHSVCrop.release();
+        rightHSVCrop.release();
+        workingHSVMat.release();
 
-        if (showOutput) {
-            frame.release();
-            return workingMat;
-        }
-        else {
-            workingMat.release();
-            return frame;
-        }
+        Mat leftCbCrop = workingYCrCbMat.submat(leftWindow);
+        Mat centerCbCrop = workingYCrCbMat.submat(centerWindow);
+        Mat rightCbCrop = workingYCrCbMat.submat(rightWindow);
+
+        populateValues(Core.mean(leftCbCrop).val, leftCb);
+        populateValues(Core.mean(centerCbCrop).val, centerCb);
+        populateValues(Core.mean(rightCbCrop).val, rightCb);
+
+        leftCbCrop.release();
+        centerCbCrop.release();
+        rightCbCrop.release();
+        workingYCrCbMat.release();
+
+        return frame;
+
     }
 
     @java.lang.Override

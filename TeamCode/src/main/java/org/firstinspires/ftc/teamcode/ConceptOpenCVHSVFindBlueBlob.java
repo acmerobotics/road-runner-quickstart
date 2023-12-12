@@ -33,15 +33,23 @@ public class ConceptOpenCVHSVFindBlueBlob extends LinearOpMode {
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 .build();
         while (!isStarted() && !isStopRequested()) {
-            telemetry.addData("Left: ", formatValues(detector.leftValues));
-            telemetry.addData("Center: ", formatValues(detector.centerValues));
-            telemetry.addData("Right: ", formatValues(detector.rightValues));
+            telemetry.addData("Left HSV: ", formatHSValues(detector.leftHSValues));
+            telemetry.addData("Center HSV: ", formatHSValues(detector.centerHSValues));
+            telemetry.addData("Right HSV: ", formatHSValues(detector.rightHSValues));
+            telemetry.addData("Left YCrCb: ", formatYCrCbValues(detector.leftCb));
+            telemetry.addData("Center YCrCb: ", formatYCrCbValues(detector.centerCb));
+            telemetry.addData("Right YCrCb: ", formatYCrCbValues(detector.rightCb));
             telemetry.update();
         }
     }
 
-    public String formatValues(double[] values) {
+    public String formatHSValues(double[] values) {
         String s = String.format("H: %3.1f  S: %3.1f  V: %3.1f ", values[0], values[1], values[2]);
+        return s;
+    }
+
+    public String formatYCrCbValues(double[] values) {
+        String s = String.format("Y: %3.1f  Cr: %3.1f  Cb: %3.1f", values[0], values[1], values[2]);
         return s;
     }
 }

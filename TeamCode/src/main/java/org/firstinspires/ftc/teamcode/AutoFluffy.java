@@ -29,8 +29,9 @@ public class AutoFluffy {
     VisionPortal visionPortal;
     AprilTagProcessor aprilTag;
     TfodProcessor tfod;
-    final int RESOLUTION_WIDTH = 960;
-    final int RESOLUTION_HEIGHT = 720;
+     RedFinder redFinder;
+    final int RESOLUTION_WIDTH = 1920;
+    final int RESOLUTION_HEIGHT = 1080;
     public static double DRONE_PUSHER_RESET = 0.85;
     public static double DRONE_PUSHER_INIT = 0.8;
     public static double GRABBER_ROT_INIT = 0.07;
@@ -53,6 +54,7 @@ public class AutoFluffy {
     public static double LIFT_POWER = 1;  //fix values
 
     boolean isGrabberUp = false;
+
     String side = "Red";
 
     String propLocation;
@@ -148,8 +150,11 @@ public class AutoFluffy {
         rightPurple = op.hardwareMap.servo.get("rightPurple");
         rightPurple.setPosition(RIGHT_PURPLE_INIT);
 
-        /*aprilTag = new AprilTagProcessor.Builder()
-                .build();*/
+        aprilTag = new AprilTagProcessor.Builder()
+                .build();
+
+        redFinder = new RedFinder();
+
 
         // -----------------------------------------------------------------------------------------
         // TFOD Configuration
@@ -171,16 +176,21 @@ public class AutoFluffy {
         // -----------
 
         drive = new MecanumDrive(op.hardwareMap, new Pose2d(new Vector2d(0, 0), 0));
-        /*visionPortal = new VisionPortal.Builder()
+
+        visionPortal = new VisionPortal.Builder()
                 .setCamera(op.hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .addProcessors(tfod, aprilTag)
+                .addProcessors(redFinder, aprilTag)
                 .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
-                .build();*/
+                .build();
 
     }
 
     List<AprilTagDetection> findDetections() {
         return aprilTag.getDetections();
+    }
+
+    public String getSide(){
+        return redFinder.side;
     }
 
     public void deliverPurple() {

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.List;
 @Config
-@Autonomous(name = "RedRight", group = "robot")
+@Autonomous(name = "RedRight", group = "robot", preselectTeleOp = "FluffyTeleOp")
 public class RedRight extends LinearOpMode {
     //BRING GRABBER UP FIRST THING
     AutoFluffy fluffy;
@@ -23,7 +23,7 @@ public class RedRight extends LinearOpMode {
         initialize();
         while(!isStarted() && !isStopRequested()){
             //currentRecognitions=fluffy.getRecognitions();
-            if(gamepad1.x){
+            /*if(gamepad1.x){
                 PATH = "Left";
                 telemetry.addData("TargetPosition: ", PATH);
             }
@@ -37,7 +37,10 @@ public class RedRight extends LinearOpMode {
             }
             //telemetry.addData("TargetPosition: ", PATH);
             telemetry.update();
-            sleep(5000);
+            sleep(5000);*/
+            PATH= fluffy.getSide();
+            telemetry.addData("Side: ", PATH );
+            telemetry.update();
 
 
         }

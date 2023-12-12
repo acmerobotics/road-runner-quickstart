@@ -243,16 +243,16 @@ public class TeleFluffy {
         rightBack.setPower(-APPROACH_SPEED);
     }
     public void slowLeft(){
-        leftFront.setPower(APPROACH_SPEED*2.5);
-        rightFront.setPower(-APPROACH_SPEED*2.5);
-        leftBack.setPower(-APPROACH_SPEED*2.5);
-        rightBack.setPower(APPROACH_SPEED*2.5);
-    }
-    public void slowRight(){
         leftFront.setPower(-APPROACH_SPEED*2.5);
         rightFront.setPower(APPROACH_SPEED*2.5);
         leftBack.setPower(APPROACH_SPEED*2.5);
         rightBack.setPower(-APPROACH_SPEED*2.5);
+    }
+    public void slowRight(){
+        leftFront.setPower(APPROACH_SPEED*2.5);
+        rightFront.setPower(-APPROACH_SPEED*2.5);
+        leftBack.setPower(-APPROACH_SPEED*2.5);
+        rightBack.setPower(APPROACH_SPEED*2.5);
     }
     public void purpleLeftUp(){
         purpleLeft.setPosition(PURPLE_LEFT_UP);

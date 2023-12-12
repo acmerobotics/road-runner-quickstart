@@ -162,14 +162,10 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             leftCrop.release();
             centerCrop.release();
             rightCrop.release();
-            if (inOut) {
+
                 workingMat.release();
                 return frame;
-            }
-            else {
-                frame.release();
-                return workingMat;
-            }
+
         }
 
         @java.lang.Override
