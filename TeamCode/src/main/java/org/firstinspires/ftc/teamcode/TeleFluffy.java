@@ -148,10 +148,10 @@ public class TeleFluffy {
     }
 
     public void setTeleOpDrive(double forward, double strafe, double turn){
-        double leftFrontPower = trimPower(forward - strafe + turn);
-        double rightFrontPower = trimPower(forward + strafe - turn);
-        double leftBackPower = trimPower(forward + strafe + turn);
-        double rightBackPower = trimPower(forward - strafe - turn);
+        double leftFrontPower = trimPower(forward + strafe + turn);
+        double rightFrontPower = trimPower(forward - strafe - turn);
+        double leftBackPower = trimPower(forward - strafe + turn);
+        double rightBackPower = trimPower(forward + strafe - turn);
         leftFront.setPower(leftFrontPower);
         rightFront.setPower(rightFrontPower);
         leftBack.setPower(leftBackPower);
