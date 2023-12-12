@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
@@ -11,11 +13,13 @@ import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
+@Config
 public class RedFinder implements VisionProcessor {
 
     final static int RESOLUTION_WIDTH = 1920;
     final static int RESOLUTION_HEIGHT = 1080;
 
+    // JRC: need to be adjusted for correct camera position.
     public static int LW_LEFT = 300;
     public static int LW_TOP = 400;
     public static int LW_WIDTH = 340;
@@ -34,7 +38,8 @@ public class RedFinder implements VisionProcessor {
 
     public static double THRESHOLD = 5.0;
 
-    // JRC: These are switched?!
+    // JRC: These are switched?!  In YCrCb, red channel is 1 and blue is 2.  BUT, because the conversion was also backwards
+    //      (Color.BGR2YCrCb), we essentially double-switched the channels.
     public final int BLUE_CHANNEL = 1;
     public final int RED_CHANNEL = 2;
     public String side = "None";            // accessible side ID
@@ -114,13 +119,9 @@ public class RedFinder implements VisionProcessor {
         leftCrop.release();
         centerCrop.release();
         rightCrop.release();
-        if (inOut) {
-            workingMat.release();
-            return frame;
-        } else {
-            frame.release();
-            return workingMat;
-        }
+        workingMat.release();
+        return frame;
+
     }
 
     @java.lang.Override

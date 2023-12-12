@@ -26,10 +26,11 @@ public class AutoFluffy {
     Servo grabberRot, finger, hangerLatch, dronePusher, leftPurple, rightPurple;
 
     public MecanumDrive drive;
+
     VisionPortal visionPortal;
     AprilTagProcessor aprilTag;
-    TfodProcessor tfod;
-     RedFinder redFinder;
+    //TfodProcessor tfod;
+    RedFinder redFinder;
     final int RESOLUTION_WIDTH = 1920;
     final int RESOLUTION_HEIGHT = 1080;
     public static double DRONE_PUSHER_RESET = 0.85;
@@ -59,6 +60,7 @@ public class AutoFluffy {
 
     String propLocation;
 
+
     String[] RED_LABELS = {"redprop"};
     String[] BLUE_LABELS = {"blueprop"};
 
@@ -74,9 +76,9 @@ public class AutoFluffy {
 
     }
 
-    public AutoFluffy() {
+    /*public AutoFluffy() {
 
-    }
+    }*/
 
     AprilTagDetection assignID (String propLocation, String side){
         int idNum=0;
@@ -107,6 +109,7 @@ public class AutoFluffy {
         }
         return null;
     }
+
 
     public void telemetryDetection (AprilTagDetection detection){
         if (detection==null){
@@ -153,7 +156,7 @@ public class AutoFluffy {
         aprilTag = new AprilTagProcessor.Builder()
                 .build();
 
-        //redFinder = new RedFinder();
+        redFinder = new RedFinder();
 
 
         // -----------------------------------------------------------------------------------------
@@ -179,8 +182,7 @@ public class AutoFluffy {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(op.hardwareMap.get(WebcamName.class, "Webcam 1"))
-                //.addProcessors(redFinder, aprilTag)
-                .addProcessor(aprilTag)
+                .addProcessors(redFinder, aprilTag)
                 .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
                 .build();
 
@@ -188,11 +190,15 @@ public class AutoFluffy {
 
     List<AprilTagDetection> findDetections() {
         return aprilTag.getDetections();
+
     }
 
+    // JRC: Shouldn't "side" be "propLocation"?  "side" is reserved for "Red" and "Blue"
     public String getSide(){
         return redFinder.side;
     }
+
+    // JRC: needs a getPropLocation() method
 
     public void deliverPurple() {
         leftPurple.setPosition(LEFT_PURPLE_RELEASE);
@@ -200,9 +206,10 @@ public class AutoFluffy {
         op.sleep(1000);
     }
 
-    public List<Recognition> getRecognitions(){
+
+    /*public List<Recognition> getRecognitions(){
         return tfod.getRecognitions();
-    }
+    }*/
 
     public void raiseGrabber(){
         grabberRot.setPosition(GRABBER_UP);
