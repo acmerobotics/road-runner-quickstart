@@ -26,7 +26,6 @@ public class AutoFluffy {
     Servo grabberRot, finger, hangerLatch, dronePusher, leftPurple, rightPurple;
 
     public MecanumDrive drive;
-
     VisionPortal visionPortal;
     AprilTagProcessor aprilTag;
     //TfodProcessor tfod;
@@ -63,6 +62,7 @@ public class AutoFluffy {
 
     String[] RED_LABELS = {"redprop"};
     String[] BLUE_LABELS = {"blueprop"};
+    private HueDetection hueDetector;
 
     public AutoFluffy(LinearOpMode op) {
         this.op = op;
@@ -110,7 +110,6 @@ public class AutoFluffy {
         return null;
     }
 
-
     public void telemetryDetection (AprilTagDetection detection){
         if (detection==null){
             return;
@@ -156,7 +155,8 @@ public class AutoFluffy {
         aprilTag = new AprilTagProcessor.Builder()
                 .build();
 
-        redFinder = new RedFinder();
+       // redFinder = new RedFinder();
+        hueDetector= new HueDetection();
 
 
         // -----------------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ public class AutoFluffy {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(op.hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .addProcessors(redFinder, aprilTag)
+                .addProcessors(hueDetector, aprilTag)
                 .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
                 .build();
 
@@ -190,15 +190,21 @@ public class AutoFluffy {
 
     List<AprilTagDetection> findDetections() {
         return aprilTag.getDetections();
-
     }
 
-    // JRC: Shouldn't "side" be "propLocation"?  "side" is reserved for "Red" and "Blue"
-    public String getSide(){
-        return redFinder.getSide();
+    public String getPropLocation(){
+        return hueDetector.propLocation;
+    }
+    public double getLeftMean(){
+        return hueDetector.leftMean;
+    }
+    public double getCenterMean(){
+        return hueDetector.centerMean;
+    }
+    public double getRightMean(){
+        return hueDetector.rightMean;
     }
 
-    // JRC: needs a getPropLocation() method
 
     public void deliverPurple() {
         leftPurple.setPosition(LEFT_PURPLE_RELEASE);

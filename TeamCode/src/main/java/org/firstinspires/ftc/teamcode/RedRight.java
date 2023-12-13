@@ -45,11 +45,14 @@ public class RedRight extends LinearOpMode {
                 telemetry.addData("TargetPosition: ", PATH);
             }*/
             //telemetry.addData("TargetPosition: ", PATH);
-            //telemetry.update();
-            //sleep(5000);*/
+            telemetry.update();
+            sleep(5000);
+            PATH= fluffy.getPropLocation();
+            telemetry.addData("Prop Location", PATH );
+            telemetry.addData("Sat. Value", fluffy.getLeftMean());
+            telemetry.addData("Sat. Value", fluffy.getCenterMean());
+            telemetry.addData("Sat. Value", fluffy.getRightMean());
 
-            PATH= fluffy.getSide();
-            telemetry.addData("Prop location: ", PATH);
             telemetry.update();
 
 

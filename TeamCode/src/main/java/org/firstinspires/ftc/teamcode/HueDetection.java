@@ -4,8 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.acmerobotics.dashboard.config.Config;
-
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
@@ -13,17 +11,11 @@ import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
-/* TODO
- * - switch over to HSV detection instead of YCrCb
- * - Adjust detection rectangles for proper camera location
- */
-@Config
-public class RedFinder implements VisionProcessor {
+public class HueDetection implements VisionProcessor {
 
     final static int RESOLUTION_WIDTH = 1920;
     final static int RESOLUTION_HEIGHT = 1080;
 
-    // JRC: need to be adjusted for correct camera position.
     public static int LW_LEFT = 300;
     public static int LW_TOP = 400;
     public static int LW_WIDTH = 340;
@@ -42,10 +34,7 @@ public class RedFinder implements VisionProcessor {
 
     public static double THRESHOLD = 5.0;
 
-    // JRC: These are switched?!  In YCrCb, red channel is 1 and blue is 2.  BUT, because the conversion was also backwards
-    //      (Color.BGR2YCrCb), we essentially double-switched the channels.
-    public final int BLUE_CHANNEL = 1;
-    public final int RED_CHANNEL = 2;
+    public final int SAT_CHANNEL = 1;
     public String propLocation = "None";            // accessible prop location ID
     public double leftMean, centerMean, rightMean;        // accessible mean red metrics
     // if the mean red of one side is greater than THRESHOLD + mean of the other, that side is "Red"
@@ -70,9 +59,7 @@ public class RedFinder implements VisionProcessor {
             return null;
         }
         Mat workingMat = new Mat();
-
-        // Pretty sure this should be COLOR_RGB2YCrCb
-        Imgproc.cvtColor(frame, workingMat, Imgproc.COLOR_BGR2YCrCb);   // Possibly: Use HSV.  Use inRange() to convert to binary matrix.
+        Imgproc.cvtColor(frame, workingMat, Imgproc.COLOR_RGB2HSV);   // Use inRange() to convert to binary matrix.
 
         if (LW_TOP + LW_HEIGHT >= workingMat.height()) {
             LW_HEIGHT = workingMat.height() - LW_TOP - 1;
@@ -99,13 +86,13 @@ public class RedFinder implements VisionProcessor {
         rightWindow = new Rect(RW_LEFT, RW_TOP, RW_WIDTH, RW_HEIGHT);
 
         Mat leftCrop = workingMat.submat(leftWindow);
-        Core.extractChannel(leftCrop, leftCrop, RED_CHANNEL);
+        Core.extractChannel(leftCrop, leftCrop, SAT_CHANNEL);
 
         Mat centerCrop = workingMat.submat(centerWindow);
-        Core.extractChannel(centerCrop, centerCrop, RED_CHANNEL);
+        Core.extractChannel(centerCrop, centerCrop, SAT_CHANNEL);
 
         Mat rightCrop = workingMat.submat(rightWindow);
-        Core.extractChannel(rightCrop, rightCrop, RED_CHANNEL);
+        Core.extractChannel(rightCrop, rightCrop, SAT_CHANNEL);
 
         leftMean = Core.mean(leftCrop).val[0];
         centerMean = Core.mean(centerCrop).val[0];
@@ -123,9 +110,13 @@ public class RedFinder implements VisionProcessor {
         leftCrop.release();
         centerCrop.release();
         rightCrop.release();
-        workingMat.release();
-        return frame;
-
+        if (inOut) {
+            workingMat.release();
+            return frame;
+        } else {
+            frame.release();
+            return workingMat;
+        }
     }
 
     @java.lang.Override
@@ -133,7 +124,7 @@ public class RedFinder implements VisionProcessor {
 
         Paint leftPaint = new Paint();
         if (propLocation.equals("Left")) {
-            leftPaint.setColor(Color.RED);
+            leftPaint.setColor(Color.MAGENTA);
         } else {
             leftPaint.setColor(Color.GREEN);
         }
@@ -143,7 +134,7 @@ public class RedFinder implements VisionProcessor {
 
         Paint centerPaint = new Paint();
         if (propLocation.equals("Center")) {
-            centerPaint.setColor(Color.RED);
+            centerPaint.setColor(Color.MAGENTA);
         } else {
             centerPaint.setColor(Color.GREEN);
         }
@@ -154,7 +145,7 @@ public class RedFinder implements VisionProcessor {
 
         Paint rightPaint = new Paint();
         if (propLocation.equals("Right")) {
-            rightPaint.setColor(Color.RED);
+            rightPaint.setColor(Color.MAGENTA);
         } else {
             rightPaint.setColor(Color.GREEN);
         }
@@ -174,3 +165,4 @@ public class RedFinder implements VisionProcessor {
         return new android.graphics.Rect(left, top, right, bottom);
     }
 }
+
