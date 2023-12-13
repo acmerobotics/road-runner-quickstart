@@ -95,9 +95,9 @@ public class HueDetection implements VisionProcessor {
         Mat rightCrop = workingMat.submat(rightWindow);
         Core.extractChannel(rightCrop, rightCrop, SAT_CHANNEL);
 
-        leftMean = Core.mean(leftCrop).val[1];
-        centerMean = Core.mean(centerCrop).val[1];
-        rightMean = Core.mean(rightCrop).val[1];
+        leftMean = Core.mean(leftCrop).val[0];
+        centerMean = Core.mean(centerCrop).val[0];
+        rightMean = Core.mean(rightCrop).val[0];
 
         if (leftMean > rightMean && leftMean > centerMean) {
             propLocation = "Left";
@@ -111,13 +111,10 @@ public class HueDetection implements VisionProcessor {
         leftCrop.release();
         centerCrop.release();
         rightCrop.release();
-        if (inOut) {
-            workingMat.release();
-            return frame;
-        } else {
-            frame.release();
-            return workingMat;
-        }
+
+        workingMat.release();
+        return frame;
+
     }
 
     @java.lang.Override
