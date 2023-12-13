@@ -140,37 +140,9 @@ public class RedRight extends LinearOpMode {
     }
 
     public void deliverYellow(){
-        fluffy.raiseLift();
-        sleep (5000); //fix values
-        Actions.runBlocking(
-                fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .lineToY(fluffy.drive.pose.position.y - 6)
-                        .build()); //fix values
-        fluffy.raiseFinger();
-        sleep (300); //fix values
 
-        Actions.runBlocking(
-                fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .setReversed(true)
-                        .lineToY(fluffy.drive.pose.position.y + 6)
-                        .setReversed(false)
-                        .build()); //fix values
-        fluffy.grabberDown();
-        sleep(300); //fix values
-        fluffy.lowerLift();
-        sleep(5000); //fix values
 
     }
-    public void correctYellowPosition(){
-        sleep(5000); //waiting for tag detections, might need less time
-        detection = fluffy.assignID(PATH, "Red");
-        double actual_X = detection.ftcPose.y;
-        double actual_Y = -detection.ftcPose.x;
-        double D_X = actual_X - DeltaC_X;
-        double D_Y = actual_Y - DeltaC_Y;
-        Target_X = fluffy.drive.pose.position.x + D_X;
-        Target_Y = fluffy.drive.pose.position.x + D_Y;
 
-    }
 
 }

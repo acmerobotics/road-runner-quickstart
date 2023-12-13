@@ -52,12 +52,16 @@ public class AutoFluffy {
     public static int LIFT_UP = 0;  //fix values
     public static int LIFT_DOWN = 0;  //fix values
     public static double LIFT_POWER = 1;  //fix values
+    public static int FINGER_UP_WAIT = 500;
+    public static int GRABBER_DOWN_WAIT = 500;
 
     boolean isGrabberUp = false;
 
     String side = "Red";
 
     String propLocation;
+
+    double deltaC_X, deltaC_Y;
 
 
     String[] RED_LABELS = {"redprop"};
@@ -185,7 +189,14 @@ public class AutoFluffy {
                 .addProcessors(hueDetector, aprilTag)
                 .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
                 .build();
-
+        if (side.equals("Red")){
+            deltaC_X = -3.86;
+            deltaC_Y = -3.51;
+        }
+        else {
+            deltaC_X = 3.86;
+            deltaC_Y = 3.51;
+        }
     }
 
     List<AprilTagDetection> findDetections() {
@@ -234,18 +245,40 @@ public class AutoFluffy {
             finger.setPosition(FINGER_DOWN);
         }
         public void raiseLift(){
-        liftMotor.setTargetPosition(LIFT_UP);
-        liftMotor.setPower(LIFT_POWER);
+            liftMotor.setTargetPosition(LIFT_UP);
+            liftMotor.setPower(LIFT_POWER);
+            while (op.opModeIsActive() && liftMotor.isBusy()){
+                op.sleep(1);
+            }
         }
         public void raiseFinger(){
-        finger.setPosition(FINGER_UP);
+            finger.setPosition(FINGER_UP);
+            op.sleep(FINGER_UP_WAIT);
         }
         public void grabberDown(){
-        grabberRot.setPosition(GRABBER_DOWN);
+            grabberRot.setPosition(GRABBER_DOWN);
+            op.sleep(GRABBER_DOWN_WAIT);
         }
         public void lowerLift(){
-        liftMotor.setTargetPosition(LIFT_DOWN);
-        liftMotor.setPower(LIFT_POWER);
+            liftMotor.setTargetPosition(LIFT_DOWN);
+            liftMotor.setPower(LIFT_POWER);
+            while (op.opModeIsActive() && liftMotor.isBusy()){
+                op.sleep(1);
+            }
         }
+
+    public Pose2d correctYellowPosition(String PATH){
+        //sleep(5000); //waiting for tag detections, might need less time
+        AprilTagDetection detection = assignID(PATH, "Red");
+        double actual_X = detection.ftcPose.y;
+        double actual_Y = -detection.ftcPose.x;
+        double D_X = actual_X - deltaC_X;
+        double D_Y = actual_Y - deltaC_Y;
+        double Target_X = drive.pose.position.x + D_X;
+        double Target_Y = drive.pose.position.x + D_Y;
+        double Target_Heading = detection.ftcPose.yaw + drive.pose.heading.toDouble();
+        return new Pose2d(Target_X, Target_Y, Target_Heading);
+
+    }
 
 }
