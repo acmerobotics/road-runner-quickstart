@@ -13,6 +13,10 @@ import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
+/* TODO
+ * - switch over to HSV detection instead of YCrCb
+ * - Adjust detection rectangles for proper camera location
+ */
 @Config
 public class RedFinder implements VisionProcessor {
 

@@ -9,12 +9,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.List;
+/* TODO
+   - turn off redFinder when no longer needed.
+ */
 @Config
 @Autonomous(name = "RedRight", group = "robot", preselectTeleOp = "FluffyTeleOp")
 public class RedRight extends LinearOpMode {
     //BRING GRABBER UP FIRST THING
     AutoFluffy fluffy;
-    public static String PATH = "Center";
+    String PATH = "Center";
     public static double delta = 1;
     List<Recognition> currentRecognitions;
     public void runOpMode(){
@@ -38,9 +41,6 @@ public class RedRight extends LinearOpMode {
             //sleep(5000);*/
 
             PATH= fluffy.getSide();
-            //telemetry.addData("Side: ", PATH );
-
-            // JRC: Need to getPropLocation() from fluffy.
             telemetry.addData("Prop location: ", PATH);
             telemetry.update();
 
@@ -51,27 +51,12 @@ public class RedRight extends LinearOpMode {
 
         if(PATH == "Left"){
             deliverPurpleLeft();
-            telemetry.addData("x", fluffy.drive.pose.position.x);
-            telemetry.addData("y", fluffy.drive.pose.position.y);
-            telemetry.addData("heading (deg)", Math.toDegrees(fluffy.drive.pose.heading.toDouble()));
-            telemetry.update();
-            sleep(5000);
             yellowLeft();
         } else if(PATH == "Right"){
             deliverPurpleRight();
-            telemetry.addData("x", fluffy.drive.pose.position.x);
-            telemetry.addData("y", fluffy.drive.pose.position.y);
-            telemetry.addData("heading (deg)", Math.toDegrees(fluffy.drive.pose.heading.toDouble()));
-            telemetry.update();
-            sleep(5000);
             yellowRight();
         }else{
             deliverPurpleCenter();
-            telemetry.addData("x", fluffy.drive.pose.position.x);
-            telemetry.addData("y", fluffy.drive.pose.position.y);
-            telemetry.addData("heading (deg)", Math.toDegrees(fluffy.drive.pose.heading.toDouble()));
-            telemetry.update();
-            sleep(5000);
             yellowCenter();
         }
 

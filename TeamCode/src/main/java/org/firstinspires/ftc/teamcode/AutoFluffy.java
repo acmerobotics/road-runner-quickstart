@@ -195,7 +195,7 @@ public class AutoFluffy {
 
     // JRC: Shouldn't "side" be "propLocation"?  "side" is reserved for "Red" and "Blue"
     public String getSide(){
-        return redFinder.side;
+        return redFinder.getSide();
     }
 
     // JRC: needs a getPropLocation() method
