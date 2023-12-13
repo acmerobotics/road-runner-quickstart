@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.List;
 /* TODO
@@ -18,6 +19,13 @@ public class RedRight extends LinearOpMode {
     //BRING GRABBER UP FIRST THING
     AutoFluffy fluffy;
     String PATH = "Center";
+    public static double DeltaC_X = -3.86;
+    public static double DeltaC_Y = -3.51;
+
+    public static double Target_X;
+    public static double Target_Y;
+
+    AprilTagDetection detection;
     public static double delta = 1;
     List<Recognition> currentRecognitions;
     public void runOpMode(){
@@ -148,6 +156,17 @@ public class RedRight extends LinearOpMode {
         sleep(300); //fix values
         fluffy.lowerLift();
         sleep(5000); //fix values
+
+    }
+    public void correctYellowPosition(){
+        sleep(5000); //waiting for tag detections, might need less time
+        detection = fluffy.assignID(PATH, "Red");
+        double actual_X = detection.ftcPose.y;
+        double actual_Y = -detection.ftcPose.x;
+        double D_X = actual_X - DeltaC_X;
+        double D_Y = actual_Y - DeltaC_Y;
+        Target_X = fluffy.drive.pose.position.x + D_X;
+        Target_Y = fluffy.drive.pose.position.x + D_Y;
 
     }
 
