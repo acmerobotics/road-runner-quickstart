@@ -140,7 +140,24 @@ public class RedRight extends LinearOpMode {
     }
 
     public void deliverYellow(){
+    /* HA plan 12/13:
+     * raiseLift()
+     * get detection  // JRC - see below
+     * do math      // JRC - math method is fluffy.correctYellowPosition, gets detection within.
+     * create trajectory and drive to it
+     * raiseFinger()
+     * back up
+     * grabberDown()
+     * lowerLift()
+     * NOTE: must park after delivering yellow.
+     */
 
+        /* JRC testing recommendation
+         * write deliverYellow with raiseLift, correctYellowPosition, raiseFinger, grabberDown.  (ie, no driving).
+         *    Test just that, and use telemetry to determine whether correctYellowPosition is working properly.
+         * When satisfied, add driving.  Test final version.
+         * (then park)
+         */
 
     }
 
