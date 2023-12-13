@@ -18,7 +18,7 @@ import java.util.List;
 public class RedRight extends LinearOpMode {
     //BRING GRABBER UP FIRST THING
     AutoFluffy fluffy;
-    String PATH = "Center";
+    String PATH;
     public static double DeltaC_X = -3.86;
     public static double DeltaC_Y = -3.51;
 
@@ -45,8 +45,7 @@ public class RedRight extends LinearOpMode {
                 telemetry.addData("TargetPosition: ", PATH);
             }*/
             //telemetry.addData("TargetPosition: ", PATH);
-            telemetry.update();
-            sleep(5000);
+           // telemetry.update();
             PATH= fluffy.getPropLocation();
             telemetry.addData("Prop Location", PATH );
             telemetry.addData("Sat. Value", fluffy.getLeftMean());
@@ -54,6 +53,7 @@ public class RedRight extends LinearOpMode {
             telemetry.addData("Sat. Value", fluffy.getRightMean());
 
             telemetry.update();
+            sleep(5000);
 
 
         }

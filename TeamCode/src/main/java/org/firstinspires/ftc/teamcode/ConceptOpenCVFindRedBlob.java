@@ -120,7 +120,7 @@ public class ConceptOpenCVFindRedBlob extends LinearOpMode {
             }
             if (LW_LEFT + LW_WIDTH >= workingMat.width()) {
                 LW_WIDTH = workingMat.width() - LW_LEFT - 1;
-            }1
+            }
             if(CW_TOP + CW_HEIGHT>= workingMat.height()){
                 CW_HEIGHT = workingMat.height() - CW_TOP-1;
             }
