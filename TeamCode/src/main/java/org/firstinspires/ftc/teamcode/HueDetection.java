@@ -94,7 +94,7 @@ public class HueDetection implements VisionProcessor {
 
         Mat rightCrop = workingMat.submat(rightWindow);
         Core.extractChannel(rightCrop, rightCrop, SAT_CHANNEL);
-
+        //
         leftMean = Core.mean(leftCrop).val[0];
         centerMean = Core.mean(centerCrop).val[0];
         rightMean = Core.mean(rightCrop).val[0];
