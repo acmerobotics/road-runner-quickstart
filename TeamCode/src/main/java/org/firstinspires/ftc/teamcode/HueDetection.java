@@ -39,6 +39,8 @@ public class HueDetection implements VisionProcessor {
     public double leftMean, centerMean, rightMean;        // accessible mean red metrics
     // if the mean red of one side is greater than THRESHOLD + mean of the other, that side is "Red"
     //public static double THRESHOLD = 5.0;
+
+    // INPUT, OUTPUT, inOut not needed.
     public Boolean INPUT = true;
     public Boolean OUTPUT = false;
     Boolean inOut = INPUT;
@@ -87,17 +89,17 @@ public class HueDetection implements VisionProcessor {
         rightWindow = new Rect(RW_LEFT, RW_TOP, RW_WIDTH, RW_HEIGHT);
 
         Mat leftCrop = workingMat.submat(leftWindow);
-        Core.extractChannel(leftCrop, leftCrop, SAT_CHANNEL);
+        //Core.extractChannel(leftCrop, leftCrop, SAT_CHANNEL);
 
         Mat centerCrop = workingMat.submat(centerWindow);
-        Core.extractChannel(centerCrop, centerCrop, SAT_CHANNEL);
+        //Core.extractChannel(centerCrop, centerCrop, SAT_CHANNEL);
 
         Mat rightCrop = workingMat.submat(rightWindow);
-        Core.extractChannel(rightCrop, rightCrop, SAT_CHANNEL);
+       // Core.extractChannel(rightCrop, rightCrop, SAT_CHANNEL);
         //
-        leftMean = Core.mean(leftCrop).val[0];
-        centerMean = Core.mean(centerCrop).val[0];
-        rightMean = Core.mean(rightCrop).val[0];
+        leftMean = Core.mean(leftCrop).val[SAT_CHANNEL];
+        centerMean = Core.mean(centerCrop).val[SAT_CHANNEL];
+        rightMean = Core.mean(rightCrop).val[SAT_CHANNEL];
 
         if (leftMean > rightMean && leftMean > centerMean) {
             propLocation = "Left";
