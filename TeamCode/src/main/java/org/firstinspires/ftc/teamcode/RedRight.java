@@ -76,7 +76,7 @@ public class RedRight extends LinearOpMode {
         telemetry.addData("heading (deg)", Math.toDegrees(fluffy.drive.pose.heading.toDouble()));
         telemetry.update();
         sleep(5000);
-
+        deliverYellow();
     }
 
 
@@ -140,6 +140,11 @@ public class RedRight extends LinearOpMode {
     }
 
     public void deliverYellow(){
+        fluffy.raiseLift();
+        fluffy.correctYellowPosition(PATH);
+        fluffy.raiseFinger();
+        telemetry.addData("correctYellowPosition", fluffy.correctYellowPosition(PATH));
+        sleep(5000);
     /* HA plan 12/13:
      * raiseLift()
      * get detection  // JRC - see below
@@ -147,7 +152,6 @@ public class RedRight extends LinearOpMode {
      * create trajectory and drive to it
      * raiseFinger()
      * back up
-     * grabberDown()
      * lowerLift()
      * NOTE: must park after delivering yellow.
      */

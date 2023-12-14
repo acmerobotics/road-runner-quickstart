@@ -255,10 +255,7 @@ public class AutoFluffy {
             finger.setPosition(FINGER_UP);
             op.sleep(FINGER_UP_WAIT);
         }
-        public void grabberDown(){
-            grabberRot.setPosition(GRABBER_DOWN);
-            op.sleep(GRABBER_DOWN_WAIT);
-        }
+
         public void lowerLift(){
             liftMotor.setTargetPosition(LIFT_DOWN);
             liftMotor.setPower(LIFT_POWER);
