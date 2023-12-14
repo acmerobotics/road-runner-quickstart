@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -76,7 +77,8 @@ public class RedRight extends LinearOpMode {
         telemetry.addData("heading (deg)", Math.toDegrees(fluffy.drive.pose.heading.toDouble()));
         telemetry.update();
         sleep(5000);
-        deliverYellow();
+        deliverYellowTest();
+        //deliverYellow();
     }
 
 
@@ -136,6 +138,18 @@ public class RedRight extends LinearOpMode {
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(new Vector2d(18, -5), Math.toRadians(-90))
                         .strafeToLinearHeading(new Vector2d(22.4, -26), Math.toRadians(-90))
+                        .build());
+    }
+
+    public void deliverYellowTest(){
+        telemetry.addData("Current position", fluffy.drive.pose);
+        telemetry.addData("Destination", fluffy.correctYellowPosition(PATH));
+        telemetry.update();
+        sleep(5000);
+        Pose2d pose = fluffy.correctYellowPosition(PATH);
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeToLinearHeading(pose.position , pose.heading)
                         .build());
     }
 
