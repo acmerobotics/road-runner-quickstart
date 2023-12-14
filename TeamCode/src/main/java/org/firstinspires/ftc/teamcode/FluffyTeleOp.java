@@ -17,9 +17,12 @@ public class FluffyTeleOp extends OpMode {
     ElapsedTime doubleTapTimer=new ElapsedTime();
     final double shortTime=5000.0;
     final double catchupTime=1000.0;
+    ElapsedTime hangerTimer = new ElapsedTime();
+    final double hangerWait = 90000;
     public static String fingerPosition = "Init";
 
     public static double position = 0;
+    boolean isGameStarted = false;
 
 
 
@@ -35,6 +38,10 @@ public class FluffyTeleOp extends OpMode {
     }
     @Override
     public void loop(){
+        if(!isGameStarted){
+            hangerTimer.reset();
+            isGameStarted = true;
+        }
         setTeleOpDrive();
         setTeleOpLift();
         setGrabberRot();
@@ -93,7 +100,7 @@ public class FluffyTeleOp extends OpMode {
 
     public void setHanger(){
         //may need to make it a double click
-        if (gamepad1.right_bumper){
+        if (hangerTimer.milliseconds() >= hangerWait && gamepad1.right_bumper){
             myBot.releaseHanger();
         }
         if(gamepad1.right_trigger > THRESHOLD){

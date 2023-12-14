@@ -9,13 +9,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
@@ -43,13 +42,14 @@ public class AutoFluffy {
 
     public static double HANGER_LATCH_INIT = 0.87;
 
-    public static double LEFT_PURPLE_RELEASE = .75;
     public static double LEFT_PURPLE_GRAB = .05;
-    public static double RIGHT_PURPLE_RELEASE = 0;
+    public static double LEFT_PURPLE_RELEASE = .2;
+
     public static double RIGHT_PURPLE_GRAB = 1;
+    public static double RIGHT_PURPLE_RELEASE = .1;
     public static double LEFT_PURPLE_INIT = LEFT_PURPLE_GRAB;
     public static double RIGHT_PURPLE_INIT = RIGHT_PURPLE_GRAB;
-    public static int LIFT_UP = 0;  //fix values
+    public static int LIFT_UP = 350;  //fix values
     public static int LIFT_DOWN = 0;  //fix values
     public static double LIFT_POWER = 1;  //fix values
     public static int FINGER_UP_WAIT = 500;
@@ -221,6 +221,8 @@ public class AutoFluffy {
         leftPurple.setPosition(LEFT_PURPLE_RELEASE);
         rightPurple.setPosition(RIGHT_PURPLE_RELEASE);
         op.sleep(1000);
+        leftPurple.setPosition(LEFT_PURPLE_GRAB);
+        rightPurple.setPosition(RIGHT_PURPLE_GRAB);
     }
 
 
@@ -264,18 +266,31 @@ public class AutoFluffy {
             }
         }
 
-    public Pose2d correctYellowPosition(String PATH){
+    public Pose2d correctYellowPosition(String PATH) {
         //sleep(5000); //waiting for tag detections, might need less time
         AprilTagDetection detection = assignID(PATH, "Red");
-        double actual_X = detection.ftcPose.y;
-        double actual_Y = -detection.ftcPose.x;
-        double D_X = actual_X - deltaC_X;
-        double D_Y = actual_Y - deltaC_Y;
-        double Target_X = drive.pose.position.x + D_X;
-        double Target_Y = drive.pose.position.x + D_Y;
-        double Target_Heading = detection.ftcPose.yaw + drive.pose.heading.toDouble();
-        return new Pose2d(Target_X, Target_Y, Target_Heading);
+        if (detection == null) {
+            if (PATH.equals("Left")) {
+                return new Pose2d(32.5, -39, Math.toRadians(-90));
+            } else if (PATH.equals("Center")) {
+                return new Pose2d(27.7, -39, Math.toRadians(-90));
+            } else if (PATH.equals("Right")) {
+                return new Pose2d(22.4, -39, Math.toRadians(-90));
+            }
+        }
+            double actual_X = -detection.ftcPose.x;
+            double actual_Y = -detection.ftcPose.y;
+            double D_X = actual_X - deltaC_X;
+            double D_Y = actual_Y - deltaC_Y;
+            double Target_X = drive.pose.position.x + D_X;
+            double Target_Y = drive.pose.position.y + D_Y;
+            RobotLog.i(String.format("D_X: %3.1f  D_Y: %3.1f", D_X, D_Y));
+            RobotLog.i(String.format("current pose: (%3.1f, %3.1f) at %3.1f deg", drive.pose.position.x, drive.pose.position.y,
+                    Math.toDegrees(drive.pose.heading.toDouble())));
+            double Target_Heading = Math.toRadians(detection.ftcPose.yaw) + drive.pose.heading.toDouble();
+            RobotLog.i(String.format("Target: (%3.1f, %3.1f) at %3.1f deg", Target_X, Target_Y, Math.toDegrees(Target_Heading)));
+            return new Pose2d(Target_X, Target_Y, Target_Heading);
 
-    }
+        }
 
-}
+        }
