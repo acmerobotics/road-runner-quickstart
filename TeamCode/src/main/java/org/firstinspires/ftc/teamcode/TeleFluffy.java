@@ -49,7 +49,7 @@ public class TeleFluffy {
     boolean isGrabberUp=false;
 
     //slow approach
-    public static final double APPROACH_SPEED = .23;
+    public static final double APPROACH_SPEED = .46/;
 
 
 
