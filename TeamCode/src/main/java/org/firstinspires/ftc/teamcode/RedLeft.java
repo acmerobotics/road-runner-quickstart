@@ -88,7 +88,7 @@ public class RedLeft extends LinearOpMode {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(new Vector2d(27.6,6), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(28.5,-5), Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(28.5,-9), Math.toRadians(-90))
                         .build());
         fluffy.deliverPurple();
     }
