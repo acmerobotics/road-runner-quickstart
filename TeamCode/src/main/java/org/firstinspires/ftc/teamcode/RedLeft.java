@@ -121,7 +121,7 @@ public class RedLeft extends LinearOpMode {
 
     public void deliverYellow(){
         fluffy.raiseLift();
-        Pose2d destination = fluffy.correctYellowPosition(PATH);
+        Pose2d destination = fluffy.correctYellowPositionRed(PATH);
         RobotLog.i(String.format("Destination position: (%3.1f, %3.1f) at %3.1f deg",
                 destination.position.x,
                 destination.position.y,
