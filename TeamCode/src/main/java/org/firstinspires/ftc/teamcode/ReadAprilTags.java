@@ -9,7 +9,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import java.util.List;
 
 @Autonomous(name="ReadAprilTags", group = "testing")
-@Disabled+
+@Disabled
 /** ToDo
  *  - telemetry.update()
  *  - press B to continue
