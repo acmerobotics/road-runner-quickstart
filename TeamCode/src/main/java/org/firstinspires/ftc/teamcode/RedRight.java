@@ -18,18 +18,10 @@ import java.util.List;
 @Config
 @Autonomous(name = "RedRight", group = "robot", preselectTeleOp = "FluffyTeleOp")
 public class RedRight extends LinearOpMode {
-    //BRING GRABBER UP FIRST THING
+    //BRING GRABBER UP FIRST THING//
     AutoFluffy fluffy;
     String PATH;
-    public static double DeltaC_X = -3.86;
-    public static double DeltaC_Y = -3.51;
     static double DELTA = 1;
-
-    public static double Target_X;
-    public static double Target_Y;
-
-    AprilTagDetection detection;
-    public static double delta = 1;
     List<Recognition> currentRecognitions;
     public void runOpMode(){
         initialize();
@@ -62,10 +54,10 @@ public class RedRight extends LinearOpMode {
 
         // JRC: Turn off redFinder at this point.
 
-        if(PATH == "Left"){
+        if(PATH .equals("Left")){
             deliverPurpleLeft();
             yellowLeft();
-        } else if(PATH == "Right"){
+        } else if(PATH .equals("Right")){
             deliverPurpleRight();
             yellowRight();
         }else{
