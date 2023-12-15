@@ -27,15 +27,13 @@ public class AutoFluffy {
     public MecanumDrive drive;
     VisionPortal visionPortal;
     AprilTagProcessor aprilTag;
-    //TfodProcessor tfod;
-    RedFinder redFinder;
+    //TfodProcessor tfod;//
+    //RedFinder redFinder;
     final int RESOLUTION_WIDTH = 1920;
     final int RESOLUTION_HEIGHT = 1080;
-    public static double DRONE_PUSHER_RESET = 0.85;
     public static double DRONE_PUSHER_INIT = 0.8;
     public static double GRABBER_ROT_INIT = 0.07;
     public static double GRABBER_UP = 0.3;
-    public static double GRABBER_DOWN = GRABBER_ROT_INIT;
     public static double FINGER_UP = 0;
     public static double FINGER_DOWN = .4;
     public static double FINGER_INIT = FINGER_DOWN;
@@ -53,19 +51,13 @@ public class AutoFluffy {
     public static int LIFT_DOWN = 0;  //fix values
     public static double LIFT_POWER = 1;  //fix values
     public static int FINGER_UP_WAIT = 500;
-    public static int GRABBER_DOWN_WAIT = 500;
-
     boolean isGrabberUp = false;
-
     String side = "Red";
-
-    String propLocation;
-
     double deltaC_X, deltaC_Y;
 
 
-    String[] RED_LABELS = {"redprop"};
-    String[] BLUE_LABELS = {"blueprop"};
+    //String[] RED_LABELS = {"redprop"};
+    //String[] BLUE_LABELS = {"blueprop"};
     private HueDetection hueDetector;
 
     public AutoFluffy(LinearOpMode op) {
@@ -87,21 +79,21 @@ public class AutoFluffy {
     AprilTagDetection assignID (String propLocation, String side){
         int idNum=0;
 
-        if (side == "Blue"){
-            if (propLocation == "Left"){
+        if (side .equals("Blue")){
+            if (propLocation .equals("Left")){
                 idNum=1;
 
-            }else if (propLocation=="Center"){
+            }else if (propLocation .equals("Center")){
                 idNum = 2;
-            }else if (propLocation=="Right"){
+            }else if (propLocation .equals("Right")){
                 idNum= 3;
             }
-        }else if (side== "Red"){
-            if (propLocation=="Left"){
+        }else if (side .equals( "Red")){
+            if (propLocation .equals("Left")){
                 idNum= 4;
-            }else if (propLocation=="Center"){
+            }else if (propLocation .equals("Center")){
                 idNum=5;
-            }else if (propLocation=="Right"){
+            }else if (propLocation .equals("Right")){
                 idNum=6;
             }
         }
@@ -237,17 +229,6 @@ public class AutoFluffy {
         isGrabberUp=true;
     }
 
-
-        public void lowerGrabber(){
-            grabberRot.setPosition(GRABBER_DOWN);
-            isGrabberUp=false;
-        }
-
-        public void setFingerUp(){finger.setPosition(FINGER_UP);
-        }
-        public void setFingerDown(){
-            finger.setPosition(FINGER_DOWN);
-        }
         public void raiseLift(){
             liftMotor.setTargetPosition(LIFT_UP);
             liftMotor.setPower(LIFT_POWER);
