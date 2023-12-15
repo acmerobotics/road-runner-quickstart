@@ -79,17 +79,16 @@ public class RedLeft extends LinearOpMode {
     public void deliverPurpleCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        //.splineTo(new Vector2d(27.93, -10.81), -91.4)
-                        //.lineToX(29)
-                        .strafeToLinearHeading(new Vector2d(37.25, 2 ), Math.toRadians(-90))
-                        //.turnTo(Math.toRadians(-91))
+                        .strafeToLinearHeading(new Vector2d(25, 7 ), Math.toRadians(0))
+                        .strafeToLinearHeading(new Vector2d(34.1, 5 ), Math.toRadians(-90))
                         .build());
         fluffy.deliverPurple();
     }
     public void deliverPurpleRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(26,-5), Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(27.6,6), Math.toRadians(0))
+                        .strafeToLinearHeading(new Vector2d(28.5,-5), Math.toRadians(-90))
                         .build());
         fluffy.deliverPurple();
     }
