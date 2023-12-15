@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -16,6 +17,7 @@ import org.opencv.core.Scalar;
 
 @Config
 @Autonomous(name="ConceptOpenCVHSVFindBlueBlob", group="testing")
+@Disabled
 public class ConceptOpenCVHSVFindBlueBlob extends LinearOpMode {
 
     final int CAMERA_WIDTH = 1920;

@@ -120,6 +120,7 @@ public class RedRight extends LinearOpMode {
               fluffy.drive.actionBuilder(fluffy.drive.pose)
                       .strafeToLinearHeading(new Vector2d(34.4, -26), Math.toRadians(-90))
                       .build());
+        fluffy.retractPurple();
     }
     public void yellowCenter(){
         Actions.runBlocking(
@@ -127,6 +128,7 @@ public class RedRight extends LinearOpMode {
                         .strafeTo(new Vector2d(30, -.5))
                         .strafeToLinearHeading(new Vector2d(28.4, -26), Math.toRadians(-90))
                         .build());
+        fluffy.retractPurple();
     }
     public void yellowRight(){
         Actions.runBlocking(
@@ -134,6 +136,7 @@ public class RedRight extends LinearOpMode {
                         .strafeToLinearHeading(new Vector2d(18, -5), Math.toRadians(-90))
                         .strafeToLinearHeading(new Vector2d(22.4, -26), Math.toRadians(-90))
                         .build());
+        fluffy.retractPurple();
     }
 
 

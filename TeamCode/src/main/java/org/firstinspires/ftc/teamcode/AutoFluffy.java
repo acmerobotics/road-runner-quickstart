@@ -221,6 +221,8 @@ public class AutoFluffy {
         leftPurple.setPosition(LEFT_PURPLE_RELEASE);
         rightPurple.setPosition(RIGHT_PURPLE_RELEASE);
         op.sleep(1000);
+    }
+    public void retractPurple(){
         leftPurple.setPosition(LEFT_PURPLE_GRAB);
         rightPurple.setPosition(RIGHT_PURPLE_GRAB);
     }

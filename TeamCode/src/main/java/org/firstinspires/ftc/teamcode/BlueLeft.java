@@ -117,6 +117,7 @@ public class BlueLeft extends LinearOpMode {
                         .strafeToLinearHeading( new Vector2d(17,14.2), Math.toRadians(90))
                         .strafeToLinearHeading(new Vector2d(20.7, 30), Math.toRadians(90))
                         .build());
+        fluffy.retractPurple();
     }
     public void yellowCenter(){
         Actions.runBlocking(
@@ -124,6 +125,7 @@ public class BlueLeft extends LinearOpMode {
                         .strafeToLinearHeading(new Vector2d(25.9, 7  ), Math.toRadians(90))
                         .strafeToLinearHeading(new Vector2d(30.1, 30), Math.toRadians(90))
                         .build());
+        fluffy.retractPurple();
     }
     public void yellowRight(){
         Actions.runBlocking(
@@ -131,6 +133,7 @@ public class BlueLeft extends LinearOpMode {
                         .strafeToLinearHeading(new Vector2d(25.5,4.9), Math.toRadians(0))
                         .strafeToLinearHeading(new Vector2d(34.0, 30), Math.toRadians(90))
                         .build());
+        fluffy.retractPurple();
     }
 
 
