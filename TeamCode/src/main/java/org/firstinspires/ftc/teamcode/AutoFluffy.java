@@ -254,11 +254,11 @@ public class AutoFluffy {
         AprilTagDetection detection = assignID(PATH, "Red");
         if (detection == null) {
             if (PATH.equals("Left")) {
-                return new Pose2d(32.5, -39, Math.toRadians(-90));
+                return new Pose2d(32.5, -39, Math.toRadians(-89.9));
             } else if (PATH.equals("Center")) {
-                return new Pose2d(27.7, -39, Math.toRadians(-90));
+                return new Pose2d(27.7, -39, Math.toRadians(-89.9));
             } else if (PATH.equals("Right")) {
-                return new Pose2d(22.4, -39, Math.toRadians(-90));
+                return new Pose2d(22.4, -39, Math.toRadians(-89.9));
             }
         }
             double actual_X = -detection.ftcPose.x;
@@ -280,11 +280,11 @@ public class AutoFluffy {
         AprilTagDetection detection = assignID(PATH, "Blue");
         if (detection == null) {
             if (PATH.equals("Left")) {
-                return new Pose2d(26.2, -40.8, Math.toRadians(-90));
+                return new Pose2d(26.2, 40.8, Math.toRadians(89.9));
             } else if (PATH.equals("Center")) {
-                return new Pose2d(31.5, -40.8, Math.toRadians(-90));
+                return new Pose2d(31.5, 40.8, Math.toRadians(89.9));
             } else if (PATH.equals("Right")) {
-                return new Pose2d(36.7, -40.8, Math.toRadians(-90));
+                return new Pose2d(36.7, 40.8, Math.toRadians(89.9));
             }
         }
         double actual_X = detection.ftcPose.x;

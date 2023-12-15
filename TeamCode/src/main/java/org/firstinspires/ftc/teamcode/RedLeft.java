@@ -80,7 +80,7 @@ public class RedLeft extends LinearOpMode {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(new Vector2d(25, 7 ), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(34.1, 5 ), Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(34.1, 5 ), Math.toRadians(-89.9))
                         .build());
         fluffy.deliverPurple();
     }
@@ -88,7 +88,7 @@ public class RedLeft extends LinearOpMode {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(new Vector2d(27.6,6), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(28.5,-9), Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(28.5,-9), Math.toRadians(-89.9))
                         .build());
         fluffy.deliverPurple();
     }
@@ -99,21 +99,21 @@ public class RedLeft extends LinearOpMode {
          */
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(34.4, -26), Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(34.4, -26), Math.toRadians(-89.9))
                         .build());
     }
     public void yellowCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeTo(new Vector2d(30, -.5))
-                        .strafeToLinearHeading(new Vector2d(28.4, -26), Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(28.4, -26), Math.toRadians(-89.9))
                         .build());
     }
     public void yellowRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(18, -5), Math.toRadians(-90))
-                        .strafeToLinearHeading(new Vector2d(22.4, -26), Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(18, -5), Math.toRadians(-89.9))
+                        .strafeToLinearHeading(new Vector2d(22.4, -26), Math.toRadians(-89.9))
                         .build());
     }
 
@@ -134,7 +134,7 @@ public class RedLeft extends LinearOpMode {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(new Vector2d(fluffy.drive.pose.position.x, (fluffy.drive.pose.position.y + DELTA)),
-                                Math.toRadians(-90))
+                                Math.toRadians(-89.9))
                         .build());
         fluffy.lowerLift();
 
@@ -160,7 +160,7 @@ public class RedLeft extends LinearOpMode {
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(0, -32), Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(0, -32), Math.toRadians(-89.9))
                         .build());
     }
 

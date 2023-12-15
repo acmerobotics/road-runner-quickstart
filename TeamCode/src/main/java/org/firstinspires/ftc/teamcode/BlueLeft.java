@@ -106,16 +106,16 @@ public class BlueLeft extends LinearOpMode {
          */
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading( new Vector2d(17,14.2), Math.toRadians(90))
-                        .strafeToLinearHeading(new Vector2d(20.7, 30), Math.toRadians(90))
+                        .strafeToLinearHeading( new Vector2d(17,14.2), Math.toRadians(89.9))
+                        .strafeToLinearHeading(new Vector2d(20.7, 30), Math.toRadians(89.9))
                         .build());
         fluffy.retractPurple();
     }
     public void yellowCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(25.9, 7  ), Math.toRadians(90))
-                        .strafeToLinearHeading(new Vector2d(30.1, 30), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(25.9, 7  ), Math.toRadians(89.9))
+                        .strafeToLinearHeading(new Vector2d(30.1, 30), Math.toRadians(89.9))
                         .build());
         fluffy.retractPurple();
     }
@@ -123,7 +123,7 @@ public class BlueLeft extends LinearOpMode {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(new Vector2d(25.5,4.9), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(34.0, 30), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(34.0, 30), Math.toRadians(89.9))
                         .build());
         fluffy.retractPurple();
     }
@@ -146,7 +146,7 @@ public class BlueLeft extends LinearOpMode {
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .setReversed(true)
                         .strafeToLinearHeading(new Vector2d(fluffy.drive.pose.position.x, (fluffy.drive.pose.position.y + DELTA)),
-                                Math.toRadians(90))
+                                Math.toRadians(89.9))
                         .setReversed(false)
                         .build());
         fluffy.lowerLift();
@@ -173,7 +173,10 @@ public class BlueLeft extends LinearOpMode {
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(0 , 34), Math.toRadians(90))
+                        .setReversed(true)
+                        .lineToY(fluffy.drive.pose.position.y - 5)
+                        .setReversed(false)
+                        .strafeToLinearHeading(new Vector2d(0 , 34), Math.toRadians(89.9))
                         .build());
     }
 
