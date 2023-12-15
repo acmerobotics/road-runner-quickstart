@@ -54,7 +54,7 @@ public class FluffyTeleOp extends OpMode {
     public void setTeleOpDrive(){
         double forward = -gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x;
-        double turn = gamepad1.right_stick_x;
+        double turn = .75*gamepad1.right_stick_x;
         myBot.setTeleOpDrive(forward, strafe, turn);
         myBot.reportDriveMotors();
     }

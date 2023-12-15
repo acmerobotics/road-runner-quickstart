@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class TeleFluffy {
     DcMotor leftFront, leftBack, rightFront, rightBack, liftMotor, hangerMotor;
     DcMotorEx droneMotor;
-    Servo grabberRot, finger, dronePusher, hangerLatch;
+    Servo grabberRot, finger, dronePusher, hangerLatch, leftPurple, rightPurple;
 
     public static double THRESHOLD = .15;
     OpMode op;
@@ -50,6 +50,10 @@ public class TeleFluffy {
 
     //slow approach
     public static final double APPROACH_SPEED = .46;
+
+
+    public static double LEFT_PURPLE_INIT = .05;
+    public static double RIGHT_PURPLE_INIT = 1;
 
 
 
@@ -108,6 +112,14 @@ public class TeleFluffy {
         //finger.setDirection(Servo.Direction.REVERSE);
         dronePusher.setPosition(DRONE_PUSHER_INIT);
         hangerLatch.setPosition(HANGER_LATCH_INIT);
+
+
+        leftPurple = op.hardwareMap.servo.get("leftPurple");
+        leftPurple.setPosition(LEFT_PURPLE_INIT);
+
+        rightPurple = op.hardwareMap.servo.get("rightPurple");
+        rightPurple.setPosition(RIGHT_PURPLE_INIT);
+
 
         //states for grabber
 
