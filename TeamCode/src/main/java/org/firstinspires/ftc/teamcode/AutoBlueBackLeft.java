@@ -6,11 +6,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Auto Red Back", group="Concept")
+@Autonomous(name="Blue Back Left", group="Concept")
 //@Disabled
-public class AutoRedBack extends AutoRedFront {
+public class AutoBlueBackLeft extends AutoRedFrontLeft {
     @Override
     public void setRobotLocation() {
-        startLoc = 2;
+        startLoc = 4;
+        leftOrRight = -1;
     }
 }

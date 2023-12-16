@@ -78,9 +78,9 @@ import java.util.List;
  *          "Webcam 1"
  */
 
-@Autonomous(name="Auto Red Front", group="Concept")
+@Autonomous(name="Red Front Left", group="Concept")
 //@Disabled
-public class AutoRedFront extends LinearOpMode {
+public class AutoRedFrontLeft extends LinearOpMode {
 
     /** 1 for Red Front, 2 for Red back, 3 for Blue Front, and 4 for Blue back
      */
@@ -91,6 +91,10 @@ public class AutoRedFront extends LinearOpMode {
     /** front: 1; back -1
      */
     private int frontOrBack = 1; // front: 1; back -1
+    /**
+     * Parking location: "1" - right of backdrop; "-1" - left of backdrop.
+     */
+    public int leftOrRight = -1; // -1) means te robot parks near the blue side no matter the autonomous, right(1) is the opposite
     /**
      * blue: 1,2,3; red: 4,5,6
      */
@@ -126,6 +130,7 @@ public class AutoRedFront extends LinearOpMode {
      */
     public void setRobotLocation() {
         startLoc = 1;
+        leftOrRight = -1;
     }
 
     /**
@@ -291,7 +296,7 @@ public class AutoRedFront extends LinearOpMode {
 
         double pausePoseY = -2 * Params.HALF_MAT - 6;
         Vector2d vMatCenter = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + 0.75), startPose.position.y);
-        Vector2d vParkPos = new Vector2d(blueOrRed * ((3 - 2 * frontOrBack) * Params.HALF_MAT - frontOrBack * ((frontOrBack > 0) ? 0 : 3)), -3.5 * Params.HALF_MAT);
+        Vector2d vParkPos = new Vector2d(blueOrRed * 3 * Params.HALF_MAT - 2.2 * leftOrRight * Params.HALF_MAT, -3.5 * Params.HALF_MAT);
         Vector2d vBackdrop = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
 
         Vector2d vAprilTag = null;
@@ -315,7 +320,7 @@ public class AutoRedFront extends LinearOpMode {
             case -2:
                 // pass the test
                 xDelta = 5.0;
-                yDelta = (frontOrBack > 0) ? 5.0 : 0;
+                yDelta = (frontOrBack > 0) ? 4.0 : 0;
                 break;
             case -1:
             case 4:
