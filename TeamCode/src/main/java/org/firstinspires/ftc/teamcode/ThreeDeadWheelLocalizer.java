@@ -17,9 +17,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static class Params {
-        public double par0YTicks = -1892.4038626862389; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks = 2116.671694515965; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = -1800.6431382092196; // x position of the perpendicular encoder (in tick units)
+        public double par0YTicks = 1983.59006402; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks =  -2055.23371428; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = 1743.4100702; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
@@ -31,8 +31,8 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
     private int lastPar0Pos, lastPar1Pos, lastPerpPos;
 
     public ThreeDeadWheelLocalizer(HardwareMap hardwareMap, double inPerTick) {
-        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightback_drive")));
-        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftback_drive")));
+        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftback_drive")));
+        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightback_drive")));
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightfront_drive")));
 
         //par0.setDirection(DcMotorSimple.Direction.REVERSE);

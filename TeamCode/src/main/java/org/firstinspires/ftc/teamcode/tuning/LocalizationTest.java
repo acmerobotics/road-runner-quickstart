@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Twist2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -16,6 +17,11 @@ public class LocalizationTest extends LinearOpMode {
             MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
             waitForStart();
+
+//            Actions.runBlocking(
+//                    drive.actionBuilder(drive.pose)
+//                            .splineTo(new Vector2d(10, 10), 0)
+//                            .build());
 
             while (opModeIsActive()) {
                 drive.setDrivePowers(new PoseVelocity2d(
