@@ -136,6 +136,7 @@ public final class MecanumDrive {
             rightBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
             rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
 
+            // TODO: reverse encoders if needed
             leftFront.setDirection(DcMotor.Direction.REVERSE);
             leftBack.setDirection(DcMotor.Direction.FORWARD);
             rightFront.setDirection(DcMotor.Direction.FORWARD);
@@ -147,9 +148,6 @@ public final class MecanumDrive {
             lastRightFrontPos = rightFront.getPositionAndVelocity().position;
 
             lastHeading = Rotation2d.exp(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
-
-            // TODO: reverse encoders if needed
-            // leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         @Override
