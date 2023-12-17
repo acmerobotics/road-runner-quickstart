@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MainCode;
+package org.firstinspires.ftc.teamcode.MainCode.Autonomous;
 public class Constants {
     public enum Alliance{
         RED,

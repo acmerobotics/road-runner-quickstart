@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MainCode;
+package org.firstinspires.ftc.teamcode.MainCode.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -11,25 +11,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-import java.util.List;
-
-
-@TeleOp(name="a_TeleOpBest", group="Linear Opmode")
+@TeleOp(name="TeleOpMain", group="Linear Opmode")
 @Config
-public class a_TeleOpBest extends LinearOpMode
+public class TeleOpMain extends LinearOpMode
 {
     public static int base = 10;
     public static double power = .5;
@@ -57,8 +44,8 @@ public class a_TeleOpBest extends LinearOpMode
     public static double clawClosePos = 0.04;
     public static int catchDrop = 30;
 
-    boolean yPress = false;
-    boolean up = false;
+    public static boolean yPress = false;
+    public static boolean up = false;
 
     //SPACE BETWEEN ARM CODE AND DRIVETRAIN CODE_______________________________________________________________
     //_________________________________________________________________________________________________________

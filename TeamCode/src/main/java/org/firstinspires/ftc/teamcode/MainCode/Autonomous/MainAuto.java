@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MainCode;
+package org.firstinspires.ftc.teamcode.MainCode.Autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
-import org.firstinspires.ftc.teamcode.MainCode.Constants.Spike;
-import org.firstinspires.ftc.teamcode.MainCode.Constants.Alliance;
-import org.firstinspires.ftc.teamcode.MainCode.Constants.Side;
+import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Constants.Spike;
+import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Constants.Alliance;
+import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Constants.Side;
 
 @Config
 @TeleOp(name="Autonomous", group="Linear Opmode")

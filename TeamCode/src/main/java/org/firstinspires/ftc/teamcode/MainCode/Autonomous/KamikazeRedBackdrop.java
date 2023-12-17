@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MainCode;
+package org.firstinspires.ftc.teamcode.MainCode.Autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -10,9 +10,9 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @Config
-@TeleOp(name="bluekamikaze", group="Linear Opmode")
+@TeleOp(name="redkamikaze", group="Linear Opmode")
 
-public final class KamikazeBlueBackdrop extends LinearOpMode {
+public final class KamikazeRedBackdrop extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         Pose2d startingPose;
@@ -21,10 +21,10 @@ public final class KamikazeBlueBackdrop extends LinearOpMode {
 
         waitForStart();
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) { //BackstageRed
-            startingPose = new Pose2d(12, 64, Math.PI*3 / 2);
+            startingPose = new Pose2d(12, -64, Math.PI / 2);
             drive = new MecanumDrive(hardwareMap, startingPose);
 
-            nextPose = new Pose2d(64, 64, 0);
+            nextPose = new Pose2d(64, -64, 0);
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .splineToConstantHeading(nextPose.position, nextPose.heading)
