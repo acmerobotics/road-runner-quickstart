@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 @Config
 @TeleOp(name= "FluffyTeleOp", group = "robot") //double check group name
@@ -16,7 +17,7 @@ public class FluffyTeleOp extends OpMode {
 
     ElapsedTime doubleTapTimer=new ElapsedTime();
     final double shortTime=5000.0;
-    final double catchupTime=1000.0;
+    final double catchupTime=2000.0;
     ElapsedTime hangerTimer = new ElapsedTime();
     final double hangerWait = 90000;
     public static String fingerPosition = "Init";
@@ -160,6 +161,7 @@ public class FluffyTeleOp extends OpMode {
             case PUSHER: {
                 myBot.setDronePusherLaunch();
                 doubleTapTimer.reset();
+                RobotLog.i(String.format("Launch speed: %3.1f", myBot.droneMotor.getVelocity()));
                 myLauncherState = LauncherStates.TIMER_2;
 
                 break;
@@ -174,7 +176,7 @@ public class FluffyTeleOp extends OpMode {
             case MOTOR_ENDS: {
                 myBot.setDroneMotorZero();
                 myBot.setDronePusherInit();
-
+                myLauncherState = LauncherStates.INIT;
                 break;
             }
         }

@@ -31,7 +31,8 @@ public class TeleFluffy {
     //  Drone Constants
     public static double DRONE_PUSHER_INIT=0.8;
     public static double DRONE_PUSHER_LAUNCH = 1;
-    public static double DRONE_MOTOR_VELOCITY = .271 *6.28; //changed from .3 during comp
+   // public static double DRONE_MOTOR_MULTIPLIER = .271;
+    public static double DRONE_MOTOR_VELOCITY = 1.8; //changed from .3 during comp
     //  Finger & Grabber Constants
     public static double GRABBER_ROT_INIT= 0.07;
     public static double GRABBER_UP=0.3;
