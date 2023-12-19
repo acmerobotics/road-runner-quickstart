@@ -31,8 +31,7 @@ public class TeleFluffy {
     //  Drone Constants
     public static double DRONE_PUSHER_INIT=0.8;
     public static double DRONE_PUSHER_LAUNCH = 1;
-    public static double DRONE_MOTOR_VELOCITY = .3 *6.28;
-
+    public static double DRONE_MOTOR_VELOCITY = .271 *6.28; //changed from .3 during comp
     //  Finger & Grabber Constants
     public static double GRABBER_ROT_INIT= 0.07;
     public static double GRABBER_UP=0.3;
@@ -49,7 +48,7 @@ public class TeleFluffy {
     boolean isGrabberUp=false;
 
     //slow approach
-    public static final double APPROACH_SPEED = .46;
+    public static final double APPROACH_SPEED = .26; //changed from 46 during comp
 
 
     public static double LEFT_PURPLE_INIT = .05;
@@ -189,6 +188,7 @@ public class TeleFluffy {
     public void setDronePusherLaunch(){
         dronePusher.setPosition(DRONE_PUSHER_LAUNCH);
     }
+    public void setDronePusherInit(){dronePusher.setPosition(DRONE_PUSHER_INIT);}
 
 
 

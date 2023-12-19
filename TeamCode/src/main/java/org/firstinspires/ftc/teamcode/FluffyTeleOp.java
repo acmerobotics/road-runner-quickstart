@@ -173,6 +173,7 @@ public class FluffyTeleOp extends OpMode {
             }
             case MOTOR_ENDS: {
                 myBot.setDroneMotorZero();
+                myBot.setDronePusherInit();
 
                 break;
             }
