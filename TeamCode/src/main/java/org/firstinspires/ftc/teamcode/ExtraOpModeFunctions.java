@@ -16,6 +16,7 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -120,13 +121,18 @@ public class ExtraOpModeFunctions
         //lift.setTargetPosition(0);
         //lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        //PIDFCoefficients pidfCoefficients = new PIDFCoefficients(10.0, 0.04, 0.0, 0.0);
+        //PIDFCoefficients pidfCoefficients = new PIDFCoefficients(5.0, 0.0, 0.0, 0.0);
+
         elevatorLeft.setDirection(DcMotorEx.Direction.FORWARD);
+        //elevatorLeft.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidfCoefficients);
         elevatorLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         elevatorLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         elevatorLeft.setTargetPosition(0);
         elevatorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         elevatorRight.setDirection(DcMotorEx.Direction.REVERSE);
+        //elevatorRight.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidfCoefficients);
         elevatorRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         elevatorRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         elevatorRight.setTargetPosition(0);
@@ -158,8 +164,9 @@ public class ExtraOpModeFunctions
         elevatorLeft.setPower(0);
         elevatorRight.setPower(0);
 
+
         localLop.telemetry.addData("Limit ", elevatorLimit.getValue());
-        localLop.telemetry.update();
+        //localLop.telemetry.update();
 
         localLop.sleep(100);
 
@@ -338,10 +345,10 @@ public class ExtraOpModeFunctions
                         break;
 
                     case 6:
-                        if (elevatorLeft.getCurrentPosition() < 60)
+                        if (elevatorLeft.getCurrentPosition() < 35)
                         {
-                            elevatorLeft.setPower(1.0);
-                            elevatorRight.setPower(1.0);
+                            elevatorLeft.setPower(0.0);
+                            elevatorRight.setPower(0.0);
                             armState = ArmState.POSITIONIN;
                         }
                         break;

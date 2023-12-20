@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -58,8 +59,8 @@ public class BasicTeleOp extends LinearOpMode
         double slope;
         double elevatorEncoderCounts;
 
-        double currentAmps1;
-        double currentAmps2;
+        double currentAmpsLeft;
+        double currentAmpsRight;
         double maxAmps = 0;
         int numDangerAmps = 0;
 
@@ -74,19 +75,19 @@ public class BasicTeleOp extends LinearOpMode
         {
 
 
-            currentAmps1 = extras.elevatorLeft.getCurrent(CurrentUnit.AMPS);
-            currentAmps2 = extras.elevatorRight.getCurrent(CurrentUnit.AMPS);
+            currentAmpsLeft = extras.elevatorLeft.getCurrent(CurrentUnit.AMPS);
+            currentAmpsRight = extras.elevatorRight.getCurrent(CurrentUnit.AMPS);
 
-            if (currentAmps1 > maxAmps)
+            if (currentAmpsLeft > maxAmps)
             {
-                maxAmps = currentAmps1;
+                maxAmps = currentAmpsLeft;
             }
-            else if (currentAmps2 > maxAmps)
+            else if (currentAmpsRight > maxAmps)
             {
-                maxAmps = currentAmps2;
+                maxAmps = currentAmpsRight;
             }
 
-            if (currentAmps1 >= 7 || currentAmps2 >= 7)
+            if (currentAmpsLeft >= 7 || currentAmpsRight >= 7)
             {
                 numDangerAmps += 1;
 
@@ -396,16 +397,18 @@ public class BasicTeleOp extends LinearOpMode
             telemetry.addData("step", extras.step);
             telemetry.addData("x", drive.pose.position.x);
             telemetry.addData("y", drive.pose.position.y);
-            telemetry.addData("heading", drive.pose.heading);
-            telemetry.addData("Elevator1 encoder counts: ", extras.elevatorLeft.getCurrentPosition());
-            telemetry.addData("Elevator2 encoder counts: ", extras.elevatorRight.getCurrentPosition());
+            telemetry.addData("heading", drive.pose.heading.real);
+            telemetry.addData("Pid Left", extras.elevatorLeft.getPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION));
+            telemetry.addData("Pid Right", extras.elevatorRight.getPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION));
+            telemetry.addData("Elevator Left encoder counts: ", extras.elevatorLeft.getCurrentPosition());
+            telemetry.addData("Elevator Right encoder counts: ", extras.elevatorRight.getCurrentPosition());
             telemetry.addData("Elevator limit: ", extras.elevatorLimit.isPressed());
             telemetry.addData("Elevator stopped? ", elevatorStopped);
             telemetry.addData("lift position", extras.lift.getCurrentPosition());
             telemetry.addLine();
 
-            telemetry.addData("Elevator1 current voltage: ", currentAmps1);
-            telemetry.addData("Elevator2 current voltage: ", currentAmps2);
+            telemetry.addData("Elevator Left current: ", currentAmpsLeft);
+            telemetry.addData("Elevator Right current: ", currentAmpsRight);
             telemetry.addData("Max amps: ", maxAmps);
 
             telemetry.addData("Elapsed time: ", getRuntime());
