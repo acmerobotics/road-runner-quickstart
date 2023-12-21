@@ -398,8 +398,8 @@ public class BasicTeleOp extends LinearOpMode
             telemetry.addData("x", drive.pose.position.x);
             telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading", drive.pose.heading.real);
-            telemetry.addData("Pid Left", extras.elevatorLeft.getPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION));
-            telemetry.addData("Pid Right", extras.elevatorRight.getPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION));
+            //telemetry.addData("Pid Left", extras.elevatorLeft.getPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION));
+            //telemetry.addData("Pid Right", extras.elevatorRight.getPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION));
             telemetry.addData("Elevator Left encoder counts: ", extras.elevatorLeft.getCurrentPosition());
             telemetry.addData("Elevator Right encoder counts: ", extras.elevatorRight.getCurrentPosition());
             telemetry.addData("Elevator limit: ", extras.elevatorLimit.isPressed());

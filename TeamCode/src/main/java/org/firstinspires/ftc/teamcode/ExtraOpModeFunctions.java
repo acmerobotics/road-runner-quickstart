@@ -16,6 +16,7 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.MotorControlAlgorithm;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -121,18 +122,20 @@ public class ExtraOpModeFunctions
         //lift.setTargetPosition(0);
         //lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //PIDFCoefficients pidfCoefficients = new PIDFCoefficients(10.0, 0.04, 0.0, 0.0);
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(10.0, 0.05, 0.0, 0.0);
         //PIDFCoefficients pidfCoefficients = new PIDFCoefficients(5.0, 0.0, 0.0, 0.0);
 
         elevatorLeft.setDirection(DcMotorEx.Direction.FORWARD);
-        //elevatorLeft.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidfCoefficients);
+        //elevatorLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, pidfCoefficients);
+        //elevatorLeft.setPositionPIDFCoefficients(5.0);
         elevatorLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         elevatorLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         elevatorLeft.setTargetPosition(0);
-        elevatorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elevatorLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         elevatorRight.setDirection(DcMotorEx.Direction.REVERSE);
-        //elevatorRight.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidfCoefficients);
+        //elevatorRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, pidfCoefficients);
+        //elevatorRight.setPositionPIDFCoefficients(5.0);
         elevatorRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         elevatorRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         elevatorRight.setTargetPosition(0);
