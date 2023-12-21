@@ -49,6 +49,7 @@ public interface Drive {
 
     List<Double> getWheelPositions();
     List<Double> getWheelVelocities();
+    Pose2d getPoseVelocity();
 
     void setDrivePower(Pose2d drivePower );
     void setMotorPowers(double v, double v1);

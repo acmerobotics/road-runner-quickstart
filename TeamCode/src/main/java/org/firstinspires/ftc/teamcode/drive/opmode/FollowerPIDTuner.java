@@ -5,7 +5,9 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.drive.Drive;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 /*
@@ -26,9 +28,14 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 public class FollowerPIDTuner extends LinearOpMode {
     public static double DISTANCE = 48; // in
 
+    private Drive drive;
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        if (TuningOpModes.DRIVE_CLASS == SampleMecanumDrive.class ) {
+            drive = new SampleMecanumDrive(hardwareMap);
+        }else if (TuningOpModes.DRIVE_CLASS == SampleTankDrive.class) {
+            drive = new SampleTankDrive(hardwareMap);
+        }
 
         Pose2d startPose = new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0);
 
