@@ -31,7 +31,6 @@ public class StraightTest extends LinearOpMode {
 
         if (TuningOpModes.DRIVE_CLASS == SampleMecanumDrive.class ) {
             drive = new SampleMecanumDrive(hardwareMap);
-
         }else if (TuningOpModes.DRIVE_CLASS == SampleTankDrive.class) {
             drive = new SampleTankDrive(hardwareMap);
         }

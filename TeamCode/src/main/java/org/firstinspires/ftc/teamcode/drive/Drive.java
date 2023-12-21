@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
 
 import java.util.List;
 
+import kotlin.Unit;
+
 public interface Drive {
     Pose2d getPoseEstimate();
     void updatePoseEstimate();
@@ -47,6 +49,8 @@ public interface Drive {
 
     List<Double> getWheelPositions();
     List<Double> getWheelVelocities();
+
+    void setDrivePower(Pose2d drivePower );
     void setMotorPowers(double v, double v1);
     void setMotorPowers(double v, double v1, double v2, double v3);
     double getRawExternalHeading();
