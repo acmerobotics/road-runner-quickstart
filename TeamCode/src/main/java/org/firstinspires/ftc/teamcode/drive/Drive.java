@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
@@ -50,6 +51,8 @@ public interface Drive {
     List<Double> getWheelPositions();
     List<Double> getWheelVelocities();
     Pose2d getPoseVelocity();
+
+    Localizer getLocalizer();
 
     void setDrivePower(Pose2d drivePower );
     void setMotorPowers(double v, double v1);
