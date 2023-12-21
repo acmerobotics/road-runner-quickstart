@@ -10,7 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.drive.Drive;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 
 import java.util.Objects;
 
@@ -30,9 +32,15 @@ public class MaxAngularVeloTuner extends LinearOpMode {
     private ElapsedTime timer;
     private double maxAngVelocity = 0.0;
 
+    private Drive drive;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        if (TuningOpModes.DRIVE_CLASS == SampleMecanumDrive.class ) {
+            drive = new SampleMecanumDrive(hardwareMap);
+        }else if (TuningOpModes.DRIVE_CLASS == SampleTankDrive.class) {
+            drive = new SampleTankDrive(hardwareMap);
+        }
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
