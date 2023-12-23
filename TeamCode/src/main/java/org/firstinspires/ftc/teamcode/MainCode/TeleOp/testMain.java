@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.MainCode;
+package org.firstinspires.ftc.teamcode.MainCode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -21,7 +20,7 @@ import java.util.List;
 
 //@TeleOp(name="Main", group="Linear Opmode")
 
-public class Main extends LinearOpMode {
+public class testMain extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor front_left = null;
     private DcMotor front_right = null;
