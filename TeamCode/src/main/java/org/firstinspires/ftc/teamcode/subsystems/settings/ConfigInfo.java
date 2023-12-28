@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems.settings;
 
-import com.qualcomm.robotcore.hardware.Servo;
-
 import org.firstinspires.ftc.teamcode.util.HardwareInterface;
 
 public class ConfigInfo {

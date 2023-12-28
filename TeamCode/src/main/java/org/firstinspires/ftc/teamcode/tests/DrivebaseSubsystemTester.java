@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
-import java.lang.annotation.Annotation;
-
 @TeleOp(name="DrivebaseSubsystemTester", group="Tests")
 public class DrivebaseSubsystemTester extends OpMode {
 
