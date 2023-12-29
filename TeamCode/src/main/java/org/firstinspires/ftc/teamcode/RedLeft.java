@@ -46,16 +46,19 @@ public class RedLeft extends LinearOpMode {
 
         if(PATH == "Left"){
             deliverPurpleLeft();
+            yellowDriveUp();
             //yellowLeft();
         } else if(PATH == "Right"){
             deliverPurpleRight();
+            yellowDriveUp();
             //yellowRight();
         }else{
             deliverPurpleCenter();
+            yellowDriveUp();
             //yellowCenter();
         }
-
-        //deliverYellow();
+        sleep(2000);
+        deliverYellow();
         //park();
         //RobotLog.i(String.format("Final position %f,%f",fluffy.drive.pose.position.x, fluffy.drive.pose.position.y));
     }
@@ -117,10 +120,23 @@ public class RedLeft extends LinearOpMode {
                         .build());
     }
 
+    public void yellowDriveUp(){
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeToLinearHeading(new Vector2d(60.9, 13.76), Math.toRadians(0    ))
+                        .strafeToLinearHeading(new Vector2d(54.42, -49.8), Math.toRadians(-89.9))
+                        .strafeToLinearHeading(new Vector2d(19.38, -74.93), Math.toRadians(-89.9))
+                        .build());
+    }
 
     public void deliverYellow(){
         fluffy.raiseLift();
         Pose2d destination = fluffy.correctYellowPositionRed(PATH);
+        RobotLog.i(String.format("Target position: %s", PATH));
+        RobotLog.i(String.format("Current position: (%3.1f, %3.1f) at %3.1f deg",
+                fluffy.drive.pose.position.x,
+                fluffy.drive.pose.position.y,
+                Math.toDegrees(fluffy.drive.pose.heading.toDouble())));
         RobotLog.i(String.format("Destination position: (%3.1f, %3.1f) at %3.1f deg",
                 destination.position.x,
                 destination.position.y,
@@ -129,6 +145,10 @@ public class RedLeft extends LinearOpMode {
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(destination.position , destination.heading)
                         .build());
+        RobotLog.i(String.format("New current position: (%3.1f, %3.1f) at %3.1f deg",
+                fluffy.drive.pose.position.x,
+                fluffy.drive.pose.position.y,
+                Math.toDegrees(fluffy.drive.pose.heading.toDouble())));
         fluffy.raiseFinger();
         sleep(500);
         Actions.runBlocking(

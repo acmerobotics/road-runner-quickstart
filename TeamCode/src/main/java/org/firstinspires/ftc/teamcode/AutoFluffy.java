@@ -253,6 +253,8 @@ public class AutoFluffy {
         //sleep(5000); //waiting for tag detections, might need less time
         AprilTagDetection detection = assignID(PATH, "Red");
         if (detection == null) {
+            RobotLog.i(String.format("running null case"));
+            //need new values for backside
             if (PATH.equals("Left")) {
                 return new Pose2d(32.5, -39, Math.toRadians(-89.9));
             } else if (PATH.equals("Center")) {
@@ -261,6 +263,7 @@ public class AutoFluffy {
                 return new Pose2d(22.4, -39, Math.toRadians(-89.9));
             }
         }
+            RobotLog.i(String.format("not running null case"));
             double actual_X = -detection.ftcPose.x;
             double actual_Y = -detection.ftcPose.y;
             double D_X = actual_X - deltaC_X;
