@@ -142,6 +142,8 @@ public final class MecanumDrive {
             rightFront.setDirection(DcMotor.Direction.FORWARD);
             rightBack.setDirection(DcMotor.Direction.REVERSE);
 
+            //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
             lastLeftFrontPos = leftFront.getPositionAndVelocity().position;
             lastLeftBackPos = leftBack.getPositionAndVelocity().position;
             lastRightBackPos = rightBack.getPositionAndVelocity().position;
