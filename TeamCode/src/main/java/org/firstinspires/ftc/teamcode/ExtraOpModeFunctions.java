@@ -208,19 +208,21 @@ public class ExtraOpModeFunctions
         upperClaw.setPosition(0);
     }
 
+    // Red
     public void upperClawGrab()
     {
         upperClaw.setPosition(0.7);
     }
 
+    // No color
     public void lowerClawRelease()
     {
-        lowerClaw.setPosition(0);
+        lowerClaw.setPosition(1);
     }
 
     public void lowerClawGrab()
     {
-        lowerClaw.setPosition(1);
+        lowerClaw.setPosition(0);
     }
 
     public void elbowExtend()
