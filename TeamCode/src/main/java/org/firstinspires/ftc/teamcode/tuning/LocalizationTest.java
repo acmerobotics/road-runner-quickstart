@@ -56,7 +56,7 @@ public class LocalizationTest extends LinearOpMode {
                 telemetry.update();
             }
         } else {
-            throw new AssertionError();
+            throw new RuntimeException();
         }
     }
 }
