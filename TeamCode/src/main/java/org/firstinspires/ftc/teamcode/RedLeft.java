@@ -21,6 +21,7 @@ public class RedLeft extends LinearOpMode {
     //BRING GRABBER UP FIRST THING
     AutoFluffy fluffy;
     String PATH;
+    String SIDE = "Left";
     public static double DeltaC_X = -3.86;
     public static double DeltaC_Y = -3.51;
     static double DELTA = 1;
@@ -59,7 +60,7 @@ public class RedLeft extends LinearOpMode {
         }
         sleep(2000);
         deliverYellow();
-        //park();
+        park();
         //RobotLog.i(String.format("Final position %f,%f",fluffy.drive.pose.position.x, fluffy.drive.pose.position.y));
     }
 
@@ -72,28 +73,45 @@ public class RedLeft extends LinearOpMode {
     public void deliverPurpleLeft(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        //.splineTo(new Vector2d(29.5,9.23), .21)
-                        .lineToX(20.5)
-                        .strafeTo( new Vector2d(29.5,11.5))
+                        .strafeTo( new Vector2d(25,26))
+                        .strafeTo( new Vector2d(30.5,26))
                         .build());
         fluffy.deliverPurple();
+        fluffy.retractPurple();
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeTo( new Vector2d(30.5,29))
+                        .strafeTo( new Vector2d(20,29))
+                        .strafeTo( new Vector2d(20,5))
+                        .strafeTo( new Vector2d(47,-3))
+                        .build());
 
     }
     public void deliverPurpleCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(25, 7 ), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(34.1, 5 ), Math.toRadians(-89.9))
+                        .strafeToLinearHeading(new Vector2d(38, 20 ), Math.toRadians(0))
+                        .strafeToLinearHeading(new Vector2d(41.5, 18.5 ), Math.toRadians(0))
                         .build());
         fluffy.deliverPurple();
+        fluffy.retractPurple();
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeToLinearHeading(new Vector2d(39, 25 ), Math.toRadians(0))
+                        .build());
     }
     public void deliverPurpleRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(new Vector2d(27.6,6), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(28.5,-9), Math.toRadians(-89.9))
+                        .strafeToLinearHeading(new Vector2d(29.0,-5), Math.toRadians(0))
                         .build());
         fluffy.deliverPurple();
+        fluffy.retractPurple();
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeToLinearHeading(new Vector2d(28.0,6), Math.toRadians(0))
+                        .build());
     }
 
     public void yellowLeft(){
@@ -123,15 +141,15 @@ public class RedLeft extends LinearOpMode {
     public void yellowDriveUp(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(60.9, 13.76), Math.toRadians(0    ))
+                        .strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(0))
                         .strafeToLinearHeading(new Vector2d(54.42, -49.8), Math.toRadians(-89.9))
-                        .strafeToLinearHeading(new Vector2d(19.38, -74.93), Math.toRadians(-89.9))
+                        .strafeToLinearHeading(new Vector2d(19.38, -78), Math.toRadians(-89.9))
                         .build());
     }
 
     public void deliverYellow(){
         fluffy.raiseLift();
-        Pose2d destination = fluffy.correctYellowPositionRed(PATH);
+        Pose2d destination = fluffy.correctYellowPositionRed(PATH, SIDE);
         RobotLog.i(String.format("Target position: %s", PATH));
         RobotLog.i(String.format("Current position: (%3.1f, %3.1f) at %3.1f deg",
                 fluffy.drive.pose.position.x,
@@ -180,7 +198,7 @@ public class RedLeft extends LinearOpMode {
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(0, -32), Math.toRadians(-89.9))
+                        .strafeToLinearHeading(new Vector2d(58, -90), Math.toRadians(-89.9))
                         .build());
     }
 

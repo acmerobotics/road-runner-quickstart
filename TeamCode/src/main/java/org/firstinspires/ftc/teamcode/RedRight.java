@@ -21,6 +21,7 @@ public class RedRight extends LinearOpMode {
     //BRING GRABBER UP FIRST THING//
     AutoFluffy fluffy;
     String PATH;
+    String SIDE = "Right";
     static double DELTA = 1;
     List<Recognition> currentRecognitions;
     public void runOpMode(){
@@ -134,7 +135,7 @@ public class RedRight extends LinearOpMode {
 
     public void deliverYellow(){
         fluffy.raiseLift();
-        Pose2d destination = fluffy.correctYellowPositionRed(PATH);
+        Pose2d destination = fluffy.correctYellowPositionRed(PATH, SIDE);
         RobotLog.i(String.format("Destination position: (%3.1f, %3.1f) at %3.1f deg",
                 destination.position.x,
                 destination.position.y,

@@ -249,18 +249,27 @@ public class AutoFluffy {
             }
         }
 
-    public Pose2d correctYellowPositionRed(String PATH) {
-        //sleep(5000); //waiting for tag detections, might need less time
+    public Pose2d correctYellowPositionRed(String PATH, String SIDE) {
         AprilTagDetection detection = assignID(PATH, "Red");
         if (detection == null) {
             RobotLog.i(String.format("running null case"));
             //need new values for backside
-            if (PATH.equals("Left")) {
-                return new Pose2d(32.5, -39, Math.toRadians(-89.9));
-            } else if (PATH.equals("Center")) {
-                return new Pose2d(27.7, -39, Math.toRadians(-89.9));
-            } else if (PATH.equals("Right")) {
-                return new Pose2d(22.4, -39, Math.toRadians(-89.9));
+            if (SIDE .equals("Right")){
+                if (PATH.equals("Left")) {
+                    return new Pose2d(32.5, -39, Math.toRadians(-89.9));
+                } else if (PATH.equals("Center")) {
+                    return new Pose2d(27.7, -39, Math.toRadians(-89.9));
+                } else if (PATH.equals("Right")) {
+                    return new Pose2d(22.4, -39, Math.toRadians(-89.9));
+                }
+            }else if(SIDE .equals("Left")){
+                if (PATH.equals("Left")) {
+                    return new Pose2d(32.5, -85, Math.toRadians(-89.9));
+                } else if (PATH.equals("Center")) {
+                    return new Pose2d(27.7, -85, Math.toRadians(-89.9));
+                } else if (PATH.equals("Right")) {
+                    return new Pose2d(22.4, -85, Math.toRadians(-89.9));
+                }
             }
         }
             RobotLog.i(String.format("not running null case"));
