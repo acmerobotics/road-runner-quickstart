@@ -73,17 +73,21 @@ public class RedLeft extends LinearOpMode {
     public void deliverPurpleLeft(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeTo( new Vector2d(25,26))
+                        .strafeTo( new Vector2d(35,10))
+                        .strafeTo( new Vector2d(35,20))
+                        .strafeTo( new Vector2d(35,10))
+                        //.strafeTo( new Vector2d(25,26))
                         .strafeTo( new Vector2d(30.5,26))
                         .build());
         fluffy.deliverPurple();
         fluffy.retractPurple();
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeTo( new Vector2d(30.5,29))
-                        .strafeTo( new Vector2d(20,29))
-                        .strafeTo( new Vector2d(20,5))
-                        .strafeTo( new Vector2d(47,-3))
+                        //.strafeTo( new Vector2d(30.5,29))
+                        //.strafeTo( new Vector2d(20,29))
+                        //.strafeTo( new Vector2d(20,5))
+                        //.strafeTo( new Vector2d(47,-7))
+                        .strafeTo( new Vector2d(30.5,0))
                         .build());
 
     }
@@ -198,7 +202,7 @@ public class RedLeft extends LinearOpMode {
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(58, -90), Math.toRadians(-89.9))
+                        .strafeToLinearHeading(new Vector2d(56, -98), Math.toRadians(-89.9))
                         .build());
     }
 
