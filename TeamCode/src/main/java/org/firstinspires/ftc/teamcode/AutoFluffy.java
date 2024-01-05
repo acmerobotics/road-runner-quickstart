@@ -277,8 +277,9 @@ public class AutoFluffy {
             double actual_Y = -detection.ftcPose.y;
             double D_X = actual_X - deltaC_X;
             double D_Y = actual_Y - deltaC_Y;
-            double Target_X = drive.pose.position.x + D_X;
-            double Target_Y = drive.pose.position.y + D_Y;
+            double Target_X =  D_X;
+            double Target_Y = D_Y;
+            RobotLog.i(String.format("April Tag X: %3.1f    April Tag Y: %3.1f", actual_X, actual_Y));
             RobotLog.i(String.format("D_X: %3.1f  D_Y: %3.1f", D_X, D_Y));
             RobotLog.i(String.format("current pose: (%3.1f, %3.1f) at %3.1f deg", drive.pose.position.x, drive.pose.position.y,
                     Math.toDegrees(drive.pose.heading.toDouble())));
@@ -311,6 +312,7 @@ public class AutoFluffy {
         double Target_Y = drive.pose.position.y + D_Y;
         op.telemetry.addData("Target_X", Target_X);
         op.telemetry.addData("Target_Y", Target_Y);
+        RobotLog.i(String.format("April Tag X: %3.1f    April Tag Y: %3.1f", actual_X, actual_Y));
         RobotLog.i(String.format("D_X: %3.1f  D_Y: %3.1f", D_X, D_Y));
         RobotLog.i(String.format("current pose: (%3.1f, %3.1f) at %3.1f deg", drive.pose.position.x, drive.pose.position.y,
                 Math.toDegrees(drive.pose.heading.toDouble())));
