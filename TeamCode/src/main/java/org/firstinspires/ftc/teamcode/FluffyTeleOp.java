@@ -51,6 +51,7 @@ public class FluffyTeleOp extends OpMode {
         setFingerPosition();
         setHanger();
         setLauncher();
+        setLauncher();
         setSlowApproach();
     }
 

@@ -54,6 +54,7 @@ import java.util.List;
 @Config
 @Disabled
 public final class MecanumDrive {
+    //CHANGING TrackWidthTicks, MaxAngVel, MaxAngAcc, LateralGain, HeadingGain BACK 1/8/24
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -66,7 +67,7 @@ public final class MecanumDrive {
         // drive model parameters
         public double inPerTick = 0.03145;
         public double lateralInPerTick = 0.03198*22/24;
-        public double trackWidthTicks = 798;//650;
+        public double trackWidthTicks = 650;//798;
 
         // feedforward parameters (in tick units)
         public double kS = 1.1453;
@@ -79,13 +80,13 @@ public final class MecanumDrive {
         public double maxProfileAccel = 50;
 
         // turn profile parameters (in radians)
-        public double maxAngVel = Math.PI/2   ; // shared with path
-        public double maxAngAccel = Math.PI/2;
+        public double maxAngVel = Math.PI; ///2   ; // shared with path
+        public double maxAngAccel = Math.PI; ///2;
 
         // path controller gains
         public double axialGain = 2;
-        public double lateralGain = 3;
-        public double headingGain = 3; // shared with turn
+        public double lateralGain = 2;//3;
+        public double headingGain = 4;//3; // shared with turn
 
         public double axialVelGain = 0.1;
         public double lateralVelGain = 0.0;

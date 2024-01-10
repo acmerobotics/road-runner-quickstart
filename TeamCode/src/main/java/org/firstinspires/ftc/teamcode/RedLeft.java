@@ -47,17 +47,12 @@ public class RedLeft extends LinearOpMode {
 
         if(PATH == "Left"){
             deliverPurpleLeft();
-            yellowDriveUp();
-            //yellowLeft();
         } else if(PATH == "Right"){
             deliverPurpleRight();
-            yellowDriveUp();
-            //yellowRight();
         }else{
             deliverPurpleCenter();
-            yellowDriveUp();
-            //yellowCenter();
         }
+        yellowDriveUp();
         sleep(2000);
         deliverYellow();
         park();
