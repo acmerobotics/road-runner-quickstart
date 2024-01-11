@@ -27,6 +27,9 @@ repositories {
     maven {
         url = 'https://maven.brott.dev/'
     }
+    //flatDir {
+    //    dirs 'libs', 'C:\\Users\\vecto\\navx-micro\\android\\libs'
+    //}
 }
 
 dependencies {
@@ -35,4 +38,5 @@ dependencies {
 
     implementation "com.acmerobotics.roadrunner:ftc:0.1.11"
     implementation "com.acmerobotics.dashboard:dashboard:0.4.14"
+    //compile (name:'navx_ftc-release', ext:'aar')
 }

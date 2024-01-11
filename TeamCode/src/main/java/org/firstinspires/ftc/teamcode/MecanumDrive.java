@@ -62,8 +62,8 @@ public final class MecanumDrive {
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
-
+                //RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;    // for Adafruit
+                RevHubOrientationOnRobot.UsbFacingDirection.UP;           // for Control Hub
         // drive model parameters
         public double inPerTick = 0.03145;
         public double lateralInPerTick = 0.03198*22/24;
@@ -85,7 +85,7 @@ public final class MecanumDrive {
 
         // path controller gains
         public double axialGain = 2;
-        public double lateralGain = 2;//3;
+        public double lateralGain = 4;//2
         public double headingGain = 4;//3; // shared with turn
 
         public double axialVelGain = 0.1;
@@ -227,7 +227,7 @@ public final class MecanumDrive {
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
         imu.initialize(parameters);
-        //imu.resetYaw();
+        imu.resetYaw();
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
