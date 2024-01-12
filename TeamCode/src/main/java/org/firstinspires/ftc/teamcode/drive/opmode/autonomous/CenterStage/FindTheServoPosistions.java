@@ -10,16 +10,18 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Autonomous (name = "Servo Finder test")
 @Config
 public class FindTheServoPosistions extends LinearOpMode {
+    pr
 
-    private SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    SampleMecanumDrive drive;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
+        drive = new SampleMecanumDrive(hardwareMap);
 
         while (!isStarted()) {
-            telemetry.addData("Servo Posistion ", drive.leftGripServo.getPosition());
-            telemetry.addData("claw Posistion" , drive.rightGripServo.getPosition());
+            telemetry.addData("Servo Posistion ", drive.gripServo.getPosition());
+        //    telemetry.addData("claw Posistion" , drive.rightGripServo.getPosition());
             telemetry.addData("claw Posistion" , drive.wristGripServo.getPosition());
             telemetry.addData("slide",drive.slideLeft.getCurrentPosition());
             telemetry.update();

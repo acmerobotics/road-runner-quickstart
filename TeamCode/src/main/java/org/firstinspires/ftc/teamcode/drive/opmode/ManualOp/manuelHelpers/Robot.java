@@ -37,7 +37,8 @@ public class Robot {
     private final IMU imu;
 
     // Create servo objects
-    private final Servo leftGripServo, rightGripServo, wristGripServo;
+    private final Servo  wristGripServo, gripServo;
+   // private final Servo leftGripServo, rightGripServo, wristGripServo, gripServo;
 
     // Create variables for headless operation
     private double headingOffset = 0.0;  // Allows headless mode to correct for rotation
@@ -105,8 +106,9 @@ public class Robot {
         slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Ask the Driver Hub which port each servo is attached to based on robot config
-        leftGripServo = hardwareMap.servo.get("leftGripServo");
-        rightGripServo = hardwareMap.servo.get("rightGripServo");
+     //   leftGripServo = hardwareMap.servo.get("leftGripServo");
+      //  rightGripServo = hardwareMap.servo.get("rightGripServo");
+        gripServo = hardwareMap.servo.get("gripServo");
         wristGripServo = hardwareMap.servo.get("wristServo");
     }
 
@@ -243,6 +245,23 @@ public class Robot {
     // This functions opens and closes our gripper based on a boolean value
 
     //TODO this is where we need to change the values and probably the names
+
+    public void setGrip(boolean grip) {
+        //double leftOpen = 0.0, leftClosed = 105.0;
+        // double rightOpen = 270.0, rightClosed = 175.0;
+        double gripOpen = 270, gripClosed = 170;
+
+        if (grip) {
+            //   leftGripServo.setPosition(leftClosed / 270);
+            //   rightGripServo.setPosition(rightClosed / 270);
+            gripServo.setPosition(gripOpen/270);
+        } else if (!grip) {
+            // leftGripServo.setPosition(leftOpen / 270);
+            // rightGripServo.setPosition(rightOpen / 270);
+            gripServo.setPosition(gripClosed/170);
+        }
+    }
+    /*
     public void setGrip(boolean grip_) {
         // Hardcode our opened and closed servo positions (in degrees)
         double leftOpen = 0.0, leftClosed = 105.0;
@@ -253,7 +272,7 @@ public class Robot {
             The servos require a value from 0 to 1 to set their position,
             and our particular servos have a range of 270°
             Dividing by 270 converts our degrees to a value from 0 to 1
-         */
+         /
         if (grip_) {
             leftGripServo.setPosition(leftClosed / 270);
             rightGripServo.setPosition(rightClosed / 270);
@@ -262,6 +281,7 @@ public class Robot {
             rightGripServo.setPosition(rightOpen / 270);
         }
     }
+    ***/
     public void setWrist (boolean wrist_) {
         double intakePos = 0.0 , backDropPos = 100;
 

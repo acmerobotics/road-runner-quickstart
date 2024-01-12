@@ -80,7 +80,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
 
-    public Servo leftGripServo, rightGripServo,wristGripServo;
+    public Servo  gripServo, wristGripServo;
     public DcMotorEx slideLeft, slideRight, slideTop;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
@@ -127,9 +127,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        leftGripServo = hardwareMap.servo.get("leftGripServo");
-        rightGripServo = hardwareMap.servo.get("rightGripServo");
-        wristGripServo = hardwareMap.servo.get("wristServo");
+        //leftGripServo = hardwareMap.servo.get("leftGripServo");
+        //rightGripServo = hardwareMap.servo.get("rightGripServo");
+        gripServo =hardwareMap.servo.get("gripServo");
+        wristGripServo = hardwareMap.servo.get("wristGripServo");
 
         slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
         slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
@@ -406,15 +407,18 @@ public class SampleMecanumDrive extends MecanumDrive {
 //TODO : WE need to change all the setGrip Functions this is found in like 3 other classes
     // Takes a boolean grip value and does the math to convert it to a servo position
     public void setGrip(boolean grip) {
-        double leftOpen = 0.0, leftClosed = 105.0;
-        double rightOpen = 270.0, rightClosed = 175.0;
+        //double leftOpen = 0.0, leftClosed = 105.0;
+       // double rightOpen = 270.0, rightClosed = 175.0;
+        double gripOpen = 270, gripClosed = 170;
 
         if (grip) {
-            leftGripServo.setPosition(leftClosed / 270);
-            rightGripServo.setPosition(rightClosed / 270);
+         //   leftGripServo.setPosition(leftClosed / 270);
+         //   rightGripServo.setPosition(rightClosed / 270);
+            gripServo.setPosition(gripOpen/270);
         } else if (!grip) {
-            leftGripServo.setPosition(leftOpen / 270);
-            rightGripServo.setPosition(rightOpen / 270);
+           // leftGripServo.setPosition(leftOpen / 270);
+           // rightGripServo.setPosition(rightOpen / 270);
+            gripServo.setPosition(gripClosed/170);
         }
     }
 
