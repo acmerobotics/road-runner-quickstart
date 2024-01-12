@@ -17,7 +17,7 @@ public class Slide {
 
     private final DcMotorEx slideLeft, slideRight, slideTop;
 
-    //private final Servo leftGripServo, rightGripServo;
+    private final Servo leftGripServo, rightGripServo;
 
     private boolean inProgress = false;
 
@@ -41,8 +41,8 @@ public class Slide {
         slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
         slideTop = hardwareMap.get(DcMotorEx.class, "slideTop");
 
-       // leftGripServo = hardwareMap.servo.get("leftGripServo");
-       // rightGripServo = hardwareMap.servo.get("rightGripServo");
+        leftGripServo = hardwareMap.servo.get("leftGripServo");
+        rightGripServo = hardwareMap.servo.get("rightGripServo");
 
         slideLeft.setDirection(DcMotorEx.Direction.REVERSE);
     }
@@ -77,7 +77,7 @@ public class Slide {
     // Bundles all the functions needed to initialize the arm controls
     public void initArm() {
         stopAndResetMotors();
-        //setGrip(false);
+        setGrip(false);
         setSlideVelocity(0, slideLeft, slideRight, slideTop);
         setHeight(0);
         setExtension(0);
@@ -106,7 +106,7 @@ public class Slide {
     }
 
     // Takes a boolean grip value and does the math to convert it to a servo position
-   /* public void setGrip(boolean grip) {
+    public void setGrip(boolean grip) {
         double leftOpen = 0.0, leftClosed = 105.0;
         double rightOpen = 270.0, rightClosed = 175.0;
 
@@ -119,7 +119,7 @@ public class Slide {
         }
     }
 
-    */
+
 
     public void manualHeightControl(double velScale) {
         // TODO: see if setting int.max and int.min is better
