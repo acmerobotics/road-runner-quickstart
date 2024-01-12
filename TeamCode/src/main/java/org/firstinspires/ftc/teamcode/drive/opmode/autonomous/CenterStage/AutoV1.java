@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -27,16 +28,16 @@ public class AutoV1 extends LinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
 
         drive.setPoseEstimate(StartLF);
-        TrajectorySequence PlacePurple = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(PurpPos,
-                SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                        DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-        )
+        TrajectorySequence PurpPlace = drive.trajectorySequenceBuilder(new Pose2d(12.30, 60.79, Math.toRadians(270.00)))
+                .splineTo(new Vector2d(12.01, 35.16), Math.toRadians(270.00))
                 .build();
 
-        drive.followTrajectorySequence(PlacePurple);
+        drive.followTrajectorySequence(PurpPlace);
         drive.setGrip(false);
-
+        TrajectorySequence placeWhite = drive.trajectorySequenceBuilder(new Pose2d(12.01, 36.47, Math.toRadians(270.00)))
+                .lineToSplineHeading(new Pose2d(11.43, 50.16, Math.toRadians(0.00)))
+                .splineToLinearHeading(new Pose2d(45.79, 38.51, Math.toRadians(0.00)), Math.toRadians(320.00))
+                .build();
+        drive.followTrajectorySequence(placeWhite);
     }
-}   
+}
