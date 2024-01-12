@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Autonomous (name = "Servo Finder test")
 @Config
 public class FindTheServoPosistions extends LinearOpMode {
-    pr
+
 
     SampleMecanumDrive drive;
 
