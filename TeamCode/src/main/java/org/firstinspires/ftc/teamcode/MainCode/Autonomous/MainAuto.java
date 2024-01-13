@@ -29,6 +29,8 @@ public final class MainAuto extends LinearOpMode {
     public static String colorValue = "";
     public static String parkValue = "";
 
+    VisionHandler visionHandler = new VisionHandler();
+
 
     public void runOpMode() throws InterruptedException {
         Pose2d startingPose;
@@ -39,7 +41,26 @@ public final class MainAuto extends LinearOpMode {
         int reflect;
         int LCRNUM = 0;
         ConfigDashboard();
+        visionHandler.init(hardwareMap);
         waitForStart();
+
+        if(color.equals(Alliance.RED)){
+            visionHandler.setRed()
+        }else{
+            visionHandler.setBlue()
+        }
+        visionHandler.setClose();
+        if(visionHandler.read() > VisionParameters.confidance){
+            // It's close!
+        }else{
+            visionHandler.setFar();
+            if(visionHandler.read() > VisionParameters.confidance){
+                // It's far!
+            }else{
+                // It's not there!
+            }
+        }
+
         if (color.equals(Alliance.RED)) {
             reflect = 1;
         } else {
