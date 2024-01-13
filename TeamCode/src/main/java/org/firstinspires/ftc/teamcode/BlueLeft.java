@@ -21,6 +21,7 @@ public class BlueLeft extends LinearOpMode {
     //BRING GRABBER UP FIRST THING//
     AutoFluffy fluffy;
     String PATH;
+    String SIDE = "Left";
     static double DELTA = 1;
     List<Recognition> currentRecognitions;
     public void runOpMode(){
@@ -79,7 +80,7 @@ public class BlueLeft extends LinearOpMode {
     public void deliverPurpleLeft(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading( new Vector2d(27.6,13.0), Math.toRadians(90))
+                        .strafeToLinearHeading( new Vector2d(24.6,13.0), Math.toRadians(90))
                         .build());
         fluffy.deliverPurple();
 
@@ -87,7 +88,7 @@ public class BlueLeft extends LinearOpMode {
     public void deliverPurpleCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(37.4, 7 ), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(34, 7 ), Math.toRadians(90))
                         .build());
         fluffy.deliverPurple();
     }
@@ -95,7 +96,7 @@ public class BlueLeft extends LinearOpMode {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(new Vector2d(27.6,6), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(28.5,-5), Math.toRadians(0))
+                        .strafeToLinearHeading(new Vector2d(28.5,-3.5), Math.toRadians(0))
                         .build());
         fluffy.deliverPurple();
     }
@@ -131,7 +132,7 @@ public class BlueLeft extends LinearOpMode {
 
     public void deliverYellow(){
         fluffy.raiseLift();
-        Pose2d destination = fluffy.correctYellowPositionBlue(PATH);
+        Pose2d destination = fluffy.correctYellowPositionBlue(PATH, SIDE);
         RobotLog.i(String.format("Destination position: (%3.1f, %3.1f) at %3.1f deg",
                 destination.position.x,
                 destination.position.y,
@@ -142,14 +143,14 @@ public class BlueLeft extends LinearOpMode {
                         .build());
         fluffy.raiseFinger();
         sleep(500);
-        Actions.runBlocking(
+        /*Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                        // .setReversed(true)
                         .strafeToLinearHeading(new Vector2d(fluffy.drive.pose.position.x, (fluffy.drive.pose.position.y + DELTA)),
                                 Math.toRadians(89.9))
                        // .setReversed(false)
-                        .build());
-        fluffy.lowerLift();
+                        .build());*/
+        //fluffy.lowerLift();
 
         /* HA plan 12/13:
          * raiseLift()
@@ -173,10 +174,12 @@ public class BlueLeft extends LinearOpMode {
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .setReversed(true)
                         .lineToY(fluffy.drive.pose.position.y - 5)
-                        .setReversed(false)
-                        .strafeToLinearHeading(new Vector2d(0 , 34), Math.toRadians(89.9))
+                        .build());
+        fluffy.lowerLift();
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeToLinearHeading(new Vector2d(3 , 34), Math.toRadians(89.9))
                         .build());
     }
 

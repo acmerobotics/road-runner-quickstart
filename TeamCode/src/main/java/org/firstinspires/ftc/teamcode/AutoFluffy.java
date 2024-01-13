@@ -47,7 +47,7 @@ public class AutoFluffy {
     public static double RIGHT_PURPLE_RELEASE = .6;
     public static double LEFT_PURPLE_INIT = LEFT_PURPLE_GRAB;
     public static double RIGHT_PURPLE_INIT = RIGHT_PURPLE_GRAB;
-    public static int LIFT_UP = 350;  //fix values
+    public static int LIFT_UP = 300;  //fix values
     public static int LIFT_DOWN = 0;  //fix values
     public static double LIFT_POWER = 1;  //fix values
     public static int FINGER_UP_WAIT = 500;
@@ -182,12 +182,12 @@ public class AutoFluffy {
                 .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
                 .build();
         if (side.equals("Red")){
-            deltaC_X = -3.86;
-            deltaC_Y = -3.51;
+            deltaC_X = -3.86;//-2.75;
+            deltaC_Y = -4.51;//-5.25;
         }
         else {
             deltaC_X = 3.86;
-            deltaC_Y = 3.51;
+            deltaC_Y = 1.51;
         }
     }
 
@@ -251,16 +251,16 @@ public class AutoFluffy {
 
     public Pose2d correctYellowPositionRed(String PATH, String SIDE) {
         AprilTagDetection detection = assignID(PATH, "Red");
-        if (detection == null) {
+        if (detection == null || detection.ftcPose == null) {
             RobotLog.i(String.format("running null case"));
             //need new values for backside
             if (SIDE .equals("Right")){
                 if (PATH.equals("Left")) {
-                    return new Pose2d(32.5, -39, Math.toRadians(-89.9));
+                    return new Pose2d(35.8, -36, Math.toRadians(-89.9));
                 } else if (PATH.equals("Center")) {
-                    return new Pose2d(27.7, -39, Math.toRadians(-89.9));
+                    return new Pose2d(27.3, -36, Math.toRadians(-89.9));
                 } else if (PATH.equals("Right")) {
-                    return new Pose2d(22.4, -39, Math.toRadians(-89.9));
+                    return new Pose2d(21.9, -36, Math.toRadians(-89.9));
                 }
             }else if(SIDE .equals("Left")){
                 if (PATH.equals("Left")) {
@@ -288,38 +288,49 @@ public class AutoFluffy {
             return new Pose2d(Target_X, Target_Y, Target_Heading);
 
         }
-    public Pose2d correctYellowPositionBlue(String PATH) {
+    public Pose2d correctYellowPositionBlue(String PATH, String SIDE) {
         //sleep(5000); //waiting for tag detections, might need less time
         AprilTagDetection detection = assignID(PATH, "Blue");
-        if (detection == null) {
-            if (PATH.equals("Left")) {
-                return new Pose2d(26.2, 40.8, Math.toRadians(89.9));
-            } else if (PATH.equals("Center")) {
-                return new Pose2d(31.5, 40.8, Math.toRadians(89.9));
-            } else if (PATH.equals("Right")) {
-                return new Pose2d(36.7, 40.8, Math.toRadians(89.9));
+        if (detection == null || detection.ftcPose == null) {
+            if (SIDE.equals("Left")) {
+                if (PATH.equals("Left")) {
+                    return new Pose2d(25.2, 44.8, Math.toRadians(89.9));
+                } else if (PATH.equals("Center")) {
+                    return new Pose2d(31.1, 44.3, Math.toRadians(89.9));
+                } else if (PATH.equals("Right")) {
+                    return new Pose2d(33.9, 45.4, Math.toRadians(89.9));
+                }
+            } else if (SIDE.equals("Right")) {
+                if (PATH.equals("Left")) {
+                    return new Pose2d(26.3, 95.4, Math.toRadians(89.9));
+                } else if (PATH.equals("Center")) {
+                    return new Pose2d(30.7, 95, Math.toRadians(89.9));
+                } else if (PATH.equals("Right")) {
+                    return new Pose2d(33.3, 95, Math.toRadians(89.9));
+                }
             }
         }
-        double actual_X = detection.ftcPose.x;
-        double actual_Y = detection.ftcPose.y;
-        double D_X = actual_X - deltaC_X;
-        double D_Y = actual_Y - deltaC_Y;
-        op.telemetry.addData("actual_X", actual_X);
-        op.telemetry.addData("actual_Y", actual_Y);
-        op.telemetry.addData("D_X", D_X);
-        op.telemetry.addData("D_Y", D_Y);
-        double Target_X = drive.pose.position.x + D_X;
-        double Target_Y = drive.pose.position.y + D_Y;
-        op.telemetry.addData("Target_X", Target_X);
-        op.telemetry.addData("Target_Y", Target_Y);
-        RobotLog.i(String.format("April Tag X: %3.1f    April Tag Y: %3.1f", actual_X, actual_Y));
-        RobotLog.i(String.format("D_X: %3.1f  D_Y: %3.1f", D_X, D_Y));
-        RobotLog.i(String.format("current pose: (%3.1f, %3.1f) at %3.1f deg", drive.pose.position.x, drive.pose.position.y,
-                Math.toDegrees(drive.pose.heading.toDouble())));
-        double Target_Heading = Math.toRadians(detection.ftcPose.yaw) + drive.pose.heading.toDouble();
-        RobotLog.i(String.format("Target: (%3.1f, %3.1f) at %3.1f deg", Target_X, Target_Y, Math.toDegrees(Target_Heading)));
-        return new Pose2d(Target_X, Target_Y, Target_Heading);
 
-    }
+            double actual_X = detection.ftcPose.x;
+            double actual_Y = detection.ftcPose.y;
+            double D_X = actual_X - deltaC_X;
+            double D_Y = actual_Y - deltaC_Y;
+            op.telemetry.addData("actual_X", actual_X);
+            op.telemetry.addData("actual_Y", actual_Y);
+            op.telemetry.addData("D_X", D_X);
+            op.telemetry.addData("D_Y", D_Y);
+            double Target_X = drive.pose.position.x + D_X;
+            double Target_Y = drive.pose.position.y + D_Y;
+            op.telemetry.addData("Target_X", Target_X);
+            op.telemetry.addData("Target_Y", Target_Y);
+            RobotLog.i(String.format("April Tag X: %3.1f    April Tag Y: %3.1f", actual_X, actual_Y));
+            RobotLog.i(String.format("D_X: %3.1f  D_Y: %3.1f", D_X, D_Y));
+            RobotLog.i(String.format("current pose: (%3.1f, %3.1f) at %3.1f deg", drive.pose.position.x, drive.pose.position.y,
+                    Math.toDegrees(drive.pose.heading.toDouble())));
+            double Target_Heading = Math.toRadians(detection.ftcPose.yaw) + drive.pose.heading.toDouble();
+            RobotLog.i(String.format("Target: (%3.1f, %3.1f) at %3.1f deg", Target_X, Target_Y, Math.toDegrees(Target_Heading)));
+            return new Pose2d(Target_X, Target_Y, Target_Heading);
 
         }
+
+    }

@@ -52,7 +52,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Config
-@Disabled
+//@Disabled
 public final class MecanumDrive {
     //CHANGING TrackWidthTicks, MaxAngVel, MaxAngAcc, LateralGain, HeadingGain BACK 1/8/24
     public static class Params {
@@ -66,7 +66,7 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP;           // for Control Hub
         // drive model parameters
         public double inPerTick = 0.03145;
-        public double lateralInPerTick = 0.03198*22/24;
+        public double lateralInPerTick = 0.03198*22.0/24.0*24.0/27.0;
         public double trackWidthTicks = 650;//798;
 
         // feedforward parameters (in tick units)
@@ -84,8 +84,8 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI; ///2;
 
         // path controller gains
-        public double axialGain = 2;
-        public double lateralGain = 4;//2
+        public double axialGain = 3;
+        public double lateralGain = 11;//2
         public double headingGain = 4;//3; // shared with turn
 
         public double axialVelGain = 0.1;
