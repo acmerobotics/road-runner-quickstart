@@ -19,8 +19,8 @@ public class ElementDetectionPipeline extends OpenCvPipeline {
         RIGHT
     }
 
-    int width = 320;
-    int height = 240;
+    int width = VisionParameters.resX;
+    int height = VisionParameters.resY;
 
     int minHue = 0;
     int maxHue = 255;

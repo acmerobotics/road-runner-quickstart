@@ -41,7 +41,7 @@ public class Configure extends LinearOpMode {
         FtcDashboard.getInstance().startCameraStream(camera, 30);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             public void onOpened() {
-                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(VisionParameters.resX,VisionParameters.resY, OpenCvCameraRotation.UPRIGHT);
             }
             public void onError(int errorCode) {}
         });

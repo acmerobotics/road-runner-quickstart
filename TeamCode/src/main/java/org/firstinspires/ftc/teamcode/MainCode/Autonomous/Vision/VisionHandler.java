@@ -71,7 +71,7 @@ public class VisionHandler {
         );
     }
     public double read() throws InterruptedException {
-        camera.startStreaming(-1,240, OpenCvCameraRotation.UPRIGHT);
+        camera.startStreaming(VisionParameters.resX, VisionParameters.resY, OpenCvCameraRotation.UPRIGHT);
         Thread.sleep(VisionParameters.readTime);
         double amt = pipeline.amount;
         camera.stopStreaming();
