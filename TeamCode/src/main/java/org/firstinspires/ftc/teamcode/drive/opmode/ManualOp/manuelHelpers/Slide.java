@@ -17,7 +17,11 @@ public class Slide {
 
     private final DcMotorEx slideLeft, slideRight, slideTop;
 
-    private final Servo leftGripServo, rightGripServo;
+    // if this is not commented out the codes gets bitchy below
+    //private final Servo leftGripServo, rightGripServo;
+
+    // adding the new servos for the pixel claw below for future use
+    //private final Servo  wristGripServo, gripServo;
 
     private boolean inProgress = false;
 
@@ -41,8 +45,12 @@ public class Slide {
         slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
         slideTop = hardwareMap.get(DcMotorEx.class, "slideTop");
 
-        leftGripServo = hardwareMap.servo.get("leftGripServo");
-        rightGripServo = hardwareMap.servo.get("rightGripServo");
+        // removing the old servos and adding the servos for centerstage
+        //leftGripServo = hardwareMap.servo.get("leftGripServo");
+        //rightGripServo = hardwareMap.servo.get("rightGripServo");
+        //gripServo = hardwareMap.servo.get("gripServo");
+        //wristGripServo = hardwareMap.servo.get("wristServo");
+
 
         slideLeft.setDirection(DcMotorEx.Direction.REVERSE);
     }
@@ -106,16 +114,17 @@ public class Slide {
     }
 
     // Takes a boolean grip value and does the math to convert it to a servo position
+    // commented out the old servos add the new servos wristGrip, and gripServo if needed
     public void setGrip(boolean grip) {
         double leftOpen = 0.0, leftClosed = 105.0;
         double rightOpen = 270.0, rightClosed = 175.0;
 
         if (grip) {
-            leftGripServo.setPosition(leftClosed / 270);
-            rightGripServo.setPosition(rightClosed / 270);
+            //leftGripServo.setPosition(leftClosed / 270);
+            //rightGripServo.setPosition(rightClosed / 270);
         } else if (!grip) {
-            leftGripServo.setPosition(leftOpen / 270);
-            rightGripServo.setPosition(rightOpen / 270);
+            //leftGripServo.setPosition(leftOpen / 270);
+            //rightGripServo.setPosition(rightOpen / 270);
         }
     }
 

@@ -109,7 +109,7 @@ public class Robot {
      //   leftGripServo = hardwareMap.servo.get("leftGripServo");
       //  rightGripServo = hardwareMap.servo.get("rightGripServo");
         gripServo = hardwareMap.servo.get("gripServo");
-        wristGripServo = hardwareMap.servo.get("wristServo");
+        wristGripServo = hardwareMap.servo.get("wristGripServo");
     }
 
     // This function is used to update the RunMode of multiples DcMotors at once
