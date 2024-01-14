@@ -96,7 +96,8 @@ public class TeleopRR extends LinearOpMode {
 
         tag.initAprilTag();
 
-        intake = new intakeUnit(hardwareMap, "Arm", "Wrist", "Finger", "Switch");
+        intake = new intakeUnit(hardwareMap, "Arm", "Wrist",
+                "Finger", "Switch"/* right switch name */, "Switch2" /* left switch */);
 
         intake.setArmModeRunToPosition(intake.getArmPosition());
 
@@ -207,8 +208,12 @@ public class TeleopRR extends LinearOpMode {
                 intake.readyToDropYellow(intake.ARM_POS_DROP_YELLOW);
             }
 
-            if (gpButtons.switchDropOne) {
-                intake.switchServoDropOne();
+            if (gpButtons.switchDropRight) {
+                intake.switchServoDropRight();
+            }
+
+            if(gpButtons.switchDropLeft){
+                intake.switchServoDropLeft();
             }
 
             if (gpButtons.switchClose) {
@@ -266,7 +271,9 @@ public class TeleopRR extends LinearOpMode {
 
                 telemetry.addData("Finger", "position %.3f", intake.getFingerPosition());
 
-                telemetry.addData("switch", "position %.3f", intake.getSwitchPosition());
+                telemetry.addData("switch Right", "position %.3f", intake.getSwitchRightPosition());
+
+                telemetry.addData("switch Left", "position %.3f", intake.getSwitchLeftPosition());
 
                 telemetry.addData("Drone", "position %.2f", DroneServo.getPosition());
 

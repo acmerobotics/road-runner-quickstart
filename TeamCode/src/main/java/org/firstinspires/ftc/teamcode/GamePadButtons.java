@@ -64,7 +64,8 @@ public class GamePadButtons {
     public boolean fingerStop;
     public boolean dropAndBack;
     public boolean switchOpen;
-    public boolean switchDropOne;
+    public boolean switchDropRight;
+    public boolean switchDropLeft;
     public boolean switchClose;
     public boolean speedCtrl;
     public boolean readyToIntake;
@@ -123,10 +124,11 @@ public class GamePadButtons {
         hangingRobot = (gamepad2.left_trigger > 0);
 
         //back switches
-        switchOpen = gamepad2.b  || gamepad1.a;
+        switchOpen = gamepad2.y  || gamepad1.a;
         switchClose = gamepad2.a;
-        switchDropOne = gamepad2.x;
-        dropAndBack = gamepad2.y;
+        switchDropRight = gamepad2.b;
+        switchDropLeft = gamepad2.x;
+        dropAndBack = gamepad2.right_bumper;
         
         //arms
         armUp = gamepad2.right_stick_y < 0;

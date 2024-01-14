@@ -222,7 +222,7 @@ public class AutoRedFrontLeft extends LinearOpMode {
         Params.blueOrRed = blueOrRed;
 
         intake = new intakeUnit(hardwareMap, "Arm", "Wrist",
-                "Finger", "Switch");
+                "Finger", "Switch", "Switch2");
         intake.resetArmEncoder();
 
         runtime.reset();
@@ -378,6 +378,7 @@ public class AutoRedFrontLeft extends LinearOpMode {
             logVector("robot drive: after turn pose starting Arm Flip required", drive.pose.position);
             logVector("robot drive: after turn pose starting Arm Flip required", startArmFlip);
         }
+
 
         intake.pushPropPose();
         sleep(2000);
@@ -547,11 +548,11 @@ public class AutoRedFrontLeft extends LinearOpMode {
         sleep(100);
 
         // 2. open switch
-        intake.setSwitchPosition(intake.SWITCH_RELEASE_PURPLE);
+        intake.setSwitchLeftPosition(intake.SWITCH_LEFT_RELEASE);
         sleep(1000);
     }
     private void dropYellowAction(){
-        intake.setSwitchPosition(intake.SWITCH_RELEASE_YELLOW);
+        intake.setSwitchRightPosition(intake.SWITCH_RIGHT_RELEASE);
         sleep(500);
         intake.setArmCountPosition(intake.getArmPosition() - 500);
         sleep(500);
