@@ -1,4 +1,3 @@
-/*
 package org.firstinspires.ftc.teamcode.MainCode.Autonomous;
 
 
@@ -10,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Vision.VisionHandler;
 import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Constants.Spike;
@@ -54,17 +54,18 @@ public final class MainAuto extends LinearOpMode {
         }else{
             visionHandler.setBlue();
         }
-        visionHandler.setClose();
-        if(visionHandler.read() > VisionParameters.confidance){
-            // It's close!
-        }else{
-            visionHandler.setFar();
-            if(visionHandler.read() > VisionParameters.confidance){
-                // It's far!
-            }else{
-                // It's not there!
-            }
-        }
+        visionHandler.setLeft();
+        double left = visionHandler.read();
+        visionHandler.setMiddle();
+        double mid = visionHandler.read();
+        visionHandler.setRight();
+        double right = visionHandler.read();
+        if(left >= mid && left >= right)
+            lcr = Spike.LEFT;
+        if(mid >= right && mid >= left)
+            lcr = Spike.CENTER;
+        if(right >= left && right >= mid)
+            lcr = Spike.RIGHT;
 
         if (color.equals(Alliance.RED)) {
             reflect = 1;
@@ -204,5 +205,3 @@ public final class MainAuto extends LinearOpMode {
         }
     }
 }
-
- */

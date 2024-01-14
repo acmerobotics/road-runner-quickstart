@@ -11,7 +11,7 @@ public class VisionHandler {
     ElementDetectionPipeline pipeline = new ElementDetectionPipeline();
     OpenCvCamera camera;
     boolean ready = false;
-    void init(HardwareMap hardwareMap){
+    public void init(HardwareMap hardwareMap){
 
         // I have no clue why this works
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -26,23 +26,31 @@ public class VisionHandler {
         });
     }
 
-    void setClose(){
+    public void setLeft(){
         pipeline.setPositionParameters(
-                VisionParameters.closeStartX,
-                VisionParameters.closeStartY,
-                VisionParameters.closeEndX,
-                VisionParameters.closeEndY
+                VisionParameters.leftStartX,
+                VisionParameters.leftStartY,
+                VisionParameters.leftEndX,
+                VisionParameters.leftEndY
         );
     }
-    void setFar(){
+    public void setMiddle(){
         pipeline.setPositionParameters(
-                VisionParameters.farStartX,
-                VisionParameters.farStartY,
-                VisionParameters.farEndX,
-                VisionParameters.farEndY
+                VisionParameters.middleStartX,
+                VisionParameters.middleStartY,
+                VisionParameters.middleEndX,
+                VisionParameters.middleEndY
         );
     }
-    void setRed(){
+    public void setRight(){
+        pipeline.setPositionParameters(
+                VisionParameters.rightStartX,
+                VisionParameters.rightStartY,
+                VisionParameters.rightEndX,
+                VisionParameters.rightEndY
+        );
+    }
+    public void setRed(){
         pipeline.setColorParameters(
                 VisionParameters.redHueMin,
                 VisionParameters.redHueMax,
@@ -52,7 +60,7 @@ public class VisionHandler {
                 VisionParameters.redValMax
         );
     }
-    void setBlue(){
+    public void setBlue(){
         pipeline.setColorParameters(
                 VisionParameters.blueHueMin,
                 VisionParameters.blueHueMax,
@@ -62,7 +70,7 @@ public class VisionHandler {
                 VisionParameters.blueValMax
         );
     }
-    double read() throws InterruptedException {
+    public double read() throws InterruptedException {
         camera.startStreaming(-1,240, OpenCvCameraRotation.UPRIGHT);
         Thread.sleep(VisionParameters.readTime);
         double amt = pipeline.amount;
