@@ -58,15 +58,16 @@ public class intakeUnit
     final double FINGER_STOP_POS = 0.5;
     final double FINGER_OUTTAKE_POS = 1.0;
 
-    private Servo switchServo = null;
+    private Servo switchRightServo = null;
+    private Servo switchLeftServo = null;
     final double SWITCH_CLOSE_POS = 0.215;
-    final double SWITCH_RELEASE_PURPLE = 0.25;
-    final double SWITCH_RELEASE_YELLOW = 0.3;
+    final double SWITCH_RIGHT_RELEASE = 0.3;
+    final double SWITCH_LEFT_RELEASE = 0.05;
+
     public Servo wristServo = null;
     final double WRIST_MIN_POS = 0.2;  // Minimum rotational position
     final double WRIST_MAX_POS = 0.95; // Maximum rotational position
     final double WRIST_POS_DROP_PURPLE = 0.33;
-    final double WRIST_POS_AUTO = 0.34;
     final double WRIST_POS_DROP_YELLOW = 0.40;
     final double WRIST_POS_DROP = 0.45;
     final double WRIST_POS_INTAKE = 0.46;
@@ -98,14 +99,16 @@ public class intakeUnit
      * @param wristMotorName the name string for wrist servo motor
      * @param switchMotorName the name string for switch servo motor
      */
-    public intakeUnit(HardwareMap hardwareMap, String armMotorName, String wristMotorName, String fingerMotorName, String switchMotorName) {
+    public intakeUnit(HardwareMap hardwareMap, String armMotorName, String wristMotorName, String fingerMotorName, String switchMotorName, String switchMotorTwo) {
         // Save reference to Hardware map
         this.hardwareMap = hardwareMap;
 
         Logging.log("init motors for finger, wrist and arm.");
-        switchServo = hardwareMap.get(Servo.class, switchMotorName);
-        switchServo.setPosition(SWITCH_CLOSE_POS);
+        switchRightServo = hardwareMap.get(Servo.class, switchMotorName);
+        switchRightServo.setPosition(SWITCH_CLOSE_POS);
 
+        switchLeftServo = hardwareMap.get(Servo.class, switchMotorTwo);
+        switchLeftServo.setPosition(SWITCH_CLOSE_POS);
 
         fingerServo = hardwareMap.get(Servo.class, fingerMotorName);
         fingerStop();
@@ -118,22 +121,33 @@ public class intakeUnit
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void setSwitchPosition(double switchPos) {
-        switchPos = Range.clip(switchPos, SWITCH_CLOSE_POS, SWITCH_RELEASE_YELLOW);
-        switchServo.setPosition(switchPos);
+    public void setSwitchRightPosition(double switchPos) {
+        switchPos = Range.clip(switchPos, SWITCH_CLOSE_POS, SWITCH_RIGHT_RELEASE);
+        switchRightServo.setPosition(switchPos);
+    }
+
+    public void setSwitchLeftPosition(double switchPos){
+        switchPos = Range.clip(switchPos, SWITCH_LEFT_RELEASE, SWITCH_CLOSE_POS);
+        switchLeftServo.setPosition(switchPos);
     }
 
     public void switchServoOpen() {
         //setSwitchPosition(switchServo.getPosition() + 0.0005);
-        setSwitchPosition(SWITCH_RELEASE_YELLOW);
+        setSwitchRightPosition(SWITCH_RIGHT_RELEASE);
+        setSwitchLeftPosition(SWITCH_LEFT_RELEASE);
     }
 
-    public void switchServoDropOne() {
-        setSwitchPosition(SWITCH_RELEASE_PURPLE);
+    public void switchServoDropRight() {
+        setSwitchRightPosition(SWITCH_RIGHT_RELEASE);
+    }
+
+    public void switchServoDropLeft(){
+        setSwitchLeftPosition(SWITCH_LEFT_RELEASE);
     }
 
     public void switchServoClose() {
-        setSwitchPosition(SWITCH_CLOSE_POS);
+        setSwitchRightPosition(SWITCH_CLOSE_POS);
+        setSwitchLeftPosition(SWITCH_CLOSE_POS);
     }
 
     /**
@@ -285,8 +299,11 @@ public class intakeUnit
         return fingerServo.getPosition();
     }
 
-    public double getSwitchPosition() {
-        return switchServo.getPosition();
+    public double getSwitchRightPosition() {
+        return switchRightServo.getPosition();
+    }
+    public double getSwitchLeftPosition() {
+        return switchLeftServo.getPosition();
     }
 
 
