@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.testing.openCvVision;
+package org.firstinspires.ftc.teamcode.MainCode.Autonomous.Vision;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -63,7 +63,7 @@ public class VisionHandler {
         );
     }
     double read() throws InterruptedException {
-        camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+        camera.startStreaming(-1,240, OpenCvCameraRotation.UPRIGHT);
         Thread.sleep(VisionParameters.readTime);
         double amt = pipeline.amount;
         camera.stopStreaming();

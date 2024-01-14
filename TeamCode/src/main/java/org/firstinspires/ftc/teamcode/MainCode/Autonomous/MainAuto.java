@@ -45,9 +45,9 @@ public final class MainAuto extends LinearOpMode {
         waitForStart();
 
         if(color.equals(Alliance.RED)){
-            visionHandler.setRed()
+            visionHandler.setRed();
         }else{
-            visionHandler.setBlue()
+            visionHandler.setBlue();
         }
         visionHandler.setClose();
         if(visionHandler.read() > VisionParameters.confidance){
