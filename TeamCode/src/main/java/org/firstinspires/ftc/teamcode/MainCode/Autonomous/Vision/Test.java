@@ -15,17 +15,22 @@ public class Test extends LinearOpMode {
         try {
             visionHandler.setBlue();
             visionHandler.setLeft();
-            telemetry.addData("Blue Close: ", visionHandler.read());
-            visionHandler.setBlue();
+            telemetry.addData("Blue Left: ", visionHandler.read());
             visionHandler.setMiddle();
-            telemetry.addData("Blue Far: ", visionHandler.read());
+            telemetry.addData("Blue Middle: ", visionHandler.read());
+            visionHandler.setRight();
+            telemetry.addData("Blue Right: ", visionHandler.read());
+
             visionHandler.setRed();
             visionHandler.setLeft();
-            telemetry.addData("Red Close: ", visionHandler.read());
-            visionHandler.setRed();
+            telemetry.addData("Red Left: ", visionHandler.read());
             visionHandler.setMiddle();
-            telemetry.addData("Red Far: ", visionHandler.read());
+            telemetry.addData("Red Middle: ", visionHandler.read());
+            visionHandler.setRight();
+            telemetry.addData("Red Right: ", visionHandler.read());
+
             telemetry.update();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
