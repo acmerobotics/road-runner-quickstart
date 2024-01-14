@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="TeleOpMain", group="Linear Opmode")
+@TeleOp(name="OldTeleOp", group="Linear Opmode")
 @Config
 public class OldTeleOp extends LinearOpMode
 {

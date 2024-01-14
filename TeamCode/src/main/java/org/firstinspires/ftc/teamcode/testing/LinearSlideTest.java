@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-//@TeleOp(name="Viper slide test", group="Linear Opmode")
+@TeleOp(name="Viper slide test", group="Linear Opmode")
 
 public class LinearSlideTest extends LinearOpMode {
 
@@ -18,8 +18,8 @@ public class LinearSlideTest extends LinearOpMode {
 
         waitForStart();
         while(opModeIsActive()) {
-            viperSlideLeft.setPower(gamepad1.left_stick_y);
-            viperSlideRight.setPower(gamepad1.left_stick_y);
+            viperSlideLeft.setPower(gamepad1.left_trigger);
+            viperSlideRight.setPower(gamepad1.right_trigger);
         }
     }
 }

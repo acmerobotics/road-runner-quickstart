@@ -1,0 +1,26 @@
+Main Hub
+
+Motors
+Port 0 back_left
+Port 1 back_right
+Port 2 front_right
+Port 3 front_left
+
+Servos
+Port 0 right_intake
+Port 1 left_intake
+Port 2 outtake_wrist
+Port 3 drone_launcher
+
+
+Expansion Hub
+
+Motors
+Port 0 intake_elbow
+port 1 outtake_elbow
+port 2 intake_grabber
+port 3 hang_arm
+
+
+All DcMotors are GoBILDA 5202/3/4 series
+
