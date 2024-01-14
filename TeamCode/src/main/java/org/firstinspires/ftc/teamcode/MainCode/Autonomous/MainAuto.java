@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.MainCode.Autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -199,3 +200,4 @@ public final class MainAuto extends LinearOpMode {
         }
     }
 }
+*/

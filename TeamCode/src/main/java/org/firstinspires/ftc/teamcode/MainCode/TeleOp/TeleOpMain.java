@@ -17,7 +17,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 /*Buttons
 Left and right sticks to drive (Robot is field centric)
 options button to reset gyro
-left trigger to run intake grabber, right trigger to run backwards
+left bumper tp toggle forward intake grabber, right bumper to toggle backwards
 a to initiate transfer
 b to reset transfer
  */
@@ -34,11 +34,16 @@ public class TeleOpMain extends LinearOpMode
     public static double intakeServoTransfer = .95;
     public static double outtakeServoTransfer = .245;
     public static int intakeMotorTransfer = -112;
-    public static int outtakeMotorTransfer = -300;
+    public static int outtakeMotorTransfer = 0;
     public static int intakeMotorStart;
+
     public static double power = .5;
+    public static boolean intakeToggleL = false;
+    public static boolean intakeToggleR = false;
+    public static int lowDropPos = 800;
+    public static int midDropPos = 1600;
+    public static int highDropPos = 2400;
     IMU imu;
-    //private Gamepad lastGamepad;
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -57,20 +62,45 @@ public class TeleOpMain extends LinearOpMode
 
         while (opModeIsActive())
         {
-            //MoveRobot();
-            RunIntakeGrabber();
-            RunOuttakeElbow();
-            if (gamepad1.a)
+            previousGamepad1.copy(currentGamepad1);
+            currentGamepad1.copy(gamepad1);
+
+            MoveRobot();
+
+            if (currentGamepad1.a && !previousGamepad1.a)
             {
                 InitiateTransfer();
             }
-            if (gamepad1.b)
+            else if (currentGamepad1.b && !previousGamepad1.b)
             {
                 ResetTransfer();
             }
 
+            if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper)
+            {
+                intakeToggleL = !intakeToggleL;
+            }
+            if (intakeToggleL)
+            {
+                intake_grabber.setPower(.75);
+            }
+            else
+            {
+                intake_grabber.setPower(0);
+            }
 
-            //lastGamepad.copy(gamepad1);
+            if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper)
+            {
+                intakeToggleR = !intakeToggleR;
+            }
+            if (intakeToggleR)
+            {
+                intake_grabber.setPower(-.75);
+            }
+            else
+            {
+                intake_grabber.setPower(0);
+            }
         }
     }
 
@@ -96,8 +126,6 @@ public class TeleOpMain extends LinearOpMode
         front_right.setDirection(DcMotor.Direction.REVERSE);
         back_right.setDirection(DcMotor.Direction.REVERSE);
         outtake_elbow.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        intakeMotorStart = intake_elbow.getCurrentPosition();
     }
     private void HardwareSetupServos()
     {
@@ -158,26 +186,11 @@ public class TeleOpMain extends LinearOpMode
         front_right.setPower(frontRightPower);
         back_right.setPower(backRightPower);
     }
-    private void RunIntakeGrabber()
-    {
-        if (gamepad1.left_trigger > gamepad1.right_trigger + 0.25)
-        {
-            intake_grabber.setPower(gamepad1.left_trigger);
-        }
-        else if (gamepad1.right_trigger > gamepad1.left_trigger + 0.25)
-        {
-            intake_grabber.setPower(-gamepad1.right_trigger);
-        }
-    }
-    private void RunOuttakeElbow()
-    {
-        outtake_elbow.setPower(gamepad1.left_stick_y);
-    }
     private void InitiateTransfer()
     {
-        //outtake_elbow.setTargetPosition(outtakeMotorTransfer);
-        //outtake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //outtake_elbow.setPower(power);
+        outtake_elbow.setTargetPosition(outtakeMotorTransfer);
+        outtake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        outtake_elbow.setPower(power);
         outtake_wrist.setPosition(outtakeServoTransfer);
 
         intake_elbow.setTargetPosition(intakeMotorTransfer);
@@ -188,17 +201,33 @@ public class TeleOpMain extends LinearOpMode
     }
     private void ResetTransfer()
     {
+        intake_elbow.setTargetPosition((intake_elbow.getCurrentPosition() + 10));
+        intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        intake_elbow.setPower(0.1);
+
         right_intake.setPosition(intakeServoStart);
+
         intake_elbow.setTargetPosition(intakeMotorStart);
         intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intake_elbow.setPower(0.1);
 
         outtake_wrist.setPosition(outtakeServoDrop);
-        right_intake.setPosition(.9);
     }
-    private void test()
+    private void LowDrop()
     {
-        outtake_elbow.setTargetPosition(outtakeMotorTransfer);
+        outtake_elbow.setTargetPosition(lowDropPos);
+        outtake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        outtake_elbow.setPower(power);
+    }
+    private void MidDrop()
+    {
+        outtake_elbow.setTargetPosition(midDropPos);
+        outtake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        outtake_elbow.setPower(power);
+    }
+    private void HighDrop()
+    {
+        outtake_elbow.setTargetPosition(highDropPos);
         outtake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         outtake_elbow.setPower(power);
     }
