@@ -29,6 +29,8 @@ public final class MainAuto extends LinearOpMode {
     public static String colorValue = "";
     public static String parkValue = "";
 
+    VisionHandler visionHandler = new VisionHandler();
+
 
     public void runOpMode() throws InterruptedException {
         Pose2d startingPose;
@@ -36,34 +38,64 @@ public final class MainAuto extends LinearOpMode {
         double xOffset = 0;
         double yOffset = 0;
         MecanumDrive drive;
-        double reflect;
+        int reflect;
+        int LCRNUM = 0;
         ConfigDashboard();
-//TODO on blue side, flip left and right as they are mirrored and wrong values
+        visionHandler.init(hardwareMap);
         waitForStart();
-        if (color.equals(Alliance.RED)) {
-            reflect = 1.0;
-        } else {
-            reflect = -1.0;
+
+        if(color.equals(Alliance.RED)){
+            visionHandler.setRed()
+        }else{
+            visionHandler.setBlue()
         }
-        if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class) && start.equals(Side.BACKSTAGE)) { //BackstageSide
+        visionHandler.setClose();
+        if(visionHandler.read() > VisionParameters.confidance){
+            // It's close!
+        }else{
+            visionHandler.setFar();
+            if(visionHandler.read() > VisionParameters.confidance){
+                // It's far!
+            }else{
+                // It's not there!
+            }
+        }
+
+        if (color.equals(Alliance.RED)) {
+            reflect = 1;
+        } else {
+            reflect = -1;
+        }
+        switch (lcr){
+            case LEFT:
+                LCRNUM = -1*reflect;
+                break;
+            case CENTER:
+                LCRNUM = 0;
+                break;
+            case RIGHT:
+                LCRNUM = 1*reflect;
+                break;
+        }
+        if (start.equals(Side.BACKSTAGE)){ //BackstageSide
             startingPose = new Pose2d(12, -64*reflect, Math.toRadians(90*reflect));
             drive = new MecanumDrive(hardwareMap, startingPose);
-            switch (lcr) {
-                case LEFT:
+            switch (LCRNUM) {
+                case -1:
                     nextPose = new Pose2d(2 + xOffset, -30*reflect + yOffset, Math.toRadians(90*reflect));
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
                                     .splineToConstantHeading(nextPose.position, nextPose.heading)
                                     .build());
                     break;
-                case CENTER:
+                case 0:
                     nextPose = new Pose2d(12 + xOffset, -26*reflect + yOffset, Math.toRadians(90*reflect));
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
                                     .splineToConstantHeading(nextPose.position, nextPose.heading)
                                     .build());
                     break;
-                case RIGHT:
+                case 1:
                     nextPose = new Pose2d(22 + xOffset, -30*reflect + yOffset, Math.toRadians(90*reflect));
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
@@ -74,22 +106,22 @@ public final class MainAuto extends LinearOpMode {
         } else { //AudienceSide
             startingPose = new Pose2d(-36, -64, Math.PI / 2);
             drive = new MecanumDrive(hardwareMap, startingPose);
-            switch (lcr) {
-                case LEFT:
+            switch (LCRNUM) {
+                case -1:
                     nextPose = new Pose2d(-46 + xOffset, -30*reflect + yOffset, Math.toRadians(90*reflect));
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
                                     .splineToConstantHeading(nextPose.position, nextPose.heading)
                                     .build());
                     break;
-                case CENTER:
+                case 0:
                     nextPose = new Pose2d(-36 + xOffset, -26*reflect + yOffset, Math.toRadians(90*reflect));
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
                                     .splineToConstantHeading(nextPose.position, nextPose.heading)
                                     .build());
                     break;
-                case RIGHT:
+                case 1:
                     nextPose = new Pose2d(-26 + xOffset, -30*reflect + yOffset, Math.toRadians(90*reflect));
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
@@ -99,6 +131,7 @@ public final class MainAuto extends LinearOpMode {
 
             }
         }
+        //go to backboard
         if (start.equals(Side.BACKSTAGE)) {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
