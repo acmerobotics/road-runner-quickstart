@@ -30,19 +30,35 @@ public class TeleOpMain extends LinearOpMode
     DcMotor front_left, back_left, front_right, back_right, intake_grabber;
     Servo left_intake, right_intake, outtake_wrist, drone_launcher;
     public static double intakeServoStart = .857;
-    public static double outtakeServoDrop = .4;
+    public static double outtakeServoDrop = .13;
     public static double intakeServoTransfer = .95;
-    public static double outtakeServoTransfer = .245;
-    public static int intakeMotorTransfer = -112;
+    public static double outtakeServoTransfer = .53;
+    public static int intakeMotorTransfer = -111;
     public static int outtakeMotorTransfer = 0;
     public static int intakeMotorStart;
 
     public static double power = .5;
     public static boolean intakeToggleL = false;
     public static boolean intakeToggleR = false;
+    public static boolean manualToggle = false;
+    public static boolean allowPIDF = true;
     public static int lowDropPos = 800;
     public static int midDropPos = 1600;
     public static int highDropPos = 2400;
+    public static double offset = 0.05;
+    public static double slidePower = 1;
+    public static double pVal = 1.26;
+    public static double iVal = 0.126;
+    public static double dVal = 0;
+    public static double fVal = 12.6;
+    public static double posVal = 5;
+    public static double motorVel = 2600;
+    public static double speedVar = .6;
+    public static int resetVar1 = -90;
+    public static double rpower1 = .7;
+    public static int resetVar2 = -80;
+    public static double rpower2 = .6;
+    int intakePos;
     IMU imu;
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -60,50 +76,43 @@ public class TeleOpMain extends LinearOpMode
 
         if (isStopRequested()) return;
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
             MoveRobot();
 
-            if (currentGamepad1.a && !previousGamepad1.a)
-            {
+            if (currentGamepad1.a && !previousGamepad1.a) {
                 InitiateTransfer();
-            }
-            else if (currentGamepad1.b && !previousGamepad1.b)
-            {
+            } else if (currentGamepad1.b && !previousGamepad1.b) {
                 ResetTransfer();
             }
+            if (gamepad1.dpad_left) {
+                intakePos = intake_elbow.getCurrentPosition();
+                intake_elbow.setTargetPosition(intakePos - 1);
+                intake_elbow.setPower(.5);
+                intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (gamepad1.dpad_up) {
+                intakePos = intake_elbow.getCurrentPosition();
+                intake_elbow.setTargetPosition(intakePos + 25);
+                intake_elbow.setPower(1);
+                intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right) {
+                outtake_wrist.setPosition(outtakeServoTransfer);
+            }
+            if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down) {
+                NoDrop();
+            }
+            ManualSlidePos();
+            intake_grabber.setPower(gamepad2.right_stick_y);
 
-            if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper)
-            {
-                intakeToggleL = !intakeToggleL;
-            }
-            if (intakeToggleL)
-            {
-                intake_grabber.setPower(.75);
-            }
-            else
-            {
-                intake_grabber.setPower(0);
-            }
-
-            if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper)
-            {
-                intakeToggleR = !intakeToggleR;
-            }
-            if (intakeToggleR)
-            {
-                intake_grabber.setPower(-.75);
-            }
-            else
-            {
-                intake_grabber.setPower(0);
-            }
+            int currentPos = intake_elbow.getCurrentPosition();
+            telemetry.addData("pos", currentPos);
+            telemetry.update();
         }
     }
-
     // Methods______________________________________________________________________________________
 
     public void HardwareSetupMotors()
@@ -123,8 +132,18 @@ public class TeleOpMain extends LinearOpMode
         MotorInit(hang_arm);
         MotorInit(outtake_elbow);
 
-        front_right.setDirection(DcMotor.Direction.REVERSE);
-        back_right.setDirection(DcMotor.Direction.REVERSE);
+        if (allowPIDF)
+        {
+            outtake_elbow.setVelocityPIDFCoefficients(pVal,iVal,dVal,fVal);
+        }
+        outtake_elbow.setPositionPIDFCoefficients(posVal);
+        outtake_elbow.setVelocity(motorVel);
+
+        intake_elbow.setVelocityPIDFCoefficients(25,0,0,0);
+        intake_elbow.setPositionPIDFCoefficients(25);
+
+        front_left.setDirection(DcMotor.Direction.REVERSE);
+        back_left.setDirection(DcMotor.Direction.REVERSE);
         outtake_elbow.setDirection(DcMotorSimple.Direction.REVERSE);
     }
     private void HardwareSetupServos()
@@ -141,8 +160,6 @@ public class TeleOpMain extends LinearOpMode
         motor.setPower(0.0);
         motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         motor.setTargetPosition(0);
-        motor.setVelocityPIDFCoefficients(25.0,0.0,0.0,0.0);
-        motor.setPositionPIDFCoefficients(25.0);
         motor.setPower(1.0);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
@@ -160,7 +177,7 @@ public class TeleOpMain extends LinearOpMode
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
-        if (gamepad1.options) {
+        if (gamepad1.y) {
             imu.resetYaw();
         }
 
@@ -181,16 +198,16 @@ public class TeleOpMain extends LinearOpMode
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
 
-        front_left.setPower(frontLeftPower);
-        back_left.setPower(backLeftPower);
-        front_right.setPower(frontRightPower);
-        back_right.setPower(backRightPower);
+        front_left.setPower(frontLeftPower*speedVar);
+        back_left.setPower(backLeftPower*speedVar);
+        front_right.setPower(frontRightPower*speedVar);
+        back_right.setPower(backRightPower*speedVar);
     }
     private void InitiateTransfer()
     {
-        outtake_elbow.setTargetPosition(outtakeMotorTransfer);
-        outtake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtake_elbow.setPower(power);
+        //outtake_elbow.setTargetPosition(outtakeMotorTransfer);
+        //outtake_elbow.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        //outtake_elbow.setPower(slidePower);
         outtake_wrist.setPosition(outtakeServoTransfer);
 
         intake_elbow.setTargetPosition(intakeMotorTransfer);
@@ -201,34 +218,71 @@ public class TeleOpMain extends LinearOpMode
     }
     private void ResetTransfer()
     {
-        intake_elbow.setTargetPosition((intake_elbow.getCurrentPosition() + 10));
+        /*
+        while (outtake_wrist.getPosition() > (outtakeServoDrop + offset))
+        {
+            outtake_wrist.setPosition(outtakeServoDrop);
+        }
+         */
+        outtake_wrist.setPosition(outtakeServoDrop);
+        intake_elbow.setTargetPosition(resetVar1);
+        intake_elbow.setPower(rpower1);
         intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        intake_elbow.setPower(0.1);
 
         right_intake.setPosition(intakeServoStart);
 
-        intake_elbow.setTargetPosition(intakeMotorStart);
+        intake_elbow.setTargetPosition(resetVar2);
+        intake_elbow.setPower(rpower2);
         intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        intake_elbow.setPower(0.1);
 
+        while (intake_elbow.isBusy())
+        {
+
+        }
+
+        sleep(400);
+
+        intake_elbow.setTargetPosition(-40);
+        intake_elbow.setPower(.3);
+        intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (intake_elbow.isBusy())
+        {
+
+        }
+        sleep(400);
+
+        intake_elbow.setTargetPosition(intakeMotorStart);
+        intake_elbow.setPower(.3);
+        intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*intake_elbow.setTargetPosition(-35);
+        intake_elbow.setPower(0.2);
+        intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        intake_elbow.setTargetPosition(intakeMotorStart);
+        intake_elbow.setPower(0.2);
+        intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
+    }
+    private void AdjustDown()
+    {
+        intake_elbow.setTargetPosition(intake_elbow.getCurrentPosition()-1);
+        intake_elbow.setPower(.5);
+        intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    private void AdjustUp()
+    {
+        intake_elbow.setTargetPosition(intake_elbow.getCurrentPosition()+1);
+        intake_elbow.setPower(.5);
+        intake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    private void NoDrop()
+    {
         outtake_wrist.setPosition(outtakeServoDrop);
     }
-    private void LowDrop()
+    private void ManualSlidePos()
     {
-        outtake_elbow.setTargetPosition(lowDropPos);
-        outtake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtake_elbow.setPower(power);
-    }
-    private void MidDrop()
-    {
-        outtake_elbow.setTargetPosition(midDropPos);
-        outtake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtake_elbow.setPower(power);
-    }
-    private void HighDrop()
-    {
-        outtake_elbow.setTargetPosition(highDropPos);
-        outtake_elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtake_elbow.setPower(power);
+        outtake_elbow.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        outtake_elbow.setPower(-gamepad1.right_stick_y);
     }
 }
