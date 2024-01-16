@@ -4,16 +4,18 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller;
+import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
 
 //@Disabled
 
-/** this is What WORKS **/
+/** This is what workd **/
 
 
-@TeleOp(name = "THIS IS WHAT WORKS - Manual Op")
+@TeleOp(name = "USE THIS ONE - Manual Op")
 public class ManualOp extends OpMode {
 
     //Here we are creating all the parts what we will manipulate
@@ -23,8 +25,11 @@ public class ManualOp extends OpMode {
     DcMotor rightRear;
     DcMotor slideLeft;
     DcMotor slideRight;
-    DcMotor slideTop;
-    Servo gripServo;
+
+    DcMotor wristMotor;
+    Servo gripServoF;
+    Servo gripServoB;
+
 
 
 
@@ -36,18 +41,21 @@ public class ManualOp extends OpMode {
         rightRear = hardwareMap.dcMotor.get("rightRear");
         slideLeft = hardwareMap.dcMotor.get("slideLeft");
         slideRight = hardwareMap.dcMotor.get("slideRight");
-        slideTop = hardwareMap.dcMotor.get("intakeMotor");
-        gripServo = hardwareMap.servo.get("gripServo");
+        wristMotor = hardwareMap.dcMotor.get("wristMotor");
+        gripServoF = hardwareMap.servo.get("gripServoF");
+        gripServoB = hardwareMap.servo.get("gripServoB");
 
-        gripServo.setPosition(0.5);
-
+        gripServoB.setPosition(0);
+        gripServoF.setPosition(0);
         //reverse  the
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        telemetry.addData("Servo Position", gripServoB.getPosition());
     }
 
-    public void loop() {
-
+        public void loop() {
+        //Game pad 1
+        //base controls
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.left_trigger - gamepad1.right_trigger;
@@ -57,28 +65,59 @@ public class ManualOp extends OpMode {
         rightFront.setPower((y - x - rx));
         rightRear.setPower((y + x + rx));
 
+
+
+        //Gamepad2 controls the arm and claw
+            //slide controls
         double vert = -gamepad2.left_stick_y;
-        double top = gamepad2.right_stick_x;
+        double wrist = gamepad2.right_stick_x;
 
         slideLeft.setPower(-vert);
         slideRight.setPower(vert);
-        slideTop.setPower(top);
+        wristMotor.setPower(wrist);
 
-        double servoSpeed = ((gamepad2.right_trigger - gamepad2.left_trigger) + 1) / 2;
-
-        telemetry.addData("servo speed: ", servoSpeed);
-        telemetry.update();
-
-
-        //These are the breaks
         //the way these are called will be different in the classes with the helpers
 
         slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        double tgtPower = gamepad2.left_trigger;
+
+        //this is the degree posistion for the servo
+            double frontposClose = 100, backposClose = 100;
+            double frontposOpen = 120 , backposOpen = 120;
+            double servoRot = 300;
+            int pressed = 0;
+
+            if (gamepad2.circle)
+            {
+                pressed++;
+            }
+            else
+            {
+                pressed =0;
+            }
 
 
-        gripServo.setPosition(servoSpeed);
+            if (pressed % 2 == 0)
+            {
+
+                //.5 = 90
+                gripServoB.setPosition(backposOpen/servoRot);
+                gripServoF.setPosition(frontposOpen/servoRot);
+            }
+            else
+            {
+                gripServoF.setPosition(frontposClose/servoRot);
+                gripServoB.setPosition(backposClose/servoRot);
+            }
+
+
+
+            telemetry.addData("Servo Position", gripServoB.getPosition());
+            telemetry.addData("Target Power", tgtPower);
+            telemetry.addData("Status", "Running");
+            telemetry.update();
 
     }
 }

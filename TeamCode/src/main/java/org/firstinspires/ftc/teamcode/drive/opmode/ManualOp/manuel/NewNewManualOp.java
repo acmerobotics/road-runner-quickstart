@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller;
 import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Robot;
 import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Slide;
@@ -15,6 +16,8 @@ public class NewNewManualOp extends OpMode {
 
     private Robot robot;
     // Create two new Controller objects, one for each gamepad
+
+    private Telemetry telemetry;
     private Controller base, arm;
 
     private Slide slides;
@@ -127,6 +130,8 @@ public class NewNewManualOp extends OpMode {
 
         telemetry.update();
         //TODO hope this works if not then curl up in a ball and cry also check for d bounce problems
+
+
         if (base.leftBumper()) {
 
             wristInput++;
