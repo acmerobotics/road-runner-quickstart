@@ -18,11 +18,14 @@ public class FindTheServoPosistions extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
+        drive.setSlideVelocity(4000, drive.slideRight, drive.slideLeft, drive.wristMotor);
+        drive.initArm();
+
 
         while (!isStarted()) {
-            telemetry.addData("Servo Posistion ", drive.gripServo.getPosition());
+            telemetry.addData("Servo Posistion ", drive.gripServoB.getPosition());
         //    telemetry.addData("claw Posistion" , drive.rightGripServo.getPosition());
-            telemetry.addData("claw Posistion" , drive.wristGripServo.getPosition());
+            telemetry.addData("claw Posistion" , drive.gripServoF.getPosition());
             telemetry.addData("slide",drive.slideLeft.getCurrentPosition());
             telemetry.update();
         }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel.oldmanuels;
+/*ckage org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel.oldmanuels;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 /**
  * "THIS IS JUST AN EXPERIMENT NOT SOMETHING IMPORTANT"
  * SAWYER PUTNAM
- */
+
 
 @TeleOp(group = "beta")
 public class linearHeadlessOp extends LinearOpMode {
@@ -142,3 +142,4 @@ public class linearHeadlessOp extends LinearOpMode {
         }
     }
 }
+*/

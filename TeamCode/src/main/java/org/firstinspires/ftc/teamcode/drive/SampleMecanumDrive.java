@@ -69,18 +69,21 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront,wristMotor;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
 
-    private IMU imu;
+//  private IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
 
-    public Servo  gripServo, wristGripServo;
-    public DcMotorEx slideLeft, slideRight, slideTop;
+    public Servo  gripServoB, gripServoF;
+    public DcMotorEx slideLeft, slideRight, wristMotor;
 // this the object contsutor
+
+
+    /// os is where the problems are at
     public SampleMecanumDrive( HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -127,12 +130,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         //leftGripServo = hardwareMap.servo.get("leftGripServo");
         //rightGripServo = hardwareMap.servo.get("rightGripServo");
-        gripServo =hardwareMap.servo.get("gripServo");
-        wristGripServo = hardwareMap.servo.get("wristGripServo");
+        gripServoF =hardwareMap.servo.get("gripServoF");
+        gripServoB =hardwareMap.servo.get("gripServoB");
 
         slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
         slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
-        slideTop = hardwareMap.get(DcMotorEx.class, "slideTop");
+        wristMotor = hardwareMap.get(DcMotorEx.class, "wristMotor");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -335,6 +338,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightFront.setPower(v3);
     }
 
+
+    //this is our custom code
+
     @Override
     public double getRawExternalHeading() {
         return 0;
@@ -367,19 +373,20 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     // Call setMotorMode() to turn off and reset the encoders on all slide motors
     public void stopAndResetMotors() {
-        setMotorMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER, slideLeft, slideRight, slideTop);
+        setMotorMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER, slideLeft, slideRight, wristMotor);
     }
 
     // Call setMotorMode() to turn on all slide motors
     public void restartMotors() {
-        setMotorMode(DcMotorEx.RunMode.RUN_TO_POSITION, slideLeft, slideRight, slideTop);
+        setMotorMode(DcMotorEx.RunMode.RUN_TO_POSITION, slideLeft, slideRight, wristMotor);
     }
 
     // Bundles all the functions needed to initialize the arm controls
+
     public void initArm() {
         stopAndResetMotors();
-        setGrip(false);
-        setSlideVelocity(0, slideLeft, slideRight, slideTop);
+        setBothGrip(false);
+        setSlideVelocity(0, slideLeft, slideRight, wristMotor);
         setHeight(0);
         setExtension(0);
         restartMotors();
@@ -392,8 +399,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     // Set the target encoders position of the horizontal slide
-    public void setExtension(int ext) {
-        slideTop.setTargetPosition(-ext);
+    public void setExtension(int ext) {wristMotor.setTargetPosition(-ext);
     }
 
     // Iterate over a list of motors and set them to a provided velocity in ticks/second
@@ -404,32 +410,46 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 //TODO : WE need to change all the setGrip Functions this is found in like 3 other classes
     // Takes a boolean grip value and does the math to convert it to a servo position
-    public void setGrip(boolean grip) {
+    public void setBothGrip(boolean grip) {
         //double leftOpen = 0.0, leftClosed = 105.0;
        // double rightOpen = 270.0, rightClosed = 175.0;
-        double gripOpen = 270, gripClosed = 170;
+        double FgripOpen = 270, FgripClosed = 170,
+                BgripOpen = 270, BgripClosed = 170;
+        double servoROT = 300;
 
         if (grip) {
-         //   leftGripServo.setPosition(leftClosed / 270);
-         //   rightGripServo.setPosition(rightClosed / 270);
-            gripServo.setPosition(gripOpen/270);
+        gripServoB.setPosition(BgripOpen/servoROT);
+        gripServoF.setPosition(FgripOpen/servoROT);
         } else if (!grip) {
-           // leftGripServo.setPosition(leftOpen / 270);
-           // rightGripServo.setPosition(rightOpen / 270);
-            gripServo.setPosition(gripClosed/170);
+            gripServoB.setPosition(BgripClosed/servoROT);
+            gripServoF.setPosition(FgripClosed/servoROT);
         }
     }
 
     // this is just a setup for the wrist these are random numbers I think we can get the numbers from a demo auto
     //ill make the auto
-    public void setWrist (boolean wrist_) {
-        double intakePos = 0.0 , backDropPos = 3;
+   public  void setFrontGrip (boolean grip) {
+       double FgripOpen = 270, FgripClosed = 170;
+       double servoROT = 300;
 
-        if (wrist_) {
-            wristGripServo.setPosition(backDropPos);
-        } else if (!wrist_) {
-            wristGripServo.setPosition(intakePos);
+       if (grip) {
+
+           gripServoF.setPosition(FgripOpen/servoROT);
+       } else if (!grip) {
+           gripServoF.setPosition(FgripClosed/servoROT);
+       }
+   }
+    public  void setBackGrip (boolean grip) {
+        double BgripOpen = 270, BgripClosed = 170;
+        double servoROT = 300;
+
+        if (grip) {
+
+            gripServoB.setPosition(BgripOpen/servoROT);
+        } else if (!grip) {
+            gripServoB.setPosition(BgripClosed/servoROT);
         }
-
     }
+
+
 }

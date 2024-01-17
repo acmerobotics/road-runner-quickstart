@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel.oldmanuels;
+/*package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel.oldmanuels;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Robot;
  * * When headless mode is enabled (press "cross"), translation direction
  * becomes relative to the field as opposed to the robot. You can
  * reset the forward heading by pressing "square".
- */
+
 @TeleOp(name = "HeadlessOpTEST")
 
 public class HeadlessOp extends OpMode {
@@ -177,7 +177,7 @@ public class HeadlessOp extends OpMode {
             To move side to side, each pair of diagonal motors moves together,
             but the motors on each side move opposite each other
             The rotation is different from normal for some strange reason. I have no clue why. Sorry.
-         */
+
             final double leftFront = y_proc + x_proc + rotation;
             final double leftRear = y_proc - x_proc - rotation;
             final double rightFront = y_proc - x_proc + rotation;
@@ -198,4 +198,4 @@ public class HeadlessOp extends OpMode {
         robot.setGrip(gripPower);
 
     }
-}
+}*/

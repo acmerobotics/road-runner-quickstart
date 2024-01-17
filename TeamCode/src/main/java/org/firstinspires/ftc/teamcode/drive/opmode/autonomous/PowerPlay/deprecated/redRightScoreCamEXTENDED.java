@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.PowerPlay.deprecated;
+/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.PowerPlay.deprecated;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -283,3 +283,4 @@ public class redRightScoreCamEXTENDED extends LinearOpMode {
         // This function will start at the end of one cycle, turn around, grab a cone, and put it on the pole
     }
 }
+*/

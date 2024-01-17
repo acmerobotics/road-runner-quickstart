@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel.oldmanuels;
+/**package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel.oldmanuels;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -74,7 +74,7 @@ public class OldNewManualOp extends OpMode {
             To move forward and backward, you apply the same rotation to all motors
             To move side to side, each pair of diagonal motors moves together, but the motors on each side move opposite each other
             To rotate, each side must move opposite each other, but each side must move with each other
-         */
+
         final double leftFront = y + x + rot;
         final double leftRear = y - x + rot;
         final double rightFront = y - x - rot;
@@ -95,5 +95,5 @@ public class OldNewManualOp extends OpMode {
         slides.manualExtensionControl(slideTop);
         slides.setGrip(grip);
     }
-}
+}*/
 

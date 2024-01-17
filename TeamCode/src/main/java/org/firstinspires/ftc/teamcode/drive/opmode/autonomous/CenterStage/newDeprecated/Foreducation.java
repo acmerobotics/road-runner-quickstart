@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
+/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -40,3 +40,4 @@ public class Foreducation extends LinearOpMode {
 
 
 }
+*/

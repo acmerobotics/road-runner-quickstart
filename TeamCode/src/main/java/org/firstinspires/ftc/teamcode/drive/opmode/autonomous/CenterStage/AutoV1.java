@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
+/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -34,10 +34,13 @@ public class AutoV1 extends LinearOpMode {
 
         drive.followTrajectorySequence(PurpPlace);
         drive.setGrip(false);
+        sleep(1000);
         TrajectorySequence placeWhite = drive.trajectorySequenceBuilder(new Pose2d(12.01, 36.47, Math.toRadians(270.00)))
                 .lineToSplineHeading(new Pose2d(11.43, 50.16, Math.toRadians(0.00)))
                 .splineToLinearHeading(new Pose2d(45.79, 38.51, Math.toRadians(0.00)), Math.toRadians(320.00))
                 .build();
         drive.followTrajectorySequence(placeWhite);
+        drive.setGrip(false);
     }
 }
+*/
