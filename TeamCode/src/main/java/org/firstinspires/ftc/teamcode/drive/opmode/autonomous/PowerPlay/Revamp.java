@@ -1,4 +1,4 @@
-/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
+/**package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -292,7 +292,7 @@ public class Revamp extends LinearOpMode {
         else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
         else { parkBot(drive, 1, parkingSpots); }
 
-     */
+
 
 //  }
 

@@ -385,7 +385,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void initArm() {
         stopAndResetMotors();
-        setBothGrip(false);
+        setBothGrip(true);
         setSlideVelocity(0, slideLeft, slideRight, wristMotor);
         setHeight(0);
         setExtension(0);

@@ -20,42 +20,42 @@ import org.firstinspires.ftc.teamcode.drive.opmode.visionPowerPlay.parkingZoneFi
 
 @Autonomous(name = "N")
 @Config
-public class NandN extends LinearOpMode{
-    
+public class NandN extends LinearOpMode {
+
     private final Pose2d startPose = new Pose2d(0, 0, Math.toRadians(90));
-    
+
     private final Pose2d endPose = new Pose2d(12, 12, Math.toRadians(0));
-    
+
     private final double travelSpeed = 45.0, travelAccel = 30.0;
-    
+
     SampleMecanumDrive drive;
-    
+
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
-        
+
         drive.initArm();
-        drive.setBothGrip(true);
-       
+
+        while (!isStarted()) {
+
+            drive.setBothGrip(true);
+        }
+
+
         TrajectorySequence norm = drive.trajectorySequenceBuilder(startPose)
-                        .lineToSplineHeading(endPose,
-                                SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                        DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                        )
-                        .build();
-        
+                .lineToSplineHeading(endPose,
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .build();
+
         drive.setSlideVelocity(4000, drive.slideRight, drive.slideLeft, drive.wristMotor);
-        
-        
-        drive.setBothGrip(false);
-        drive.setFrontGrip(false);
-        drive.setBackGrip(true);
-        sleep(200);
-        drive.setHeight(200);
-        drive.setExtension(50);
-    
+
+        drive.followTrajectorySequence(norm);
+       
+
+
     }
-    
-    
+
 }
