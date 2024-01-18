@@ -139,9 +139,9 @@ public final class MecanumDrive {
 
             // TODO: reverse encoders if needed
             leftFront.setDirection(DcMotor.Direction.REVERSE);
-            leftBack.setDirection(DcMotor.Direction.FORWARD);
+            leftBack.setDirection(DcMotor.Direction.REVERSE);
             rightFront.setDirection(DcMotor.Direction.FORWARD);
-            rightBack.setDirection(DcMotor.Direction.REVERSE);
+            rightBack.setDirection(DcMotor.Direction.FORWARD);
 
             //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -224,9 +224,9 @@ public final class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         resetEncodes();
 
