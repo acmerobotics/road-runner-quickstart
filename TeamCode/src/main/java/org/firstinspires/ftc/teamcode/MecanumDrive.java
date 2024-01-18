@@ -65,9 +65,9 @@ public final class MecanumDrive {
                 //RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;    // for Adafruit
                 RevHubOrientationOnRobot.UsbFacingDirection.UP;           // for Control Hub
         // drive model parameters
-        public double inPerTick = 0.03145;
+        public double inPerTick = 0.03145*72.0/72.9;  //0.03145;
         public double lateralInPerTick = 0.03198*22.0/24.0*24.0/27.0;
-        public double trackWidthTicks = 650;//798;
+        public double trackWidthTicks = 772;//650*91.6/90.3; //798;
 
         // feedforward parameters (in tick units)
         public double kS = 1.1453;
