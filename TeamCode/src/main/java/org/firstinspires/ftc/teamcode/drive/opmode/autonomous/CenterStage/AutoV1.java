@@ -29,9 +29,10 @@ public class AutoV1 extends LinearOpMode {
             drive.initArm();
         }
 
-        drive = new SampleMecanumDrive(hardwareMap);
 
         drive.setPoseEstimate(StartLF);
+
+
         TrajectorySequence PurpPlace = drive.trajectorySequenceBuilder(new Pose2d(12.30, 60.79, Math.toRadians(270.00)))
                 .splineTo(new Vector2d(12.01, 35.16), Math.toRadians(270.00))
                 .build();

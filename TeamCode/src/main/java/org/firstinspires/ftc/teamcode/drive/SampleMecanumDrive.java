@@ -410,8 +410,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 //TODO : WE need to change all the setGrip Functions this is found in like 3 other classes
     // Takes a boolean grip value and does the math to convert it to a servo position
     public void setBothGrip(boolean grip) {
-        //double leftOpen = 0.0, leftClosed = 105.0;
-       // double rightOpen = 270.0, rightClosed = 175.0;
         double FgripOpen = 270, FgripClosed = 170,
                 BgripOpen = 270, BgripClosed = 170;
         double servoROT = 300;
