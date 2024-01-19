@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.MainCode.Autonomous.Vision;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="Test OpenCV", group="Linear Opmode")
-public class Test extends LinearOpMode {
+@TeleOp(name="LCR TEST", group="Linear Opmode")
+public class lcrTest extends LinearOpMode {
 
     public void runOpMode(){
         VisionHandler visionHandler = new VisionHandler();

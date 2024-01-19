@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.testing.openCvVision;
+package org.firstinspires.ftc.teamcode.MainCode.Autonomous.Vision;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -18,6 +18,8 @@ public class Configure extends LinearOpMode {
         VAL,
         POS
     }
+
+
     Parameter parameterToModify = Parameter.HUE;
 
     boolean canSwitch = true;
@@ -26,6 +28,8 @@ public class Configure extends LinearOpMode {
     public static double MOVE_SPEED = 8;
 
     public void runOpMode(){
+//        Class<? extends  RegionParameter> a = {LeftRegion.class};
+
         FtcDashboard dashboard = FtcDashboard.getInstance();
         Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
@@ -37,7 +41,7 @@ public class Configure extends LinearOpMode {
         FtcDashboard.getInstance().startCameraStream(camera, 30);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             public void onOpened() {
-                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(VisionParameters.resX,VisionParameters.resY, OpenCvCameraRotation.UPRIGHT);
             }
             public void onError(int errorCode) {}
         });
@@ -72,18 +76,18 @@ public class Configure extends LinearOpMode {
                 }
                 if (gamepad1.y) {
                     elementDetectionPipeline.setPositionParameters(
-                            VisionParameters.farStartX,
-                            VisionParameters.farStartY,
-                            VisionParameters.farEndX,
-                            VisionParameters.farEndY
+                            VisionParameters.middleStartX,
+                            VisionParameters.middleStartY,
+                            VisionParameters.middleEndX,
+                            VisionParameters.middleEndY
                     );
                 }
                 if (gamepad1.a) {
                     elementDetectionPipeline.setPositionParameters(
-                            VisionParameters.closeStartX,
-                            VisionParameters.closeStartY,
-                            VisionParameters.closeEndX,
-                            VisionParameters.closeEndY
+                            VisionParameters.leftStartX,
+                            VisionParameters.leftStartY,
+                            VisionParameters.leftEndX,
+                            VisionParameters.leftEndY
                     );
                 }
             }
