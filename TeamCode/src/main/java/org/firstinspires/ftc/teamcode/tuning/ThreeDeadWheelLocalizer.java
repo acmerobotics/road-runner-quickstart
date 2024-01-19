@@ -17,9 +17,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static class Params {
-        public double par0YTicks = 1983.59006402; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks =  -2055.23371428; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = 1743.4100702; // x position of the perpendicular encoder (in tick units)
+        public double par0YTicks =   -1534.028994502563; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks = 1147.601765831616; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = -1074.8826657154207; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
@@ -35,12 +35,15 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         //   the encoders should be plugged into the slot matching the named motor
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftback_drive")));
-        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightback_drive")));
+        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftfront_drive")));
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightfront_drive")));
 
         //par0.setDirection(DcMotorSimple.Direction.REVERSE);
         //par1.setDirection(DcMotorSimple.Direction.REVERSE);
         perp.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // TODO: reverse encoder directions if needed
+        //   par0.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lastPar0Pos = par0.getPositionAndVelocity().position;
         lastPar1Pos = par1.getPositionAndVelocity().position;

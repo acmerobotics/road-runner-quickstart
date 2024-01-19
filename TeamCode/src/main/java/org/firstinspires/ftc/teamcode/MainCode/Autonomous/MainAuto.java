@@ -8,33 +8,43 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Vision.VisionHandler;
+import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Vision.VisionParameters;
 import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Constants.Spike;
 import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Constants.Alliance;
 import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Constants.Side;
 import org.firstinspires.ftc.teamcode.MainCode.Autonomous.Constants.Park;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 @Config
 @TeleOp(name="Autonomous", group="Linear Opmode")
 
 
 public final class MainAuto extends LinearOpMode {
-
-    public static Side start;
+    public static Side start = Side.AUDIENCE;
     public static Spike lcr;
-    public static Alliance color;
-    public static Park park;
+    public static Alliance color = Alliance.RED;
+    public static Park park = Park.CORNER;
 
     //for dashboard
     public static String startValue = "";
     public static String lcrValue = "";
     public static String colorValue = "";
     public static String parkValue = "";
-
-    VisionHandler visionHandler = new VisionHandler();
+    VisionHandler visionHandler;
 
 
     public void runOpMode() throws InterruptedException {
@@ -45,7 +55,39 @@ public final class MainAuto extends LinearOpMode {
         MecanumDrive drive;
         int reflect;
         int LCRNUM = 0;
+        visionHandler = new VisionHandler();
         ConfigDashboard();
+
+
+        while(!isStarted()){
+            if (gamepad1.right_bumper){
+                if(color.equals(Alliance.RED)){
+                    color = Alliance.BLUE;
+                } else {
+                    color = Alliance.RED;
+                }
+            }
+            if (gamepad1.left_bumper){
+                if(park.equals(Park.CORNER)){
+                    park = Park.STAGE;
+                } else {
+                    park = Park.CORNER;
+                }
+            }
+            if (gamepad1.a){
+                if(start.equals(Side.AUDIENCE)){
+                    start = Side.BACKSTAGE;
+                } else {
+                    start = Side.AUDIENCE;
+                }
+            }
+            telemetry.addData("Color: ", color.name());
+            telemetry.addData("Side: ", start.name());
+            telemetry.addData("Parking: ", park.name());
+            telemetry.update();
+        }
+        waitForStart();
+
         visionHandler.init(hardwareMap);
         waitForStart();
 
