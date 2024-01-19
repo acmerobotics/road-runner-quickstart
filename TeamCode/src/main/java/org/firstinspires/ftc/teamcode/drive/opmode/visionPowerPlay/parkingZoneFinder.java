@@ -28,12 +28,14 @@ public class parkingZoneFinder extends OpenCvPipeline {
     public final Scalar threeLower = new Scalar(0.0, 0.0, 140.0);
     public final Scalar threeUpper = new Scalar(255.0, 135.0, 255.0);
 
-    private Mat YcBcR = new Mat();
-    private Mat oneMat = new Mat(), twoMat = new Mat(), threeMat = new Mat();
+    private final Mat YcBcR = new Mat();
+    private final Mat oneMat = new Mat();
+    private final Mat twoMat = new Mat();
+    private final Mat threeMat = new Mat();
     private Mat targetMat = new Mat();
     private double oneAvg, twoAvg, threeAvg;
 
-    private Mat output = new Mat();
+    private final Mat output = new Mat();
 
     private final Rect targetArea = new Rect(565, 340, 210, 290);
 
@@ -72,7 +74,7 @@ public class parkingZoneFinder extends OpenCvPipeline {
         Imgproc.rectangle(output, targetArea, new Scalar(255.0, 0.0, 0.0), 2);
 
         // Write the current parking zone on the camera stream for easier debugging
-        Imgproc.putText(output, "Zone #" + String.valueOf(zoneNumber), new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
+        Imgproc.putText(output, "Zone #" + zoneNumber, new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
 
         return output;
     }

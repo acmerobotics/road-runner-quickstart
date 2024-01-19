@@ -137,21 +137,13 @@ public class NewNewManualOp extends OpMode {
             wristInput++;
         }
 
-        if (wristInput % 2 == 0) {
-            robot.setWrist(true);
-        } else {
-            robot.setWrist(false);
-        }
+        robot.setWrist(wristInput % 2 == 0);
 
         // bassically the same thing for the opening
         if (base.rightBumper()){
             gripInput++;
         }
-        if (gripInput % 2 == 0 ) {
-            robot.setGrip(true);
-        } else {
-            robot.setGrip(false);
-        }
+        robot.setGrip(gripInput % 2 == 0);
 
 
     }

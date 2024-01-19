@@ -87,7 +87,5 @@ public class asyncAngleAdjust extends LinearOpMode {
         _drive.followTrajectorySequenceAsync(doNothing);
         _drive.update();
 
-        return;
-
     }
 }

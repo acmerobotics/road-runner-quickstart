@@ -14,7 +14,9 @@ public class poleFinder extends OpenCvPipeline {
         ALIGNED
     }
 
-    private int width, height, slices;  // Declare variables to hold frame size and number of slices
+    private final int width;
+    private final int height;
+    private final int slices;  // Declare variables to hold frame size and number of slices
     poleLocation outputLocation;        // Declare variable to hold pole location information
 
     // YcBcR will hold mat with converted colors

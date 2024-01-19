@@ -21,7 +21,7 @@ public class rotateTest extends LinearOpMode {
 
     private final double travelSpeed = 45.0, travelAccel = 30.0;
 
-    private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
+    private final Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
             -20, Math.toRadians(90)), new Pose2d(60, -17, Math.toRadians(90))};
 
     SampleMecanumDrive drive;

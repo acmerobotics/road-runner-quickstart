@@ -12,8 +12,11 @@ public class advancedSlideControl {
     private final HardwareMap hardwareMap;
 
     // Create motor, servo, and gyro objects
-    private DcMotorEx slideLeft, slideRight, slideTop;
-    private Servo leftGripServo, rightGripServo;
+    private final DcMotorEx slideLeft;
+    private final DcMotorEx slideRight;
+    private final DcMotorEx slideTop;
+    private final Servo leftGripServo;
+    private final Servo rightGripServo;
 
     // Create robot class
     public advancedSlideControl(final HardwareMap _hardwareMap) {

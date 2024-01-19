@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  */
 public class Controller {
     // Create a gamepad object
-    private Gamepad gamepad;
+    private final Gamepad gamepad;
 
     // Create variables to hold the state of each button and analog input
     private int dpad_up, dpad_down, dpad_left, dpad_right;
