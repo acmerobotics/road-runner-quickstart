@@ -34,16 +34,33 @@ public class TeleOpMain extends LinearOpMode {
     public static double outtakeServoDrop = .13;
     public static double intakeServoTransfer = .95;
     public static double outtakeServoTransfer = .53;
-    public static int intakeMotorTransfer = -116;
-    public static int outtakeMotorTransfer = 0;
-    public static int intakeMotorStart;
+    public static int intakeMotorTransfer1 = -80;
+    public static int intakeMotorTransfer2 = -118;
     public static double speedVar = 1;
     public static int resetVar1 = -90;
     public static int resetVar2 = -40;
-    int intakePos;
+    public static int adjustSize = 5;
     IMU imu;
     private ElapsedTime runtime = new ElapsedTime();
-
+    public enum ResetState {
+        RESET_START,
+        RESET_EXTEND,
+        RESET_FALL,
+        RESET_END,
+        RESET_RESET1,
+        RESET_RESET2
+    };
+    ResetState resetState = ResetState.RESET_START;
+    public enum InitState {
+        INIT_START,
+        INIT_EXTEND,
+        INIT_END
+    };
+    InitState initState = InitState.INIT_START;
+    public boolean glideMode = false;
+    public boolean slowMode = false;
+    public boolean yToggle = false;
+    public boolean isFieldCentric = true;
 
     private PIDController controller;
     public static double p = 0.02, i = 0, d = 0.0002;
@@ -53,19 +70,25 @@ public class TeleOpMain extends LinearOpMode {
     public static double offset = -25;
     int armPos;
     double pid, targetArmAngle, ff, currentArmAngle, intakeArmPower;
+    Gamepad currentGamepad1;
+    Gamepad previousGamepad1;
     @Override
     public void runOpMode() throws InterruptedException //START HERE
     {
         controller = new PIDController(p, i, d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Gamepad currentGamepad1 = new Gamepad();
-        Gamepad previousGamepad1 = new Gamepad();
+        currentGamepad1 = new Gamepad();
+        previousGamepad1 = new Gamepad();
 
         HardwareSetupMotors();
         HardwareSetupServos();
         ImuSetup();
         right_intake.setPosition(intakeServoStart);
+
+        runtime.reset();
+        target = 0;
+
         waitForStart();
 
         if (isStopRequested()) return;
@@ -74,33 +97,153 @@ public class TeleOpMain extends LinearOpMode {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
-            if (currentGamepad1.a && !previousGamepad1.a) {
-                InitiateTransfer();
+            //Finite State Machine - Reset
+            switch (resetState) {
+                case RESET_START:
+                    if (gamepad1.b) {
+                        glideMode = false;
+                        target = resetVar1;
+                        resetState = ResetState.RESET_EXTEND;
+                    }
+                    break;
+                case RESET_EXTEND:
+                    if (Math.abs(intake_elbow.getCurrentPosition() - resetVar1) < 10) {
+                        right_intake.setPosition(intakeServoStart);
+                        outtake_wrist.setPosition(outtakeServoDrop);
+
+                        runtime.reset();
+                        resetState = ResetState.RESET_FALL;
+                    }
+                    break;
+                case RESET_FALL:
+                    if (runtime.seconds() >= .4) {
+                        runtime.reset();
+                        target = resetVar2;
+                        resetState = ResetState.RESET_END;
+                    }
+                    break;
+                case RESET_END:
+                    if (runtime.seconds() >= .4) {
+
+                        runtime.reset();
+                        glideMode = true;
+                        target = 0;
+
+                        resetState = ResetState.RESET_RESET1;
+                    }
+                    break;
+                case RESET_RESET1:
+                    if (runtime.seconds() >= .8)
+                    {
+                        intake_elbow.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+                        resetState = ResetState.RESET_RESET2;
+                    }
+                    break;
+                case RESET_RESET2:
+                    if (runtime.seconds() >= .4)
+                    {
+                        intake_elbow.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+                        resetState = ResetState.RESET_START;
+                    }
+                default:
+                    // should never be reached, as resetState should never be null
+                    resetState = ResetState.RESET_START;
             }
-            if (currentGamepad1.b && !previousGamepad1.b) {
-                ResetTransfer1();
+
+            //Finite State Machine - Init
+            switch (initState) {
+                case INIT_START:
+                    if (gamepad1.a) {
+                        glideMode = false;
+                        outtake_wrist.setPosition(outtakeServoTransfer);
+                        initState = InitState.INIT_EXTEND;
+                    }
+                    break;
+                case INIT_EXTEND:
+                    if (runtime.seconds() >= .4) {
+
+                        target = intakeMotorTransfer1;
+                        right_intake.setPosition(intakeServoTransfer);
+                        initState = InitState.INIT_END;
+                    }
+                    break;
+                case INIT_END:
+                    if (runtime.seconds() >= .4)
+                    {
+                        target = intakeMotorTransfer2;
+
+                        initState = InitState.INIT_START;
+                    }
+                default:
+                    initState = InitState.INIT_START;
             }
-            if (currentGamepad1.x && !previousGamepad1.x) {
-                ResetTransfer2();
-            }
+
             if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down) {
                 AdjustDown();
             }
             if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up) {
                 AdjustUp();
             }
-            if (gamepad1.dpad_right) {
+            if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right) {
+                outtake_wrist.setPosition(outtakeServoDrop);
+            }
+            if (currentGamepad1.dpad_left && !previousGamepad1.dpad_left) {
                 outtake_wrist.setPosition(outtakeServoTransfer);
-                telemetry.addData("dpad right", "pressed");
             }
-            if (gamepad1.dpad_left) {
-                NoDrop();
-                telemetry.addData("dpad left", "pressed");
+            if (currentGamepad1.back && !previousGamepad1.back) {
+                glideMode = !glideMode;
+            }
+            if (currentGamepad1.left_stick_button && !previousGamepad1.left_stick_button)
+            {
+                isFieldCentric = !isFieldCentric;
+            }
+            if (currentGamepad1.x && !previousGamepad1.x) {
+                intake_elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                intake_elbow.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+            if (currentGamepad1.y && !previousGamepad1.y)
+            {
+                glideMode = false;
+                if (!yToggle)
+                {
+                    yToggle = true;
+                    target -= 20;
+                }
+                else
+                {
+                    yToggle = false;
+                    target = 0;
+                    glideMode = true;
+                }
+            }
+            //if (currentGamepad1.left_stick_button && currentGamepad1.right_stick_button) {
+                //drone_launcher.setPosition();
+            //}
+            if (currentGamepad1.start && !previousGamepad1.start) {
+                if (slowMode)
+                {
+                    slowMode = false;
+                    speedVar = 1;
+                }
+                else
+                {
+                    slowMode = true;
+                    speedVar = .6;
+                }
             }
 
-            MoveRobot();
-
+            if (isFieldCentric)
+            {
+                MoveRobotFieldCentric();
+            }
+            else
+            {
+                MoveRobot();
+            }
             ManualSlidePos();
+            RunIntake();
 
             //PID stuff
             controller.setPID(p, i, d);
@@ -112,8 +255,19 @@ public class TeleOpMain extends LinearOpMode {
 
             intakeArmPower = pid + ff;
 
-            intake_elbow.setPower(intakeArmPower);
-            hang_arm.setPower(intakeArmPower);
+            if (!glideMode)
+            {
+                intake_elbow.setPower(intakeArmPower);
+                hang_arm.setPower(intakeArmPower);
+            }
+            else
+            {
+                intake_elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                hang_arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+                intake_elbow.setPower(0);
+                hang_arm.setPower(0);
+            }
 
             TelemetryData();
         }
@@ -132,7 +286,8 @@ public class TeleOpMain extends LinearOpMode {
 
         intake_grabber = hardwareMap.get(DcMotor.class, "intake_grabber");
 
-        MotorInit(intake_elbow);
+        intake_elbow.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        intake_elbow.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         MotorInit(hang_arm);
         MotorInit(outtake_elbow);
 
@@ -162,12 +317,12 @@ public class TeleOpMain extends LinearOpMode {
         imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 
-    private void MoveRobot() {
+    private void MoveRobotFieldCentric() {
         double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
-        if (gamepad1.y) {
+        if (gamepad1.right_stick_button) {
             imu.resetYaw();
         }
 
@@ -192,50 +347,52 @@ public class TeleOpMain extends LinearOpMode {
         back_left.setPower(backLeftPower * speedVar);
         front_right.setPower(frontRightPower * speedVar);
         back_right.setPower(backRightPower * speedVar);
-
-        RunIntake();
     }
+    private void MoveRobot()
+    {
+        double max;
+        // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+        double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+        double lateral = gamepad1.left_stick_x;
+        double yaw = gamepad1.right_stick_x;
 
-    private void InitiateTransfer() {
-        //outtake_elbow.setTargetPosition(outtakeMotorTransfer);
-        //outtake_elbow.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        //outtake_elbow.setPower(slidePower);
-        outtake_wrist.setPosition(outtakeServoTransfer);
+        // Combine the joystick requests for each axis-motion to determine each wheel's power.
+        // Set up a variable for each drive wheel to save the power level for telemetry.
+        double leftFrontPower = axial + lateral + yaw;
+        double rightFrontPower = axial - lateral - yaw;
+        double leftBackPower = axial - lateral + yaw;
+        double rightBackPower = axial + lateral - yaw;
 
-        target = intakeMotorTransfer;
+        // Normalize the values so no wheel power exceeds 100%
+        // This ensures that the robot maintains the desired motion.
+        max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+        max = Math.max(max, Math.abs(leftBackPower));
+        max = Math.max(max, Math.abs(rightBackPower));
 
-        right_intake.setPosition(intakeServoTransfer);
-        //left_intake.setPosition(intakeServoTransfer);
+        if (max > 1.0) {
+            leftFrontPower /= max;
+            rightFrontPower /= max;
+            leftBackPower /= max;
+            rightBackPower /= max;
+        }
+
+        // Send calculated power to wheels
+        front_left.setPower(speedVar * leftFrontPower);
+        front_right.setPower(speedVar * rightFrontPower);
+        back_left.setPower(speedVar * leftBackPower);
+        back_right.setPower(speedVar * rightBackPower);
     }
-
-    private void ResetTransfer1() {
-        outtake_wrist.setPosition(outtakeServoDrop);
-
-        target = resetVar1;
-
-        right_intake.setPosition(intakeServoStart);
-
-        target = resetVar2;
-
-    }
-
-    private void ResetTransfer2() {
-        target = intakeMotorStart;
-    }
-
     private void AdjustDown() {
-        target -= 1;
+        glideMode = false;
+        target -= adjustSize;
     }
 
     private void AdjustUp() {
-        target += 1;
+        glideMode = false;
+        target += adjustSize;
     }
-
-    private void NoDrop() {
-        outtake_wrist.setPosition(outtakeServoDrop);
-    }
-
-    private void ManualSlidePos() {
+    private void ManualSlidePos()
+    {
         outtake_elbow.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         outtake_elbow.setPower(-gamepad1.right_stick_y);
     }
@@ -244,19 +401,22 @@ public class TeleOpMain extends LinearOpMode {
         double outtakePos = outtake_wrist.getPosition();
         double gameInput = gamepad1.right_stick_y;
         int intakePos = intake_elbow.getCurrentPosition();
-        telemetry.addData("Intake Elbow Position", intakePos);
-        telemetry.addData("Right Stick X", gamepad1.right_stick_x);
-        telemetry.addData("Right Stick Y", gamepad1.right_stick_y);
-        telemetry.addData("Outtake Servo Position", outtakePos);
-        telemetry.addData("intake arm power", intakeArmPower);
-        telemetry.addData("pid", pid);
-        telemetry.addData("ff", ff);
-        telemetry.addData("target arm angle", targetArmAngle);
-        telemetry.addData("current arm angle", currentArmAngle);
-        telemetry.addData("target", target);
+        telemetry.addData("Intake Elbow Position:", intakePos);
+        telemetry.addData("Outtake Servo Position:", outtakePos);
+        //telemetry.addData("intake arm power", intakeArmPower);
+        //telemetry.addData("pid", pid);
+        //telemetry.addData("ff", ff);
+        //telemetry.addData("target arm angle", targetArmAngle);
+        //telemetry.addData("current arm angle", currentArmAngle);
+        telemetry.addData("Target:", target);
+        telemetry.addData("GlideMode:", glideMode);
+        telemetry.addData("SlowMode:", slowMode);
+        telemetry.addData("Previous Input:", previousGamepad1);
+        telemetry.addData("Current Input:", currentGamepad1);
+        telemetry.addData("Run Time", runtime.seconds());
+        telemetry.addData("Reset State", resetState.name());
         telemetry.update();
     }
-
     private void RunIntake() {
         if (gamepad1.left_bumper) {
             intake_grabber.setPower(1);
