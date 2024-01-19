@@ -17,21 +17,9 @@ apply from: '../build.dependencies.gradle'
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
-    androidResources {
-        noCompress 'tflite'
-    }
 
     packagingOptions {
-        jniLibs {
-            pickFirsts += ['**/*.so']
-        }
         jniLibs.useLegacyPackaging true
-    }
-}
-
-repositories {
-    maven {
-        url = 'https://maven.brott.dev/'
     }
 }
 
@@ -39,6 +27,9 @@ dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 
-    implementation "com.acmerobotics.roadrunner:ftc:0.1.11"
-    implementation "com.acmerobotics.dashboard:dashboard:0.4.14"
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+
+    implementation 'com.acmerobotics.roadrunner:core:0.5.6'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
 }
