@@ -36,10 +36,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -79,6 +79,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
 
+    public Servo  gripServoB, gripServoF;
+    public DcMotorEx slideLeft, slideRight, wristMotor;
+// this the object contsutor
+
+
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -106,6 +112,15 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
+        //leftGripServo = hardwareMap.servo.get("leftGripServo");
+        //rightGripServo = hardwareMap.servo.get("rightGripServo");
+        gripServoF =hardwareMap.servo.get("gripServoF");
+        gripServoB =hardwareMap.servo.get("gripServoB");
+
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
+        wristMotor = hardwareMap.get(DcMotorEx.class, "wristMotor");
+
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         for (DcMotorEx motor : motors) {
@@ -131,6 +146,9 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, lastTrackingEncPositions, lastTrackingEncVels));
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, lastTrackingEncPositions, lastTrackingEncVels));
+
+
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(
                 follower, HEADING_PID, batteryVoltageSensor,
@@ -292,12 +310,14 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        return 0;
+                //imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
 
     @Override
     public Double getExternalHeadingVelocity() {
-        return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
+        return 0.0;
+                //(double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
@@ -310,4 +330,95 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
+    // Custom code from this point on
+
+    // Iterate over a list of motors and set them to a give mode
+    private void setMotorMode(DcMotorEx.RunMode mode, DcMotorEx... motors) {
+        // Iterate over each DcMotor object and set their motor mode
+        for (DcMotorEx motor : motors) {
+            motor.setMode(mode);
+        }
+    }
+
+    // Call setMotorMode() to turn off and reset the encoders on all slide motors
+    public void stopAndResetMotors() {
+        setMotorMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER, slideLeft, slideRight, wristMotor);
+    }
+
+    // Call setMotorMode() to turn on all slide motors
+    public void restartMotors() {
+        setMotorMode(DcMotorEx.RunMode.RUN_TO_POSITION, slideLeft, slideRight, wristMotor);
+    }
+
+    // Bundles all the functions needed to initialize the arm controls
+
+    public void initArm() {
+        stopAndResetMotors();
+        setBothGrip(true);
+        setSlideVelocity(0, slideLeft, slideRight, wristMotor);
+        setHeight(0);
+        setExtension(0);
+        restartMotors();
+    }
+
+    // Set the target encoder position of the vertical slides
+    public void setHeight(int height) {
+        slideLeft.setTargetPosition(height);
+        slideRight.setTargetPosition(-height);
+    }
+
+    // Set the target encoders position of the horizontal slide
+    public void setExtension(int ext) {wristMotor.setTargetPosition(-ext);
+    }
+
+    // Iterate over a list of motors and set them to a provided velocity in ticks/second
+    public void setSlideVelocity(int vel, DcMotorEx... motors) {
+        for (DcMotorEx motor : motors) {
+            motor.setVelocity(vel);
+        }
+    }
+    //TODO : WE need to change all the setGrip Functions this is found in like 3 other classes
+    // Takes a boolean grip value and does the math to convert it to a servo position
+    public void setBothGrip(boolean grip) {
+        //double leftOpen = 0.0, leftClosed = 105.0;
+        // double rightOpen = 270.0, rightClosed = 175.0;
+        double FgripOpen = 270, FgripClosed = 170,
+                BgripOpen = 270, BgripClosed = 170;
+        double servoROT = 300;
+
+        if (grip) {
+            gripServoB.setPosition(BgripOpen/servoROT);
+            gripServoF.setPosition(FgripOpen/servoROT);
+        } else if (!grip) {
+            gripServoB.setPosition(BgripClosed/servoROT);
+            gripServoF.setPosition(FgripClosed/servoROT);
+        }
+    }
+
+    // this is just a setup for the wrist these are random numbers I think we can get the numbers from a demo auto
+    //ill make the auto
+    public  void setFrontGrip (boolean grip) {
+        double FgripOpen = 270, FgripClosed = 170;
+        double servoROT = 300;
+
+        if (grip) {
+
+            gripServoF.setPosition(FgripOpen/servoROT);
+        } else if (!grip) {
+            gripServoF.setPosition(FgripClosed/servoROT);
+        }
+    }
+    public  void setBackGrip (boolean grip) {
+        double BgripOpen = 270, BgripClosed = 170;
+        double servoROT = 300;
+
+        if (grip) {
+
+            gripServoB.setPosition(BgripOpen/servoROT);
+        } else if (!grip) {
+            gripServoB.setPosition(BgripClosed/servoROT);
+        }
+    }
+
+
 }
