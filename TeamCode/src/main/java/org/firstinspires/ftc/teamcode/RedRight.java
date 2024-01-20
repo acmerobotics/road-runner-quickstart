@@ -27,21 +27,7 @@ public class RedRight extends LinearOpMode {
     public void runOpMode(){
         initialize();
         while(!isStarted() && !isStopRequested()){
-            //currentRecognitions=fluffy.getRecognitions();
-            /*if(gamepad1.x){
-                PATH = "Left";
-                telemetry.addData("TargetPosition: ", PATH);
-            }
-            if(gamepad1.y){
-                PATH = "Center";
-                telemetry.addData("TargetPosition: ", PATH);
-            }
-            if(gamepad1.b){
-                PATH = "Right";
-                telemetry.addData("TargetPosition: ", PATH);
-            }*/
-            //telemetry.addData("TargetPosition: ", PATH);
-           // telemetry.update();
+            
             PATH= fluffy.getPropLocation();
             telemetry.addData("Prop Location", PATH );
             telemetry.addData("Left Sat. Value", fluffy.getLeftMean());
