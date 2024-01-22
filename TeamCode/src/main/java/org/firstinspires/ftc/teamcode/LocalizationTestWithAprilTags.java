@@ -56,6 +56,7 @@ public class LocalizationTestWithAprilTags extends LinearOpMode {
                             RobotLog.i(Detection2String(d));
                         }
                     }
+                    telemetry.addLine("logged");
                 }
                 else {
                     isBUp = true;
