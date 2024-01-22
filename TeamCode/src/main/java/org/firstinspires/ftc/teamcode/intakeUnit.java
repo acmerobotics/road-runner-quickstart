@@ -78,7 +78,7 @@ public class intakeUnit
     int ARM_POS_INTAKE = 3350;//3600; 3560 for finger down, 3600 for finger up
     int ARM_MIN_COUNT_POS = ARM_POS_INTAKE - 3350; //0;
     int ARM_MAX_COUNT_POS = ARM_POS_INTAKE + 100; //3620;
-    int ARM_POS_AUTO = ARM_POS_INTAKE - 3480; //80;
+    int ARM_POS_AUTO = ARM_POS_INTAKE - 3300; //80;
     int ARM_POS_HANG = ARM_POS_INTAKE - 3060; //500;
     int ARM_POS_READY_FOR_HANG = ARM_POS_INTAKE - 1760; // 1800
     int ARM_POS_DROP = ARM_POS_INTAKE - 1000; //2550;
@@ -320,7 +320,7 @@ public class intakeUnit
         ARM_POS_INTAKE = intakePos;
         ARM_MIN_COUNT_POS = ARM_POS_INTAKE - 3350; //0;
         ARM_MAX_COUNT_POS = ARM_POS_INTAKE + 100; //3620; 
-        ARM_POS_AUTO = ARM_POS_INTAKE - 3480; //80;
+        ARM_POS_AUTO = ARM_POS_INTAKE - 3300; //80;
         ARM_POS_HANG = ARM_POS_INTAKE - 3060; //500;
         ARM_POS_READY_FOR_HANG = ARM_POS_INTAKE - 1760; // 1800
         ARM_POS_DROP = ARM_POS_INTAKE - 1000; //2550;
