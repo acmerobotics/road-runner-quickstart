@@ -262,7 +262,7 @@ public class AutoFluffy {
             }
         }
 
-     public Pose2d getPoseFromAprilTag(String PATH, String SIDE) {
+     public Pose2d getPoseFromAprilTag() {
          List<AprilTagDetection> detections = findDetections();
          if (detections == null || detections.isEmpty()) {
              return drive.pose;
