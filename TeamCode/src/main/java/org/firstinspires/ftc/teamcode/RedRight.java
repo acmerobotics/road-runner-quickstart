@@ -15,6 +15,12 @@ import java.util.List;
 /* TODO
    - turn off redFinder when no longer needed.
  */
+
+/* CHANGELIST
+ * Change start location
+ *
+ * */
+
 @Config
 @Autonomous(name = "RedRight", group = "robot", preselectTeleOp = "FluffyTeleOp")
 public class RedRight extends LinearOpMode {
@@ -24,6 +30,21 @@ public class RedRight extends LinearOpMode {
     String SIDE = "Right";
     static double DELTA = 1;
     List<Recognition> currentRecognitions;
+
+    final Pose2d RR_START = new Pose2d(new Vector2d(16.2,-63.2), Math.toRadians(90));
+    final Pose2d RR_CENTER_PROP_PUSH = new Pose2d(new Vector2d(14.2,-27.95), Math.toRadians(0.1));
+    final Pose2d RR_CENTER_PURPLE_BACKUP = new Pose2d(new Vector2d(14.2,-34.45), Math.toRadians(0.1));
+    final Pose2d RR_CENTER_YELLOW_PREP = new Pose2d(new Vector2d(16.7,-36.7), Math.toRadians(0.1));
+    final Pose2d RR_READ_YELLOW_CENTER = new Pose2d(new Vector2d(42.2,-36.2), Math.toRadians(0.1));
+    final Pose2d RR_PARK_BACKUP = new Pose2d(new Vector2d(47.2,-35.9), Math.toRadians(0.1));
+    final Pose2d RR_PARK_FINAL = new Pose2d(new Vector2d(48.2,-60.2), Math.toRadians(0.1));
+    final Pose2d RR_RIGHT_PROP_PUSH = new Pose2d(new Vector2d(22.95,-40.2), Math.toRadians(0.1));
+    final Pose2d RR_RIGHT_YELLOW_PREP = new Pose2d(new Vector2d(21.2,-45.2), Math.toRadians(0.1));
+    final Pose2d RR_READ_YELLOW_RIGHT = new Pose2d(new Vector2d(42.2,-40.8), Math.toRadians(0.1));
+    final Pose2d RR_LEFT_PROP_PUSH = new Pose2d(new Vector2d(16.2,-42.7), Math.toRadians(90));
+    final Pose2d RR_LEFT_PURPLE_BACKUP = new Pose2d(new Vector2d(7.7,-33.7), Math.toRadians(90));
+    final Pose2d RR_READ_YELLOW_LEFT = new Pose2d(new Vector2d(42.2,-28.8), Math.toRadians(0.1));
+
     public void runOpMode(){
         initialize();
         while(!isStarted() && !isStopRequested()){
@@ -41,6 +62,7 @@ public class RedRight extends LinearOpMode {
 
         // JRC: Turn off redFinder at this point.
 
+        fluffy.drive.pose = RR_START;
         if(PATH .equals("Left")){
             deliverPurpleLeft();
             yellowLeft();
@@ -67,8 +89,8 @@ public class RedRight extends LinearOpMode {
         Actions.runBlocking(
            fluffy.drive.actionBuilder(fluffy.drive.pose)
                    //.splineTo(new Vector2d(29.5,9.23), .21)
-                   .lineToX(20.5)
-                   .strafeTo( new Vector2d(29.5,8.5))
+                   .strafeTo(RR_LEFT_PROP_PUSH.position)   // .lineToX(WHATEVERPOSE.position.x)
+                   .strafeTo(RR_LEFT_PURPLE_BACKUP.position)  // .strafeTo(WHATEVERPOSE.position)
                    .build());
         fluffy.deliverPurple();
 
@@ -78,8 +100,8 @@ public class RedRight extends LinearOpMode {
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         //.splineTo(new Vector2d(27.93, -10.81), -91.4)
                         //.lineToX(29)
-                        .strafeToLinearHeading(new Vector2d(35.25, 2 ), Math.toRadians(-89.9))
-                        .strafeToLinearHeading(new Vector2d(29.5, 2 ), Math.toRadians(-89.9))
+                        .strafeToLinearHeading(RR_CENTER_PROP_PUSH.position, RR_CENTER_PROP_PUSH.heading)
+                        .strafeTo(RR_CENTER_PURPLE_BACKUP.position)
                         //.turnTo(Math.toRadians(-91))
                         .build());
         fluffy.deliverPurple();
@@ -87,7 +109,7 @@ public class RedRight extends LinearOpMode {
     public void deliverPurpleRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(23,-5), Math.toRadians(-89.9))
+                        .strafeToLinearHeading(RR_RIGHT_PROP_PUSH.position, RR_RIGHT_PROP_PUSH.heading)
                         .build());
         fluffy.deliverPurple();
     }
@@ -98,23 +120,23 @@ public class RedRight extends LinearOpMode {
          */
         Actions.runBlocking(
               fluffy.drive.actionBuilder(fluffy.drive.pose)
-                      .strafeToLinearHeading(new Vector2d(34.4, -26), Math.toRadians(-89.9))
+                      .strafeToLinearHeading(RR_READ_YELLOW_LEFT.position, RR_READ_YELLOW_LEFT.heading)
                       .build());
         fluffy.retractPurple();
     }
     public void yellowCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeTo(new Vector2d(27, -.5))
-                        .strafeToLinearHeading(new Vector2d(28.4, -26), Math.toRadians(-89.9))
+                        .strafeTo(RR_CENTER_YELLOW_PREP.position)
+                        .strafeTo(RR_READ_YELLOW_CENTER.position)
                         .build());
         fluffy.retractPurple();
     }
     public void yellowRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(18, -5), Math.toRadians(-89.9))
-                        .strafeToLinearHeading(new Vector2d(22.4, -26), Math.toRadians(-89.9))
+                        .strafeTo(RR_RIGHT_YELLOW_PREP.position)
+                        .strafeTo(RR_READ_YELLOW_RIGHT.position)
                         .build());
         fluffy.retractPurple();
     }
@@ -162,12 +184,12 @@ public class RedRight extends LinearOpMode {
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .lineToY(fluffy.drive.pose.position.y + 5)
+                        .lineToY(RR_PARK_BACKUP.position.y)
                         .build());
         fluffy.lowerLift();
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(3, -32), Math.toRadians(-89.9))
+                        .strafeTo(RR_PARK_FINAL.position)
                         .build());
     }
 

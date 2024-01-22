@@ -55,6 +55,10 @@ public class AutoFluffy {
     String side = "Red";
     double deltaC_X, deltaC_Y;
 
+    final Pose2d RR_CENTER_DELIVERY = new Pose2d(new Vector2d(52.2,-34.8), Math.toRadians(0.1));
+    final Pose2d RR_RIGHT_DELIVERY = new Pose2d(new Vector2d(52.2,-41.3), Math.toRadians(0.1));
+    final Pose2d RR_LEFT_DELIVERY = new Pose2d(new Vector2d(52.2,-27.4), Math.toRadians(0.1));
+
 
     //String[] RED_LABELS = {"redprop"};
     //String[] BLUE_LABELS = {"blueprop"};
@@ -256,11 +260,11 @@ public class AutoFluffy {
             //need new values for backside
             if (SIDE .equals("Right")){
                 if (PATH.equals("Left")) {
-                    return new Pose2d(35.8, -36, Math.toRadians(-89.9));
+                    return RR_LEFT_DELIVERY;
                 } else if (PATH.equals("Center")) {
-                    return new Pose2d(27.3, -36, Math.toRadians(-89.9));
+                    return RR_CENTER_DELIVERY;
                 } else if (PATH.equals("Right")) {
-                    return new Pose2d(21.9, -36, Math.toRadians(-89.9));
+                    return RR_RIGHT_DELIVERY;
                 }
             }else if(SIDE .equals("Left")){
                 if (PATH.equals("Left")) {
