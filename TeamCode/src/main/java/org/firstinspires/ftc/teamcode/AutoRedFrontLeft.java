@@ -399,27 +399,22 @@ public class AutoRedFrontLeft extends LinearOpMode {
 
         // drop off the purple pixel by arm and wrist actions
         dropPurpleAction();
-        if(desiredTagNum == 2 || desiredTagNum == 5) {
-            intake.setArmModeRunToPosition(intake.ARM_POS_READY_FOR_HANG);
-            sleep(500);
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .strafeTo(new Vector2d(vDropPurple.x, vDropPurple.y + ((frontOrBack > 0) ? 12 : 0)))
-                            .build()
-            );//strafe several inches left to avoid hitting the beam
-        }
 
         double armPower = intake.armMotor.getPower();
         intake.armMotor.setPower(0.1); // use slow speed
-        if(desiredTagNum != 2 && desiredTagNum != 5) {
-            intake.underTheBeam();
-        }
+
+        intake.underTheBeam();
+
         sleep(300);
         intake.armMotor.setPower(armPower);
         intake.switchServoClose();
 
-        if ((2 == checkStatus) || (5 == checkStatus)) {
-
+        if(desiredTagNum == 2 || desiredTagNum == 5) {
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeTo(new Vector2d(vMatCenter.x, vMatCenter.y + 1.5 * Params.HALF_MAT)) // move away from gate
+                            .build()
+            );//strafe several inches left to avoid hitting the beam
         }
 
         // there is a bug somewhere in turn() function when using PI/2, it actually turn PI */
