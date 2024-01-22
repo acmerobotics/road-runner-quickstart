@@ -191,7 +191,7 @@ public class AutoFluffy {
         }
     }
 
-    List<AprilTagDetection> findDetections() {
+    public List<AprilTagDetection> findDetections() {
         return aprilTag.getDetections();
     }
 
