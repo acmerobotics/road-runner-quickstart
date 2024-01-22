@@ -59,6 +59,15 @@ public class AutoFluffy {
     final Pose2d RR_RIGHT_DELIVERY = new Pose2d(new Vector2d(52.2,-41.3), Math.toRadians(0.1));
     final Pose2d RR_LEFT_DELIVERY = new Pose2d(new Vector2d(52.2,-27.4), Math.toRadians(0.1));
 
+    public final Vector2d deltaF = new Vector2d(8.5,4.5);
+
+    public final Vector2d[] tagPositions = new Vector2d[] {new Vector2d(62, 41.5),
+                                                        new Vector2d(62, 35.5),
+                                                        new Vector2d(62, 29.5),
+                                                        new Vector2d(62,-29.5),
+                                                        new Vector2d(62,-35.5),
+                                                        new Vector2d(62, -41.5),
+                                                                };
 
     //String[] RED_LABELS = {"redprop"};
     //String[] BLUE_LABELS = {"blueprop"};
@@ -252,6 +261,27 @@ public class AutoFluffy {
                 op.sleep(1);
             }
         }
+
+     public Pose2d getPoseFromAprilTag(String PATH, String SIDE) {
+         List<AprilTagDetection> detections = findDetections();
+         if (detections == null || detections.isEmpty()) {
+             return drive.pose;
+         }
+         AprilTagDetection OurTag = detections.get(0);
+         for (AprilTagDetection d : detections) {
+             if (Math.abs(d.ftcPose.x) < Math.abs(OurTag.ftcPose.x)) {
+                 OurTag = d;
+             }
+         }
+
+         Vector2d cameraVector = new Vector2d(OurTag.ftcPose.y, -OurTag.ftcPose.x);
+         Vector2d rTag = tagPositions[OurTag.id - 1];
+         Vector2d returnVector = rTag.minus(deltaF);
+         returnVector = returnVector.minus(cameraVector);
+         Pose2d returnPose = new Pose2d(returnVector, -OurTag.ftcPose.yaw);
+         return returnPose;
+
+     }
 
     public Pose2d correctYellowPositionRed(String PATH, String SIDE) {
         AprilTagDetection detection = assignID(PATH, "Red");

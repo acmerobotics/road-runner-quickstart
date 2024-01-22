@@ -13,9 +13,10 @@ import java.util.List;
 
 @Autonomous(name="LocalizationTestWithAprilTags", group = "testing")
 public class LocalizationTestWithAprilTags extends LinearOpMode {
-    AutoFluffy fluffy = new AutoFluffy(this);
+    AutoFluffy fluffy;
     @Override
     public void runOpMode() throws InterruptedException {
+        fluffy = new AutoFluffy(this);
         boolean isBUp = true;
         MecanumDrive drive = fluffy.drive;
         List<AprilTagDetection> currentDetections;
@@ -72,7 +73,7 @@ public class LocalizationTestWithAprilTags extends LinearOpMode {
             s="no pose available";
         }
         else {
-            s=String.format("(x,y) heading: %0.3f %03.f %0.3f", pose.position.x, pose.position.y, pose.heading);
+            s=String.format("(x,y) heading: %.3f %.3f %.3f", pose.position.x, pose.position.y, pose.heading.toDouble());
         }
         return s;
     }
@@ -84,7 +85,7 @@ public class LocalizationTestWithAprilTags extends LinearOpMode {
             s += "    No pose available";
         }
         else {
-            s += String.format("    Pose (x,y) yaw: %0.3f, %0.3f  %0.3f", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.yaw);
+            s += String.format("    Pose (x,y) yaw: %.3f, %.3f  %.3f", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.yaw);
         }
         return s;
     }

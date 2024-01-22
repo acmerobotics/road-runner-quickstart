@@ -37,7 +37,7 @@ public class RedRight extends LinearOpMode {
     final Pose2d RR_CENTER_YELLOW_PREP = new Pose2d(new Vector2d(16.7,-36.7), Math.toRadians(0.1));
     final Pose2d RR_READ_YELLOW_CENTER = new Pose2d(new Vector2d(42.2,-36.2), Math.toRadians(0.1));
     final Pose2d RR_PARK_BACKUP = new Pose2d(new Vector2d(37.2,-35.9), Math.toRadians(0.1));
-    final Pose2d RR_PARK_FINAL = new Pose2d(new Vector2d(38.2,-60.2), Math.toRadians(0.1));
+    final Pose2d RR_PARK_FINAL = new Pose2d(new Vector2d(50.2,-60.2), Math.toRadians(0.1));
     final Pose2d RR_RIGHT_PROP_PUSH = new Pose2d(new Vector2d(22.95,-40.2), Math.toRadians(0.1));
     final Pose2d RR_RIGHT_YELLOW_PREP = new Pose2d(new Vector2d(21.2,-45.2), Math.toRadians(0.1));
     final Pose2d RR_READ_YELLOW_RIGHT = new Pose2d(new Vector2d(42.2,-40.8), Math.toRadians(0.1));
@@ -184,7 +184,7 @@ public class RedRight extends LinearOpMode {
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .lineToY(RR_PARK_BACKUP.position.y)
+                        .lineToX(RR_PARK_BACKUP.position.x)
                         .build());
         fluffy.lowerLift();
         Actions.runBlocking(
