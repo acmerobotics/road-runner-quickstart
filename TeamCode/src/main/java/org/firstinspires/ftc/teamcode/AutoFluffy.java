@@ -58,6 +58,12 @@ public class AutoFluffy {
     final Pose2d RR_CENTER_DELIVERY = new Pose2d(new Vector2d(52.2,-34.8), Math.toRadians(0.1));
     final Pose2d RR_RIGHT_DELIVERY = new Pose2d(new Vector2d(52.2,-41.3), Math.toRadians(0.1));
     final Pose2d RR_LEFT_DELIVERY = new Pose2d(new Vector2d(52.2,-27.4), Math.toRadians(0.1));
+    final Pose2d RL_CENTER_DELIVERY = new Pose2d(new Vector2d(50,-37.1), Math.toRadians(0.1));
+    final Pose2d RL_RIGHT_DELIVERY = new Pose2d(new Vector2d(50,-43.1), Math.toRadians(0.1));
+    final Pose2d RL_LEFT_DELIVERY = new Pose2d(new Vector2d(50,-31.1), Math.toRadians(0.1));
+    final Pose2d BR_CENTER_DELIVERY = new Pose2d(new Vector2d(77,30), Math.toRadians(0));
+    final Pose2d BR_RIGHT_DELIVERY = new Pose2d(new Vector2d(77,26), Math.toRadians(0));
+    final Pose2d BR_LEFT_DELIVERY = new Pose2d(new Vector2d(77.4, 34), Math.toRadians(0));
 
     public final Vector2d deltaF = new Vector2d(8.5,4.5);
 
@@ -298,11 +304,11 @@ public class AutoFluffy {
                 }
             }else if(SIDE .equals("Left")){
                 if (PATH.equals("Left")) {
-                    return new Pose2d(32.5, -85, Math.toRadians(-89.9));
+                    return RL_LEFT_DELIVERY;
                 } else if (PATH.equals("Center")) {
-                    return new Pose2d(27.7, -85, Math.toRadians(-89.9));
+                    return RL_CENTER_DELIVERY;
                 } else if (PATH.equals("Right")) {
-                    return new Pose2d(22.4, -85, Math.toRadians(-89.9));
+                    return RL_RIGHT_DELIVERY;
                 }
             }
         }
@@ -336,11 +342,11 @@ public class AutoFluffy {
                 }
             } else if (SIDE.equals("Right")) {
                 if (PATH.equals("Left")) {
-                    return new Pose2d(26.3, 95.4, Math.toRadians(89.9));
+                    return BR_LEFT_DELIVERY;
                 } else if (PATH.equals("Center")) {
-                    return new Pose2d(30.7, 95, Math.toRadians(89.9));
+                    return BR_CENTER_DELIVERY;
                 } else if (PATH.equals("Right")) {
-                    return new Pose2d(33.3, 95, Math.toRadians(89.9));
+                    return BR_RIGHT_DELIVERY;
                 }
             }
         }

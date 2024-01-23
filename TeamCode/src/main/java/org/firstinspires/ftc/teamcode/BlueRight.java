@@ -23,6 +23,28 @@ public class BlueRight extends LinearOpMode {
     String PATH;
     String SIDE = "Right";
     static double DELTA = 2;
+
+    final Pose2d BR_START = new Pose2d(new Vector2d(-18,60), Math.toRadians(-90));
+    final Pose2d BR_CENTER_PROP_PUSH = new Pose2d(new Vector2d(-36,60), Math.toRadians(-90));
+    final Pose2d BR_CENTER_PURPLE_BACKUP = new Pose2d(new Vector2d(-27,22), Math.toRadians(-90));
+    final Pose2d BR_CENTER_MOVE_FROM_PIXEL = new Pose2d(new Vector2d(-33,18.5), Math.toRadians(-90));
+    final Pose2d BR_CENTER_YELLOW_PREP_1 = new Pose2d(new Vector2d(-25.76,21), Math.toRadians(-90));
+    final Pose2d BR_RIGHT_PROP_PUSH = new Pose2d(new Vector2d(-13,60), Math.toRadians(-90));
+    final Pose2d BR_RIGHT_PURPLE_BACKUP = new Pose2d(new Vector2d(-34.5,27.5), Math.toRadians(-90));
+    final Pose2d BR_RIGHT_MOVE_FROM_PIXEL = new Pose2d(new Vector2d(-38,27.5), Math.toRadians(-90));
+    final Pose2d BR_RIGHT_YELLOW_PREP_1 = new Pose2d(new Vector2d(-25.76,27.6), Math.toRadians(-90));
+    final Pose2d BR_LEFT_PROP_PUSH = new Pose2d(new Vector2d(-24,60), Math.toRadians(-90));
+    final Pose2d BR_LEFT_PURPLE_BACKUP = new Pose2d(new Vector2d(-10.25,32.4), Math.toRadians(-90));
+    final Pose2d BR_LEFT_MOVE_FROM_PIXEL = new Pose2d(new Vector2d(-24,31), Math.toRadians(-90));
+    final Pose2d BR_LEFT_YELLOW_PREP_1 = new Pose2d(new Vector2d(-25.76,32), Math.toRadians(-90));
+    final Pose2d BR_YELLOW_PREP_2 = new Pose2d(new Vector2d(-25.26,4), Math.toRadians(0));
+    final Pose2d BR_YELLOW_PREP_3 = new Pose2d(new Vector2d(52.8,4), Math.toRadians(0));
+    final Pose2d BR_READ_YELLOW = new Pose2d(new Vector2d(66,30), Math.toRadians(0));
+    final Pose2d BR_PARK_BACKUP = new Pose2d(new Vector2d(75,30), Math.toRadians(0));
+    final Pose2d BR_PARK_FINAL = new Pose2d(new Vector2d(68,40), Math.toRadians(0));
+
+
+
     List<Recognition> currentRecognitions;
     public void runOpMode(){
         initialize();
@@ -54,6 +76,7 @@ public class BlueRight extends LinearOpMode {
         }
 
         // JRC: Turn off redFinder at this point.
+        fluffy.drive.pose = BR_START;
         sleep(2000);
         if(PATH .equals("Left")){
             deliverPurpleLeft();
@@ -80,73 +103,73 @@ public class BlueRight extends LinearOpMode {
     public void deliverPurpleLeft(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(27.6,-6), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(29.0,7.75), Math.toRadians(0))
+                        .strafeTo(BR_LEFT_PROP_PUSH.position)
+                        .strafeTo(BR_LEFT_PURPLE_BACKUP.position)
                         .build());
         fluffy.deliverPurple();
         fluffy.retractPurple();
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(28.0,-6), Math.toRadians(0))
+                        .strafeTo(BR_LEFT_MOVE_FROM_PIXEL.position)
                         .build());
     }
     public void deliverPurpleCenter() {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(38, -18 ), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(41.5, -9 ), Math.toRadians(0))
+                        .strafeTo(BR_CENTER_PROP_PUSH.position)
+                        .strafeTo(BR_CENTER_PURPLE_BACKUP.position)
                         .build());
         fluffy.deliverPurple();
         fluffy.retractPurple();
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(39, -15 ), Math.toRadians(0))
+                        .strafeTo(BR_CENTER_MOVE_FROM_PIXEL.position)
                         .build());
     }
     public void deliverPurpleRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeTo( new Vector2d(32.5,5))
+                        .strafeTo(BR_RIGHT_PROP_PUSH.position)
                         //.strafeTo( new Vector2d(35,30))
-                        .strafeTo( new Vector2d(32.5,-16.5))
+                        .strafeTo(BR_RIGHT_PURPLE_BACKUP.position)
                         //.strafeTo( new Vector2d(25,26))
                         .build());
         fluffy.deliverPurple();
         fluffy.retractPurple();
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeTo( new Vector2d(32.5,-20))
+                        .strafeTo(BR_RIGHT_MOVE_FROM_PIXEL.position)
                         .build());
     }
 
     public void yellowLeft(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(56, -7.76), Math.toRadians(0))
-                        .turnTo(Math.toRadians(89.9))
+                        .strafeTo(BR_LEFT_YELLOW_PREP_1.position)
+                        .strafeToLinearHeading(BR_YELLOW_PREP_2.position,BR_YELLOW_PREP_2.heading)
                         //.strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(-89.9))
-                        .lineToY(70.8)
-                        .strafeToLinearHeading(new Vector2d(26, 84), Math.toRadians(89.9))
+                        .strafeTo(BR_YELLOW_PREP_3.position)
+                        .strafeTo(BR_READ_YELLOW.position)
                         .build());
     }
     public void yellowCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(56, -7.76), Math.toRadians(0))
-                        .turnTo(Math.toRadians(89.9))
+                        .strafeTo(BR_CENTER_YELLOW_PREP_1.position)
+                        .strafeToLinearHeading(BR_YELLOW_PREP_2.position,BR_YELLOW_PREP_2.heading)
                         //.strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(-89.9))
-                        .lineToY(70.8)
-                        .strafeToLinearHeading(new Vector2d(30, 84), Math.toRadians(89.9))
+                        .strafeTo(BR_YELLOW_PREP_3.position)
+                        .strafeTo(BR_READ_YELLOW.position)
                         .build());
     }
     public void yellowRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(56, -7.76), Math.toRadians(0))
-                        .turnTo(Math.toRadians(89.9))
+                        .strafeTo(BR_RIGHT_YELLOW_PREP_1.position)
+                        .strafeToLinearHeading(BR_YELLOW_PREP_2.position,BR_YELLOW_PREP_2.heading)
                         //.strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(-89.9))
-                        .lineToY(70.8)
-                        .strafeToLinearHeading(new Vector2d(34, 84), Math.toRadians(89.9))
+                        .strafeTo(BR_YELLOW_PREP_3.position)
+                        .strafeTo(BR_READ_YELLOW.position)
                         .build());
     }
 
@@ -176,8 +199,7 @@ public class BlueRight extends LinearOpMode {
         sleep(500);
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(fluffy.drive.pose.position.x, (fluffy.drive.pose.position.y - DELTA)),
-                                Math.toRadians(89.9))
+                        .strafeTo(BR_PARK_BACKUP.position)
                         .build());
         fluffy.lowerLift();
 
@@ -203,7 +225,7 @@ public class BlueRight extends LinearOpMode {
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(5, 86), Math.toRadians(89.9))
+                        .strafeTo(BR_PARK_FINAL.position)
                         .build());
     }
 

@@ -31,6 +31,30 @@ public class RedLeft extends LinearOpMode {
 
     AprilTagDetection detection;
     public static double delta = 1;
+
+    final Pose2d RL_START = new Pose2d(new Vector2d(-35,-65.5), Math.toRadians(90));
+    final Pose2d RL_CENTER_PROP_PUSH = new Pose2d(new Vector2d(-50,-45.5), Math.toRadians(90));
+    final Pose2d RL_CENTER_PURPLE_BACKUP = new Pose2d(new Vector2d(-50,-25.5), Math.toRadians(90));
+    final Pose2d RL_CENTER_MOVE_FROM_PIXEL = new Pose2d(new Vector2d(-57,-24), Math.toRadians(90));
+    final Pose2d RL_CENTER_YELLOW_PREP_1 = new Pose2d(new Vector2d(-57,-18.26), Math.toRadians(90));
+    final Pose2d RL_RIGHT_PROP_PUSH = new Pose2d(new Vector2d(-41,-60.5), Math.toRadians(90));
+    final Pose2d RL_RIGHT_PURPLE_BACKUP = new Pose2d(new Vector2d(-32.5,-31.9), Math.toRadians(90));
+    final Pose2d RL_RIGHT_MOVE_FROM_PIXEL = new Pose2d(new Vector2d(-39,-35.5), Math.toRadians(90));
+    final Pose2d RL_RIGHT_YELLOW_PREP_1 = new Pose2d(new Vector2d(-40,-37.5), Math.toRadians(90));
+    final Pose2d RL_LEFT_PROP_PUSH = new Pose2d(new Vector2d(-40,-65.5), Math.toRadians(90));
+    final Pose2d RL_LEFT_PURPLE_BACKUP = new Pose2d(new Vector2d(-57.5,-31.5), Math.toRadians(90));
+    final Pose2d RL_LEFT_MOVE_FROM_PIXEL = new Pose2d(new Vector2d(-60,-31.5), Math.toRadians(90));
+    final Pose2d RL_LEFT_YELLOW_PREP_1 = new Pose2d(new Vector2d(-60,-20.26), Math.toRadians(90));
+    final Pose2d RL_YELLOW_PREP_2 = new Pose2d(new Vector2d(-48.76,-14.5), Math.toRadians(0.1));
+    final Pose2d RL_YELLOW_PREP_3 = new Pose2d(new Vector2d(35.8,-9.5), Math.toRadians(0.1));
+    final Pose2d RL_READ_YELLOW_LEFT = new Pose2d(new Vector2d(43,-29.5), Math.toRadians(0.1));
+    final Pose2d RL_READ_YELLOW_CENTER = new Pose2d(new Vector2d(43,-37), Math.toRadians(0.1));
+    final Pose2d RL_READ_YELLOW_RIGHT = new Pose2d(new Vector2d(43,-41.5), Math.toRadians(0.1));
+    final Pose2d RL_PARK_BACKUP = new Pose2d(new Vector2d(39,-37), Math.toRadians(0.1));
+    final Pose2d RL_PARK_FINAL = new Pose2d(new Vector2d(45,-58), Math.toRadians(0.1));
+
+
+
     List<Recognition> currentRecognitions;
     public void runOpMode(){
         initialize();
@@ -44,6 +68,7 @@ public class RedLeft extends LinearOpMode {
         }
 
         // JRC: Turn off redFinder at this point.
+        fluffy.drive.pose = RL_START;
         sleep(2000);
         if(PATH == "Left"){
             deliverPurpleLeft();
@@ -70,74 +95,73 @@ public class RedLeft extends LinearOpMode {
     public void deliverPurpleLeft(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeTo( new Vector2d(34,5))
+                        .strafeTo(RL_LEFT_PROP_PUSH.position)
                         //.strafeTo( new Vector2d(35,30))
-                        .strafeTo( new Vector2d(34,22.5))
+                        .strafeTo(RL_LEFT_PURPLE_BACKUP.position)
                         //.strafeTo( new Vector2d(25,26))
                         .build());
         fluffy.deliverPurple();
         fluffy.retractPurple();
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeTo( new Vector2d(34,25))
+                        .strafeTo(RL_LEFT_MOVE_FROM_PIXEL.position)
                         .build());
 
     }
     public void deliverPurpleCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(38, 20 ), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(41.5, 15 ), Math.toRadians(0))
+                        .strafeTo(RL_CENTER_PROP_PUSH.position)
+                        .strafeTo(RL_CENTER_PURPLE_BACKUP.position)
                         .build());
         fluffy.deliverPurple();
         fluffy.retractPurple();
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(39, 22 ), Math.toRadians(0))
+                        .strafeTo(RL_CENTER_MOVE_FROM_PIXEL.position)
                         .build());
     }
     public void deliverPurpleRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(27.6,6), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(30.0,-2.5), Math.toRadians(0))
+                        .strafeTo(RL_RIGHT_PROP_PUSH.position)
+                        .strafeTo(RL_RIGHT_PURPLE_BACKUP.position)
                         .build());
         fluffy.deliverPurple();
         fluffy.retractPurple();
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(28.0,6), Math.toRadians(0))
+                        .strafeTo(RL_RIGHT_MOVE_FROM_PIXEL.position)
                         .build());
     }
 
     public void yellowLeft(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(0))
-                        .turnTo(Math.toRadians(-89.9))
+                        .strafeTo(RL_LEFT_YELLOW_PREP_1.position)
+                        .strafeToLinearHeading(RL_YELLOW_PREP_2.position,RL_YELLOW_PREP_2.heading)
                         //.strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(-89.9))
-                        .lineToY(-70.8)
-                        .strafeToLinearHeading(new Vector2d(34.4, -78), Math.toRadians(-89.9))
+                        .strafeTo(RL_YELLOW_PREP_3.position)
+                        .strafeTo(RL_READ_YELLOW_LEFT.position)
                         .build());
     }
     public void yellowCenter(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(0))
-                        .turnTo(Math.toRadians(-89.9))
+                        .strafeTo(RL_CENTER_YELLOW_PREP_1.position)
+                        .strafeToLinearHeading(RL_YELLOW_PREP_2.position,RL_YELLOW_PREP_2.heading)
                         //.strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(-89.9))
-                        .lineToY(-70.8)
-                        .strafeToLinearHeading(new Vector2d(28.4, -78), Math.toRadians(-89.9))
+                        .strafeTo(RL_YELLOW_PREP_3.position)
+                        .strafeTo(RL_READ_YELLOW_CENTER.position)
                         .build());
     }
     public void yellowRight(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(0))
-                        .turnTo(Math.toRadians(-89.9))
+                        .strafeToLinearHeading(RL_YELLOW_PREP_2.position, RL_YELLOW_PREP_2.heading)
                         //.strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(-89.9))
-                        .lineToY(-70.8)
-                        .strafeToLinearHeading(new Vector2d(22.4, -78), Math.toRadians(-89.9))
+                        .strafeTo(RL_YELLOW_PREP_3.position)
+                        .strafeTo(RL_READ_YELLOW_RIGHT.position)
                         .build());
     }
 
@@ -176,7 +200,7 @@ public class RedLeft extends LinearOpMode {
         sleep(500);
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeTo(new Vector2d(fluffy.drive.pose.position.x, (fluffy.drive.pose.position.y + DELTA)))
+                        .strafeTo(RL_PARK_BACKUP.position)
                         .build());
         fluffy.lowerLift();
 
@@ -202,7 +226,7 @@ public class RedLeft extends LinearOpMode {
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(50, -80), fluffy.drive.pose.heading)
+                        .strafeTo(RL_PARK_FINAL.position)
                         .build());
     }
 

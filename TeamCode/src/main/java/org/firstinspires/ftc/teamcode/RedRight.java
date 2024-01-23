@@ -36,14 +36,15 @@ public class RedRight extends LinearOpMode {
     final Pose2d RR_CENTER_PURPLE_BACKUP = new Pose2d(new Vector2d(14.2,-34.45), Math.toRadians(0.1));
     final Pose2d RR_CENTER_YELLOW_PREP = new Pose2d(new Vector2d(16.7,-36.7), Math.toRadians(0.1));
     final Pose2d RR_READ_YELLOW_CENTER = new Pose2d(new Vector2d(42.2,-36.2), Math.toRadians(0.1));
-    final Pose2d RR_PARK_BACKUP = new Pose2d(new Vector2d(37.2,-35.9), Math.toRadians(0.1));
-    final Pose2d RR_PARK_FINAL = new Pose2d(new Vector2d(50.2,-60.2), Math.toRadians(0.1));
     final Pose2d RR_RIGHT_PROP_PUSH = new Pose2d(new Vector2d(22.95,-40.2), Math.toRadians(0.1));
     final Pose2d RR_RIGHT_YELLOW_PREP = new Pose2d(new Vector2d(21.2,-45.2), Math.toRadians(0.1));
     final Pose2d RR_READ_YELLOW_RIGHT = new Pose2d(new Vector2d(42.2,-40.8), Math.toRadians(0.1));
     final Pose2d RR_LEFT_PROP_PUSH = new Pose2d(new Vector2d(16.2,-42.7), Math.toRadians(90));
     final Pose2d RR_LEFT_PURPLE_BACKUP = new Pose2d(new Vector2d(7.7,-33.7), Math.toRadians(90));
     final Pose2d RR_READ_YELLOW_LEFT = new Pose2d(new Vector2d(42.2,-28.8), Math.toRadians(0.1));
+    final Pose2d RR_PARK_BACKUP = new Pose2d(new Vector2d(37.2,-35.9), Math.toRadians(0.1));
+    final Pose2d RR_PARK_FINAL = new Pose2d(new Vector2d(50.2,-60.2), Math.toRadians(0.1));
+
 
     public void runOpMode(){
         initialize();
