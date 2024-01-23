@@ -66,7 +66,7 @@ public class Params {
 
     // drone servo parameters
     static final double DRONE_START = 0.55;
-    static final double DRONE_LAUNCH = 0.2;
+    static final double DRONE_LAUNCH = 0.18;
 
 }
 

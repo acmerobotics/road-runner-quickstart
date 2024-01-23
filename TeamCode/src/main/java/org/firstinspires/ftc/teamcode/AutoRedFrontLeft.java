@@ -296,7 +296,7 @@ public class AutoRedFrontLeft extends LinearOpMode {
 
         double pausePoseY = -2 * Params.HALF_MAT - 6;
         Vector2d vMatCenter = new Vector2d(blueOrRed * (3 * Params.HALF_MAT), startPose.position.y);
-        Vector2d vParkPos = new Vector2d(blueOrRed * 3 * Params.HALF_MAT - 2.2 * leftOrRight * Params.HALF_MAT, -3.5 * Params.HALF_MAT);
+        Vector2d vParkPos = new Vector2d(blueOrRed * 3 * Params.HALF_MAT - 2 * leftOrRight * Params.HALF_MAT, -3.2 * Params.HALF_MAT);
         Vector2d vBackdrop = new Vector2d(blueOrRed * 3 * Params.HALF_MAT, -4 * Params.HALF_MAT);
 
         Vector2d vAprilTag = null;
@@ -306,8 +306,8 @@ public class AutoRedFrontLeft extends LinearOpMode {
         } else {
             vAprilTag = new Vector2d(vBackdrop.x + (5 - desiredTagNum) * Params.BACKDROP_SIDEWAYS, vBackdrop.y);
         }
-        Vector2d vCheckingAprilTagPose = new Vector2d(vAprilTag.x, vAprilTag.y + 10);
-        Vector2d vDropYellow = new Vector2d(vAprilTag.x + BUCKET_SHIFT, vAprilTag.y + 1.5);
+        Vector2d vCheckingAprilTagPose = new Vector2d(vAprilTag.x, vAprilTag.y + Params.HALF_MAT);
+        Vector2d vDropYellow = new Vector2d(vAprilTag.x + BUCKET_SHIFT, vAprilTag.y + 2.5); // 3 seem good
 
         Vector2d vDropPurple = null;
         double xDelta = -7.0;
@@ -319,13 +319,13 @@ public class AutoRedFrontLeft extends LinearOpMode {
             case 2:
             case -2:
                 // pass the test
-                xDelta = 10.0;
+                xDelta = 9.0;
                 yDelta = 0;
                 break;
             case -1:
             case 4:
                 // pass the test
-                xDelta = (blueOrRed > 0)? 7.0 : 11.0;  // TODO: need double check by test
+                xDelta = 12.0;
                 yDelta = blueOrRed * -10.0;
                 break;
             case -3:
@@ -337,7 +337,7 @@ public class AutoRedFrontLeft extends LinearOpMode {
             case 1:
             case 6:
                 // near gate cases
-                xDelta = -6; // 0;
+                xDelta = -4; // 0;
                 yDelta = 9;
                 startArmFlip = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + xDelta), startPose.position.y + 15);
                 break;
@@ -345,7 +345,7 @@ public class AutoRedFrontLeft extends LinearOpMode {
             case -6:
                 // pass the test
                 xDelta = 12.0;
-                yDelta = blueOrRed * 11.0;
+                yDelta = blueOrRed * 14.0;
                 break;
         }
         vDropPurple = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + xDelta), startPose.position.y + yDelta);
@@ -409,10 +409,12 @@ public class AutoRedFrontLeft extends LinearOpMode {
         intake.armMotor.setPower(armPower);
         intake.switchServoClose();
 
-        if(desiredTagNum == 2 || desiredTagNum == 5) {
+        if(checkStatus == 2 || checkStatus == 5 ||
+                4 == checkStatus || 3 == checkStatus) {
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
-                            .strafeTo(new Vector2d(vMatCenter.x, vMatCenter.y + 1.5 * Params.HALF_MAT)) // move away from gate
+                            // move away from gate, and avoid stamp on purple pixel
+                            .strafeTo(new Vector2d(vMatCenter.x + blueOrRed * 4, vMatCenter.y + 1.5 * Params.HALF_MAT))
                             .build()
             );//strafe several inches left to avoid hitting the beam
         }
@@ -454,14 +456,22 @@ public class AutoRedFrontLeft extends LinearOpMode {
 
         // move to the center of second mat to go through gate.
         if (frontOrBack > 0) {
+            // add 2 inch to avoid drive on purple pixel, always 2 inch more to right
+            Vector2d driveThroughGate = null;
+            if (1 == checkStatus || 6 == checkStatus) {
+                driveThroughGate = new Vector2d(vMatCenter.x - 2, vMatCenter.y);
+            }
+            else {
+                driveThroughGate = new Vector2d(vMatCenter.x, vMatCenter.y);
+            }
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
-                            .strafeTo(vMatCenter)
+                            .strafeTo(driveThroughGate)
                             .build()
             );
 
             logVector("robot drive: drive.pose move to 2nd mat center", drive.pose.position);
-            logVector("robot drive: move to 2nd mat center required", vMatCenter);
+            logVector("robot drive: move to 2nd mat center required", driveThroughGate);
         }
 
         if (frontOrBack < 0) {
