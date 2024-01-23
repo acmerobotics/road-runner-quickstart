@@ -122,7 +122,7 @@ public class AutoRedFrontLeft extends LinearOpMode {
     // road runner variables
     Pose2d startPose;
 
-    final int WAIT_ALLIANCE_SECONDS = 3;
+    final int WAIT_ALLIANCE_SECONDS = 6;
 
     /**
      * Set robot starting location on the field:
@@ -222,7 +222,7 @@ public class AutoRedFrontLeft extends LinearOpMode {
         Params.blueOrRed = blueOrRed;
 
         intake = new intakeUnit(hardwareMap, "Arm", "Wrist",
-                "Finger", "Switch", "Switch2");
+                "Finger", "SwitchR", "SwitchL");
         intake.resetArmEncoder();
 
         runtime.reset();
@@ -337,7 +337,7 @@ public class AutoRedFrontLeft extends LinearOpMode {
             case 1:
             case 6:
                 // near gate cases
-                xDelta = -4; // 0;
+                xDelta = -5; // 0;
                 yDelta = 9;
                 startArmFlip = new Vector2d(blueOrRed * (3 * Params.HALF_MAT + xDelta), startPose.position.y + 15);
                 break;
@@ -448,12 +448,6 @@ public class AutoRedFrontLeft extends LinearOpMode {
             logVector("robot drive: turn after drop purple required", vDropPurple);
         }
 
-        // flip down the arm to get ready to go through the gate
-        if ((2 == checkStatus) || (5 == checkStatus)) {
-            intake.underTheBeam();
-            sleep(500);
-        }
-
         // move to the center of second mat to go through gate.
         if (frontOrBack > 0) {
             // add 2 inch to avoid drive on purple pixel, always 2 inch more to right
@@ -531,12 +525,16 @@ public class AutoRedFrontLeft extends LinearOpMode {
                     drive.pose.position.y - aprilTagPose.position.y + Params.AUTO_DISTANCE_TO_TAG);
             logVector("robot drive: drop yellow pose required after april tag adjust", vDropYellow);
         }
-
-        if (frontOrBack > 0) {
-            intake.readyToDropYellow(intake.ARM_POS_DROP_YELLOW);
-        } else {
-            intake.readyToDropYellow(intake.ARM_POS_DROP_YELLOW + 100); // lower for back to avoid pixel jump away
+        else {
+            if(-3 == checkStatus || -4 == checkStatus) {
+                // adjust yellow drop-off position according to testing results
+                vDropYellow = new Vector2d(vDropYellow.x, vDropYellow.y - 1.0); // advance 1 inch more for -3/-4 cases
+                logVector("robot drive: drop yellow pose required after adjust for -3/-4", vDropYellow);
+            }
+            Logging.log("Can not found required AprilTag to drop yellow pixel");
         }
+
+        intake.readyToDropYellow(intake.ARM_POS_DROP_YELLOW);
 
         // shift to AprilTag
         Actions.runBlocking(

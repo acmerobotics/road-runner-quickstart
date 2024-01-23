@@ -97,7 +97,7 @@ public class TeleopRR extends LinearOpMode {
         tag.initAprilTag();
 
         intake = new intakeUnit(hardwareMap, "Arm", "Wrist",
-                "Finger", "Switch"/* right switch name */, "Switch2" /* left switch */);
+                "Finger", "SwitchR"/* right switch name */, "SwitchL" /* left switch */);
 
         intake.setArmModeRunToPosition(intake.getArmPosition());
 
