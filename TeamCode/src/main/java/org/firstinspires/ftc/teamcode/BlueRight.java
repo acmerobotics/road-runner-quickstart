@@ -39,9 +39,11 @@ public class BlueRight extends LinearOpMode {
     final Pose2d BR_LEFT_YELLOW_PREP_1 = new Pose2d(new Vector2d(-25.76,32), Math.toRadians(-90));
     final Pose2d BR_YELLOW_PREP_2 = new Pose2d(new Vector2d(-25.26,4), Math.toRadians(0));
     final Pose2d BR_YELLOW_PREP_3 = new Pose2d(new Vector2d(52.8,4), Math.toRadians(0));
-    final Pose2d BR_READ_YELLOW = new Pose2d(new Vector2d(66,30), Math.toRadians(0));
-    final Pose2d BR_PARK_BACKUP = new Pose2d(new Vector2d(75,30), Math.toRadians(0));
-    final Pose2d BR_PARK_FINAL = new Pose2d(new Vector2d(68,40), Math.toRadians(0));
+    final Pose2d BR_READ_YELLOW_LEFT = new Pose2d(new Vector2d(54,41), Math.toRadians(0));
+    final Pose2d BR_READ_YELLOW_CENTER = new Pose2d(new Vector2d(54,36), Math.toRadians(0));
+    final Pose2d BR_READ_YELLOW_RIGHT = new Pose2d(new Vector2d(54,29.5), Math.toRadians(0));
+    final Pose2d BR_PARK_BACKUP = new Pose2d(new Vector2d(45,30), Math.toRadians(0));
+    final Pose2d BR_PARK_FINAL = new Pose2d(new Vector2d(50,58), Math.toRadians(0));
 
 
 
@@ -149,7 +151,7 @@ public class BlueRight extends LinearOpMode {
                         .strafeToLinearHeading(BR_YELLOW_PREP_2.position,BR_YELLOW_PREP_2.heading)
                         //.strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(-89.9))
                         .strafeTo(BR_YELLOW_PREP_3.position)
-                        .strafeTo(BR_READ_YELLOW.position)
+                        .strafeTo(BR_READ_YELLOW_LEFT.position)
                         .build());
     }
     public void yellowCenter(){
@@ -159,7 +161,7 @@ public class BlueRight extends LinearOpMode {
                         .strafeToLinearHeading(BR_YELLOW_PREP_2.position,BR_YELLOW_PREP_2.heading)
                         //.strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(-89.9))
                         .strafeTo(BR_YELLOW_PREP_3.position)
-                        .strafeTo(BR_READ_YELLOW.position)
+                        .strafeTo(BR_READ_YELLOW_CENTER.position)
                         .build());
     }
     public void yellowRight(){
@@ -169,7 +171,7 @@ public class BlueRight extends LinearOpMode {
                         .strafeToLinearHeading(BR_YELLOW_PREP_2.position,BR_YELLOW_PREP_2.heading)
                         //.strafeToLinearHeading(new Vector2d(56, 13.76), Math.toRadians(-89.9))
                         .strafeTo(BR_YELLOW_PREP_3.position)
-                        .strafeTo(BR_READ_YELLOW.position)
+                        .strafeTo(BR_READ_YELLOW_RIGHT.position)
                         .build());
     }
 

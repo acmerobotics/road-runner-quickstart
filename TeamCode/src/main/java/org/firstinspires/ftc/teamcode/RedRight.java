@@ -143,7 +143,7 @@ public class RedRight extends LinearOpMode {
     }
 
 
-    public void deliverYellow(){
+    /*public void deliverYellow(){
         fluffy.raiseLift();
         Pose2d destination = fluffy.correctYellowPositionRed(PATH, SIDE);
         RobotLog.i(String.format("Destination position: (%3.1f, %3.1f) at %3.1f deg",
@@ -181,7 +181,30 @@ public class RedRight extends LinearOpMode {
          * (then park)
          */
 
+    public void deliverYellow(){
+        Vector2d destination; //need to fix (offset)
+        fluffy.drive.pose = fluffy.getPoseFromAprilTag();
+        if (PATH.equals("LEFT")){
+            destination = fluffy.tagPositions[3].plus(fluffy.DELIVERY_OFFSET);
+        }
+        else if (PATH.equals("CENTER:")){
+            destination = fluffy.tagPositions[4].plus(fluffy.DELIVERY_OFFSET);
+        }
+        else{
+            destination = fluffy.tagPositions[5].plus(fluffy.DELIVERY_OFFSET);
+        }
+        fluffy.raiseLift();
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeToLinearHeading(destination, 0)
+                        .build());
+        fluffy.raiseFinger();
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .lineToX(fluffy.drive.pose.position.x - 1)
+                        .build());
     }
+    //}
     public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)

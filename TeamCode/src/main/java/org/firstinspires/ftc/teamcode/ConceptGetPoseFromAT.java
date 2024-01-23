@@ -31,6 +31,9 @@ public class ConceptGetPoseFromAT extends LinearOpMode {
                     ),
                     -gamepad1.right_stick_x
             ));
+
+            fluffy.drive.updatePoseEstimate();
+            telemetry.update();
         }
 
 
@@ -43,7 +46,13 @@ public class ConceptGetPoseFromAT extends LinearOpMode {
         }
         else {
             for (AprilTagDetection d : detections) {
-                String s = String.format("Tag ID %d: (%.3f, %.3f) @%3.f", d.id, d.ftcPose.y, -d.ftcPose.x, d.ftcPose.yaw);
+                String s;
+                if (d.ftcPose == null) {
+                    s = String.format("Tag ID %d, no pose available", d.id);
+                }
+                else {
+                    s = String.format("Tag ID %d: (%.3f, %.3f) @%.3f", d.id, d.ftcPose.y, -d.ftcPose.x, d.ftcPose.yaw);
+                }
                 RobotLog.i(s);
                 telemetry.addLine(s);
             }

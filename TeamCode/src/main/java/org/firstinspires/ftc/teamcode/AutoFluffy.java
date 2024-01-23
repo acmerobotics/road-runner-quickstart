@@ -65,7 +65,7 @@ public class AutoFluffy {
     final Pose2d BR_RIGHT_DELIVERY = new Pose2d(new Vector2d(77,26), Math.toRadians(0));
     final Pose2d BR_LEFT_DELIVERY = new Pose2d(new Vector2d(77.4, 34), Math.toRadians(0));
 
-    public final Vector2d deltaF = new Vector2d(8.5,4.5);
+    public final Vector2d deltaF = new Vector2d(7.5,4.5);
 
     public final Vector2d[] tagPositions = new Vector2d[] {new Vector2d(62, 41.5),
                                                         new Vector2d(62, 35.5),
@@ -74,6 +74,8 @@ public class AutoFluffy {
                                                         new Vector2d(62,-35.5),
                                                         new Vector2d(62, -41.5),
                                                                 };
+
+    public final Vector2d DELIVERY_OFFSET = new Vector2d(-10,-0.5);
 
     //String[] RED_LABELS = {"redprop"};
     //String[] BLUE_LABELS = {"blueprop"};
@@ -271,20 +273,36 @@ public class AutoFluffy {
      public Pose2d getPoseFromAprilTag() {
          List<AprilTagDetection> detections = findDetections();
          if (detections == null || detections.isEmpty()) {
+             RobotLog.i("getPoseFromAprilTag: no detections");
              return drive.pose;
          }
          AprilTagDetection OurTag = detections.get(0);
          for (AprilTagDetection d : detections) {
+             if (OurTag.ftcPose == null) {
+                 OurTag = d;
+                 continue;
+             }
+             if (d.ftcPose == null) {
+                 continue;
+             }
              if (Math.abs(d.ftcPose.x) < Math.abs(OurTag.ftcPose.x)) {
                  OurTag = d;
              }
+         }
+         if (OurTag.ftcPose == null) {
+             RobotLog.i("getPoseFromAprilTag: no detections");
+             return drive.pose;
          }
 
          Vector2d cameraVector = new Vector2d(OurTag.ftcPose.y, -OurTag.ftcPose.x);
          Vector2d rTag = tagPositions[OurTag.id - 1];
          Vector2d returnVector = rTag.minus(deltaF);
          returnVector = returnVector.minus(cameraVector);
-         Pose2d returnPose = new Pose2d(returnVector, -OurTag.ftcPose.yaw);
+         Pose2d returnPose = new Pose2d(returnVector, Math.toRadians(-OurTag.ftcPose.yaw));
+         RobotLog.i("getPoseFromAprilTag: reference tag = "+OurTag.id);
+         RobotLog.i(String.format("getPoseFromAprilTag: tag data: (%.3f, %.3f) @%.3f",OurTag.ftcPose.x, OurTag.ftcPose.y, OurTag.ftcPose.yaw));
+         RobotLog.i("getPoseFromAprilTag: pose = "+returnPose.toString());
+
          return returnPose;
 
      }
