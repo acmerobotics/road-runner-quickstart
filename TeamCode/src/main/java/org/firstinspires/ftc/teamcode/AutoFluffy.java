@@ -47,7 +47,8 @@ public class AutoFluffy {
     public static double RIGHT_PURPLE_RELEASE = .6;
     public static double LEFT_PURPLE_INIT = LEFT_PURPLE_GRAB;
     public static double RIGHT_PURPLE_INIT = RIGHT_PURPLE_GRAB;
-    public static int LIFT_UP = 450;//changed from 300 during comp  //fix values
+    public static int LIFT_UP = 300;//changed from 300 during comp  //fix values
+    public static int LIFT_UP_HIGH = 360;
     public static int LIFT_DOWN = 0;  //fix values
     public static double LIFT_POWER = 1;  //fix values
     public static int FINGER_UP_WAIT = 500;
@@ -75,7 +76,7 @@ public class AutoFluffy {
                                                         new Vector2d(62, -41.5),
                                                                 };
 
-    public final Vector2d DELIVERY_OFFSET = new Vector2d(-10,-0.5);
+    public final Vector2d DELIVERY_OFFSET = new Vector2d(-8.5,-0.5);
 
     //String[] RED_LABELS = {"redprop"};
     //String[] BLUE_LABELS = {"blueprop"};
@@ -250,13 +251,21 @@ public class AutoFluffy {
         isGrabberUp=true;
     }
 
-        public void raiseLift(){
+        public void raiseLift() {
             liftMotor.setTargetPosition(LIFT_UP);
             liftMotor.setPower(LIFT_POWER);
-            while (op.opModeIsActive() && liftMotor.isBusy()){
+            while (op.opModeIsActive() && liftMotor.isBusy()) {
                 op.sleep(1);
             }
         }
+        public void raiseLiftHigh(){
+             liftMotor.setTargetPosition(LIFT_UP_HIGH);
+             liftMotor.setPower(LIFT_POWER);
+             while (op.opModeIsActive() && liftMotor.isBusy()){
+                 op.sleep(1);
+             }
+            }
+
         public void raiseFinger(){
             finger.setPosition(FINGER_UP);
             op.sleep(FINGER_UP_WAIT);

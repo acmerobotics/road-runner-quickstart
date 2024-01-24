@@ -35,22 +35,30 @@ public class RedRight extends LinearOpMode {
     final Pose2d RR_CENTER_PROP_PUSH = new Pose2d(new Vector2d(14.2,-27.95), Math.toRadians(0.1));
     final Pose2d RR_CENTER_PURPLE_BACKUP = new Pose2d(new Vector2d(14.2,-34.45), Math.toRadians(0.1));
     final Pose2d RR_CENTER_YELLOW_PREP = new Pose2d(new Vector2d(16.7,-36.7), Math.toRadians(0.1));
-    final Pose2d RR_READ_YELLOW_CENTER = new Pose2d(new Vector2d(42.2,-36.2), Math.toRadians(0.1));
+    final Pose2d RR_READ_YELLOW_CENTER = new Pose2d(new Vector2d(40.2,-36.2), Math.toRadians(0.1));
     final Pose2d RR_RIGHT_PROP_PUSH = new Pose2d(new Vector2d(22.95,-40.2), Math.toRadians(0.1));
     final Pose2d RR_RIGHT_YELLOW_PREP = new Pose2d(new Vector2d(21.2,-45.2), Math.toRadians(0.1));
-    final Pose2d RR_READ_YELLOW_RIGHT = new Pose2d(new Vector2d(42.2,-40.8), Math.toRadians(0.1));
+    final Pose2d RR_READ_YELLOW_RIGHT = new Pose2d(new Vector2d(40.2,-40.8), Math.toRadians(0.1));
     final Pose2d RR_LEFT_PROP_PUSH = new Pose2d(new Vector2d(16.2,-42.7), Math.toRadians(90));
     final Pose2d RR_LEFT_PURPLE_BACKUP = new Pose2d(new Vector2d(7.7,-33.7), Math.toRadians(90));
-    final Pose2d RR_READ_YELLOW_LEFT = new Pose2d(new Vector2d(42.2,-28.8), Math.toRadians(0.1));
+    final Pose2d RR_READ_YELLOW_LEFT = new Pose2d(new Vector2d(40.2,-28.8), Math.toRadians(0.1));
     final Pose2d RR_PARK_BACKUP = new Pose2d(new Vector2d(37.2,-35.9), Math.toRadians(0.1));
-    final Pose2d RR_PARK_FINAL = new Pose2d(new Vector2d(50.2,-60.2), Math.toRadians(0.1));
+    final Pose2d RR_PARK_FINAL_LEFT = new Pose2d(new Vector2d(50.2,-12), Math.toRadians(0.1));
+    final Pose2d RR_PARK_FINAL_CENTER = new Pose2d(new Vector2d(46.7,-36), Math.toRadians(0.1));
+    final Pose2d RR_PARK_FINAL_RIGHT = new Pose2d(new Vector2d(50.2,-60.2), Math.toRadians(0.1));
 
-
+    Menu initMenu = new Menu(this);
     public void runOpMode(){
         initialize();
+
+        initMenu.add(new MenuItem(3, "Park Loc (L=1 C=2 R=3)", 3, 1, 1));
+        initMenu.add(new MenuItem(2, "Pixel Pos (L=1 R=2)", 2,1,1));
+        initMenu.add(new MenuItem(0, "Wait Time (0-12)", 12,0,1));
         while(!isStarted() && !isStopRequested()){
             
             PATH= fluffy.getPropLocation();
+            initMenu.update();
+            initMenu.display();
             telemetry.addData("Prop Location", PATH );
             telemetry.addData("Left Sat. Value", fluffy.getLeftMean());
             telemetry.addData("Center Sat. Value", fluffy.getCenterMean());
@@ -61,6 +69,7 @@ public class RedRight extends LinearOpMode {
 
         }
 
+        sleep((long)initMenu.get(2)*1000);
         // JRC: Turn off redFinder at this point.
 
         fluffy.drive.pose = RR_START;
@@ -143,60 +152,27 @@ public class RedRight extends LinearOpMode {
     }
 
 
-    /*public void deliverYellow(){
-        fluffy.raiseLift();
-        Pose2d destination = fluffy.correctYellowPositionRed(PATH, SIDE);
-        RobotLog.i(String.format("Destination position: (%3.1f, %3.1f) at %3.1f deg",
-                destination.position.x,
-                destination.position.y,
-                Math.toDegrees(destination.heading.toDouble())));
-        Actions.runBlocking(
-                fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(destination.position , destination.heading)
-                        .build());
-        fluffy.raiseFinger();
-        sleep(500);
-       /* Actions.runBlocking(
-                fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(fluffy.drive.pose.position.x, (fluffy.drive.pose.position.y -  DELTA)),
-                                Math.toRadians(-89.9))
-                        .build());*/
-        //fluffy.lowerLift();
-
-    /* HA plan 12/13:
-     * raiseLift()
-     * get detection  // JRC - see below
-     * do math      // JRC - math method is fluffy.correctYellowPosition, gets detection within.
-     * create trajectory and drive to it
-     * raiseFinger()
-     * back up
-     * lowerLift()
-     * NOTE: must park after delivering yellow.
-     */
-
-        /* JRC testing recommendation
-         * write deliverYellow with raiseLift, correctYellowPosition, raiseFinger, grabberDown.  (ie, no driving).
-         *    Test just that, and use telemetry to determine whether correctYellowPosition is working properly.
-         * When satisfied, add driving.  Test final version.
-         * (then park)
-         */
-
     public void deliverYellow(){
         Vector2d destination; //need to fix (offset)
+        sleep(1000);
         fluffy.drive.pose = fluffy.getPoseFromAprilTag();
-        if (PATH.equals("LEFT")){
+        if (PATH.equals("Left")){
             destination = fluffy.tagPositions[3].plus(fluffy.DELIVERY_OFFSET);
         }
-        else if (PATH.equals("CENTER:")){
+        else if (PATH.equals("Center")){
             destination = fluffy.tagPositions[4].plus(fluffy.DELIVERY_OFFSET);
         }
         else{
             destination = fluffy.tagPositions[5].plus(fluffy.DELIVERY_OFFSET);
         }
+        if ((int)initMenu.get(1) == 1){
+            destination = destination.plus(new Vector2d(0,4.5));
+        }
         fluffy.raiseLift();
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(destination, 0)
+                        .strafeTo(destination)
+                        //.turnTo(fluffy.drive.pose.heading)
                         .build());
         fluffy.raiseFinger();
         Actions.runBlocking(
@@ -211,11 +187,25 @@ public class RedRight extends LinearOpMode {
                         .lineToX(RR_PARK_BACKUP.position.x)
                         .build());
         fluffy.lowerLift();
-        Actions.runBlocking(
-                fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeTo(RR_PARK_FINAL.position)
-                        .build());
-    }
+        if ((int)initMenu.get(0) == 1){
+            Actions.runBlocking(
+                    fluffy.drive.actionBuilder(fluffy.drive.pose)
+                            .strafeTo(RR_PARK_FINAL_LEFT.position)
+                            .build());
+        }
+        else if ((int)initMenu.get(0) == 2){
+            Actions.runBlocking(
+                    fluffy.drive.actionBuilder(fluffy.drive.pose)
+                            .strafeTo(RR_PARK_FINAL_CENTER.position)
+                            .build());
+        }
+        else {
+            Actions.runBlocking(
+                    fluffy.drive.actionBuilder(fluffy.drive.pose)
+                            .strafeTo(RR_PARK_FINAL_RIGHT.position)
+                            .build());
+        }
 
+    }
 
 }
