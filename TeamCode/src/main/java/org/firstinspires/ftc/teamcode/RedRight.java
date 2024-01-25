@@ -54,6 +54,7 @@ public class RedRight extends LinearOpMode {
         initMenu.add(new MenuItem(3, "Park Loc (L=1 C=2 R=3)", 3, 1, 1));
         initMenu.add(new MenuItem(2, "Pixel Pos (L=1 R=2)", 2,1,1));
         initMenu.add(new MenuItem(0, "Wait Time (0-12)", 12,0,1));
+
         while(!isStarted() && !isStopRequested()){
             
             PATH= fluffy.getPropLocation();

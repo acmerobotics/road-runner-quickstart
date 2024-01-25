@@ -40,7 +40,6 @@ public class RedLeft extends LinearOpMode {
     final Pose2d RL_RIGHT_PROP_PUSH = new Pose2d(new Vector2d(-41, -60.5), Math.toRadians(90));
     final Pose2d RL_RIGHT_PURPLE_BACKUP = new Pose2d(new Vector2d(-32.5, -31.9), Math.toRadians(90));
     final Pose2d RL_RIGHT_MOVE_FROM_PIXEL = new Pose2d(new Vector2d(-39, -35.5), Math.toRadians(90));
-    final Pose2d RL_RIGHT_YELLOW_PREP_1 = new Pose2d(new Vector2d(-40, -37.5), Math.toRadians(90));
     final Pose2d RL_LEFT_PROP_PUSH_1 = new Pose2d(new Vector2d(-60, -60), Math.toRadians(90));
     final Pose2d RL_LEFT_PROP_PUSH_2 = new Pose2d(new Vector2d(-60, -31.5), Math.toRadians(90));
     final Pose2d RL_LEFT_PURPLE_BACKUP_1 = new Pose2d(new Vector2d(-45,-31.5), Math.toRadians(90));
@@ -71,6 +70,8 @@ public class RedLeft extends LinearOpMode {
 
         while (!isStarted() && !isStopRequested()) {
             PATH = fluffy.getPropLocation();
+            initMenu.update();
+            initMenu.display();
             telemetry.addData("Prop Location", PATH);
             telemetry.addData("Left Sat. Value", fluffy.getLeftMean());
             telemetry.addData("Center Sat. Value", fluffy.getCenterMean());

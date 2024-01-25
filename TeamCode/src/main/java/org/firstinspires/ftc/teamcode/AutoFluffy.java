@@ -76,7 +76,7 @@ public class AutoFluffy {
                                                         new Vector2d(62, -41.5),
                                                                 };
 
-    public final Vector2d DELIVERY_OFFSET = new Vector2d(-8.5,-0.5);
+    public final Vector2d DELIVERY_OFFSET = new Vector2d(-8.75,-0.5);
 
     //String[] RED_LABELS = {"redprop"};
     //String[] BLUE_LABELS = {"blueprop"};
