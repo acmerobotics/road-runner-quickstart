@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 /* TODO
  * initial servo constants
  */
@@ -20,6 +25,8 @@ public class TeleFluffy {
     DcMotor leftFront, leftBack, rightFront, rightBack, liftMotor, hangerMotor;
     DcMotorEx droneMotor;
     Servo grabberRot, finger, dronePusher, hangerLatch, leftPurple, rightPurple;
+    DistanceSensor distanceSensor;
+    RevBlinkinLedDriver blinkinLedDriver;
 
     public static double THRESHOLD = .15;
     OpMode op;
@@ -55,7 +62,7 @@ public class TeleFluffy {
     public static double LEFT_PURPLE_INIT = .05;
     public static double RIGHT_PURPLE_INIT = 1;
 
-
+    public static double CORRECT_PIXEL_DISTANCE = 1; //find actual distance in inches (we can use different units if we want)
 
 
     public TeleFluffy(OpMode op) {
@@ -119,6 +126,8 @@ public class TeleFluffy {
 
         rightPurple = op.hardwareMap.servo.get("rightPurple");
         rightPurple.setPosition(RIGHT_PURPLE_INIT);
+
+        distanceSensor = op.hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
 
         //states for grabber
@@ -261,6 +270,15 @@ public class TeleFluffy {
         rightFront.setPower(-APPROACH_SPEED*2.5);
         leftBack.setPower(-APPROACH_SPEED*2.5);
         rightBack.setPower(APPROACH_SPEED*2.5);
+    }
+
+    public void lightLeds(){
+        double currentDistance = distanceSensor.getDistance(DistanceUnit.INCH);
+        if (currentDistance <= CORRECT_PIXEL_DISTANCE){
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
+        }else{
+            //turn lights off
+        }
     }
 
 }
