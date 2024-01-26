@@ -33,7 +33,7 @@ public class BlueRight extends LinearOpMode {
     final Pose2d BR_RIGHT_PROP_PUSH_1 = new Pose2d(new Vector2d(-54,57), Math.toRadians(-90));
     final Pose2d BR_RIGHT_PROP_PUSH_2 = new Pose2d(new Vector2d(-54,31.5), Math.toRadians(-90));
     final Pose2d BR_RIGHT_PURPLE_BACKUP_1 = new Pose2d(new Vector2d(-44,31.5), Math.toRadians(-90));
-    final Pose2d BR_RIGHT_PURPLE_BACKUP_2 = new Pose2d(new Vector2d(-51.4,31.5), Math.toRadians(-90));
+    final Pose2d BR_RIGHT_PURPLE_BACKUP_2 = new Pose2d(new Vector2d(-51,31.5), Math.toRadians(-90));
     final Pose2d BR_RIGHT_MOVE_FROM_PIXEL = new Pose2d(new Vector2d(-54,31.5), Math.toRadians(-90));
     final Pose2d BR_RIGHT_YELLOW_PREP_1 = new Pose2d(new Vector2d(-52,20.26), Math.toRadians(-90));
     final Pose2d BR_LEFT_PROP_PUSH = new Pose2d(new Vector2d(-41,60.5), Math.toRadians(-90));

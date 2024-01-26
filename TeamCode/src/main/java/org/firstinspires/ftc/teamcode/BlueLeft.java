@@ -24,9 +24,34 @@ public class BlueLeft extends LinearOpMode {
     String SIDE = "Left";
     static double DELTA = 1;
     List<Recognition> currentRecognitions;
-    public void runOpMode(){
+
+    final Pose2d BL_START = new Pose2d(new Vector2d(16.2, 63.2), Math.toRadians(-90));
+    final Pose2d BL_CENTER_PROP_PUSH = new Pose2d(new Vector2d(16.2, 28), Math.toRadians(0));
+    final Pose2d BL_CENTER_PURPLE_BACKUP = new Pose2d(new Vector2d(16.2, 33), Math.toRadians(0));
+    final Pose2d BL_CENTER_YELLOW_PREP = new Pose2d(new Vector2d(16.7, 36.7), Math.toRadians(0));
+    final Pose2d BL_READ_YELLOW_CENTER = new Pose2d(new Vector2d(40.2, 36.2), Math.toRadians(0));
+    final Pose2d BL_LEFT_PROP_PUSH = new Pose2d(new Vector2d(30, 38.2), Math.toRadians(0));
+    final Pose2d BL_LEFT_YELLOW_PREP = new Pose2d(new Vector2d(30.8, 45.2), Math.toRadians(0));
+    final Pose2d BL_READ_YELLOW_LEFT = new Pose2d(new Vector2d(40.2, 40.8), Math.toRadians(0));
+    final Pose2d BL_RIGHT_PROP_PUSH = new Pose2d(new Vector2d(21.2, 42.7), Math.toRadians(-90));
+    final Pose2d BL_RIGHT_PURPLE_BACKUP = new Pose2d(new Vector2d(13, 30.7), Math.toRadians(-90));
+    final Pose2d BL_RIGHT_MOVE_FROM_PURPLE = new Pose2d(new Vector2d(21.7,31.7), Math.toRadians(-90));
+    final Pose2d BL_READ_YELLOW_RIGHT = new Pose2d(new Vector2d(40.2, 28.8), Math.toRadians(0));
+    final Pose2d BL_PARK_BACKUP = new Pose2d(new Vector2d(37.2, 35.9), Math.toRadians(0));
+    final Pose2d BL_PARK_FINAL_RIGHT = new Pose2d(new Vector2d(50.2, 12), Math.toRadians(0));
+    final Pose2d BL_PARK_FINAL_CENTER = new Pose2d(new Vector2d(46.7, 36), Math.toRadians(0));
+    final Pose2d BL_PARK_FINAL_LEFT = new Pose2d(new Vector2d(50.2, 60.2), Math.toRadians(0));
+
+    Menu initMenu = new Menu(this);
+
+    public void runOpMode() {
         initialize();
-        while(!isStarted() && !isStopRequested()){
+
+        initMenu.add(new MenuItem(3, "Park Loc (L=1 C=2 R=3)", 3, 1, 1));
+        initMenu.add(new MenuItem(2, "Pixel Pos (L=1 R=2)", 2, 1, 1));
+        initMenu.add(new MenuItem(0, "Wait Time (0-12)", 12, 0, 1));
+
+        while (!isStarted() && !isStopRequested()) {
             //currentRecognitions=fluffy.getRecognitions();
             /*if(gamepad1.x){
                 PATH = "Left";
@@ -42,8 +67,10 @@ public class BlueLeft extends LinearOpMode {
             }*/
             //telemetry.addData("TargetPosition: ", PATH);
             // telemetry.update();
-            PATH= fluffy.getPropLocation();
-            telemetry.addData("Prop Location", PATH );
+            PATH = fluffy.getPropLocation();
+            initMenu.update();
+            initMenu.display();
+            telemetry.addData("Prop Location", PATH);
             telemetry.addData("Left Sat. Value", fluffy.getLeftMean());
             telemetry.addData("Center Sat. Value", fluffy.getCenterMean());
             telemetry.addData("Right Sat. Value", fluffy.getRightMean());
@@ -53,84 +80,94 @@ public class BlueLeft extends LinearOpMode {
 
         }
 
+        sleep((long) initMenu.get(2) * 1000);
         // JRC: Turn off redFinder at this point.
 
-        if(PATH .equals("Left")){
+        fluffy.drive.pose = BL_START;
+        if (PATH.equals("Left")) {
             deliverPurpleLeft();
             yellowLeft();
-        } else if(PATH .equals("Right")){
+        } else if (PATH.equals("Right")) {
             deliverPurpleRight();
             yellowRight();
-        }else{
+        } else {
             deliverPurpleCenter();
             yellowCenter();
         }
 
         deliverYellow();
         park();
-        RobotLog.i(String.format("Final position %f,%f",fluffy.drive.pose.position.x, fluffy.drive.pose.position.y));
+        RobotLog.i(String.format("Final position %f,%f", fluffy.drive.pose.position.x, fluffy.drive.pose.position.y));
     }
 
 
-    public void initialize(){
+    public void initialize() {
         fluffy = new AutoFluffy(this, "Blue");
         fluffy.raiseGrabber();
     }
 
-    public void deliverPurpleLeft(){
+    public void deliverPurpleLeft() {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading( new Vector2d(24.6,13.0), Math.toRadians(90))
+                        .strafeToLinearHeading(BL_LEFT_PROP_PUSH.position, BL_LEFT_PROP_PUSH.heading)
                         .build());
         fluffy.deliverPurple();
 
     }
-    public void deliverPurpleCenter(){
+
+    public void deliverPurpleCenter() {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(34, 7 ), Math.toRadians(90))
-                        .build());
-        fluffy.deliverPurple();
-    }
-    public void deliverPurpleRight(){
-        Actions.runBlocking(
-                fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(27.6,6), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(28.5,-3.5), Math.toRadians(0))
+                        .strafeToLinearHeading(BL_CENTER_PROP_PUSH.position, BL_CENTER_PROP_PUSH.heading)
+                        .strafeTo(BL_CENTER_PURPLE_BACKUP.position)
                         .build());
         fluffy.deliverPurple();
     }
 
-    public void yellowLeft(){
+    public void deliverPurpleRight() {
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeTo(BL_RIGHT_PROP_PUSH.position)
+                        .strafeTo(BL_RIGHT_PURPLE_BACKUP.position)
+                        .build());
+        fluffy.deliverPurple();
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeTo(BL_RIGHT_MOVE_FROM_PURPLE.position)
+                        .build());
+    }
+
+    public void yellowLeft() {
         /* JRC: To read position, use
          * Don't forget to handle the null case gracefully!
          */
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading( new Vector2d(17,14.2), Math.toRadians(89.9))
-                        .strafeToLinearHeading(new Vector2d(20.7, 30), Math.toRadians(89.9))
+                        .strafeTo(BL_LEFT_YELLOW_PREP.position)
+                        .strafeTo(BL_READ_YELLOW_LEFT.position)
                         .build());
         fluffy.retractPurple();
     }
-    public void yellowCenter(){
+
+    public void yellowCenter() {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(25.9, 7  ), Math.toRadians(89.9))
-                        .strafeToLinearHeading(new Vector2d(30.1, 30), Math.toRadians(89.9))
+                        .strafeTo(BL_CENTER_YELLOW_PREP.position)
+                        .strafeTo(BL_READ_YELLOW_CENTER.position)
                         .build());
         fluffy.retractPurple();
     }
-    public void yellowRight(){
+
+    public void yellowRight() {
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
-                        .strafeToLinearHeading(new Vector2d(25.5,4.9), Math.toRadians(0))
-                        .strafeToLinearHeading(new Vector2d(34.0, 30), Math.toRadians(89.9))
+                        .strafeToLinearHeading(BL_READ_YELLOW_RIGHT.position, BL_READ_YELLOW_RIGHT.heading)
                         .build());
         fluffy.retractPurple();
     }
 
 
-    public void deliverYellow(){
+    /*public void deliverYellow(){
         fluffy.raiseLift();
         Pose2d destination = fluffy.correctYellowPositionBlue(PATH, SIDE);
         RobotLog.i(String.format("Destination position: (%3.1f, %3.1f) at %3.1f deg",
@@ -150,28 +187,93 @@ public class BlueLeft extends LinearOpMode {
                                 Math.toRadians(89.9))
                        // .setReversed(false)
                         .build());*/
-        //fluffy.lowerLift();
+    //fluffy.lowerLift();
 
-        /* HA plan 12/13:
-         * raiseLift()
-         * get detection  // JRC - see below
-         * do math      // JRC - math method is fluffy.correctYellowPosition, gets detection within.
-         * create trajectory and drive to it
-         * raiseFinger()
-         * back up
-         * lowerLift()
-         * NOTE: must park after delivering yellow.
-         */
+    /* HA plan 12/13:
+     * raiseLift()
+     * get detection  // JRC - see below
+     * do math      // JRC - math method is fluffy.correctYellowPosition, gets detection within.
+     * create trajectory and drive to it
+     * raiseFinger()
+     * back up
+     * lowerLift()
+     * NOTE: must park after delivering yellow.
+     */
 
-        /* JRC testing recommendation
-         * write deliverYellow with raiseLift, correctYellowPosition, raiseFinger, grabberDown.  (ie, no driving).
-         *    Test just that, and use telemetry to determine whether correctYellowPosition is working properly.
-         * When satisfied, add driving.  Test final version.
-         * (then park)
-         */
+    /* JRC testing recommendation
+     * write deliverYellow with raiseLift, correctYellowPosition, raiseFinger, grabberDown.  (ie, no driving).
+     *    Test just that, and use telemetry to determine whether correctYellowPosition is working properly.
+     * When satisfied, add driving.  Test final version.
+     * (then park)
+     */
+
+    public void deliverYellow() {
+        Vector2d destination; //need to fix (offset)
+        sleep(1000);
+        fluffy.drive.pose = fluffy.getPoseFromAprilTag();
+        if (PATH.equals("Left")) {
+            destination = fluffy.tagPositions[0].plus(fluffy.DELIVERY_OFFSET);
+        } else if (PATH.equals("Center")) {
+            destination = fluffy.tagPositions[1].plus(fluffy.DELIVERY_OFFSET);
+        } else {
+            destination = fluffy.tagPositions[2].plus(fluffy.DELIVERY_OFFSET);
+        }
+        if ((int) initMenu.get(1) == 1) {
+            destination = destination.plus(new Vector2d(0, 4.5));
+
+        }
+
+        fluffy.raiseLift();
+
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .strafeTo(destination)
+                        //.turnTo(fluffy.drive.pose.heading)
+                        .build());
+
+        fluffy.raiseFinger();
+
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .lineToX(fluffy.drive.pose.position.x - 1)
+                        .build());
 
     }
+
+
     public void park(){
+        Actions.runBlocking(
+                fluffy.drive.actionBuilder(fluffy.drive.pose)
+                        .lineToX(BL_PARK_BACKUP.position.x)
+                        .build());
+        fluffy.lowerLift();
+        if ((int)initMenu.get(0) == 1){
+            Actions.runBlocking(
+                    fluffy.drive.actionBuilder(fluffy.drive.pose)
+                            .strafeTo(BL_PARK_FINAL_LEFT.position)
+                            .build());
+        }
+        else if ((int)initMenu.get(0) == 2){
+            Actions.runBlocking(
+                    fluffy.drive.actionBuilder(fluffy.drive.pose)
+                            .strafeTo(BL_PARK_FINAL_CENTER.position)
+                            .build());
+        }
+        else {
+            Actions.runBlocking(
+                    fluffy.drive.actionBuilder(fluffy.drive.pose)
+                            .strafeTo(BL_PARK_FINAL_RIGHT.position)
+                            .build());
+        }
+
+
+
+    }
+
+}
+
+
+    /*public void park(){
         Actions.runBlocking(
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .lineToY(fluffy.drive.pose.position.y - 5)
@@ -181,7 +283,5 @@ public class BlueLeft extends LinearOpMode {
                 fluffy.drive.actionBuilder(fluffy.drive.pose)
                         .strafeToLinearHeading(new Vector2d(3 , 34), Math.toRadians(89.9))
                         .build());
-    }
+    }*/
 
-
-}

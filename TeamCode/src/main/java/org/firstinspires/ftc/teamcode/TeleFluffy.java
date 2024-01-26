@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -128,7 +127,8 @@ public class TeleFluffy {
         rightPurple.setPosition(RIGHT_PURPLE_INIT);
 
         distanceSensor = op.hardwareMap.get(DistanceSensor.class, "distanceSensor");
-
+        blinkinLedDriver = op.hardwareMap.get(RevBlinkinLedDriver.class, "bling");
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
 
         //states for grabber
 
@@ -228,6 +228,7 @@ public class TeleFluffy {
     }
     public void setFingerDown(){
         finger.setPosition(FINGER_DOWN);
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
     }
 
      public void releaseHanger(){
@@ -272,14 +273,16 @@ public class TeleFluffy {
         rightBack.setPower(APPROACH_SPEED*2.5);
     }
 
-    public void lightLeds(){
+    public void setDistanceLeds(){
         double currentDistance = distanceSensor.getDistance(DistanceUnit.INCH);
         if (currentDistance <= CORRECT_PIXEL_DISTANCE){
             blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
         }else{
-            //turn lights off
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
         }
     }
-
+    public void setLeds(RevBlinkinLedDriver.BlinkinPattern pattern){
+        blinkinLedDriver.setPattern(pattern);
+    }
 }
 

@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
+import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.RAINBOW_PARTY_PALETTE;
+
 import android.util.Size;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -23,6 +27,7 @@ public class AutoFluffy {
     LinearOpMode op;
     DcMotor liftMotor;
     Servo grabberRot, finger, hangerLatch, dronePusher, leftPurple, rightPurple;
+    RevBlinkinLedDriver blinkinLedDriver;
 
     public MecanumDrive drive;
     VisionPortal visionPortal;
@@ -64,7 +69,10 @@ public class AutoFluffy {
     final Pose2d RL_LEFT_DELIVERY = new Pose2d(new Vector2d(50,-31.1), Math.toRadians(0.1));
     final Pose2d BR_CENTER_DELIVERY = new Pose2d(new Vector2d(77,30), Math.toRadians(0));
     final Pose2d BR_RIGHT_DELIVERY = new Pose2d(new Vector2d(77,26), Math.toRadians(0));
-    final Pose2d BR_LEFT_DELIVERY = new Pose2d(new Vector2d(77.4, 34), Math.toRadians(0));
+    final Pose2d BR_LEFT_DELIVERY = new Pose2d(new Vector2d(77, 34), Math.toRadians(0));
+    final Pose2d BL_CENTER_DELIVERY = new Pose2d(new Vector2d(77,30), Math.toRadians(0));
+    final Pose2d BL_LEFT_DELIVERY = new Pose2d(new Vector2d(77,34), Math.toRadians(0));
+    final Pose2d BL_RIGHT_DELIVERY = new Pose2d(new Vector2d(77,26), Math.toRadians(0));
 
     public final Vector2d deltaF = new Vector2d(7.5,4.5);
 
@@ -176,6 +184,11 @@ public class AutoFluffy {
        // redFinder = new RedFinder();
         hueDetector= new HueDetection();
 
+        blinkinLedDriver = op.hardwareMap.get(RevBlinkinLedDriver.class, "bling");
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+
+
+
 
         // -----------------------------------------------------------------------------------------
         // TFOD Configuration
@@ -232,6 +245,7 @@ public class AutoFluffy {
 
 
     public void deliverPurple() {
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
         leftPurple.setPosition(LEFT_PURPLE_RELEASE);
         rightPurple.setPosition(RIGHT_PURPLE_RELEASE);
         op.sleep(1000);
@@ -239,6 +253,7 @@ public class AutoFluffy {
     public void retractPurple(){
         leftPurple.setPosition(LEFT_PURPLE_GRAB);
         rightPurple.setPosition(RIGHT_PURPLE_GRAB);
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
     }
 
 
@@ -251,20 +266,22 @@ public class AutoFluffy {
         isGrabberUp=true;
     }
 
-        public void raiseLift() {
-            liftMotor.setTargetPosition(LIFT_UP);
-            liftMotor.setPower(LIFT_POWER);
-            while (op.opModeIsActive() && liftMotor.isBusy()) {
-                op.sleep(1);
-            }
+    public void raiseLift() {
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+        liftMotor.setTargetPosition(LIFT_UP);
+        liftMotor.setPower(LIFT_POWER);
+        while (op.opModeIsActive() && liftMotor.isBusy()) {
+            op.sleep(1);
         }
-        public void raiseLiftHigh(){
-             liftMotor.setTargetPosition(LIFT_UP_HIGH);
-             liftMotor.setPower(LIFT_POWER);
-             while (op.opModeIsActive() && liftMotor.isBusy()){
-                 op.sleep(1);
-             }
-            }
+    }
+    public void raiseLiftHigh(){
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+        liftMotor.setTargetPosition(LIFT_UP_HIGH);
+        liftMotor.setPower(LIFT_POWER);
+        while (op.opModeIsActive() && liftMotor.isBusy()){
+            op.sleep(1);
+        }
+    }
 
         public void raiseFinger(){
             finger.setPosition(FINGER_UP);
@@ -277,6 +294,7 @@ public class AutoFluffy {
             while (op.opModeIsActive() && liftMotor.isBusy()){
                 op.sleep(1);
             }
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
         }
 
      public Pose2d getPoseFromAprilTag() {
@@ -316,7 +334,7 @@ public class AutoFluffy {
 
      }
 
-    public Pose2d correctYellowPositionRed(String PATH, String SIDE) {
+     /*public Pose2d correctYellowPositionRed(String PATH, String SIDE) {
         AprilTagDetection detection = assignID(PATH, "Red");
         if (detection == null || detection.ftcPose == null) {
             RobotLog.i(String.format("running null case"));
@@ -354,18 +372,19 @@ public class AutoFluffy {
             RobotLog.i(String.format("Target: (%3.1f, %3.1f) at %3.1f deg", Target_X, Target_Y, Math.toDegrees(Target_Heading)));
             return new Pose2d(Target_X, Target_Y, Target_Heading);
 
-        }
-    public Pose2d correctYellowPositionBlue(String PATH, String SIDE) {
+        }*/
+
+    /*public Pose2d correctYellowPositionBlue(String PATH, String SIDE) {
         //sleep(5000); //waiting for tag detections, might need less time
         AprilTagDetection detection = assignID(PATH, "Blue");
         if (detection == null || detection.ftcPose == null) {
             if (SIDE.equals("Left")) {
                 if (PATH.equals("Left")) {
-                    return new Pose2d(25.2, 44.8, Math.toRadians(89.9));
+                    return BL_LEFT_DELIVERY;
                 } else if (PATH.equals("Center")) {
-                    return new Pose2d(31.1, 44.3, Math.toRadians(89.9));
+                    return BL_CENTER_DELIVERY;
                 } else if (PATH.equals("Right")) {
-                    return new Pose2d(33.9, 45.4, Math.toRadians(89.9));
+                    return BL_RIGHT_DELIVERY;
                 }
             } else if (SIDE.equals("Right")) {
                 if (PATH.equals("Left")) {
@@ -398,6 +417,6 @@ public class AutoFluffy {
             RobotLog.i(String.format("Target: (%3.1f, %3.1f) at %3.1f deg", Target_X, Target_Y, Math.toDegrees(Target_Heading)));
             return new Pose2d(Target_X, Target_Y, Target_Heading);
 
-        }
+        }*/
 
     }

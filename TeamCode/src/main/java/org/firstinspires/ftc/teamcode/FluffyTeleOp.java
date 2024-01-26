@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.RAINBOW_PARTY_PALETTE;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -53,6 +55,7 @@ public class FluffyTeleOp extends OpMode {
         setLauncher();
         setLauncher();
         setSlowApproach();
+        myBot.setDistanceLeds();
     }
 
     public void setTeleOpDrive(){
@@ -149,7 +152,7 @@ public class FluffyTeleOp extends OpMode {
             }
             case DOUBLE_TAPPED: {
                 myLauncherState = LauncherStates.MOTOR_STARTS;
-
+                myBot.setLeds(RAINBOW_PARTY_PALETTE);
 
                 break;
             }
@@ -185,6 +188,7 @@ public class FluffyTeleOp extends OpMode {
             case MOTOR_ENDS: {
                 myBot.setDroneMotorZero();
                 myBot.setDronePusherInit();
+                myBot.setLeds(RAINBOW_PARTY_PALETTE);
                 myLauncherState = LauncherStates.INIT;
                 break;
             }
@@ -224,7 +228,6 @@ public class FluffyTeleOp extends OpMode {
         }else if (gamepad1.dpad_left){
             myBot.slowLeft();
         }
-
 
     }
 }
