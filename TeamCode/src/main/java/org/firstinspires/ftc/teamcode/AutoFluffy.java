@@ -37,8 +37,8 @@ public class AutoFluffy {
     final int RESOLUTION_WIDTH = 1920;
     final int RESOLUTION_HEIGHT = 1080;
     public static double DRONE_PUSHER_INIT = 0.8;
-    public static double GRABBER_ROT_INIT = 0.07;
-    public static double GRABBER_UP = 0.3;
+    public static double GRABBER_ROT_INIT = 0.505;
+    public static double GRABBER_UP = 0.39;
     public static double FINGER_UP = 0;
     public static double FINGER_DOWN = .4;
     public static double FINGER_INIT = FINGER_DOWN;
