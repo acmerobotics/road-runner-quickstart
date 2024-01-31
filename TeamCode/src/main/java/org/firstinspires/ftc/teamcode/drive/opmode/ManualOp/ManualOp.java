@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSeg
 @TeleOp(name = "USE THIS ONE - Manual Op")
 public class ManualOp extends OpMode {
 
-    //Here we are creating all the parts what we will manipulate
+    // Here we are creating all the parts what we will manipulate
     DcMotor leftFront;
     DcMotor rightFront;
     DcMotor leftRear;
@@ -29,9 +29,6 @@ public class ManualOp extends OpMode {
     DcMotor wristMotor;
     Servo gripServoF;
     Servo gripServoB;
-
-
-
 
 
     public void init() {
@@ -47,7 +44,7 @@ public class ManualOp extends OpMode {
 
         gripServoB.setPosition(0);
         gripServoF.setPosition(0);
-        //reverse  the
+        // Reverse  the DC motors
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         telemetry.addData("Servo Position", gripServoB.getPosition());
