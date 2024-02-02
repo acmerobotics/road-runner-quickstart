@@ -24,7 +24,6 @@ public class TeleFluffy {
     DcMotor leftFront, leftBack, rightFront, rightBack, liftMotor, hangerMotor;
     DcMotorEx droneMotor;
     Servo grabberRot, finger, dronePusher, hangerLatch, leftPurple, rightPurple;
-    DistanceSensor distanceSensor;
     RevBlinkinLedDriver blinkinLedDriver;
 
     public static double THRESHOLD = .15;
@@ -126,7 +125,6 @@ public class TeleFluffy {
         rightPurple = op.hardwareMap.servo.get("rightPurple");
         rightPurple.setPosition(RIGHT_PURPLE_INIT);
 
-        distanceSensor = op.hardwareMap.get(DistanceSensor.class, "distanceSensor");
         blinkinLedDriver = op.hardwareMap.get(RevBlinkinLedDriver.class, "bling");
         blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
 
@@ -290,22 +288,9 @@ public class TeleFluffy {
         rightBack.setPower(APPROACH_SPEED * 2.5);
     }
 
-    public void setDistanceLeds() {
-        double currentDistance = distanceSensor.getDistance(DistanceUnit.INCH);
-        if (currentDistance <= CORRECT_PIXEL_DISTANCE) {
-            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
-        } else {
-            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
-        }
-    }
 
     public void setLeds(RevBlinkinLedDriver.BlinkinPattern pattern) {
         blinkinLedDriver.setPattern(pattern);
     }
 
-
-    public double getPixelDistance() {
-        double currentDistance = distanceSensor.getDistance(DistanceUnit.INCH);
-        return currentDistance;
-    }
 }

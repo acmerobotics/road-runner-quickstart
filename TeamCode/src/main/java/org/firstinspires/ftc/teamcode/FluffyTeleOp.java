@@ -55,8 +55,6 @@ public class FluffyTeleOp extends OpMode {
         setLauncher();
         setLauncher();
         setSlowApproach();
-        myBot.setDistanceLeds();
-        telemetry.addData("Pixel Distance", myBot.getPixelDistance());
     }
 
     public void setTeleOpDrive(){
