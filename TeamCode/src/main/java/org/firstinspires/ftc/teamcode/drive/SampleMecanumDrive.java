@@ -385,8 +385,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void setBothGrip(boolean grip) {
         //double leftOpen = 0.0, leftClosed = 105.0;
         // double rightOpen = 270.0, rightClosed = 175.0;
-        double FgripOpen = 270, FgripClosed = 170,
-                BgripOpen = 270, BgripClosed = 170;
+        double FgripOpen = 0, FgripClosed = 0,
+                BgripOpen = 0, BgripClosed = 0;
         double servoROT = 300;
 
         if (grip) {
@@ -401,7 +401,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     // this is just a setup for the wrist these are random numbers I think we can get the numbers from a demo auto
     //ill make the auto
     public  void setFrontGrip (boolean grip) {
-        double FgripOpen = 270, FgripClosed = 170;
+        double FgripOpen = 25, FgripClosed = 0;
         double servoROT = 300;
 
         if (grip) {
@@ -412,7 +412,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
     }
     public  void setBackGrip (boolean grip) {
-        double BgripOpen = 270, BgripClosed = 170;
+        double BgripOpen = 25, BgripClosed = 0;
         double servoROT = 300;
 
         if (grip) {

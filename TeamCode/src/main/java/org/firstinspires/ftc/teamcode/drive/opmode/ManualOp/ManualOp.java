@@ -43,6 +43,8 @@ public class ManualOp extends OpMode {
         launchServo = hardwareMap.servo.get("launchServo");
         gripServoB.setPosition(0);
         gripServoF.setPosition(0);
+        launchServo.setPosition(0);
+
 
         // leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         //  rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -64,21 +66,51 @@ public class ManualOp extends OpMode {
         rightFront.setPower((y - x + rx));
         rightRear.setPower((y + x + rx));
 
+        if (gamepad1.triangle) {
+            launchServo.setPosition(.75);
 
+        }
 
         //Gamepad2 controls the arm and claw
             //slide controls
-        double vert = -gamepad2.left_stick_y;
-        double wrist = gamepad2.right_stick_x;
+        double vert = gamepad2.left_stick_y;
+        double wrist = gamepad2.right_stick_y; //wrist range 8 at intake -100 at backdrop
 
-        slideLeft.setPower(-vert);
-        slideRight.setPower(vert);
-        wristMotor.setPower(wrist);
+     //   slideLeft.setPower(-vert); // at base 17 at backdrop 3142 (iffy number)
+      //  slideRight.setPower(vert); // at base 2 at backdrop  -3125 (iffy number)
+     //   wristMotor.setPower(wrist*.3);
 
         //the way these are called will be different in the classes with the helpers
 
-        slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //limitors
+
+            if (slideLeft.getCurrentPosition() > 3000 || slideRight.getCurrentPosition() < -3000 )
+            {
+                slideLeft.setPower(-vert*.5);
+                slideRight.setPower(vert*.5);
+                slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            } else {
+                slideLeft.setPower(-vert); // at base 17 at backdrop 3142 (iffy number)
+                slideRight.setPower(vert);// at base 2 at backdrop  -3125 (iffy number)
+                slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            }
+
+            if (wristMotor.getCurrentPosition()>=10|| wristMotor.getCurrentPosition() <= -105){
+                wristMotor.setPower(wrist*.15);
+                wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            } else {
+                wristMotor.setPower(wrist*.3);
+                wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }
+
+
+
+
 
         double tgtPower = gamepad2.left_trigger;
 
@@ -86,7 +118,7 @@ public class ManualOp extends OpMode {
 
             //edge to edge of inner diameter of pixel is 31.75 mm //22 degrees
             //vertex to vertex is 36 mm // 25 degrees
-            double closed = 0, open = 40;
+            double closed = 0, open = 22;
             double servoRot = 300;
 
             if (gamepad2.circle)
@@ -107,6 +139,9 @@ public class ManualOp extends OpMode {
 
 
             telemetry.addData("Target Power", tgtPower);
+            telemetry.addData("Lslide pos", slideLeft.getCurrentPosition());
+            telemetry.addData("Rslide pos", slideRight.getCurrentPosition());
+            telemetry.addData("wrist pos", wristMotor.getCurrentPosition());
             telemetry.addData("Status", "Running");
             telemetry.update();
 
