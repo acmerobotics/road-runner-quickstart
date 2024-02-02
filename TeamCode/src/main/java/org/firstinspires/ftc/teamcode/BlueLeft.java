@@ -212,14 +212,14 @@ public class BlueLeft extends LinearOpMode {
         sleep(1000);
         fluffy.drive.pose = fluffy.getPoseFromAprilTag();
         if (PATH.equals("Left")) {
-            destination = fluffy.tagPositions[0].plus(fluffy.DELIVERY_OFFSET);
+            destination = fluffy.tagPositions[0].plus(fluffy.DELIVERY_OFFSET_BLUE);
         } else if (PATH.equals("Center")) {
-            destination = fluffy.tagPositions[1].plus(fluffy.DELIVERY_OFFSET);
+            destination = fluffy.tagPositions[1].plus(fluffy.DELIVERY_OFFSET_BLUE);
         } else {
-            destination = fluffy.tagPositions[2].plus(fluffy.DELIVERY_OFFSET);
+            destination = fluffy.tagPositions[2].plus(fluffy.DELIVERY_OFFSET_BLUE);
         }
         if ((int) initMenu.get(1) == 1) {
-            destination = destination.plus(new Vector2d(0, 4.5));
+            destination = destination.plus(new Vector2d(0, 3.5));
 
         }
 
