@@ -84,51 +84,7 @@ public class blueCameraPipeline extends OpenCvPipeline {
     }
 
     public MovementDirection getDirection() {
+
         return propLocation;
-    }
-
-    @Override
-    public Mat processFrame(Mat input) {
-        // Divide the frame into two equal sections vertically
-        int width = input.width(); // returns width of the input
-        int height = input.height(); // returns height of the input
-        int sectionHeight = height / 2; // Divides it into two sections
-
-        // Define mats to be used throughout the pipeline
-        Mat YcBcr = new Mat(); // Store the converted mat as YcBcr
-        Mat output = new Mat(); // Returned at the end of the pipeline
-
-        // Define variables for counting yellow pixels in each section
-        int[] yellowPixelCount = new int[2]; // Makes an array that holds 2 integer values
-
-        // Loop through each section
-        for (int i = 0; i < 2; i++) {
-            // Define the region of interest (ROI) for the current section
-            Rect roi = new Rect(i * sectionHeight, 0, sectionHeight, width);
-            Mat section = YcBcr.submat(roi);
-
-            // Apply a color filter to detect yellow regions
-            Mat yellowMask = new Mat();
-            Core.inRange(section, new Scalar(66, 100, 100), new Scalar(44, 100, 100), yellowMask);
-
-            // Count the number of yellow pixels in the current section
-            yellowPixelCount[i] = Core.countNonZero(yellowMask);
-
-            // Clean up resources
-            yellowMask.release();
-            section.release();
-        }
-
-        // Determine the section with the most yellow pixels
-        boolean maxYellowIndex = false; // Assume false initially
-        if (yellowPixelCount[1] > yellowPixelCount[0]) {
-            maxYellowIndex = true;
-        }
-
-        // Release resources
-        YcBcr.release();
-
-        // Return the original input (you can modify this to return a processed frame)
-        return input;
     }
 }

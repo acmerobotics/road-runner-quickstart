@@ -53,8 +53,6 @@ public class NandN extends LinearOpMode {
         drive.setSlideVelocity(4000, drive.slideRight, drive.slideLeft, drive.wristMotor);
 
         drive.followTrajectorySequence(norm);
-       
-
 
     }
 
