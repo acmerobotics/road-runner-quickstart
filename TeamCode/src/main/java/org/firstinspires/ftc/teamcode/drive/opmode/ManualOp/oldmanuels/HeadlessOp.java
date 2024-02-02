@@ -1,10 +1,4 @@
-/*package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel.oldmanuels;
-
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Controller;
-import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Robot;
+/**package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel.oldmanuels;
 
 /**
  * Mecanum teleop (with an optional headless mode)
