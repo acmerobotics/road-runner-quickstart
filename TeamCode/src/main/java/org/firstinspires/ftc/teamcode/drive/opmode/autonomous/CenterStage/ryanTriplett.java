@@ -30,33 +30,25 @@ public class ryanTriplett extends LinearOpMode {
 
     private final double travelSpeed = 45.0, travelAccel = 30.0;
 
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    SampleMecanumDrive drive;
 
     blueCameraPipeline ourCam = new blueCameraPipeline();
-    private int linePlace;
-
-
+    private blueCameraPipeline.MovementDirection linePlace;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
+        drive = new SampleMecanumDrive(hardwareMap);
+
         while (!isStarted()) {
             drive.initArm();
 
-        linePlace= ourCam.getDirection().ordinal();
+            linePlace = ourCam.getDirection();
 
-        telemetry.addData("location",ourCam.getDirection());
-        telemetry.addData("location",linePlace);
+            telemetry.addData("location",ourCam.getDirection());
+            telemetry.addData("location",linePlace);
 
-        telemetry.update();
-
-
-
-            // Initialize the camera somewhere here.
-            // Create an instance of the pipeline
-
-            // Run the getDirection function from the pipeline
-
+            telemetry.update();
         }
 
         TrajectorySequence leftProp = drive.trajectorySequenceBuilder(startPose)
@@ -80,17 +72,15 @@ public class ryanTriplett extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 ).build();
 
-        /*
-        if (direction == LEFT) {
+
+        if (linePlace == LEFT) {
             drive.followTrajectorySequence(leftProp);
         }
-        else if (direction == MIDDLE) {
+        else if (linePlace == MIDDLE) {
             drive.followTrajectorySequence(middleProp);
         }
-        else if (direction == RIGHT) {
+        else if (linePlace == RIGHT) {
             drive.followTrajectorySequence(rightProp);
         }
-
-         */
     }
 }
