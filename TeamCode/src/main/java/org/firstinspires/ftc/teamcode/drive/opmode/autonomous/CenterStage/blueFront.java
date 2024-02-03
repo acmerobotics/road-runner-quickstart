@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 
 
-
+// don't let graeme fool you, I made this. He is a liar and a slave driver
 @Autonomous(name = "blueFront auto")
 @Config
 public class blueFront extends LinearOpMode {
@@ -56,10 +56,10 @@ public class blueFront extends LinearOpMode {
 
 
         drive.setPoseEstimate(blueFrontStart);
-        TrajectorySequence placePurple = drive.trajectorySequenceBuilder(_pose)
+        TrajectorySequence placePurpleFront = drive.trajectorySequenceBuilder(_pose)
                 .lineToSplineHeading(blueFrontEnd)
                 .build();
-        drive.followTrajectorySequence(placePurple);
+        drive.followTrajectorySequence(placePurpleFront);
 
 
     }
