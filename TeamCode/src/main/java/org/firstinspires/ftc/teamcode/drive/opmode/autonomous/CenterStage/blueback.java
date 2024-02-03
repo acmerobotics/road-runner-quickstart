@@ -25,9 +25,9 @@ public class blueback extends LinearOpMode {
 
 
 
-    private final Pose2d leftLine = new Pose2d(-48, 36, Math.toRadians(0));
-    private final Pose2d rightLine = new Pose2d(-24, 36, Math.toRadians(-180));
-    private final Pose2d centerLine = new Pose2d(-36, 24, Math.toRadians(-90));
+    private final Pose2d rightLine = new Pose2d(-48, 30, Math.toRadians(0));
+    private final Pose2d  leftLine = new Pose2d(-24, 30, Math.toRadians(0));
+    private final Pose2d centerLine = new Pose2d(-36, 24.5, Math.toRadians(-90));
 
     // truss
     private final Pose2d blueBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
