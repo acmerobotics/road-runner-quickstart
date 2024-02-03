@@ -7,7 +7,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class cameraPipeline extends cameraInitialization {
+public class cameraPipeline extends cameraInit {
 
     public enum MovementDirection {
         LEFT,
