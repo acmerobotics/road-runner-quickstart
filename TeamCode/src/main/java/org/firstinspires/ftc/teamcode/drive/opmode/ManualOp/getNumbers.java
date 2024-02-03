@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 @Config
+@Disabled
 @Autonomous(name = "Get nums", group = "comp")
 public class getNumbers extends OpMode {
 

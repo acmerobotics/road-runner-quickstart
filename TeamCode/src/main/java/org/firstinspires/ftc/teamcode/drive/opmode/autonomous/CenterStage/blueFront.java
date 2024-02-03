@@ -10,6 +10,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+
+
+
+
 @Autonomous(name = "blueFront auto")
 @Config
 public class blueFront extends LinearOpMode {
@@ -40,10 +44,10 @@ public class blueFront extends LinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
 
         drive.setPoseEstimate(blueFrontStart);
-        TrajectorySequence placePurple = drive.trajectorySequenceBuilder(_pose)
+        TrajectorySequence placePurpleFront = drive.trajectorySequenceBuilder(_pose)
                 .lineToSplineHeading(blueFrontEnd)
                 .build();
-        drive.followTrajectorySequence(placePurple);
+        drive.followTrajectorySequence(placePurpleFront);
 
     }
 }

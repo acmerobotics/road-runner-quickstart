@@ -94,6 +94,17 @@ public class getClawDegrees extends OpMode {
             telemetry.addData("deci", deci);
             telemetry.update();
         }
+        if (gamepad2.cross) {
+
+            drive.gripServoB.setPosition(.25);
+            drive.gripServoF.setPosition(0);
+            telemetry.addData("F pos", drive.gripServoF.getPosition());
+            telemetry.addData("B pos", drive.gripServoB.getPosition());
+            telemetry.addData("degree", degree);
+            telemetry.addData("on", on);
+            telemetry.addData("deci", deci);
+            telemetry.update();
+        }
 
 
     }
