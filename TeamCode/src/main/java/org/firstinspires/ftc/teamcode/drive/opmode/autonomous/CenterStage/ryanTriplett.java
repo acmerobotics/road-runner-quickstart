@@ -14,8 +14,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.Camerainitialization;
 import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous(name="piped", group = "practice")
 @Config
@@ -29,20 +31,32 @@ public class ryanTriplett extends LinearOpMode {
     private final double travelSpeed = 45.0, travelAccel = 30.0;
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-    blueCameraPipeline.MovementDirection direction;
+
+    blueCameraPipeline ourCam = new blueCameraPipeline();
+    private int linePlace;
+
+
+
     @Override
     public void runOpMode() throws InterruptedException {
-
 
         while (!isStarted()) {
             drive.initArm();
 
+        linePlace= ourCam.getDirection().ordinal();
+
+        telemetry.addData("location",ourCam.getDirection());
+        telemetry.addData("location",linePlace);
+
+        telemetry.update();
+
+
+
             // Initialize the camera somewhere here.
             // Create an instance of the pipeline
-            blueCameraPipeline pipeline = new blueCameraPipeline();
 
             // Run the getDirection function from the pipeline
-            direction = pipeline.getDirection();
+
         }
 
         TrajectorySequence leftProp = drive.trajectorySequenceBuilder(startPose)
@@ -66,6 +80,7 @@ public class ryanTriplett extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 ).build();
 
+        /*
         if (direction == LEFT) {
             drive.followTrajectorySequence(leftProp);
         }
@@ -75,10 +90,7 @@ public class ryanTriplett extends LinearOpMode {
         else if (direction == RIGHT) {
             drive.followTrajectorySequence(rightProp);
         }
+
+         */
     }
 }
-/*
-MESSAGE TO JAXSON
-This is just showing what I meant, whether we do it this way or how you're thinking, I don't care
-I just can't seem to understand what you're saying we should do
- */
