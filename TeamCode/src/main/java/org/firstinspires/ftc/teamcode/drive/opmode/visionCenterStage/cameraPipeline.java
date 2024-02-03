@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage;
-
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -8,9 +7,8 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+public class cameraPipeline extends cameraInitialization {
 
-// https://github.com/OpenFTC/EasyOpenCV/blob/master/doc/user_docs/pipelines_overview.md
-public class cameraPipeline extends OpenCvPipeline {
     public enum MovementDirection {
         LEFT,
         MIDDLE,
