@@ -118,19 +118,25 @@ public class ManualOp extends OpMode {
 
             //edge to edge of inner diameter of pixel is 31.75 mm //22 degrees
             //vertex to vertex is 36 mm // 25 degrees
-            double closed = 0, open = 22;
+            double closed = 0, Fopen = 50,Bopen = 50;
             double servoRot = 300;
 
             if (gamepad2.circle)
             {
-                gripServoB.setPosition(open/servoRot);
-                gripServoF.setPosition(open/servoRot);
+                gripServoB.setPosition(closed/servoRot);
+                gripServoF.setPosition(closed/servoRot);
+
+               // gripServoB.setPosition(open/servoRot);
+              //  gripServoF.setPosition(open/servoRot);
 
             }
             else
             {
-                gripServoB.setPosition(closed/servoRot);
-                gripServoF.setPosition(closed/servoRot);
+                gripServoB.setPosition(Bopen/servoRot);
+                gripServoF.setPosition(Fopen/servoRot);
+
+               // gripServoB.setPosition(closed/servoRot);
+              //  gripServoF.setPosition(closed/servoRot);
             }
 
 
