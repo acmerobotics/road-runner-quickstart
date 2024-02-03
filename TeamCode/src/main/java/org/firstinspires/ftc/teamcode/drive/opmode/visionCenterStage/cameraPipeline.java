@@ -7,7 +7,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class cameraPipeline extends cameraInit {
+public class cameraPipeline extends Camerainitialization {
 
     public enum MovementDirection {
         LEFT,
@@ -17,7 +17,6 @@ public class cameraPipeline extends cameraInit {
 
     MovementDirection propLocation = MovementDirection.MIDDLE;
 
-    @Override
     public Mat processFrame(Mat input) {
         // Divide the frame into three equal sections horizontally
         int width = input.width(); // returns width of the input
