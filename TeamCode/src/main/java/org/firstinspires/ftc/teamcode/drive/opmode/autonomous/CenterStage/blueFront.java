@@ -46,6 +46,10 @@ public class blueFront extends LinearOpMode {
         drive.setPoseEstimate(blueFrontStart);
         if (_pose == 0) {
             drive.setPoseEstimate(blueFrontStart);
+            TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(blueFrontStart)
+                    .lineToSplineHeading(leftLine)
+                    .build();
+            drive.followTrajectorySequence(placePurpleBack);
             drive.setFrontGrip(false);
             sleep(1000);
             TrajectorySequence gotoback = drive.trajectorySequenceBuilder(leftLine)
@@ -53,11 +57,15 @@ public class blueFront extends LinearOpMode {
                     .build();
             drive.followTrajectorySequence(gotoback);
 
+
         }
 
         else if (_pose == 1) {
             drive.setPoseEstimate(blueFrontStart);
-
+            TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(blueFrontStart)
+                    .lineToSplineHeading(centerLine)
+                    .build();
+            drive.followTrajectorySequence(placePurpleBack);
             drive.setFrontGrip(false);
             sleep(1000);
             TrajectorySequence gotoback = drive.trajectorySequenceBuilder(centerLine)
@@ -68,6 +76,10 @@ public class blueFront extends LinearOpMode {
 
         else if (_pose == 2) {
             drive.setPoseEstimate(blueFrontStart);
+            TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(blueFrontStart)
+                    .lineToSplineHeading(rightLine)
+                    .build();
+            drive.followTrajectorySequence(placePurpleBack);
             drive.setFrontGrip(false);
             sleep(1000);
             TrajectorySequence gotoback = drive.trajectorySequenceBuilder(rightLine)

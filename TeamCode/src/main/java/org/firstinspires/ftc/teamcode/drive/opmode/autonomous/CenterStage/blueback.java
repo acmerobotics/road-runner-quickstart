@@ -52,13 +52,14 @@ public class blueback extends LinearOpMode {
         // ask gram is second trajectory sequence needs to be the where the last trajectory sequence ended
         if (_pose == 0) {
             drive.setPoseEstimate(blueBackStart);
-            TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(leftLine)
-                    .lineToSplineHeading(blueBackTruss)
+            TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(blueBackStart)
+                    .lineToSplineHeading(leftLine)
                     .build();
             drive.followTrajectorySequence(placePurpleBack);
             drive.setFrontGrip(false);
             sleep(1000);
             TrajectorySequence gotoback = drive.trajectorySequenceBuilder(leftLine)
+                    .lineToSplineHeading(blueBackTruss)
                     .lineToSplineHeading(blueBackEnd)
                     .build();
             drive.followTrajectorySequence(gotoback);
@@ -67,13 +68,14 @@ public class blueback extends LinearOpMode {
 
         else if (_pose == 1) {
             drive.setPoseEstimate(blueBackStart);
-            TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(centerLine)
-                    .lineToSplineHeading(blueBackGate)
+            TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(blueBackStart)
+                    .lineToSplineHeading(centerLine)
                     .build();
             drive.followTrajectorySequence(placePurpleBack);
             drive.setFrontGrip(false);
             sleep(1000);
             TrajectorySequence gotoback = drive.trajectorySequenceBuilder(centerLine)
+                    .lineToSplineHeading(blueBackGate)
                     .lineToSplineHeading(blueFrontGate)
                     .lineToSplineHeading(blueBackEnd)
                     .build();
@@ -82,13 +84,14 @@ public class blueback extends LinearOpMode {
 
         else if (_pose == 2) {
             drive.setPoseEstimate(blueBackStart);
-            TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(rightLine)
-                    .lineToSplineHeading(blueBackTruss)
+            TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(blueBackStart)
+                    .lineToSplineHeading(rightLine)
                     .build();
             drive.followTrajectorySequence(placePurpleBack);
             drive.setFrontGrip(false);
             sleep(1000);
             TrajectorySequence gotoback = drive.trajectorySequenceBuilder(rightLine)
+                    .lineToSplineHeading(blueBackTruss)
                     .lineToSplineHeading(blueBackEnd)
                     .build();
             drive.followTrajectorySequence(gotoback);
