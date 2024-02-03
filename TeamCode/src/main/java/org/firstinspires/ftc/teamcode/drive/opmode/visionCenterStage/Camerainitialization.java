@@ -5,30 +5,22 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-public class cameraInit
-{
-    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-    // You're gonna have to check Vuforia for the details once hardware is installed :/ Also wtf happened to hardwareMap?
-    // Use camera.pauseViewport(); to turn live viewport on and off.
-    // ONLY TURN LIVE VIEWPORT ON FOR DEBUG. UNDER ABSOLUTELY NO CIRCUMSTANCES SHOULD IT BE ON DURING COMPETITION!!!!
-    WebcamName webcamName = hardwareMap.get(WebcamName.class, "NAME_OF_CAMERA_IN_CONFIG_FILE");
-    //Need to come back to this and get exact names
-    OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+public class Camerainitialization {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        // You're gonna have to check Vuforia for the details once hardware is installed :/ Also wtf happened to hardwareMap?
+        // Use camera.pauseViewport(); to turn live viewport on and off.
+        // ONLY TURN LIVE VIEWPORT ON FOR DEBUG. UNDER ABSOLUTELY NO CIRCUMSTANCES SHOULD IT BE ON DURING COMPETITION!!!!
+        WebcamName webcamName = hardwareMap.get(WebcamName.class, "NAME_OF_CAMERA_IN_CONFIG_FILE");
+        //Need to come back to this and get exact names
+        OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 
-    void openCameraDeviceAsync(OpenCvCamera.AsyncCameraOpenListener cameraOpenListener)
-    {
+        public void openCameraDeviceAsync (OpenCvCamera.AsyncCameraOpenListener cameraOpenListener) {}
 
-        public void onOpened();
-        {
-            camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
-            // gotta input camera resolution once we get that info
-            // Usually this is where you'll want to start streaming from the camera
-        }
+        public void onOpened() {
+        camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+        // gotta input camera resolution once we get that info
+        // Usually this is where you'll want to start streaming from the camera
+    }
 
-        public void onError(int errorCode)
-        {
-            /*
-             * This will be called if the camera could not be opened
-             */
-        }};
+        public void onError () {}
 }
