@@ -43,7 +43,6 @@ public class ryanTriplett extends LinearOpMode {
     blueCameraPipeline ourCam = new blueCameraPipeline();
     blueCameraPipeline.MovementDirection linePlace;
 
-
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -112,5 +111,6 @@ public class ryanTriplett extends LinearOpMode {
         else if (linePlace == RIGHT) {
             drive.followTrajectorySequence(rightProp);
         }
+        // Comment
     }
 }

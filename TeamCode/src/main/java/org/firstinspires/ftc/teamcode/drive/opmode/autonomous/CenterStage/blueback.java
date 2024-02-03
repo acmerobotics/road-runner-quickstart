@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 
 
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.LEFT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.MIDDLE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.RIGHT;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -77,14 +81,13 @@ public class blueback extends LinearOpMode {
             }
         });
         while (!isStarted()) {
-
-          linePlace=ourCam.getDirection();
+            linePlace=ourCam.getDirection();
             telemetry.addData("Parking Zone", linePlace);
             telemetry.update();
         }
 
             // ask gram is second trajectory sequence needs to be the where the last trajectory sequence ended
-            if (_pose == 0) {
+            if (linePlace == LEFT) {
                 drive.setPoseEstimate(blueBackStart);
                 TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(blueBackStart)
                         .lineToSplineHeading(leftLine)
@@ -98,7 +101,7 @@ public class blueback extends LinearOpMode {
                         .build();
                 drive.followTrajectorySequence(gotoback);
 
-            } else if (_pose == 1) {
+            } else if (linePlace == MIDDLE) {
                 drive.setPoseEstimate(blueBackStart);
                 TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(blueBackStart)
                         .lineToSplineHeading(centerLine)
@@ -112,7 +115,7 @@ public class blueback extends LinearOpMode {
                         .lineToSplineHeading(blueBackEnd)
                         .build();
                 drive.followTrajectorySequence(gotoback);
-            } else if (_pose == 2) {
+            } else if (linePlace == RIGHT) {
                 drive.setPoseEstimate(blueBackStart);
                 TrajectorySequence placePurpleBack = drive.trajectorySequenceBuilder(blueBackStart)
                         .lineToSplineHeading(rightLine)
