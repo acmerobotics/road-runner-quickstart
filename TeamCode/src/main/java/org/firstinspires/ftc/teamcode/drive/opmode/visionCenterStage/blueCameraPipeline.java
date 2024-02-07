@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage;
 
+
+import static java.lang.Thread.sleep;
+
+import android.util.Log;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -16,18 +21,28 @@ public class blueCameraPipeline extends OpenCvPipeline {
         MIDDLE,
         RIGHT
     }
+    
+    // Use YcBcR 
+    // Output different mats / masks
+
+    private Mat sect = new Mat();
+    private Mat section = new Mat();
+    private Mat blueMask = new Mat();
 
     MovementDirection propLocation = MovementDirection.MIDDLE;
-
+    public boolean isFirstFrameProcessed = false;
+    public int frameCount = 1;
     @Override
     public Mat processFrame(Mat input) {
+
         // Divide the frame into three equal sections horizontally
         int width = input.width(); // returns width of the input
         int height = input.height(); // returns height of the input
-        int sectionWidth = width / 3; // Divides it into three sections
+        int sectionWidth = (width / 3); // Divides it into three sections
 
         // Define mats to be used throughout the pipeline
-        Mat YcBcr = new Mat(); // Store the converted mat as YcBcr
+
+        input.copyTo(sect);
 
         // Define variables for counting blue pixels in each section
         int[] bluePixelCount = new int[3]; // Makes an array that holds 3 integer values
@@ -36,18 +51,17 @@ public class blueCameraPipeline extends OpenCvPipeline {
         for (int i = 0; i < 3; i++) {
             // Define the region of interest (ROI) for the current section
             Rect roi = new Rect(i * sectionWidth, 0, sectionWidth, height);
-            Mat section = YcBcr.submat(roi);
+
+            section = sect.submat(roi);
 
             // Apply a color filter to detect blue regions
-            Mat blueMask = new Mat();
-            Core.inRange(section, new Scalar(253, 92, 76), new Scalar(203, 96, 79), blueMask);
-
-            // Count the number of blue pixels in the current section
+            blueMask = new Mat();
+            Core.inRange(section, new Scalar(0, 0, 100), new Scalar(80, 80, 255), blueMask);                // Count the number of blue pixels in the current section
             bluePixelCount[i] = Core.countNonZero(blueMask);
 
             // Clean up resources
-            blueMask.release();
-            section.release();
+//                blueMask.release();
+//                section.release();
         }
 
         // Determine the section with the most blue pixels
@@ -70,21 +84,17 @@ public class blueCameraPipeline extends OpenCvPipeline {
                 propLocation = MovementDirection.RIGHT;
                 break;
         }
+            // Return the original input (you can modify this to return a processed frame)
 
-        // Draw rectangles on the output to visualize the sections (optional)
-        Imgproc.rectangle(input, new Point(0, 0), new Point(sectionWidth, height), new Scalar(255, 0, 0), 2);
-        Imgproc.rectangle(input, new Point(sectionWidth, 0), new Point(2 * sectionWidth, height), new Scalar(255, 0, 0), 2);
-        Imgproc.rectangle(input, new Point(2 * sectionWidth, 0), new Point(width, height), new Scalar(255, 0, 0), 2);
+            Imgproc.putText(sect, "Direction: " + String.valueOf(maxBlueIndex), new Point(25, 100),
+                            Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
+            Imgproc.putText(sect, "Bluestuff: " + String.valueOf(bluePixelCount), new Point(300, 300),
+                                        Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
 
-        // Release resources
-        YcBcr.release();
-
-        // Return the original input (you can modify this to return a processed frame)
-        return input;
+            return sect;
     }
 
     public MovementDirection getDirection() {
-
         return propLocation;
     }
 }

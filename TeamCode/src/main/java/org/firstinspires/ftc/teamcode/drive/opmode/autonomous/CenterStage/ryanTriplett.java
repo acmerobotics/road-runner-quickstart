@@ -7,7 +7,6 @@ import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blue
 import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.RIGHT;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -15,7 +14,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.Camerainitialization;
 import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -51,6 +49,7 @@ public class ryanTriplett extends LinearOpMode {
         WebcamName adjustCameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
         // adjustCamera was the deviceName in last years code
         // We may need to change the name adjustCamera to Webcam1
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam1 = OpenCvCameraFactory.getInstance().createWebcam(adjustCameraName);
 
         // Set the camera's pipeline
@@ -65,20 +64,21 @@ public class ryanTriplett extends LinearOpMode {
 
             @Override
             public void onError(int errorCode) {
-
+                telemetry.addData("CameraInitialization", "Camera initialization error: " + errorCode);
             }
         });
 
         while (!isStarted()) {
             drive.initArm();
-
             linePlace = ourCam.getDirection();
-
-            telemetry.addData("location",ourCam.getDirection());
-            telemetry.addData("location",linePlace);
-
+            telemetry.addData("Direction", linePlace);
             telemetry.update();
         }
+
+        waitForStart();
+        webcam1.stopStreaming();
+
+        linePlace = ourCam.getDirection();
 
         TrajectorySequence leftProp = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(endPose,
@@ -101,16 +101,16 @@ public class ryanTriplett extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 ).build();
 
-
-        if (linePlace == LEFT) {
-            drive.followTrajectorySequence(leftProp);
+        while(isStarted()) {
+            if (linePlace == LEFT) {
+                drive.followTrajectorySequence(leftProp);
+            }
+            else if (linePlace == MIDDLE) {
+                drive.followTrajectorySequence(middleProp);
+            }
+            else if (linePlace == RIGHT) {
+                drive.followTrajectorySequence(rightProp);
+            }
         }
-        else if (linePlace == MIDDLE) {
-            drive.followTrajectorySequence(middleProp);
-        }
-        else if (linePlace == RIGHT) {
-            drive.followTrajectorySequence(rightProp);
-        }
-        // Comment
     }
 }
