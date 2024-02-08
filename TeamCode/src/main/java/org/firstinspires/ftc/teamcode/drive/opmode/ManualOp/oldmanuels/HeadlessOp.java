@@ -1,6 +1,6 @@
 /**package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuel.oldmanuels;
 
-/**
+/*
  * Mecanum teleop (with an optional headless mode)
  * * Left stick controls x/y translation.
  * * Triggers control rotation about the z axis

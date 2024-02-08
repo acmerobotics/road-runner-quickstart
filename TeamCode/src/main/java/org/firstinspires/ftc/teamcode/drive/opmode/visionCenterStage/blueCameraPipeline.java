@@ -30,8 +30,6 @@ public class blueCameraPipeline extends OpenCvPipeline {
     private Mat blueMask = new Mat();
 
     MovementDirection propLocation = MovementDirection.MIDDLE;
-    public boolean isFirstFrameProcessed = false;
-    public int frameCount = 1;
     @Override
     public Mat processFrame(Mat input) {
 
