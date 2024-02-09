@@ -1,6 +1,5 @@
-/*
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 
 import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.LEFT;
@@ -12,7 +11,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline;
@@ -136,4 +134,3 @@ public class blueback extends LinearOpMode {
     }
 
 
-*/
