@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.visionPowerPlay;
+import androidx.annotation.NonNull;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -41,7 +43,7 @@ public class parkingZoneFinder extends OpenCvPipeline {
 
     private int zoneNumber = -1;
 
-    public Mat processFrame(Mat input) {
+    public Mat processFrame(@NonNull Mat input) {
 
         // We reduce our mat to only hold the pixels we are interested in
         targetMat = input.submat(targetArea);
