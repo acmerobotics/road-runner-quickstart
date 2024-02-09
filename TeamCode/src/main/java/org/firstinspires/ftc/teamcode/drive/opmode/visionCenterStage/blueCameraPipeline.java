@@ -1,4 +1,6 @@
+/*
 package org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage;
+
 
 
 import static java.lang.Thread.sleep;
@@ -85,9 +87,9 @@ public class blueCameraPipeline extends OpenCvPipeline {
             // Return the original input (you can modify this to return a processed frame)
 
             Imgproc.putText(sect, "Direction: " + String.valueOf(maxBlueIndex), new Point(25, 100),
-                            Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
+                    Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
             Imgproc.putText(sect, "Bluestuff: " + String.valueOf(bluePixelCount), new Point(300, 300),
-                                        Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
+                    Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
 
             return sect;
     }
@@ -96,3 +98,4 @@ public class blueCameraPipeline extends OpenCvPipeline {
         return propLocation;
     }
 }
+*/
