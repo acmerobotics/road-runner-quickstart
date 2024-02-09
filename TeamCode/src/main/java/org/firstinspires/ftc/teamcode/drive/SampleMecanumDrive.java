@@ -351,7 +351,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void initArm() {
         stopAndResetMotors();
         setBothGrip(true);
-        setSlideVelocity(0, slideLeft, slideRight, wristMotor);
+        setSlideVelocity(200, slideLeft, slideRight, wristMotor);
         setHeight(0);
         setExtension(0);
         restartMotors();
@@ -363,7 +363,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         slideRight.setTargetPosition(-height);
     }
 
-    // Set the target encoders position of the horizontal slide
+    // Set the target encoders position of the wrist slide
     public void setExtension(int ext) {wristMotor.setTargetPosition(-ext);
     }
 

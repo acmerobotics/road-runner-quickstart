@@ -50,7 +50,7 @@ public class advancedSlideControl {
 
     public void setHeight(int height) {
         slideLeft.setTargetPosition(height);
-        slideLeft.setTargetPosition(-height);
+        slideRight.setTargetPosition(-height);
     }
 
     public void setExtension(int ext) {

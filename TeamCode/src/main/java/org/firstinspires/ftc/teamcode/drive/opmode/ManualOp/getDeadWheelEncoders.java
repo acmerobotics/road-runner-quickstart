@@ -14,7 +14,7 @@ public class getDeadWheelEncoders extends OpMode {
 
     @Override
     public void loop(){
-        
+
     }
 
 }
