@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp;
+package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.oldmanuels;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,9 +11,10 @@ import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Robot;
 import org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.manuelHelpers.Slide;
 
 @Config
+@Disabled
 @TeleOp (name = "WITH CLAW WORK")
 
-public class NewNewManualOp extends OpMode {
+public class OldManuelOpWithHelpers extends OpMode {
 
     private Robot robot;
     // Create two new Controller objects, one for each gamepad

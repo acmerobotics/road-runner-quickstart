@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp;
+package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp.oldmanuels;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 @Disabled
 @Autonomous(name = "Get nums", group = "comp")
-public class getNumbers extends OpMode {
+public class OLDgetNumbers extends OpMode {
 
 
     DcMotor leftFront;

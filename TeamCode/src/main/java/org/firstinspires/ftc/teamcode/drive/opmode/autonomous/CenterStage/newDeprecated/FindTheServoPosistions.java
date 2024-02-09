@@ -1,14 +1,15 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage.newDeprecated;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Autonomous (name = "Servo Finder test")
 @Config
+@Disabled
 public class FindTheServoPosistions extends LinearOpMode {
 
 

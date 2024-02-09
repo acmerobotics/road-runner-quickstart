@@ -69,15 +69,18 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
-    private List<DcMotorEx> motors;
+    public DcMotorEx leftFront;
+    public DcMotorEx leftRear;
+    public DcMotorEx rightRear;
+    public DcMotorEx rightFront;
+    public List<DcMotorEx> motors;
 
     private VoltageSensor batteryVoltageSensor;
 
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
 
-    public Servo  gripServoB, gripServoF;
+    public Servo  gripServoB, gripServoF,launchServo;
     public DcMotorEx slideLeft, slideRight, wristMotor;
 // this the object contsutor
 
@@ -98,25 +101,15 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-     /*   imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters
-                (
-                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP)
-                );
-        imu.initialize(parameters);
-
-      */
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        //leftGripServo = hardwareMap.servo.get("leftGripServo");
-        //rightGripServo = hardwareMap.servo.get("rightGripServo");
         gripServoF =hardwareMap.servo.get("gripServoF");
         gripServoB =hardwareMap.servo.get("gripServoB");
-        //launchServo = hardwareMap.servo.get("launchServo");
+        launchServo = hardwareMap.servo.get("launchServo");
 
         slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
         slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
