@@ -29,7 +29,7 @@ public class recognizerTest extends LinearOpMode {
         webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam1.startStreaming(1280,720, OpenCvCameraRotation.UPRIGHT);
+                webcam1.startStreaming(1280,720, OpenCvCameraRotation.UPSIDE_DOWN);
             }
 
             @Override

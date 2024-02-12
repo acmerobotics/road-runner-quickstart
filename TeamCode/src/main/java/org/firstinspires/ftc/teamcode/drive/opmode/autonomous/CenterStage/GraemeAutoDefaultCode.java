@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
+/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.LEFT;
 import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.MIDDLE;
@@ -227,3 +227,4 @@ public class GraemeAutoDefaultCode extends LinearOpMode  {
     }
 
 }
+*/
