@@ -31,16 +31,16 @@ public class blueFront extends LinearOpMode {
 
 
     // line Poses wrote the list this way to make it easier to read.
-    private final Pose2d rightLine = new Pose2d(1, 30, Math.toRadians(0));
+    private final Pose2d rightLine = new Pose2d(1, 30, Math.toRadians(180));
     private final Pose2d leftLine = new Pose2d(24, 30, Math.toRadians(0));
-    private final Pose2d centerLine = new Pose2d(12, 24.5, Math.toRadians(-90));
+    private final Pose2d centerLine = new Pose2d(12, 24.5, Math.toRadians(270));
     List<Pose2d> listPose = Arrays.asList(leftLine, centerLine, rightLine);
 
 
 
     // these poses are markers for the Left and right back to move to the backdrop in FrontSide Code these will not be here
     private final Pose2d blueBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
-    private final Pose2d blueBackTrussMarker = new Pose2d(-36, 36, Math.toRadians(0));
+    private final Pose2d blueFrontTrussMarker = new Pose2d(-12, 48, Math.toRadians(0));
     private final Pose2d blueFrontTruss = new Pose2d(-24, 36, Math.toRadians(0));
 
 
@@ -114,7 +114,7 @@ public class blueFront extends LinearOpMode {
             if (linePlace == LEFT) {
                 moveToPurple(drive,0);
                 drive.setFrontGrip(false);
-                LRmoveToBackDrop (drive, 0);
+                LRCmoveToBackDrop (drive, 0);
                 drive.setBackGrip(false);
                 goPark(drive);
                 break;
@@ -123,14 +123,14 @@ public class blueFront extends LinearOpMode {
             else if (linePlace == MIDDLE) {
                 moveToPurple(drive,1);
                 drive.setFrontGrip(false);
-                CmoveToBackDrop(drive,1);
+                LRCmoveToBackDrop(drive,1);
                 goPark(drive);
                 break;
             }
             else if (linePlace == RIGHT) {
                 moveToPurple(drive,2);
                 drive.setFrontGrip(false);
-                LRmoveToBackDrop (drive, 2);
+                LRCmoveToBackDrop (drive, 2);
                 goPark(drive);
                 break;
             }
@@ -141,7 +141,7 @@ public class blueFront extends LinearOpMode {
 
         robot.setPoseEstimate(opStartpose);
         TrajectorySequence  starttoPurple= robot.trajectorySequenceBuilder(robot.getPoseEstimate())
-                .lineToSplineHeading(blueBackTrussMarker,
+                .lineToSplineHeading(blueFrontTrussMarker,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -158,20 +158,9 @@ public class blueFront extends LinearOpMode {
 
 
     }
-    public void LRmoveToBackDrop (SampleMecanumDrive robot , int DropPlace) {
+    public void LRCmoveToBackDrop (SampleMecanumDrive robot , int DropPlace) {
 
-        TrajectorySequence  LRgoTOBack= robot.trajectorySequenceBuilder(robot.getPoseEstimate())
-
-                .lineToSplineHeading(blueBackTruss,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-
-                .lineToSplineHeading(blueFrontTruss,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel))
+        TrajectorySequence  LRCgoTOBack= robot.trajectorySequenceBuilder(robot.getPoseEstimate())
 
                 .lineToSplineHeading(listYellowDrop.get(DropPlace),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
@@ -180,37 +169,12 @@ public class blueFront extends LinearOpMode {
                 )
 
                 .build();
-        robot.followTrajectorySequence(LRgoTOBack);
+        robot.followTrajectorySequence(LRCgoTOBack);
         robot.updatePoseEstimate();
 
 
     }
-    public void CmoveToBackDrop (SampleMecanumDrive robot , int DropPlace) {
 
-        TrajectorySequence  CgoToBack= robot.trajectorySequenceBuilder(robot.getPoseEstimate())
-
-                .lineToSplineHeading(blueBackGate,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-
-                .lineToSplineHeading(blueFrontGate,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel))
-
-                .lineToSplineHeading(listYellowDrop.get(DropPlace),
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-
-                .build();
-        robot.followTrajectorySequence(CgoToBack);
-        robot.updatePoseEstimate();
-
-    }
     public void goPark (SampleMecanumDrive robot){
         TrajectorySequence  park = robot.trajectorySequenceBuilder(robot.getPoseEstimate())
 

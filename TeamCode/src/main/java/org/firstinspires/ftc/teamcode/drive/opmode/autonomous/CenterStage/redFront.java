@@ -30,7 +30,7 @@ public class redFront extends LinearOpMode  {
     //THIS IS THE DEFAULT CODE and the DEFAULT POSITION IS BLUE BACK
     //I HAVE NOT WORKED ON HEADINGS
     private final Pose2d opStartpose = new Pose2d(12, -60, Math.toRadians(90));
-    private final Pose2d opEndPose = new Pose2d(59, -60, Math.toRadians(90);
+    private final Pose2d opEndPose = new Pose2d(59, -60, Math.toRadians(0);
 
     // line Poses wrote the list this way to make it easier to read.
     private final Pose2d rightLine = new Pose2d(23, -30, Math.toRadians(90));
@@ -114,7 +114,7 @@ public class redFront extends LinearOpMode  {
             if (linePlace == LEFT) {
                 moveToPurple(drive,0);
                 drive.setFrontGrip(false);
-                LRmoveToBackDrop (drive, 0);
+                LRCmoveToBackDrop (drive, 0);
                 drive.setBackGrip(false);
                 goPark(drive);
                 break;
@@ -123,14 +123,14 @@ public class redFront extends LinearOpMode  {
             else if (linePlace == MIDDLE) {
                 moveToPurple(drive,1);
                 drive.setFrontGrip(false);
-                CmoveToBackDrop(drive,1);
+                LRCmoveToBackDrop(drive,1);
                 goPark(drive);
                 break;
             }
             else if (linePlace == RIGHT) {
                 moveToPurple(drive,2);
                 drive.setFrontGrip(false);
-                LRmoveToBackDrop (drive, 2);
+                LRCmoveToBackDrop (drive, 2);
                 goPark(drive);
                 break;
             }
@@ -158,20 +158,9 @@ public class redFront extends LinearOpMode  {
 
 
     }
-    public void LRmoveToBackDrop (SampleMecanumDrive robot , int DropPlace) {
+    public void LRCmoveToBackDrop (SampleMecanumDrive robot , int DropPlace) {
 
-        TrajectorySequence  LRgoTOBack= robot.trajectorySequenceBuilder(robot.getPoseEstimate())
-
-                .lineToSplineHeading(redBackTruss,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-
-                .lineToSplineHeading(redFrontTruss,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel))
+        TrajectorySequence  LRCgoTOBack= robot.trajectorySequenceBuilder(robot.getPoseEstimate())
 
                 .lineToSplineHeading(listYellowDrop.get(DropPlace),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
@@ -180,34 +169,10 @@ public class redFront extends LinearOpMode  {
                 )
 
                 .build();
-        robot.followTrajectorySequence(LRgoTOBack);
+        robot.followTrajectorySequence(LRCgoTOBack);
         robot.updatePoseEstimate();
 
 
-    }
-    public void CmoveToBackDrop (SampleMecanumDrive robot , int DropPlace) {
-        TrajectorySequence CgoToBack = robot.trajectorySequenceBuilder(robot.getPoseEstimate())
-
-                .lineToSplineHeading(redBackGate,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-
-                .lineToSplineHeading(redFrontGate,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel))
-
-                .lineToSplineHeading(listYellowDrop.get(DropPlace),
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-
-                .build();
-        robot.followTrajectorySequence(CgoToBack);
-        robot.updatePoseEstimate();
     }
     public void goPark (SampleMecanumDrive robot){
         TrajectorySequence  park = robot.trajectorySequenceBuilder(robot.getPoseEstimate())
