@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
+/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.LEFT;
 import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.MIDDLE;
@@ -30,7 +30,7 @@ public class redFront extends LinearOpMode  {
     //THIS IS THE DEFAULT CODE and the DEFAULT POSITION IS BLUE BACK
     //I HAVE NOT WORKED ON HEADINGS
     private final Pose2d opStartpose = new Pose2d(12, -60, Math.toRadians(90));
-    private final Pose2d opEndPose = new Pose2d(59, -60, Math.toRadians(0);
+    private final Pose2d opEndPose = new Pose2d(59, -60, Math.toRadians(0));
 
     // line Poses wrote the list this way to make it easier to read.
     private final Pose2d rightLine = new Pose2d(23, -30, Math.toRadians(90));
@@ -48,7 +48,7 @@ public class redFront extends LinearOpMode  {
     private final Pose2d redBackGate = new Pose2d(-36, 12, Math.toRadians(0));
 */
 
-    // these are the drop poses these are the same for all blue opModes only different for Red side
+  /*  // these are the drop poses these are the same for all blue opModes only different for Red side
     private final Pose2d redDropL = new Pose2d(50, -30, Math.toRadians(0));
     private final Pose2d redDropC = new Pose2d(50, -36, Math.toRadians(0));
     private final Pose2d redDropR = new Pose2d(50, -42, Math.toRadians(0));
@@ -187,3 +187,4 @@ public class redFront extends LinearOpMode  {
     }
 
 }
+*/
