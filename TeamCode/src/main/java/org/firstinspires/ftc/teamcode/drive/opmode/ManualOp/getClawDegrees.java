@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode.ManualOp;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -16,10 +17,13 @@ public class getClawDegrees extends OpMode {
 
     private double on = 0;
     private double deci;
+    private double deciB = 27.0/300;
+    private double deciF= 13.0/300;
 
     @Override
     public void init() {
         drive = new SampleMecanumDrive(hardwareMap);
+        drive.gripServoF.setDirection(Servo.Direction.REVERSE);
         drive.gripServoB.setPosition(0);
         drive.gripServoF.setPosition(0);
         telemetry.addData("F pos", drive.gripServoF.getPosition());
@@ -85,8 +89,8 @@ public class getClawDegrees extends OpMode {
             degree = 22;
             on = degree;
             deci = degree / 300;
-            drive.gripServoB.setPosition(deci);
-            drive.gripServoF.setPosition(deci);
+            drive.gripServoB.setPosition(deciB);
+            drive.gripServoF.setPosition(deciF);
             telemetry.addData("F pos", drive.gripServoF.getPosition());
             telemetry.addData("B pos", drive.gripServoB.getPosition());
             telemetry.addData("degree", degree);
@@ -96,13 +100,12 @@ public class getClawDegrees extends OpMode {
         }
         if (gamepad2.cross) {
 
-            drive.gripServoB.setPosition(.25);
-            drive.gripServoF.setPosition(0);
+            drive.gripServoB.setPosition(deciB);
+            drive.gripServoF.setPosition(deciF);
             telemetry.addData("F pos", drive.gripServoF.getPosition());
             telemetry.addData("B pos", drive.gripServoB.getPosition());
-            telemetry.addData("degree", degree);
-            telemetry.addData("on", on);
-            telemetry.addData("deci", deci);
+            telemetry.addData("deciB", deciB);
+            telemetry.addData("deciF", deciF);
             telemetry.update();
         }
 

@@ -99,12 +99,12 @@ public class ManualOp extends OpMode {
                 slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             }
-
+// top encoder 100 med 120 low 145
             if (wristMotor.getCurrentPosition()>=10|| wristMotor.getCurrentPosition() <= -105){
-                wristMotor.setPower(wrist*.15);
+                wristMotor.setPower(wrist*.3);
                 wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             } else {
-                wristMotor.setPower(wrist*.3);
+                wristMotor.setPower(wrist*.6);
                 wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
@@ -118,7 +118,7 @@ public class ManualOp extends OpMode {
 
             //edge to edge of inner diameter of pixel is 31.75 mm //22 degrees
             //vertex to vertex is 36 mm // 25 degrees
-            double closed = 0, Fopen = 50,Bopen = 50;
+            double closed = 0, Fopen = 13,Bopen = 27;
             double servoRot = 300;
 
             if (gamepad2.circle)
