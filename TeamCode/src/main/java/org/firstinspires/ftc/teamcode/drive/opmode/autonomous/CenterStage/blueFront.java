@@ -1,7 +1,9 @@
+/**
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
-/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
-
-
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.Recognizer.pixelLocation.LEFT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.Recognizer.pixelLocation.RIGHT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.Recognizer.pixelLocation.MIDDLE;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -11,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.Recognizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -20,9 +23,9 @@ import org.openftc.easyopencv.OpenCvWebcam;
 import java.util.Arrays;
 import java.util.List;
 
-
-@Autonomous(name = "blueFront auto")
 @Config
+@Autonomous(name = "blueFront auto")
+
 public class blueFront extends LinearOpMode {
     //THIS IS THE DEFAULT CODE and the DEFAULT POSITION IS BLUE BACK
     //I HAVE NOT WORKED ON HEADINGS
@@ -62,8 +65,8 @@ public class blueFront extends LinearOpMode {
     // This is the Microsoft Life Cam 3000
     OpenCvWebcam webcam1 = null;
 
-    blueCameraPipeline ourCam = new blueCameraPipeline();
-    blueCameraPipeline.MovementDirection linePlace;
+    Recognizer ourCam = new Recognizer();
+    Recognizer.pixelLocation linePlace;
 
     int width =1280, height = 720;
 
@@ -98,7 +101,7 @@ public class blueFront extends LinearOpMode {
 
         while (!isStarted()) {
             drive.initArm();
-            linePlace = ourCam.getDirection();
+            linePlace = ourCam.getPixelLocation();
             telemetry.addData("Direction", linePlace);
             telemetry.update();
         }
@@ -106,7 +109,7 @@ public class blueFront extends LinearOpMode {
         waitForStart();
         webcam1.stopStreaming();
 
-        linePlace = ourCam.getDirection();
+        linePlace = ourCam.getPixelLocation();
 
 
         // because our OP modes are created for each corner
@@ -188,5 +191,4 @@ public class blueFront extends LinearOpMode {
     }
 
 }
-
 */

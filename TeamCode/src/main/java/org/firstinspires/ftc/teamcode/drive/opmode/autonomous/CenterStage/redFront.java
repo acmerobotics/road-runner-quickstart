@@ -1,3 +1,4 @@
+
 /*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.LEFT;
@@ -46,9 +47,9 @@ public class redFront extends LinearOpMode  {
     //these are markers for the Center back move2backDrop in FrontSide Cose these will not be here
  /*  private final Pose2d redFrontGate = new Pose2d(24, 12, Math.toRadians(0));
     private final Pose2d redBackGate = new Pose2d(-36, 12, Math.toRadians(0));
-*/
 
-  /*  // these are the drop poses these are the same for all blue opModes only different for Red side
+
+    // these are the drop poses these are the same for all blue opModes only different for Red side
     private final Pose2d redDropL = new Pose2d(50, -30, Math.toRadians(0));
     private final Pose2d redDropC = new Pose2d(50, -36, Math.toRadians(0));
     private final Pose2d redDropR = new Pose2d(50, -42, Math.toRadians(0));
@@ -187,4 +188,5 @@ public class redFront extends LinearOpMode  {
     }
 
 }
+
 */

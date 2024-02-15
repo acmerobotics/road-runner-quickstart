@@ -8,7 +8,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class Recognizer extends OpenCvPipeline {
+public class redRecognizer extends OpenCvPipeline {
     public enum pixelLocation {
         LEFT,
         MIDDLE,
