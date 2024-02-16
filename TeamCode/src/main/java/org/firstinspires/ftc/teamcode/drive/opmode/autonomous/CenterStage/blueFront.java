@@ -75,43 +75,42 @@ public class blueFront extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        drive = new SampleMecanumDrive(hardwareMap);
-        // Set up the webcam
-        WebcamName adjustCameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-        // adjustCamera was the deviceName in last years code
-        // We may need to change the name adjustCamera to Webcam1
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(adjustCameraName);
 
-        // Set the camera's pipeline
-        webcam1.setPipeline(ourCam);
+    drive = new SampleMecanumDrive(hardwareMap);
+    // Set up the webcam
+    WebcamName adjustCameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    // adjustCamera was the deviceName in last years code
+    // We may need to change the name adjustCamera to Webcam1
+    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    webcam1 = OpenCvCameraFactory.getInstance().createWebcam(adjustCameraName);
 
-        // Open the camera
-        webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                webcam1.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
-            }
+    // Set the camera's pipeline
+    webcam1.setPipeline(ourCam);
 
-            @Override
-            public void onError(int errorCode) {
-                telemetry.addData("CameraInitialization", "Camera initialization error: " + errorCode);
-            }
-        });
+    // Open the camera
+    webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+    @Override
+    public void onOpened() {
+    webcam1.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
+    }
 
-        while (!isStarted()) {
-            drive.initArm();
-            linePlace = ourCam.getPixelLocation();
-            telemetry.addData("Direction", linePlace);
-            telemetry.update();
-        }
+    @Override
+    public void onError(int errorCode) {
+    telemetry.addData("CameraInitialization", "Camera initialization error: " + errorCode);
+    }
+    });
 
-        waitForStart();
-        webcam1.stopStreaming();
+    while (!isStarted()) {
+    drive.initArm();
+    linePlace = ourCam.getPixelLocation();
+    telemetry.addData("Direction", linePlace);
+    telemetry.update();
+    }
 
-        linePlace = ourCam.getPixelLocation();
+    waitForStart();
+    webcam1.stopStreaming();
 
-
+    linePlace = ourCam.getPixelLocation();
         // because our OP modes are created for each corner
         while(isStarted()) {
             if (linePlace == LEFT) {
