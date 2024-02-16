@@ -1,5 +1,5 @@
 
-/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 
 import com.acmerobotics.dashboard.config.Config;
@@ -30,8 +30,8 @@ public class redback extends LinearOpMode {
 
 
     // line Poses wrote the list this way to make it easier to read.
-    private final Pose2d leftLine = new Pose2d(-48, -32, Math.toRadians(0));
-    private final Pose2d rightLine = new Pose2d(-24, 32, Math.toRadians(0));
+    private final Pose2d leftLine = new Pose2d(-48, -36, Math.toRadians(0));
+    private final Pose2d rightLine = new Pose2d(-24, -36, Math.toRadians(0));
     private final Pose2d centerLine = new Pose2d(-36, -24.5, Math.toRadians(-90));
     List<Pose2d> listPose = Arrays.asList(leftLine, rightLine, centerLine);
 
@@ -39,7 +39,7 @@ public class redback extends LinearOpMode {
 
     // these poses are markers for the Left and right back to move to the backdrop in FrontSide Code these will not be here
     private final Pose2d redBackTruss = new Pose2d(-24, -36, Math.toRadians(0));
-    private final Pose2d redBackTrussMarker = new Pose2d(-36, -36, Math.toRadians(0));
+    private final Pose2d redBackTrussMarker = new Pose2d(-36, -41, Math.toRadians(0));
     private final Pose2d redFrontTruss = new Pose2d(-24, -36, Math.toRadians(0));
 
 
@@ -223,4 +223,3 @@ public class redback extends LinearOpMode {
     }
 
 }
-*/

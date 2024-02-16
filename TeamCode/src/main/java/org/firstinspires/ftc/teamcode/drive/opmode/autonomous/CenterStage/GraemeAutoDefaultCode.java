@@ -34,22 +34,22 @@ public class GraemeAutoDefaultCode extends LinearOpMode  {
 
 
     // line Poses wrote the list this way to make it easier to read.
-    private final Pose2d rightLine = new Pose2d(-48, 32, Math.toRadians(0));
-    private final Pose2d leftLine = new Pose2d(-24, 32, Math.toRadians(0));
+    private final Pose2d rightLine = new Pose2d(-48, 36, Math.toRadians(-90));
+    private final Pose2d leftLine = new Pose2d(-24, 36, Math.toRadians(0));
     private final Pose2d centerLine = new Pose2d(-36, 24.5, Math.toRadians(-90));
-    List<Pose2d> listPose = Arrays.asList(leftLine, rightLine, centerLine);
+    List<Pose2d> listPose = Arrays.asList(leftLine, centerLine,rightLine);
 
 
 
     // these poses are markers for the Left and right back to move to the backdrop in FrontSide Code these will not be here
-    private final Pose2d blueBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
-    private final Pose2d blueBackTrussMarker = new Pose2d(-36, 36, Math.toRadians(0));
-    private final Pose2d blueFrontTruss = new Pose2d(-24, 36, Math.toRadians(0));
+    private final Pose2d blueBackTruss = new Pose2d(-20, 36, Math.toRadians(0));
+    private final Pose2d blueBackLineMoveMarker = new Pose2d(-36, 41, Math.toRadians(-90));
+    private final Pose2d blueFrontTruss = new Pose2d(24, 36, Math.toRadians(0));
 
 
     //these are markers for the Center back move2backDrop in FrontSide Cose these will not be here
     private final Pose2d blueFrontGate = new Pose2d(24, 12, Math.toRadians(0));
-    private final Pose2d blueBackGate = new Pose2d(-36, 12, Math.toRadians(0));
+    private final Pose2d blueBackGate = new Pose2d(-34, 11.5, Math.toRadians(-15));
 
 
     // these are the drop poses these are the same for all blue opModes only different for Red side
@@ -144,7 +144,7 @@ public class GraemeAutoDefaultCode extends LinearOpMode  {
 
         robot.setPoseEstimate(opStartpose);
         TrajectorySequence  starttoPurple= robot.trajectorySequenceBuilder(robot.getPoseEstimate())
-                .lineToSplineHeading(blueBackTrussMarker,
+                .lineToSplineHeading(blueBackLineMoveMarker,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
