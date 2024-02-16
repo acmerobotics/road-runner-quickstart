@@ -34,7 +34,7 @@ public class blueFront extends LinearOpMode {
 
 
     // line Poses wrote the list this way to make it easier to read.
-    private final Pose2d rightLine = new Pose2d(1, 30, Math.toRadians(180));
+    private final Pose2d rightLine = new Pose2d(1, 30, Math.toRadians(0));
     private final Pose2d leftLine = new Pose2d(24, 30, Math.toRadians(0));
     private final Pose2d centerLine = new Pose2d(12, 24.5, Math.toRadians(270));
     List<Pose2d> listPose = Arrays.asList(leftLine, centerLine, rightLine);
