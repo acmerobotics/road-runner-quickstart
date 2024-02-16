@@ -77,7 +77,7 @@ public class GraemeAutoDefaultCode extends LinearOpMode  {
 
         drive = new SampleMecanumDrive(hardwareMap);
         // Set up the webcam
-        WebcamName adjustCameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    /*    WebcamName adjustCameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
         // adjustCamera was the deviceName in last years code
         // We may need to change the name adjustCamera to Webcam1
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -96,6 +96,23 @@ public class GraemeAutoDefaultCode extends LinearOpMode  {
             @Override
             public void onError(int errorCode) {
                 telemetry.addData("CameraInitialization", "Camera initialization error: " + errorCode);
+            }
+        });*/
+        WebcamName adjustCameraName = hardwareMap.get(WebcamName.class,"Webcam 1");
+
+        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(adjustCameraName);
+
+        webcam1.setPipeline(ourCam);
+
+        webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam1.startStreaming(1280,720, OpenCvCameraRotation.UPSIDE_DOWN);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
             }
         });
 
@@ -116,23 +133,23 @@ public class GraemeAutoDefaultCode extends LinearOpMode  {
         while(isStarted()) {
             if (linePlace == LEFT) {
                 moveToPurple(drive,0);
-                drive.setFrontGrip(false);
+              //  drive.setFrontGrip(false);
                 LRmoveToBackDrop (drive, 0);
-                drive.setBackGrip(false);
+              //  drive.setBackGrip(false);
                 goPark(drive);
                 break;
 
             }
             else if (linePlace == MIDDLE) {
                 moveToPurple(drive,1);
-                drive.setFrontGrip(false);
+            //    drive.setFrontGrip(false);
                 CmoveToBackDrop(drive,1);
                 goPark(drive);
                 break;
             }
             else if (linePlace == RIGHT) {
                 moveToPurple(drive,2);
-                drive.setFrontGrip(false);
+              //  drive.setFrontGrip(false);
                 LRmoveToBackDrop (drive, 2);
                 goPark(drive);
                 break;
