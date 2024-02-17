@@ -40,6 +40,7 @@ public class recognizerTest extends LinearOpMode {
         while (!isStarted()) {
             telemetry.addData("Location", ourCam.getPixelLocation().name());
             telemetry.update();
+
         }
     }
 }

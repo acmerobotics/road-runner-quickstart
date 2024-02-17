@@ -33,6 +33,10 @@ public class getClawDegrees extends OpMode {
 
     @Override
     public void loop() {
+        telemetry.addData("left encoder", drive.leftRear.getCurrentPosition());
+        telemetry.addData("right encoder", drive.rightFront.getCurrentPosition());
+        telemetry.addData("lateral encoder", drive.leftFront.getCurrentPosition());
+        telemetry.update();
         if (gamepad2.dpad_up) {
             on++;
             degree = on / 20;
