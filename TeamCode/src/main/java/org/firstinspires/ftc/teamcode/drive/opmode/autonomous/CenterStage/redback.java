@@ -29,7 +29,7 @@ import java.util.List;
 public class redback extends LinearOpMode {
     //THIS IS THE DEFAULT CODE and the DEFAULT POSITION IS BLUE BACK
     private final Pose2d opStartpose = new Pose2d(-36, -60, Math.toRadians(90));
-    private final Pose2d opEndPose = new Pose2d(48, -36, Math.toRadians(0));
+    private final Pose2d opEndPose = new Pose2d(50, -60, Math.toRadians(0));
 
     // line Poses wrote the list this way to make it easier to read.
     private final Pose2d leftLine = new Pose2d(-49, -30, Math.toRadians(180));

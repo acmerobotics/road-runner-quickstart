@@ -30,7 +30,7 @@ public class redFront extends LinearOpMode  {
 
     //THIS IS THE DEFAULT CODE and the DEFAULT POSITION IS BLUE BACK
     private final Pose2d opStartpose = new Pose2d(12, -60, Math.toRadians(90));
-    private final Pose2d opEndPose = new Pose2d(59, -60, Math.toRadians(0));
+    private final Pose2d opEndPose = new Pose2d(50, -60, Math.toRadians(0));
 
     // line Poses wrote the list this way to make it easier to read.
     private final Pose2d rightLine = new Pose2d(24, -30, Math.toRadians(0));
@@ -39,12 +39,12 @@ public class redFront extends LinearOpMode  {
     List<Pose2d> listPose = Arrays.asList(leftLine, rightLine, centerLine);
 
     // these poses are markers for the Left and right back to move to the backdrop in FrontSide Code these will not be here
-    private final Pose2d redBackTrussMarker = new Pose2d(15, -48, Math.toRadians(0));
+     private final Pose2d redBackTrussMarker = new Pose2d(12, -36, Math.toRadians(0));
 
     // these are the drop poses these are the same for all blue opModes only different for Red side
-    private final Pose2d redDropL = new Pose2d(50, -30, Math.toRadians(0));
+    private final Pose2d redDropL = new Pose2d(50, -28, Math.toRadians(0));
     private final Pose2d redDropC = new Pose2d(50, -36, Math.toRadians(0));
-    private final Pose2d redDropR = new Pose2d(50, -42, Math.toRadians(0));
+    private final Pose2d redDropR = new Pose2d(50, -44, Math.toRadians(0));
 
     List<Pose2d> listYellowDrop = Arrays.asList(redDropL, redDropC, redDropR);
 
