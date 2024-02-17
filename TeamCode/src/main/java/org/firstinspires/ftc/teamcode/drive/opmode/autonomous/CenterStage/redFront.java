@@ -39,7 +39,18 @@ public class redFront extends LinearOpMode  {
     List<Pose2d> listPose = Arrays.asList(leftLine, rightLine, centerLine);
 
     // these poses are markers for the Left and right back to move to the backdrop in FrontSide Code these will not be here
+<<<<<<< Updated upstream
     private final Pose2d redBackTrussMarker = new Pose2d(15, -48, Math.toRadians(0));
+=======
+    private final Pose2d redBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
+    private final Pose2d redBackTrussMarker = new Pose2d(15, -48, Math.toRadians(90));
+    private final Pose2d redFrontTruss = new Pose2d(-24, 36, Math.toRadians(90));
+
+    //these are markers for the Center back move2backDrop in FrontSide Cose these will not be here
+   private final Pose2d redFrontGate = new Pose2d(24, 12, Math.toRadians(0));
+    private final Pose2d redBackGate = new Pose2d(-36, 12, Math.toRadians(0));
+
+>>>>>>> Stashed changes
 
     // these are the drop poses these are the same for all blue opModes only different for Red side
     private final Pose2d redDropL = new Pose2d(50, -30, Math.toRadians(0));
