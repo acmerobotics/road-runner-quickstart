@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-@Autonomous (name = "THIS IS BLUE BACK")
+@Autonomous (name = "Red FRONT ")
 
 public class redFront extends LinearOpMode  {
 
@@ -63,10 +63,11 @@ public class redFront extends LinearOpMode  {
     // This is the Microsoft Life Cam 3000
     OpenCvWebcam webcam1 = null;
 
-    blueCameraPipeline ourCam = new blueCameraPipeline();
-    blueCameraPipeline.MovementDirection linePlace;
+    redRecognizer ourCam = new redRecognizer();
+    redRecognizer.pixelLocationRed linePlace;
 
     int width =1280, height = 720;
+
 
     private final double travelSpeed = 45.0, travelAccel = 30.0;
 
@@ -99,7 +100,7 @@ public class redFront extends LinearOpMode  {
 
         while (!isStarted()) {
             drive.initArm();
-            linePlace = ourCam.getDirection();
+            linePlace = ourCam.getPixelLocationRed();
             telemetry.addData("Direction", linePlace);
             telemetry.update();
         }
@@ -107,7 +108,7 @@ public class redFront extends LinearOpMode  {
         waitForStart();
         webcam1.stopStreaming();
 
-        linePlace = ourCam.getDirection();
+        linePlace = ourCam.getPixelLocationRed();
 
 
         // because our OP modes are created for each corner

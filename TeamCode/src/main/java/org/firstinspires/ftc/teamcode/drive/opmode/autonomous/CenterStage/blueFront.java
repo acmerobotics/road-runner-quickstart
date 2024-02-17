@@ -1,4 +1,4 @@
-/**
+
 package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
 import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.Recognizer.pixelLocation.LEFT;
@@ -42,14 +42,14 @@ public class blueFront extends LinearOpMode {
 
 
     // these poses are markers for the Left and right back to move to the backdrop in FrontSide Code these will not be here
-    private final Pose2d blueBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
+ //   private final Pose2d blueBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
     private final Pose2d blueFrontTrussMarker = new Pose2d(15, 48, Math.toRadians(270));
-    private final Pose2d blueFrontTruss = new Pose2d(-24, 36, Math.toRadians(0));
+  //  private final Pose2d blueFrontTruss = new Pose2d(-24, 36, Math.toRadians(0));
 
 
     //these are markers for the Center back move2backDrop in FrontSide Cose these will not be here
-    private final Pose2d blueFrontGate = new Pose2d(24, 12, Math.toRadians(0));
-    private final Pose2d blueBackGate = new Pose2d(-36, 12, Math.toRadians(0));
+  //  private final Pose2d blueFrontGate = new Pose2d(24, 12, Math.toRadians(0));
+  //  private final Pose2d blueBackGate = new Pose2d(-36, 12, Math.toRadians(0));
 
 
     // these are the drop poses these are the same for all blue opModes only different for Red side
@@ -63,12 +63,13 @@ public class blueFront extends LinearOpMode {
     SampleMecanumDrive drive;
 
     // This is the Microsoft Life Cam 3000
+
     OpenCvWebcam webcam1 = null;
 
     Recognizer ourCam = new Recognizer();
     Recognizer.pixelLocation linePlace;
 
-    int width =1280, height = 720;
+    int width = 1280, height = 720;
 
     private final double travelSpeed = 45.0, travelAccel = 30.0;
 
@@ -78,27 +79,23 @@ public class blueFront extends LinearOpMode {
 
     drive = new SampleMecanumDrive(hardwareMap);
     // Set up the webcam
-    WebcamName adjustCameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-    // adjustCamera was the deviceName in last years code
-    // We may need to change the name adjustCamera to Webcam1
-    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-    webcam1 = OpenCvCameraFactory.getInstance().createWebcam(adjustCameraName);
+        WebcamName adjustCameraName = hardwareMap.get(WebcamName.class,"Webcam 1");
 
-    // Set the camera's pipeline
-    webcam1.setPipeline(ourCam);
+        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(adjustCameraName);
 
-    // Open the camera
-    webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-    @Override
-    public void onOpened() {
-    webcam1.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
-    }
+        webcam1.setPipeline(ourCam);
 
-    @Override
-    public void onError(int errorCode) {
-    telemetry.addData("CameraInitialization", "Camera initialization error: " + errorCode);
-    }
-    });
+        webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam1.startStreaming(1280,720, OpenCvCameraRotation.UPSIDE_DOWN);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
 
     while (!isStarted()) {
     drive.initArm();
@@ -190,4 +187,4 @@ public class blueFront extends LinearOpMode {
     }
 
 }
-*/
+

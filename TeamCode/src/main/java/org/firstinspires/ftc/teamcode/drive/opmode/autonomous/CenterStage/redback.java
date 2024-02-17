@@ -1,6 +1,10 @@
-/**
+
 package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
+
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.redRecognizer.pixelLocationRed.LEFT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.redRecognizer.pixelLocationRed.MIDDLE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.redRecognizer.pixelLocationRed.RIGHT;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -10,13 +14,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.redRecognizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-import java.net.ProxySelector;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,8 +65,8 @@ public class redback extends LinearOpMode {
     // This is the Microsoft Life Cam 3000
     OpenCvWebcam webcam1 = null;
 
-    blueCameraPipeline ourCam = new blueCameraPipeline();
-    blueCameraPipeline.MovementDirection linePlace;
+    redRecognizer ourCam = new redRecognizer();
+    redRecognizer.pixelLocationRed linePlace;
 
     int width =1280, height = 720;
 
@@ -97,7 +101,7 @@ public class redback extends LinearOpMode {
 
         while (!isStarted()) {
             drive.initArm();
-            linePlace = ourCam.getDirection();
+            linePlace = ourCam.getPixelLocationRed();
             telemetry.addData("Direction", linePlace);
             telemetry.update();
         }
@@ -105,7 +109,7 @@ public class redback extends LinearOpMode {
         waitForStart();
         webcam1.stopStreaming();
 
-        linePlace = ourCam.getDirection();
+        linePlace = ourCam.getPixelLocationRed();
 
 
         // because our OP modes are created for each corner
@@ -223,4 +227,3 @@ public class redback extends LinearOpMode {
     }
 
 }
-*/
