@@ -5,17 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.Recognizer;
+import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.redRecognizer;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+
 @Autonomous
 @Config
-public class recognizerTest extends LinearOpMode {
+public class redRecognizerTest extends LinearOpMode {
     OpenCvWebcam webcam1 = null;
 
-    Recognizer ourCam = new Recognizer();
+    redRecognizer ourCam = new redRecognizer();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,7 +39,7 @@ public class recognizerTest extends LinearOpMode {
             }
         });
         while (!isStarted()) {
-            telemetry.addData("Location", ourCam.getPixelLocation().name());
+            telemetry.addData("Location", ourCam.getPixelLocationRed().name());
             telemetry.update();
         }
     }

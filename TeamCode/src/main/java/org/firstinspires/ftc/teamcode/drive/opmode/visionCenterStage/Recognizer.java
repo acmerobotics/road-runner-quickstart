@@ -17,68 +17,62 @@ public class Recognizer extends OpenCvPipeline {
     }
     // Creates our enum's that the program returns at the end
     private final Mat YcBcR = new Mat();
-    //This is the mat that receives the camera output after a YcBcR filter is applied
+    //This is the mat that receives the camera output after a Grayscale filter is applied
     private Mat leftMat = new Mat();
     private Mat middleMat = new Mat();
     private Mat rightMat = new Mat();
     //Individual matrices to detect different sections of the screen, each getting 1/3rd respectively,
     //with the left getting slightly more due to camera positioning
     private double leftAvg, middleAvg, rightAvg;
-    //Creates our variables to collect the average number of pixels turned white after YcBcR filter is applied
+    //Creates our variables to collect the average number of pixels turned white after Grayscale filter is applied
     private final Mat output = new Mat();
-    //Mat thats there so I can see unYCbCr filtered image whenever necessary.
-    private final Rect leftRect = new Rect(90,360,140,80);
-    private final Rect middleRect = new Rect(560,270,200,100);
-    private final Rect rightRect = new Rect(1100,400,140,80);
+    //Mat thats there so I can see unGrayscaled filtered image whenever necessary.
+    private final Rect leftRect = new Rect(0,100,140,80);
+    private final Rect middleRect = new Rect(560,0,200,100);
+    private final Rect rightRect = new Rect(1100,100,140,80);
     //Rectangles created to define where leftMat, rightMat, & middleMat check for correctly colored pixels.
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input,YcBcR, Imgproc.COLOR_RGB2YCrCb);
-        //Actually applying YcBcR filter using Imgproc filters that come as part of EasyOpenCv, with the output reading as YcBcR
-
-        leftMat = input.submat(leftRect); // Defines where leftMat actually is using leftRect
-        Core.inRange(YcBcR, new Scalar(0.0, 105, 185), new Scalar(145.0, 145.0, 255.0), leftMat);
-        //Takes YcBcR's output, and analyzes the pixels within the previously defined leftRect for YcBcR values that fall
-        //within the defined scalar values, (Roughly the entire blue spectrum) and returns a 1 for each pixel within that value range
-
-        leftAvg = Core.mean(leftMat).val[0]*100.0;
-        // takes that value outputted by the previous function, averages it, and multiplies by 100
-        // this avoids the many basically zero numbers we would have to read later on, simplifying the computers comparison
-
-        middleMat = input.submat(middleRect);
-        Core.inRange(YcBcR, new Scalar(0.0, 105, 185.0), new Scalar(145.0, 145.0, 255.0), middleMat);
-        //All of this is just the same as for the left Section.
-
-        middleAvg = Core.mean(middleMat).val[0]*100.0;
-
-        rightMat = input.submat(rightRect);
-        Core.inRange(YcBcR, new Scalar(0.0, 105, 185.0), new Scalar(145.0, 145.0, 255.0), rightMat);
-        // Same as for the left section again
-
-        rightAvg = Core.mean(rightMat).val[0]*100.0;
-
+        Imgproc.cvtColor(input,YcBcR, Imgproc.COLOR_RGB2GRAY);
+        //converts image to grayscale
         input.copyTo(output);
+        YcBcR.copyTo(leftMat);
+        YcBcR.copyTo(middleMat);
+        YcBcR.copyTo(rightMat);
+        // copies grayscale to all inputs and output screen
 
-        Imgproc.rectangle(YcBcR, leftRect, new Scalar(255.0, 255.0, 0.0), 2);
-        Imgproc.rectangle(YcBcR, middleRect, new Scalar(255.0, 255.0, 0.0), 2);
-        Imgproc.rectangle(YcBcR, rightRect, new Scalar(255.0, 255.0, 0.0), 2);
-        //Places rectangle bounding boxes on defined rectangles for diagnostic purposes
+        leftMat = input.submat(leftRect); //defines left mat's location
+        Scalar avgIntensityLeft = Core.mean(leftMat); //Detects the average intensity of left mat and stores it as a scalar
+        leftAvg = avgIntensityLeft.val[0]; //stores the Scalar value as a variable
 
-        Imgproc.putText(YcBcR, getPixelLocation().name(), new Point(25,100), Imgproc.FONT_HERSHEY_SIMPLEX,3.0,new Scalar(0.0, 255.0, 0.0));
-        //Creates output text on driver hub for testing purposes
-        return YcBcR;
-        //puts back out image for diagnostic purposes
+        middleMat = input.submat(middleRect); //defines middle mat's location
+        Scalar avgIntensityMiddle = Core.mean(middleMat); //Detects the average intensity of middle mat and stores it as a scalar
+        middleAvg = avgIntensityMiddle.val[0]; //stores the Scalar value as a variable
+
+        rightMat = input.submat(rightRect); //defines right mat's location
+        Scalar avgIntensityRight = Core.mean(rightMat); //Detects the average intensity of right mat and stores it as a scalar
+        rightAvg = avgIntensityRight.val[0]; //stores the Scalar value as a variable
+
+        Imgproc.rectangle(output, leftRect, new Scalar(255.0, 255.0, 0.0), 2);
+        Imgproc.rectangle(output, middleRect, new Scalar(255.0, 255.0, 0.0), 2);
+        Imgproc.rectangle(output, rightRect, new Scalar(255.0, 255.0, 0.0), 2);
+        // Creates bounding boxes on the output for diagnostic reasons
+
+        Imgproc.putText(output, getPixelLocation().name(), new Point(25,100), Imgproc.FONT_HERSHEY_SIMPLEX,3.0,new Scalar(0.0, 255.0, 0.0));
+        //places the PixelLocation on the camera stream.
+        return output;
+
     }
     public pixelLocation getPixelLocation() {
-        if (leftAvg > middleAvg && leftAvg > rightAvg) {
+        if (leftAvg < middleAvg && leftAvg < rightAvg) {
             return pixelLocation.LEFT;
-        } else if (middleAvg > leftAvg && middleAvg > rightAvg) {
+        } else if (middleAvg < leftAvg && middleAvg < rightAvg) {
             return pixelLocation.MIDDLE;
-        } else if (rightAvg > leftAvg && rightAvg > middleAvg) {
+        } else if (rightAvg < leftAvg && rightAvg < middleAvg) {
                 return pixelLocation.RIGHT;
         } else {
             return pixelLocation.UNKNOWN;
         }
-        //Basic if statement that just compares the values of each average, and the highest one gets returned.
+        //Basic if statement that just compares intensity averages and returns the section with the lowest average.
     }
 }
