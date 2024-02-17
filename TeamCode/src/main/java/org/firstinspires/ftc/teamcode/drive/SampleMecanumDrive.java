@@ -411,7 +411,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             gripServoF.setPosition(FgripClosed/servoROT);
         }
     }
-    }
+
     public  void setBackGrip (boolean grip) {
         double BgripOpen = 25, BgripClosed = 0;
         double servoROT = 300;
