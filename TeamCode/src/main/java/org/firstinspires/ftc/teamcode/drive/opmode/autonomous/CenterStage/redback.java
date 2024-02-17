@@ -90,7 +90,7 @@ public class redback extends LinearOpMode {
         webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam1.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
+                webcam1.startStreaming(width, height, OpenCvCameraRotation.UPSIDE_DOWN);
             }
 
             @Override
