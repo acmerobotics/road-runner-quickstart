@@ -1,9 +1,9 @@
 
-/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.CenterStage;
 
-import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.LEFT;
-import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.MIDDLE;
-import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline.MovementDirection.RIGHT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.redRecognizer.pixelLocationRed.LEFT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.redRecognizer.pixelLocationRed.MIDDLE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.redRecognizer.pixelLocationRed.RIGHT;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.blueCameraPipeline;
+import org.firstinspires.ftc.teamcode.drive.opmode.visionCenterStage.redRecognizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -40,12 +40,12 @@ public class redFront extends LinearOpMode  {
     List<Pose2d> listPose = Arrays.asList(leftLine, rightLine, centerLine);
 
     // these poses are markers for the Left and right back to move to the backdrop in FrontSide Code these will not be here
-  /*  private final Pose2d redBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
+    private final Pose2d redBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
     private final Pose2d redBackTrussMarker = new Pose2d(15, -48, Math.toRadians(0));
     private final Pose2d redFrontTruss = new Pose2d(-24, 36, Math.toRadians(90));
-*/
+
     //these are markers for the Center back move2backDrop in FrontSide Cose these will not be here
- /*  private final Pose2d redFrontGate = new Pose2d(24, 12, Math.toRadians(0));
+   private final Pose2d redFrontGate = new Pose2d(24, 12, Math.toRadians(0));
     private final Pose2d redBackGate = new Pose2d(-36, 12, Math.toRadians(0));
 
 
@@ -188,4 +188,3 @@ public class redFront extends LinearOpMode  {
     }
 
 }
- */
