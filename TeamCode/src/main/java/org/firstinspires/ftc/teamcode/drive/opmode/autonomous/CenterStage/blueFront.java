@@ -27,11 +27,10 @@ import java.util.List;
 @Autonomous(name = "blueFront auto")
 
 public class blueFront extends LinearOpMode {
-    //THIS IS THE DEFAULT CODE and the DEFAULT POSITION IS BLUE BACK
-    //I HAVE NOT WORKED ON HEADINGS
+    // THIS IS THE DEFAULT CODE and the DEFAULT POSITION IS BLUE BACK
+    // I HAVE NOT WORKED ON HEADINGS
     private final Pose2d opStartpose = new Pose2d(11, 60, Math.toRadians(-90));
     private final Pose2d opEndPose = new Pose2d(48, 62, Math.toRadians(0));
-
 
     // line Poses wrote the list this way to make it easier to read.
     private final Pose2d rightLine = new Pose2d(1, 34, Math.toRadians(180));
@@ -39,18 +38,10 @@ public class blueFront extends LinearOpMode {
     private final Pose2d centerLine = new Pose2d(12, 24.5, Math.toRadians(270));
     List<Pose2d> listPose = Arrays.asList(leftLine, centerLine, rightLine);
 
-
-
     // these poses are markers for the Left and right back to move to the backdrop in FrontSide Code these will not be here
- //   private final Pose2d blueBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
+    // private final Pose2d blueBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
     private final Pose2d blueFrontTrussMarker = new Pose2d(15, 48, Math.toRadians(270));
-  //  private final Pose2d blueFrontTruss = new Pose2d(-24, 36, Math.toRadians(0));
-
-
-    //these are markers for the Center back move2backDrop in FrontSide Cose these will not be here
-  //  private final Pose2d blueFrontGate = new Pose2d(24, 12, Math.toRadians(0));
-  //  private final Pose2d blueBackGate = new Pose2d(-36, 12, Math.toRadians(0));
-
+    // private final Pose2d blueFrontTruss = new Pose2d(-24, 36, Math.toRadians(0));
 
     // these are the drop poses these are the same for all blue opModes only different for Red side
     private final Pose2d blueDropL = new Pose2d(50, 42, Math.toRadians(0));
@@ -75,7 +66,6 @@ public class blueFront extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
 
     drive = new SampleMecanumDrive(hardwareMap);
     // Set up the webcam

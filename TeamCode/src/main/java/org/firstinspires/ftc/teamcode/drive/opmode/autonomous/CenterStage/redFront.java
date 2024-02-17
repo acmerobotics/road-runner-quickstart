@@ -24,40 +24,31 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-@Autonomous (name = "Red FRONT ")
+@Autonomous (name = "redFront auto ")
 
 public class redFront extends LinearOpMode  {
 
     //THIS IS THE DEFAULT CODE and the DEFAULT POSITION IS BLUE BACK
-    //I HAVE NOT WORKED ON HEADINGS
     private final Pose2d opStartpose = new Pose2d(12, -60, Math.toRadians(90));
     private final Pose2d opEndPose = new Pose2d(59, -60, Math.toRadians(0));
 
     // line Poses wrote the list this way to make it easier to read.
-    private final Pose2d rightLine = new Pose2d(24, -30, Math.toRadians(10));
+    private final Pose2d rightLine = new Pose2d(24, -30, Math.toRadians(0));
     private final Pose2d leftLine = new Pose2d(1,-34, Math.toRadians(180));
-    private final Pose2d centerLine = new Pose2d(12,-24.5 , Math.toRadians(90));
+    private final Pose2d centerLine = new Pose2d(12,-24 , Math.toRadians(90));
     List<Pose2d> listPose = Arrays.asList(leftLine, rightLine, centerLine);
 
     // these poses are markers for the Left and right back to move to the backdrop in FrontSide Code these will not be here
-    private final Pose2d redBackTruss = new Pose2d(-24, 36, Math.toRadians(0));
     private final Pose2d redBackTrussMarker = new Pose2d(15, -48, Math.toRadians(0));
-    private final Pose2d redFrontTruss = new Pose2d(-24, 36, Math.toRadians(90));
-
-    //these are markers for the Center back move2backDrop in FrontSide Cose these will not be here
-   private final Pose2d redFrontGate = new Pose2d(24, 12, Math.toRadians(0));
-    private final Pose2d redBackGate = new Pose2d(-36, 12, Math.toRadians(0));
-
 
     // these are the drop poses these are the same for all blue opModes only different for Red side
     private final Pose2d redDropL = new Pose2d(50, -30, Math.toRadians(0));
     private final Pose2d redDropC = new Pose2d(50, -36, Math.toRadians(0));
     private final Pose2d redDropR = new Pose2d(50, -42, Math.toRadians(0));
 
-    // Why is this named this?
     List<Pose2d> listYellowDrop = Arrays.asList(redDropL, redDropC, redDropR);
 
-    //Sameple mecnum drive is the ROBOT class that gives us the ablity to create the Robot object in this case name drive and send and revice all the data for Moters, servos ,etc.
+    //Sample mecanum drive is the ROBOT class that gives us the ability to create the Robot object in this case name drive and send and revice all the data for Moters, servos ,etc.
     SampleMecanumDrive drive;
 
     // This is the Microsoft Life Cam 3000
@@ -66,8 +57,7 @@ public class redFront extends LinearOpMode  {
     redRecognizer ourCam = new redRecognizer();
     redRecognizer.pixelLocationRed linePlace;
 
-    int width =1280, height = 720;
-
+    int width = 1280, height = 720;
 
     private final double travelSpeed = 45.0, travelAccel = 30.0;
 
@@ -162,14 +152,13 @@ public class redFront extends LinearOpMode  {
     }
     public void LRCmoveToBackDrop (SampleMecanumDrive robot , int DropPlace) {
 
-        TrajectorySequence  LRCgoTOBack= robot.trajectorySequenceBuilder(robot.getPoseEstimate())
+        TrajectorySequence LRCgoTOBack= robot.trajectorySequenceBuilder(robot.getPoseEstimate())
 
                 .lineToSplineHeading(listYellowDrop.get(DropPlace),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
-
                 .build();
         robot.followTrajectorySequence(LRCgoTOBack);
         robot.updatePoseEstimate();
