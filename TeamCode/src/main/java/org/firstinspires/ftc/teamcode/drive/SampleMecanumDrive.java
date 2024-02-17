@@ -350,8 +350,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void initArm() {
         stopAndResetMotors();
-        setBothGrip(true);
-        setSlideVelocity(200, slideLeft, slideRight, wristMotor);
+        setBothGrip(false);
+        setSlideVelocity(2000, slideLeft, slideRight, wristMotor);
         setHeight(0);
         setExtension(0);
         restartMotors();
@@ -374,12 +374,15 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
     }
     //TODO : WE need to change all the setGrip Functions this is found in like 3 other classes
-    // Takes a boolean grip value and does the math to convert it to a servo position
+    // Takes a boolean grip value and does the math to convert it to a servo position4
+
+    // true is open false is closed
+    //F Is LEft B is right
     public void setBothGrip(boolean grip) {
         //double leftOpen = 0.0, leftClosed = 105.0;
         // double rightOpen = 270.0, rightClosed = 175.0;
-        double FgripOpen = 0, FgripClosed = 0,
-                BgripOpen = 0, BgripClosed = 0;
+        double FgripOpen = 13, FgripClosed = 0,
+                BgripOpen = 27, BgripClosed = 0;
         double servoROT = 300;
 
         if (grip) {
@@ -394,15 +397,20 @@ public class SampleMecanumDrive extends MecanumDrive {
     // this is just a setup for the wrist these are random numbers I think we can get the numbers from a demo auto
     //ill make the auto
     public  void setFrontGrip (boolean grip) {
-        double FgripOpen = 25, FgripClosed = 0;
+        //double leftOpen = 0.0, leftClosed = 105.0;
+        // double rightOpen = 270.0, rightClosed = 175.0;
+        double FgripOpen = 5, FgripClosed = 15,
+                BgripOpen = 27, BgripClosed = 0;
         double servoROT = 300;
 
         if (grip) {
-
+            gripServoB.setPosition(BgripOpen/servoROT);
             gripServoF.setPosition(FgripOpen/servoROT);
         } else if (!grip) {
+            gripServoB.setPosition(BgripClosed/servoROT);
             gripServoF.setPosition(FgripClosed/servoROT);
         }
+    }
     }
     public  void setBackGrip (boolean grip) {
         double BgripOpen = 25, BgripClosed = 0;
