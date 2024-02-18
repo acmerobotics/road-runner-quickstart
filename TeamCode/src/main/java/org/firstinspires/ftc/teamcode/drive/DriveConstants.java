@@ -24,8 +24,8 @@ public class DriveConstants {
      * These are motor constants that should be listed online for your motors.
      */
 
-    public static final double TICKS_PER_REV = 145.6;
-    public static final double MAX_RPM = 450;
+    public static final double TICKS_PER_REV = 145.1;
+    public static final double MAX_RPM = 1150; //1150
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
@@ -59,7 +59,7 @@ public class DriveConstants {
      */
     // OLD VALUE--
     // kV = 1.0 / rpmToVelocity(MAX_RPM)
-    public static double kV = 0.007093976167486655;
+    public static double kV = 0.0072;
     public static double kA = 0.00435;
     public static double kStatic = 0.0015;
 
@@ -104,8 +104,8 @@ public class DriveConstants {
      * https://github.com/acmerobotics/road-runner-quickstart/issues/91
 
      */
-    public static double MAX_VEL = 30;
-    public static double MAX_ACCEL = 30;
+    public static double MAX_VEL = 30; //90
+    public static double MAX_ACCEL = 30; //90
     public static double MAX_ANG_VEL = Math.toRadians(322.28875976108804);
     public static double MAX_ANG_ACCEL = Math.toRadians(322.28875976108804);
     public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR =
