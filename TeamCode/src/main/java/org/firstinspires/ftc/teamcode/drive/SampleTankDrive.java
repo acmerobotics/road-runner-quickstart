@@ -53,7 +53,7 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  * Simple tank drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleTankDrive extends TankDrive {
+public class SampleTankDrive extends TankDrive implements Drive {
     public static PIDCoefficients AXIAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients CROSS_TRACK_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
@@ -272,6 +272,8 @@ public class SampleTankDrive extends TankDrive {
         return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
     }
 
+
+
     @Override
     public void setMotorPowers(double v, double v1) {
         for (DcMotorEx leftMotor : leftMotors) {
@@ -280,6 +282,10 @@ public class SampleTankDrive extends TankDrive {
         for (DcMotorEx rightMotor : rightMotors) {
             rightMotor.setPower(v1);
         }
+    }
+
+    @Override
+    public void setMotorPowers(double v, double v1, double v2, double v3) {
     }
 
     @Override

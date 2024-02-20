@@ -20,7 +20,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.drive.Drive;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 
 import java.util.List;
 
@@ -64,6 +66,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         return MotionProfileGenerator.generateSimpleMotionProfile(start, goal, MAX_VEL, MAX_ACCEL);
     }
 
+    private Drive drive;
+
     @Override
     public void runOpMode() {
         if (!RUN_USING_ENCODER) {
@@ -73,7 +77,11 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        if (TuningOpModes.DRIVE_CLASS == SampleMecanumDrive.class ) {
+            drive = new SampleMecanumDrive(hardwareMap);
+        }else if (TuningOpModes.DRIVE_CLASS == SampleTankDrive.class) {
+            drive = new SampleTankDrive(hardwareMap);
+        }
 
         Mode mode = Mode.TUNING_MODE;
 

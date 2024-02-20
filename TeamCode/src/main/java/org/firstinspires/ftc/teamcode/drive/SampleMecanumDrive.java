@@ -49,11 +49,12 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 
+
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
+public class SampleMecanumDrive extends MecanumDrive implements Drive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
@@ -277,7 +278,13 @@ public class SampleMecanumDrive extends MecanumDrive {
             lastEncVels.add(vel);
             wheelVelocities.add(encoderTicksToInches(vel));
         }
+
         return wheelVelocities;
+    }
+
+    @Override
+    public void setMotorPowers(double v, double v1) {
+
     }
 
     @Override
