@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teamCode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class ArmController{
@@ -11,17 +12,18 @@ public class ArmController{
     public int currentPos;
     public PIDController pidController;
 
-    int MaxPoz = 800;
-    int MidPoz = 500;
+    int MaxPoz = 1500;
+    int MidPoz = 650;
     int MinPoz = 0;
     DcMotorEx armMotor;
     public ArmController(HardwareMap map)
     {
         pidController = new PIDController(P, I, D);
         pidController.maxOutput = 0.8;
-        armMotor = map.get(DcMotorEx.class, "m2e");
+        armMotor = map.get(DcMotorEx.class, "m0e");
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
