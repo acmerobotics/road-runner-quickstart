@@ -36,6 +36,8 @@ public class TestConfigMotor1PIDServo extends LinearOpMode {
         servo2 = hardwareMap.get(Servo.class, nameservo2);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         waitForStart();
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while (opModeIsActive())
         {
             pidController.p = P;

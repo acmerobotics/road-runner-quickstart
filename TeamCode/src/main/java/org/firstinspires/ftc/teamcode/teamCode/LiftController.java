@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.teamCode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+@Config
 public class LiftController{
     public static double P = 0.01, I = 0, D = 0;
     public static int target = 0;
@@ -39,6 +41,10 @@ public class LiftController{
     public void goMid()
     {
         target = MidPoz;
+    }
+    public void goTOPos(int pos)
+    {
+        target = pos;
     }
 
     public void up(double x)

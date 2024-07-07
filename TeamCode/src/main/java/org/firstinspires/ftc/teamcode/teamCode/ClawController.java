@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class ClawController {
     Servo left, right;
-    double leftClosed = 0.5;
-    double leftOpen = 0.5;
-    double rightClosed = 0.5;
-    double rightOpen = 0.5;
+    double leftClosed = 0.6;
+    double leftOpen = 0.45;
+    double rightClosed = 0.65;
+    double rightOpen = 0.8;
 
     public enum Status
     {
@@ -20,8 +20,8 @@ public class ClawController {
     Status rightStatus = Status.OPEN;
 
     public ClawController (HardwareMap map) {
-        left = map.get(Servo.class, "");
-        right = map.get(Servo.class, "");
+        left = map.get(Servo.class, "s0e");
+        right = map.get(Servo.class, "s2e");
     }
     public void toggleLeft() {
         if(leftStatus == Status.OPEN) {

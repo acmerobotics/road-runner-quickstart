@@ -1,50 +1,52 @@
 package org.firstinspires.ftc.teamcode.teamCode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
-public class ArmController{
-    double power;
-    public int target = 0;
+public class ArmControllerPID {
+    public static double P = 0.04, I = 0.02, D = 2;
+    public static int target = 0;
     public int currentPos;
+    public PIDController pidController;
+
     public static int MaxPoz = 900;
-    public static int MidPoz = 550;
-    public static int MinPoz = 150;
+    public static int MidPoz = 450;
+    public static int MinPoz = 0;
     DcMotorEx armMotor;
-    public ArmController(HardwareMap map)
+    public ArmControllerPID(HardwareMap map)
     {
+        pidController = new PIDController(P, I, D);
+        pidController.maxOutput = 0.8;
         armMotor = map.get(DcMotorEx.class, "m0e");
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void goUp()
     {
         target = MaxPoz;
-        armMotor.setTargetPosition(target);
+        pidController.targetValue = target;
     }
     public void goDown()
     {
         target = MinPoz;
-        armMotor.setTargetPosition(target);
+        pidController.targetValue = target;
     }
     public void goMid()
     {
         target = MidPoz;
-        armMotor.setTargetPosition(target);
+        pidController.targetValue = target;
     }
     public void update()
     {
         currentPos = armMotor.getCurrentPosition();
-        if(currentPos - target > 50) power = 0.4;
-        else power = 1;
+        double power = pidController.update(currentPos);
         armMotor.setPower(power);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
