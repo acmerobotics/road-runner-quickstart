@@ -11,10 +11,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 @Autonomous
 public class AutoPisu extends LinearOpMode {
     SampleMecanumDrive drive;
-    ArmController arm;
-    LiftController lift;
-    JointController joint;
-    ClawController claw;
+    Robot robot;
 
 
     //public Robotel robotel;
@@ -22,54 +19,52 @@ public class AutoPisu extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {{
                 drive = new SampleMecanumDrive(hardwareMap);
-                arm = new ArmController (hardwareMap);
-                lift = new LiftController (hardwareMap);
-                joint = new JointController(hardwareMap);
-                claw = new ClawController (hardwareMap);
-
                 Pose2d START_POSE = new Pose2d(14, 65, Math.toRadians(-90));
-
-                arm.goUp();
-                joint.goToUp();
-                claw.toggleLeft();
-                claw.toggleRight();
+                robot = new Robot(this);
+                robot.start();
+                robot.arm.goUp();
+                robot.joint.goToUp();
+                robot.claw.toggleLeft();
+                robot.claw.toggleRight();
                 drive.setPoseEstimate(START_POSE);
                 waitForStart();
                 drive.followTrajectorySequence(drive.trajectorySequenceBuilder(START_POSE)
                         .lineToLinearHeading(new Pose2d(14,64, Math.toRadians(-90)))
                         .lineToLinearHeading(new Pose2d(13, 45, Math.toRadians(-120)))//pune pixel pe right
                                 .addTemporalMarker(() -> {
-                                    claw.toggleRight();
+                                    robot.claw.toggleRight();
                                 })
                                 .waitSeconds(0)
                                 .waitSeconds(0.5)
                                 .addTemporalMarker(() ->{
-                                    arm.goMid();
+                                    robot.arm.goMid();
                                 })
                                 .waitSeconds(0)
                                 .lineToConstantHeading(new Vector2d(13, 50)) //da cu spatele ig
                         .lineToLinearHeading(new Pose2d(20, 45, Math.toRadians(0))) //rotire
                         .lineToConstantHeading(new Vector2d(46, 30)) //merge la backdrop
                                 .addTemporalMarker(() -> {
-                                            lift.goMid();
-                                            joint.goToUp();
+                                            robot.lift.goMid();
+                                            robot.joint.goToUp();
                                         })
                                         .waitSeconds(0)
                                         .waitSeconds(0.02)
                                                 .addTemporalMarker(() -> {
-                                                 claw.toggleLeft();
+                                                 robot.claw.toggleLeft();
                                                 })
                                 .waitSeconds(0)
                                 .waitSeconds(0.02)
                                 .addTemporalMarker(() -> {
-                                    lift.goDown();
+                                    robot.lift.goDown();
                                 })
                                 .waitSeconds(0)
 
                         .build()
                 );
-
-
-
+        if(isStopRequested()) {
+            robot.interrupt();
+            stop();
+        }
+        robot.interrupt();
             }}}
 
