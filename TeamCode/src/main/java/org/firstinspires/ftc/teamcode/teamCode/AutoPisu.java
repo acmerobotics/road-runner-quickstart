@@ -28,31 +28,43 @@ public class AutoPisu extends LinearOpMode {
                 claw = new ClawController (hardwareMap);
 
                 Pose2d START_POSE = new Pose2d(14, 65, Math.toRadians(-90));
-                arm.goMid();
+
+                arm.goUp();
                 joint.goToUp();
                 claw.toggleLeft();
                 claw.toggleRight();
-
+                drive.setPoseEstimate(START_POSE);
                 waitForStart();
                 drive.followTrajectorySequence(drive.trajectorySequenceBuilder(START_POSE)
-                            .lineToLinearHeading(new Pose2d(13, 45, Math.toRadians(-120)))//pune pixel pe right
-
-
-                            .lineToLinearHeading(new Pose2d(20, 50, Math.toRadians(0))) //rotire
-                            .lineToConstantHeading(new Vector2d(46, 36)) //merge la backdrop
-
-
-
-                            .lineToLinearHeading(new Pose2d(23, 11, Math.toRadians(180))) //rotire+diag
-
-                            .lineToConstantHeading(new Vector2d(-53, 11)) //trece pe sub door si aj la stack
-
-
-
-
-
-                            .lineToConstantHeading(new Vector2d(23, 11)) //pleaca de la stack
-                            .lineToLinearHeading(new Pose2d(46, 36, Math.toRadians(0))) //ajunge la backdrop
+                        .lineToLinearHeading(new Pose2d(14,64, Math.toRadians(-90)))
+                        .lineToLinearHeading(new Pose2d(13, 45, Math.toRadians(-120)))//pune pixel pe right
+                                .addTemporalMarker(() -> {
+                                    claw.toggleRight();
+                                })
+                                .waitSeconds(0)
+                                .waitSeconds(0.5)
+                                .addTemporalMarker(() ->{
+                                    arm.goMid();
+                                })
+                                .waitSeconds(0)
+                                .lineToConstantHeading(new Vector2d(13, 50)) //da cu spatele ig
+                        .lineToLinearHeading(new Pose2d(20, 45, Math.toRadians(0))) //rotire
+                        .lineToConstantHeading(new Vector2d(46, 30)) //merge la backdrop
+                                .addTemporalMarker(() -> {
+                                            lift.goMid();
+                                            joint.goToUp();
+                                        })
+                                        .waitSeconds(0)
+                                        .waitSeconds(0.02)
+                                                .addTemporalMarker(() -> {
+                                                 claw.toggleLeft();
+                                                })
+                                .waitSeconds(0)
+                                .waitSeconds(0.02)
+                                .addTemporalMarker(() -> {
+                                    lift.goDown();
+                                })
+                                .waitSeconds(0)
 
                         .build()
                 );
