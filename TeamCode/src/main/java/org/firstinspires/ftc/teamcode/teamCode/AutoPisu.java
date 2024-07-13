@@ -22,7 +22,7 @@ public class AutoPisu extends LinearOpMode {
                 Pose2d START_POSE = new Pose2d(14, 65, Math.toRadians(-90));
                 robot = new Robot(this);
                 robot.start();
-                robot.arm.goUp();
+                robot.arm.goMid();
                 robot.joint.goToUp();
                 robot.claw.toggleLeft();
                 robot.claw.toggleRight();
