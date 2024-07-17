@@ -13,7 +13,6 @@ public class ClawController {
     public static double RightOpen = 0.5;
     public static double RightClose = 0.6;
     public static double LeftArrange= 0.9;
-
     public ClawController(HardwareMap map)
     {
         ClawLeft = map.get(Servo.class, "clawLeft");
