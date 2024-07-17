@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teamCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.sfdev.assembly.state.StateMachineBuilder;
+import com.sfdev.assembly.state.*;
 
 import org.firstinspires.ftc.robotcore.external.StateMachine;
 
@@ -20,60 +21,61 @@ public class TeleOp extends LinearOpMode {
     RobotStates lastState = RobotStates.OUTTAKE_READY;
     @Override
     public void runOpMode() throws InterruptedException {
-        StateMachine machine = new StateMachineBuilder()
+        StateMachine machine = new StateMachineBuilder(df)
                 .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_EXTENDED)
-                .onEnter( () -> {
-                    intake.spit();
-                    slides.retract();
+                .onExit(() -> {
+                    telemetry.addData("", "");
                 })
-                .transition( () -> slides.currentState == retracted, RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
-
-                .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
-                .onEnter( () -> {
-                    storage.open();
-                    outtake4bar.goToIntake();
-                    outtakeJoint.goToIntake();
-                })
-                .onExit( () -> {
-                    outtakeClaw.closeLeft();
-                    outtakeClaw.closeRight();
-                })
-                .transitionTimed(1, RobotStates.WAITING_FOR_CLAW)
-
-                .state(RobotStates.WAITING_FOR_CLAW)
-                .onExit( () -> {
-                    if(claw.isEmpty() && lift.currentState == UP) {
-                        lift.currentState = GOING_DOWN_PID;
-                    }
-                })
-                .transitionTimed(0.2, RobotStates.OUTTAKE_READY)
-
-                .state(RobotStates.OUTTAKE_READY)
-                .onEnter( () -> {
-                    outtake4bar.goToReady();
-                    outtakeJoint.goToReady();
-                    outtakeRotation.goToLevel();
-                })
-                .transition(lift.currentState == UP, RobotStates.LIFT_UP)
-                .transition(slides.currentState == EXTENDED && storage.currentState == full, RobotStates.WAITING_FOR_REVERSE_INTAKE)
-
-                .state(RobotStates.WAITING_FOR_REVERSE_INTAKE)
-                .transitionTimed(0.2, RobotStates.PIXELS_IN_STORAGE_SLIDES_EXTENDED)
-
-                .state(RobotStates.LIFT_UP)
-                .onEnter( () -> {
-                    outtake4bar.goToOuttake();
-                    outtakeJoint.goToOuttake();
-                })
-                .transition(claw.isEmpty() || lift.currentState != UP, RobotStates.WAITING_FOR_CLAW)
+//                .onEnter( () -> {
+//                    intake.spit();
+//                    slides.retract();
+//                })
+//                .transition( () -> slides.currentState == retracted, RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
+//
+//                .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
+//                .onEnter( () -> {
+//                    storage.open();
+//                    outtake4bar.goToIntake();
+//                    outtakeJoint.goToIntake();
+//                })
+//                .onExit( () -> {
+//                    outtakeClaw.closeLeft();
+//                    outtakeClaw.closeRight();
+//                })
+//                .transitionTimed(1, RobotStates.WAITING_FOR_CLAW)
+//
+//                .state(RobotStates.WAITING_FOR_CLAW)
+//                .onExit( () -> {
+//                    if(claw.isEmpty() && lift.currentState == UP) {
+//                        lift.currentState = GOING_DOWN_PID;
+//                    }
+//                })
+//                .transitionTimed(0.2, RobotStates.OUTTAKE_READY)
+//
+//                .state(RobotStates.OUTTAKE_READY)
+//                .onEnter( () -> {
+//                    outtake4bar.goToReady();
+//                    outtakeJoint.goToReady();
+//                    outtakeRotation.goToLevel();
+//                })
+//                .transition(lift.currentState == UP, RobotStates.LIFT_UP)
+//                .transition(slides.currentState == EXTENDED && storage.currentState == full, RobotStates.WAITING_FOR_REVERSE_INTAKE)
+//
+//                .state(RobotStates.WAITING_FOR_REVERSE_INTAKE)
+//                .transitionTimed(0.2, RobotStates.PIXELS_IN_STORAGE_SLIDES_EXTENDED)
+//
+//                .state(RobotStates.LIFT_UP)
+//                .onEnter( () -> {
+//                    outtake4bar.goToOuttake();
+//                    outtakeJoint.goToOuttake();
+//                })
+//                .transition(claw.isEmpty() || lift.currentState != UP, RobotStates.WAITING_FOR_CLAW)
 
                 .build();
 
         waitForStart();
-        machine.start();
 
         while(opModeIsActive()) {
-            machine.update();
         }
     }
 }
