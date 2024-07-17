@@ -11,6 +11,13 @@ public class Storage {
         servo = map.get(Servo.class, "");
     }
 
+    public enum State {
+        EMPTY,
+        PIXEL,
+        FULL
+    }
+    public State currentState = State.EMPTY;
+
     public void open() {
         servo.setPosition(openPos);
     }

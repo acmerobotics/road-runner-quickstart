@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode.teamCode.Classes;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Utils.PIDController;
 
-public class SlidesControllerPID {
+public class ExtendoControllerPID {
     DcMotorEx extendo;
     //double kp = 0.02, kd = 0.01, ki = 0.002;
     double kp = 0, kd = 0, ki = 0;
@@ -31,7 +30,7 @@ public class SlidesControllerPID {
     ElapsedTime timer;
     int time_to_wait;
 
-    public SlidesControllerPID(HardwareMap map) {
+    public ExtendoControllerPID(HardwareMap map) {
         extendo = map.get(DcMotorEx.class, "Extendo");
 
         extendo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

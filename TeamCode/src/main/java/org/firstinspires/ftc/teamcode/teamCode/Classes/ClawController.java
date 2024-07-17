@@ -73,4 +73,7 @@ public class ClawController {
         closeRight();
     }
 
+    public boolean isEmpty() {
+        return LeftStatus == Status.OPEN && RightStatus == Status.OPEN;
+    }
 }

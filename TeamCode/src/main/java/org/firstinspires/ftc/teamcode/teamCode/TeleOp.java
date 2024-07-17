@@ -2,16 +2,16 @@ package org.firstinspires.ftc.teamcode.teamCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.sfdev.assembly.state.StateMachineBuilder;
-import com.sfdev.assembly.state.*;
 
-import org.firstinspires.ftc.robotcore.external.StateMachine;
-import org.firstinspires.ftc.teamcode.configs.StateMachineTest;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.Utils.StickyGamepad;
+import org.firstinspires.ftc.teamcode.teamCode.Classes.ClawController;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.IntakeController;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.LiftController;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.Outtake4Bar;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.OuttakeJoint;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.OuttakeRotation;
-import org.firstinspires.ftc.teamcode.teamCode.Classes.SlidesControllerPID;
+import org.firstinspires.ftc.teamcode.teamCode.Classes.ExtendoControllerPID;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.Storage;
 
 
@@ -24,7 +24,11 @@ public class TeleOp extends LinearOpMode {
     OuttakeJoint outtakeJoint;
     IntakeController intake;
     Storage storage;
-    SlidesControllerPID slides;
+    ExtendoControllerPID slides;
+    ClawController claw;
+    SampleMecanumDrive drive;
+    StickyGamepad sticky1, sticky2;
+
 
     enum RobotStates
     {
@@ -48,14 +52,12 @@ public class TeleOp extends LinearOpMode {
 
         com.sfdev.assembly.state.StateMachine machine = new StateMachineBuilder()
                 .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_EXTENDED)
-                .onExit(() -> {
-                    telemetry.addData("", "");
-                })
                 .onEnter(() -> {
                     intake.reverse();
-                    slides.retract();
+                    if(slides.currentState != ExtendoControllerPID.States.RETRACTED)
+                        slides.retract();
                 })
-                .transition(() -> slides.currentState == SlidesControllerPID.States.RETRACTED, RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
+                .transition(() -> slides.currentState == ExtendoControllerPID.States.RETRACTED, RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
 
                 .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
                 .onEnter(() -> {
@@ -65,15 +67,14 @@ public class TeleOp extends LinearOpMode {
                     outtakeJoint.goToIntake();
                 })
                 .onExit(() -> {
-                    outtakeClaw.closeLeft();
-                    outtakeClaw.closeRight();
+                    claw.goToPlace();
                 })
                 .transitionTimed(1, RobotStates.WAITING_FOR_CLAW)
 
                 .state(RobotStates.WAITING_FOR_CLAW)
                 .onExit(() -> {
-                    if (claw.isEmpty() && lift.currentState == UP) {
-                        lift.currentState = GOING_DOWN_PID;
+                    if (claw.isEmpty() && lift.currentState == LiftController.States.UP) {
+                        lift.currentState = LiftController.States.GOING_DOWN_PID;
                     }
                 })
                 .transitionTimed(0.2, RobotStates.OUTTAKE_READY)
@@ -84,8 +85,8 @@ public class TeleOp extends LinearOpMode {
                     outtakeJoint.goToReady();
                     outtakeRotation.goToLevel();
                 })
-                .transition(lift.currentState == UP, RobotStates.LIFT_UP)
-                .transition(slides.currentState == EXTENDED && storage.currentState == full, RobotStates.WAITING_FOR_REVERSE_INTAKE)
+                .transition( () -> lift.currentState == LiftController.States.UP, RobotStates.LIFT_UP)
+                .transition( () -> storage.currentState == Storage.State.FULL, RobotStates.WAITING_FOR_REVERSE_INTAKE)
 
                 .state(RobotStates.WAITING_FOR_REVERSE_INTAKE)
                 .transitionTimed(0.2, RobotStates.PIXELS_IN_STORAGE_SLIDES_EXTENDED)
@@ -95,18 +96,23 @@ public class TeleOp extends LinearOpMode {
                     outtake4Bar.goToDrop();
                     outtakeJoint.goToDrop();
                 })
-                .transition(claw.isEmpty() || lift.currentState != UP, RobotStates.WAITING_FOR_CLAW)
+                .transition( () -> claw.isEmpty() || lift.currentState != LiftController.States.UP, RobotStates.WAITING_FOR_CLAW)
 
                 .build();
 
-
-//        StateMachine machine = getStateMachine();
-
         waitForStart();
 
+        machine.setState(RobotStates.OUTTAKE_READY);
         machine.start();
 
         while(opModeIsActive()) {
+
+
+
+
+            sticky1.update();
+            sticky2.update();
+            drive.RobotCentric(gamepad1);
             machine.update();
         }
     }
