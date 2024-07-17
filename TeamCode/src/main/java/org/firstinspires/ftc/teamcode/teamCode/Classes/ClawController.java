@@ -28,22 +28,49 @@ public class ClawController {
         OPEN,
         CLOSE
     }
-    public Status LeftStatus, RightStatus;
-    LeftStatus=Status.OPEN;
+    public Status LeftStatus = Status.OPEN, RightStatus = Status.OPEN;
 
-    public void goToIntake() {
+    public void openLeft() {
+        LeftStatus = Status.OPEN;
         ClawLeft.setPosition(LeftOpen);
+    }
+    public void openRight() {
+        RightStatus = Status.OPEN;
         ClawRight.setPosition(RightOpen);
     }
 
-    public void goToPlace() {
+    public void closeLeft() {
+        LeftStatus = Status.CLOSE;
         ClawLeft.setPosition(LeftClose);
+    }
+    public void closeRight() {
+        RightStatus = Status.CLOSE;
         ClawRight.setPosition(RightClose);
+    }
+
+    public void toggleLeft() {
+        if(LeftStatus == Status.OPEN) closeLeft();
+        else openLeft();
+    }
+
+    public void toggleRight() {
+        if(RightStatus == Status.OPEN) closeRight();
+        else openRight();
+    }
+
+    public void goToIntake() {
+        openLeft();
+        openRight();
+    }
+
+    public void goToPlace() {
+        closeLeft();
+        closeRight();
     }
 
     public void goToArrange() {
         ClawLeft.setPosition(LeftArrange);
-        ClawRight.setPosition(RightClose);
+        closeRight();
     }
 
 }
