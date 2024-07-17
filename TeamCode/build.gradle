@@ -26,6 +26,8 @@ android {
 repositories {
     maven {
         url = 'https://maven.brott.dev/'
+    }
+    maven {
         url = 'https://jitpack.io'
     }
 }
