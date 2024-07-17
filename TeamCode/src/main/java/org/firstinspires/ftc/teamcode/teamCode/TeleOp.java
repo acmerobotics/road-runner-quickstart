@@ -6,10 +6,12 @@ import com.sfdev.assembly.state.*;
 
 import org.firstinspires.ftc.robotcore.external.StateMachine;
 import org.firstinspires.ftc.teamcode.configs.StateMachineTest;
+import org.firstinspires.ftc.teamcode.teamCode.Classes.IntakeController;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.LiftController;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.Outtake4Bar;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.OuttakeJoint;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.OuttakeRotation;
+import org.firstinspires.ftc.teamcode.teamCode.Classes.Storage;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -19,6 +21,8 @@ public class TeleOp extends LinearOpMode {
     OuttakeRotation outtakeRotation;
     Outtake4Bar outtake4Bar;
     OuttakeJoint outtakeJoint;
+    IntakeController intake;
+    Storage storage;
 
     enum RobotStates
     {
@@ -46,13 +50,14 @@ public class TeleOp extends LinearOpMode {
                     telemetry.addData("", "");
                 })
                 .onEnter(() -> {
-                    intake.spit();
+                    intake.reverse();
                     slides.retract();
                 })
                 .transition(() -> slides.currentState == retracted, RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
 
                 .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
                 .onEnter(() -> {
+                    intake.turnOff();
                     storage.open();
                     outtake4Bar.goToIntake();
                     outtakeJoint.goToIntake();

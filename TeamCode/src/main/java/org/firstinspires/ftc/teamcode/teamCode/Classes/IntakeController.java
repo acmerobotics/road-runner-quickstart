@@ -18,7 +18,7 @@ public class IntakeController {
         motor.setPower(speed1);
     }
 
-    public void tunrOff() {
+    public void turnOff() {
         motor.setPower(0);
     }
 
