@@ -30,7 +30,7 @@ public class TeleOp extends LinearOpMode {
 
                 .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
                 .onEnter( () -> {
-                    latch.open();
+                    storage.open();
                     outtake4bar.goToIntake();
                     outtakeJoint.goToIntake();
                 })
