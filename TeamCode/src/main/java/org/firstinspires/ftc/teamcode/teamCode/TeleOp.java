@@ -68,5 +68,12 @@ public class TeleOp extends LinearOpMode {
                 .transition(claw.isEmpty() || lift.currentState != UP, RobotStates.WAITING_FOR_CLAW)
 
                 .build();
+
+        waitForStart();
+        machine.start();
+
+        while(opModeIsActive()) {
+            machine.update();
+        }
     }
 }
