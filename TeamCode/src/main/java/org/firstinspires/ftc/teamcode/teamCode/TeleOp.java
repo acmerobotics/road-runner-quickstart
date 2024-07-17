@@ -1,97 +1,72 @@
 package org.firstinspires.ftc.teamcode.teamCode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.sfdev.assembly.state.StateMachineBuilder;
 
-import org.firstinspires.ftc.teamcode.Utils.StickyGamepad;
-
+import org.firstinspires.ftc.robotcore.external.StateMachine;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
-@Config
 public class TeleOp extends LinearOpMode {
-
-    boolean bratEJos = false;
-    StickyGamepad sticky1;
-    StickyGamepad sticky2;
-    ChassisController sasiu;
-    ArmController arm;
-    JointController joint;
-    LiftController lift;
-
-    ClawController claw;
-
+    enum RobotStates
+    {
+        PIXELS_IN_STORAGE_SLIDES_EXTENDED,
+        PIXELS_IN_STORAGE_SLIDES_RETRACTED,
+        OUTTAKE_READY,
+        WAITING_FOR_CLAW,
+        LIFT_UP,
+        WAITING_FOR_REVERSE_INTAKE,
+        LIFT_GOING_DOWN,
+    }
+    RobotStates lastState = RobotStates.OUTTAKE_READY;
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        StateMachine machine = new StateMachineBuilder()
+                .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_EXTENDED)
+                .onEnter( () -> {
+                    intake.spit();
+                    slides.retract();
+                })
+                .transition( () -> slides.currentState == retracted, RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
 
-        sasiu = new ChassisController(hardwareMap);
-        arm = new ArmController(hardwareMap);
-        lift = new LiftController(hardwareMap);
-        claw = new ClawController(hardwareMap);
-        joint = new JointController(hardwareMap);
-        joint.goToMid();
-        arm.goMid();
-        sticky1 = new StickyGamepad(gamepad1, this);
-        sticky2 = new StickyGamepad(gamepad2, this);
+                .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
+                .onEnter( () -> {
+                    latch.open();
+                    outtake4bar.goToIntake();
+                    outtakeJoint.goToIntake();
+                })
+                .onExit( () -> {
+                    outtakeClaw.closeLeft();
+                    outtakeClaw.closeRight();
+                })
+                .transitionTimed(1, RobotStates.WAITING_FOR_CLAW)
 
-        waitForStart();
-        while(opModeIsActive())
-        {
+                .state(RobotStates.WAITING_FOR_CLAW)
+                .onExit( () -> {
+                    if(claw.isEmpty() && lift.currentState == UP) {
+                        lift.currentState = GOING_DOWN_PID;
+                    }
+                })
+                .transitionTimed(0.2, RobotStates.OUTTAKE_READY)
 
-            sasiu.move(gamepad1);
-            arm.update();
-            lift.update();
-            sticky1.update();
-            sticky2.update();
+                .state(RobotStates.OUTTAKE_READY)
+                .onEnter( () -> {
+                    outtake4bar.goToReady();
+                    outtakeJoint.goToReady();
+                    outtakeRotation.goToLevel();
+                })
+                .transition(lift.currentState == UP, RobotStates.LIFT_UP)
+                .transition(slides.currentState == EXTENDED && storage.currentState == full, RobotStates.WAITING_FOR_REVERSE_INTAKE)
 
-            if(lift.currentPos > 400 && bratEJos)
-            {
-                arm.target = 110;
-            }
+                .state(RobotStates.WAITING_FOR_REVERSE_INTAKE)
+                .transitionTimed(0.2, RobotStates.PIXELS_IN_STORAGE_SLIDES_EXTENDED)
 
+                .state(RobotStates.LIFT_UP)
+                .onEnter( () -> {
+                    outtake4bar.goToOuttake();
+                    outtakeJoint.goToOuttake();
+                })
+                .transition(claw.isEmpty() || lift.currentState != UP, RobotStates.WAITING_FOR_CLAW)
 
-            if(gamepad1.a)
-            {
-                bratEJos = true;
-                arm.goDown();
-                joint.goToDown();
-                lift.goTOPos(300);
-            }
-            if(gamepad1.b)
-            {
-                bratEJos = false;
-                arm.goMid();
-                joint.goToMid();
-                lift.goTOPos(0);
-            }
-            if(gamepad1.y)
-            {
-                bratEJos = false;
-                arm.goUp();
-                joint.goToUp();
-            }
-            if (gamepad1.left_trigger != 0) {
-                lift.down(gamepad1.left_trigger);
-            }
-            if (gamepad1.right_trigger != 0) {
-                lift.up(gamepad1.right_trigger); }
-            if (gamepad1.dpad_down) {
-                lift.goDown(); }
-            if (gamepad1.dpad_up) {
-                lift.goUp(); }
-            if (gamepad1.dpad_left) {
-                lift.goMid(); }
-            if (sticky1.right_bumper) {
-                claw.toggleRight();
-            }
-            if (sticky1.left_bumper) {
-                claw.toggleLeft();
-            }
-
-            telemetry.addData("glis: ", lift.currentPos);
-            telemetry.update();
-        }
+                .build();
     }
 }
