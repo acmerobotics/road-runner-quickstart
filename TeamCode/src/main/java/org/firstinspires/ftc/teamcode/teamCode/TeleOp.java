@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.teamCode.Classes.LiftController;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.Outtake4Bar;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.OuttakeJoint;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.OuttakeRotation;
+import org.firstinspires.ftc.teamcode.teamCode.Classes.SlidesControllerPID;
 import org.firstinspires.ftc.teamcode.teamCode.Classes.Storage;
 
 
@@ -23,6 +24,7 @@ public class TeleOp extends LinearOpMode {
     OuttakeJoint outtakeJoint;
     IntakeController intake;
     Storage storage;
+    SlidesControllerPID slides;
 
     enum RobotStates
     {
@@ -53,7 +55,7 @@ public class TeleOp extends LinearOpMode {
                     intake.reverse();
                     slides.retract();
                 })
-                .transition(() -> slides.currentState == retracted, RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
+                .transition(() -> slides.currentState == SlidesControllerPID.States.RETRACTED, RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
 
                 .state(RobotStates.PIXELS_IN_STORAGE_SLIDES_RETRACTED)
                 .onEnter(() -> {
