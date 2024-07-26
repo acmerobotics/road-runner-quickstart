@@ -14,9 +14,13 @@
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
+    kotlinOptions {
+        jvmTarget = '17'
+    }
 
     packagingOptions {
         jniLibs.useLegacyPackaging true
@@ -31,6 +35,7 @@ repositories {
 
 dependencies {
     implementation project(':FtcRobotController')
+    implementation 'androidx.core:core-ktx:1.13.1'
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 
     implementation "com.acmerobotics.roadrunner:ftc:0.1.13"
