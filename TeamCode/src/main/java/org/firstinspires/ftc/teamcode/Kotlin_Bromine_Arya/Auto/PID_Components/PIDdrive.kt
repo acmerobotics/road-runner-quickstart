@@ -4,12 +4,12 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.LOCALIZER
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizer
 import kotlin.math.cos
 import kotlin.math.sin
 
 
-open class PIDdrive(hwMap: HardwareMap){
+open class PIDdrive(hwMap: HardwareMap, private val localizer: Localizer){
     //constants
     private val X: PIDController = PIDController()
     private val Y: PIDController = PIDController()
@@ -20,6 +20,12 @@ open class PIDdrive(hwMap: HardwareMap){
     val rightFront: DcMotor = hwMap.get(DcMotorEx::class.java, "rightFront")
     val leftBack: DcMotor = hwMap.get(DcMotorEx::class.java, "leftBack")
 
+    fun setPID(p: DoubleArray, i: DoubleArray, d:DoubleArray){
+        X.setPIDF(p[0], i[0], d[0], 0.0)
+        Y.setPIDF(p[1], i[1], d[0], 0.0)
+        R.setPIDF(p[2], i[2], d[0], 0.0)
+    }
+
     init {
         leftBack.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         leftFront.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
@@ -27,32 +33,39 @@ open class PIDdrive(hwMap: HardwareMap){
         rightFront.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         leftBack.direction = DcMotorSimple.Direction.REVERSE
         leftFront.direction = DcMotorSimple.Direction.REVERSE
-        X.setPIDF(.05, .0001, .000315, 0.0)
-        Y.setPIDF(.05, .0001, .000315, 0.0)
-        R.setPIDF(.05, .0001, .000315, 0.0)
     }
-
+companion object{
+    var x = 0.0
+    var y =0.0
+}
     fun driveTo(target: DoubleArray){
-        val rx = Math.toRadians(LOCALIZER.headingPos)
+        var rx = localizer.heading.toDouble()
 
-        val axial = Y.calculate(LOCALIZER.yPos,target[1])
-        val lateral = X.calculate(LOCALIZER.xPos,target[0])
-        val turn = 0.0
-        // R.calculate(HeadingPosDegrees(), Target[2])
+        //TODO(Move to A util class)
+        while (rx> Math.PI){
+            rx -= 2* Math.PI
+        }
+        while (rx< -Math.PI){
+            rx += 2*Math.PI
+        }
+
+        val axial = Y.calculate(localizer.yPos,target[1])
+        val lateral = X.calculate(localizer.xPos,target[0])
+        val turn = R.calculate(rx, target[2])
+
+        x= turn
 
         val rotX = lateral * cos(-rx) - axial * sin(-rx)
         val rotY = lateral * sin(-rx) + axial * cos(-rx)
 
-        leftFront.power = (rotY + rotX + turn) //front left
-        leftBack.power = (rotY - rotX + turn) // back left
-        rightFront.power = (rotY - rotX - turn) //front right
-        rightBack.power = (rotY + rotX - turn) // back right
+
+
+        leftFront.power = (rotY + rotX - turn)
+        leftBack.power = (rotY - rotX - turn)
+        rightFront.power = (rotY - rotX + turn)
+        rightBack.power = (rotY + rotX + turn)
     }
 
-    fun stopWait(){
-        leftFront.power = 0.0
-        leftBack.power = 0.0
-        rightFront.power = 0.0
-        rightBack.power = 0.0
-    }
+
+
 }

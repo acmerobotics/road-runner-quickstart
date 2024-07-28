@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.SummerTrainingCourse;
+package org.firstinspires.ftc.teamcode.Outdated_CenterStage;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

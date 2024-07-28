@@ -30,7 +30,7 @@ public class Pipeline implements VisionProcessor {
     double cameraHeight = 1080;
 
     final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0,0);
-    final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(cameraWidth/3,cameraHeight);
+    final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(cameraWidth/3,0);
     final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(2*cameraWidth/3,0);
 
     final double RegionWidth = cameraWidth/3;
@@ -60,11 +60,6 @@ public class Pipeline implements VisionProcessor {
 
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
-        //submaqts
-
-        Left_rect = HSv_Mat.submat(new Rect(region1_pointA,region1_pointB));
-        Middle_rect = HSv_Mat.submat(new Rect(region2_pointA,region2_pointB));
-        Right_Rect = HSv_Mat.submat(new Rect(region3_pointA,region3_pointB));
 
     }
 

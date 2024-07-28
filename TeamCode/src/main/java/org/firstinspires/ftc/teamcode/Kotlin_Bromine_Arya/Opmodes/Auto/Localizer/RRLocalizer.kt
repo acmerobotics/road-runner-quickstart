@@ -7,23 +7,24 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.BacktrackingKt.Drive
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Sequencing.Sequencer
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.LOCALIZER
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizer
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizers
 
-@TeleOp
-class RRLocalizer : LinearOpMode() {
+@TeleOp(name = "RRLocalizer", group = "Linear OpMode")
+class RRLocalizer : LinearOpMode(){
     override fun runOpMode() {
         telemetry = MultipleTelemetry(telemetry, FtcDashboard.getInstance().telemetry)
 
-        LOCALIZER.mecDrive = Drive(hardwareMap, Pose2d(0.0, 0.0, 0.0))
+        val drive = Localizer(hardwareMap, Pose2d(0.0, 0.0, 0.0))
 
         waitForStart()
 
         while (opModeIsActive() && !isStopRequested) {
-            LOCALIZER.mecDrive.updatePoseEstimate();
+            drive.update()
             telemetry.addData("MajorCommand", Sequencer.MAJORCOMMAND)
-            telemetry.addData("x",LOCALIZER.xPos)
-            telemetry.addData("y",LOCALIZER.yPos)
-            telemetry.addData("h",LOCALIZER.headingPos)
+            telemetry.addData("x",drive.xPos)
+            telemetry.addData("y",drive.yPos)
+            telemetry.addData("h",Math.toDegrees(drive.heading.toDouble()))
             telemetry.update()
         }
     }

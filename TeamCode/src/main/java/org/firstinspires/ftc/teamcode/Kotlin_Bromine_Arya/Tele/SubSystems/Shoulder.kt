@@ -57,7 +57,7 @@ open class Shoulder(hwMap: HardwareMap) {
     //run consistantly
     fun pidShoulder() {
         findTarget()
-        val pidf = shoulderPIDF.calculate(shoulder.currentPosition.toDouble(), target.toDouble())
+        val pidf = shoulderPIDF.calculate(shoulder.currentPosition.toDouble(), target)
         shoulder.power =  if (target == 0.0) { powerDrop } else { pidf }
     }
 

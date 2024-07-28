@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.PID_Components
 
 import com.qualcomm.robotcore.util.ElapsedTime
 
+//TODO(Move to A util class)
+
+
 class PIDController {
-    val timer: ElapsedTime = ElapsedTime()
+    private val timer: ElapsedTime = ElapsedTime()
     private var kp: Double = 0.0
     private var ki: Double = 0.0
     private var kd: Double = 0.0
