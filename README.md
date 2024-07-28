@@ -1,4 +1,8 @@
-# Road Runner Quickstart
+# Catalysts 23997 Team Repository
 
-Check out the [docs](https://rr.brott.dev/docs/v1-0/tuning/).
+Welcome to Our repository. 
 
+List of GitHub projects implemented into this repository: 
+https://github.com/DaCodingBeast/BackTrackingIMU
+
+coming soon
