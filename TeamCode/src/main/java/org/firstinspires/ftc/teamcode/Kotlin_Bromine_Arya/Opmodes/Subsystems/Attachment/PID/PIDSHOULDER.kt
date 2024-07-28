@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.PID_Components.PIDController
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Util.PIDController
 
 @Disabled
 @TeleOp(name = "PIDSHOULDER", group = "Linear OpMode")
