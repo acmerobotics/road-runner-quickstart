@@ -1,14 +1,12 @@
-package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Auto.Localizer
+package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.Auto.Localizer
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.BacktrackingKt.Drive
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Sequencing.Sequencer
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizer
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizers
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Localizer.Localizer
 
 @TeleOp(name = "RRLocalizer", group = "Linear OpMode")
 class RRLocalizer : LinearOpMode(){

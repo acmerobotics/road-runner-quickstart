@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Subsystems.CameraAutoMove;
+package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Testing$Tuning.Subsystems$Tele.CameraAutoMove;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

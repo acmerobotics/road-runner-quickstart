@@ -6,16 +6,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Drive(hwMap: HardwareMap) {
+class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) {
 
     //private val autoDrive = autoDriveTo(hwMap)
 
-    private val revDistance: Double = 48 * Math.PI
-    private val distanceBetween: Double = 11.45 * 25.4
-    val trackWidth: Double = distanceBetween / revDistance * 2000
-
     private var rx = 0.0
-    val imu: IMU = IMU(hwMap)
 
     val rightBack: DcMotor = hwMap.get(DcMotor::class.java, "rightBack")
     val leftFront: DcMotor = hwMap.get(DcMotor::class.java, "leftFront")
@@ -28,7 +23,7 @@ class Drive(hwMap: HardwareMap) {
 
     //loop
     fun drive(gamepadInput: Array<Float>) {
-        rx = imu.imuOrientation()
+        rx = localizer.getRotation()
         when (driveType) {
             DriveType.Manual -> manualDrive(gamepadInput[0], gamepadInput[1], gamepadInput[2])
             DriveType.Auto -> autoDrive()
@@ -59,11 +54,9 @@ class Drive(hwMap: HardwareMap) {
     }
 
 
-
-
-enum class DriveType {
-    Auto, Manual
-}
+    enum class DriveType {
+        Auto, Manual
+    }
 
 }
 

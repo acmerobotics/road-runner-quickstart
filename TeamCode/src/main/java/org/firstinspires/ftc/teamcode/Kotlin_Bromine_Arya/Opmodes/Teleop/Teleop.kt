@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Actions
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.Claw
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.Drive
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.IMU
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.Heading
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.Shoulder
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.Wrist
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.TeleLocalizer
 import kotlin.math.abs
 
 @TeleOp(name = "Teleop", group = "Linear OpMode")
@@ -22,28 +22,21 @@ class Teleop : LinearOpMode() {
 
     override fun runOpMode() {
         val actions = Actions(hardwareMap)
+        val localizer = TeleLocalizer(hardwareMap)
+        val drive = Drive(hardwareMap,localizer)
+
+        Actions.isAuto = false
 
         val startOfMatch =
             abs(gamepad1.right_stick_x) > 0 || abs(gamepad1.left_stick_x) > 0 || abs(gamepad1.left_stick_y) > 0
-        //val timer: Timer = Timer
-
-
-        val drive = Drive(hardwareMap)
-
-        val imu = IMU(hardwareMap)
-        Actions.isAuto = false
-
-        val wrist = Wrist(hardwareMap)
-
-
         var gamepadInput: Array<Float>
+
         waitForStart()
         while (opModeIsActive()) {
+            actions.loop()
+            localizer.updateHeading()
 
             gamepadInput = arrayOf(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x)
-
-            actions.loop()
-
             drive.drive(gamepadInput)
 
             //previousGamepad1.copy(currentGamepad1)
@@ -70,7 +63,7 @@ class Teleop : LinearOpMode() {
 
 
             if (gamepad1.x) {
-                imu.resetIMU()
+                localizer.resetHeading()
             }
 
             //Gamepad2

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Actions
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Angle
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.PID_Components.PIDdrive
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizer
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Localizer.Localizer
 import kotlin.math.abs
 
 open class Sequencer(hwMap: HardwareMap, private val localizer: Localizer) : Actions(hwMap) {

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Subsystems.CV;
+package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Testing$Tuning.Subsystems$Tele.CV;
 
 import android.graphics.Canvas;
 

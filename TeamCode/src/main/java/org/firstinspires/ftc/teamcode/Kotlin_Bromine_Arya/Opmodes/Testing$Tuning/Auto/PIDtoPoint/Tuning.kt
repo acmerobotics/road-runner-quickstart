@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Auto.PIDtoPoint
+package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.Auto.PIDtoPoint
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
@@ -7,10 +7,9 @@ import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Actions
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.PID_Components.PIDdrive
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Pathing.BlueHelp
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Sequencing.Sequencer
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizer
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Localizer.Localizer
 
 @TeleOp(name = "Tuning", group = "Linear OpMode")
 class Tuning : LinearOpMode() {
@@ -29,7 +28,7 @@ class Tuning : LinearOpMode() {
         val drive = Localizer(hardwareMap, startPose)
         val path = BlueHelp(hardwareMap, drive, startPose)
 
-        path.setPID(PIDDRIVETUNE.P,PIDDRIVETUNE.I,PIDDRIVETUNE.D)
+        path.setPID(PIDDRIVETUNE.P, PIDDRIVETUNE.I, PIDDRIVETUNE.D)
 
         Sequencer.MAJORCOMMAND =0
 
@@ -39,7 +38,7 @@ class Tuning : LinearOpMode() {
 
         while (opModeIsActive() && !isStopRequested) {
 
-            path.setPID(PIDDRIVETUNE.P,PIDDRIVETUNE.I,PIDDRIVETUNE.D)
+            path.setPID(PIDDRIVETUNE.P, PIDDRIVETUNE.I, PIDDRIVETUNE.D)
 
             drive.update()
             path.Loop()

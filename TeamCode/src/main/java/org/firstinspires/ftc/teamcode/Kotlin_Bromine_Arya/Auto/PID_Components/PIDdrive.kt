@@ -4,9 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizer
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Localizer.Localizer
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Angle
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Subsystems.Attachment.Angles
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.PIDController
 import kotlin.math.cos
 import kotlin.math.sin

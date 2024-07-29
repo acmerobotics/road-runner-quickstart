@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Pathing.Paths.circle
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Sequencing.Sequencer
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizer
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Localizer.Localizer
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Wait.runAsynchActionAfter
 
 const val PI = Math.PI

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Subsystems.LoopTimes
+package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.`Subsystems$Tele`.LoopTimes
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config

@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.Twist2d
 import com.acmerobotics.roadrunner.Twist2dDual
 import com.acmerobotics.roadrunner.Vector2dDual
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.BacktrackingKt.DualNumHelper
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Localizer.BacktrackingKt.DualNumHelper
 
 class Drive(hwMap: HardwareMap, startPos: Pose2d) : MecDrive(hwMap, startPos) {
 

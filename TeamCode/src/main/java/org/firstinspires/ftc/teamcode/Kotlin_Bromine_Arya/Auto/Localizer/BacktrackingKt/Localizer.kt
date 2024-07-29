@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.BacktrackingKt.DualNumHelper
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Localizer.BacktrackingKt.DualNumHelper
 import org.firstinspires.ftc.teamcode.RR.ThreeDeadWheelLocalizer
 import org.firstinspires.ftc.teamcode.RR.messages.ThreeDeadWheelInputsMessage
 
@@ -114,6 +114,9 @@ class Localizer(hardwareMap: HardwareMap, val imu: IMU, inPerTick: Double, priva
         )
 
         listofEstimatedPosChanges.add(twist.value())
+        //TODO(CHange project to fix this)
+
+        deadWheelHeading = Rotation2d.exp((par0PosVel.position - par1PosVel.position) / (PARAMS.par0YTicks - PARAMS.par1YTicks))
 
         if (readImu) {
             val headingDrift = heading - deadWheelHeading
@@ -121,11 +124,10 @@ class Localizer(hardwareMap: HardwareMap, val imu: IMU, inPerTick: Double, priva
             timer.reset()
         }
 
-
         lastPar0Pos = par0PosVel.position
         lastPar1Pos = par1PosVel.position
         lastPerpPos = perpPosVel.position
-        deadWheelHeading = Rotation2d.exp((par0PosVel.position - par1PosVel.position) / (PARAMS.par0YTicks - PARAMS.par1YTicks))
+
 
         return twist
     }

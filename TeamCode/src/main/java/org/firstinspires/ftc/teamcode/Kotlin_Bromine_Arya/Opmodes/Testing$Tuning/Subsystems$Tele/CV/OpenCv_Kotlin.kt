@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Subsystems.CV
+package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.`Subsystems$Tele`.CV
 
 import android.util.Size
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
