@@ -91,7 +91,6 @@ class Claw(hwMap: HardwareMap) : Shoulder(hwMap) {
             true -> if (rightClaw || leftClaw) {
                 if (Actions.isAuto) {
                     fullSequence()
-                    Sequencer.MAJORCOMMAND++
                 } else {
                     semiSequence()
                 }
@@ -99,9 +98,6 @@ class Claw(hwMap: HardwareMap) : Shoulder(hwMap) {
 
             false -> if (rightClaw && leftClaw) {
                 fullSequence()
-                if (Actions.isAuto) {
-                    Sequencer.MAJORCOMMAND++
-                }
             }
         }
 

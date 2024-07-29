@@ -18,7 +18,7 @@ open class Actions(hardwareMap: HardwareMap) {
     private val wrist = Wrist(hardwareMap)
     private val colorSensor = ColorSensorClaw(hardwareMap)
 
-    companion object{
+    companion object {
         var isAuto: Boolean = false
     }
 
@@ -29,12 +29,13 @@ open class Actions(hardwareMap: HardwareMap) {
         Shoulder.shoulderPos = Shoulder.ShoulderPos.Lowered
         Claw.notBothClaws = colorSensor.checkForRecognition(clawChoice)
     }
+
     //AUTOMATIC CHANGE IN MAJORCOMMAND
     fun autoGrabBoth() {
         Wrist.wristPos = Wrist.WristPos.Lowered
         Shoulder.shoulderPos = Shoulder.ShoulderPos.Lowered
         Claw.notBothClaws = colorSensor.checkForRecognition()
-        if(Claw.clawContainer == Claw.ClawContainer.Full){
+        if (Claw.clawContainer == Claw.ClawContainer.Full) {
             Claw.clawChoice = Claw.ClawChoice.Both
         }
     }
@@ -82,9 +83,7 @@ open class Actions(hardwareMap: HardwareMap) {
     }
     fun manualGrab() {
         Claw.clawState = Claw.ClawState.CLOSE
-        if(isAuto&& Claw.clawContainer == Claw.ClawContainer.Full){
-            Sequencer.MAJORCOMMAND++
-        }
+        if (isAuto && Claw.clawContainer == Claw.ClawContainer.Full) Sequencer.MAJORCOMMAND++
     }
 
     //AUTOMATIC CHANGE IN MAJORCOMMAND

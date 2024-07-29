@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Localizer.Localizer
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Util.PIDController
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Angle
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Subsystems.Attachment.Angles
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.PIDController
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -35,31 +37,16 @@ open class PIDdrive(hwMap: HardwareMap, private val localizer: Localizer){
         leftBack.direction = DcMotorSimple.Direction.REVERSE
         leftFront.direction = DcMotorSimple.Direction.REVERSE
     }
-companion object{
-    var x = 0.0
-    var y =0.0
-}
     fun driveTo(target: DoubleArray){
-        var rx = localizer.heading.toDouble()
+        val rx = localizer.heading.toDouble()
 
-        //TODO(Move to A util class)
-        while (rx> Math.PI){
-            rx -= 2* Math.PI
-        }
-        while (rx< -Math.PI){
-            rx += 2*Math.PI
-        }
-
-        val axial = Y.calculate(localizer.yPos,target[1])
-        val lateral = X.calculate(localizer.xPos,target[0])
-        val turn = R.calculate(rx, target[2])
-
-        x= turn
+        val angleError = Angle.wrap(target[2]-rx)
+        val axial = Y.calculate(target[1] - localizer.yPos)
+        val lateral = X.calculate(target[0] - localizer.xPos)
+        val turn = R.calculate(angleError)
 
         val rotX = lateral * cos(-rx) - axial * sin(-rx)
         val rotY = lateral * sin(-rx) + axial * cos(-rx)
-
-
 
         leftFront.power = (rotY + rotX - turn)
         leftBack.power = (rotY - rotX - turn)

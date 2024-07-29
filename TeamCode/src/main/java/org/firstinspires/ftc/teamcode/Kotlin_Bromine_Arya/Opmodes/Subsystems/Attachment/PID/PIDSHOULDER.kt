@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Util.PIDController
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.PIDController
 
 @Disabled
 @TeleOp(name = "PIDSHOULDER", group = "Linear OpMode")
@@ -36,7 +36,7 @@ class PIDSHOULDER : LinearOpMode() {
 
         while (opModeIsActive()) {
             val PidfPower =
-                shoulder.calculate(Shoulder.currentPosition.toDouble(), bruh.target.toDouble())
+                shoulder.calculate(bruh.target -Shoulder.currentPosition.toDouble())
 
             Shoulder.power = if (bruh.target.toInt() == 0) {
                 powerDrop

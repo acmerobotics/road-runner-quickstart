@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Util.PIDController
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.PIDController
 
 
 open class Shoulder(hwMap: HardwareMap) {
@@ -57,7 +57,7 @@ open class Shoulder(hwMap: HardwareMap) {
     //run consistantly
     fun pidShoulder() {
         findTarget()
-        val pidf = shoulderPIDF.calculate(shoulder.currentPosition.toDouble(), target)
+        val pidf = shoulderPIDF.calculate(target -shoulder.currentPosition.toDouble())
         shoulder.power =  if (target == 0.0) { powerDrop } else { pidf }
     }
 
