@@ -59,6 +59,7 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
     private var deadWheelHeading = 0.0
     private var lastDrift = 0.0
     private var thetaError = 0.0
+    private var rotationcount= 0.0
 
     fun updateHeading() {
         val readImu = timer.milliseconds().toInt() >= HeadingTuner.TeleLocalizer.timeBetweenRead
@@ -88,10 +89,20 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
             ((par0PosVel.position - offsetPar0) - par1PosVel.position - offsetPar1) / (PARAMS.par0YTicks - PARAMS.par1YTicks)
 
         if (readImu) {
+            val PreviousDeadWheelHeading = deadWheelHeading
             val headingDrift = Angle.wrap(heading - deadWheelHeading)
             thetaError += (lastDrift - headingDrift)
             lastDrift = headingDrift
             timer.reset()
+
+
+            //im lazy and don't wanna figure out how to get pi in radians rn
+            if ((PreviousDeadWheelHeading > Math.PI/2) && deadWheelHeading > Math.PI/2);||
+                (PreviousDeadWheelHeading <-Math.PI/2 && deadWheelHeading < Math.PI/2);
+            ++rotationcount
+
+            }
+
         }
 
         finalHeading = Angle.wrap(deadWheelHeading - thetaError)
