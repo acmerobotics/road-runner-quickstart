@@ -7,10 +7,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.teamcode.BacktrackingKt.BacktrackingTUNING
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Angle
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.`Subsystems$Tele`.LoopTimes.HeadingTuner
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.`Subsystems$Tele`.LoopTimes.HeadingTuner.TeleLocalizer.Lcoeffecient
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.`Subsystems$Tele`.LoopTimes.HeadingTuner.TeleLocalizer.Rcoeffecient
 import org.firstinspires.ftc.teamcode.RR.ThreeDeadWheelLocalizer
+import kotlin.math.abs
 
 class TeleLocalizer(hardwareMap: HardwareMap) {
 
@@ -55,11 +57,16 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
     private var lastPar0Pos: Int = 0
     private var lastPar1Pos: Int = 0
     var heading = 0.0
-    private var finalHeading = 0.0
+    private var currentHeading = 0.0
     private var deadWheelHeading = 0.0
     private var lastDrift = 0.0
     private var thetaError = 0.0
-    private var rotationcount= 0.0
+    private var rightHalfTurns= 0
+    private var lastHeading = 0.0
+
+
+    //CHANGE
+    private var coeffecient  = 0.0
 
     fun updateHeading() {
         val readImu = timer.milliseconds().toInt() >= HeadingTuner.TeleLocalizer.timeBetweenRead
@@ -71,7 +78,18 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
         if (readImu) {
             val angles = imu.robotYawPitchRollAngles
             heading = angles.getYaw(AngleUnit.RADIANS)
-            //TODO(ADD TUNING COEFFECIENT)
+            //Has coeffecients for both and right
+
+            if(rightHalfTurns >0) {
+                val unWrappedHeading = (rightHalfTurns * Math.PI) + (Math.PI - abs(heading))
+                val coApplied = unWrappedHeading * Rcoeffecient
+                heading += (unWrappedHeading-coApplied)
+            }
+            else if(rightHalfTurns<0){
+                val unWrappedHeading = (rightHalfTurns * Math.PI) - (Math.PI - abs(heading))
+                val coApplied = unWrappedHeading * Lcoeffecient
+                heading += (unWrappedHeading-coApplied)
+            }
         }
 
         //This happens once
@@ -82,43 +100,38 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
             lastPar1Pos = par1PosVel.position
             deadWheelHeading =
                 ((par0PosVel.position - offsetPar0) - (par1PosVel.position - offsetPar1)) / (PARAMS.par0YTicks - PARAMS.par1YTicks)
-            finalHeading = deadWheelHeading
+            currentHeading = deadWheelHeading
         }
 
         deadWheelHeading =
             ((par0PosVel.position - offsetPar0) - par1PosVel.position - offsetPar1) / (PARAMS.par0YTicks - PARAMS.par1YTicks)
 
         if (readImu) {
-            val PreviousDeadWheelHeading = deadWheelHeading
             val headingDrift = Angle.wrap(heading - deadWheelHeading)
             thetaError += (lastDrift - headingDrift)
             lastDrift = headingDrift
             timer.reset()
-
-            if (PreviousDeadWheelHeading > Math.PI/2) && deadWheelHeading < Math.PI/2);{
-                ++rotationcount
-            }
-
-
-            //im lazy and don't wanna figure out how to get pi in radians rn
-            if ((PreviousDeadWheelHeading > Math.PI/2) && deadWheelHeading < Math.PI/2);||
-
-            ++rotationcount
-
-            }
-
-
-
         }
 
-        finalHeading = Angle.wrap(deadWheelHeading - thetaError)
+        currentHeading = Angle.wrap(deadWheelHeading - thetaError)
 
+        checkForRot()
+
+        lastHeading = currentHeading
         lastPar0Pos = par0PosVel.position
         lastPar1Pos = par1PosVel.position
     }
 
     fun getRotation(): Double {
-        return finalHeading
+        return currentHeading
     }
 
+    private fun checkForRot(){
+        if(lastHeading>Math.PI/2 && currentHeading < -Math.PI/2){
+            rightHalfTurns++
+        }
+        else if(lastHeading< -Math.PI/2 && currentHeading > Math.PI/2){
+            rightHalfTurns--
+        }
+    }
 }

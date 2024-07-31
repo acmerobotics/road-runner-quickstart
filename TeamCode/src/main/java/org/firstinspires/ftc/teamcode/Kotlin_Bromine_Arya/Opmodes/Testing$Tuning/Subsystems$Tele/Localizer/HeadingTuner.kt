@@ -16,6 +16,16 @@ class HeadingTuner : LinearOpMode() {
 
         @JvmField
         val finished = false
+
+        @JvmField
+        val Rcoeffecient = 1.0
+
+        @JvmField
+        val Lcoeffecient = 1.0
+
+
+        @JvmField
+        val Reset = false
     }
     var dif =0.0
     override fun runOpMode() {
@@ -26,7 +36,7 @@ class HeadingTuner : LinearOpMode() {
 
         while (opModeIsActive()) {
             telemetry.addData("Tune: ", "TIME BETWEEN READ CONFIG")
-            telemetry.addData("Rotate Bot 10 times, then set boolean done to true", "")
+            telemetry.addData("Rotate Bot 10 times either direction, then set boolean done to true", "")
 
             localizer.updateHeading()
             val currentHeading = localizer.getRotation()
@@ -36,12 +46,12 @@ class HeadingTuner : LinearOpMode() {
             if (gamepad1.x) {
                 localizer.resetHeading()
             }
-            if(TeleLocalizer.finished){
-               dif = Angle.wrap(Math.PI - currentHeading)
-            }
-            telemetry.addData("Input this multiplier into TeleLocalizer",dif/3600)
 
-            //TODO(Find a way to Prevent IMU wrap around and have this tuning actually be effective)
+            //TODO(Set start offset, have difference be subtracting by end offset, have degrees reflect that too, implement reset variable)
+
+            telemetry.addData("If you turned 10 to the right replace Rcoeffecient with ",dif/3600)
+            telemetry.addData("If you turned 10 to the left replace Lcoeffecient with ",dif/3600)
+            telemetry.addData("Set reset to true before measuring the other side","",)
 
             telemetry.update()
 
