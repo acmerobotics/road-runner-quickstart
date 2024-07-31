@@ -95,13 +95,19 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
             lastDrift = headingDrift
             timer.reset()
 
+            if (PreviousDeadWheelHeading > Math.PI/2) && deadWheelHeading < Math.PI/2);{
+                ++rotationcount
+            }
+
 
             //im lazy and don't wanna figure out how to get pi in radians rn
-            if ((PreviousDeadWheelHeading > Math.PI/2) && deadWheelHeading > Math.PI/2);||
-                (PreviousDeadWheelHeading <-Math.PI/2 && deadWheelHeading < Math.PI/2);
+            if ((PreviousDeadWheelHeading > Math.PI/2) && deadWheelHeading < Math.PI/2);||
+
             ++rotationcount
 
             }
+
+
 
         }
 
