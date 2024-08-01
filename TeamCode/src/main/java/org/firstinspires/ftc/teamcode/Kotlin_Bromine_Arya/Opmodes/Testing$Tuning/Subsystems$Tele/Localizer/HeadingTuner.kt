@@ -9,20 +9,17 @@ import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.TeleLo
 @TeleOp(name = "HeadingTuner", group = "Linear OpMode")
 class HeadingTuner : LinearOpMode() {
 
+    //Change these variables once tuned
     @Config
     object TeleLocalizer {
         @JvmField
         val timeBetweenRead = 100
 
         @JvmField
-        val finished = false
-
-        @JvmField
         val Rcoeffecient = 1.0
 
         @JvmField
         val Lcoeffecient = 1.0
-
 
         @JvmField
         val Reset = false
@@ -36,16 +33,14 @@ class HeadingTuner : LinearOpMode() {
 
         while (opModeIsActive()) {
             telemetry.addData("Tune: ", "TIME BETWEEN READ CONFIG")
-            telemetry.addData("Rotate Bot 10 times either direction, then set boolean done to true", "")
+            telemetry.addData("Rotate Bot 10 times right, then reset and repeat for left", "")
 
             localizer.updateHeading()
             val currentHeading = localizer.getRotation()
 
-            telemetry.addData("Heading", currentHeading)
+            telemetry.addData("Current Heading", currentHeading)
 
-            if (gamepad1.x) {
-                localizer.resetHeading()
-            }
+            if(TeleLocalizer.Reset) localizer.resetHeading()
 
             //TODO(Set start offset, have difference be subtracting by end offset, have degrees reflect that too, implement reset variable)
 

@@ -64,10 +64,6 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
     private var rightHalfTurns= 0
     private var lastHeading = 0.0
 
-
-    //CHANGE
-    private var coeffecient  = 0.0
-
     fun updateHeading() {
         val readImu = timer.milliseconds().toInt() >= HeadingTuner.TeleLocalizer.timeBetweenRead
 
