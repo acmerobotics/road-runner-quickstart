@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.reflection.ReflectionConfig;
 import com.acmerobotics.roadrunner.MotorFeedforward;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.AngularRampLogger;
+import com.acmerobotics.roadrunner.ftc.DeadWheelDirectionDebugger;
 import com.acmerobotics.roadrunner.ftc.DriveType;
 import com.acmerobotics.roadrunner.ftc.DriveView;
 import com.acmerobotics.roadrunner.ftc.DriveViewFactory;
@@ -96,7 +97,7 @@ public final class TuningOpModes {
                         rightEncs,
                         parEncs,
                         perpEncs,
-                        md.imu,
+                        md.lazyImu,
                         md.voltageSensor,
                         () -> new MotorFeedforward(MecanumDrive.PARAMS.kS,
                                 MecanumDrive.PARAMS.kV / MecanumDrive.PARAMS.inPerTick,
@@ -139,7 +140,7 @@ public final class TuningOpModes {
                         rightEncs,
                         parEncs,
                         perpEncs,
-                        td.imu,
+                        td.lazyImu,
                         td.voltageSensor,
                         () -> new MotorFeedforward(TankDrive.PARAMS.kS,
                                 TankDrive.PARAMS.kV / TankDrive.PARAMS.inPerTick,
@@ -157,6 +158,7 @@ public final class TuningOpModes {
         manager.register(metaForClass(LateralRampLogger.class), new LateralRampLogger(dvf));
         manager.register(metaForClass(ManualFeedforwardTuner.class), new ManualFeedforwardTuner(dvf));
         manager.register(metaForClass(MecanumMotorDirectionDebugger.class), new MecanumMotorDirectionDebugger(dvf));
+        manager.register(metaForClass(DeadWheelDirectionDebugger.class), new DeadWheelDirectionDebugger(dvf));
 
         manager.register(metaForClass(ManualFeedbackTuner.class), ManualFeedbackTuner.class);
         manager.register(metaForClass(SplineTest.class), SplineTest.class);
