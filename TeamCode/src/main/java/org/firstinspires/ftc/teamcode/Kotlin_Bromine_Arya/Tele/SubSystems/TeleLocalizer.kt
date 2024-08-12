@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems
 
 import com.acmerobotics.roadrunner.ftc.Encoder
+import com.acmerobotics.roadrunner.ftc.OverflowEncoder
+import com.acmerobotics.roadrunner.ftc.RawEncoder
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.util.ElapsedTime
@@ -18,8 +21,8 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
 
     var PARAMS: ThreeDeadWheelLocalizer.Params = ThreeDeadWheelLocalizer.Params()
 
-    lateinit var par0: Encoder
-    lateinit var par1: Encoder
+    var par0: Encoder
+    var par1: Encoder
 
     val imu: IMU = hardwareMap.get(IMU::class.java, "imu")
     val timer = ElapsedTime()
@@ -40,6 +43,8 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
         imu.initialize(IMU.Parameters(orientationOnRobot))
         imu.resetYaw()
         timer.reset()
+        par0 = OverflowEncoder(RawEncoder(hardwareMap.get(DcMotorEx::class.java, "par0")))
+        par1 = OverflowEncoder(RawEncoder(hardwareMap.get(DcMotorEx::class.java, "par1")))
     }
 
     private var par1Pos = 0
@@ -82,7 +87,7 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
                 heading += (unWrappedHeading-coApplied)
             }
             else if(rightHalfTurns<0){
-                val unWrappedHeading = (rightHalfTurns * Math.PI) - (Math.PI - abs(heading))
+                val unWrappedHeading = abs((rightHalfTurns * Math.PI) - (Math.PI - abs(heading)))
                 val coApplied = unWrappedHeading * Lcoeffecient
                 heading += (unWrappedHeading-coApplied)
             }

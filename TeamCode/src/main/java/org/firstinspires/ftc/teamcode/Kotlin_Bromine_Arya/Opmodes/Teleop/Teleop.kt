@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.Teleop
 
+import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Gamepad
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Actions
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Localizer.Localizer
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.Claw
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.Drive
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.Heading
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.Shoulder
 import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.TeleLocalizer
 import kotlin.math.abs
@@ -22,7 +23,7 @@ class Teleop : LinearOpMode() {
 
     override fun runOpMode() {
         val actions = Actions(hardwareMap)
-        val localizer = TeleLocalizer(hardwareMap)
+        val localizer = Localizer(hardwareMap, Pose2d(0.0,0.0,0.0))
         val drive = Drive(hardwareMap,localizer)
 
         Actions.isAuto = false
@@ -34,7 +35,7 @@ class Teleop : LinearOpMode() {
         waitForStart()
         while (opModeIsActive()) {
             actions.loop()
-            localizer.updateHeading()
+            //localizer.updateHeading()
 
             gamepadInput = arrayOf(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x)
             drive.drive(gamepadInput)
@@ -63,7 +64,7 @@ class Teleop : LinearOpMode() {
 
 
             if (gamepad1.x) {
-                localizer.resetHeading()
+               // localizer.resetHeading()
             }
 
             //Gamepad2

@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Localizer.Localizer
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) {
+class Drive(hwMap: HardwareMap, private val localizer: Localizer) {
 
     //private val autoDrive = autoDriveTo(hwMap)
 
@@ -23,7 +24,7 @@ class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) {
 
     //loop
     fun drive(gamepadInput: Array<Float>) {
-        rx = localizer.getRotation()
+        rx = localizer.heading.toDouble()
         when (driveType) {
             DriveType.Manual -> manualDrive(gamepadInput[0], gamepadInput[1], gamepadInput[2])
             DriveType.Auto -> autoDrive()
@@ -52,7 +53,6 @@ class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) {
     private fun autoDrive() {
         //autoDrive.AutoDriveTB()
     }
-
 
     enum class DriveType {
         Auto, Manual
