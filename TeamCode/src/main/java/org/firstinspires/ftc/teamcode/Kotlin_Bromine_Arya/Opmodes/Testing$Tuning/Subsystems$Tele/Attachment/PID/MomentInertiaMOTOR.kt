@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.`Subsystems$Tele`.Attachment.PID.Inertia.startIt
 
 @Config
 object Inertia {
@@ -20,6 +21,8 @@ object Inertia {
     var reverseMotor = false
     var momentInertia = .08
     var motorAcceleration = 0.03
+    @JvmField
+    var startIt = false
 }
 
 @TeleOp(name = "Acceleration Test", group = "Linear OpMode")
@@ -58,12 +61,14 @@ class MomentInertiaMOTOR : LinearOpMode() {
                 currentAngle = motor.currentPosition * conversion
             }
 
-            if (gamepad1.a && !started) {
+            if (startIt && !started) {
                 started= true
                 initialAngle = currentAngle
                 motor.power = 1.0
                 timer.reset()
+                startIt = false
             }
+
             if(started){
 
                 val powerDelta = motor.power - lastPower
