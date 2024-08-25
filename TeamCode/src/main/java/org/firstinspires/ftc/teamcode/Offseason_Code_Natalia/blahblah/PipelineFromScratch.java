@@ -23,9 +23,9 @@ public class PipelineFromScratch extends OpenCvPipeline implements VisionProcess
 
 
 
-        final Point BOTTOMRIGHT = new Point(0,0);
-        final Point BOTTOMLEFT = new Point(1919,0);
-        final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(0, 1079);
+        final Point BOTTOMRIGHT = new Point(1,1);
+        final Point BOTTOMLEFT = new Point(1919,1);
+        final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(1, 1079);
 
 
         Point region1_pointA = new Point(
@@ -40,7 +40,7 @@ public class PipelineFromScratch extends OpenCvPipeline implements VisionProcess
 
 
         Mat largerect;
-        Mat HSvMat = new Mat( );
+        Mat HSvMat = new Mat();
 
         final double RegionWidth = cameraWidth;
         final double RegionHeight = cameraHeight;
@@ -48,6 +48,7 @@ public class PipelineFromScratch extends OpenCvPipeline implements VisionProcess
 
         public void init(int width, int height, CameraCalibration calibration) {
             //submats
+
 
 
             largerect = HSvMat.submat(new Rect(BOTTOMLEFT, BOTTOMRIGHT));
