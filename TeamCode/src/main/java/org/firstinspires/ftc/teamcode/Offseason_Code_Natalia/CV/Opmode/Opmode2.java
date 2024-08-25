@@ -33,8 +33,6 @@ public class Opmode2 extends LinearOpMode {
 
 
 
-
-
         visionPortal.setProcessorEnabled(pipeline, true);
         OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
         webcam.setPipeline(pipeline);

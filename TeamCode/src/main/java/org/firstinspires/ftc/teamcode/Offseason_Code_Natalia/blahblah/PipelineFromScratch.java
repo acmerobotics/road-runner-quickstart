@@ -39,7 +39,6 @@ public class PipelineFromScratch extends OpenCvPipeline implements VisionProcess
 
 
 
-
         Mat largerect;
         Mat HSvMat = new Mat( );
 
