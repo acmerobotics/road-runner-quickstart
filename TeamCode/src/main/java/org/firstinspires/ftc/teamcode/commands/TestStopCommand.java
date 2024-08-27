@@ -2,14 +2,20 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-public class ExampleCommand extends CommandBase {
-    public ExampleCommand(){
-        addRequirements();
+import org.firstinspires.ftc.teamcode.subsystems.TestSubsystem;
+
+public class TestStopCommand extends CommandBase {
+
+    private final TestSubsystem m_testSubsystem;
+
+    public TestStopCommand(TestSubsystem testSubsystem) {
+        this.m_testSubsystem = testSubsystem;
+        addRequirements(m_testSubsystem);
     }
 
     @Override
     public void initialize(){
-
+        m_testSubsystem.stop();
     }
 
     @Override
