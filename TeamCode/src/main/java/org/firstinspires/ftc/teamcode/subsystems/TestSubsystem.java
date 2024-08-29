@@ -16,9 +16,9 @@ public class TestSubsystem extends SubsystemBase {
     // Defining the test motor
     private final DcMotor testDcMotor;
 
-    public TestSubsystem(final HardwareMap hMap, final String testMotor) {
+    public TestSubsystem(DcMotor testMotor) {
         // This gets the information for the motor
-        this.testDcMotor = hMap.get(DcMotor.class, testMotor);
+        this.testDcMotor = testMotor;
     }
 
     // Simple methods to allow for control over the motor with constants

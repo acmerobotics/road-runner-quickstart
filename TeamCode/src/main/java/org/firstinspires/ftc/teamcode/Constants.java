@@ -15,7 +15,7 @@ public class Constants {
     public static double TRACK_WIDTH = 1; // in
 
     // Testing constants
-    public static double TEST_MOTOR_MAX_POWER = 1;
+    public static double TEST_MOTOR_MAX_POWER = 0.1;
 
 
 }
