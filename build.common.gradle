@@ -58,7 +58,6 @@ android {
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
 
-        multiDexEnabled true
         /**
          * We keep the versionCode and versionName of robot controller applications in sync with
          * the master information published in the AndroidManifest.xml file of the FtcRobotController
@@ -122,6 +121,5 @@ android {
 }
 
 repositories {
-    mavenCentral()
 }
 
