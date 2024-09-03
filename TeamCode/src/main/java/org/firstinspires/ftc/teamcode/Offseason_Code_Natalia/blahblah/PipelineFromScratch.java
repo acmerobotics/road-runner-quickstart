@@ -14,47 +14,52 @@ public class PipelineFromScratch extends OpenCvPipeline implements VisionProcess
 
 //        public PipelineFromScratch.Location location = PipelineFromScratch.location;
 
-         int cameraWidth = 920;
-         int cameraHeight = 1080;
-        private OpenCvCamera controlhubcamera;
+    int cameraWidth = 1920;
+    int cameraHeight = 1080;
+    private OpenCvCamera controlhubcamera;
 
-        boolean isred= false;
-
-
+    boolean isred = false;
 
 
-        final Point BOTTOMRIGHT = new Point(1,1);
-        final Point BOTTOMLEFT = new Point(1919,1);
-        final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(1, 1079);
+    final Point BOTTOMRIGHT = new Point(1, 1);
+    final Point BOTTOMLEFT = new Point(1919, 1);
+    final Point TOPRIGHT = new Point(1, 1079);
+    final Point TOPLEFT = new Point(1919,1079);
 
+    int RegionWidth = cameraWidth/3;
+    int RegionHeight = cameraHeight;
 
-        Point region1_pointA = new Point(
-                BOTTOMRIGHT.x,
-                BOTTOMRIGHT.y);
-
-
-        Point region1_pointB = new Point(
-                BOTTOMLEFT.x,
-                BOTTOMLEFT.y);
+    Point region1topright = new Point(
+           TOPRIGHT.x-RegionWidth,
+            TOPRIGHT.y+0);
 
 
 
-        Mat largerect;
-        Mat HSvMat = new Mat();
 
-        final double RegionWidth = cameraWidth;
-        final double RegionHeight = cameraHeight;
-
-
-        public void init(int width, int height, CameraCalibration calibration) {
-            //submats
+    Point region3bottomright = new Point(
+            BOTTOMLEFT.x+RegionWidth,
+            BOTTOMLEFT.y+0);
 
 
+    Point region3upperleft = new Point(
+            TOPRIGHT.x-RegionHeight,
+            TOPRIGHT.y+0);
 
-            largerect = HSvMat.submat(new Rect(BOTTOMLEFT, BOTTOMRIGHT));
-        }
 
-//        @Override
+    public Mat largerect;
+    Mat HSvMat = new Mat();
+
+
+
+    public void init(int width, int height, CameraCalibration calibration) {
+
+        //submats
+
+
+        largerect = HSvMat.submat(new Rect(BOTTOMLEFT,TOPRIGHT));
+    }
+
+            @Override
         public Mat processFrame(Mat frame) {
             //Imgproc;
             double LowerHueThreshold = 0;
@@ -77,10 +82,10 @@ public class PipelineFromScratch extends OpenCvPipeline implements VisionProcess
 
 
         }
-        @Override
-        public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
-            // Not useful either
-        }
+    @Override
+    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+        // Not useful either
+    }
 
 //        @Override
 //        public void onViewportTapped() {
@@ -88,14 +93,26 @@ public class PipelineFromScratch extends OpenCvPipeline implements VisionProcess
 //
 //        }
 
-        @Override
-        public Object processFrame(Mat frame, long captureTimeNanos) {
+    @Override
+    public Object processFrame(Mat frame, long captureTimeNanos) {
+        double LowerHueThreshold = 0;
+        double UpperHueThreshold = 131;
+        double[] avg1;
+
+        avg1 = new double[]{Core.mean(largerect).val[0]};
+
+        if (avg1[0] < UpperHueThreshold && avg1[0] > LowerHueThreshold) {
+            isred = true;
+
+
+            return null;
+
+        }
         return null;
 
-    }
-
 
     }
+}
 
 
 

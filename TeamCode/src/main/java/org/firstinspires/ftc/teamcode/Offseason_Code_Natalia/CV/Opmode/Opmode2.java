@@ -13,19 +13,22 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
 public class Opmode2 extends LinearOpMode {
-    PipelineFromScratch pipeline;  // Changed from CV_Pipeline to PipelineFromScratch, references PipelinefromScratch
+    PipelineFromScratch basicgraypipeline;  // Changed from CV_Pipeline to PipelineFromScratch, references PipelinefromScratch
     VisionPortal visionPortal;
 
-    @Override
+
     public void runOpMode() {
 
-        pipeline = new PipelineFromScratch();  // Instantiate PipelineFromScratch
+
+        waitForStart();
+
+        basicgraypipeline = new PipelineFromScratch();  // Instantiate PipelineFromScratch
 
         visionPortal = new VisionPortal.Builder()
                 //setting up camera and vision portal and things
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .setCameraResolution(new Size(1920,1080))
-                .addProcessor(pipeline)
+                .addProcessor(basicgraypipeline)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
@@ -33,9 +36,11 @@ public class Opmode2 extends LinearOpMode {
 
 
 
-        visionPortal.setProcessorEnabled(pipeline, true);
+
+
+        visionPortal.setProcessorEnabled(basicgraypipeline, true);
         OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        webcam.setPipeline(pipeline);
+        webcam.setPipeline(basicgraypipeline);
         FtcDashboard.getInstance().startCameraStream(webcam, 30);
 
 
@@ -45,11 +50,12 @@ public class Opmode2 extends LinearOpMode {
             telemetry.update();
         }
 
-        visionPortal.setProcessorEnabled(pipeline, false);
+        visionPortal.setProcessorEnabled(basicgraypipeline, false);
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
             telemetry.update();
+            visionPortal.getProcessorEnabled(basicgraypipeline);
         }
         visionPortal.stopStreaming();
 
