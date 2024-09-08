@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url = 'https://maven.brott.dev/' }
+    maven { url = "https://jitpack.io" }
+}
+
+dependencies {
+    implementation 'com.github.fwprobotics:MeepMeep:master-SNAPSHOT'
+}
