@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -14,12 +15,15 @@ public class Robot {
     public Arm arm;
     public Wrist wrist;
     public Claw claw;
+    public MecanumDrive drive;
 
     public Robot(HardwareMap hardwareMap, Telemetry telemetry) {
         this.lift = new Lift(hardwareMap, telemetry);
         this.arm = new Arm(hardwareMap, telemetry);
         this.wrist = new Wrist(hardwareMap, telemetry);
         this.claw = new Claw(hardwareMap, telemetry);
+        this.drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+
 
     }
 
