@@ -19,6 +19,11 @@ public class MotionProfile {
         acceleration_dt = maxvel / maxaccel;
         distance = end - start;
 
+        // If its going backwards, make sure to make accel negative
+        if (distance < 0) {
+            maxaccel = -maxaccel;
+        }
+
         // If we can't accelerate to max velocity in the given distance, we'll accelerate as much as possible
         halfway_distance = distance / 2;
         acceleration_distance = 0.5 * maxaccel * Math.pow(acceleration_dt, 2);
@@ -36,7 +41,7 @@ public class MotionProfile {
         deceleration_dt = acceleration_dt;
 
         // calculate the time that we're at max velocity
-        cruise_distance = distance - 2 * acceleration_distance;
+        cruise_distance = distance - (2 * acceleration_distance);
         cruise_dt = cruise_distance / maxvel;
         deceleration_time = acceleration_dt + cruise_dt;
 
