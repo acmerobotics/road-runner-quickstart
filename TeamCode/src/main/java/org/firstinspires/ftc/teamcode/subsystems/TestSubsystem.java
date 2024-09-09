@@ -5,11 +5,10 @@
 
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.Constants.*;
+import static org.firstinspires.ftc.teamcode.Constants.TEST_MOTOR_MAX_POWER;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class TestSubsystem extends SubsystemBase {
 
@@ -30,9 +29,7 @@ public class TestSubsystem extends SubsystemBase {
         testDcMotor.setPower(-TEST_MOTOR_MAX_POWER);
     }
 
-    public void stop() {
-        testDcMotor.setPower(0);
-    }
+    public void stop() {testDcMotor.setPower(0);}
 
     @Override
     public void periodic() {

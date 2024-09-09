@@ -17,5 +17,8 @@ public class Constants {
     // Testing constants
     public static double TEST_MOTOR_MAX_POWER = 0.1;
 
+    // Motor Constants
+    public static int MAX_ARM_POSITION = 300;
+
 
 }
