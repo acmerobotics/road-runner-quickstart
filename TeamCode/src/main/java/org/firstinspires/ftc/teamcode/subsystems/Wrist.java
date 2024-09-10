@@ -9,5 +9,5 @@ public class Wrist extends Subsystem{
         super(hardwareMap, telemetry);
     }
 
-    //TODO: servo code for wrist + rr action
+    //TODO: Model wrist based on arm and attempt manual control 
 }
