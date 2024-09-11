@@ -34,13 +34,13 @@ public class MeepMeepTesting {
                 .splineToLinearHeading(new Pose2d(-47, -47, Math.PI/4), Math.toRadians(-80))
                 .waitSeconds(1)
 
-                .setTangent(3 * Math.PI/4)
-                .splineToLinearHeading(new Pose2d(-58, -36, 3 * Math.PI/4), 3 * Math.PI/4)
+                .setTangent(Math.toRadians(125))
+                .splineToLinearHeading(new Pose2d(-55, -36, 3 * Math.PI/4), Math.toRadians(125))
                 .waitSeconds(1)
-                .setTangent(Math.PI/-4)
-                .splineToLinearHeading(new Pose2d(-47, -47, Math.PI/4), Math.PI/-4)
+                .setTangent(Math.toRadians(-55))
+                .splineToLinearHeading(new Pose2d(-47, -47, Math.PI/4), Math.toRadians(-55))
                 .waitSeconds(1)
-
+                
                 .setTangent(Math.PI/2)
                 .splineToLinearHeading(new Pose2d(-28, -9, 0), 0)
                 .waitSeconds(1)
