@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Offseason_Code_Natalia.blahblah.Pipeline2;
 import org.firstinspires.ftc.vision.VisionPortal;
 import android.util.Size;
 
@@ -48,7 +47,7 @@ public class Opmode2 extends LinearOpMode {
             // Assuming getLocation() is a method you need to implement in PipelineFromScratch
             telemetry.addData("if you're reading this, at least the telemetry's working", toString());
             telemetry.update();
-            telemetry.addData("",Pipeline2.Location.Left);
+//            telemetry.addData("",Pipeline2.Location.Left);
         }
 
         visionPortal.setProcessorEnabled(pipeline, false);

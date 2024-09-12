@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya
 
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Auto.Sequencing.Sequencer
 import kotlin.math.PI
 import kotlin.math.cos
 
@@ -35,16 +34,15 @@ data class PIDFcontroller(var params: PIDParams) {
 }
 
 
-
 object Wait {
     val wait: ElapsedTime = ElapsedTime()
     private var runOnce = false
 
-    fun waitFor(timeInMs: Int) {
-        if (timeStamp(timeInMs)) {
-            Sequencer.MAJORCOMMAND++
-        }
-    }
+//    fun waitFor(timeInMs: Int) {
+//        if (timeStamp(timeInMs)) {
+//            Sequencer.MAJORCOMMAND++
+//        }
+//    }
 
     fun <Parameter> runAsynchActionAfter(
         timeInMs: Int,

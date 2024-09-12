@@ -3,11 +3,10 @@ package org.firstinspires.ftc.teamcode.New.SubSystems
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Tele.SubSystems.TeleLocalizer
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Drive(hwMap: HardwareMap, val localizer: TeleLocalizer) : SubSystems {
+class Drive(hwMap: HardwareMap) : SubSystems {
     enum class States {
         Manual, Auto
     }
@@ -20,15 +19,18 @@ class Drive(hwMap: HardwareMap, val localizer: TeleLocalizer) : SubSystems {
     val leftBack: DcMotor = hwMap.get(DcMotor::class.java, "leftBack")
 
     override fun update(gamepadInput: ArrayList<Float>) {
-        localizer.updateHeading()
-        val rx = localizer.heading
+//        localizer.updateHeading()
+//        val rx = localizer.heading
+        //TODO SET UP LOCALIZER
 
         when (state) {
             States.Auto -> {
 
             }
 
+
             States.Manual -> {
+                val rx =0.0
                 val (lateral, axial, turn) = gamepadInput
                 val rotX = axial * cos(-rx) - lateral * sin(-rx)
                 val rotY = axial * sin(-rx) + lateral * cos(-rx)
