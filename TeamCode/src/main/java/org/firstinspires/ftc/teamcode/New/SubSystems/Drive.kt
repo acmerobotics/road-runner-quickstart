@@ -6,7 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Drive(hwMap: HardwareMap) : SubSystems {
+//todo Make Java version
+class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) : SubSystems {
     enum class States {
         Manual, Auto
     }
@@ -19,18 +20,15 @@ class Drive(hwMap: HardwareMap) : SubSystems {
     val leftBack: DcMotor = hwMap.get(DcMotor::class.java, "leftBack")
 
     override fun update(gamepadInput: ArrayList<Float>) {
-//        localizer.updateHeading()
-//        val rx = localizer.heading
-        //TODO SET UP LOCALIZER
+        localizer.updateHeading()
+        val rx = localizer.heading
 
         when (state) {
             States.Auto -> {
 
             }
 
-
             States.Manual -> {
-                val rx =0.0
                 val (lateral, axial, turn) = gamepadInput
                 val rotX = axial * cos(-rx) - lateral * sin(-rx)
                 val rotY = axial * sin(-rx) + lateral * cos(-rx)

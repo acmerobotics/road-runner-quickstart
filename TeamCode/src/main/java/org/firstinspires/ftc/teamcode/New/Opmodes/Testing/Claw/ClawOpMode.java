@@ -4,26 +4,43 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.New.SubSystems.Claw;
+import org.firstinspires.ftc.teamcode.New.SubSystems.Claws;
 
-@Disabled
-@TeleOp(name = "Teleop", group = "Linear OpMode")
+
+@TeleOp(name = "Claws", group = "Linear OpMode")
 public class ClawOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Claw claws = new Claw(hardwareMap);
-
+        Claws claws = new Claws(hardwareMap);
 
         waitForStart();
 
-        claws.timer.reset();
-        while(opModeIsActive()){
+        while (opModeIsActive()) {
+
+            if(gamepad1.a){
+                claws.rightClaw.state = Claws.RightClaw.States.Open;
+                claws.leftClaw.state = Claws.LeftClaw.States.Open;
+            }
+
+            if(gamepad1.b){
+                claws.rightClaw.state = Claws.RightClaw.States.Closed;
+                claws.leftClaw.state = Claws.LeftClaw.States.Open;
+            }
+
+            if(gamepad1.x){
+                claws.rightClaw.state = Claws.RightClaw.States.Closed;
+                claws.leftClaw.state = Claws.LeftClaw.States.Closed;
+            }
+
+            if(gamepad1.y){
+                claws.rightClaw.state = Claws.RightClaw.States.Open;
+                claws.leftClaw.state = Claws.LeftClaw.States.Closed;
+            }
 
             claws.update();
 
-            telemetry.addData("Claw", claws.leftClaw.getPosition());
             telemetry.update();
 
 
@@ -31,7 +48,6 @@ public class ClawOpMode extends LinearOpMode {
 
 
     }
-
 
 
 }
