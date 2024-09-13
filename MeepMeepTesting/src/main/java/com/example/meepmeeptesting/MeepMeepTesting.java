@@ -31,13 +31,7 @@ public class MeepMeepTesting {
                 .turn(Math.toRadians(90))
                 .build());
 
-        Image img = null;
-        try { img = ImageIO.read(new File("IntoTheDeep.jpg"));
-        }
-        catch (IOException e) {}
-
-        assert img != null;
-        meepMeep.setBackground(img)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
