@@ -36,6 +36,7 @@ repositories {
 dependencies {
     implementation project(':FtcRobotController')
     implementation 'androidx.core:core-ktx:1.13.1'
+    testImplementation 'junit:junit'
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 
     implementation "com.acmerobotics.roadrunner:ftc:0.1.13"
