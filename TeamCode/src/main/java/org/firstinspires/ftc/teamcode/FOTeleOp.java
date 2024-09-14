@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
@@ -19,29 +20,42 @@ public class FOTeleOp extends OpMode {
     DcMotor frontRightMotor;
     DcMotor backLeftMotor;
     DcMotor backRightMotor;
-    DcMotorEx leftSlidesMotor;
-    DcMotorEx rightSlidesMotor;
+    DcMotorEx leftSlidesOuttakeMotor;
+    DcMotorEx rightSlidesOuttakeMotor;
+    DcMotorEx intakeSlidesMotor;
+    DcMotorEx turretMotor;
     double y = 0;
     double x = 0;
     double rx = 0;
+    CRServo servoIntakeSpin;
+    Servo servoIntakeRotate;
+    Servo servoOuttakeClamp;
+    Servo servoOuttakeRotate;
+    Servo servoOuttakeArmRotate;
 
-    //Initialize all motors
+
     //Initialize all servos
     //Initialize all sensors
     //Initialize all variables
 
     //This is an example state machine for the arm
-    public enum ArmState {
-        Bottom,
-        RotateUp,
-        Drop1,
-        Drop2,
-        RotateDown,
-    }
+    public enum TransferState {
+        IntakeSlidesRetract,
+        IntakeRotate,
+        OuttakeHold,
+        OuttakeRotate
+    };
+    public enum SampleDrop {
+        IntakeSlidesRetract,
+        IntakeRotate,
+        OuttakeHold,
+        OuttakeRotate
+    };
+
     //This is the timer for the arm
     ElapsedTime armTimer = new ElapsedTime();
     //This is the starting state
-    ArmState armState = ArmState.Bottom;
+    TransferState transferState = TransferState.IntakeSlidesRetract;
 
     @Override
     public void init() {
@@ -49,15 +63,26 @@ public class FOTeleOp extends OpMode {
         frontRightMotor = hardwareMap.dcMotor.get("frontRight");
         backLeftMotor = hardwareMap.dcMotor.get("backLeft");
         backRightMotor = hardwareMap.dcMotor.get("backRight");
-        leftSlidesMotor = (DcMotorEx) hardwareMap.dcMotor.get("leftSlides");
-        rightSlidesMotor = (DcMotorEx) hardwareMap.dcMotor.get("rightSlides");
+        leftSlidesOuttakeMotor = (DcMotorEx) hardwareMap.dcMotor.get("outtakeLeft");
+        rightSlidesOuttakeMotor = (DcMotorEx) hardwareMap.dcMotor.get("outtakeRight");
+        intakeSlidesMotor = (DcMotorEx) hardwareMap.dcMotor.get("intake");
+        turretMotor = (DcMotorEx) hardwareMap.dcMotor.get("turret");
 
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftSlidesMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightSlidesMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftSlidesOuttakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlidesOuttakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeSlidesMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        servoIntakeSpin = (CRServo) hardwareMap.servo.get("intakeSpin");
+        servoIntakeRotate = hardwareMap.servo.get("intakeRotate");
+        servoOuttakeClamp = hardwareMap.servo.get("outtakeClamp");
+        servoOuttakeRotate = hardwareMap.servo.get("outtakeRotate");
+        servoOuttakeArmRotate = hardwareMap.servo.get("outtakeArmRotate");
+
 
         imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
@@ -70,11 +95,27 @@ public class FOTeleOp extends OpMode {
 
     @Override
     public void start() {
-        //Initialize starting servo positions
+        servoIntakeRotate.setPosition(0.4); //0.4 to 0.8
+        servoOuttakeClamp.setPosition(0.4); //0.4 to 0.5
+        servoOuttakeRotate.setPosition(0.4); //0.4 to 0.6
+        servoOuttakeArmRotate.setPosition(0.4); //0.4 to 0.8
     }
 
     @Override
     public void loop() {
+        switch (transferState) {
+            case IntakeSlidesRetract:
+               // if intakeColorSensor.distance() <= 1{
+
+
+            //}
+            case IntakeRotate:
+            case OuttakeHold:
+            case OuttakeRotate:
+        }
+
+
+
         if (gamepad1.right_trigger > 0) {
             y = -gamepad1.left_stick_y - gamepad1.right_stick_y; // Remember, this is reversed!
             x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
