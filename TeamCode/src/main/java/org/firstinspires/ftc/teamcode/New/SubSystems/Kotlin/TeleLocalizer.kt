@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.New.SubSystems
+package org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin
 
 import com.acmerobotics.roadrunner.ftc.Encoder
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder
@@ -10,8 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Angle
-import org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Localizer.HeadingTuner
+import org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Opmodes.Localizer.HeadingTuner
 import org.firstinspires.ftc.teamcode.New.RRlocalizer.ThreeDeadWheelLocalizer
 import kotlin.math.abs
 

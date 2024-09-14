@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.New.SubSystems
+package org.firstinspires.ftc.teamcode.New.SubSystems.Bromine
 
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
+import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.SubSystems
 
 class ClawsKt(hardwareMap: HardwareMap) : SubSystems {
 
@@ -13,7 +14,7 @@ class ClawsKt(hardwareMap: HardwareMap) : SubSystems {
         rightClaw.update()
     }
 
-    class LeftClaw(hardwareMap: HardwareMap) : SubSystems,ColorSensorClaw(hardwareMap) {
+    class LeftClaw(hardwareMap: HardwareMap) : SubSystems, ColorSensorClaw(hardwareMap) {
 
         enum class States(val servoPose: Double) {
             Open(0.5), Closed(1.0),AutomaticClose(1.0);

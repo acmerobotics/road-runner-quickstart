@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya
+package org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin
 
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.PI
-import kotlin.math.cos
 
 private const val double = Math.PI * 2
 

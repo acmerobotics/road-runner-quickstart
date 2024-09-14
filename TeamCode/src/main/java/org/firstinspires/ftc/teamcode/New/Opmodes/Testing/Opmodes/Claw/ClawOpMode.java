@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Claw;
+package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Opmodes.Claw;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.New.SubSystems.Claws;
+import org.firstinspires.ftc.teamcode.New.SubSystems.Bromine.Claws;
 
 
 @TeleOp(name = "Claws", group = "Linear OpMode")
