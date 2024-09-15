@@ -30,8 +30,9 @@ class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) : SubSyste
 
             States.Manual -> {
                 val (lateral, axial, turn) = gamepadInput
-                val rotX = axial * cos(-rx) - lateral * sin(-rx)
-                val rotY = axial * sin(-rx) + lateral * cos(-rx)
+                val h = -rx
+                val rotX = axial * cos(h) - lateral * sin(h)
+                val rotY = axial * sin(h) + lateral * cos(h)
 
                 leftFront.power = (rotY + rotX + turn) //front left
                 leftBack.power = (rotY - rotX + turn) // back left

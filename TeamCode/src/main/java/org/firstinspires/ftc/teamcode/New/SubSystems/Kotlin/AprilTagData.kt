@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin
 
 import android.util.Size
 import com.acmerobotics.roadrunner.Pose2d
+import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
@@ -9,9 +10,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
+import org.testng.annotations.Test
+import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.sin
 
-class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalizer): SubSystems {
+class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalizer) : SubSystems {
 
     enum class State {
         On, Off, TagDiscovered
@@ -48,44 +52,53 @@ class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalize
         visionPortal = builder.build()
     }
 
+
     private fun searchForTag(): Pose2d {
         visionPortal.resumeStreaming()
-        val currentDetections= aprilTag.detections
-        val data = doubleArrayOf(0.0,0.0)
+        val currentDetections = aprilTag.detections
+
         for (detection in currentDetections) {
-            if (detection.id == 2 || detection.id == 4) {
-                data[0] = detection.ftcPose.range
-                data[1] = detection.ftcPose.bearing
+            if (detection.id == 12 || detection.id == 16) {
+                state = State.TagDiscovered
+                val data = Vector2d(detection.ftcPose.x, detection.ftcPose.y)
+                return Pose2d(cameraVector(fieldDistanceToTag(data)),localizer.heading)
             }
         }
-        return findCameraPose(data)
+        return Pose2d(0.0, 0.0, 0.0)
     }
 
-    private fun findCameraPose(translateData: DoubleArray): Pose2d {
-        val Range = translateData[0]
-        val Bearing = translateData[1]
+    companion object {
+        fun fieldDistanceToTag(translateData: Vector2d): Vector2d {
+            //todo measure Camera Offset
+            val relX = translateData.x + 0.0
+            val relY = translateData.y + 1.0
 
-        val yaw = if (localizer.heading >= 0) {
-            90 - localizer.heading
-        } else {
-            90 + localizer.heading
+            val localizer = -PI / 2
+            val h = -localizer
+            val x = relX * cos(h) - relY * sin(h)
+            val y = relX * sin(h) + relY * cos(h)
+
+            return Vector2d(x, y)
         }
 
-        val x = Range * sin(Math.PI / 2 - Bearing) / sin(Math.PI / 2 + yaw)
-        val y = Range * sin(Bearing - yaw) / sin(Math.PI / 2 + yaw)
-
-        return Pose2d(x,y,localizer.heading)
+        fun cameraVector(fieldDistanceToTag: Vector2d): Vector2d {
+            val tagPose = Pair(-72.0, -48.0)
+            val xPose: Double = tagPose.first - fieldDistanceToTag.x
+            val yPose: Double = tagPose.second - fieldDistanceToTag.y
+            return Vector2d(xPose, yPose)
+        }
     }
 
     override fun update() {
-        when(state){
+        when (state) {
             State.On -> {
                 searchForTag()
-                if(searchForTag() != Pose2d(0.0,0.0,0.0)) state = State.TagDiscovered
             }
+
             State.Off -> {
                 visionPortal.stopStreaming()
             }
+
             State.TagDiscovered -> {
                 val pose = searchForTag()
                 //run to pose
@@ -95,4 +108,10 @@ class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalize
         }
     }
 
+}
+
+@Test
+fun cameraDerivedVector() {
+    val cameraData = Vector2d(10.0, 6.0)
+    println(AprilTagData.cameraVector(AprilTagData.fieldDistanceToTag(cameraData)))
 }
