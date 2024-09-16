@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Localizer
+package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Opmodes.Localizer
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.New.SubSystems.TeleLocalizer
+import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.TeleLocalizer
 
 @Disabled
 @TeleOp(name = "HeadingTuner", group = "Linear OpMode")

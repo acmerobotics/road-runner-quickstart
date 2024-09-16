@@ -1,12 +1,11 @@
-package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Drive//package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.Auto.Localizer
+package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Opmodes.Drive//package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.Opmodes.`Testing$Tuning`.Auto.Localizer
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.New.SubSystems.Drive
-import org.firstinspires.ftc.teamcode.New.SubSystems.TeleLocalizer
+import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.Drive
+import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.TeleLocalizer
 
 @TeleOp(name = "DrivingPractice", group = "Linear OpMode")
 class DrivingPractice : LinearOpMode(){

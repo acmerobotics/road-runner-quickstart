@@ -1,10 +1,16 @@
-package org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya
+package org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin
 
 import com.qualcomm.robotcore.util.ElapsedTime
+import org.testng.annotations.Test
 import kotlin.math.PI
-import kotlin.math.cos
 
 private const val double = Math.PI * 2
+
+@Test
+fun main(){
+    val angle = PI *4 +.2
+    println(Angle.wrap(angle))
+}
 
 object Angle {
     fun wrap(theta: Double): Double {

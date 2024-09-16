@@ -1,11 +1,9 @@
-package org.firstinspires.ftc.teamcode.New.SubSystems
+package org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.PIDFcontroller
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.PIDParams
 
 class Slides(hardwareMap: HardwareMap) : SubSystems {
     enum class States {
