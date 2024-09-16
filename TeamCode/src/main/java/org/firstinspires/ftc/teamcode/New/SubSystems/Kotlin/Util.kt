@@ -1,22 +1,16 @@
 package org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin
 
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.testng.annotations.Test
 import kotlin.math.PI
 
-private const val double = Math.PI * 2
 
-@Test
-fun main(){
-    val angle = PI *4 +.2
-    println(Angle.wrap(angle))
-}
 
 object Angle {
     fun wrap(theta: Double): Double {
+        require(theta in -2*PI..2*PI)
             var angle = theta
-            while (angle > PI) angle -= double
-            while (angle < -PI) angle += double
+            while (angle > PI) angle -= PI*2
+            while (angle < -PI) angle += PI*2
             return angle
     }
 }

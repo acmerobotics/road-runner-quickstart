@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.New.SubSystems
 
-import org.junit.Assert.*
-import org.firstinspires.ftc.teamcode.Kotlin_Bromine_Arya.*
-
+import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.Angle
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.Random
+import kotlin.math.PI
+import kotlin.math.abs
 
 class AngleTest {
 
@@ -21,7 +22,7 @@ class AngleTest {
 
         //Test a bunch of values from -PI to PI.
         var expected = -Math.PI
-        while(expected <= Math.PI){
+        while (expected <= Math.PI) {
             val actual = angle.wrap(expected)
 
             assertEquals(expected, actual, epsilon)
@@ -41,7 +42,7 @@ class AngleTest {
         val rng = Random()
 
         //Test that values > PI wrap
-        for(i in 1..100) {
+        for (i in 1..100) {
             val testValue = Math.PI + rng.nextDouble()
             val expected = testValue - Math.PI * 2
             val actual = angle.wrap(testValue)
@@ -49,12 +50,20 @@ class AngleTest {
         }
 
         //Test that values < -PI wrap
-        for(i in 1..100) {
+        for (i in 1..100) {
             val testValue = -Math.PI - rng.nextDouble()
             val expected = testValue + Math.PI * 2
             val actual = angle.wrap(testValue)
             assertEquals(expected, actual, epsilon)
         }
+    }
+
+    @Test
+    fun wrap_with_insane_values(){
+
+        //Number of Digits allowed cuts off the input into Angle Wrap
+        //Therefore not being equal to the estimated output
+        assertEquals(0.0, Angle.wrap(PI* 2 * 100), 0.0)
     }
 
     @Test
@@ -67,7 +76,7 @@ class AngleTest {
         val rng = Random()
 
         //Test that values > 2PI wrap
-        for(i in 1..100) {
+        for (i in 1..100) {
             val testValue = (2 * Math.PI) + (rng.nextDouble() * 100)
             val expected = testValue - Math.PI * 2
             val actual = angle.wrap(testValue)
@@ -75,11 +84,13 @@ class AngleTest {
         }
 
         //Test that values < -2PI wrap
-        for(i in 1..100) {
+        for (i in 1..100) {
             val testValue = -(2 * Math.PI) - (rng.nextDouble() * 100)
             val expected = testValue + Math.PI * 2
             val actual = angle.wrap(testValue)
             assertEquals(expected, actual, epsilon)
         }
+
     }
+
 }

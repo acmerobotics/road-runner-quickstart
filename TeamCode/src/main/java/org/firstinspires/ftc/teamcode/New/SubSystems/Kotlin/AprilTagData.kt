@@ -66,29 +66,24 @@ class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalize
         }
         return Pose2d(0.0, 0.0, 0.0)
     }
+    private fun fieldDistanceToTag(translateData: Vector2d): Vector2d {
+        //todo measure Camera Offset
+        val relX = translateData.x + 0.0
+        val relY = translateData.y + 1.0
 
-    companion object {
-        fun fieldDistanceToTag(translateData: Vector2d): Vector2d {
-            //todo measure Camera Offset
-            val relX = translateData.x + 0.0
-            val relY = translateData.y + 1.0
+        val h = -localizer.heading
+        val x = relX * cos(h) - relY * sin(h)
+        val y = relX * sin(h) + relY * cos(h)
 
-            val localizer = -PI / 2
-            val h = -localizer
-            val x = relX * cos(h) - relY * sin(h)
-            val y = relX * sin(h) + relY * cos(h)
-
-            return Vector2d(x, y)
-        }
-
-        fun cameraVector(fieldDistanceToTag: Vector2d): Vector2d {
-            val tagPose = Pair(-72.0, -48.0)
-            val xPose: Double = tagPose.first - fieldDistanceToTag.x
-            val yPose: Double = tagPose.second - fieldDistanceToTag.y
-            return Vector2d(xPose, yPose)
-        }
+        return Vector2d(x, y)
     }
 
+    private fun cameraVector(fieldDistanceToTag: Vector2d): Vector2d {
+        val tagPose = Pair(-72.0, -48.0)
+        val xPose: Double = tagPose.first - fieldDistanceToTag.x
+        val yPose: Double = tagPose.second - fieldDistanceToTag.y
+        return Vector2d(xPose, yPose)
+    }
     override fun update() {
         when (state) {
             State.On -> {
@@ -108,10 +103,4 @@ class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalize
         }
     }
 
-}
-
-@Test
-fun cameraDerivedVector() {
-    val cameraData = Vector2d(10.0, 6.0)
-    println(AprilTagData.cameraVector(AprilTagData.fieldDistanceToTag(cameraData)))
 }
