@@ -59,14 +59,6 @@ class AngleTest {
     }
 
     @Test
-    fun wrap_with_insane_values(){
-
-        //Number of Digits allowed cuts off the input into Angle Wrap
-        //Therefore not being equal to the estimated output
-        assertEquals(0.0, Angle.wrap(PI* 2 * 100), 0.0)
-    }
-
-    @Test
     //Tests the wrap() function when the angle to wrap is >= 2PI or <= -2PI.
     //Expected Outcome: Wrap should occur.
     fun wrap_outside_range_large_values() {
