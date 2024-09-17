@@ -52,7 +52,6 @@ class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalize
         visionPortal = builder.build()
     }
 
-
     private fun searchForTag(): Pose2d {
         visionPortal.resumeStreaming()
         val currentDetections = aprilTag.detections
@@ -70,6 +69,7 @@ class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalize
         //todo measure Camera Offset
         val relX = translateData.x + 0.0
         val relY = translateData.y + 1.0
+        require(relY>0)
 
         val h = -localizer.heading
         val x = relX * cos(h) - relY * sin(h)

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 
-class Slides(hardwareMap: HardwareMap) : SubSystems {
+class VerticalSlides(hardwareMap: HardwareMap) : SubSystems {
     enum class States {
         Lowered, Basket, Hang, Clips
     }
