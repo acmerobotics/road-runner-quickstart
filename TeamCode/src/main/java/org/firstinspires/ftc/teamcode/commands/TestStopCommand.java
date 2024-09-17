@@ -8,6 +8,11 @@ public class TestStopCommand extends CommandBase {
 
     private final TestSubsystem m_testSubsystem;
 
+    /**
+     * Command to set the test motor to stop running.
+     *
+     * @param testSubsystem Parent subsystem - Currently TestSubsystem
+     */
     public TestStopCommand(TestSubsystem testSubsystem) {
         this.m_testSubsystem = testSubsystem;
         addRequirements(m_testSubsystem);

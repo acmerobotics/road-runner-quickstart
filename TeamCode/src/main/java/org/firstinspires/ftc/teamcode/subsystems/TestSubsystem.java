@@ -15,6 +15,10 @@ public class TestSubsystem extends SubsystemBase {
     // Defining the test motor
     private final DcMotor testDcMotor;
 
+    /**
+     * Simple subsystem for testing motors - Originally for proof of concept of FTCLib
+     * @param testMotor Motor to test
+     */
     public TestSubsystem(DcMotor testMotor) {
         // This gets the information for the motor
         this.testDcMotor = testMotor;

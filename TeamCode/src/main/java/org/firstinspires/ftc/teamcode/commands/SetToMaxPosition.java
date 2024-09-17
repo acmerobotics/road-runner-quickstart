@@ -8,6 +8,13 @@ public class SetToMaxPosition extends CommandBase {
 
     private final ExampleArmSubsystem m_exampleArmSubsystem;
 
+    /**
+     * Command to set the arm to the max position specified in <code>Constants.java</code>
+     *
+     * @param exampleArmSubsystem Parent subsystem - ExampleArmSubsystem by default
+     *
+     * @see org.firstinspires.ftc.teamcode.Constants
+     */
     public SetToMaxPosition(ExampleArmSubsystem exampleArmSubsystem){
         m_exampleArmSubsystem = exampleArmSubsystem;
         addRequirements();

@@ -8,6 +8,13 @@ public class TestForwardCommand extends CommandBase {
 
     private final TestSubsystem m_testSubsystem;
 
+    /**
+     * Command to set the test motor to run forwards at specified speed in <code>Constants.java</code>.
+     *
+     * @param testSubsystem Parent subsystem - Currently TestSubsystem
+     *
+     * @see org.firstinspires.ftc.teamcode.Constants
+     */
     public TestForwardCommand(TestSubsystem testSubsystem) {
         this.m_testSubsystem = testSubsystem;
         addRequirements(m_testSubsystem);
