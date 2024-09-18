@@ -4,9 +4,12 @@ import com.aimrobotics.aimlib.util.HardwareInterface;
 
 public class ConfigurationInfo {
 
-    // ARM
-    public static HardwareInterface leftArm = new HardwareInterface("LA", true, 0);
-    public static HardwareInterface rightArm = new HardwareInterface("RA", false, 0);
+    // BRISTLES
+    public static HardwareInterface bristles = new HardwareInterface("BRI", true, 0);
+
+    //INTAKE HINGE
+    public static HardwareInterface leftHinge = new HardwareInterface("LH", false, 0);
+    public static HardwareInterface rightHinge = new HardwareInterface("RH", false, 0);
 
     // CLAW
     public static HardwareInterface intake = new HardwareInterface("SS", true, 3);
