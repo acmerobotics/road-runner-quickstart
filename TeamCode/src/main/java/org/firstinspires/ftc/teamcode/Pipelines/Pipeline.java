@@ -10,11 +10,11 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class File extends OpenCvPipeline {
+public class Pipeline extends OpenCvPipeline {
 
     Telemetry telemetry;
 
-    public File(Telemetry telemetry) {
+    public Pipeline(Telemetry telemetry) {
         this.telemetry = telemetry;
     }
 
