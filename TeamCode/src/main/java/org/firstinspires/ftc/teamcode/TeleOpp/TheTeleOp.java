@@ -91,6 +91,18 @@ public class TheTeleOp extends LinearOpMode {
                         liftRightMotor.setPower(liftRightDIP.moveSomeIdk(timer.seconds()));
                     }
                     break;
+                case LIFTARM:
+                    liftState = LiftState.LIFTRELEASE;
+                    break;
+                case LIFTRELEASE:
+                    liftState = LiftState.LIFTRETRACT;
+                    break;
+                case LIFTRETRACT:
+                    liftState = LiftState.LIFTSTART;
+                    break;
+                default:
+                    liftState = LiftState.LIFTSTART;
+                    break;
             }
 
 
