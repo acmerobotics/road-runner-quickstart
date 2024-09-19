@@ -78,21 +78,18 @@ public class babyteleop extends LinearOpMode {
             } else if(gamepad2.y){
                 robot.posServo.setPosition(closed);
             }**/
-           /** if(gamepad1.a){
-                robot.armMotorOne.setPower(1);
-            } else if(gamepad1.b){
-                robot.armMotorOne.setPower(-1);
-            } else{
-                robot.armMotorOne.setPower(0);
+           while(gamepad1.a){
+               robot.leftfrontDrive.setPower(60);
             }
-          if(gamepad1.x){
-                robot.armMotorTwo.setPower(1);
-            } else if(gamepad1.y){
-                robot.armMotorTwo.setPower(-1);
-
-            } else{
-              robot.armMotorTwo.setPower(0);
-          }**/
+            while(gamepad1.b){
+                robot.rightfrontDrive.setPower(60);
+            }
+            while(gamepad1.x){
+                robot.leftbackDrive.setPower(60);
+            }
+            while(gamepad1.y){
+                robot.rightbackDrive.setPower(60);
+            }
 
            while(gamepad1.dpad_up){
                 robot.leftfrontDrive.setPower(1);
@@ -106,5 +103,6 @@ public class babyteleop extends LinearOpMode {
             while(gamepad1.dpad_right){
                 robot.rightbackDrive.setPower(1);
             }
+
     }
 }}
