@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.relocalization;
 
 import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -28,6 +29,7 @@ public class Relocalization {
     }
 
     public Pose2d relocalizeOTOS() {
-        // insert code here
+        SparkFunOTOS.Pose2D otosPos = otos.getPosition();
+        return new Pose2d(otosPos.x, otosPos.y, new Rotation2d(otosPos.h));
     }
 }
