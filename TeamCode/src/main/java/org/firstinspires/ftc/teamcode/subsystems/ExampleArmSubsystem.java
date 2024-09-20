@@ -49,7 +49,7 @@ public class ExampleArmSubsystem extends SubsystemBase {
      * Lifts up the dual-motor arm to the max position specified in <code>Constants.java</code>.
      * As of initial implementation, the code may not work as intended.
      *
-     * @see org.firstinspires.ftc.teamcode.Constants
+     * @see org.firstinspires.ftc.teamcode.Constants#MAX_ARM_POSITION
      * @see DcMotor#setTargetPosition(int)
      */
     public void liftArmToMax() {
@@ -73,12 +73,41 @@ public class ExampleArmSubsystem extends SubsystemBase {
      * Sets the dual-motor arm to the original position specified in <code>Constants.java</code>.
      * As of initial implementation, the code may not work as intended.
      *
-     * @see org.firstinspires.ftc.teamcode.Constants
+     * @see org.firstinspires.ftc.teamcode.Constants#ORIGINAL_ARM_POSITION
      * @see DcMotor#setTargetPosition(int)
      */
     public void resetToOriginalPosition() {
         leftMotor.setTargetPosition(ORIGINAL_ARM_POSITION);
         rightMotor.setTargetPosition(ORIGINAL_ARM_POSITION);
+    }
+
+    /**
+     * Sets the claw servo to the open position set in <code>Constants.java</code>.
+     *
+     * @see org.firstinspires.ftc.teamcode.Constants#OPEN_POSITION
+     * @see Servo#setPosition(double)
+     */
+    public void openClaw() {
+        clawServo.setPosition(OPEN_POSITION / 180);
+    }
+
+    /**
+     * Sets the claw servo to the closed position as set in <code>Constants.java</code>.
+     *
+     * @see org.firstinspires.ftc.teamcode.Constants#CLOSE_POSITION
+     * @see Servo#setPosition(double)
+     */
+    public void closeClaw() {
+        clawServo.setPosition(CLOSE_POSITION / 180);
+    }
+
+    /**
+     * Sets the claw servo to the specified degree.
+     *
+     * @param degree A value in degrees - Max is 180 (Normalized to 0-1)
+     */
+    public void setClawToPosition(double degree) {
+        clawServo.setPosition(degree / 180);
     }
 
     @Override

@@ -11,5 +11,9 @@ public class Constants {
     public static int MAX_ARM_POSITION = 300;
     public static int ORIGINAL_ARM_POSITION = 0;
 
+    // Claw Servo Constants
+    public static double OPEN_POSITION = 180; // IN DEGREES
+    public static double CLOSE_POSITION = 0;  // IN DEGREES
+
 
 }
