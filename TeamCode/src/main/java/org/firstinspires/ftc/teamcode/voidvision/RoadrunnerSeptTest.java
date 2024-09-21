@@ -26,12 +26,11 @@ public class RoadrunnerSeptTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         // instantiate your MecanumDrive at a particular pose.
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.8, 61.7, Math.toRadians(90)));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
         Action trajectoryAction1;
         trajectoryAction1 = drive.actionBuilder(drive.pose)
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(48, -48, 0), Math.PI / 2)
+                .splineToLinearHeading(new Pose2d(-60, -60, 0), Math.PI / 2)
                 .waitSeconds(3)
                 .build();
 
