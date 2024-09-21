@@ -10,8 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
-import org.testng.annotations.Test
-import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -23,53 +21,51 @@ class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalize
 
     override var state = State.Off
 
-    private val camera: WebcamName = hardwareMap.get(WebcamName::class.java, "Webcam1")
-    private var aprilTag: AprilTagProcessor
+    private val camera: WebcamName = hardwareMap.get(WebcamName::class.java, "Arducam")
+
+    private var aprilTag: AprilTagProcessor = AprilTagProcessor.Builder()
+        .setDrawAxes(true)
+        .setDrawTagOutline(true)
+        .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+        .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+        .setOutputUnits(DistanceUnit.INCH, AngleUnit.RADIANS)
+        .setLensIntrinsics(919.688, 919.688, 647.849 ,350.162)
+        .build()
+
+
     private var visionPortal: VisionPortal
 
     init {
-        val builder: VisionPortal.Builder = VisionPortal.Builder()
-        builder.setCamera(camera)
-        builder.setCameraResolution(Size(1920, 1080))
-        aprilTag = AprilTagProcessor.Builder()
-            .setDrawAxes(true)
-            .setDrawTagOutline(true)
-            .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-            .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-            .setOutputUnits(DistanceUnit.INCH, AngleUnit.RADIANS)
-            .build()
-
-
-        //todo change when testing
-        builder.enableLiveView(false)
-
-        // Set the stream format; MJPEG uses less bandwidth than default YUY2.
-        builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG)
-
-        // Set and enable the processor.
-        builder.addProcessor(aprilTag)
+        val builder = VisionPortal.Builder()
+            .setCamera(camera)
+            .setCameraResolution(Size(1280, 720))
+            .enableLiveView(false)
+            .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
+            .addProcessor(aprilTag)
 
         visionPortal = builder.build()
     }
 
-    private fun searchForTag(): Pose2d {
+    fun searchForTag(): Pose2d {
         visionPortal.resumeStreaming()
+        visionPortal.resumeLiveView()
         val currentDetections = aprilTag.detections
 
         for (detection in currentDetections) {
             if (detection.id == 12 || detection.id == 16) {
                 state = State.TagDiscovered
                 val data = Vector2d(detection.ftcPose.x, detection.ftcPose.y)
-                return Pose2d(cameraVector(fieldDistanceToTag(data)),localizer.heading)
+                return Pose2d(cameraVector(fieldDistanceToTag(data)), localizer.heading)
             }
         }
         return Pose2d(0.0, 0.0, 0.0)
     }
+
     private fun fieldDistanceToTag(translateData: Vector2d): Vector2d {
         //todo measure Camera Offset
         val relX = translateData.x + 0.0
         val relY = translateData.y + 1.0
-        require(relY>0)
+        require(relY > 0)
 
         val h = -localizer.heading
         val x = relX * cos(h) - relY * sin(h)
@@ -84,6 +80,7 @@ class AprilTagData(hardwareMap: HardwareMap, private val localizer: TeleLocalize
         val yPose: Double = tagPose.second - fieldDistanceToTag.y
         return Vector2d(xPose, yPose)
     }
+
     override fun update() {
         when (state) {
             State.On -> {

@@ -14,10 +14,10 @@ class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) : SubSyste
 
     override val state = States.Manual
 
-    val rightBack: DcMotor = hwMap.get(DcMotor::class.java, "rightBack")
-    val leftFront: DcMotor = hwMap.get(DcMotor::class.java, "leftFront")
-    val rightFront: DcMotor = hwMap.get(DcMotor::class.java, "rightFront")
-    val leftBack: DcMotor = hwMap.get(DcMotor::class.java, "leftBack")
+    private val rightBack: DcMotor = hwMap.get(DcMotor::class.java, "rightBack")
+    private val leftFront: DcMotor = hwMap.get(DcMotor::class.java, "leftFront")
+    private val rightFront: DcMotor = hwMap.get(DcMotor::class.java, "rightFront")
+    private val leftBack: DcMotor = hwMap.get(DcMotor::class.java, "leftBack")
 
     override fun update(gamepadInput: ArrayList<Float>) {
         localizer.updateHeading()

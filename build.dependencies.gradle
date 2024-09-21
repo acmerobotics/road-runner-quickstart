@@ -1,6 +1,6 @@
 repositories {
     mavenCentral()
-    google() // Needed for androidx
+    google()
 
     maven{
         url = "https://maven.brott.dev/"
@@ -17,5 +17,7 @@ dependencies {
     implementation 'org.firstinspires.ftc:FtcCommon:10.0.0'
     implementation 'org.firstinspires.ftc:Vision:10.0.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    //this is just to fix the weird error when building project, its a bug from google, idk when it will be fixed
 }
 
