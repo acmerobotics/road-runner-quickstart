@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.New.SubSystems
 
-import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.Angle
+import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Kotlin.Angle
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.Random

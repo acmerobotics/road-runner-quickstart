@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.New.SubSystems.Bromine;
+package org.firstinspires.ftc.teamcode.New.SubSystems.Bromine.Java;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.New.SubSystems.Java.JavaSubsystems;
+import org.firstinspires.ftc.teamcode.New.SubSystems.JavaSubsystems;
 
 
 public class Claws implements JavaSubsystems {

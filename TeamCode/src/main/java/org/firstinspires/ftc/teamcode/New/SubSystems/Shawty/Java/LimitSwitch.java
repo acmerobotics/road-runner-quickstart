@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.New.SubSystems.NewRobotName;
+package org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Java;
 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.ftc.teamcode.New.SubSystems.Java.JavaSubsystems;
+import org.firstinspires.ftc.teamcode.New.SubSystems.JavaSubsystems;
 
 public class LimitSwitch implements JavaSubsystems {
 

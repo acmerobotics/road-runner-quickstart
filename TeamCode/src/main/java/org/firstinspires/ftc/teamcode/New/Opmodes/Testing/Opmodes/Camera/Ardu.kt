@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Opmodes.Camera
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.AprilTagData
-import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.TeleLocalizer
+import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Kotlin.AprilTagData
+import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Kotlin.TeleLocalizer
 
 @TeleOp(name = "ArduCamAprilTags",group = "Linear OpMode")
 class Ardu : LinearOpMode() {

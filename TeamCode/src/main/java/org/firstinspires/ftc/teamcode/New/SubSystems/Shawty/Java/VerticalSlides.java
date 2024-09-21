@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.New.SubSystems.NewRobotName;
+package org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Java;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.PIDFcontroller;
-import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.PIDParams;
+import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Kotlin.PIDFcontroller;
+import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Kotlin.PIDParams;
 
 public class VerticalSlides {
 

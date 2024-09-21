@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Opmodes.Claw;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.New.SubSystems.Bromine.Claws;
+import org.firstinspires.ftc.teamcode.New.SubSystems.Bromine.Java.Claws;
 
 
 @TeleOp(name = "Claws", group = "Linear OpMode")

@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.New.SubSystems.Bromine
+package org.firstinspires.ftc.teamcode.New.SubSystems.Bromine.Kotlin
 
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.New.SubSystems.Kotlin.SubSystems
+import org.firstinspires.ftc.teamcode.New.SubSystems.SubSystems
 
 class ClawsKt(hardwareMap: HardwareMap) : SubSystems {
 

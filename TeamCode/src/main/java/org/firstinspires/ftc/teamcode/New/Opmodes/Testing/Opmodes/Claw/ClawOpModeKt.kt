@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Opmodes.Claw
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.New.SubSystems.Bromine.ClawsKt
+import org.firstinspires.ftc.teamcode.New.SubSystems.Bromine.Kotlin.ClawsKt
 
 @TeleOp(name = "ClawsKT", group = "Linear OpMode")
 class ClawOpModeKt : LinearOpMode() {
