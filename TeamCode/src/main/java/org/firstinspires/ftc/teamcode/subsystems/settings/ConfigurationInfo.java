@@ -26,8 +26,8 @@ public class ConfigurationInfo {
     public static HardwareInterface releaseServo = new HardwareInterface("REL", false, 2);
 
     // SLIDES
-    public static HardwareInterface leftSlide = new HardwareInterface("LL", false, 2);
-    public static HardwareInterface rightSlide = new HardwareInterface("RL", true, 2);
+    public static HardwareInterface leftSlide = new HardwareInterface("LVS", false, 2);
+    public static HardwareInterface rightSlide = new HardwareInterface("RVS", true, 2);
 
     // CAMERA
     public static HardwareInterface camera = new HardwareInterface("Ray", true, 0);
