@@ -23,10 +23,11 @@ public class VerticalSlides {
         HANG,
         BASKET,
         BAR1,
-        BAR2
+        BAR2,
+        IDLE
     }
 
-    State state = State.LOWERED;
+    static State state = State.LOWERED;
     int target = 0;
 
     public void update(State slideState) {
@@ -43,10 +44,10 @@ public class VerticalSlides {
 
         leftSlide.update(target);
         rightSlide.update(target);
-
     }
 
     public static class LeftSlide {
+
         DcMotor leftSlide;
         int prevPos;
         int leftEncoder;
@@ -72,10 +73,19 @@ public class VerticalSlides {
                 leftEncoder = LimitSwitch.State.RESET.value;
             }
 
-            leftSlide.setPower(pidFcontroller.calculate(target - leftEncoder));
+            double leftPower = pidFcontroller.calculate(target - leftEncoder);
+
+            //idle mode for testing or emergency stop
+            if(state == State.IDLE){
+               leftPower = 0;
+           }
+
+            leftSlide.setPower(leftPower);
         }
     }
+
     public static class RightSlide {
+
         DcMotor rightSlide;
         int prevPos;
         int rightEncoder;
@@ -90,7 +100,6 @@ public class VerticalSlides {
         public RightSlide(HardwareMap hardwareMap){
             rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
             rightDigitalChannel = hardwareMap.get(DigitalChannel.class, "leftSwitch");
-
         }
 
         public void update(int target) {
@@ -102,7 +111,14 @@ public class VerticalSlides {
                 rightEncoder = LimitSwitch.State.RESET.value;
             }
 
-            rightSlide.setPower(pidFcontroller.calculate(target - rightEncoder));
+            double rightPower = pidFcontroller.calculate(target - rightEncoder);
+
+            //idle mode for testing or emergency stop
+            if(state == State.IDLE){
+                rightPower = 0;
+            }
+
+            rightSlide.setPower(rightPower);
         }
     }
 }
