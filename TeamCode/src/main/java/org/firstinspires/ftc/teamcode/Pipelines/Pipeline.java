@@ -99,8 +99,8 @@ public class Pipeline extends OpenCvPipeline {
             telemetry.addData("Duck", "Right");
         }*/
 
-        telemetry.addData("leftValue", leftValue);
-        telemetry.addData("middleValue", middleValue);
+        //telemetry.addData("leftValue", leftValue);
+        //telemetry.addData("middleValue", middleValue);
         //telemetry.addData("rightValue", rightValue);
         telemetry.update();
         return mat;
