@@ -6,18 +6,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name = "SlideTest", group = "Linear OpMode")
 public class SlideTest extends LinearOpMode {
 
-    VerticalSlides verticalSlides = new VerticalSlides(hardwareMap);
+    LinearSlides verticalSlides = new LinearSlides(hardwareMap);
 
     @Override
     public void runOpMode() {
         while (opModeIsActive()){
-            VerticalSlides.state = VerticalSlides.State.IDLE;
+            verticalSlides.state = LinearSlides.State.IDLE;
+            verticalSlides.resetValue = 0;
+            verticalSlides.update();
 
             telemetry.addData("rightEncoder", verticalSlides.rightSlide.rightEncoder);
             telemetry.addData("leftEncoder", verticalSlides.leftSlide.leftEncoder);
             telemetry.update();
         }
-
-
     }
 }

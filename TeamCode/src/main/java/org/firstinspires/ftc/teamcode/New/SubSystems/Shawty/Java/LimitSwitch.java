@@ -8,32 +8,26 @@ public class LimitSwitch implements JavaSubsystems {
 
     DigitalChannel digitalChannel;
     State state;
-    public static int resetValue;
-
+    public int resetValue;
 
     public LimitSwitch(DigitalChannel digitalChannel, int resetValue) {
         this.digitalChannel = digitalChannel;
-        LimitSwitch.resetValue = resetValue;
+        this.resetValue = resetValue;
     }
+
     @Override
     public void update() {
         boolean limitSwitchState = digitalChannel.getState();
 
         if(limitSwitchState){
-            state = State.RESET;
+            state = State.PRESSED;
         }
         else{
-            state = State.DONT;
+            state = State.RELEASED;
         }
-
     }
     enum State{
-        RESET(resetValue),
-        DONT(0);
-        final int value;
-        State(int value) {
-            this.value = value;
-        }
+        PRESSED,
+        RELEASED
     }
-
 }

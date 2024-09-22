@@ -7,13 +7,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Kotlin.PIDFcontroller;
 import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Kotlin.PIDParams;
 
-public class VerticalSlides {
+public class LinearSlides {
 
     public LeftSlide leftSlide;
     public RightSlide rightSlide;
-    public static int resetValue = 0;
+    public int resetValue = 0;
 
-    public VerticalSlides(HardwareMap hardwareMap){
+    public LinearSlides(HardwareMap hardwareMap){
         leftSlide = new LeftSlide(hardwareMap);
         rightSlide = new RightSlide(hardwareMap);
     }
@@ -27,11 +27,10 @@ public class VerticalSlides {
         IDLE
     }
 
-    static State state = State.LOWERED;
+    State state = State.IDLE;
     int target = 0;
 
-    public void update(State slideState) {
-        state = slideState;
+    public void update() {
 
         switch (state){
             //find height values, make code to test
@@ -42,18 +41,16 @@ public class VerticalSlides {
             case BAR2: target = 4; break;
         }
 
-        leftSlide.update(target);
-        rightSlide.update(target);
+        leftSlide.update(target, state);
+        rightSlide.update(target, state);
     }
 
-    public static class LeftSlide {
+    public class LeftSlide {
 
         DcMotor leftSlide;
-        int prevPos;
         int leftEncoder;
 
         DigitalChannel leftDigitalChannel;
-        LimitSwitch leftLimitSwitch = new LimitSwitch(leftDigitalChannel, resetValue);
 
         //tune PID coefficients
         PIDParams pidParams = new PIDParams(0.0,0.0,0.0,0.0);
@@ -64,13 +61,16 @@ public class VerticalSlides {
             leftDigitalChannel = hardwareMap.get(DigitalChannel.class, "leftSwitch");
         }
 
-        public void update(int target) {
+        LimitSwitch leftLimitSwitch = new LimitSwitch(leftDigitalChannel, resetValue);
+        int prevPos = leftSlide.getCurrentPosition();
+
+        public void update(int target, State state) {
             leftEncoder += leftSlide.getCurrentPosition() - prevPos;
             prevPos = leftSlide.getCurrentPosition();
 
             leftLimitSwitch.update();
-            if(leftLimitSwitch.state == LimitSwitch.State.RESET){
-                leftEncoder = LimitSwitch.State.RESET.value;
+            if(leftLimitSwitch.state == LimitSwitch.State.PRESSED){
+                leftEncoder = leftLimitSwitch.resetValue;
             }
 
             double leftPower = pidFcontroller.calculate(target - leftEncoder);
@@ -84,14 +84,11 @@ public class VerticalSlides {
         }
     }
 
-    public static class RightSlide {
-
+    public class RightSlide {
         DcMotor rightSlide;
-        int prevPos;
         int rightEncoder;
 
         DigitalChannel rightDigitalChannel;
-        LimitSwitch rightLimitSwitch = new LimitSwitch(rightDigitalChannel, resetValue);
 
         //tune PID coefficients
         PIDParams pidParams = new PIDParams(0.0,0.0,0.0,0.0);
@@ -102,13 +99,16 @@ public class VerticalSlides {
             rightDigitalChannel = hardwareMap.get(DigitalChannel.class, "leftSwitch");
         }
 
-        public void update(int target) {
+        LimitSwitch rightLimitSwitch = new LimitSwitch(rightDigitalChannel, resetValue);
+        int prevPos = rightSlide.getCurrentPosition();
+
+        public void update(int target, State state) {
             rightEncoder += rightSlide.getCurrentPosition() - prevPos;
             prevPos = rightSlide.getCurrentPosition();
 
             rightLimitSwitch.update();
-            if(rightLimitSwitch.state == LimitSwitch.State.RESET){
-                rightEncoder = LimitSwitch.State.RESET.value;
+            if(rightLimitSwitch.state == LimitSwitch.State.PRESSED){
+                rightEncoder = rightLimitSwitch.resetValue;
             }
 
             double rightPower = pidFcontroller.calculate(target - rightEncoder);
