@@ -27,14 +27,14 @@ public class Pipeline extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar yellowhighHSV = new Scalar(248, 200, 250);//3 numbers to represent something, in this case, the rgb values of yellowhigh
-        Scalar yellowlowHSV = new Scalar(138, 34, 143);//WHY DOES EVERY HSV CALAULATOR HAVE DIFFERENT VALUES OPRIUHGPDAUFHMPGI RDGPID
-        Scalar redHighHSV1 = new Scalar (359, 255, 191);
-        Scalar redLowHSV1 = new Scalar (346, 255, 191);
-        Scalar redHighHSV2 = new Scalar (10, 255, 191); 
-        Scalar redLowHSV2 = new Scalar (0, 255, 191);
-        Scalar blueHighHSV = new Scalar (256, 255, 191);
-        Scalar blueLowHSV = new Scalar (210, 255, 191);
+        Scalar yellowHighHSV = new Scalar(63, 100, 75);//3 numbers to represent something, in this case, the rgb values of yellowhigh
+        Scalar yellowLowHSV = new Scalar(41, 34, 75);
+        Scalar redHighHSV1 = new Scalar (359, 100, 75);
+        Scalar redLowHSV1 = new Scalar (346, 100, 75);
+        Scalar redHighHSV2 = new Scalar (10, 100, 75);
+        Scalar redLowHSV2 = new Scalar (0, 100, 75);
+        Scalar blueHighHSV = new Scalar (256, 100, 75);
+        Scalar blueLowHSV = new Scalar (210, 100, 75);
         /*Rect RECT_LEFT = new Rect(
                 new Point(180, 30),//top left of camera fov is (0,0), pos x is downward, pos y is rightward
                 new Point(240,100)//max values is 720x by 480y
@@ -57,7 +57,7 @@ public class Pipeline extends OpenCvPipeline {
        // Imgproc.rectangle(mat, RECT_LEFT, color, 2);//mat is array with 3 layers for each of the r,g,b values of each pixel
         Imgproc.rectangle(mat, RECT_MIDDLE2, color, 2);//Imgproc does something idk
         //Imgproc.rectangle(mat, RECT_RIGHT, color, 2);
-        Core.inRange(mat, yellowlowHSV, yellowhighHSV, yellowmat);//core.inRange = if color of a pixel is in color range, then it selects it and colors it white, otherwise it colors it black
+        Core.inRange(mat, yellowLowHSV, yellowHighHSV, yellowmat);//core.inRange = if color of a pixel is in color range, then it selects it and colors it white, otherwise it colors it black
         Core.inRange(mat, redLowHSV1, redHighHSV1, redmat);
         Core.inRange(mat, redLowHSV2, redHighHSV2, redmat2);
         Core.inRange(mat, blueLowHSV, blueHighHSV, bluemat);
