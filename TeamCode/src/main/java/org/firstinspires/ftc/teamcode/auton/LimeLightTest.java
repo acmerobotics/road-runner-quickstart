@@ -16,6 +16,8 @@ public class LimeLightTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        waitForStart();
+        
         cam = hardwareMap.get(Limelight3A.class, "limelight");
         telemetry.setMsTransmissionInterval(11);
         cam.pipelineSwitch(0);
