@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode.util;
 public enum Levels {
     ZERO,
     INTAKE,
-    CAPTURE,
     INTERMEDIATE,
-    DEPOSIT,
-    BACKDROP,
-    CLIMB_EXTEND,
-    CLIMB,
-    INIT,
-    FARPOS
+    LOW_BASKET,
+    HIGH_BASKET,
+    LOW_RUNG,
+    HIGH_RUNG,
+    CLIMB_STAGE_1,
+    CLIMB_STAGE_2
 }

@@ -92,7 +92,13 @@ public class Lift {
             runToPosition(0);
         } else if (preset == Levels.INTAKE) {
             runToPosition(0);
-        } else if (preset == Levels.DEPOSIT){
+        } else if (preset == Levels.LOW_BASKET){
+            runToPosition(0);
+        } else if (preset == Levels.HIGH_BASKET){
+            runToPosition(0);
+        } else if (preset == Levels.LOW_RUNG){
+            runToPosition(0);
+        } else if (preset == Levels.HIGH_RUNG){
             runToPosition(0);
         }
     }

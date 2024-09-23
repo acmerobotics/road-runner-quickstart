@@ -6,22 +6,23 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.teamcode.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
 
 public class Relocalization {
 
     public CVMaster vision;
     public SparkFunOTOS otos;
-    private HardwareMap hardwareMap;
+    public GoBildaPinpoint pinpoint;
 
-    public Relocalization(CVMaster cv, SparkFunOTOS o, HardwareMap map) {
+    public Relocalization(CVMaster cv, GoBildaPinpoint pp, SparkFunOTOS o) {
         vision = cv;
+        pinpoint = pp;
         otos = o;
-        hardwareMap = map;
     }
 
     public Pose2d relocalizeMT2() {
-        return vision.mt2Relocalize(otos.getPosition().h);
+        return vision.mt2Relocalize(pinpoint.getHeading());
     }
 
     public Pose2d relocalizeMT1() {
