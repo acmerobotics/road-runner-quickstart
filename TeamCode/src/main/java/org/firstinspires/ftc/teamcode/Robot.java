@@ -2,21 +2,33 @@ package org.firstinspires.ftc.teamcode;
 
 // IMPORT SUBSYSTEMS
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import com.acmerobotics.roadrunner.Pose2d;
 
 import org.firstinspires.ftc.teamcode.commands.CommandMaster;
+import org.firstinspires.ftc.teamcode.subsystems.endEffector.EndEffector;
+import org.firstinspires.ftc.teamcode.subsystems.extension.Extension;
+import org.firstinspires.ftc.teamcode.subsystems.lift.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.v4b.V4B;
 import org.firstinspires.ftc.teamcode.util.Component;
+import org.firstinspires.ftc.teamcode.util.ContinuousServo;
 import org.firstinspires.ftc.teamcode.util.Motor;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.util.StepperServo;
 
 public class Robot {
 
     // SUBSYSTEM DECLARATIONS
     public Component[] components;
     public MecanumDrive drive;
+    public Lift lift;
+    public Extension extension;
+    public V4B v4b;
+    public EndEffector endEffector;
+
     public CommandMaster commands;
     public HardwareMap hardwareMap;
 
@@ -40,11 +52,29 @@ public class Robot {
                 new Motor(2, "rightBack", map, false),        //1 right odometer
                 new Motor(1, "leftFront", map, true),         //2 middle odometer
                 new Motor(0, "rightFront", map, false),       //3
+
+                new Motor(0, "lift1", map, false),            //4
+                new Motor(1, "lift2", map, false),            //5
+
+                new StepperServo(0, "ext1", map),                    //6
+                new StepperServo(1, "ext2", map),                    //7
+
+                new StepperServo(0, "arm", map),                     //8
+
+                new StepperServo(0, "elbow", map),                   //9
+                new ContinuousServo(1, "intake1", map),              //10
+                new ContinuousServo(2, "intake2", map)               //11
         };
 
         VoltageSensor voltageSensor = map.voltageSensor.iterator().next();
+        RevColorSensorV3 colorSensor = map.get(RevColorSensorV3.class, "colorSensor");
 
         // INIT SUBSYSTEMS
+
+        this.lift = new Lift((Motor) components[4], (Motor) components[5], voltageSensor);
+        this.extension = new Extension((StepperServo) components[6], (StepperServo) components[7]);
+        this.v4b = new V4B((StepperServo) components[8]);
+        this.endEffector = new EndEffector((ContinuousServo) components[10], (ContinuousServo) components[11], (StepperServo) components[9], colorSensor);
 
         this.commands = new CommandMaster(this);
         this.hardwareMap = map;

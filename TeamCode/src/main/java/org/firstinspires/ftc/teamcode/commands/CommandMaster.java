@@ -8,4 +8,7 @@ public class CommandMaster {
     public CommandMaster(Robot r) {
         robot = r;
     }
+
+    //REGISTER COMMANDS HERE
+
 }
