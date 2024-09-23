@@ -33,6 +33,10 @@ public class LimeLightTest extends LinearOpMode {
                 telemetry.addData("PoseY", botpose.getPosition().y);
                 telemetry.addData("PoseZ", botpose.getPosition().z);
             }
+            else {
+                telemetry.addLine("Nothing is There");
+            }
+            telemetry.update();
 
         }
     }

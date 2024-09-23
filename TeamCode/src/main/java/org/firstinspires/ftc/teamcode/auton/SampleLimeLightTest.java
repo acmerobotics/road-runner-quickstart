@@ -34,8 +34,15 @@ public class SampleLimeLightTest extends LinearOpMode {
                     telemetry.addData("tx", result.getTx());
                     telemetry.addData("ty", result.getTy());
                     telemetry.addData("Botpose", botpose.toString());
+                    telemetry.addData("BotX", botpose.getPosition().x);
+                    telemetry.addData("BotY", botpose.getPosition().y);
+                    telemetry.addData("BotZ", botpose.getPosition().z);
                 }
             }
+            else {
+                telemetry.addLine("Nothing is There");
+            }
+            telemetry.update();
         }
     }
 }
