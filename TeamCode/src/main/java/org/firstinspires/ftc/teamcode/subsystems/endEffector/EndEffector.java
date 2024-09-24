@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems.endEffector;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.util.ContinuousServo;
+import org.firstinspires.ftc.teamcode.util.Levels;
 import org.firstinspires.ftc.teamcode.util.SampleColors;
 import org.firstinspires.ftc.teamcode.util.StepperServo;
 
@@ -41,6 +41,12 @@ public class EndEffector {
         elbow.setAngle(angle);
     }
 
+    public void runToAnglePreset(Levels level) {
+        if (level == Levels.INTAKE_INTERMEDIATE) {
+            setAngle(10);
+        }
+    }
+
     public void startIntake() {
         setPower(1);
     }
@@ -54,11 +60,27 @@ public class EndEffector {
         if (Arrays.stream(colors).anyMatch(x -> x == s )) {
             stopIntake();
         } else if (s != null) {
-            ejectSample();
+            eject();
         }
     }
 
-    public void ejectSample() {
+    /**
+     *
+     * @param colors colors that you want to stop the intake for
+     * @return 0: nothing in intake, 1: intaked targeted color, -1: intaked non-target (eject)
+     */
+
+    public int smartStopDetect(SampleColors... colors) {
+        SampleColors s = detectSample();
+        if (Arrays.stream(colors).anyMatch(x -> x == s )) {
+            return 1;
+        } else if (s != null) {
+            return -1;
+        }
+        return 0;
+    }
+
+    public void eject() {
         setPower((float) -0.5);
     }
 

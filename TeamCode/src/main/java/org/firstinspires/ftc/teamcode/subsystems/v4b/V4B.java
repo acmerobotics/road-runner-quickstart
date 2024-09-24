@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.v4b;
 
+import org.firstinspires.ftc.teamcode.util.Levels;
 import org.firstinspires.ftc.teamcode.util.StepperServo;
 
 public class V4B {
@@ -15,6 +16,12 @@ public class V4B {
         servo.setAngle(t);
 
         target = t;
+    }
+
+    public void runToPreset(Levels level) {
+        if (level == Levels.INTAKE) {
+            runToPosition(1);
+        }
     }
 
     public float getPosition() {

@@ -15,8 +15,10 @@ import org.firstinspires.ftc.teamcode.subsystems.lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.v4b.V4B;
 import org.firstinspires.ftc.teamcode.util.Component;
 import org.firstinspires.ftc.teamcode.util.ContinuousServo;
+import org.firstinspires.ftc.teamcode.util.Levels;
 import org.firstinspires.ftc.teamcode.util.Motor;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.util.SampleColors;
 import org.firstinspires.ftc.teamcode.util.StepperServo;
 
 public class Robot {
@@ -34,6 +36,8 @@ public class Robot {
 
     // STATE VARS
     boolean auton;
+    boolean intaking = false;
+    Levels state = Levels.INIT;
 
     Motor backLeft;
     Motor backRight;
@@ -83,6 +87,107 @@ public class Robot {
         backRight = (Motor) components[1];
         frontLeft = (Motor) components[2];
         frontRight = (Motor) components[3];
+    }
+
+    // INTAKE PRESETS
+
+    public void intakePreset() {
+        lift.runToPreset(Levels.INTAKE);
+        v4b.runToPreset(Levels.INTAKE_INTERMEDIATE);
+        endEffector.runToAnglePreset(Levels.INTAKE_INTERMEDIATE);
+        extension.runToPreset(Levels.INTAKE);
+
+        new Thread(() -> {
+            sleep(3000);
+            v4b.runToPreset(Levels.INTAKE);
+            endEffector.runToAnglePreset(Levels.INTAKE);
+            endEffector.startIntake();
+            intaking = true;
+            state = Levels.INTAKE;
+        }).start();
+    }
+
+    public void intermediatePreset() {
+        v4b.runToPreset(Levels.INTERMEDIATE);
+        endEffector.runToAnglePreset(Levels.INTERMEDIATE);
+        extension.runToPreset(Levels.INTERMEDIATE);
+        lift.runToPreset(Levels.INTERMEDIATE);
+        state = Levels.INTERMEDIATE;
+    }
+
+    public void stopIntake() {
+        intaking = false;
+        endEffector.stopIntake();
+        intermediatePreset();
+    }
+
+    public void autoStopIntakeUpdate(SampleColors... colors) {
+        int r = endEffector.smartStopDetect(colors);
+        switch (r) {
+            case 0:
+                break;
+            case 1:
+                stopIntake();
+                break;
+            case -1:
+                endEffector.eject();
+                break;
+        }
+    }
+
+    // DEPOSIT PRESETS
+     public void lowBasket() {
+        v4b.runToPreset(Levels.LOW_BASKET);
+        endEffector.runToAnglePreset(Levels.LOW_BASKET);
+        lift.runToPreset(Levels.LOW_BASKET);
+        state = Levels.LOW_BASKET;
+     }
+
+    public void highBasket() {
+        v4b.runToPreset(Levels.HIGH_BASKET);
+        endEffector.runToAnglePreset(Levels.HIGH_BASKET);
+        lift.runToPreset(Levels.HIGH_BASKET);
+        state = Levels.HIGH_BASKET;
+    }
+
+    public void lowRung() {
+        v4b.runToPreset(Levels.LOW_RUNG);
+        endEffector.runToAnglePreset(Levels.LOW_RUNG);
+        lift.runToPreset(Levels.LOW_RUNG);
+        state = Levels.LOW_RUNG;
+    }
+
+    public void highRung() {
+        v4b.runToPreset(Levels.HIGH_RUNG);
+        endEffector.runToAnglePreset(Levels.HIGH_RUNG);
+        lift.runToPreset(Levels.HIGH_RUNG);
+        state = Levels.HIGH_RUNG;
+    }
+
+    // OUTTAKE
+
+    public void outtakeSample() {
+        endEffector.eject();
+    }
+
+    public void outtakeSpecimen() {
+        lift.runToPosition(lift.getPos() - 10);
+        new Thread(() -> {
+            sleep(50);
+            endEffector.eject();
+        }).start();
+    }
+
+    public void smartOuttake() {
+        if (state == Levels.LOW_BASKET || state == Levels.HIGH_BASKET) {
+            outtakeSample();
+            intermediatePreset();
+            state = Levels.INTERMEDIATE;
+        } else if (state == Levels.LOW_RUNG || state == Levels.HIGH_RUNG) {
+            outtakeSpecimen();
+            intermediatePreset();
+            state = Levels.INTERMEDIATE;
+        }
     }
 
     //DRIVE
