@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.acmerobotics.roadrunner.Pose2d;
 
 import org.firstinspires.ftc.teamcode.commands.CommandMaster;
-import org.firstinspires.ftc.teamcode.subsystems.endEffector.EndEffector;
+import org.firstinspires.ftc.teamcode.subsystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.extension.Extension;
 import org.firstinspires.ftc.teamcode.subsystems.lift.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.v4b.V4B;
+import org.firstinspires.ftc.teamcode.subsystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.util.Component;
 import org.firstinspires.ftc.teamcode.util.ContinuousServo;
 import org.firstinspires.ftc.teamcode.util.Levels;
@@ -28,8 +28,8 @@ public class Robot {
     public MecanumDrive drive;
     public Lift lift;
     public Extension extension;
-    public V4B v4b;
-    public EndEffector endEffector;
+    public Arm arm;
+    public Claw claw;
 
     public CommandMaster commands;
     public HardwareMap hardwareMap;
@@ -77,8 +77,8 @@ public class Robot {
 
         this.lift = new Lift((Motor) components[4], (Motor) components[5], voltageSensor);
         this.extension = new Extension((StepperServo) components[6], (StepperServo) components[7]);
-        this.v4b = new V4B((StepperServo) components[8]);
-        this.endEffector = new EndEffector((ContinuousServo) components[10], (ContinuousServo) components[11], (StepperServo) components[9], colorSensor);
+        this.arm = new Arm((StepperServo) components[8], (StepperServo) components[9]);
+        this.claw = new Claw((ContinuousServo) components[10], (ContinuousServo) components[11], colorSensor);
 
         this.commands = new CommandMaster(this);
         this.hardwareMap = map;
@@ -93,23 +93,20 @@ public class Robot {
 
     public void intakePreset() {
         lift.runToPreset(Levels.INTAKE);
-        v4b.runToPreset(Levels.INTAKE_INTERMEDIATE);
-        endEffector.runToAnglePreset(Levels.INTAKE_INTERMEDIATE);
+        arm.runToPreset(Levels.INTAKE_INTERMEDIATE);
         extension.runToPreset(Levels.INTAKE);
 
         new Thread(() -> {
             sleep(3000);
-            v4b.runToPreset(Levels.INTAKE);
-            endEffector.runToAnglePreset(Levels.INTAKE);
-            endEffector.startIntake();
+            arm.runToPreset(Levels.INTAKE);
+            claw.startIntake();
             intaking = true;
             state = Levels.INTAKE;
         }).start();
     }
 
     public void intermediatePreset() {
-        v4b.runToPreset(Levels.INTERMEDIATE);
-        endEffector.runToAnglePreset(Levels.INTERMEDIATE);
+        arm.runToPreset(Levels.INTERMEDIATE);
         extension.runToPreset(Levels.INTERMEDIATE);
         lift.runToPreset(Levels.INTERMEDIATE);
         state = Levels.INTERMEDIATE;
@@ -117,12 +114,12 @@ public class Robot {
 
     public void stopIntake() {
         intaking = false;
-        endEffector.stopIntake();
+        claw.stopIntake();
         intermediatePreset();
     }
 
     public void autoStopIntakeUpdate(SampleColors... colors) {
-        int r = endEffector.smartStopDetect(colors);
+        int r = claw.smartStopDetect(colors);
         switch (r) {
             case 0:
                 break;
@@ -130,36 +127,32 @@ public class Robot {
                 stopIntake();
                 break;
             case -1:
-                endEffector.eject();
+                claw.eject();
                 break;
         }
     }
 
     // DEPOSIT PRESETS
      public void lowBasket() {
-        v4b.runToPreset(Levels.LOW_BASKET);
-        endEffector.runToAnglePreset(Levels.LOW_BASKET);
+        arm.runToPreset(Levels.LOW_BASKET);
         lift.runToPreset(Levels.LOW_BASKET);
         state = Levels.LOW_BASKET;
      }
 
     public void highBasket() {
-        v4b.runToPreset(Levels.HIGH_BASKET);
-        endEffector.runToAnglePreset(Levels.HIGH_BASKET);
+        arm.runToPreset(Levels.HIGH_BASKET);
         lift.runToPreset(Levels.HIGH_BASKET);
         state = Levels.HIGH_BASKET;
     }
 
     public void lowRung() {
-        v4b.runToPreset(Levels.LOW_RUNG);
-        endEffector.runToAnglePreset(Levels.LOW_RUNG);
+        arm.runToPreset(Levels.LOW_RUNG);
         lift.runToPreset(Levels.LOW_RUNG);
         state = Levels.LOW_RUNG;
     }
 
     public void highRung() {
-        v4b.runToPreset(Levels.HIGH_RUNG);
-        endEffector.runToAnglePreset(Levels.HIGH_RUNG);
+        arm.runToPreset(Levels.HIGH_RUNG);
         lift.runToPreset(Levels.HIGH_RUNG);
         state = Levels.HIGH_RUNG;
     }
@@ -167,14 +160,14 @@ public class Robot {
     // OUTTAKE
 
     public void outtakeSample() {
-        endEffector.eject();
+        claw.eject();
     }
 
     public void outtakeSpecimen() {
         lift.runToPosition(lift.getPos() - 10);
         new Thread(() -> {
             sleep(50);
-            endEffector.eject();
+            claw.eject();
         }).start();
     }
 

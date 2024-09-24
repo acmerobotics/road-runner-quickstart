@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.endEffector;
+package org.firstinspires.ftc.teamcode.subsystems.claw;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -12,18 +12,16 @@ import org.firstinspires.ftc.teamcode.util.StepperServo;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class EndEffector {
+public class Claw {
     ContinuousServo servo1;
     ContinuousServo servo2;
-    StepperServo elbow;
     RevColorSensorV3 colorSensor;
 
     ElapsedTime sensorTimeout;
 
-    public EndEffector(ContinuousServo s1, ContinuousServo s2, StepperServo s3, RevColorSensorV3 sensor) {
+    public Claw(ContinuousServo s1, ContinuousServo s2, RevColorSensorV3 sensor) {
         servo1 = s1;
         servo2 = s2;
-        elbow = s3;
         colorSensor = sensor;
 
         sensorTimeout = new ElapsedTime();
@@ -35,16 +33,6 @@ public class EndEffector {
     public void setPower(float p) {
         servo1.servo.setPower(p);
         servo2.servo.setPower(p);
-    }
-
-    public void setAngle(float angle) {
-        elbow.setAngle(angle);
-    }
-
-    public void runToAnglePreset(Levels level) {
-        if (level == Levels.INTAKE_INTERMEDIATE) {
-            setAngle(10);
-        }
     }
 
     public void startIntake() {

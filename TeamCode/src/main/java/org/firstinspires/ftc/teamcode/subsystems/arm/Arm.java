@@ -1,15 +1,17 @@
-package org.firstinspires.ftc.teamcode.subsystems.v4b;
+package org.firstinspires.ftc.teamcode.subsystems.arm;
 
 import org.firstinspires.ftc.teamcode.util.Levels;
 import org.firstinspires.ftc.teamcode.util.StepperServo;
 
-public class V4B {
+public class Arm {
     StepperServo servo;
+    StepperServo wrist;
 
     float target = 0;
 
-    public V4B(StepperServo s) {
-        servo = s;
+    public Arm(StepperServo s1, StepperServo s2) {
+        servo = s1;
+        wrist = s2;
     }
 
     public void runToPosition(float t) {
@@ -26,5 +28,15 @@ public class V4B {
 
     public float getPosition() {
         return target;
+    }
+
+    public void setWristAngle(float angle) {
+        wrist.setAngle(angle);
+    }
+
+    public void runToWristPreset(Levels level) {
+        if (level == Levels.INTAKE_INTERMEDIATE) {
+            setWristAngle(10);
+        }
     }
 }
