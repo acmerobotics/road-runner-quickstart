@@ -66,7 +66,7 @@ public class TheTeleOp extends LinearOpMode {
 
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
-        float gain = 2;
+        float gain = 50;
 
         final float[] hsvValues = new float[3];
 
@@ -96,11 +96,6 @@ public class TheTeleOp extends LinearOpMode {
                 imu.resetYaw();
             }
 
-            if (gamepad1.a) {
-                gain += 0.005;
-            } else if (gamepad1.b && gain > 1) {
-                gain -= 0.005;
-            }
 
             telemetry.addData("Gain", gain);
             colorSensor.setGain(gain);

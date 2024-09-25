@@ -1,25 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
 import android.graphics.Color;
-import android.view.View;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
 @TeleOp
-public class ColorSensor extends LinearOpMode {
+public class ColorSensorCode extends LinearOpMode {
 
 
     @Override
@@ -29,7 +20,7 @@ public class ColorSensor extends LinearOpMode {
 
 
 
-        float gain = 2;
+        float gain = 50;
 
         final float[] hsvValues = new float[3];
 
@@ -86,11 +77,11 @@ public class ColorSensor extends LinearOpMode {
                     .addData("Value", "%.3f", hsvValues[2]);
             telemetry.addData("Alpha", "%.3f", colors.alpha);
 
-            if (colors.red > 225 && colors.green > 225 && colors.blue < 30) {
+            if (colors.red > 0.6 && colors.green > 0.5 && colors.blue < 0.32) {
                 telemetry.addData("Block Color", "yellow");
-            } else if (colors.red > 225 && colors.green < 30 && colors.blue < 30) {
+            } else if (colors.red > 0.6 && colors.green < 0.3 && colors.blue < 0.3) {
                 telemetry.addData("Block Color", "red");
-            } else if (colors.red < 30 && colors.green < 30 && colors.blue > 225) {
+            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.35) {
                 telemetry.addData("Block Color", "blue");
             } else {
                 telemetry.addData("Block Color", "none");
