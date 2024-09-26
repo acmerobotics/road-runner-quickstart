@@ -12,6 +12,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 public class Pipeline extends OpenCvPipeline {
 
+    String color2;
     Telemetry telemetry;
 
     public Pipeline(Telemetry telemetry) {
@@ -27,14 +28,14 @@ public class Pipeline extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar yellowHighHSV = new Scalar(63, 100, 75);//3 numbers to represent something, in this case, the rgb values of yellowhigh
-        Scalar yellowLowHSV = new Scalar(41, 34, 75);
-        Scalar redHighHSV1 = new Scalar (359, 100, 75);
-        Scalar redLowHSV1 = new Scalar (346, 100, 75);
-        Scalar redHighHSV2 = new Scalar (10, 100, 75);
-        Scalar redLowHSV2 = new Scalar (0, 100, 75);
-        Scalar blueHighHSV = new Scalar (256, 100, 75);
-        Scalar blueLowHSV = new Scalar (210, 100, 75);
+        Scalar yellowHighHSV = new Scalar(153, 50, 50);//3 numbers to represent something, in this case, the rgb values of yellowhigh
+        Scalar yellowLowHSV = new Scalar(145, 50, 50);
+        Scalar redHighHSV1 = new Scalar (255, 255, 255);
+        Scalar redLowHSV1 = new Scalar (0, 0, 0);
+        Scalar redHighHSV2 = new Scalar (255, 255, 255);
+        Scalar redLowHSV2 = new Scalar (0, 0, 0);
+        Scalar blueHighHSV = new Scalar (255, 255, 255);
+        Scalar blueLowHSV = new Scalar (0, 0, 0);
 
         Rect RECT_MIDDLE = new Rect(200, 200, 200, 200);
 
@@ -64,12 +65,15 @@ public class Pipeline extends OpenCvPipeline {
 
         if(middleyellowValue /rectArea > minNum){
            telemetry.addData("Yellow Detected", middleyellowValue) ;
+           color2 = "yellow";
         }
         else if (middleblueValue/rectArea>minNum){
            telemetry.addData("Blue Detected", middleblueValue);
+           color2 = "Blue";
         }
         else if (middleredValue/rectArea>minNum){
             telemetry.addData("Red Detected", middleredValue);
+            color2 = "Red";
         }
         else {
             telemetry.addData("Not Detected", 0);
@@ -79,7 +83,9 @@ public class Pipeline extends OpenCvPipeline {
         //telemetry.addData("middleValue", middleValue);
         //telemetry.addData("rightValue", rightValue);
         telemetry.update();
-        return mat;
+        return bluemat;
     }
-
+    public String colorDetected(){
+        return color2;
+    }
 }
