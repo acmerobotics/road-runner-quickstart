@@ -60,7 +60,7 @@ class AngleTest {
 
     @Test
     //Tests the wrap() function when the angle to wrap is >= 2PI or <= -2PI.
-    //Expected Outcome: Wrap should occur.
+    //Expected Outcome: Error preventing Radians input being greater or less than -2PI, 2PI
     fun wrap_outside_range_large_values() {
         val angle = Angle
         val epsilon = 0.0
