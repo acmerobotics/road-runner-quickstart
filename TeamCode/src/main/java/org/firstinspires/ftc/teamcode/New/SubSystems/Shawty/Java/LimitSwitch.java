@@ -17,9 +17,8 @@ public class LimitSwitch implements JavaSubsystems {
 
     @Override
     public void update() {
-        boolean limitSwitchState = digitalChannel.getState();
 
-        if(limitSwitchState){
+        if(digitalChannel.getState()){
             state = State.PRESSED;
         }
         else{
