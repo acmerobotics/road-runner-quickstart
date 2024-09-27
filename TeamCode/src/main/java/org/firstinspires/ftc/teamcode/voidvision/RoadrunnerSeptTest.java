@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.PathBuilder;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -26,13 +27,17 @@ public class RoadrunnerSeptTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         // instantiate your MecanumDrive at a particular pose.
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(new Vector2d(0,0),0));
 
         Action trajectoryAction1;
         trajectoryAction1 = drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-60, -60, 0), Math.PI / 2)
-                .waitSeconds(3)
+                .setTangent(0)
+                .lineToX(20)
+                .waitSeconds(4)
+                .setTangent(Math.PI/2)
+                .lineToY(20)
                 .build();
+
 
 
         while (!isStopRequested() && !opModeIsActive()) {
@@ -51,10 +56,13 @@ public class RoadrunnerSeptTest extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
+
                         trajectoryAction1
 
                         //,trajectoryActionCloseOut
+
                 )
-        );
+
+        );telemetry.addData("X",drive.pose);
     }
 }

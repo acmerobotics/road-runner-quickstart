@@ -37,9 +37,9 @@ public class babyteleop extends LinearOpMode {
 
             //Drive
 
-            fwdBackPower = gamepad1.left_stick_y * slowamount;
+            fwdBackPower = -gamepad1.left_stick_y * slowamount;
             strafePower = -gamepad1.left_stick_x * slowamount;
-            turnPower = gamepad1.right_stick_x * slowamount;
+            turnPower = -gamepad1.right_stick_x * slowamount;
 
             lfPower = (fwdBackPower - turnPower - strafePower);
             rfPower = (fwdBackPower + turnPower + strafePower);
