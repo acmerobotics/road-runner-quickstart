@@ -3,10 +3,6 @@ package org.firstinspires.ftc.teamcode.Common;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 public class Constants {
-    public static final Pose2d RED_RIGHT_START = new Pose2d(12, -62, Math.toRadians(90));
-    public static final Pose2d RED_LEFT_START = new Pose2d(-36, -62, Math.toRadians(90));
-    public static final Pose2d BLUE_RIGHT_START = new Pose2d(-36, 62, Math.toRadians(270));
-    public static final Pose2d BLUE_LEFT_START = new Pose2d(12, 62, Math.toRadians(270));
     public static final int ArmUpTicks = 1800;
     public static final int ArmUpTicksAuto = 1890;
     public static final double armSpeedUp = 0.6;
