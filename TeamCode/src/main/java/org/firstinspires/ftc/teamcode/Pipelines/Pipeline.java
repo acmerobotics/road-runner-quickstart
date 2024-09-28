@@ -28,14 +28,14 @@ public class Pipeline extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar yellowHighHSV = new Scalar(153, 50, 50);//3 numbers to represent something, in this case, the rgb values of yellowhigh
-        Scalar yellowLowHSV = new Scalar(145, 50, 50);
-        Scalar redHighHSV1 = new Scalar (255, 255, 255);
-        Scalar redLowHSV1 = new Scalar (0, 0, 0);
-        Scalar redHighHSV2 = new Scalar (255, 255, 255);
-        Scalar redLowHSV2 = new Scalar (0, 0, 0);
-        Scalar blueHighHSV = new Scalar (255, 255, 255);
-        Scalar blueLowHSV = new Scalar (0, 0, 0);
+        Scalar yellowHighHSV = new Scalar(222, 215, 31);//3 numbers to represent something, in this case, the rgb values of yellowhigh
+        Scalar yellowLowHSV = new Scalar(176, 114, 10);
+        Scalar redHighHSV1 = new Scalar (61, 97, 102);
+        Scalar redLowHSV1 = new Scalar (49, 105, 81);
+        Scalar redHighHSV2 = new Scalar (61, 97, 102);
+        Scalar redLowHSV2 = new Scalar (49, 105, 81);
+        Scalar blueHighHSV = new Scalar (120, 255, 255);
+        Scalar blueLowHSV = new Scalar (90, 80, 80);
 
         Rect RECT_MIDDLE = new Rect(200, 200, 200, 200);
 
@@ -83,7 +83,7 @@ public class Pipeline extends OpenCvPipeline {
         //telemetry.addData("middleValue", middleValue);
         //telemetry.addData("rightValue", rightValue);
         telemetry.update();
-        return bluemat;
+        return yellowmat;
     }
     public String colorDetected(){
         return color2;

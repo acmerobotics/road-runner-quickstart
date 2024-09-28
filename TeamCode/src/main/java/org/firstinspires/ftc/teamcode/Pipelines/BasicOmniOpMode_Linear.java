@@ -59,7 +59,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     webcam1.setPipeline(new Pipeline(telemetry));
     webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener(){
         public void onOpened(){
-            webcam1.startStreaming(1280,720, OpenCvCameraRotation.UPRIGHT);
+            webcam1.startStreaming(640,480, OpenCvCameraRotation.UPRIGHT);
 
             }
             public void onError(int errorCode){
