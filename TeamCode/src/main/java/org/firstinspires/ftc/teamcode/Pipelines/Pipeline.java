@@ -28,16 +28,16 @@ public class Pipeline extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar yellowHighHSV = new Scalar(222, 215, 31);//3 numbers to represent something, in this case, the rgb values of yellowhigh
-        Scalar yellowLowHSV = new Scalar(176, 114, 10);
-        Scalar redHighHSV1 = new Scalar (61, 97, 102);
-        Scalar redLowHSV1 = new Scalar (49, 105, 81);
-        Scalar redHighHSV2 = new Scalar (61, 97, 102);
-        Scalar redLowHSV2 = new Scalar (49, 105, 81);
+        Scalar yellowHighHSV = new Scalar(30, 255, 255);//3 numbers to represent something, in this case, the rgb values of yellowhigh
+        Scalar yellowLowHSV = new Scalar(25, 127, 127);
+        Scalar redHighHSV1 = new Scalar (179, 240, 240);
+        Scalar redLowHSV1 = new Scalar (150, 100, 100);
+        Scalar redHighHSV2 = new Scalar (15, 240, 240);
+        Scalar redLowHSV2 = new Scalar (0, 100, 100);
         Scalar blueHighHSV = new Scalar (120, 255, 255);
         Scalar blueLowHSV = new Scalar (90, 80, 80);
 
-        Rect RECT_MIDDLE = new Rect(200, 200, 200, 200);
+        Rect RECT_MIDDLE = new Rect(200, 100, 250, 200);
 
         Scalar color = new Scalar(64, 64, 64);
         Imgproc.rectangle(mat, RECT_MIDDLE, color, 2);
