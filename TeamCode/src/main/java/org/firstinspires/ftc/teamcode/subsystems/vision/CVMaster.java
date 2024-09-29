@@ -12,8 +12,12 @@ import com.qualcomm.robotcore.util.SortOrder;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
+import org.firstinspires.ftc.teamcode.util.FullPose2d;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
 import org.firstinspires.ftc.vision.opencv.ColorRange;
@@ -34,7 +38,8 @@ public class CVMaster {
     ColorBlobLocatorProcessor yellowProcessor;
     EOCVPipeline activeCV = EOCVPipeline.YELLOW_SAMPLE;
 
-    List<ColorBlobLocatorProcessor.Blob> potTargets;
+    List<ColorBlobLocatorProcessor.Blob> rawPotTargets;
+    List<Pose3D> targets = new ArrayList<>();
     Pose2d poseAtSnapshot;
 
     public final float WEBCAM_X_OFFSET = 0;
@@ -175,24 +180,29 @@ public class CVMaster {
         }
 
 
-        List<ColorBlobLocatorProcessor.Blob> targets;
+        List<ColorBlobLocatorProcessor.Blob> rawTargets;
 
         if (activeCV == EOCVPipeline.RED_SAMPLE) {
-            targets = redProcessor.getBlobs();
+            rawTargets = redProcessor.getBlobs();
         } else if (activeCV == EOCVPipeline.BLUE_SAMPLE) {
-            targets = blueProcessor.getBlobs();
+            rawTargets = blueProcessor.getBlobs();
         } else {
-            targets = yellowProcessor.getBlobs();
+            rawTargets = yellowProcessor.getBlobs();
         }
 
-        ColorBlobLocatorProcessor.Util.filterByArea(50, 20000, targets);
-        ColorBlobLocatorProcessor.Util.sortByArea(SortOrder.DESCENDING, targets);
+        ColorBlobLocatorProcessor.Util.filterByArea(50, 20000, rawTargets);
+        ColorBlobLocatorProcessor.Util.sortByArea(SortOrder.DESCENDING, rawTargets);
 
-        potTargets = targets;
+        targets = new ArrayList<>();
+        for (int i = 0; i < Math.min(5, rawTargets.size()); i++) {
+            targets.add(calculateBlobFieldCoordinates(rawTargets.get(i)));
+        }
+
+        rawPotTargets = rawTargets;
         poseAtSnapshot = robotPose;
     }
 
-    public List<Double> calculateBlobFieldCoordinates(ColorBlobLocatorProcessor.Blob blob) {
+    public Pose3D calculateBlobFieldCoordinates(ColorBlobLocatorProcessor.Blob blob) {
         // Find pixel coordinates of the target
         double x = blob.getBoxFit().center.x;
         double y = blob.getBoxFit().center.y;
@@ -217,11 +227,24 @@ public class CVMaster {
         double field_x = cam_x + (world_x * Math.cos(poseAtSnapshot.getHeading())) - (cam_y * Math.sin(poseAtSnapshot.getHeading()));
         double field_y = cam_y + (world_x * Math.sin(poseAtSnapshot.getHeading())) + (world_y * Math.cos(poseAtSnapshot.getHeading()));
 
-        ArrayList<Double> targetCoordinates = new ArrayList<Double>();
-        targetCoordinates.add(field_x);
-        targetCoordinates.add(field_y);
+        return new Pose3D(
+                new Position(DistanceUnit.INCH, field_x, field_y, 0, System.currentTimeMillis()),
+                new YawPitchRollAngles(AngleUnit.DEGREES, 0, 0, 0, System.currentTimeMillis()));
+    }
 
-        return targetCoordinates;
+    public Pose3D findOptimalTarget(Pose2d robotPose) {
+        Pose3D t = targets.get(0);
+        targets.remove(0);
+        return t;
+    }
+
+    public FullPose2d calculateRobotFullPose(Pose3D target, double constX, double constY) {
+        double a = Math.abs((target.getPosition().y - constY));
+        double b = Math.abs((target.getPosition().x - constX));
+        double c = Math.sqrt((Math.pow(a, 2) + Math.pow(b, 2)));
+        double heading = Math.acos((a/c));
+
+        return new FullPose2d(constX, constY, heading, c);
     }
 
     public Pose2d llGetClosestYellowLocation() {
