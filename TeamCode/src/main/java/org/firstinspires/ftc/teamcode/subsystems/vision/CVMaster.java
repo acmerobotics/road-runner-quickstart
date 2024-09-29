@@ -243,6 +243,9 @@ public class CVMaster {
         double b = Math.abs((target.getPosition().x - constX));
         double c = Math.sqrt((Math.pow(a, 2) + Math.pow(b, 2)));
         double heading = Math.acos((a/c));
+        if ((target.getPosition().y - constY) < 0 || (target.getPosition().x - constX) < 0) {
+            heading = -1 * heading;
+        }
 
         return new FullPose2d(constX, constY, heading, c);
     }
