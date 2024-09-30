@@ -145,7 +145,7 @@ public class CVMaster {
      @param heading current accurate robot heading
      */
     public Pose2d mt2Relocalize(double heading) {
-        limelight.updateRobotOrientation(heading);
+        limelight.updateRobotOrientation(Math.toDegrees(heading));
         LLResult result = limelight.getLatestResult();
 
         if (result != null && result.isValid()) {
@@ -160,7 +160,7 @@ public class CVMaster {
     }
 
     public LLResult mt2RelocalizeRAW(double heading) {
-        limelight.updateRobotOrientation(heading);
+        limelight.updateRobotOrientation(Math.toDegrees(heading));
         LLResult result = limelight.getLatestResult();
 
         if (result != null && result.isValid()) {

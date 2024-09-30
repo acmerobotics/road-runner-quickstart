@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
@@ -24,7 +25,7 @@ import org.firstinspires.ftc.teamcode.util.Motor;
 
 @TeleOp(name="cv tuner")
 @Config
-public class LimelightTest extends LinearOpMode {
+public class LocalizationTuner extends LinearOpMode {
     CVMaster cv;
     GoBildaPinpoint odo;
     SparkFunOTOS otos;
@@ -33,6 +34,16 @@ public class LimelightTest extends LinearOpMode {
     Motor backRight;
     Motor frontLeft;
     Motor frontRight;
+
+    public static double odoXOffset = 48.26;
+    public static double odoYOffset = 1.27;
+    public static double otosXOffset = -7.35;
+    public static double otosYOffset = 0;
+    public static double otosHeadingOffset = Math.toRadians(90);
+
+    public double startingX = 63.75;
+    public double startingY = 54.25;
+    public double startingHeading = Math.toRadians(0);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -44,27 +55,27 @@ public class LimelightTest extends LinearOpMode {
         cv.start();
         cv.setLLPipeline(CVMaster.LLPipeline.APRILTAGS);
 
-        odo.setOffsets(48.26, 1.27);
+        odo.setOffsets(odoXOffset, odoYOffset);
         odo.setEncoderResolution(GoBildaPinpoint.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
         odo.setEncoderDirections(GoBildaPinpoint.EncoderDirection.FORWARD, GoBildaPinpoint.EncoderDirection.FORWARD);
 //        odo.resetPosAndIMU();
-        odo.setPosition(new Pose2D(DistanceUnit.INCH, 63.75, 54.25, AngleUnit.RADIANS, Math.toRadians(0)));
+        odo.setPosition(new Pose2D(DistanceUnit.INCH, startingX, startingY, AngleUnit.RADIANS, startingHeading));
 
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.RADIANS);
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(-7.35, 0, 90);
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(otosXOffset, otosYOffset, otosHeadingOffset);
         otos.setOffset(offset);
         otos.setLinearScalar(1.0);
         otos.setAngularScalar(1.0);
         otos.calibrateImu();
         otos.resetTracking();
-        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(63.75, 54.25, 0);
+        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(startingX, startingY, startingHeading);
         otos.setPosition(currentPosition);
 
         backLeft = new Motor(3, "leftBack", hardwareMap, true);
-        backRight = new Motor(3, "rightBack", hardwareMap, true);
+        backRight = new Motor(3, "rightBack", hardwareMap, false);
         frontLeft = new Motor(3, "leftFront", hardwareMap, true);
-        frontRight = new Motor(3, "rightFront", hardwareMap, true);
+        frontRight = new Motor(3, "rightFront", hardwareMap, false);
 
         waitForStart();
         if (isStopRequested()) return;
@@ -72,14 +83,14 @@ public class LimelightTest extends LinearOpMode {
             odo.bulkUpdate();
             Pose2D pos = odo.getPosition();
             Pose2d ppPose = new Pose2d(pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.RADIANS));
-            SparkFunOTOS.Pose2D otosPose = otos.getPosition();
-            Pose2d otosPose2d = new Pose2d(otosPose.x, otosPose.y, otosPose.h);
+            SparkFunOTOS.Pose2D otosPos = otos.getPosition();
+            Pose2d otosPose = new Pose2d(otosPos.x, otosPos.y, otosPos.h);
             LLResult result = cv.mt2RelocalizeRAW(pos.getHeading(AngleUnit.RADIANS));
             Pose3D pose3d = null;
-            Pose2d pose = null;
+            Pose2d llPose = null;
             if (result != null && result.isValid()) {
                 pose3d = result.getBotpose_MT2();
-                pose = new Pose2d((pose3d.getPosition().x*39.3701007874), (pose3d.getPosition().y*39.3701007874), pose3d.getOrientation().getYaw(AngleUnit.RADIANS));
+                llPose = new Pose2d((pose3d.getPosition().x*39.3701007874), (pose3d.getPosition().y*39.3701007874), pose3d.getOrientation().getYaw(AngleUnit.RADIANS));
             }
 
 
@@ -90,14 +101,14 @@ public class LimelightTest extends LinearOpMode {
 
             TelemetryPacket packet = new TelemetryPacket();
             Canvas c = packet.fieldOverlay();
-            if (pose != null) {
+            if (llPose != null) {
 
                 c.setStroke("#34ad38");
-                Drawing.drawRobot(c, pose);
+                Drawing.drawRobot(c, llPose);
 
-                telemetry.addData("x", pose.position.x);
-                telemetry.addData("y", pose.position.y);
-                telemetry.addData("heading", pose.heading.toDouble());
+                telemetry.addData("x", llPose.position.x);
+                telemetry.addData("y", llPose.position.y);
+                telemetry.addData("heading", llPose.heading.toDouble());
                 telemetry.addData("rawPose", pose3d.toString());
             }
 
@@ -105,7 +116,7 @@ public class LimelightTest extends LinearOpMode {
             Drawing.drawRobot(c, ppPose);
 
             c.setStroke("#d90209");
-            Drawing.drawRobot(c, otosPose2d);
+            Drawing.drawRobot(c, otosPose);
 
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
