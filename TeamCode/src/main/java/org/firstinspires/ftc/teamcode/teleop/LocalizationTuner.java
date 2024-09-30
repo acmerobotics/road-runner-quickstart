@@ -41,6 +41,10 @@ public class LocalizationTuner extends LinearOpMode {
     public static double otosYOffset = 0;
     public static double otosHeadingOffset = Math.toRadians(90);
 
+    public static double Kpp = 0.25;
+    public static double Kotos = 0.25;
+    public static double Kll = 0.5;
+
     public double startingX = 63.75;
     public double startingY = 54.25;
     public double startingHeading = Math.toRadians(0);
@@ -99,9 +103,15 @@ public class LocalizationTuner extends LinearOpMode {
             double frequency = 1/loopTime;
             oldTime = newTime;
 
+            double fusedX = ((Kpp+(Kll/2)) * ppPose.getX()) + ((Kotos + (Kll/2)) * otosPose.getX());
+            double fusedY = ((Kpp+(Kll/2)) * ppPose.getY()) + ((Kotos + (Kll/2)) * otosPose.getY());
+
             TelemetryPacket packet = new TelemetryPacket();
             Canvas c = packet.fieldOverlay();
             if (llPose != null) {
+
+                fusedX = ((Kpp) * ppPose.getX()) + ((Kotos) * otosPose.getX()) + (Kll * llPose.getX());
+                fusedY = ((Kpp) * ppPose.getY()) + ((Kotos) * otosPose.getY()) + (Kll * llPose.getX());
 
                 c.setStroke("#34ad38");
                 Drawing.drawRobot(c, llPose);
@@ -112,11 +122,16 @@ public class LocalizationTuner extends LinearOpMode {
                 telemetry.addData("rawPose", pose3d.toString());
             }
 
+            Pose2d fusedPose = new Pose2d(fusedX, fusedY, ppPose.getHeading());
+
             c.setStroke("#edd100");
             Drawing.drawRobot(c, ppPose);
 
             c.setStroke("#d90209");
             Drawing.drawRobot(c, otosPose);
+
+            c.setStroke("#fc8c03");
+            Drawing.drawRobot(c, fusedPose);
 
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
