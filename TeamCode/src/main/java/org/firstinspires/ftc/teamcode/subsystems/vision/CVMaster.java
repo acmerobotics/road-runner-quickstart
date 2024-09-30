@@ -4,11 +4,12 @@ import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.util.SortOrder;
+import com.acmerobotics.roadrunner.Pose2d;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -87,8 +88,8 @@ public class CVMaster {
 
         portal = new VisionPortal.Builder()
                 .setCamera(camera)
-                .setCameraResolution(new Size(640, 480))
-                .setStreamFormat(VisionPortal.StreamFormat.YUY2)
+                .setCameraResolution(new Size(1280, 800))
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .addProcessors(redProcessor, yellowProcessor, blueProcessor)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
@@ -123,17 +124,17 @@ public class CVMaster {
             portal.setProcessorEnabled(redProcessor, true);
             portal.setProcessorEnabled(blueProcessor, false);
             portal.setProcessorEnabled(yellowProcessor, false);
-            setDashboardStream(redProcessor);
+//            setDashboardStream(redProcessor);
         } else if (pipeline == EOCVPipeline.BLUE_SAMPLE) {
             portal.setProcessorEnabled(redProcessor, false);
             portal.setProcessorEnabled(blueProcessor, true);
             portal.setProcessorEnabled(yellowProcessor, false);
-            setDashboardStream(blueProcessor);
+//            setDashboardStream(blueProcessor);
         } else if (pipeline == EOCVPipeline.YELLOW_SAMPLE) {
             portal.setProcessorEnabled(redProcessor, false);
             portal.setProcessorEnabled(blueProcessor, false);
             portal.setProcessorEnabled(yellowProcessor, true);
-            setDashboardStream(yellowProcessor);
+//            setDashboardStream(yellowProcessor);
         }
         activeCV = pipeline;
     }
@@ -149,9 +150,21 @@ public class CVMaster {
 
         if (result != null && result.isValid()) {
             Pose3D pose = result.getBotpose_MT2();
-            return new Pose2d(pose.getPosition().x,
-                    pose.getPosition().y,
-                    Rotation2d.fromDegrees(pose.getOrientation().getPitch(AngleUnit.DEGREES)));
+            return new Pose2d(new Vector2d((pose.getPosition().x*39.3701007874), (pose.getPosition().y*9.3701007874)), pose.getOrientation().getYaw(AngleUnit.RADIANS));
+//            return new Pose2d(pose.getPosition().x,
+//                    pose.getPosition().y,
+//                    Rotation2d.fromDegrees(pose.getOrientation().getPitch(AngleUnit.DEGREES)));
+        }
+
+        return null;
+    }
+
+    public LLResult mt2RelocalizeRAW(double heading) {
+        limelight.updateRobotOrientation(heading);
+        LLResult result = limelight.getLatestResult();
+
+        if (result != null && result.isValid()) {
+            return result;
         }
 
         return null;
@@ -168,7 +181,7 @@ public class CVMaster {
             Pose3D pose = result.getBotpose();
             return new Pose2d(pose.getPosition().x,
                     pose.getPosition().y,
-                    Rotation2d.fromDegrees(pose.getOrientation().getPitch(AngleUnit.DEGREES)));
+                    pose.getOrientation().getPitch(AngleUnit.RADIANS));
         }
 
         return null;
@@ -220,12 +233,12 @@ public class CVMaster {
         double world_y = (WEBCAM_Z_OFFSET * ((Math.cos(WEBCAM_PITCH_OFFSET) * Math.tan(phi_y)) + Math.sin(WEBCAM_PITCH_OFFSET))) / ((Math.sin(WEBCAM_PITCH_OFFSET) * Math.tan(phi_y)) - Math.cos(WEBCAM_PITCH_OFFSET));
 
         // Calculate the coords of the camera on the field using the offsets
-        double cam_x = poseAtSnapshot.getX() + (WEBCAM_X_OFFSET * Math.cos(poseAtSnapshot.getHeading())) - (WEBCAM_Y_OFFSET * Math.sin(poseAtSnapshot.getHeading()));
-        double cam_y = poseAtSnapshot.getY() + (WEBCAM_X_OFFSET * Math.sin(poseAtSnapshot.getHeading())) + (WEBCAM_Y_OFFSET * Math.cos(poseAtSnapshot.getHeading()));
+        double cam_x = poseAtSnapshot.position.x + (WEBCAM_X_OFFSET * Math.cos(poseAtSnapshot.heading.toDouble())) - (WEBCAM_Y_OFFSET * Math.sin(poseAtSnapshot.heading.toDouble()));
+        double cam_y = poseAtSnapshot.position.y + (WEBCAM_X_OFFSET * Math.sin(poseAtSnapshot.heading.toDouble())) + (WEBCAM_Y_OFFSET * Math.cos(poseAtSnapshot.heading.toDouble()));
 
         // Finally calculate the field coords of the target
-        double field_x = cam_x + (world_x * Math.cos(poseAtSnapshot.getHeading())) - (cam_y * Math.sin(poseAtSnapshot.getHeading()));
-        double field_y = cam_y + (world_x * Math.sin(poseAtSnapshot.getHeading())) + (world_y * Math.cos(poseAtSnapshot.getHeading()));
+        double field_x = cam_x + (world_x * Math.cos(poseAtSnapshot.heading.toDouble())) - (cam_y * Math.sin(poseAtSnapshot.heading.toDouble()));
+        double field_y = cam_y + (world_x * Math.sin(poseAtSnapshot.heading.toDouble())) + (world_y * Math.cos(poseAtSnapshot.heading.toDouble()));
 
         return new Pose3D(
                 new Position(DistanceUnit.INCH, field_x, field_y, 0, System.currentTimeMillis()),
@@ -256,7 +269,7 @@ public class CVMaster {
         LLResult result = limelight.getLatestResult();
 
         if (result != null && result.isValid()) {
-            return new Pose2d(result.getTx(), result.getTy(), Rotation2d.fromDegrees(result.getTa()));
+            return new Pose2d(result.getTx(), result.getTy(), result.getTa());
         }
         return null;
     }
@@ -267,7 +280,7 @@ public class CVMaster {
         LLResult result = limelight.getLatestResult();
 
         if (result != null && result.isValid()) {
-            return new Pose2d(result.getTx(), result.getTy(), Rotation2d.fromDegrees(result.getTa()));
+            return new Pose2d(result.getTx(), result.getTy(), result.getTa());
         }
         return null;
     }
@@ -278,7 +291,7 @@ public class CVMaster {
         LLResult result = limelight.getLatestResult();
 
         if (result != null && result.isValid()) {
-            return new Pose2d(result.getTx(), result.getTy(), Rotation2d.fromDegrees(result.getTa()));
+            return new Pose2d(result.getTx(), result.getTy(), result.getTa());
         }
         return null;
     }
