@@ -52,6 +52,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         // TODO: reverse encoder directions if needed
         //   par.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        par.setDirection(DcMotorSimple.Direction.REVERSE);
         perp.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.imu = imu;
