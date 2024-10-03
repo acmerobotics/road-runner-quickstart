@@ -36,10 +36,10 @@ class Drive(hwMap: HardwareMap) : SubSystems {
                 val rotX = axial * cos(h) - lateral * sin(h)
                 val rotY = axial * sin(h) + lateral * cos(h)
 
-                leftFront.power = (rotY + rotX + turn) //front left
-                leftBack.power = (rotY - rotX + turn) // back left
-                rightFront.power = (rotY - rotX - turn) //front right
-                rightBack.power = (rotY + rotX - turn) // back right}
+                leftFront.power = (rotY - rotX + turn) //front left
+                leftBack.power = (rotY + rotX + turn) // back left
+                rightFront.power = (rotY + rotX - turn) //front right
+                rightBack.power = (rotY - rotX - turn) // back right}
             }
         }
     }
@@ -49,8 +49,11 @@ class Drive(hwMap: HardwareMap) : SubSystems {
         leftFront.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         rightBack.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         rightFront.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        leftBack.direction = DcMotorSimple.Direction.REVERSE
-        leftFront.direction = DcMotorSimple.Direction.REVERSE
+        leftBack.direction = DcMotorSimple.Direction.FORWARD
+        leftFront.direction = DcMotorSimple.Direction.FORWARD
+        rightFront.direction = DcMotorSimple.Direction.FORWARD
+        rightBack.direction = DcMotorSimple.Direction.FORWARD
+
     }
 
 }
