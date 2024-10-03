@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode.New.SubSystems.Bromine.Java;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Wrist {
+public class WristJohn {
     Servo Wrist;
     State state = State.STATIONARY;
 
-    public Wrist(HardwareMap hardwareMap){
+    public WristJohn(HardwareMap hardwareMap){
         Wrist = hardwareMap.get(Servo.class, "Wrist");
     }
 
