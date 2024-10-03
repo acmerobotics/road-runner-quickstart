@@ -9,11 +9,13 @@ import static org.firstinspires.ftc.teamcode.Constants.TEST_MOTOR_MAX_POWER;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class TestSubsystem extends SubsystemBase {
 
     // Defining the test motor
     private final DcMotor testDcMotor;
+
 
     /**
      * Simple subsystem for testing motors - Originally for proof of concept of FTCLib
@@ -34,6 +36,16 @@ public class TestSubsystem extends SubsystemBase {
     }
 
     public void stop() {testDcMotor.setPower(0);}
+
+    public void drive(double inputPower) {
+        if (inputPower > 0) {
+            forward();
+        } else if (inputPower < 0) {
+            backward();
+        } else {
+            stop();
+        }
+    }
 
     @Override
     public void periodic() {

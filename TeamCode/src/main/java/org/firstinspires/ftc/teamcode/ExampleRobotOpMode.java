@@ -11,17 +11,19 @@ import org.firstinspires.ftc.teamcode.subsystems.ExampleArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TestSubsystem;
 import org.firstinspires.ftc.teamcode.commands.*;
 
-@TeleOp(name= "TestOpMode", group="Test")
-public class TestOpMode extends CommandOpMode {
-    private TestSubsystem m_testSubsystem;
+@TeleOp(name= "ExampleRobotOpMode", group="Examples")
+public class ExampleRobotOpMode extends CommandOpMode {
+    private ExampleArmSubsystem m_exampleArmSubsystem;
     private Gamepad gamepad;
 
     @Override
     public void initialize() {
-        // This is for the subsystem requirements
-        m_testSubsystem = new TestSubsystem(hardwareMap.get(DcMotor.class, "testMotor"));
+        m_exampleArmSubsystem = new ExampleArmSubsystem(
+                hardwareMap.get(DcMotor.class, "LeftArmMotor"),
+                hardwareMap.get(DcMotor.class, "RightArmMotor"),
+                hardwareMap.get(Servo.class, "ArmServo"));
 
         // This will make the default for the test subsystems.
-        m_testSubsystem.setDefaultCommand(new TestDriveCommand(m_testSubsystem, gamepad));
+        m_exampleArmSubsystem.setDefaultCommand(new SetToOriginalPosition(m_exampleArmSubsystem));
     }
 }
