@@ -1,16 +1,17 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.control.PIDFController;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.PIDFController;
 
 public class Extendo {
     public DcMotor extendoLeft;
     public DcMotor extendoRight;
 
-    public PIDCoefficients extendoLeftCoeffs = new PIDCoefficients(1, 0 , 0);
-    public PIDCoefficients extendoRightCoeffs = new PIDCoefficients(1, 0 , 0);
+    public PIDFController.PIDCoefficients extendoLeftCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
+    public PIDFController.PIDCoefficients extendoRightCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
     public PIDFController extendoLeftPID = new PIDFController(extendoLeftCoeffs);
     public PIDFController extendoRightPID = new PIDFController(extendoRightCoeffs);
 
@@ -21,7 +22,7 @@ public class Extendo {
 
         extendoLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         extendoRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        
+
     }
 
     public void urMom(double pos) {

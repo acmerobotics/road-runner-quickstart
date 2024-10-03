@@ -1,16 +1,17 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.control.PIDFController;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.PIDFController;
 
 public class Slides {
     DcMotor slidesLeftMotor;
     DcMotor slidesRightMotor;
 
-    public PIDCoefficients slidesLeftCoeffs = new PIDCoefficients(1, 0 , 0);
-    public PIDCoefficients slidesRightCoeffs = new PIDCoefficients(1, 0 , 0);
+    public PIDFController.PIDCoefficients slidesLeftCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
+    public PIDFController.PIDCoefficients slidesRightCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
     public PIDFController slidesLeftPID = new PIDFController(slidesLeftCoeffs);
     public PIDFController slidesRightPID = new PIDFController(slidesRightCoeffs);
 
