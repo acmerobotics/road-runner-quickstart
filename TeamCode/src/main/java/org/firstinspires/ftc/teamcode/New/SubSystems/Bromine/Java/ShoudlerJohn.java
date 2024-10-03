@@ -6,14 +6,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Kotlin.PIDFcontroller;
 import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Kotlin.PIDParams;
 
-public class Shoudler {
+public class ShoudlerJohn {
     DcMotor Shoulder;
     State state;
     PIDParams shoulderParams = new PIDParams(0,0,0,0);
     PIDFcontroller shoulderPID = new PIDFcontroller(shoulderParams);
     int target;
 
-    public Shoudler(HardwareMap hardwareMap){
+    public ShoudlerJohn(HardwareMap hardwareMap){
         Shoulder = hardwareMap.get(DcMotor.class,"Shoulder");
     }
 

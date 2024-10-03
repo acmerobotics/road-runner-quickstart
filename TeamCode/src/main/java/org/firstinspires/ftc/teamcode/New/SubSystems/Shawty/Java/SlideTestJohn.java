@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Java;
 
-import com.acmerobotics.roadrunner.Line;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "SlideTest", group = "Linear OpMode")
-public class SlideTest extends LinearOpMode {
+@TeleOp(name = "SlideTestJohn", group = "Linear OpMode")
+public class SlideTestJohn extends LinearOpMode {
 
     //                       HNG    BSK  CLP   SUB GND STA
     int[] verticalTargets = {5000, 4000, 3000, 100, 0, 0};
