@@ -1,73 +1,88 @@
 package org.firstinspires.ftc.teamcode.Auto.Paths;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
+
+
+import androidx.annotation.NonNull;
+
+// RR-specific imports
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
+
+// Non-RR imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous
 public class BlueAutoPaths extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
         Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
-        drive.setPoseEstimate(StartPose1);
+        MecanumDrive drive = new MecanumDrive(hardwareMap,StartPose1);
 
-        TrajectorySequence basket = drive.trajectorySequenceBuilder(StartPose1)
-                .lineToConstantHeading(new Vector2d(0, 36))
+        //Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
+        //drive.setPoseEstimate(StartPose1);
+
+        TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
+                .strafeTo(new Vector2d(0, 36))
                 //deposit specimen
-                .forward(10)
-                .lineToLinearHeading(new Pose2d(-53, -44, Math.toRadians(0)))
+                .lineToX(10)
+                .strafeToLinearHeading(new Vector2d(-53, -44), Math.toRadians(0))
                 //intake sample
-                .lineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(45)))
+                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(45))
                 //deposit sample
-                .lineToLinearHeading(new Pose2d(-55, -44, Math.toRadians(0)))
+                .strafeToLinearHeading(new Vector2d(-55, -44), Math.toRadians(0))
                 //intake sample
-                .lineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(45)))
+                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(45))
                 //deposit sample
-                .lineToLinearHeading(new Pose2d(-50, -27, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(-50, -27), Math.toRadians(90))
                 //intake sample
-                .lineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(45)))
+                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(45));
                 //deposit sample
-                .build();
+                //.build();
 
 
         Pose2d StartPose2 = new Pose2d(20, -60, Math.toRadians(180));
-        drive.setPoseEstimate(StartPose2);
+        //drive.setPoseEstimate(StartPose2);
         
-        TrajectorySequence speciman = drive.trajectorySequenceBuilder(StartPose2)
-                .lineToConstantHeading(new Vector2d(5, -25))
+        TrajectoryActionBuilder speciman = drive.actionBuilder(StartPose2)
+                .strafeTo(new Vector2d(5, -25))
                 //Drop off specimen
-                .forward(8)
-                .lineToLinearHeading(new Pose2d(45, -33, Math.toRadians(300)))
-                .forward(5)
+                .lineToY(8)
+                .strafeToLinearHeading(new Vector2d(45, -33), Math.toRadians(300))
+                .lineToY(5)
                 //intake block
-                .back(5)
-                .lineToLinearHeading(new Pose2d(55, -68, Math.toRadians(270)))
+                .lineToY(-5)
+                .strafeToLinearHeading(new Vector2d(55, -68), Math.toRadians(270))
                 //outtake block into human area
-                .back(5)
+                .lineToY(-5)
                 .waitSeconds(0.5)
-                .strafeLeft(10)
-                .lineToLinearHeading(new Pose2d(48, -33, Math.toRadians(300)))
-                .forward(5)
+                .lineToX(10)
+                .strafeToLinearHeading(new Vector2d(48, -33), Math.toRadians(300))
+                .lineToY(5)
                 //intake 2nd sample
-                .lineToLinearHeading(new Pose2d(50, -68, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(50, -68), Math.toRadians(270))
                 //outtake block
-                .back(5)
+                .lineToY(-5)
                 .waitSeconds(0.5)
-                .strafeLeft(0)
-                .lineToLinearHeading(new Pose2d(68, -33, Math.toRadians(300)))
-                .forward(5)
+                .lineToX(0)
+                .strafeToLinearHeading(new Vector2d(68, -33), Math.toRadians(300))
+                .lineToY(5)
                 //intake 3rd block
-                .back(8)
-                .lineToLinearHeading(new Pose2d(45, -68, Math.toRadians(270)))
+                .lineToY(-8)
+                .strafeToLinearHeading(new Vector2d(45, -68), Math.toRadians(270));
                 //outtake block
-                .build();
+                //.build();
 
     }
 }
