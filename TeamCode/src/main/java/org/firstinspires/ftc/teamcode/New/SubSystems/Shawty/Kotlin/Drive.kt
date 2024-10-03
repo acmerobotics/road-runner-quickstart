@@ -8,7 +8,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 //todo Make Java version
-class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) : SubSystems {
+class Drive(hwMap: HardwareMap) : SubSystems {
     enum class States {
         Manual, Auto
     }
@@ -20,9 +20,10 @@ class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) : SubSyste
     private val rightFront: DcMotor = hwMap.get(DcMotor::class.java, "rightFront")
     private val leftBack: DcMotor = hwMap.get(DcMotor::class.java, "leftBack")
 
+
     override fun update(gamepadInput: ArrayList<Float>) {
-        localizer.updateHeading()
-        val rx = localizer.heading
+            //todo
+        val rx = 0.0
 
         when (state) {
             States.Auto -> {
@@ -35,10 +36,10 @@ class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) : SubSyste
                 val rotX = axial * cos(h) - lateral * sin(h)
                 val rotY = axial * sin(h) + lateral * cos(h)
 
-                leftFront.power = (rotY + rotX + turn) //front left
-                leftBack.power = (rotY - rotX + turn) // back left
-                rightFront.power = (rotY - rotX - turn) //front right
-                rightBack.power = (rotY + rotX - turn) // back right}
+                leftFront.power = (rotY - rotX + turn) //front left
+                leftBack.power = (rotY + rotX + turn) // back left
+                rightFront.power = (rotY + rotX - turn) //front right
+                rightBack.power = (rotY - rotX - turn) // back right}
             }
         }
     }
@@ -48,8 +49,11 @@ class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) : SubSyste
         leftFront.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         rightBack.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         rightFront.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        leftBack.direction = DcMotorSimple.Direction.REVERSE
-        leftFront.direction = DcMotorSimple.Direction.REVERSE
+        leftBack.direction = DcMotorSimple.Direction.FORWARD
+        leftFront.direction = DcMotorSimple.Direction.FORWARD
+        rightFront.direction = DcMotorSimple.Direction.FORWARD
+        rightBack.direction = DcMotorSimple.Direction.FORWARD
+
     }
 
 }
