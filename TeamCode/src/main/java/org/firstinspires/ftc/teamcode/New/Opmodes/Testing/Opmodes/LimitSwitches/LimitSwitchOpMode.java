@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Java;
-import static org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Java.ColorSensor.States.Left;
-
+package org.firstinspires.ftc.teamcode.New.Opmodes.Testing.Opmodes.LimitSwitches;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,31 +6,20 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.New.SubSystems.Shawty.Java.LimitSwitch;
 
 
 @TeleOp(name = "Limit Switch Op Mode", group = "Switch")
 public class LimitSwitchOpMode extends LinearOpMode {
-
-
-    LimitSwitch LimitSwitchSubsystem;
-
-
-
-
     @Override
     public void runOpMode() throws InterruptedException {
-        LimitSwitchSubsystem = new LimitSwitch(hardwareMap.get(DigitalChannel.class, "Switch"),0);
-
-
+         LimitSwitch limitSwitchSubsystem = new LimitSwitch(hardwareMap.get(DigitalChannel.class, "Switch"),0);
 
 
         while (opModeIsActive()) {
-            LimitSwitchSubsystem.update();
+            limitSwitchSubsystem.update();
 
-
-
-
-            switch (LimitSwitchSubsystem.state) {
+            switch (limitSwitchSubsystem.state) {
                 case RELEASED:
                     telemetry.addData("Limit Switch", "Released");
                     break;
@@ -40,8 +27,6 @@ public class LimitSwitchOpMode extends LinearOpMode {
                     telemetry.addData("Limit Switch","Pressed");
                     break;
             }
-
-
 
 
             telemetry.update();
