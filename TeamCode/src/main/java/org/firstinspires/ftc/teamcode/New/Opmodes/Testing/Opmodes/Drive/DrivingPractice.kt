@@ -13,13 +13,17 @@ class DrivingPractice : LinearOpMode(){
         telemetry = MultipleTelemetry(telemetry, FtcDashboard.getInstance().telemetry)
 
         val localizer = TeleLocalizer(hardwareMap)
-        val drive = Drive(hardwareMap, localizer)
+        //val drive = Drive(hardwareMap, localizer)
 
         waitForStart()
 
+        //par 1 is front right
+        //par 0 is backLeft
+        //perp is frontLeft
+
         while (opModeIsActive() && !isStopRequested) {
 
-            drive.update(arrayListOf(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x))
+            //drive.update(arrayListOf(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x))
 
             telemetry.addData("heading",Math.toDegrees(localizer.heading))
             telemetry.update()

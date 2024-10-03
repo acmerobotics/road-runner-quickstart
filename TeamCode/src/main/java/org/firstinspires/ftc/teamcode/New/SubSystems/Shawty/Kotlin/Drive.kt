@@ -8,7 +8,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 //todo Make Java version
-class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) : SubSystems {
+class Drive(hwMap: HardwareMap) : SubSystems {
     enum class States {
         Manual, Auto
     }
@@ -20,9 +20,10 @@ class Drive(hwMap: HardwareMap, private val localizer: TeleLocalizer) : SubSyste
     private val rightFront: DcMotor = hwMap.get(DcMotor::class.java, "rightFront")
     private val leftBack: DcMotor = hwMap.get(DcMotor::class.java, "leftBack")
 
+
     override fun update(gamepadInput: ArrayList<Float>) {
-        localizer.updateHeading()
-        val rx = localizer.heading
+            //todo
+        val rx = 0.0
 
         when (state) {
             States.Auto -> {
