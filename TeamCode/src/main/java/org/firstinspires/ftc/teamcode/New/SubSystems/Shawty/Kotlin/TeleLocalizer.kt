@@ -26,8 +26,8 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
 
     init {
         //reset odowheels (Have to do this because RR's custom encoder class does not let you Reset)
-        val parx = hardwareMap.get(DcMotor::class.java, "par0")
-        val pary = hardwareMap.get(DcMotor::class.java, "par1")
+        val parx = hardwareMap.get(DcMotor::class.java, "backLeft")
+        val pary = hardwareMap.get(DcMotor::class.java, "frontRight")
         parx.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         pary.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         parx.close()
@@ -40,8 +40,8 @@ class TeleLocalizer(hardwareMap: HardwareMap) {
         imu.initialize(IMU.Parameters(orientationOnRobot))
         imu.resetYaw()
         timer.reset()
-        par0 = OverflowEncoder(RawEncoder(hardwareMap.get(DcMotorEx::class.java, "par0")))
-        par1 = OverflowEncoder(RawEncoder(hardwareMap.get(DcMotorEx::class.java, "par1")))
+        par0 = OverflowEncoder(RawEncoder(hardwareMap.get(DcMotorEx::class.java, "backLeft")))
+        par1 = OverflowEncoder(RawEncoder(hardwareMap.get(DcMotorEx::class.java, "frontRight")))
     }
 
     private var par1Pos = 0
