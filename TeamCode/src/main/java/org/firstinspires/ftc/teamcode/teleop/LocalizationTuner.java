@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
@@ -35,10 +34,10 @@ public class LocalizationTuner extends LinearOpMode {
     Motor frontLeft;
     Motor frontRight;
 
-    public static double odoXOffset = 48.26;
-    public static double odoYOffset = 1.27;
-    public static double otosXOffset = -7.35;
-    public static double otosYOffset = 0;
+    public static double odoXOffset = 43.18;
+    public static double odoYOffset = 22.225;
+    public static double otosXOffset = 0;
+    public static double otosYOffset =  6.625;
     public static double otosHeadingOffset = Math.toRadians(90);
 
     public static double Kpp = 0.25;
@@ -59,10 +58,11 @@ public class LocalizationTuner extends LinearOpMode {
         cv.start();
         cv.setLLPipeline(CVMaster.LLPipeline.APRILTAGS);
 
-        odo.setOffsets(odoXOffset, odoYOffset);
-        odo.setEncoderResolution(GoBildaPinpoint.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
-        odo.setEncoderDirections(GoBildaPinpoint.EncoderDirection.FORWARD, GoBildaPinpoint.EncoderDirection.FORWARD);
 //        odo.resetPosAndIMU();
+        odo.setOffsets(odoXOffset, odoYOffset);
+        odo.recalibrateIMU();
+        odo.setEncoderResolution(GoBildaPinpoint.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        odo.setEncoderDirections(GoBildaPinpoint.EncoderDirection.FORWARD, GoBildaPinpoint.EncoderDirection.REVERSED);
         odo.setPosition(new Pose2D(DistanceUnit.INCH, startingX, startingY, AngleUnit.RADIANS, startingHeading));
 
         otos.setLinearUnit(DistanceUnit.INCH);
@@ -94,7 +94,9 @@ public class LocalizationTuner extends LinearOpMode {
             Pose2d llPose = null;
             if (result != null && result.isValid()) {
                 pose3d = result.getBotpose_MT2();
+                //llPose = new Pose2d((pose3d.getPosition().y*39.3701007874), (-pose3d.getPosition().x*39.3701007874), pose3d.getOrientation().getYaw(AngleUnit.RADIANS));
                 llPose = new Pose2d((pose3d.getPosition().x*39.3701007874), (pose3d.getPosition().y*39.3701007874), pose3d.getOrientation().getYaw(AngleUnit.RADIANS));
+
             }
 
 
@@ -103,15 +105,15 @@ public class LocalizationTuner extends LinearOpMode {
             double frequency = 1/loopTime;
             oldTime = newTime;
 
-            double fusedX = ((Kpp+(Kll/2)) * ppPose.getX()) + ((Kotos + (Kll/2)) * otosPose.getX());
-            double fusedY = ((Kpp+(Kll/2)) * ppPose.getY()) + ((Kotos + (Kll/2)) * otosPose.getY());
+            double fusedX = ((Kpp+(Kll/2)) * ppPose.position.x) + ((Kotos + (Kll/2)) * otosPose.position.x);
+            double fusedY = ((Kpp+(Kll/2)) * ppPose.position.y) + ((Kotos + (Kll/2)) * otosPose.position.y);
 
             TelemetryPacket packet = new TelemetryPacket();
             Canvas c = packet.fieldOverlay();
             if (llPose != null) {
 
-                fusedX = ((Kpp) * ppPose.getX()) + ((Kotos) * otosPose.getX()) + (Kll * llPose.getX());
-                fusedY = ((Kpp) * ppPose.getY()) + ((Kotos) * otosPose.getY()) + (Kll * llPose.getX());
+                fusedX = ((Kpp) * ppPose.position.x) + ((Kotos) * otosPose.position.x) + (Kll * llPose.position.x);
+                fusedY = ((Kpp) * ppPose.position.y) + ((Kotos) * otosPose.position.y) + (Kll * llPose.position.y);
 
                 c.setStroke("#34ad38");
                 Drawing.drawRobot(c, llPose);
@@ -122,7 +124,7 @@ public class LocalizationTuner extends LinearOpMode {
                 telemetry.addData("rawPose", pose3d.toString());
             }
 
-            Pose2d fusedPose = new Pose2d(fusedX, fusedY, ppPose.getHeading());
+            Pose2d fusedPose = new Pose2d(fusedX, fusedY, ppPose.heading.toDouble());
 
             c.setStroke("#edd100");
             Drawing.drawRobot(c, ppPose);

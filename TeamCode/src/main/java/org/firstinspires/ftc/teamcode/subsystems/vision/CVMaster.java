@@ -150,7 +150,7 @@ public class CVMaster {
 
         if (result != null && result.isValid()) {
             Pose3D pose = result.getBotpose_MT2();
-            return new Pose2d(new Vector2d((pose.getPosition().x*39.3701007874), (pose.getPosition().y*9.3701007874)), pose.getOrientation().getYaw(AngleUnit.RADIANS));
+            return new Pose2d(new Vector2d((pose.getPosition().y*39.3701007874), (pose.getPosition().x*9.3701007874)), pose.getOrientation().getYaw(AngleUnit.RADIANS));
 //            return new Pose2d(pose.getPosition().x,
 //                    pose.getPosition().y,
 //                    Rotation2d.fromDegrees(pose.getOrientation().getPitch(AngleUnit.DEGREES)));
