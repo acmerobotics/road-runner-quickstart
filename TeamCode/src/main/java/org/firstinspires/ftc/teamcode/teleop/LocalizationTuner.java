@@ -37,7 +37,7 @@ public class LocalizationTuner extends LinearOpMode {
     public static double odoXOffset = 43.18;
     public static double odoYOffset = 22.225;
     public static double otosXOffset = 0;
-    public static double otosYOffset =  6.625;
+    public static double otosYOffset =  6.625; //6.625
     public static double otosHeadingOffset = Math.toRadians(90);
 
     public static double Kpp = 0.25;
@@ -75,6 +75,10 @@ public class LocalizationTuner extends LinearOpMode {
         otos.resetTracking();
         SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(startingX, startingY, startingHeading);
         otos.setPosition(currentPosition);
+        // Get the hardware and firmware version
+        SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
+        SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
+        otos.getVersionInfo(hwVersion, fwVersion);
 
         backLeft = new Motor(3, "leftBack", hardwareMap, true);
         backRight = new Motor(3, "rightBack", hardwareMap, false);
@@ -138,6 +142,8 @@ public class LocalizationTuner extends LinearOpMode {
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
 //            telemetry.addData("pose", pose);
+            double otosError = Math.sqrt((Math.pow((ppPose.position.x - otosPose.position.x), 2) + Math.pow((ppPose.position.y - otosPose.position.y), 2)));
+            telemetry.addData("otosError", otosError);
             telemetry.addData("px", pos.getX(DistanceUnit.INCH));
             telemetry.addData("py", pos.getY(DistanceUnit.INCH));
             telemetry.addData("pheading", pos.getHeading(AngleUnit.RADIANS));
