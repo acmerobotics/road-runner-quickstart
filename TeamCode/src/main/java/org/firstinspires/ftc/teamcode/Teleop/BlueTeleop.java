@@ -29,6 +29,11 @@
 
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -44,6 +49,9 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @TeleOp
@@ -67,6 +75,10 @@ public class BlueTeleop extends LinearOpMode {
     Pipeline vision = new Pipeline(telemetry);
     OpenCvWebcam webcam1 = null;
 
+    private FtcDashboard dash = FtcDashboard.getInstance();
+    private List<Action> runningActions = new ArrayList<>();
+
+    public static boolean liftOn = false;
     public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
         double y = gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
@@ -85,7 +97,77 @@ public class BlueTeleop extends LinearOpMode {
     }
 
     public void buttonpress(Extendo extendo, Intake intake, Slides slides, Claw claw) {
+        double y = gamepad2.left_stick_y;
 
+        //TODO: change values to the min/max of how far extendo extends
+        if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
+            extendo.extendoLeft.setPower(y);
+            extendo.extendoRight.setPower(y);
+        }
+        //TODO: change value to ~1/3 of max extendo length or smth like that
+        if (extendo.getPos() > 200) {
+            if (!Intake.flipped) {
+                runningActions.add(intake.flip());
+            }
+            if (vision.colorDetected().equals("Blue") || vision.colorDetected().equals("Yellow")) {
+                intake.intakeMotor.setPower(0);
+                runningActions.add(new SequentialAction(
+                        intake.flop(),
+                        extendo.retract()
+                ));
+            } else if (vision.colorDetected().equals("Red")) {
+                intake.intakeMotor.setPower(-1);
+            } else {
+                intake.intakeMotor.setPower(1);
+            }
+        }
+
+        if (gamepad2.x) {
+            if (!liftOn) {
+                liftOn = true;
+                runningActions.add(new SequentialAction(
+                        claw.close(),
+                        slides.slideTopBasket(),
+                        claw.flip()
+                ));
+            } else {
+                runningActions.add(new SequentialAction(
+                        claw.open(),
+                        claw.flop(),
+                        slides.retract()
+                ));
+            }
+
+        }
+        /*
+        if (extendo extends far enough) {
+            flip intake
+            run intake
+            >sensor input false<
+            reverse intake
+            >sensor input true<
+            stop intake
+            flop intake
+            retract extendo
+        }
+
+        if x {
+            close claw
+            extend slides
+            flip claw
+            >user input<
+            open claw
+            flop claw
+            retract slides
+        }
+        if y {
+            extend slides to wall
+            close claw
+            extend slides to high
+            >user input<
+            retract slides
+       }
+         */
     }
     @Override
     public void runOpMode() {
@@ -126,8 +208,22 @@ public class BlueTeleop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            TelemetryPacket packet = new TelemetryPacket();
+
             drivetrain(FL, FR, BL, BR);
             buttonpress(extendo, intake, slides, claw);
+
+            List<Action> newActions = new ArrayList<>();
+            for (Action action : runningActions) {
+                action.preview(packet.fieldOverlay());
+                if (action.run(packet)) {
+                    newActions.add(action);
+                }
+            }
+            runningActions = newActions;
+
+            dash.sendTelemetryPacket(packet);
+
             telemetry.addData("intakeCamera", vision.colorDetected());
             telemetry.update();
         }

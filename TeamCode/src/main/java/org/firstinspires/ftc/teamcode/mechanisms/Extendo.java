@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -15,7 +19,7 @@ public class Extendo {
     public PIDFController extendoLeftPID = new PIDFController(extendoLeftCoeffs);
     public PIDFController extendoRightPID = new PIDFController(extendoRightCoeffs);
 
-    public boolean moving = false;
+    //public boolean moving = false;
     public Extendo(HardwareMap HWMap){
         extendoLeft = HWMap.get(DcMotor.class, "extendoLeft");
         extendoRight = HWMap.get(DcMotor.class, "extendoRight");
@@ -25,25 +29,55 @@ public class Extendo {
 
     }
 
-    public void urMom(double pos) {
-        extendoLeftPID.setTargetPosition(pos);
-        extendoRightPID.setTargetPosition(pos);
-        moving = true;
+    public class Retract implements Action {
+        private boolean init = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!init) {
+                //TODO: set value to retracted extendo position
+                extendoLeftPID.setTargetPosition(0);
+                extendoRightPID.setTargetPosition(0);
+                init = true;
+            }
+
+            extendoLeft.setPower(extendoLeftPID.update(extendoLeft.getCurrentPosition()));
+            extendoRight.setPower(extendoRightPID.update(extendoRight.getCurrentPosition()));
+
+            if (Math.abs(extendoLeftPID.getTargetPosition() - getPos()) < 15) {
+                Intake.flipped = false;
+                return true;
+            }
+            return false;
+        }
+    }
+    public Action retract() {
+        return new Retract();
     }
 
     public double getPos() {
         return (double) (extendoLeft.getCurrentPosition() + extendoRight.getCurrentPosition()) / 2;
     }
 
-    public void doStuff() {
-        extendoLeft.setPower(extendoLeftPID.update(extendoLeft.getCurrentPosition()));
-        extendoRight.setPower(extendoRightPID.update(extendoRight.getCurrentPosition()));
-
-        if (Math.abs(extendoLeftPID.getTargetPosition() - getPos()) < 10) {
-            moving = false;
-        }
-
-    }
+//    public void urMom(double pos) {
+//        extendoLeftPID.setTargetPosition(pos);
+//        extendoRightPID.setTargetPosition(pos);
+//        moving = true;
+//    }
+//
+//    public double getPos() {
+//        return (double) (extendoLeft.getCurrentPosition() + extendoRight.getCurrentPosition()) / 2;
+//    }
+//
+//    public void doStuff() {
+//        extendoLeft.setPower(extendoLeftPID.update(extendoLeft.getCurrentPosition()));
+//        extendoRight.setPower(extendoRightPID.update(extendoRight.getCurrentPosition()));
+//
+//        if (Math.abs(extendoLeftPID.getTargetPosition() - getPos()) < 10) {
+//            moving = false;
+//        }
+//
+//    }
 }
 
 

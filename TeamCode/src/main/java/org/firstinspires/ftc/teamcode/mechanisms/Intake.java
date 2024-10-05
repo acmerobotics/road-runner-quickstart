@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -8,6 +12,7 @@ public class Intake {
     public Servo intakeServoLeft;
     public Servo intakeServoRight;
     public DcMotor intakeMotor;
+    public static boolean flipped = false;
 
     public Intake(HardwareMap HWMap){
         intakeServoLeft = HWMap.get(Servo.class, "intakeServoLeft");
@@ -17,27 +22,57 @@ public class Intake {
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void runMotor() {
-        if (intakeMotor.getPower() != 1.0) {
+    public class Flip implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            //TODO: set values to actual servo positions
+            intakeServoLeft.setPosition(1);
+            intakeServoRight.setPosition(1);
             intakeMotor.setPower(1.0);
+            flipped = true;
+            return false;
         }
     }
+    public Action flip() {
+        return new Flip();
+    }
 
-    public void runMotorBack() {
-        if (intakeMotor.getPower() != -1.0) {
-            intakeMotor.setPower(-1.0);
+    public class Flop implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            //TODO: set values to actual servo positions
+            intakeServoLeft.setPosition(0);
+            intakeServoRight.setPosition(0);
+            return false;
         }
     }
-
-    public void extend() {
-        intakeServoLeft.setPosition(100);
-        intakeServoRight.setPosition(100);
-        intakeMotor.setPower(1.0);
+    public Action flop() {
+        return new Flop();
     }
 
-    public void retract() {
-        intakeServoLeft.setPosition(0);
-        intakeServoRight.setPosition(0);
-    }
+//    public void runMotor() {
+//        if (intakeMotor.getPower() != 1.0) {
+//            intakeMotor.setPower(1.0);
+//        }
+//    }
+//
+//    public void runMotorBack() {
+//        if (intakeMotor.getPower() != -1.0) {
+//            intakeMotor.setPower(-1.0);
+//        }
+//    }
+//
+//    public void extend() {
+//        intakeServoLeft.setPosition(100);
+//        intakeServoRight.setPosition(100);
+//        intakeMotor.setPower(1.0);
+//    }
+//
+//    public void retract() {
+//        intakeServoLeft.setPosition(0);
+//        intakeServoRight.setPosition(0);
+//    }
 
 }

@@ -85,7 +85,7 @@ public class RedTeleop extends LinearOpMode {
     }
 
     public void buttonpress(Extendo extendo, Intake intake, Slides slides, Claw claw) {
-        switch (extendoState) {
+        /*switch (extendoState) {
             case EXTENDOSTART:
                 if (gamepad1.a) {
                     extendo.urMom(EXTENDOLENGTH);
@@ -197,7 +197,7 @@ public class RedTeleop extends LinearOpMode {
                 break;
         }
         slides.updatePID();
-        extendo.doStuff();
+        extendo.doStuff();*/
         }
 
     @Override

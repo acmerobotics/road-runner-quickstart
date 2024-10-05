@@ -18,73 +18,73 @@ public class Claw {
         clawServo = HWMap.get(Servo.class, "clawServo");
     }
 
-//    public class Flip implements Action {
-//        @Override
-//        public boolean run(@NonNull TelemetryPacket packet) {
-//            clawLeftServo.setPosition(1);
-//            clawRightServo.setPosition(1);
-//            return false;
-//        }
-//    }
-//
-//    public Action flip() {
-//        return new Flip();
-//    }
-//
-//    public class Flop implements Action {
-//        @Override
-//        public boolean run(@NonNull TelemetryPacket packet) {
-//            clawLeftServo.setPosition(0);
-//            clawRightServo.setPosition(0);
-//            return false;
-//        }
-//    }
-//
-//    public Action flop() {
-//        return new Flop();
-//    }
-//
-//    public class Close implements Action {
-//        @Override
-//        public boolean run(@NonNull TelemetryPacket packet) {
-//            clawServo.setPosition(1);
-//            return false;
-//        }
-//    }
-//
-//    public Action close() {
-//        return new Close();
-//    }
-//
-//    public class Open implements Action {
-//        @Override
-//        public boolean run(@NonNull TelemetryPacket packet) {
-//            clawServo.setPosition(1);
-//            return false;
-//        }
-//    }
-//
-//    public Action open() {
-//        return new Open();
-//    }
-//}
-
-
-    public void flip() {
-        clawLeftServo.setPosition(1);
-        clawRightServo.setPosition(1);
+    public class Flip implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawLeftServo.setPosition(1);
+            clawRightServo.setPosition(1);
+            return false;
+        }
     }
 
-    public void flop() {
-        clawLeftServo.setPosition(0);
-        clawRightServo.setPosition(0);
+    public Action flip() {
+        return new Flip();
     }
 
-    public void close() {
-        clawServo.setPosition(1);
+    public class Flop implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawLeftServo.setPosition(0);
+            clawRightServo.setPosition(0);
+            return false;
+        }
     }
 
-    public void open() {
-        clawServo.setPosition(0);
+    public Action flop() {
+        return new Flop();
+    }
+
+    public class Close implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawServo.setPosition(1);
+            return false;
+        }
+    }
+
+    public Action close() {
+        return new Close();
+    }
+
+    public class Open implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawServo.setPosition(1);
+            return false;
+        }
+    }
+
+    public Action open() {
+        return new Open();
     }
 }
+
+
+//    public void flip() {
+//        clawLeftServo.setPosition(1);
+//        clawRightServo.setPosition(1);
+//    }
+//
+//    public void flop() {
+//        clawLeftServo.setPosition(0);
+//        clawRightServo.setPosition(0);
+//    }
+//
+//    public void close() {
+//        clawServo.setPosition(1);
+//    }
+//
+//    public void open() {
+//        clawServo.setPosition(0);
+//    }
+
