@@ -1,9 +1,11 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.util.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-public class ContinuousServo extends Component{
+import org.firstinspires.ftc.teamcode.util.hardware.Component;
+
+public class ContinuousServo extends Component {
 
     private float speed;
     public CRServo servo;

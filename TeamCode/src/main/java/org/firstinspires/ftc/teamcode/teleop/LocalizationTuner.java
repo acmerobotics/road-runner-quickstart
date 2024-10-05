@@ -19,8 +19,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.roadrunner.Drawing;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
-import org.firstinspires.ftc.teamcode.util.GoBildaPinpoint;
-import org.firstinspires.ftc.teamcode.util.Motor;
+import org.firstinspires.ftc.teamcode.util.hardware.GoBildaPinpoint;
+import org.firstinspires.ftc.teamcode.util.hardware.Motor;
 
 @TeleOp(name="cv tuner")
 @Config

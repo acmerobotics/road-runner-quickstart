@@ -4,10 +4,8 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.util.ContinuousServo;
-import org.firstinspires.ftc.teamcode.util.Levels;
-import org.firstinspires.ftc.teamcode.util.SampleColors;
-import org.firstinspires.ftc.teamcode.util.StepperServo;
+import org.firstinspires.ftc.teamcode.util.hardware.ContinuousServo;
+import org.firstinspires.ftc.teamcode.util.enums.SampleColors;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;

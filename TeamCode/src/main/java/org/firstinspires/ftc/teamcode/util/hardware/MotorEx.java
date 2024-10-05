@@ -1,13 +1,14 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.util.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.util.hardware.Component;
 
 
-public class MotorEx extends Component{
+public class MotorEx extends Component {
     private boolean reverse;
     private float speed;
     public DcMotorEx motor;

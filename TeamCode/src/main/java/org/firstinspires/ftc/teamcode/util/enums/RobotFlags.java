@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.util.enums;
 
 public enum RobotFlags {
     CLIMB_RETRACT_REQUESTED,

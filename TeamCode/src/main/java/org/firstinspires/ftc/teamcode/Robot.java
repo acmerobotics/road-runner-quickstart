@@ -13,13 +13,13 @@ import org.firstinspires.ftc.teamcode.subsystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.extension.Extension;
 import org.firstinspires.ftc.teamcode.subsystems.lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.arm.Arm;
-import org.firstinspires.ftc.teamcode.util.Component;
-import org.firstinspires.ftc.teamcode.util.ContinuousServo;
-import org.firstinspires.ftc.teamcode.util.Levels;
-import org.firstinspires.ftc.teamcode.util.Motor;
+import org.firstinspires.ftc.teamcode.util.hardware.Component;
+import org.firstinspires.ftc.teamcode.util.hardware.ContinuousServo;
+import org.firstinspires.ftc.teamcode.util.enums.Levels;
+import org.firstinspires.ftc.teamcode.util.hardware.Motor;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.util.SampleColors;
-import org.firstinspires.ftc.teamcode.util.StepperServo;
+import org.firstinspires.ftc.teamcode.util.enums.SampleColors;
+import org.firstinspires.ftc.teamcode.util.hardware.StepperServo;
 
 public class Robot {
 

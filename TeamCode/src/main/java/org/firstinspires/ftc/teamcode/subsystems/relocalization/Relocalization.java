@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems.relocalization;
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 
-import org.firstinspires.ftc.teamcode.util.GoBildaPinpoint;
+import org.firstinspires.ftc.teamcode.util.hardware.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
 
 public class Relocalization {

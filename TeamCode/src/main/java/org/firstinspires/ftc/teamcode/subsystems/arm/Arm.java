@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.arm;
 
-import org.firstinspires.ftc.teamcode.util.Levels;
-import org.firstinspires.ftc.teamcode.util.StepperServo;
+import org.firstinspires.ftc.teamcode.util.enums.Levels;
+import org.firstinspires.ftc.teamcode.util.hardware.StepperServo;
 
 public class Arm {
     StepperServo servo;

@@ -1,9 +1,11 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.util.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class StepperServo extends Component{
+import org.firstinspires.ftc.teamcode.util.hardware.Component;
+
+public class StepperServo extends Component {
 
     private float angle;
     public Servo servo;

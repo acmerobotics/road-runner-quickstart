@@ -1,10 +1,12 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.util.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.util.hardware.Component;
 
-public class Motor extends Component{
+
+public class Motor extends Component {
     private boolean reverse;
     private float speed;
     public DcMotor motor;

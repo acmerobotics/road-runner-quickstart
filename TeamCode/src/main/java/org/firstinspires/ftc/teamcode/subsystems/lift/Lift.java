@@ -1,25 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems.lift;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import org.firstinspires.ftc.teamcode.util.Levels;
-import org.firstinspires.ftc.teamcode.util.MotionProfile;
-import org.firstinspires.ftc.teamcode.util.MotionProfileGenerator;
-import org.firstinspires.ftc.teamcode.util.Motor;
-
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import org.firstinspires.ftc.teamcode.util.enums.Levels;
+import org.firstinspires.ftc.teamcode.util.control.MotionProfile;
+import org.firstinspires.ftc.teamcode.util.control.MotionProfileGenerator;
+import org.firstinspires.ftc.teamcode.util.hardware.Motor;
 
 public class Lift {
     private PIDController controller1;
