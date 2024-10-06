@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class pidfLoop {
     public static double fP,fI, fD;
     public static double sP,sI,sD;
-    private PIDController flipController = new PIDController(fP,fI, fD);
-    private PIDController slidesController = new PIDController(sP, sI, sD);
+    private final PIDController flipController = new PIDController(fP,fI, fD);
+    private final PIDController slidesController = new PIDController(sP, sI, sD);
     public static double fF;
 
     private final double ticks_in_degree = 100/180.0;
