@@ -14,7 +14,6 @@ public class ArcadeDrive extends LinearOpMode {
         DcMotor rightBack = hardwareMap.dcMotor.get("rightBack");
         DcMotor rightFront = hardwareMap.dcMotor.get("rightFront");
 
-
         leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
