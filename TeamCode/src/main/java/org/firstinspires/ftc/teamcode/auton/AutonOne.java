@@ -18,33 +18,27 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class AutonOne extends LinearOpMode {
     @Override
     public void runOpMode() {
-        // Starting position of the robot
-        Pose2d initialPose = new Pose2d(-11.8, -61.7, Math.toRadians(-90)); // (x, y, heading)
+        // Starting position of the robot (x = -11.8, y = -61.7, heading = -90 degrees)
+        Pose2d initialPose = new Pose2d(-11.8, -61.7, Math.toRadians(-90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
-        // Vision system outputs position (set manually here for now)
-        int visionOutputPosition = 1;
 
-        // Define trajectory using Pose2d and Vector2d
+
+        // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(-11.8 + 24, -61.7)) // Strafe 24 inches to the right (new x = initial x + 24)
-                .strafeTo(new Vector2d(-11.8 + 24, -61.7 + 12)) // Move forward 12 inches (new y = initial y + 12)
-                .strafeTo(new Vector2d(-11.8 + 24, -61.7 + 12 - 10)) // Move back 10 inches (y - 10)
-                .strafeTo(new Vector2d(-11.8 + 24 - 30, -61.7 + 12 - 10)); // Strafe left 30 inches (x - 30)
+                // Move to a new pose 24 inches right and 12 inches forward
+                .strafeTo(new Vector2d(-11.8 + 24, -61.7 + 12)) // New position (x + 24, y + 12)
+                // Move back 10 inches (y - 10)
+                .strafeTo(new Vector2d(-11.8 + 24, -61.7 + 12 - 10))
+                // Strafe left 30 inches (x - 30)
+                .strafeTo(new Vector2d(-11.8 + 24 - 30, -61.7 + 12 - 10));
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         // Initialize loop to check vision output
-        while (!isStopRequested() && !opModeIsActive()) {
-            int position = visionOutputPosition;
-            telemetry.addData("Position during Init", position);
-            telemetry.update();
-        }
 
-        int startPosition = visionOutputPosition;
-        telemetry.addData("Starting Position", startPosition);
-        telemetry.update();
+
 
         // Wait for the start of the op mode
         waitForStart();
