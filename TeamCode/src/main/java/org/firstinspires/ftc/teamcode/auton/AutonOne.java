@@ -22,10 +22,9 @@ public class AutonOne extends LinearOpMode {
         Pose2d initialPose = new Pose2d(-11.8, -61.7, Math.toRadians(-90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
-       
 
         // Define trajectory using Pose2d for simultaneous right and forward movement
-        TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(0,0,0))
                 // Move to a new pose 24 inches right and 12 inches forward
                 .strafeTo(new Vector2d(24, 12)) // New position (x + 24, y + 12)
                 // Move back 10 inches (y - 10)
@@ -35,10 +34,6 @@ public class AutonOne extends LinearOpMode {
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();
-
-        // Initialize loop to check vision output
-       
-
 
         // Wait for the start of the op mode
         waitForStart();
