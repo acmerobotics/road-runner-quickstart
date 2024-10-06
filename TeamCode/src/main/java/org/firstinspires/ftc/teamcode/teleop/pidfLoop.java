@@ -8,9 +8,11 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class pidfLoop {
-    public static double p,i,d;
-    private PIDController controller = new PIDController(p,i,d);
-    public static double f;
+    public static double fP,fI, fD;
+    public static double sP,sI,sD;
+    private PIDController flipController = new PIDController(fP,fI, fD);
+    private PIDController slidesController = new PIDController(sP, sI, sD);
+    public static double fF;
 
     private final double ticks_in_degree = 100/180.0;
     private final double slidesFF = 0.1;
@@ -19,11 +21,11 @@ public class pidfLoop {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                controller.setPID(p,i,d);
+                flipController.setPID(fP,fI, fD);
 
                 int armPos = arm.getCurrentPosition();
-                double pid = controller.calculate(armPos, target);
-                double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+                double pid = flipController.calculate(armPos, target);
+                double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * fF;
 
                 double power = pid + ff;
 
@@ -37,10 +39,10 @@ public class pidfLoop {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                controller.setPID(p,i,d);
+                slidesController.setPID(sP,sI, sD);
 
                 int armPos = slide.getCurrentPosition();
-                double pid = controller.calculate(armPos, target);
+                double pid = slidesController.calculate(armPos, target);
 
                 double power = pid + slidesFF;
 
