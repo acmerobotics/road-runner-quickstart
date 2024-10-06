@@ -9,14 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class ArcadeDrive extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
-        DcMotor leftFront = hardwareMap.dcMotor.get("leftFront");
-        DcMotor leftBack = hardwareMap.dcMotor.get("leftBack");
-        DcMotor rightBack = hardwareMap.dcMotor.get("rightBack");
-        DcMotor rightFront = hardwareMap.dcMotor.get("rightFront");
+        Robot bot = new Robot(hardwareMap);
 
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        bot.leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        bot.rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        bot.leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
 
@@ -34,10 +31,10 @@ public class ArcadeDrive extends LinearOpMode {
             double rightFrontPower = (y - x - rx) / denominator;
             double rightBackPower = (y + x - rx) / denominator;
 
-            leftFront.setPower(leftFrontPower);
-            leftBack.setPower(leftBackPower);
-            rightFront.setPower(rightFrontPower);
-            rightBack.setPower(rightBackPower);
+            bot.leftFront.setPower(leftFrontPower);
+            bot.leftBack.setPower(leftBackPower);
+            bot.rightFront.setPower(rightFrontPower);
+            bot.rightBack.setPower(rightBackPower);
         }
     }
 }
