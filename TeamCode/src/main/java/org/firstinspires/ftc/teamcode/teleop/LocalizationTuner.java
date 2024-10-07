@@ -52,7 +52,7 @@ public class LocalizationTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
-        odo = hardwareMap.get(GoBildaPinpoint.class,"odo");
+        odo = hardwareMap.get(GoBildaPinpoint.class,"pinpoint");
         otos = hardwareMap.get(SparkFunOTOS.class, "otos");
 
         cv.start();
@@ -126,6 +126,8 @@ public class LocalizationTuner extends LinearOpMode {
                 telemetry.addData("y", llPose.position.y);
                 telemetry.addData("heading", llPose.heading.toDouble());
                 telemetry.addData("rawPose", pose3d.toString());
+                telemetry.addData("currentTime", System.currentTimeMillis());
+                telemetry.addData("limelight timestamp", result.getTimestamp() );
             }
 
             Pose2d fusedPose = new Pose2d(fusedX, fusedY, ppPose.heading.toDouble());

@@ -67,6 +67,8 @@ public class CVMaster {
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-1,1,1,-1))
                 .setDrawContours(true)
                 .setBlurSize(5)
+
+
                 .build();
 
         blueProcessor = new ColorBlobLocatorProcessor.Builder()
@@ -92,6 +94,7 @@ public class CVMaster {
                 .addProcessors(redProcessor, yellowProcessor, blueProcessor)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
+
                 .build();
         setEOCVPipeline(EOCVPipeline.YELLOW_SAMPLE);
     }
