@@ -34,6 +34,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -57,32 +58,19 @@ import java.util.List;
 @TeleOp
 public class BlueTeleop extends LinearOpMode {
 
-    private enum ExtendoState {EXTENDOSTART, EXTENDOEXTEND, EXTENDOINTAKE, EXTENDORETRACT}
-    private ExtendoState extendoState = ExtendoState.EXTENDOSTART;
-
-    private enum LiftState {LIFTSTART, SAMPLEEXTEND, SAMPLEFLIP, SAMPLEDEPOSIT, SAMPLEFLOP, SAMPLERETRACT, SPECIMANEXTEND, SPECIMANFLIP, SPECIMANGRAB, SPECIMANPUTUP, SPECIMANPUTDOWN}
-    private LiftState liftState = LiftState.LIFTSTART;
-
-    private final double EXTENDOLENGTH = 100;
-    private final double HIGHBASKET = 100;
-    private final double LOWBASKET = 50;
-    private final double WALLHEIGHT = 100;
-    private final double SPECIMANHIGH = 100;
-    private final double SPECIMANLOW = 50;
-    private boolean baskethigh = true;
-    private boolean specimanhigh = true;
-
     Pipeline vision = new Pipeline(telemetry);
     OpenCvWebcam webcam1 = null;
 
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
-    public static boolean liftOn = false;
+    private enum LiftState {LIFTSTART, LIFTDEPOSIT};
+    private LiftState liftState = LiftState.LIFTSTART;
+
     public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
         double y = gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
+        double x = -gamepad1.left_stick_x;
+        double rx = -gamepad1.right_stick_x;
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (y + x + rx) / denominator;
@@ -122,23 +110,64 @@ public class BlueTeleop extends LinearOpMode {
             }
         }
 
-        if (gamepad2.x) {
-            if (!liftOn) {
-                liftOn = true;
-                runningActions.add(new SequentialAction(
-                        claw.close(),
-                        slides.slideTopBasket(),
-                        claw.flip()
-                ));
-            } else {
-                runningActions.add(new SequentialAction(
-                        claw.open(),
-                        claw.flop(),
-                        slides.retract()
-                ));
-            }
-
+        switch (liftState) {
+            case LIFTSTART:
+                if (gamepad2.x) {
+                    if (gamepad2.left_trigger >= 0.9) {
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideTopBasket(),
+                                claw.flip()
+                        ));
+                    } else {
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideBottomBasket(),
+                                claw.flip()
+                        ));
+                    }
+                }
+                liftState = LiftState.LIFTSTART;
+                break;
+            case LIFTDEPOSIT:
+                if (gamepad2.x) {
+                    runningActions.add(new SequentialAction(
+                            claw.open(),
+                            claw.flop(),
+                            slides.retract()
+                    ));
+                }
+                liftState = LiftState.LIFTDEPOSIT;
+                break;
+            default:
+                liftState = LiftState.LIFTSTART;
+                break;
         }
+
+        //INCOMPLETE speiceman thing
+        if (gamepad2.y) {
+            runningActions.add(new SequentialAction(
+                    slides.slideWallLevel(),
+                    claw.flip()
+            ));
+        }
+        if (gamepad2.y) {
+            runningActions.add(new SequentialAction(
+                    claw.close(),
+                    slides.slideTopBar()
+            ));
+        }
+        if (gamepad2.y) {
+            runningActions.add(new SequentialAction(
+                    slides.slideBottomBar(),
+                    new SleepAction(1),
+                    slides.retract()
+            ));
+        }
+
+
+
+
         /*
         if (extendo extends far enough) {
             flip intake
@@ -182,8 +211,8 @@ public class BlueTeleop extends LinearOpMode {
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        FR.setDirection(DcMotorSimple.Direction.REVERSE);
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
+        FL.setDirection(DcMotorSimple.Direction.REVERSE);
+        BL.setDirection(DcMotorSimple.Direction.REVERSE);
 
         Extendo extendo = new Extendo(hardwareMap);
         Intake intake = new Intake(hardwareMap);
