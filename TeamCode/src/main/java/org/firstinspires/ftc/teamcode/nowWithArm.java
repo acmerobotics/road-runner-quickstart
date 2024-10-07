@@ -36,7 +36,7 @@ public class nowWithArm extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_WITH_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
@@ -73,6 +73,8 @@ public class nowWithArm extends LinearOpMode {
         double backLeftPower;
         double frontRightPower;
         double backRightPower;
+        boolean armUp;
+        boolean armDown;
         //feemfeemfeemfeem
         y = gamepad1.left_stick_y;
         x = -gamepad1.left_stick_x;
