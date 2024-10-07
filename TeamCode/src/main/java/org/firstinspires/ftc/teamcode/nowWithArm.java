@@ -31,6 +31,7 @@ public class nowWithArm extends LinearOpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -46,6 +47,7 @@ public class nowWithArm extends LinearOpMode {
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        arm = hardwareMap.get(DcMotor.class, "arm");
 
         setupMovement();
         waitForStart();
@@ -75,7 +77,6 @@ public class nowWithArm extends LinearOpMode {
         double backRightPower;
         boolean armUp;
         boolean armDown;
-        //feemfeemfeemfeem
         y = gamepad1.left_stick_y;
         x = -gamepad1.left_stick_x;
         t = -gamepad1.right_stick_x;
@@ -104,6 +105,8 @@ public class nowWithArm extends LinearOpMode {
             arm.setPower(0.5);
         }else if (armDown){
             arm.setPower(-0.5);
+        } else {
+            arm.setPower(0);
         }
 
     }
