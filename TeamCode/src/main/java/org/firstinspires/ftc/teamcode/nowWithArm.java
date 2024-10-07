@@ -10,8 +10,8 @@ import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "ChassisMovement2425")
-public class ChassisMovement2425 extends LinearOpMode {
+@TeleOp(name = "nowWithArm")
+public class nowWithArm extends LinearOpMode {
 
     private IMU imu;
     private DcMotor backRight;
