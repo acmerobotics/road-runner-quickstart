@@ -31,11 +31,11 @@ public class Robot {
     public double intakeLeftPos, intakeRightPos;
 
     public Robot(HardwareMap hardwareMap) {
-//        axonLeft = hardwareMap.get(AnalogInput.class, "axonLeftEncoder");
-//        axonRight = hardwareMap.get(AnalogInput.class, "axonRightEncoder");
+        axonLeft = hardwareMap.get(AnalogInput.class, "axonLeft");
+        axonRight = hardwareMap.get(AnalogInput.class, "axonRight");
 
-//        intakeLeftPos = axonLeft.getVoltage() / 3.3 * 360;
-//        intakeRightPos = axonRight.getVoltage() / 3.3 * 360;
+        intakeLeftPos = axonLeft.getVoltage() / 3.3 * 360;
+        intakeRightPos = axonRight.getVoltage() / 3.3 * 360;
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
@@ -46,8 +46,9 @@ public class Robot {
 
         flip = hardwareMap.dcMotor.get("flip");
         slide = hardwareMap.dcMotor.get("slide");
-//        intakeLeft = hardwareMap.crservo.get("intakeLeft");
-//        intakeRight = hardwareMap.crservo.get("intakeRight");
+
+        intakeLeft = hardwareMap.crservo.get("intakeLeft");
+        intakeRight = hardwareMap.crservo.get("intakeRight");
 //        claw = hardwareMap.servo.get("claw");
 //        wrist = hardwareMap.servo.get("wrist");
 
@@ -62,6 +63,10 @@ public class Robot {
         leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        flip.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         for (DcMotor motor: motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -125,11 +130,11 @@ public class Robot {
     }
 
     public void slideControl(Gamepad gamepad) {
-        slide.setPower(-gamepad.right_stick_y);
+        slide.setPower(-gamepad.left_stick_y);
     }
 
     public void tiltControl(Gamepad gamepad) {
-        flip.setPower(-gamepad.left_stick_y);
+        flip.setPower(-gamepad.right_stick_y);
     }
 
     public void wristControl(Gamepad gamepad) {

@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+@TeleOp
 public class TeleopV1 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -16,9 +18,9 @@ public class TeleopV1 extends LinearOpMode {
             bot.tiltControl(gamepad2);
 //            bot.wristControl(gamepad2);
 //            bot.gripClawControl(gamepad2);
-//            bot.intakeControl(gamepad2);
-//
-//            bot.updateAxonPositions();
+            bot.intakeControl(gamepad2);
+
+            bot.updateAxonPositions();
 
             telemetry.addData("FlipPos", bot.flip.getCurrentPosition());
             telemetry.addData("SlidePos", bot.slide.getCurrentPosition());
