@@ -28,7 +28,7 @@ public class BlueAutoPaths extends LinearOpMode {
     @Override
     public void runOpMode() {
         Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
-        MecanumDrive drive = new MecanumDrive(hardwareMap,StartPose1);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
         //Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
         //drive.setPoseEstimate(StartPose1);

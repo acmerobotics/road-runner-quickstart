@@ -45,6 +45,7 @@ public class Intake {
             //TODO: set values to actual servo positions
             intakeServoLeft.setPosition(0);
             intakeServoRight.setPosition(0);
+            flipped = false;
             return false;
         }
     }

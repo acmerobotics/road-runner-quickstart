@@ -33,6 +33,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -42,6 +43,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Auto.Vision.Pipeline;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
@@ -64,8 +66,11 @@ public class BlueTeleop extends LinearOpMode {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
-    private enum LiftState {LIFTSTART, LIFTDEPOSIT};
+    private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR};
     private LiftState liftState = LiftState.LIFTSTART;
+
+    Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
+    MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
     public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
         double y = gamepad1.left_stick_y;
@@ -86,11 +91,18 @@ public class BlueTeleop extends LinearOpMode {
 
     public void buttonpress(Extendo extendo, Intake intake, Slides slides, Claw claw) {
         double y = gamepad2.left_stick_y;
-
+        double robotX = drive.pose.position.x;
+        double robotY = drive.pose.position.y;
         //TODO: change values to the min/max of how far extendo extends
         if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
             extendo.extendoLeft.setPower(y);
             extendo.extendoRight.setPower(y);
+        } else if (extendo.getPos() > 10000) {
+            extendo.extendoLeft.setPower(-0.6);
+            extendo.extendoRight.setPower(-0.6);
+        } else if (extendo.getPos() < 0) {
+            extendo.extendoLeft.setPower(0.6);
+            extendo.extendoRight.setPower(0.6);
         }
         //TODO: change value to ~1/3 of max extendo length or smth like that
         if (extendo.getPos() > 200) {
@@ -107,6 +119,10 @@ public class BlueTeleop extends LinearOpMode {
                 intake.intakeMotor.setPower(-1);
             } else {
                 intake.intakeMotor.setPower(1);
+            }
+        } else {
+            if (Intake.flipped) {
+                runningActions.add(intake.flop());
             }
         }
 
@@ -126,8 +142,15 @@ public class BlueTeleop extends LinearOpMode {
                                 claw.flip()
                         ));
                     }
+                    liftState = LiftState.LIFTDEPOSIT;
                 }
-                liftState = LiftState.LIFTSTART;
+                if (gamepad2.y) {
+                    runningActions.add(new SequentialAction(
+                            slides.slideWallLevel(),
+                            claw.flip()
+                    ));
+                    liftState = LiftState.LIFTWALL;
+                }
                 break;
             case LIFTDEPOSIT:
                 if (gamepad2.x) {
@@ -136,83 +159,48 @@ public class BlueTeleop extends LinearOpMode {
                             claw.flop(),
                             slides.retract()
                     ));
+                    liftState = LiftState.LIFTSTART;
                 }
-                liftState = LiftState.LIFTDEPOSIT;
+                break;
+            case LIFTWALL:
+                if (gamepad2.y) {
+                    runningActions.add(new SequentialAction(
+                            claw.close(),
+                            slides.slideTopBar()
+                    ));
+                    liftState = LiftState.LIFTTOPBAR;
+                }
+                if (gamepad2.y) {
+                    runningActions.add(new SequentialAction(
+                            claw.close(),
+                            slides.slideBottomBar()
+                    ));
+                    liftState = LiftState.LIFTBOTTOMBAR;
+                }
+                break;
+            case LIFTTOPBAR:
+                if (gamepad2.y) {
+                    runningActions.add(new SequentialAction(
+                            slides.slideBottomBar(),
+                            new SleepAction(1.2),
+                            slides.retract()
+                    ));
+                    liftState = LiftState.LIFTSTART;
+                }
+                break;
+            case LIFTBOTTOMBAR:
+                if (gamepad2.y) {
+                    runningActions.add(slides.retract());
+                    liftState = LiftState.LIFTSTART;
+                }
                 break;
             default:
                 liftState = LiftState.LIFTSTART;
                 break;
         }
-
-        //INCOMPLETE speiceman thing
-        if (gamepad2.y) {
-            runningActions.add(new SequentialAction(
-                    slides.slideWallLevel(),
-                    claw.flip()
-            ));
-        }
-        if (gamepad2.y) {
-            runningActions.add(new SequentialAction(
-                    claw.close(),
-                    slides.slideTopBar()
-            ));
-        }
-        if (gamepad2.y) {
-            runningActions.add(new SequentialAction(
-                    slides.slideBottomBar(),
-                    new SleepAction(1),
-                    slides.retract()
-            ));
-        }
-
-
-
-
-        /*
-        if (extendo extends far enough) {
-            flip intake
-            run intake
-            >sensor input false<
-            reverse intake
-            >sensor input true<
-            stop intake
-            flop intake
-            retract extendo
-        }
-
-        if x {
-            close claw
-            extend slides
-            flip claw
-            >user input<
-            open claw
-            flop claw
-            retract slides
-        }
-        if y {
-            extend slides to wall
-            close claw
-            extend slides to high
-            >user input<
-            retract slides
-       }
-         */
     }
     @Override
     public void runOpMode() {
-
-        DcMotor FL = hardwareMap.get(DcMotor.class, "FL");
-        DcMotor FR = hardwareMap.get(DcMotor.class, "FR");
-        DcMotor BL = hardwareMap.get(DcMotor.class, "BL");
-        DcMotor BR = hardwareMap.get(DcMotor.class, "BR");
-
-        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        FL.setDirection(DcMotorSimple.Direction.REVERSE);
-        BL.setDirection(DcMotorSimple.Direction.REVERSE);
 
         Extendo extendo = new Extendo(hardwareMap);
         Intake intake = new Intake(hardwareMap);
@@ -239,7 +227,7 @@ public class BlueTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
 
-            drivetrain(FL, FR, BL, BR);
+            drivetrain(drive.leftFront, drive.rightFront, drive.leftBack, drive.rightBack);
             buttonpress(extendo, intake, slides, claw);
 
             List<Action> newActions = new ArrayList<>();
@@ -255,6 +243,8 @@ public class BlueTeleop extends LinearOpMode {
 
             telemetry.addData("intakeCamera", vision.colorDetected());
             telemetry.update();
+            drive.updatePoseEstimate();
+
         }
     }
 }
