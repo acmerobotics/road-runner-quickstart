@@ -29,6 +29,13 @@
 
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -36,6 +43,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Auto.Vision.Pipeline;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
@@ -45,32 +53,29 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @TeleOp
 public class RedTeleop extends LinearOpMode {
 
-    private enum ExtendoState {EXTENDOSTART, EXTENDOEXTEND, EXTENDOINTAKE, EXTENDORETRACT}
-    private ExtendoState extendoState = ExtendoState.EXTENDOSTART;
-
-    private enum LiftState {LIFTSTART, SAMPLEEXTEND, SAMPLEFLIP, SAMPLEDEPOSIT, SAMPLEFLOP, SAMPLERETRACT, SPECIMANEXTEND, SPECIMANFLIP, SPECIMANGRAB, SPECIMANPUTUP, SPECIMANPUTDOWN}
-    private LiftState liftState = LiftState.LIFTSTART;
-
-    private final double EXTENDOLENGTH = 100;
-    private final double HIGHBASKET = 100;
-    private final double LOWBASKET = 50;
-    private final double WALLHEIGHT = 100;
-    private final double SPECIMANHIGH = 100;
-    private final double SPECIMANLOW = 50;
-    private boolean baskethigh = true;
-    private boolean specimanhigh = true;
-
     Pipeline vision = new Pipeline(telemetry);
     OpenCvWebcam webcam1 = null;
 
+    private FtcDashboard dash = FtcDashboard.getInstance();
+    private List<Action> runningActions = new ArrayList<>();
+
+    private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR};
+    private LiftState liftState = LiftState.LIFTSTART;
+
+    Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
+    MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
+
     public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
         double y = gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
+        double x = -gamepad1.left_stick_x;
+        double rx = -gamepad1.right_stick_x;
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (y + x + rx) / denominator;
@@ -85,110 +90,108 @@ public class RedTeleop extends LinearOpMode {
     }
 
     public void buttonpress(Extendo extendo, Intake intake, Slides slides, Claw claw) {
-        /*switch (extendoState) {
-            case EXTENDOSTART:
-                if (gamepad1.a) {
-                    extendo.urMom(EXTENDOLENGTH);
-                    extendoState = ExtendoState.EXTENDOEXTEND;
-                }
-                break;
-            case EXTENDOEXTEND:
-                if (!extendo.moving) {
-                    intake.extend();
-                    extendoState = ExtendoState.EXTENDOINTAKE;
-                }
-                break;
-            case EXTENDOINTAKE:
-                if (vision.colorDetected().equals("Red") || vision.colorDetected().equals("Yellow")) {
-                    intake.retract();
-                    extendo.urMom(0);
-                    extendoState = ExtendoState.EXTENDORETRACT;
-                } else if (vision.colorDetected().equals("Blue")) {
-                    intake.runMotorBack();
-                }
-                break;
-            case EXTENDORETRACT:
-                if (!extendo.moving) {
-                    extendoState = ExtendoState.EXTENDOSTART;
-                }
-                break;
-            default:
-                extendoState = ExtendoState.EXTENDOSTART;
-                break;
+        double y = gamepad2.left_stick_y;
+        double robotX = drive.pose.position.x;
+        double robotY = drive.pose.position.y;
+        //TODO: change values to the min/max of how far extendo extends
+        if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
+            extendo.extendoLeft.setPower(y);
+            extendo.extendoRight.setPower(y);
+        } else if (extendo.getPos() > 10000) {
+            extendo.extendoLeft.setPower(-0.6);
+            extendo.extendoRight.setPower(-0.6);
+        } else if (extendo.getPos() < 0) {
+            extendo.extendoLeft.setPower(0.6);
+            extendo.extendoRight.setPower(0.6);
+        }
+        //TODO: change value to ~1/3 of max extendo length or smth like that
+        if (extendo.getPos() > 200) {
+            if (!Intake.flipped) {
+                runningActions.add(intake.flip());
+            }
+            if (vision.colorDetected().equals("Red") || vision.colorDetected().equals("Yellow")) {
+                intake.intakeMotor.setPower(0);
+                runningActions.add(new SequentialAction(
+                        intake.flop(),
+                        extendo.retract()
+                ));
+            } else if (vision.colorDetected().equals("Blue")) {
+                intake.intakeMotor.setPower(-1);
+            } else {
+                intake.intakeMotor.setPower(1);
+            }
+        } else {
+            if (Intake.flipped) {
+                runningActions.add(intake.flop());
+            }
         }
 
         switch (liftState) {
             case LIFTSTART:
-                if (gamepad1.x) {
-                    baskethigh = gamepad1.left_trigger <= 0.9;
-                    if (baskethigh) {
-                        slides.slide(HIGHBASKET);
+                if (gamepad2.x) {
+                    if (gamepad2.left_trigger < 0.9) {
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideTopBasket(),
+                                claw.flip()
+                        ));
                     } else {
-                        slides.slide(LOWBASKET);
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideBottomBasket(),
+                                claw.flip()
+                        ));
                     }
-                    liftState = LiftState.SAMPLEEXTEND;
+                    liftState = LiftState.LIFTDEPOSIT;
                 }
-                if (gamepad1.y) {
-                    slides.slide(WALLHEIGHT);
-                    liftState = LiftState.SPECIMANEXTEND;
-                    specimanhigh = gamepad1.left_trigger <= 0.9;
-                }
-                break;
-            case SAMPLEEXTEND:
-                if (!slides.moving) {
-                    claw.flip();
-                    liftState = LiftState.SAMPLEFLIP;
+                if (gamepad2.y) {
+                    runningActions.add(new SequentialAction(
+                            slides.slideWallLevel(),
+                            claw.flip()
+                    ));
+                    liftState = LiftState.LIFTWALL;
                 }
                 break;
-            case SAMPLEFLIP:
-                if (gamepad1.x) {
-                    claw.open();
-                }
-                liftState = LiftState.SAMPLEDEPOSIT;
-                break;
-            case SAMPLEDEPOSIT:
-                claw.flop();
-                liftState = LiftState.SAMPLEFLOP;
-                break;
-            case SAMPLEFLOP:
-                slides.slide(0.0);
-                break;
-            case SAMPLERETRACT:
-                if (!slides.moving) {
+            case LIFTDEPOSIT:
+                if (gamepad2.x) {
+                    runningActions.add(new SequentialAction(
+                            claw.open(),
+                            claw.flop(),
+                            slides.retract()
+                    ));
                     liftState = LiftState.LIFTSTART;
                 }
                 break;
-
-
-            case SPECIMANEXTEND:
-                if (Math.abs(WALLHEIGHT - slides.getPos()) < WALLHEIGHT / 2) {
-                    claw.flip();
-                }
-                if (!slides.moving) {
-                    liftState = LiftState.SPECIMANFLIP;
-                }
-                break;
-            case SPECIMANFLIP:
-                if (gamepad1.y) {
-                    claw.close();
-                }
-                break;
-            case SPECIMANGRAB:
-                if (specimanhigh) {
-                    slides.slide(SPECIMANHIGH);
-                } else {
-                    slides.slide(SPECIMANLOW);
+            case LIFTWALL:
+                if (gamepad2.y) {
+                    if (gamepad2.left_trigger < 0.9) {
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideTopBar()
+                        ));
+                        liftState = LiftState.LIFTTOPBAR;
+                    } else {
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideBottomBar()
+                        ));
+                        liftState = LiftState.LIFTBOTTOMBAR;
+                    }
                 }
                 break;
-            case SPECIMANPUTUP:
-                if (!slides.moving && gamepad1.y) {
-                    slides.slide(0.0);
-                    liftState = LiftState.SPECIMANPUTDOWN;
+            case LIFTTOPBAR:
+                if (gamepad2.y) {
+                    runningActions.add(new SequentialAction(
+                            slides.slideBottomBar(),
+                            new SleepAction(1.2),
+                            slides.retract()
+                    ));
+                    liftState = LiftState.LIFTSTART;
                 }
                 break;
-            case SPECIMANPUTDOWN:
-                if (!slides.moving) {
-                    claw.flop();
+            case LIFTBOTTOMBAR:
+                if (gamepad2.y) {
+                    runningActions.add(slides.retract());
                     liftState = LiftState.LIFTSTART;
                 }
                 break;
@@ -196,25 +199,9 @@ public class RedTeleop extends LinearOpMode {
                 liftState = LiftState.LIFTSTART;
                 break;
         }
-        slides.updatePID();
-        extendo.doStuff();*/
-        }
-
+    }
     @Override
     public void runOpMode() {
-
-        DcMotor FL = hardwareMap.get(DcMotor.class, "FL");
-        DcMotor FR = hardwareMap.get(DcMotor.class, "FR");
-        DcMotor BL = hardwareMap.get(DcMotor.class, "BL");
-        DcMotor BR = hardwareMap.get(DcMotor.class, "BR");
-
-        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        FR.setDirection(DcMotorSimple.Direction.REVERSE);
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         Extendo extendo = new Extendo(hardwareMap);
         Intake intake = new Intake(hardwareMap);
@@ -239,10 +226,25 @@ public class RedTeleop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            drivetrain(FL, FR, BL, BR);
+            TelemetryPacket packet = new TelemetryPacket();
+
+            drivetrain(drive.leftFront, drive.rightFront, drive.leftBack, drive.rightBack);
             buttonpress(extendo, intake, slides, claw);
+
+            List<Action> newActions = new ArrayList<>();
+            for (Action action : runningActions) {
+                action.preview(packet.fieldOverlay());
+                if (action.run(packet)) {
+                    newActions.add(action);
+                }
+            }
+            runningActions = newActions;
+
+            dash.sendTelemetryPacket(packet);
+
             telemetry.addData("intakeCamera", vision.colorDetected());
             telemetry.update();
+            drive.updatePoseEstimate();
         }
     }
 }
