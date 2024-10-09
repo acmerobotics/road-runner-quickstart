@@ -141,10 +141,10 @@ public class Robot {
 
     public void wristControl(Gamepad gamepad) {
         if (gamepad.dpad_up) {
-            wrist.setPosition(wrist.getPosition() + 0.1);
+            wrist.setPosition(wrist.getPosition() + 0.05);
         }
         else if (gamepad.dpad_down) {
-            wrist.setPosition(wrist.getPosition() - 0.1);
+            wrist.setPosition(wrist.getPosition() - 0.05);
         }
     }
 
@@ -163,11 +163,11 @@ public class Robot {
     }
 
     public void intakeOpen(Gamepad gamepad) {
-        if (gamepad.dpad_up) {
-            intakeRight.setPosition(intakeRight.getPosition() + 0.01);
+        if (gamepad.dpad_right) {
+            intakeRight.setPosition(intakeRight.getPosition() + 0.05);
         }
-        else if (gamepad.dpad_down) {
-            intakeRight.setPosition(intakeRight.getPosition() - 0.01);
+        else if (gamepad.dpad_left) {
+            intakeRight.setPosition(intakeRight.getPosition() - 0.05);
         }
     }
 
