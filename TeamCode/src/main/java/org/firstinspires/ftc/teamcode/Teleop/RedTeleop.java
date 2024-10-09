@@ -69,8 +69,13 @@ public class RedTeleop extends LinearOpMode {
     private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR};
     private LiftState liftState = LiftState.LIFTSTART;
 
+    private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT};
+    private ExtendoState extendoState = ExtendoState.EXTENDONOTHING;
+
     Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
     MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
+
+    private boolean intaked = false;
 
     public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
         double y = gamepad1.left_stick_y;
@@ -94,37 +99,55 @@ public class RedTeleop extends LinearOpMode {
         double robotX = drive.pose.position.x;
         double robotY = drive.pose.position.y;
         //TODO: change values to the min/max of how far extendo extends
-        if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
-            extendo.extendoLeft.setPower(y);
-            extendo.extendoRight.setPower(y);
-        } else if (extendo.getPos() > 10000) {
-            extendo.extendoLeft.setPower(-0.6);
-            extendo.extendoRight.setPower(-0.6);
-        } else if (extendo.getPos() < 0) {
-            extendo.extendoLeft.setPower(0.6);
-            extendo.extendoRight.setPower(0.6);
-        }
-        //TODO: change value to ~1/3 of max extendo length or smth like that
-        if (extendo.getPos() > 200) {
-            if (!Intake.flipped) {
-                runningActions.add(intake.flip());
-            }
-            if (vision.colorDetected().equals("Red") || vision.colorDetected().equals("Yellow")) {
-                intake.intakeMotor.setPower(0);
-                runningActions.add(new SequentialAction(
-                        intake.flop(),
-                        extendo.retract()
-                ));
-            } else if (vision.colorDetected().equals("Blue")) {
-                intake.intakeMotor.setPower(-1);
-            } else {
-                intake.intakeMotor.setPower(1);
-            }
-        } else {
-            if (Intake.flipped) {
-                runningActions.add(intake.flop());
+        if (!intaked) {
+            if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
+                extendo.extendoLeft.setPower(y);
+                extendo.extendoRight.setPower(y);
+            } else if (extendo.getPos() > 10000) {
+                extendo.extendoLeft.setPower(-0.6);
+                extendo.extendoRight.setPower(-0.6);
+            } else if (extendo.getPos() < 0) {
+                extendo.extendoLeft.setPower(0.6);
+                extendo.extendoRight.setPower(0.6);
             }
         }
+
+        switch (extendoState) {
+            case EXTENDONOTHING:
+                //TODO: change value to how far until its a bit extended out in front of the robot
+                if (extendo.getPos() > 200) {
+                    if (!Intake.flipped) {
+                        runningActions.add(intake.flip());
+                    }
+                    if (vision.colorDetected().equals("Red") || vision.colorDetected().equals("Yellow")) {
+                        intake.intakeMotor.setPower(0);
+                        intaked = true;
+                        runningActions.add(new SequentialAction(
+                                intake.flop(),
+                                extendo.retract()
+                        ));
+                        extendoState = ExtendoState.EXTENDORETRACT;
+                    } else if (vision.colorDetected().equals("Blue")) {
+                        intake.intakeMotor.setPower(-1);
+                    } else {
+                        intake.intakeMotor.setPower(1);
+                    }
+                } else {
+                    if (Intake.flipped) {
+                        runningActions.add(intake.flop());
+                    }
+                }
+                break;
+            case EXTENDORETRACT:
+                //TODO: Set to the transfer position
+                if (extendo.getPos() < 0) {
+                    intake.intakeMotor.setPower(-0.2);
+                    extendoState = ExtendoState.EXTENDONOTHING;
+                }
+                break;
+        }
+
+
 
         switch (liftState) {
             case LIFTSTART:
