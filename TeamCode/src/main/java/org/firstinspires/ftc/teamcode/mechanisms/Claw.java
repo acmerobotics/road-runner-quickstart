@@ -69,22 +69,3 @@ public class Claw {
     }
 }
 
-
-//    public void flip() {
-//        clawLeftServo.setPosition(1);
-//        clawRightServo.setPosition(1);
-//    }
-//
-//    public void flop() {
-//        clawLeftServo.setPosition(0);
-//        clawRightServo.setPosition(0);
-//    }
-//
-//    public void close() {
-//        clawServo.setPosition(1);
-//    }
-//
-//    public void open() {
-//        clawServo.setPosition(0);
-//    }
-

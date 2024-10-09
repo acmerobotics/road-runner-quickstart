@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
-public class TEST extends LinearOpMode {
+public class TESTDRIVING extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -27,8 +27,8 @@ public class TEST extends LinearOpMode {
 
         while (opModeIsActive()) {
             double y = gamepad1.left_stick_y;
-            double x = -1*gamepad1.left_stick_x;
-            double rx = -1*gamepad1.right_stick_x;
+            double x = -1 * gamepad1.left_stick_x;
+            double rx = -1 * gamepad1.right_stick_x;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator;

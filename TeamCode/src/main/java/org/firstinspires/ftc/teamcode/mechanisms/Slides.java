@@ -173,22 +173,4 @@ public class Slides {
     public double getPos() {
         return (double) (slidesLeftMotor.getCurrentPosition() + slidesRightMotor.getCurrentPosition()) / 2;
     }
-
-//    public void slide(double pos) {
-//        slidesLeftPID.setTargetPosition(pos);
-//        slidesRightPID.setTargetPosition(pos);
-//        moving = true;
-//    }
-//
-//    public double getPos() {
-//        return (double) (slidesLeftMotor.getCurrentPosition() + slidesRightMotor.getCurrentPosition()) / 2;
-//    }
-//
-//    public void updatePID() {
-//        slidesLeftPID.update(slidesLeftMotor.getCurrentPosition());
-//        slidesRightPID.update(slidesRightMotor.getCurrentPosition());
-//        if (Math.abs(slidesLeftPID.getTargetPosition() - getPos()) < 10) {
-//            moving = false;
-//        }
-//    }
 }

@@ -58,26 +58,6 @@ public class Extendo {
     public double getPos() {
         return (double) (extendoLeft.getCurrentPosition() + extendoRight.getCurrentPosition()) / 2;
     }
-
-//    public void urMom(double pos) {
-//        extendoLeftPID.setTargetPosition(pos);
-//        extendoRightPID.setTargetPosition(pos);
-//        moving = true;
-//    }
-//
-//    public double getPos() {
-//        return (double) (extendoLeft.getCurrentPosition() + extendoRight.getCurrentPosition()) / 2;
-//    }
-//
-//    public void doStuff() {
-//        extendoLeft.setPower(extendoLeftPID.update(extendoLeft.getCurrentPosition()));
-//        extendoRight.setPower(extendoRightPID.update(extendoRight.getCurrentPosition()));
-//
-//        if (Math.abs(extendoLeftPID.getTargetPosition() - getPos()) < 10) {
-//            moving = false;
-//        }
-//
-//    }
 }
 
 

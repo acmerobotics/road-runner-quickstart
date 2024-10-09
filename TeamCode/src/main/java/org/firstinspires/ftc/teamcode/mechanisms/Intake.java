@@ -52,28 +52,4 @@ public class Intake {
     public Action flop() {
         return new Flop();
     }
-
-//    public void runMotor() {
-//        if (intakeMotor.getPower() != 1.0) {
-//            intakeMotor.setPower(1.0);
-//        }
-//    }
-//
-//    public void runMotorBack() {
-//        if (intakeMotor.getPower() != -1.0) {
-//            intakeMotor.setPower(-1.0);
-//        }
-//    }
-//
-//    public void extend() {
-//        intakeServoLeft.setPosition(100);
-//        intakeServoRight.setPosition(100);
-//        intakeMotor.setPower(1.0);
-//    }
-//
-//    public void retract() {
-//        intakeServoLeft.setPosition(0);
-//        intakeServoRight.setPosition(0);
-//    }
-
 }

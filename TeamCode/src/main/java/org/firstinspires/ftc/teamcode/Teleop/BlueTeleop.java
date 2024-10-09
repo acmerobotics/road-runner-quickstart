@@ -245,7 +245,6 @@ public class BlueTeleop extends LinearOpMode {
             telemetry.addData("intakeCamera", vision.colorDetected());
             telemetry.update();
             drive.updatePoseEstimate();
-
         }
     }
 }
