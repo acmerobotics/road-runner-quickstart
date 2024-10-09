@@ -67,5 +67,17 @@ public class Claw {
     public Action open() {
         return new Open();
     }
+
+    public class Up implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawServo.setPosition(0.5);
+            return false;
+        }
+    }
+
+    public Action up() {
+        return new Up();
+    }
 }
 

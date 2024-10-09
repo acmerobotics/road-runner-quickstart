@@ -144,6 +144,7 @@ public class BlueTeleop extends LinearOpMode {
             case EXTENDOSPIT:
                 if (!vision.colorDetected().equals("Blue") && !vision.colorDetected().equals("Yellow")) {
                     intake.intakeMotor.setPower(0);
+                    runningActions.add(claw.close());
                     extendoState = ExtendoState.EXTENDONOTHING;
                 }
                 break;
@@ -156,13 +157,11 @@ public class BlueTeleop extends LinearOpMode {
                 if (gamepad2.x) {
                     if (gamepad2.left_trigger < 0.9) {
                         runningActions.add(new SequentialAction(
-                                claw.close(),
                                 slides.slideTopBasket(),
                                 claw.flip()
                         ));
                     } else {
                         runningActions.add(new SequentialAction(
-                                claw.close(),
                                 slides.slideBottomBasket(),
                                 claw.flip()
                         ));
@@ -171,6 +170,7 @@ public class BlueTeleop extends LinearOpMode {
                 }
                 if (gamepad2.y) {
                     runningActions.add(new SequentialAction(
+                            claw.open(),
                             slides.slideWallLevel(),
                             claw.flip()
                     ));
@@ -181,6 +181,13 @@ public class BlueTeleop extends LinearOpMode {
                 if (gamepad2.x) {
                     runningActions.add(new SequentialAction(
                             claw.open(),
+                            claw.flop(),
+                            slides.retract()
+                    ));
+                    liftState = LiftState.LIFTSTART;
+                }
+                if (gamepad2.b) {
+                    runningActions.add(new SequentialAction(
                             claw.flop(),
                             slides.retract()
                     ));
