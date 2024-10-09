@@ -27,49 +27,41 @@ public class BlueAutoPaths extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
+        Pose2d StartPose1 = new Pose2d(24, 59.5, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
-        //Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
-        //drive.setPoseEstimate(StartPose1);
-
         TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
-                .strafeTo(new Vector2d(0, 36))
+                .strafeTo(new Vector2d(0, 32.5))
                 //deposit specimen
-                .lineToX(10)
-                .strafeToLinearHeading(new Vector2d(-53, -44), Math.toRadians(0))
+                .lineToY(42.5)
+                .strafeToLinearHeading(new Vector2d(49, 39), Math.toRadians(270))
                 //intake sample
-                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(50, 50), Math.toRadians(225))
                 //deposit sample
-                .strafeToLinearHeading(new Vector2d(-55, -44), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(60, 39), Math.toRadians(270))
                 //intake sample
-                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(50, 50), Math.toRadians(225))
                 //deposit sample
-                .strafeToLinearHeading(new Vector2d(-50, -27), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(57, 25), Math.toRadians(0))
                 //intake sample
-                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(50, 50), Math.toRadians(225));
                 //deposit sample
-                //.build();
 
 
-        Pose2d StartPose2 = new Pose2d(20, -60, Math.toRadians(180));
-        //drive.setPoseEstimate(StartPose2);
+
+        Pose2d StartPose2 = new Pose2d(-24, 59.5, Math.toRadians(90));
         
         TrajectoryActionBuilder speciman = drive.actionBuilder(StartPose2)
-                .strafeTo(new Vector2d(5, -25))
+                .strafeTo(new Vector2d(0, 32.5))
                 //Drop off specimen
-                .lineToY(8)
-                .strafeToLinearHeading(new Vector2d(45, -33), Math.toRadians(300))
-                .lineToY(5)
+                .lineToY(42.5)
+                .strafeToLinearHeading(new Vector2d(-49, 39), Math.toRadians(270))
                 //intake block
-                .lineToY(-5)
-                .strafeToLinearHeading(new Vector2d(55, -68), Math.toRadians(270))
+                .lineToY(52.5)
                 //outtake block into human area
-                .lineToY(-5)
-                .waitSeconds(0.5)
-                .lineToX(10)
-                .strafeToLinearHeading(new Vector2d(48, -33), Math.toRadians(300))
-                .lineToY(5)
+                .lineToY(50.5)
+                .waitSeconds(2)
+                .strafeToConstantHeading(new Vector2d(-48, 63.5))
                 //intake 2nd sample
                 .strafeToLinearHeading(new Vector2d(50, -68), Math.toRadians(270))
                 //outtake block
