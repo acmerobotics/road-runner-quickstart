@@ -69,13 +69,12 @@ public class RedTeleop extends LinearOpMode {
     private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR};
     private LiftState liftState = LiftState.LIFTSTART;
 
-    private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT};
+    private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT, EXTENDOSPIT};
     private ExtendoState extendoState = ExtendoState.EXTENDONOTHING;
 
     Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
     MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
-    private boolean intaked = false;
 
     public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
         double y = gamepad1.left_stick_y;
@@ -98,22 +97,20 @@ public class RedTeleop extends LinearOpMode {
         double y = gamepad2.left_stick_y;
         double robotX = drive.pose.position.x;
         double robotY = drive.pose.position.y;
-        //TODO: change values to the min/max of how far extendo extends
-        if (!intaked) {
-            if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
-                extendo.extendoLeft.setPower(y);
-                extendo.extendoRight.setPower(y);
-            } else if (extendo.getPos() > 10000) {
-                extendo.extendoLeft.setPower(-0.6);
-                extendo.extendoRight.setPower(-0.6);
-            } else if (extendo.getPos() < 0) {
-                extendo.extendoLeft.setPower(0.6);
-                extendo.extendoRight.setPower(0.6);
-            }
-        }
 
         switch (extendoState) {
             case EXTENDONOTHING:
+                //TODO: change values to the min/max of how far extendo extends
+                if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
+                    extendo.extendoLeft.setPower(y);
+                    extendo.extendoRight.setPower(y);
+                } else if (extendo.getPos() > 10000) {
+                    extendo.extendoLeft.setPower(-0.6);
+                    extendo.extendoRight.setPower(-0.6);
+                } else if (extendo.getPos() < 0) {
+                    extendo.extendoLeft.setPower(0.6);
+                    extendo.extendoRight.setPower(0.6);
+                }
                 //TODO: change value to how far until its a bit extended out in front of the robot
                 if (extendo.getPos() > 200) {
                     if (!Intake.flipped) {
@@ -121,7 +118,6 @@ public class RedTeleop extends LinearOpMode {
                     }
                     if (vision.colorDetected().equals("Red") || vision.colorDetected().equals("Yellow")) {
                         intake.intakeMotor.setPower(0);
-                        intaked = true;
                         runningActions.add(new SequentialAction(
                                 intake.flop(),
                                 extendo.retract()
@@ -142,6 +138,12 @@ public class RedTeleop extends LinearOpMode {
                 //TODO: Set to the transfer position
                 if (extendo.getPos() < 0) {
                     intake.intakeMotor.setPower(-0.2);
+                    extendoState = ExtendoState.EXTENDOSPIT;
+                }
+                break;
+            case EXTENDOSPIT:
+                if (!vision.colorDetected().equals("Red") && !vision.colorDetected().equals("Yellow")) {
+                    intake.intakeMotor.setPower(0);
                     extendoState = ExtendoState.EXTENDONOTHING;
                 }
                 break;

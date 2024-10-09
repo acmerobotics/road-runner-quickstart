@@ -74,7 +74,7 @@ public class BlueTeleop extends LinearOpMode {
 
     Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
     MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
-    
+
 
     public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
         double y = gamepad1.left_stick_y;
