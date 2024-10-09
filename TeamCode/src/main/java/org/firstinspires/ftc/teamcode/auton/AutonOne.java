@@ -19,7 +19,7 @@ public class AutonOne extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Starting position of the robot (x = -11.8, y = -61.7, heading = -90 degrees)
-        Pose2d initialPose = new Pose2d(-11.8, -61.7, Math.toRadians(-90));
+        Pose2d initialPose = new Pose2d(0, 0, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
 
@@ -27,7 +27,7 @@ public class AutonOne extends LinearOpMode {
         TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(0,0,0))
                 // Move to a new pose 24 inches right and 12 inches forward
                 .strafeTo(new Vector2d(24, 12)) // New position (x + 24, y + 12)
-                // Move back 10 inches (y - 10
+                // Move back 10 inches (y - 10)
                 .strafeTo(new Vector2d(24, 2))
                 // Strafe left 30 inches (x - 30)
                 .strafeTo(new Vector2d(-6, 2));
