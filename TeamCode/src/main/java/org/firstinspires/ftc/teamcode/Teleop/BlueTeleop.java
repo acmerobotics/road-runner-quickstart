@@ -129,7 +129,7 @@ public class BlueTeleop extends LinearOpMode {
         switch (liftState) {
             case LIFTSTART:
                 if (gamepad2.x) {
-                    if (gamepad2.left_trigger >= 0.9) {
+                    if (gamepad2.left_trigger < 0.9) {
                         runningActions.add(new SequentialAction(
                                 claw.close(),
                                 slides.slideTopBasket(),
@@ -164,18 +164,19 @@ public class BlueTeleop extends LinearOpMode {
                 break;
             case LIFTWALL:
                 if (gamepad2.y) {
-                    runningActions.add(new SequentialAction(
-                            claw.close(),
-                            slides.slideTopBar()
-                    ));
-                    liftState = LiftState.LIFTTOPBAR;
-                }
-                if (gamepad2.y) {
-                    runningActions.add(new SequentialAction(
-                            claw.close(),
-                            slides.slideBottomBar()
-                    ));
-                    liftState = LiftState.LIFTBOTTOMBAR;
+                    if (gamepad2.left_trigger < 0.9) {
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideTopBar()
+                        ));
+                        liftState = LiftState.LIFTTOPBAR;
+                    } else {
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideBottomBar()
+                        ));
+                        liftState = LiftState.LIFTBOTTOMBAR;
+                    }
                 }
                 break;
             case LIFTTOPBAR:
