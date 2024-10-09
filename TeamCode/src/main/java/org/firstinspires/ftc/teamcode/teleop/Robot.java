@@ -136,7 +136,7 @@ public class Robot {
     }
 
     public void tiltControl(Gamepad gamepad) {
-        flip.setPower(-gamepad.right_stick_y);
+        flip.setPower(-gamepad.right_stick_y * 0.25);
     }
 
     public void wristControl(Gamepad gamepad) {
