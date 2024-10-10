@@ -11,10 +11,11 @@ public class ConfigurationInfo {
     public static HardwareInterface leftHinge = new HardwareInterface("LH", false, 0);
     public static HardwareInterface rightHinge = new HardwareInterface("RH", false, 0);
 
-    // CLAW
-    public static HardwareInterface intake = new HardwareInterface("SS", true, 3);
-    public static HardwareInterface leftClamp = new HardwareInterface("LC", true, 1);
-    public static HardwareInterface rightClamp = new HardwareInterface("RC", false, 1);
+    // OUTAKE MANIPULATER
+    public static HardwareInterface leftArmHinge = new HardwareInterface("OLAH", true, 0);
+    public static HardwareInterface rightArmHinge = new HardwareInterface("ORAH", true, 0);
+    public static HardwareInterface leftBucketHinge = new HardwareInterface("OLBH", false, 0);
+    public static HardwareInterface rightBucketHinge = new HardwareInterface("ORBH", false, 0);
 
     // DRIVEBASE
     public static HardwareInterface leftFront = new HardwareInterface("FLD", true, 1);
