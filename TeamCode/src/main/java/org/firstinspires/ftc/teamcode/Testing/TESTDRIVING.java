@@ -36,10 +36,10 @@ public class TESTDRIVING extends LinearOpMode {
             double frontRightPower = (y - x - rx) / denominator;
             double backRightPower = (y + x - rx) / denominator;
 
-            FL.setPower(frontLeftPower);
-            BL.setPower(backLeftPower);
-            FR.setPower(frontRightPower);
-            BR.setPower(backRightPower);
+            FL.setPower(frontLeftPower/3);
+            BL.setPower(backLeftPower/3);
+            FR.setPower(frontRightPower/3);
+            BR.setPower(backRightPower/3);
         }
 
     }
