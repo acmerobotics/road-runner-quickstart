@@ -51,22 +51,16 @@ public class nowWithArm extends LinearOpMode {
 
         setupMovement();
         waitForStart();
-        if (isStopRequested()) {
-            // return???
-        }
-        if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                manualMove();
-            }
+
+        while (opModeIsActive()) {
+            manualMove();
         }
     }
 
-
-
     private void manualMove() {
-        float y;
-        float x;
-        float t;
+        float y = gamepad1.left_stick_y;
+        float x = -gamepad1.left_stick_x;
+        float t = -gamepad1.right_stick_x;
         double botHeading;
         double rotX;
         double rotY;
@@ -75,13 +69,8 @@ public class nowWithArm extends LinearOpMode {
         double backLeftPower;
         double frontRightPower;
         double backRightPower;
-        boolean armUp;
-        boolean armDown;
-        y = gamepad1.left_stick_y;
-        x = -gamepad1.left_stick_x;
-        t = -gamepad1.right_stick_x;
-        armUp = gamepad1.dpad_up;
-        armDown = gamepad1.dpad_down;
+        boolean armUp = gamepad1.dpad_up;
+        boolean armDown = gamepad1.dpad_down;
 
 
         if (gamepad1.start) {
@@ -103,11 +92,10 @@ public class nowWithArm extends LinearOpMode {
 
         if (armUp) {
             arm.setPower(0.5);
-        }else if (armDown){
+        } else if (armDown){
             arm.setPower(-0.5);
         } else {
             arm.setPower(0);
         }
-
     }
 }
