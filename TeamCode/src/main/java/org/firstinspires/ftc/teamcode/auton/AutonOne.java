@@ -22,7 +22,7 @@ public class AutonOne extends LinearOpMode {
         Pose2d initialPose = new Pose2d(0, 0, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
-
+        
         // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(0,0,0))
                 // Move to a new pose 24 inches right and 12 inches forward
