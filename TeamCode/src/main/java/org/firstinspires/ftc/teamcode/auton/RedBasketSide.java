@@ -34,7 +34,7 @@ public class RedBasketSide extends LinearOpMode {
                 .waitSeconds(1)
                 .turn(Math.toRadians(55))
                 .waitSeconds(2);
-
+        
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();

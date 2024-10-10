@@ -23,7 +23,7 @@ public class BlueBasketSide extends LinearOpMode {
 
         
         // Define trajectory using Pose2d for simultaneous right and forward movement
-        TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(15,63,270))
+        TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(11,58))
                 .waitSeconds(2.5)
                 .strafeToLinearHeading(new Vector2d(56,48), Math.toRadians(245))
