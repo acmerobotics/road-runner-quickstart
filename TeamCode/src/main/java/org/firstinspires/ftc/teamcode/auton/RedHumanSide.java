@@ -23,9 +23,9 @@ public class RedHumanSide extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(15,63,270))
-                .strafeTo(new Vector2d(-11,58))
+                .strafeTo(new Vector2d(-11,-58))
                 .waitSeconds(2.5)
-                .strafeToLinearHeading(new Vector2d(-56,48), Math.toRadians(295))
+                .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(115))
                 .waitSeconds(3)
                 .turn(Math.toRadians(-30))
                 .waitSeconds(1)
@@ -37,17 +37,18 @@ public class RedHumanSide extends LinearOpMode {
                 .waitSeconds(2)
                 .turn(Math.toRadians(-25))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(-56,48))
+                .strafeTo(new Vector2d(-56,-48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(-11,58))
+                .strafeTo(new Vector2d(-11,-58))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(-56,48))
+                .strafeTo(new Vector2d(-56,-48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(-11,58))
+                .strafeTo(new Vector2d(-11,-58))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(-56,48))
+                .strafeTo(new Vector2d(-56,-48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(-11,58));
+                .strafeTo(new Vector2d(-11,-58))
+                .waitSeconds(2);
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();

@@ -22,9 +22,9 @@ public class RedBasketSide extends LinearOpMode {
 
         // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(-11,-58))
+                .strafeTo(new Vector2d(11,-58))
                 .waitSeconds(2.5)
-                .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(65))
+                .strafeToLinearHeading(new Vector2d(56,-48), Math.toRadians(65))
                 .waitSeconds(3)
                 .turn(Math.toRadians(30))
                 .waitSeconds(1)
@@ -34,6 +34,7 @@ public class RedBasketSide extends LinearOpMode {
                 .waitSeconds(1)
                 .turn(Math.toRadians(-55))
                 .waitSeconds(2);
+
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();
