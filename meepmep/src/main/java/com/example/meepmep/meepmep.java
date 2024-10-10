@@ -21,6 +21,16 @@ public class meepmep {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
+        RoadRunnerBotEntity bot3 = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueDark())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .build();
+
+        RoadRunnerBotEntity bot4 = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueDark())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .build();
+
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(15, 63, Math.toRadians(270)))
                 .strafeTo(new Vector2d(11,58))
                 .waitSeconds(2.5)
@@ -65,11 +75,58 @@ public class meepmep {
                 .waitSeconds(2)
                 .build());
 
+        bot3.runAction(bot3.getDrive().actionBuilder(new Pose2d(15, -63, Math.toRadians(90)))
+                .strafeTo(new Vector2d(11,-58))
+                .waitSeconds(2.5)
+                .strafeToLinearHeading(new Vector2d(56,-48), Math.toRadians(65))
+                .waitSeconds(3)
+                .turn(Math.toRadians(30))
+                .waitSeconds(1)
+                .turn(Math.toRadians(-30))
+                .waitSeconds(2)
+                .turn(Math.toRadians(55))
+                .waitSeconds(1)
+                .turn(Math.toRadians(-55))
+                .waitSeconds(2)
+                .build());
+
+        bot4.runAction(bot4.getDrive().actionBuilder(new Pose2d(-15, -63, Math.toRadians(90)))
+                .strafeTo(new Vector2d(-11,-58))
+                .waitSeconds(2.5)
+                .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(115))
+                .waitSeconds(3)
+                .turn(Math.toRadians(-30))
+                .waitSeconds(1)
+                .turn(Math.toRadians(30))
+                .waitSeconds(2)
+                .turn(Math.toRadians(-55))
+                .waitSeconds(1)
+                .turn(Math.toRadians(55))
+                .waitSeconds(2)
+                .turn(Math.toRadians(-25))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-56,-48))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-11,-58))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-56,-48))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-11,-58))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-56,-48))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-11,-58))
+                .waitSeconds(2)
+                .build());
+
+
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
                 .addEntity(bot2)
+                .addEntity(bot3)
+                .addEntity(bot4)
                 .start();
     }
 }
