@@ -18,24 +18,38 @@ public class BlueHumanSide extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Starting position of the robot (x = -11.8, y = -61.7, heading = -90 degrees)
-        Pose2d initialPose = new Pose2d(15, 63, Math.toRadians(270));
+        Pose2d initialPose = new Pose2d(-15, 63, Math.toRadians(270));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+
 
         
         // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(15,63,270))
-                .strafeTo(new Vector2d(11,58))
+                .strafeTo(new Vector2d(-11,58))
                 .waitSeconds(2.5)
-                .strafeToLinearHeading(new Vector2d(56,48), Math.toRadians(245))
+                .strafeToLinearHeading(new Vector2d(-56,48), Math.toRadians(295))
                 .waitSeconds(3)
-                .turn(Math.toRadians(30))
-                .waitSeconds(1)
                 .turn(Math.toRadians(-30))
-                .waitSeconds(2)
-                .turn(Math.toRadians(55))
                 .waitSeconds(1)
+                .turn(Math.toRadians(30))
+                .waitSeconds(2)
                 .turn(Math.toRadians(-55))
-                .waitSeconds(2);
+                .waitSeconds(1)
+                .turn(Math.toRadians(55))
+                .waitSeconds(2)
+                .turn(Math.toRadians(-25))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-56,48))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-11,58))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-56,48))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-11,58))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-56,48))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(-11,58));
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();
