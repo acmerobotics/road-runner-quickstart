@@ -12,20 +12,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "AutonOne", group = "Autonomous")
+@Autonomous(name = "RedBasketSide", group = "Autonomous")
 public class RedBasketSide extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Starting position of the robot (x = -11.8, y = -61.7, heading = -90 degrees)
-        Pose2d initialPose = new Pose2d(15, 63, Math.toRadians(270));
+        Pose2d initialPose = new Pose2d(-15, -63, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
-        
         // Define trajectory using Pose2d for simultaneous right and forward movement
-        TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(15,63,270))
-                .strafeTo(new Vector2d(11,58))
+        TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
+                .strafeTo(new Vector2d(-11,-58))
                 .waitSeconds(2.5)
-                .strafeToLinearHeading(new Vector2d(56,48), Math.toRadians(245))
+                .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(65))
                 .waitSeconds(3)
                 .turn(Math.toRadians(30))
                 .waitSeconds(1)
