@@ -24,13 +24,19 @@ public class AutonOne extends LinearOpMode {
 
         
         // Define trajectory using Pose2d for simultaneous right and forward movement
-        TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(0,0,0))
-                // Move to a new pose 24 inches right and 12 inches forward
-                .strafeTo(new Vector2d(24, 12)) // New position (x + 24, y + 12)
-                // Move back 10 inches (y - 10)
-                .strafeTo(new Vector2d(24, 2))
-                // Strafe left 30 inches (x - 30)
-                .strafeTo(new Vector2d(-6, 2));
+        TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(15,63,270))
+                .strafeTo(new Vector2d(11,58))
+                .waitSeconds(2.5)
+                .strafeToLinearHeading(new Vector2d(56,48), Math.toRadians(245))
+                .waitSeconds(3)
+                .turn(Math.toRadians(30))
+                .waitSeconds(1)
+                .turn(Math.toRadians(-30))
+                .waitSeconds(2)
+                .turn(Math.toRadians(55))
+                .waitSeconds(1)
+                .turn(Math.toRadians(-55))
+                .waitSeconds(2);
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();
