@@ -23,6 +23,8 @@ public class babyteleop extends LinearOpMode {
     static double slowamount ;
     static double open = .3;
     static double closed = .5;
+    static double direction = -1;
+
 
     private boolean changed1 = false;
 
@@ -37,9 +39,9 @@ public class babyteleop extends LinearOpMode {
 
             //Drive
 
-            fwdBackPower = -gamepad1.left_stick_y * slowamount;
-            strafePower = -gamepad1.left_stick_x * slowamount;
-            turnPower = -gamepad1.right_stick_x * slowamount;
+            fwdBackPower = direction * -gamepad1.left_stick_y * slowamount;
+            strafePower = direction * -gamepad1.left_stick_x * slowamount;
+            turnPower = gamepad1.right_stick_x * slowamount;
 
             lfPower = (fwdBackPower - turnPower - strafePower);
             rfPower = (fwdBackPower + turnPower + strafePower);
@@ -52,17 +54,28 @@ public class babyteleop extends LinearOpMode {
             robot.rightfrontDrive.setPower(rfPower);
             robot.rightbackDrive.setPower(rbPower);
 
+            slowamount = .5;
+
 
             if (gamepad1.right_bumper){
-                slowamount = 0.25;}
-            else if (gamepad1.left_bumper) {
-                slowamount = 0.05;}
+                flipWheelConfigurationBackward();
+                telemetry.addData("Direction-Backward:", direction);
+
+            }
             else{
-                slowamount = .5;}
+                flipWheelConfigurationNormal();
+                telemetry.addData("Direction-Normal:", direction);
+
+            }
+
+
+            if(gamepad1.left_bumper){
+                slowamount = .25;
+            }
+            else{slowamount = gamepad1.left_trigger*.4;}
 
             //robot.armMotorTwo.setPower(gamepad2.left_stick_y);
             //robot.armMotorOne.setPower(-gamepad2.right_stick_y*.5);
-
 
 
             /**
@@ -90,8 +103,7 @@ public class babyteleop extends LinearOpMode {
             while(gamepad1.y){
                 robot.rightbackDrive.setPower(60);
             }
-
-           while(gamepad1.dpad_up){
+            while(gamepad1.dpad_up){
                 robot.leftfrontDrive.setPower(1);
             }
             while(gamepad1.dpad_left){
@@ -103,6 +115,33 @@ public class babyteleop extends LinearOpMode {
             while(gamepad1.dpad_right){
                 robot.rightbackDrive.setPower(1);
             }
-
+            testTriggerRight();
+            testTriggerLeft();
+            telemetry.update();
+        }
     }
-}}
+    public void flipWheelConfigurationBackward(){
+        /**
+         * negating the power switches the direction:
+         * forward is now backward
+         * strafe right is now strafe left
+         * the turnPower variable is left alone bc it doesn't switch when the wheels switch
+         **/
+        direction = 1;
+    }
+    public void flipWheelConfigurationNormal(){
+        /**
+         * negating the power switches the direction:
+         * forward is now backward
+         * strafe right is now strafe left
+         * the turnPower variable is left alone bc it doesn't switch when the wheels switch
+         **/
+        direction = -1;
+    }
+    public void testTriggerRight(){
+        telemetry.addData("Right Trigger",gamepad1.right_trigger);
+    }
+    public void testTriggerLeft(){
+        telemetry.addData("Left Trigger",gamepad1.left_trigger);
+    }
+}

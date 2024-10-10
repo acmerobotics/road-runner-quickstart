@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
@@ -75,8 +76,8 @@ public abstract class Auto_Util extends LinearOpMode {
     DcMotor rightfrontDrive, rightbackDrive, leftfrontDrive, leftbackDrive;
     //Utility motors
     DcMotor slideMotor, slideMotor2, utilmotor3, utilmotor4;
-    //odometry encoders
-    DcMotor verticalLeft, verticalRight, horizontal;
+    //Odometry encoders
+    DcMotorEx par1, par2, perp;
     //servos
     // Servo servo1;
     CRServo intakeServo, crservo2;
@@ -84,25 +85,23 @@ public abstract class Auto_Util extends LinearOpMode {
     BNO055IMU imu;
     static double motor_power;
     //Hardware Map Names for drive motors and odometry wheels. This may need to be changed between years if the config changes
-    String rfName = "rfD", rbName = "rbD", lfName = "lfD", lbName = "lbD";
+    String rfName = "rightFront", rbName = "rightBack", lfName = "leftFront", lbName = "leftBack";
     String util1name = "rightSlide", util2name = "leftSlide"; //, util3name = "shootM", util4name = "wobbleG";
     String /*servo1name = "wobbleS",*/ intakeServoname = "intake"/*, crservo2name = "pastaS2"*/;
     String verticalLeftEncoderName = lbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
 
     //Variables for Camera
-
     public static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     public static final String[] LABELS = {
-            "1 Bolt",
-            "2 Bulb",
-            "3 Panel"
+                "1 Bolt",
+                "2 Bulb",
+                "3 Panel"
     };
     private static final String LABEL_FIRST_ELEMENT = "1 Bolt";
     private static final String LABEL_SECOND_ELEMENT = "2 Bulb";
     private static final String LABEL_THIRD_ELEMENT = "3 Panel";
     private static String objectLabel = "None";
-    private static final String VUFORIA_KEY =
-            "ATcQ9Jb/////AAABmXGJFOKC40g7kfOPBw8DjTpDq86FQe6MiHxC08OsCToNqw+fKiT29mM/lfoeeV88sikFGdia+F+WuD6Dm/Du3Ob+nWnN7gJCIwR+tO+qWxAguajBRQ2pxo7tODCvhYzof/ltTNRdFNNvSl82rRW+OLaI4/mn512YZfs3wNA0/hjZM5tUtsSHKKNigaAnY7QhSI9o8Wig8jtIbl6uKHyNiy8WYIjdJW2tfpwJa+jRskvcm2Eck6xPg1MfBHZzMefB9jYl/Sect6savpkYvRLIsfa16/rD7YDnR5vJVt7RVw+g1axFH3iYV1DlqxNRDgRvAO1HryGCABQUyS8h5hWGOu61S0ArgAqLQoFW38R0eJpg";
+    private static final String VUFORIA_KEY = "ATcQ9Jb/////AAABmXGJFOKC40g7kfOPBw8DjTpDq86FQe6MiHxC08OsCToNqw+fKiT29mM/lfoeeV88sikFGdia+F+WuD6Dm/Du3Ob+nWnN7gJCIwR+tO+qWxAguajBRQ2pxo7tODCvhYzof/ltTNRdFNNvSl82rRW+OLaI4/mn512YZfs3wNA0/hjZM5tUtsSHKKNigaAnY7QhSI9o8Wig8jtIbl6uKHyNiy8WYIjdJW2tfpwJa+jRskvcm2Eck6xPg1MfBHZzMefB9jYl/Sect6savpkYvRLIsfa16/rD7YDnR5vJVt7RVw+g1axFH3iYV1DlqxNRDgRvAO1HryGCABQUyS8h5hWGOu61S0ArgAqLQoFW38R0eJpg";
 
     //"AYSaE87/////AAABmd4MI42q9kBngeU2bY+LVZJDc/gsy7wMwK3XXPjV+w2c4E3gtwueNUhCeDOIXgW1qP0yVp+ZvTxaTspl7CXq3ogA6ZUIqqLep9WvnAF5xLF7KIZOITXPRKcAPeK3O6o7gazhB0RdNpZKTavtq2TAV/D9LME20zAAZcwoSVRGzmFmnhS3TDsaWMtC+kWQDLh+cOlqB/SoTzsg07av6GLyNlz2PxkZnVhPqMHaDjeYdOrgTzT8KqG8XtC9GtC7tuBbC8+bE8zBExb2ToydJ4BLFKhG38Tms8oCNoGYUs1j3h3reNN1Obx74RtWqGSxTVcvml0mB0XsnAChPKoGt7WFzWrNLwEZ1BJ2jDkzjNYaIfow";
     //private VuforiaLocalizer vuforia;
@@ -435,7 +434,6 @@ public abstract class Auto_Util extends LinearOpMode {
             leftbackDrive.setPower(0.1 * (leftSpeed - PI(desiredHeading)));
 
 
-
             //prints the desired position and actual position of all four motors
             //adjusts the motor powers according to the PI function
             while (opModeIsActive() &&
@@ -476,7 +474,7 @@ public abstract class Auto_Util extends LinearOpMode {
         }
     }
 
-    public void encoderLift(double speed, double liftInches,  double timeoutS, double desiredHeading){
+    public void encoderLift(double speed, double liftInches, double timeoutS, double desiredHeading) {
         int heightTarget;
         //int averageTarget;
         double liftSpeed;
@@ -502,7 +500,6 @@ public abstract class Auto_Util extends LinearOpMode {
             runtime.reset();
             slideMotor.setPower((liftSpeed));
             slideMotor2.setPower((liftSpeed * -1));
-
 
 
             //prints the desired position and actual position of all four motors
@@ -813,7 +810,9 @@ public abstract class Auto_Util extends LinearOpMode {
          * image format supported by a camera */
     //final int imageFormat = ImageFormat.YUY2;
 
-    /** Verify that the image is supported, and fetch size and desired frame rate if so */
+    /**
+     * Verify that the image is supported, and fetch size and desired frame rate if so
+     */
         /*
         CameraCharacteristics cameraCharacteristics = cameraName.getCameraCharacteristics();
         if (!contains(cameraCharacteristics.getAndroidFormats(), imageFormat)) {
@@ -1080,7 +1079,6 @@ public abstract class Auto_Util extends LinearOpMode {
     -
     ___________________________________________________________________________________________________________________________________
      */
-
     public void setAllDriveMotors(double time) {
         runtime.reset();
         while (runtime.seconds() < time) {
@@ -1154,9 +1152,9 @@ public abstract class Auto_Util extends LinearOpMode {
     }
 
 
-    public void slideLift(double time){
+    public void slideLift(double time) {
         runtime.reset();
-        while(runtime.seconds() < time){
+        while (runtime.seconds() < time) {
             slideMotor.setPower(0.5);
             slideMotor2.setPower(-0.5);
         }
@@ -1164,9 +1162,9 @@ public abstract class Auto_Util extends LinearOpMode {
         slideMotor2.setPower(0);
     }
 
-    public void slideLower(double time){
+    public void slideLower(double time) {
         runtime.reset();
-        while(runtime.seconds() < time){
+        while (runtime.seconds() < time) {
             slideMotor.setPower(-0.5);
             slideMotor2.setPower(0.5);
         }
@@ -1273,7 +1271,7 @@ public abstract class Auto_Util extends LinearOpMode {
     }
 
  */
-    /*
+/*
 
     public void colorAlignment() {
         boolean notOnLine = true;
@@ -1340,7 +1338,7 @@ public abstract class Auto_Util extends LinearOpMode {
         telemetry.update();
     }
     */
-}
+
 
 
 /*
@@ -1409,3 +1407,4 @@ right front motor = 3
 
      String verticalLeftEncoderName = lbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
      */
+}
