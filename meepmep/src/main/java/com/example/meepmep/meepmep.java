@@ -10,7 +10,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class meepmep {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(700);
 
         RoadRunnerBotEntity BlueBasketSide = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -52,14 +52,10 @@ public class meepmep {
                 .strafeToLinearHeading(new Vector2d(-56,48), Math.toRadians(295))
                 .waitSeconds(3)
                 .turn(Math.toRadians(-30))
-                .waitSeconds(1)
-                .turn(Math.toRadians(30))
-                .waitSeconds(2)
-                .turn(Math.toRadians(-55))
-                .waitSeconds(1)
-                .turn(Math.toRadians(55))
                 .waitSeconds(2)
                 .turn(Math.toRadians(-25))
+                .waitSeconds(1)
+                .turn(Math.toRadians(25))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(-56,48))
                 .waitSeconds(2)
@@ -96,14 +92,10 @@ public class meepmep {
                 .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(65))
                 .waitSeconds(3)
                 .turn(Math.toRadians(30))
-                .waitSeconds(1)
-                .turn(Math.toRadians(-30))
-                .waitSeconds(2)
-                .turn(Math.toRadians(55))
-                .waitSeconds(1)
-                .turn(Math.toRadians(-55))
                 .waitSeconds(2)
                 .turn(Math.toRadians(25))
+                .waitSeconds(1)
+                .turn(Math.toRadians(-25))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(-56,-48))
                 .waitSeconds(2)
