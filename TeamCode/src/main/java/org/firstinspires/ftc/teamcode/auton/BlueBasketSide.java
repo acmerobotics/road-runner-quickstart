@@ -1,25 +1,24 @@
 package org.firstinspires.ftc.teamcode.auton;
 
-import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
 @Autonomous(name = "AutonOne", group = "Autonomous")
-public class AutonOne extends LinearOpMode {
+public class BlueBasketSide extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Starting position of the robot (x = -11.8, y = -61.7, heading = -90 degrees)
-        Pose2d initialPose = new Pose2d(0, 0, Math.toRadians(0));
+        Pose2d initialPose = new Pose2d(15, 63, Math.toRadians(270));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         
