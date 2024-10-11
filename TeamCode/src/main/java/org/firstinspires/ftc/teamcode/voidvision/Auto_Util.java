@@ -72,7 +72,7 @@ public abstract class Auto_Util extends LinearOpMode {
     public static final int BLUE = 2;
     public static final int CAP = 3;
 
-    //Drive motors
+    //Drive motors.
     DcMotor rightfrontDrive, rightbackDrive, leftfrontDrive, leftbackDrive;
     //Utility motors
     DcMotor slideMotor, slideMotor2, utilmotor3, utilmotor4;
