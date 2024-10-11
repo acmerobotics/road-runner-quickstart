@@ -33,7 +33,7 @@ public class babyhwmap extends HardwareMapUtil {
         //posServo = hwMap.get(Servo.class, "posServo");
 
 
-        //armServo.setDirection(DcMotorSimple.Direction.FORWARD);//
+        //armServo.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
