@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 public class Elbow {
 
@@ -52,7 +53,7 @@ public class Elbow {
     static final double  POWER_DOWN_MUL = 0.8;
     // Define class members
 
-    private DcMotor elbow;
+    private DcMotorEx elbow;
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
@@ -68,7 +69,7 @@ public class Elbow {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        elbow = myOpMode.hardwareMap.get(DcMotor.class, "elbow");
+        elbow = myOpMode.hardwareMap.get(DcMotorEx.class, "elbow");
 
         elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -158,8 +159,7 @@ public class Elbow {
         elbow.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        if (true || (power < 0) && (deg > 0)
-                || (power > 0) && (deg < 210)) {
+        if ((deg > 0) || (power > 0) && (deg < 210)) {
             elbow.setPower(power);
         }
 
