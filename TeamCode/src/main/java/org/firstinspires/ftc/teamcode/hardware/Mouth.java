@@ -56,15 +56,10 @@ public class Mouth {
 
     public void listen() {
 
-        // slew the servo, according to the rampUp (direction) variable.
         if (myOpMode.gamepad2.left_trigger > 0.1) {
-            mouth.setDirection((DcMotorSimple.Direction.FORWARD));
-            mouth.setPower(1);
+            mouth.setPower(-myOpMode.gamepad2.left_trigger);
         } else if (myOpMode.gamepad2.right_trigger > 0.1) {
-            mouth.setDirection(DcMotorSimple.Direction.REVERSE);
-            mouth.setPower(1);
-        } else if ((myOpMode.gamepad2.left_trigger > 0.1) && (myOpMode.gamepad2.right_trigger > 0.1)) {
-            mouth.setPower(0);
+            mouth.setPower(myOpMode.gamepad2.right_trigger);
         } else {
             mouth.setPower(0);
         }

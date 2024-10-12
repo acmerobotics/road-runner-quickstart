@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Elbow;
+import org.firstinspires.ftc.teamcode.hardware.Mouth;
 import org.firstinspires.ftc.teamcode.hardware.Viper;
 
 /*
@@ -55,6 +56,7 @@ public class TestAttachments extends LinearOpMode {
 
     Viper viper = new Viper(this);
     Elbow elbow = new Elbow(this);
+    Mouth mouth = new Mouth(this);
 
     @Override
     public void runOpMode() {
@@ -62,6 +64,7 @@ public class TestAttachments extends LinearOpMode {
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         viper.init();
         elbow.init();
+        mouth.init();
 
         // Send telemetry message to signify robot waiting;
         // Wait for the game to start (driver presses PLAY)
@@ -72,8 +75,7 @@ public class TestAttachments extends LinearOpMode {
 
             viper.listen();
             elbow.listen();
-            // Pace this loop.
-            sleep(50);
+            mouth.listen();
         }
     }
 }

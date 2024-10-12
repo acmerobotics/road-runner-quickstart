@@ -175,7 +175,7 @@ public class Elbow {
         // move elbow according to the right stick y
 
 
-        double power = -myOpMode.gamepad2.right_stick_y / 10;
+        double power = -myOpMode.gamepad2.right_stick_y;
         if (Math.abs(power) > 0.1) {
             moveElbowByPower(power);
         } else {

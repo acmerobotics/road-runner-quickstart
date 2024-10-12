@@ -69,8 +69,6 @@ public class TestViper extends LinearOpMode {
         while (opModeIsActive()) {
 
             viper.listen();
-            // Pace this loop so hands move at a reasonable speed.
-            sleep(50);
         }
     }
 }

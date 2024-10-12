@@ -174,7 +174,7 @@ public class Viper {
         // move viper according to the left stick y
 
 
-        double power = -myOpMode.gamepad2.left_stick_y / 10;
+        double power = -myOpMode.gamepad2.left_stick_y;
         if (Math.abs(power) > 0.1) {
             moveViperByPower(power);
         } else {
