@@ -70,7 +70,6 @@ public class TestElbow extends LinearOpMode {
 
             elbow.listen();
             // Pace this loop so hands move at a reasonable speed.
-            sleep(50);
         }
     }
 }
