@@ -36,13 +36,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Neck {
 
 
     // Define class members
-    double neckPosition = 0.0;
-
+    double neckPosition = 0.5;
+    ElapsedTime neckDelay = new ElapsedTime();
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
@@ -54,6 +55,7 @@ public class Neck {
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         servo = myOpMode.hardwareMap.get(Servo.class, "neck");
+
     }
 
 
@@ -62,10 +64,12 @@ public class Neck {
 
         servo.setPosition(neckPosition);
         // rotate right
-        if (myOpMode.gamepad2.right_bumper && neckPosition < 1) {
+        if (myOpMode.gamepad2.right_bumper && neckDelay.seconds() > 1) {
+            neckDelay.reset();
             neckPosition -=0.1;
         // rotate left
-        } else if (myOpMode.gamepad2.left_bumper && neckPosition > 0) {
+        } else if (myOpMode.gamepad2.left_bumper && neckDelay.seconds() > 1) {
+            neckDelay.reset();
             neckPosition +=0.1;
 
         }
