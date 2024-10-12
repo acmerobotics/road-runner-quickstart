@@ -50,11 +50,11 @@ import org.firstinspires.ftc.teamcode.hardware.Wrist;
 public class scrimTeleOp extends OpMode {
 
     // Insert whatever initialization your own code does
-    Elbow elbow = new Elbow(this);
-    Mouth mouth = new Mouth(this);
-    Neck neck = new Neck(this);
-    Viper viper = new Viper(this);
-    Wrist wrist = new Wrist(this);
+    Elbow elbow;
+    Mouth mouth;
+    Neck neck;
+    Viper viper;
+    Wrist wrist;
     // Assuming you're using StandardTrackingWheelLocalizer.java
     // Switch this class to something else (Like TwoWheeTrackingLocalizer.java) if your configuration is different
     MecanumDrive drive;
@@ -100,11 +100,18 @@ public class scrimTeleOp extends OpMode {
     public void init() {
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        elbow = new Elbow(this);
+        mouth = new Mouth(this);
+        neck = new Neck(this);
+        viper = new Viper(this);
+        wrist = new Wrist(this);
+
         elbow.init();
         mouth.init();
         neck.init();
         viper.init();
         wrist.init();
+
     }
 
     @Override
@@ -136,6 +143,7 @@ public class scrimTeleOp extends OpMode {
         neck.sendTelemetry();
         viper.sendTelemetry();
         wrist.sendTelemetry();
+        updateTelemetry(telemetry);
 
     }
 

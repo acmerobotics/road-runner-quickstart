@@ -43,7 +43,7 @@ public class TestNeck extends LinearOpMode {
     Neck neck = new Neck(this);
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
         //starts hardware.
         neck.init();
