@@ -117,7 +117,6 @@ public class BlueTeleop extends LinearOpMode {
                         runningActions.add(intake.flip());
                     }
                     if (vision.colorDetected().equals("Blue") || vision.colorDetected().equals("Yellow")) {
-                        intake.intakeMotor.setPower(0);
                         runningActions.add(new SequentialAction(
                                 intake.flop(),
                                 extendo.retract()
