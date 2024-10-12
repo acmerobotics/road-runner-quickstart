@@ -34,7 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.Mouth;
+import org.firstinspires.ftc.teamcode.hardware.Neck;
 import org.firstinspires.ftc.teamcode.hardware.Viper;
+import org.firstinspires.ftc.teamcode.hardware.Wrist;
 
 /*
  * This OpMode scans a single servo back and forward until Stop is pressed.
@@ -57,6 +59,8 @@ public class TestAttachments extends LinearOpMode {
     Viper viper = new Viper(this);
     Elbow elbow = new Elbow(this);
     Mouth mouth = new Mouth(this);
+    Neck neck = new Neck(this);
+    Wrist wrist = new Wrist(this);
 
     @Override
     public void runOpMode() {
@@ -65,6 +69,8 @@ public class TestAttachments extends LinearOpMode {
         viper.init();
         elbow.init();
         mouth.init();
+        neck.init();
+        wrist.init();
 
         // Send telemetry message to signify robot waiting;
         // Wait for the game to start (driver presses PLAY)
@@ -76,6 +82,18 @@ public class TestAttachments extends LinearOpMode {
             viper.listen();
             elbow.listen();
             mouth.listen();
+            neck.listen();
+            wrist.listen();
+
+
+            viper.sendTelemetry();
+            elbow.sendTelemetry();
+            mouth.sendTelemetry();
+            neck.sendTelemetry();
+            wrist.sendTelemetry();
+
+            updateTelemetry(telemetry);
+
         }
     }
 }

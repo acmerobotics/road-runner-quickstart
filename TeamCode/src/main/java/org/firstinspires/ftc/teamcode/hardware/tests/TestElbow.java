@@ -69,6 +69,8 @@ public class TestElbow extends LinearOpMode {
         while (opModeIsActive()) {
 
             elbow.listen();
+            elbow.sendTelemetry();
+            updateTelemetry(telemetry);
         }
     }
 }

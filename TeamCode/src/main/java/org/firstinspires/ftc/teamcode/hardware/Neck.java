@@ -70,4 +70,9 @@ public class Neck {
 
         }
     }
+
+
+    public void sendTelemetry() {
+        myOpMode.telemetry.addData("Neck Position", "%.2f", neckPosition);
+    }
 }

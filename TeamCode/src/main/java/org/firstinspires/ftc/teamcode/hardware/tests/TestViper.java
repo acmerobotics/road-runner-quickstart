@@ -69,6 +69,8 @@ public class TestViper extends LinearOpMode {
         while (opModeIsActive()) {
 
             viper.listen();
+            viper.sendTelemetry();
+            updateTelemetry(telemetry);
         }
     }
 }

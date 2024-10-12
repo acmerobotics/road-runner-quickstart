@@ -56,6 +56,8 @@ public class TestNeck extends LinearOpMode {
         while (opModeIsActive()) {
 
             neck.listen();
+            neck.sendTelemetry();
+            updateTelemetry(telemetry);
         }
     }
 }

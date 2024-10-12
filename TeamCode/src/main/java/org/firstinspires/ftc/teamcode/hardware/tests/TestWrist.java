@@ -56,6 +56,8 @@ public class TestWrist extends LinearOpMode {
         while (opModeIsActive()) {
 
             wrist.listen();
+            wrist.sendTelemetry();
+            updateTelemetry(telemetry);
         }
     }
 }
