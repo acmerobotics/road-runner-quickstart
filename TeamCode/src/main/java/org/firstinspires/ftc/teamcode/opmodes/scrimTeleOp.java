@@ -39,13 +39,22 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.hardware.Elbow;
+import org.firstinspires.ftc.teamcode.hardware.Mouth;
+import org.firstinspires.ftc.teamcode.hardware.Neck;
+import org.firstinspires.ftc.teamcode.hardware.Viper;
+import org.firstinspires.ftc.teamcode.hardware.Wrist;
 
-
-@TeleOp(name = "I AM DOCTOR IVO ROBOTNIK!", group = "Robotnik")
+// I AM DOCTOR IVO ROBOTNIK!
+@TeleOp(name = "scrimTeleOp", group = "OpModes")
 public class scrimTeleOp extends OpMode {
 
     // Insert whatever initialization your own code does
-
+    Elbow elbow = new Elbow(this);
+    Mouth mouth = new Mouth(this);
+    Neck neck = new Neck(this);
+    Viper viper = new Viper(this);
+    Wrist wrist = new Wrist(this);
     // Assuming you're using StandardTrackingWheelLocalizer.java
     // Switch this class to something else (Like TwoWheeTrackingLocalizer.java) if your configuration is different
     MecanumDrive drive;
@@ -91,6 +100,11 @@ public class scrimTeleOp extends OpMode {
     public void init() {
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        elbow.init();
+        mouth.init();
+        neck.init();
+        viper.init();
+        wrist.init();
     }
 
     @Override
@@ -110,6 +124,18 @@ public class scrimTeleOp extends OpMode {
                         ), -gamepad1.right_stick_x
                 )
         );
+
+        elbow.listen();
+        mouth.listen();
+        neck.listen();
+        viper.listen();
+        wrist.listen();
+
+        elbow.sendTelemetry();
+        mouth.sendTelemetry();
+        neck.sendTelemetry();
+        viper.sendTelemetry();
+        wrist.sendTelemetry();
 
     }
 
