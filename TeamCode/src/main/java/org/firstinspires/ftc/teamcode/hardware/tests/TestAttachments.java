@@ -33,6 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Elbow;
+import org.firstinspires.ftc.teamcode.hardware.Mouth;
+import org.firstinspires.ftc.teamcode.hardware.Viper;
 
 /*
  * This OpMode scans a single servo back and forward until Stop is pressed.
@@ -48,18 +50,21 @@ import org.firstinspires.ftc.teamcode.hardware.Elbow;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "Test: Elbow", group = "Concept")
-public class TestElbow extends LinearOpMode {
+@TeleOp(name = "Test: All Attachments", group = "Concept")
+public class TestAttachments extends LinearOpMode {
 
 
+    Viper viper = new Viper(this);
     Elbow elbow = new Elbow(this);
+    Mouth mouth = new Mouth(this);
 
     @Override
     public void runOpMode() {
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
+        viper.init();
         elbow.init();
-
+        mouth.init();
 
         // Send telemetry message to signify robot waiting;
         // Wait for the game to start (driver presses PLAY)
@@ -68,7 +73,9 @@ public class TestElbow extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            viper.listen();
             elbow.listen();
+            mouth.listen();
         }
     }
 }

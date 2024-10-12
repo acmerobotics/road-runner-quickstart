@@ -55,7 +55,6 @@ public class TestMouth extends LinearOpMode {
         while (opModeIsActive()) {
 
             mouth.listen();
-            sleep(50);
         }
     }
 }
