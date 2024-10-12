@@ -14,7 +14,8 @@ public class Intake extends Mechanism {
     CRServo bristles;
     Servo leftHinge;
     Servo rightHinge;
-    final double downHingePosition = 0;
+    final double downHingePosition = -0.5;
+    final double neutralHingePosition = 0;
     final double upHingePosition = 0.5;
 
     @Override
@@ -24,17 +25,29 @@ public class Intake extends Mechanism {
         rightHinge = hwMap.get(Servo.class, ConfigurationInfo.rightHinge.getDeviceName());
     }
 
-    public void intake() {
-        bristles.setPower(1);
+    public void bristlesIn() {bristles.setPower(1);}
+
+    public void bristlesOut() {bristles.setPower(-1);}
+
+    public void intakeOff(){
+        bristles.setPower(0);
     }
 
-    public void outtake() {
-        bristles.setPower(-1);
+    public void hingeNeutral() {
+        leftHinge.setPosition(neutralHingePosition);
+        rightHinge.setPosition(neutralHingePosition);
     }
 
     public void hingeUp() {
         leftHinge.setPosition(upHingePosition);
         rightHinge.setPosition(upHingePosition);
     }
+
+    public void hingeDown() {
+        leftHinge.setPosition(downHingePosition);
+        rightHinge.setPosition(downHingePosition);
+    }
+
+
 
 }
