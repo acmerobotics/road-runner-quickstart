@@ -55,6 +55,8 @@ public class TestMouth extends LinearOpMode {
         while (opModeIsActive()) {
 
             mouth.listen();
+            mouth.sendTelemetry();
+            updateTelemetry(telemetry);
         }
     }
 }

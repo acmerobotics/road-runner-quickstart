@@ -72,4 +72,8 @@ public class Wrist {
             wristPosition = 1;
         }
     }
+
+    public void sendTelemetry() {
+        myOpMode.telemetry.addData("Wrist Position", "%.2f", wristPosition);
+    }
 }
