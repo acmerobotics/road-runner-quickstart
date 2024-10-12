@@ -55,14 +55,17 @@ public class Mouth {
 
 
     public void listen() {
+        double left_trigger = myOpMode.gamepad2.left_trigger;
+        double right_trigger = myOpMode.gamepad2.right_trigger;
 
-        if (myOpMode.gamepad2.left_trigger > 0.1) {
-            mouth.setPower(-myOpMode.gamepad2.left_trigger);
-        } else if (myOpMode.gamepad2.right_trigger > 0.1) {
-            mouth.setPower(myOpMode.gamepad2.right_trigger);
-        } else {
-            mouth.setPower(0);
-        }
+        double power = -left_trigger + right_trigger;
+        mouth.setPower(power);
+
+
+        myOpMode.telemetry.addData("Left Trigger", left_trigger);
+        myOpMode.telemetry.addData("Right Trigger", right_trigger);
+        myOpMode.telemetry.addData("Power", power);
+        myOpMode.updateTelemetry(myOpMode.telemetry);
 
     }
 }
