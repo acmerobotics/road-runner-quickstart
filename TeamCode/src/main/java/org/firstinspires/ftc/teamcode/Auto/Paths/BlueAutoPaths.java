@@ -32,19 +32,38 @@ public class BlueAutoPaths extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
         TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(5.24, 36.60), Math.toRadians(-45));
+                .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45));
                 //deposit sample
         TrajectoryActionBuilder block1 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(26.49, 26.64), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(24.72, 23.82), Math.toRadians(0));
                 //intake sample
         TrajectoryActionBuilder block2 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(25.13, 35.12), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(25.86, 33.24), Math.toRadians(0));
                 //intake sample
         TrajectoryActionBuilder block3 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(46.5, 27.18), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(48.57, 27.59), Math.toRadians(90))
+                .afterDisp(0, new SleepAction(1.0));
                 //intake sample
+        TrajectoryActionBuilder park = drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(62.49, 1));
 
-
+        TrajectoryActionBuilder trajecotryegrig = drive.actionBuilder(StartPose1)
+                .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
+                .afterDisp(0, new SleepAction(1.0))
+                .strafeToLinearHeading(new Vector2d(24.72, 23.82), Math.toRadians(0))
+                .waitSeconds(0.5)
+                .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(25.86, 33.24), Math.toRadians(0))
+                .waitSeconds(0.5)
+                .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(48.57, 27.59), Math.toRadians(90))
+                .waitSeconds(0.5)
+                .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(62.49, 20))
+                .strafeTo(new Vector2d(62.49, 1));
 
         Pose2d StartPose2 = new Pose2d(-24, 59.5, Math.toRadians(90));
 
@@ -58,23 +77,28 @@ public class BlueAutoPaths extends LinearOpMode {
         Action block1A = block1.build();
         Action block2A = block2.build();
         Action block3A = block3.build();
+        Action parkA = park.build();
+        Action auto = trajecotryegrig.build();
         waitForStart();
 
-        Actions.runBlocking(new SequentialAction(
-                basketA,
-                new SleepAction(1),
-                block1A,
-                new SleepAction(0.5),
-                basket2A,
-                new SleepAction(1),
-                block2A,
-                new SleepAction(0.5),
-                basket3A,
-                new SleepAction(1),
-                block3A,
-                new SleepAction(0.5),
-                basket4A
-        ));
+//        Actions.runBlocking(new SequentialAction(
+//                basketA,
+//                new SleepAction(1),
+//                block1A,
+//                new SleepAction(0.5),
+//                basket2A,
+//                new SleepAction(1),
+//                block2A,
+//                new SleepAction(0.5),
+//                basket3A,
+//                new SleepAction(1),
+//                block3A,
+//                new SleepAction(0.5),
+//                basket4A,
+//                new SleepAction(1),
+//                parkA
+//        ));
+        Actions.runBlocking(auto);
     }
 }
 
