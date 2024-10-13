@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Common;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+//import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 public class Constants {
     public static final int ArmUpTicks = 1800;
@@ -29,5 +29,11 @@ public class Constants {
     public static final double HangingMiddle = 0.38;
     public static final double HangingUp = 1;
     public static final String HangingConfigName = "HANGING";
+
+    public static final String SlideLeftName = "SL";
+    public static final String SlideRightName = "SR";
+    public static final String ExtensionName = "ES";
+    public static final String HangingHighName = "HH";
+    public static final String HangingLowName = "HL";
 
 }
