@@ -18,7 +18,7 @@ public class RedHumanSide extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Starting position of the robot (x = -11.8, y = -61.7, heading = -90 degrees)
-        Pose2d initialPose = new Pose2d(15, -63, Math.toRadians(270));
+        Pose2d initialPose = new Pose2d(15, -63, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
 
