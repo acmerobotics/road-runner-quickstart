@@ -28,14 +28,14 @@ public class BlueAutoPaths extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d StartPose1 = new Pose2d(0,0, Math.toRadians(0));
+        Pose2d StartPose1 = new Pose2d(0,-8.5, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
         TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
                 .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45));
                 //deposit sample
         TrajectoryActionBuilder block1 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(24.72, 23.82), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(24.72, 2.82), Math.toRadians(0));
                 //intake sample
         TrajectoryActionBuilder block2 = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(25.86, 33.24), Math.toRadians(0));
@@ -50,25 +50,24 @@ public class BlueAutoPaths extends LinearOpMode {
         TrajectoryActionBuilder trajecotryegrig = drive.actionBuilder(StartPose1)
                 .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
                 .afterDisp(0, new SleepAction(1.0))
-                .strafeToLinearHeading(new Vector2d(24.72, 23.82), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(24.72, 30.02), Math.toRadians(0))
                 .waitSeconds(0.5)
                 .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(25.86, 33.24), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(25.86, 40.74), Math.toRadians(0))
                 .waitSeconds(0.5)
                 .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(48.57, 27.59), Math.toRadians(90))
+                .strafeTo(new Vector2d(5,20))
+                .strafeToLinearHeading(new Vector2d(46.57, 27.59), Math.toRadians(90))
                 .waitSeconds(0.5)
-                .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
+                .strafeToLinearHeading(new Vector2d(6.74, 35.60), Math.toRadians(-45))
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(62.49, 20))
-                .strafeTo(new Vector2d(62.49, 1));
+                .splineToLinearHeading(new Pose2d(53.00, 4, Math.toRadians(-90)),-90);
 
         Pose2d StartPose2 = new Pose2d(-24, 59.5, Math.toRadians(90));
 
-        TrajectoryActionBuilder poormansauto = drive.actionBuilder(StartPose2)
-                .strafeToLinearHeading(new Vector2d(60, 60), Math.toRadians(225));
+
 
         Action basketA = basket.build();
         Action basket2A = basket.build();

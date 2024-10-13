@@ -27,50 +27,20 @@ public class RedAutoPaths extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d StartPose1 = new Pose2d(0, 0, 0);
+        Pose2d StartPose1 = new Pose2d(0, 8, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap,StartPose1);
 
         //Pose2d StartPose1 = new Pose2d(-40, -60, 0);
         //drive.setPoseEstimate(StartPose1);
 
         TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
-                //.strafeTo(new Vector2d(24.57, -25))
-                //deposit specimen
-                //.strafeTo(new Vector2d(24, 0))
-                //intake sample
-                .strafeToLinearHeading(new Vector2d(7.02, 86.07), Math.toRadians(-45))
-                //deposit sample
-                .strafeTo(new Vector2d(10, 0))
-                .strafeToLinearHeading(new Vector2d(26.44, -7.89),Math.toRadians(-45))
-                //intake sample
+                .strafeTo(new Vector2d(30,20))
+                .strafeTo(new Vector2d(0,-10))
+                .splineToLinearHeading(new Pose2d(60, -5, Math.toRadians(90)),90);
 
-                //deposit sample
-                .strafeToLinearHeading(new Vector2d(7.02, 86.07), Math.toRadians(-45))
-
-                .strafeTo(new Vector2d(10, 0))//intake sample
-                .strafeToLinearHeading(new Vector2d(25.02, -35.14),Math.toRadians(-45))
-                .strafeTo(new Vector2d(10, 0))
-                .strafeToLinearHeading(new Vector2d(7.02, 86.07), Math.toRadians(-45))
-                //deposit sample
-
-                .strafeTo(new Vector2d(10, 0));
-        TrajectoryActionBuilder third = drive.actionBuilder( new Pose2d(10, 0, Math.toRadians(-45)))
-                .strafeToLinearHeading(new Vector2d(39.82, -24.03),Math.toRadians(-95))
-
-                .strafeTo(new Vector2d(10, 0))
-
-                .strafeToLinearHeading(new Vector2d(7.02, 86.07), Math.toRadians(-45));
-                //intake sample
-
-                //deposit sample
-                //.build();
-                Action path = basket.build();
-                Action path2 = third.build();
+        Action path = basket.build();
                 waitForStart();
-                Actions.runBlocking(new SequentialAction(
-                        path,
-                        path2
-                ));
+                Actions.runBlocking(path);
 
     }
 }
