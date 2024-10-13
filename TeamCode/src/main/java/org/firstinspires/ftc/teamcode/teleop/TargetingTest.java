@@ -70,9 +70,8 @@ public class TargetingTest extends LinearOpMode {
         frontLeft = new Motor(3, "leftFront", hardwareMap, true);
         frontRight = new Motor(3, "rightFront", hardwareMap, false);
 
-        waitForStart();
-        if (isStopRequested()) return;
-        while (opModeIsActive() && !isStopRequested()) {
+
+        while (!opModeIsActive() && !isStopRequested()) {
             odo.bulkUpdate();
             Pose2D pos = odo.getPosition();
             Pose2d ppPose = new Pose2d(pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.RADIANS));
@@ -157,6 +156,8 @@ public class TargetingTest extends LinearOpMode {
             setDrivePower(-x, y, rx);
 
         }
+        waitForStart();
+        if (isStopRequested()) return;
     }
 
     public void setDrivePower(double x, double y, double rx) {
