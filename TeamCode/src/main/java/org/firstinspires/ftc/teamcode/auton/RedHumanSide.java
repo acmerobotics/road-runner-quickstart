@@ -33,17 +33,15 @@ public class RedHumanSide extends LinearOpMode {
                 .waitSeconds(1)
                 .turn(Math.toRadians(25))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(56,-48))
-                .waitSeconds(2)
-                .strafeToLinearHeading(new Vector2d(8,-48), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(4,-52), Math.toRadians(90))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(56,-48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(8,-48))
+                .strafeTo(new Vector2d(4,-52))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(56,-48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(8,-48))
+                .strafeTo(new Vector2d(4,-52))
                 .waitSeconds(2);
 
         // Final action to close out the trajectory
