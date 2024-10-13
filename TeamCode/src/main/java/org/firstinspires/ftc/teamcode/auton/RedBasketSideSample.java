@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "RedBasketSide", group = "Autonomous")
+@Autonomous(name = "RedBasketSideSample", group = "Autonomous")
 public class RedBasketSideSample extends LinearOpMode {
     @Override
     public void runOpMode() {

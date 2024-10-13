@@ -72,7 +72,7 @@ public class meepmep {
                 .build());
 
         RedBasketSide.runAction(RedBasketSide.getDrive().actionBuilder(new Pose2d(-15, -63, Math.toRadians(90)))
-                .strafeTo(new Vector2d(-11 ,-48))
+                .strafeTo(new Vector2d(-9,-48))
                 .waitSeconds(2.5)
                 .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(65))
                 .waitSeconds(3)
@@ -87,7 +87,7 @@ public class meepmep {
                 .build());
 
         RedHumanSide.runAction(RedHumanSide.getDrive().actionBuilder(new Pose2d(15, -63, Math.toRadians(90)))
-                .strafeTo(new Vector2d(11,-58))
+                .strafeTo(new Vector2d(11,-48))
                 .waitSeconds(2.5)
                 .strafeToLinearHeading(new Vector2d(56,-48), Math.toRadians(115))
                 .waitSeconds(3)
@@ -97,17 +97,15 @@ public class meepmep {
                 .waitSeconds(1)
                 .turn(Math.toRadians(25))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(56,-48))
-                .waitSeconds(2)
-                .strafeTo(new Vector2d(11,-58))
+                .strafeToLinearHeading(new Vector2d(4,-52), Math.toRadians(90))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(56,-48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(11,-58))
+                .strafeTo(new Vector2d(4,-52))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(56,-48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(11,-58))
+                .strafeTo(new Vector2d(4,-52))
                 .waitSeconds(2)
                 .build());
 
