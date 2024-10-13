@@ -18,12 +18,12 @@ public class RedHumanSide extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Starting position of the robot (x = -11.8, y = -61.7, heading = -90 degrees)
-        Pose2d initialPose = new Pose2d(15, 63, Math.toRadians(270));
+        Pose2d initialPose = new Pose2d(15, -63, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(11,-58))
+                .strafeTo(new Vector2d(11,-48))
                 .waitSeconds(2.5)
                 .strafeToLinearHeading(new Vector2d(56,-48), Math.toRadians(115))
                 .waitSeconds(3)
@@ -33,17 +33,15 @@ public class RedHumanSide extends LinearOpMode {
                 .waitSeconds(1)
                 .turn(Math.toRadians(25))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(56,-48))
-                .waitSeconds(2)
-                .strafeTo(new Vector2d(11,-58))
+                .strafeToLinearHeading(new Vector2d(4,-52), Math.toRadians(90))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(56,-48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(11,-58))
+                .strafeTo(new Vector2d(4,-52))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(56,-48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(11,-58))
+                .strafeTo(new Vector2d(4,-52))
                 .waitSeconds(2);
 
         // Final action to close out the trajectory
