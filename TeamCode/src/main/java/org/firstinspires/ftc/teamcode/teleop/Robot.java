@@ -49,9 +49,9 @@ public class Robot {
         flip = hardwareMap.dcMotor.get("flip");
         slide = hardwareMap.dcMotor.get("slide");
 
-        intakeLeft = hardwareMap.crservo.get("intakeLeft");
-        intakeRight = hardwareMap.crservo.get("intakeRight");
-        claw = hardwareMap.servo.get("claw");
+//        intakeLeft = hardwareMap.crservo.get("intakeLeft");
+//        intakeRight = hardwareMap.crservo.get("intakeRight");
+//        claw = hardwareMap.servo.get("claw");
         wrist = hardwareMap.servo.get("wrist");
 
         List<DcMotor> motors = Arrays.asList(leftBack, leftFront, rightBack, rightFront, flip, slide);
@@ -65,10 +65,10 @@ public class Robot {
         leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        flip.setDirection(DcMotorSimple.Direction.REVERSE);
+        flip.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//        intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+//        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         for (DcMotor motor: motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -139,28 +139,28 @@ public class Robot {
         flip.setPower(-gamepad.right_stick_y * 0.25);
     }
 
-    public void wristControl(Gamepad gamepad) {
-        if (gamepad.dpad_up) {
-            wrist.setPosition(wrist.getPosition() + 0.05);
-        }
-        else if (gamepad.dpad_down) {
-            wrist.setPosition(wrist.getPosition() - 0.05);
-        }
-    }
+//    public void wristControl(Gamepad gamepad) {
+//        if (gamepad.dpad_up) {
+//            wrist.setPosition(wrist.getPosition() + 0.05);
+//        }
+//        else if (gamepad.dpad_down) {
+//            wrist.setPosition(wrist.getPosition() - 0.05);
+//        }
+//    }
 
-    public void gripClawControl(Gamepad gamepad) {
-        if (gamepad.a) {
-            claw.setPosition(gripClawClosed);
-        }
-        else if (gamepad.b) {
-            claw.setPosition(gripClawOpen);
-        }
-    }
+//    public void gripClawControl(Gamepad gamepad) {
+//        if (gamepad.a) {
+//            claw.setPosition(gripClawClosed);
+//        }
+//        else if (gamepad.b) {
+//            claw.setPosition(gripClawOpen);
+//        }
+//    }
 
-    public void intakeControl(Gamepad gamepad) {
-        intakeLeft.setPower(-gamepad.left_trigger + gamepad.right_trigger);
-         intakeRight.setPower(gamepad.left_trigger - gamepad.right_trigger);
-    }
+//    public void intakeControl(Gamepad gamepad) {
+//        intakeLeft.setPower(-gamepad.left_trigger + gamepad.right_trigger);
+//         intakeRight.setPower(gamepad.left_trigger - gamepad.right_trigger);
+//    }
 
     public void intakeOpen(Gamepad gamepad) {
 //        if (gamepad.dpad_right) {
