@@ -33,11 +33,11 @@ public class Robot {
     public double intakeLeftPos, intakeRightPos;
 
     public Robot(HardwareMap hardwareMap) {
-        axonLeft = hardwareMap.get(AnalogInput.class, "axonLeft");
-        axonRight = hardwareMap.get(AnalogInput.class, "axonRight");
+//        axonLeft = hardwareMap.get(AnalogInput.class, "axonLeft");
+//        axonRight = hardwareMap.get(AnalogInput.class, "axonRight");
 
-        intakeLeftPos = axonLeft.getVoltage() / 3.3 * 360;
-        intakeRightPos = axonRight.getVoltage() / 3.3 * 360;
+//        intakeLeftPos = axonLeft.getVoltage() / 3.3 * 360;
+//        intakeRightPos = axonRight.getVoltage() / 3.3 * 360;
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
@@ -49,8 +49,8 @@ public class Robot {
         flip = hardwareMap.dcMotor.get("flip");
         slide = hardwareMap.dcMotor.get("slide");
 
-//        intakeLeft = hardwareMap.crservo.get("intakeLeft");
-//        intakeRight = hardwareMap.crservo.get("intakeRight");
+        intakeLeft = hardwareMap.crservo.get("intakeLeft");
+        intakeRight = hardwareMap.crservo.get("intakeRight");
 //        claw = hardwareMap.servo.get("claw");
         wrist = hardwareMap.servo.get("wrist");
 
@@ -67,8 +67,8 @@ public class Robot {
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         flip.setDirection(DcMotorSimple.Direction.FORWARD);
 
-//        intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-//        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         for (DcMotor motor: motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -139,14 +139,17 @@ public class Robot {
         flip.setPower(-gamepad.right_stick_y * 0.25);
     }
 
-//    public void wristControl(Gamepad gamepad) {
-//        if (gamepad.dpad_up) {
-//            wrist.setPosition(wrist.getPosition() + 0.05);
-//        }
-//        else if (gamepad.dpad_down) {
-//            wrist.setPosition(wrist.getPosition() - 0.05);
-//        }
-//    }
+    public void wristControl(Gamepad gamepad) {
+        if (gamepad.b) {
+            wrist.setPosition(1);
+        }
+        else if (gamepad.a) {
+            wrist.setPosition(0);
+        }
+        else if (gamepad.y) {
+            wrist.setPosition(0.5);
+        }
+    }
 
 //    public void gripClawControl(Gamepad gamepad) {
 //        if (gamepad.a) {
@@ -157,10 +160,10 @@ public class Robot {
 //        }
 //    }
 
-//    public void intakeControl(Gamepad gamepad) {
-//        intakeLeft.setPower(-gamepad.left_trigger + gamepad.right_trigger);
-//         intakeRight.setPower(gamepad.left_trigger - gamepad.right_trigger);
-//    }
+    public void intakeControl(Gamepad gamepad) {
+        intakeLeft.setPower(-gamepad.left_trigger + gamepad.right_trigger);
+         intakeRight.setPower(gamepad.left_trigger - gamepad.right_trigger);
+    }
 
     public void intakeOpen(Gamepad gamepad) {
 //        if (gamepad.dpad_right) {
@@ -171,8 +174,8 @@ public class Robot {
 //        }
     }
 
-    public void updateAxonPositions() {
-        intakeLeftPos = axonLeft.getVoltage() / 3.3 * 360;
-        intakeRightPos = axonRight.getVoltage() / 3.3 * 360;
-    }
+//    public void updateAxonPositions() {
+//        intakeLeftPos = axonLeft.getVoltage() / 3.3 * 360;
+//        intakeRightPos = axonRight.getVoltage() / 3.3 * 360;
+//    }
 }
