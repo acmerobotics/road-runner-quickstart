@@ -52,7 +52,6 @@ public class pidfTuner extends OpMode {
         slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         flip.setDirection(DcMotor.Direction.REVERSE);
-
     }
 
     @Override
