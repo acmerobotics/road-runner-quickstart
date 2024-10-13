@@ -39,7 +39,7 @@ public class CVMaster {
     EOCVPipeline activeCV = EOCVPipeline.YELLOW_SAMPLE;
 
     List<ColorBlobLocatorProcessor.Blob> rawPotTargets;
-    List<Pose3D> targets = new ArrayList<>();
+    public List<Pose3D> targets = new ArrayList<>();
     Pose2d poseAtSnapshot;
 
     public final float WEBCAM_X_OFFSET = 0;
