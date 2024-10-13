@@ -46,8 +46,11 @@ public class CVMaster {
     public final float WEBCAM_Y_OFFSET = 0;
     public final float WEBCAM_Z_OFFSET = 0;
     public final float WEBCAM_PITCH_OFFSET = 0;
-    public final float WEBCAM_VFOV = 0;
-    public final float WEBCAM_HFOV = 0;
+    public final double YWEBCAM_A = 1.000798;
+    public final double YWEBCAM_K = 1043.367;
+    public final double YWEBCAM_H = 1.653406;
+    public final double XWEBCAM_FB = 0.333333;
+    public final double WEBCAM_INCHESTOP = 21;
     public final double WEBCAM_H = 480;
     public final double WEBCAM_W = 640;
 
@@ -222,17 +225,9 @@ public class CVMaster {
         double x = blob.getBoxFit().center.x;
         double y = blob.getBoxFit().center.y;
 
-        // convert from image coords to normalized coords
-        double u = ((2*x)/WEBCAM_W) - 1;
-        double v = ((2*y)/WEBCAM_H) - 1;
-
-        // find angle offsets
-        double phi_x = u * (WEBCAM_HFOV / 2);
-        double phi_y = v * (WEBCAM_VFOV / 2);
-
-        // Calculate world coords relative to the camera (assumes camera is (0,0) )
-        double world_x = (WEBCAM_Z_OFFSET * Math.tan(phi_x)) / ((Math.sin(WEBCAM_PITCH_OFFSET) * Math.tan(phi_y)) - Math.cos(WEBCAM_PITCH_OFFSET));
-        double world_y = (WEBCAM_Z_OFFSET * ((Math.cos(WEBCAM_PITCH_OFFSET) * Math.tan(phi_y)) + Math.sin(WEBCAM_PITCH_OFFSET))) / ((Math.sin(WEBCAM_PITCH_OFFSET) * Math.tan(phi_y)) - Math.cos(WEBCAM_PITCH_OFFSET));
+        // convert from image coords to inches
+        double world_x = Math.pow(YWEBCAM_A, (x+YWEBCAM_K))+YWEBCAM_H;
+        double world_y = ((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W)-1)*WEBCAM_INCHESTOP - WEBCAM_INCHESTOP;
 
         // Calculate the coords of the camera on the field using the offsets
         double cam_x = poseAtSnapshot.position.x + (WEBCAM_X_OFFSET * Math.cos(poseAtSnapshot.heading.toDouble())) - (WEBCAM_Y_OFFSET * Math.sin(poseAtSnapshot.heading.toDouble()));
