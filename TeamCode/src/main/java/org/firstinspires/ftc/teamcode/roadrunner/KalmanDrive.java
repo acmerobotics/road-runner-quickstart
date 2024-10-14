@@ -35,8 +35,8 @@ public class KalmanDrive extends MecanumDrive {
          */
         //These are tuned for 3110-0002-0001 Product Insight #1
         // RR localizer note: These units are inches, presets are converted from mm (which is why they are inexact)
-        public double xOffset = -3.3071;
-        public double yOffset = -6.6142;
+        public double xOffset = 1.7;
+        public double yOffset = 0.875;
 
         /*
         Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
@@ -48,7 +48,7 @@ public class KalmanDrive extends MecanumDrive {
         To get this value from inPerTick, first convert the value to millimeters (multiply by 25.4)
         and then take its inverse (one over the value)
          */
-        public double encoderResolution = GoBildaPinpointRR.goBILDA_4_BAR_POD;
+        public double encoderResolution = GoBildaPinpointRR.goBILDA_SWINGARM_POD;
 
         /*
         Set the direction that each of the two odometry pods count. The X (forward) pod should
@@ -56,17 +56,21 @@ public class KalmanDrive extends MecanumDrive {
         you move the robot to the left.
          */
         public GoBildaPinpoint.EncoderDirection xDirection = GoBildaPinpoint.EncoderDirection.FORWARD;
-        public GoBildaPinpoint.EncoderDirection yDirection = GoBildaPinpoint.EncoderDirection.FORWARD;
+        public GoBildaPinpoint.EncoderDirection yDirection = GoBildaPinpoint.EncoderDirection.REVERSED;
     }
 
     public static Params PARAMS = new Params();
     public GoBildaPinpointRR pinpoint;
+    public Limelight3A ll;
+    public KalmanFilter kalman;
     private Pose2d lastPinpointPose = pose;
 
-    public KalmanDrive(HardwareMap hardwareMap, Pose2d pose) {
+    public KalmanDrive(HardwareMap hardwareMap, Pose2d pose, Limelight3A limelight) {
         super(hardwareMap, pose);
 //        FlightRecorder.write("PINPOINT_PARAMS",PARAMS);
         pinpoint = hardwareMap.get(GoBildaPinpointRR.class,"pinpoint");
+        ll = limelight;
+        kalman = new KalmanFilter(pose, pinpoint, ll);
 
         // RR localizer note: don't love this conversion (change driver?)
         pinpoint.setOffsets(DistanceUnit.MM.fromInches(PARAMS.xOffset), DistanceUnit.MM.fromInches(PARAMS.yOffset));
@@ -84,7 +88,7 @@ public class KalmanDrive extends MecanumDrive {
         This is recommended before you run your autonomous, as a bad initial calibration can cause
         an incorrect starting value for x, y, and heading.
          */
-        //pinpoint.recalibrateIMU();
+        pinpoint.recalibrateIMU();
         pinpoint.resetPosAndIMU();
         // wait for pinpoint to finish calibrating
         try {
@@ -108,7 +112,8 @@ public class KalmanDrive extends MecanumDrive {
             pinpoint.setPosition(pose);
         }
         pinpoint.update();
-        pose = pinpoint.getPositionRR();
+        kalman.kalmanSmart();
+        pose = kalman.getCalculatedState();
         lastPinpointPose = pose;
 
         // RR standard
