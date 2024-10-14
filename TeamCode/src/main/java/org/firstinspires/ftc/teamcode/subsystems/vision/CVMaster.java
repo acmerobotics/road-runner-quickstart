@@ -45,15 +45,16 @@ public class CVMaster {
     public List<Pose3D> targets = new ArrayList<>();
     Pose2d poseAtSnapshot;
 
-    public final float WEBCAM_X_OFFSET = 0;
-    public final double WEBCAM_Y_OFFSET = -7.875;
+    public final float WEBCAM_X_OFFSET = -1;
+    public final double WEBCAM_Y_OFFSET = 7.875;
     public final float WEBCAM_Z_OFFSET = 0;
     public final double WEBCAM_YAW_OFFSET = Math.PI;
-    public final double YWEBCAM_A = 1.00701;
-    public final double YWEBCAM_K = 103.802;
-    public final double YWEBCAM_H = -2.06073 + 7.875;
+    public final double YWEBCAM_A = 1.00608;
+    public final double YWEBCAM_K = 146.003;
+    public final double YWEBCAM_H = -2.3806 + 7.875;
     public final double XWEBCAM_FB = 0.29582733819;
     public final double WEBCAM_INCHESTOP = 37.354;
+    public final double WEBCAM_HA = 800;
     public final double WEBCAM_H = 327;
     public final double WEBCAM_W = 1280;
 
@@ -69,21 +70,21 @@ public class CVMaster {
 //        pipelines.put(Pipeline.BLUE_YELLOW_SAMPLE, 5);
 
         redProcessor = new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(ColorRange.RED)
+                .setTargetColorRange(new ColorRange(ColorSpace.RGB, new Scalar(173, 25, 31), new Scalar(242, 78, 74)))
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-1,1,1,-1))
                 .setDrawContours(true)
                 .setBlurSize(5)
-
-
+                .setDilateSize(2)
                 .build();
 
         blueProcessor = new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(ColorRange.BLUE)
+                .setTargetColorRange(new ColorRange(ColorSpace.RGB, new Scalar(1, 20, 105), new Scalar(23, 79, 158)))
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-1,1,1,-1))
                 .setDrawContours(true)
-                .setBlurSize(5)
+                .setBlurSize(8)
+                .setDilateSize(2)
                 .build();
 
         yellowProcessor = new ColorBlobLocatorProcessor.Builder()
@@ -92,6 +93,7 @@ public class CVMaster {
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-1,1,1,-1))
                 .setDrawContours(true)
                 .setBlurSize(5)
+                .setDilateSize(2)
                 .build();
 
         portal = new VisionPortal.Builder()
@@ -227,19 +229,22 @@ public class CVMaster {
     public Pose3D calculateBlobFieldCoordinates(ColorBlobLocatorProcessor.Blob blob, Telemetry telemetry) {
         // Find pixel coordinates of the target
         double x = blob.getBoxFit().center.x;
-        double y = blob.getBoxFit().center.y;
+        double y = WEBCAM_HA- blob.getBoxFit().center.y;
+
 
         telemetry.addData("pixelx: ", x);
         telemetry.addData("pixely: ", y);
         // convert from image coords to inches
-        double world_y = Math.pow(YWEBCAM_A, (x+YWEBCAM_K))+YWEBCAM_H;
-        double world_x = ((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W))*WEBCAM_INCHESTOP;
+        double world_y = Math.pow(YWEBCAM_A, (y+YWEBCAM_K))+YWEBCAM_H;
+        double world_x = (2*((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W))-1)*0.5*WEBCAM_INCHESTOP;
 
-        telemetry.addData("relative to cameraX: ", world_x);
-        telemetry.addData("relative to cameraY: ", world_y );
+        telemetry.addData("relative to cameraX: ", world_x+ WEBCAM_X_OFFSET);
+        telemetry.addData("relative to cameraY: ", world_y+WEBCAM_Y_OFFSET );
+        telemetry.addData("heading ", poseAtSnapshot.heading.toDouble() );
 
 
-        Vector2d cam = rotateVector(new Vector2d(world_x + WEBCAM_X_OFFSET, world_y+WEBCAM_Y_OFFSET), -1 * (Math.PI/2 - poseAtSnapshot.heading.toDouble())+ WEBCAM_YAW_OFFSET);
+        Vector2d cam = rotateVector(rotateVector(new Vector2d(world_x + WEBCAM_X_OFFSET, world_y+WEBCAM_Y_OFFSET), -1 * ((Math.PI/2) - poseAtSnapshot.heading.toDouble())), WEBCAM_YAW_OFFSET);
+
         telemetry.addData("relative to worldx: ", cam.x);
         telemetry.addData("relative to worldy: ", cam.y );
 
