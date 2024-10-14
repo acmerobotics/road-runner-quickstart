@@ -94,12 +94,12 @@ public class TargetingTest extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
             Canvas c = packet.fieldOverlay();
 
-            kalman.odoKalman(telemetry);
+            kalman.odoKalman();
             fusedX = kalman.getCalculatedState().position.x;
             fusedY = kalman.getCalculatedState().position.y;
 
             if (llPose != null) {
-                kalman.aprilTagKalman(telemetry);
+                kalman.aprilTagKalman();
 
                 fusedX = kalman.getCalculatedState().position.x;
                 fusedY = kalman.getCalculatedState().position.y;
