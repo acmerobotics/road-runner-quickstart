@@ -54,6 +54,7 @@ public class CVMaster {
     public final double YWEBCAM_H = -2.06073 + 7.875;
     public final double XWEBCAM_FB = 0.29582733819;
     public final double WEBCAM_INCHESTOP = 37.354;
+    public final double WEBCAM_HA = 800;
     public final double WEBCAM_H = 327;
     public final double WEBCAM_W = 1280;
 
@@ -227,19 +228,21 @@ public class CVMaster {
     public Pose3D calculateBlobFieldCoordinates(ColorBlobLocatorProcessor.Blob blob, Telemetry telemetry) {
         // Find pixel coordinates of the target
         double x = blob.getBoxFit().center.x;
-        double y = blob.getBoxFit().center.y;
+        double y = WEBCAM_HA- blob.getBoxFit().center.y;
+
 
         telemetry.addData("pixelx: ", x);
         telemetry.addData("pixely: ", y);
         // convert from image coords to inches
-        double world_y = Math.pow(YWEBCAM_A, (x+YWEBCAM_K))+YWEBCAM_H;
-        double world_x = ((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W))*WEBCAM_INCHESTOP;
+        double world_y = Math.pow(YWEBCAM_A, (y+YWEBCAM_K))+YWEBCAM_H;
+        double world_x = (2*((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W))-1)*0.5*WEBCAM_INCHESTOP;
 
         telemetry.addData("relative to cameraX: ", world_x);
         telemetry.addData("relative to cameraY: ", world_y );
 
 
-        Vector2d cam = rotateVector(new Vector2d(world_x + WEBCAM_X_OFFSET, world_y+WEBCAM_Y_OFFSET), -1 * (Math.PI/2 - poseAtSnapshot.heading.toDouble())+ WEBCAM_YAW_OFFSET);
+        Vector2d cam = rotateVector(new Vector2d(world_x + WEBCAM_X_OFFSET, world_y+WEBCAM_Y_OFFSET), -1 * ((Math.PI/2) - (poseAtSnapshot.heading.toDouble() + WEBCAM_YAW_OFFSET)));
+
         telemetry.addData("relative to worldx: ", cam.x);
         telemetry.addData("relative to worldy: ", cam.y );
 
