@@ -41,7 +41,7 @@ public class KalmanFilter {
 
         double time = timer.time();
         timer.reset();
-        telemetry.addData("translatedVel", translatedVel);
+        //telemetry.addData("translatedVel", translatedVel);
         estimateXVariance += time*time*Math.abs(translatedVel.x); // p n,n -> p n+1, n
         estimateYVariance += time*time*Math.abs(translatedVel.y);
 

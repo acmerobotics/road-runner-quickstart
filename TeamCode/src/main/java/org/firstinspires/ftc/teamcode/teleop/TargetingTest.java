@@ -119,7 +119,7 @@ public class TargetingTest extends LinearOpMode {
             c.setStroke("#fc8c03");
             Drawing.drawRobot(c, fusedPose);
 
-            cv.updatePotentialTargetList(pipeline, fusedPose);
+            cv.updatePotentialTargetList(pipeline, fusedPose, telemetry);
 
             String dcolor = "#f5d142";
             if (pipeline == CVMaster.EOCVPipeline.RED_SAMPLE) {
@@ -130,7 +130,7 @@ public class TargetingTest extends LinearOpMode {
 
             c.setStroke(dcolor);
             c.setFill(dcolor);
-            c.setAlpha(0.5);
+            c.setAlpha(1);
             for (Pose3D p : cv.targets) {
                 c.fillRect(p.getPosition().x, p.getPosition().y, 2, 4);
                 telemetry.addLine(p.toString());

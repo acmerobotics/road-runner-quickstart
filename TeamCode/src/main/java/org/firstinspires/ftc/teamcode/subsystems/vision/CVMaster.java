@@ -10,6 +10,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.util.SortOrder;
 import com.acmerobotics.roadrunner.Pose2d;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -21,7 +22,9 @@ import org.firstinspires.ftc.teamcode.util.misc.FullPose2d;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
 import org.firstinspires.ftc.vision.opencv.ColorRange;
+import org.firstinspires.ftc.vision.opencv.ColorSpace;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
+import org.opencv.core.Scalar;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -43,16 +46,17 @@ public class CVMaster {
     Pose2d poseAtSnapshot;
 
     public final float WEBCAM_X_OFFSET = 0;
-    public final float WEBCAM_Y_OFFSET = 0;
+    public final double WEBCAM_Y_OFFSET = -7.875;
     public final float WEBCAM_Z_OFFSET = 0;
     public final double WEBCAM_YAW_OFFSET = Math.PI;
-    public final double YWEBCAM_A = 1.000798;
-    public final double YWEBCAM_K = 1043.367;
-    public final double YWEBCAM_H = 1.653406;
-    public final double XWEBCAM_FB = 0.333333;
-    public final double WEBCAM_INCHESTOP = 21;
-    public final double WEBCAM_H = 480;
-    public final double WEBCAM_W = 640;
+    public final double YWEBCAM_A = 1.00701;
+    public final double YWEBCAM_K = 103.802;
+    public final double YWEBCAM_H = -2.06073 + 7.875;
+    public final double XWEBCAM_FB = 0.29582733819;
+    public final double WEBCAM_INCHESTOP = 37.354;
+    public final double WEBCAM_H = 327;
+    public final double WEBCAM_W = 1280;
+
 
     public CVMaster(Limelight3A ll3a, WebcamName camera) {
         limelight = ll3a;
@@ -83,7 +87,7 @@ public class CVMaster {
                 .build();
 
         yellowProcessor = new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(ColorRange.YELLOW)
+                .setTargetColorRange(new ColorRange(ColorSpace.RGB, new Scalar(191, 130, 24), new Scalar(253, 247, 101)))
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-1,1,1,-1))
                 .setDrawContours(true)
@@ -155,7 +159,7 @@ public class CVMaster {
 
         if (result != null && result.isValid()) {
             Pose3D pose = result.getBotpose_MT2();
-            return new Pose2d(new Vector2d((pose.getPosition().y*39.3701007874), (pose.getPosition().x*9.3701007874)), pose.getOrientation().getYaw(AngleUnit.RADIANS));
+            return new Pose2d(new Vector2d((pose.getPosition().y*39.3701007874), (pose.getPosition().x*39.3701007874)), pose.getOrientation().getYaw(AngleUnit.RADIANS));
 //            return new Pose2d(pose.getPosition().x,
 //                    pose.getPosition().y,
 //                    Rotation2d.fromDegrees(pose.getOrientation().getPitch(AngleUnit.DEGREES)));
@@ -192,7 +196,7 @@ public class CVMaster {
         return null;
     }
 
-    public void updatePotentialTargetList(EOCVPipeline color, Pose2d robotPose) {
+    public void updatePotentialTargetList(EOCVPipeline color, Pose2d robotPose, Telemetry telemetry) {
         if (activeCV != color) {
             setEOCVPipeline(color);
         }
@@ -213,33 +217,40 @@ public class CVMaster {
 
         targets = new ArrayList<>();
         for (int i = 0; i < Math.min(5, rawTargets.size()); i++) {
-            targets.add(calculateBlobFieldCoordinates(rawTargets.get(i)));
+            targets.add(calculateBlobFieldCoordinates(rawTargets.get(i), telemetry));
         }
 
         rawPotTargets = rawTargets;
         poseAtSnapshot = robotPose;
     }
 
-    public Pose3D calculateBlobFieldCoordinates(ColorBlobLocatorProcessor.Blob blob) {
+    public Pose3D calculateBlobFieldCoordinates(ColorBlobLocatorProcessor.Blob blob, Telemetry telemetry) {
         // Find pixel coordinates of the target
         double x = blob.getBoxFit().center.x;
         double y = blob.getBoxFit().center.y;
 
+        telemetry.addData("pixelx: ", x);
+        telemetry.addData("pixely: ", y);
         // convert from image coords to inches
-        double world_x = Math.pow(YWEBCAM_A, (x+YWEBCAM_K))+YWEBCAM_H;
-        double world_y = ((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W))*WEBCAM_INCHESTOP;
+        double world_y = Math.pow(YWEBCAM_A, (x+YWEBCAM_K))+YWEBCAM_H;
+        double world_x = ((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W))*WEBCAM_INCHESTOP;
 
-        double dist = Math.sqrt(world_x*world_x + world_y*world_y);
-        // Calculate the coords of the object relative to x,y plane
-        double cam_x = dist*Math.sin(Math.atan(world_y/world_x) - ((Math.PI/2)-poseAtSnapshot.heading.toDouble())-WEBCAM_YAW_OFFSET);
-        double cam_y = dist*Math.cos(Math.atan(world_y/world_x) - ((Math.PI/2)-poseAtSnapshot.heading.toDouble())-WEBCAM_YAW_OFFSET);
+        telemetry.addData("relative to cameraX: ", world_x);
+        telemetry.addData("relative to cameraY: ", world_y );
+
+
+        Vector2d cam = rotateVector(new Vector2d(world_x + WEBCAM_X_OFFSET, world_y+WEBCAM_Y_OFFSET), -1 * (Math.PI/2 - poseAtSnapshot.heading.toDouble())+ WEBCAM_YAW_OFFSET);
+        telemetry.addData("relative to worldx: ", cam.x);
+        telemetry.addData("relative to worldy: ", cam.y );
+
         // Finally calculate the field coords of the target
-        double field_x = cam_x + poseAtSnapshot.position.x;
-        double field_y = cam_y + poseAtSnapshot.position.y;
+        double field_x = cam.x + poseAtSnapshot.position.x;
+        double field_y = cam.y + poseAtSnapshot.position.y;
         return new Pose3D(
                 new Position(DistanceUnit.INCH, field_x, field_y, 0, System.currentTimeMillis()),
                 new YawPitchRollAngles(AngleUnit.DEGREES, 0, 0, 0, System.currentTimeMillis()));
     }
+
 
     public Pose3D findOptimalTarget(Pose2d robotPose) {
         Pose3D t = targets.get(0);
@@ -310,5 +321,8 @@ public class CVMaster {
 
     public void setDashboardStream(ColorBlobLocatorProcessor pcr) {
         FtcDashboard.getInstance().startCameraStream((CameraStreamSource) pcr, 0);
+    }
+    public Vector2d rotateVector(Vector2d vector,double angle){
+        return new Vector2d(Math.cos(angle)*vector.x - Math.sin(angle)*vector.y, Math.sin(angle)*vector.x + Math.cos(angle)*vector.y);
     }
 }

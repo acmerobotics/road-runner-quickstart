@@ -131,11 +131,11 @@ public class KalmanTuner extends LinearOpMode {
                 c.setStroke("#34ad38");
                 Drawing.drawRobot(c, llPose);
 
-                telemetry.addData("x", llPose.position.x);
-                telemetry.addData("y", llPose.position.y);
-                telemetry.addData("heading", llPose.heading.toDouble());
-                telemetry.addData("rawPose", pose3d.toString());
-                telemetry.addData("ll", "true");
+//                telemetry.addData("x", llPose.position.x);
+//                telemetry.addData("y", llPose.position.y);
+//                telemetry.addData("heading", llPose.heading.toDouble());
+//                telemetry.addData("rawPose", pose3d.toString());
+//                telemetry.addData("ll", "true");
 
 //                telemetry.addData("currentTime", System.currentTimeMillis());
 //                telemetry.addData("limelight timestamp", result.getTimestamp() );
