@@ -5,14 +5,13 @@ package org.firstinspires.ftc.teamcode.roadrunner;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.ftc.FlightRecorder;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriver;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
+import com.acmerobotics.roadrunner.ftc.GoBildaPinpointRR;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.messages.PoseMessage;
+//import org.firstinspires.ftc.teamcode.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
 import org.firstinspires.ftc.teamcode.util.control.KalmanFilter;
 import org.firstinspires.ftc.teamcode.util.hardware.GoBildaPinpoint;
@@ -49,7 +48,7 @@ public class KalmanDrive extends MecanumDrive {
         To get this value from inPerTick, first convert the value to millimeters (multiply by 25.4)
         and then take its inverse (one over the value)
          */
-        public double encoderResolution = GoBildaPinpointDriverRR.goBILDA_4_BAR_POD;
+        public double encoderResolution = GoBildaPinpointRR.goBILDA_4_BAR_POD;
 
         /*
         Set the direction that each of the two odometry pods count. The X (forward) pod should
@@ -61,15 +60,13 @@ public class KalmanDrive extends MecanumDrive {
     }
 
     public static Params PARAMS = new Params();
-    public GoBildaPinpoint pinpoint;
-    public KalmanFilter kalmanFilter;
+    public GoBildaPinpointRR pinpoint;
     private Pose2d lastPinpointPose = pose;
 
-    public KalmanDrive(HardwareMap hardwareMap, Pose2d pose, Limelight3A ll) {
+    public KalmanDrive(HardwareMap hardwareMap, Pose2d pose) {
         super(hardwareMap, pose);
 //        FlightRecorder.write("PINPOINT_PARAMS",PARAMS);
-        pinpoint = hardwareMap.get(GoBildaPinpoint.class,"pinpoint");
-        kalmanFilter = new KalmanFilter(pose, pinpoint, ll);
+        pinpoint = hardwareMap.get(GoBildaPinpointRR.class,"pinpoint");
 
         // RR localizer note: don't love this conversion (change driver?)
         pinpoint.setOffsets(DistanceUnit.MM.fromInches(PARAMS.xOffset), DistanceUnit.MM.fromInches(PARAMS.yOffset));
@@ -120,9 +117,9 @@ public class KalmanDrive extends MecanumDrive {
             poseHistory.removeFirst();
         }
 
-        FlightRecorder.write("ESTIMATED_POSE", new PoseMessage(pose));
-        FlightRecorder.write("PINPOINT_RAW_POSE",new FTCPoseMessage(pinpoint.getPosition()));
-        FlightRecorder.write("PINPOINT_STATUS",pinpoint.getDeviceStatus());
+//        FlightRecorder.write("ESTIMATED_POSE", new PoseMessage(pose));
+//        FlightRecorder.write("PINPOINT_RAW_POSE",new FTCPoseMessage(pinpoint.getPosition()));
+//        FlightRecorder.write("PINPOINT_STATUS",pinpoint.getDeviceStatus());
 
         return pinpoint.getVelocityRR();
     }

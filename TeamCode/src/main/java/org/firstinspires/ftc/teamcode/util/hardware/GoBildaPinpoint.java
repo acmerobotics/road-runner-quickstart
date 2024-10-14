@@ -24,10 +24,12 @@ package org.firstinspires.ftc.teamcode.util.hardware;
 
 import static com.qualcomm.robotcore.util.TypeConversion.byteArrayToInt;
 
+import com.qualcomm.hardware.lynx.LynxI2cDeviceSynch;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchSimple;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties;
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 import com.qualcomm.robotcore.util.TypeConversion;
@@ -48,82 +50,96 @@ import java.util.Arrays;
         description ="goBILDA® Pinpoint Odometry Computer (IMU Sensor Fusion for 2 Wheel Odometry)"
 )
 
-public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
-
-    private int deviceStatus   = 0;
-    private int loopTime       = 0;
-    private int xEncoderValue  = 0;
-    private int yEncoderValue  = 0;
-    private float xPosition    = 0;
-    private float yPosition    = 0;
+public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynchSimple> {
+    private int deviceStatus = 0;
+    private int loopTime = 0;
+    private int xEncoderValue = 0;
+    private int yEncoderValue = 0;
+    private float xPosition = 0;
+    private float yPosition = 0;
     private float hOrientation = 0;
-    private float xVelocity    = 0;
-    private float yVelocity    = 0;
-    private float hVelocity    = 0;
+    private float xVelocity = 0;
+    private float yVelocity = 0;
+    private float hVelocity = 0;
 
     private static final float goBILDA_SWINGARM_POD = 13.26291192f; //ticks-per-mm for the goBILDA Swingarm Pod
-    private static final float goBILDA_4_BAR_POD    = 19.89436789f; //ticks-per-mm for the goBILDA 4-Bar Pod
-
-
-    public GoBildaPinpoint(I2cDeviceSynch deviceClient, boolean deviceClientIsOwned) {
-        super(deviceClient, deviceClientIsOwned);
-
-        this.deviceClient.setI2cAddress(I2cAddr.create7bit(DEFAULT_ADDRESS));
-
-        super.registerArmingStateCallback(false);
-        this.deviceClient.engage();
-    }
+    private static final float goBILDA_4_BAR_POD = 19.89436789f; //ticks-per-mm for the goBILDA 4-Bar Pod
 
     //i2c address of the device
     public static final byte DEFAULT_ADDRESS = 0x31;
 
+    public GoBildaPinpoint(I2cDeviceSynchSimple deviceClient, boolean deviceClientIsOwned) {
+        super(deviceClient, deviceClientIsOwned);
+
+        this.deviceClient.setI2cAddress(I2cAddr.create7bit(DEFAULT_ADDRESS));
+        super.registerArmingStateCallback(false);
+    }
+
+
+    @Override
+    public Manufacturer getManufacturer() {
+        return Manufacturer.Other;
+    }
+
+    @Override
+    protected synchronized boolean doInitialize() {
+        ((LynxI2cDeviceSynch) (deviceClient)).setBusSpeed(LynxI2cDeviceSynch.BusSpeed.FAST_400K);
+        return true;
+    }
+
+    @Override
+    public String getDeviceName() {
+        return "goBILDA® Pinpoint Odometry Computer";
+    }
+
+
     //Register map of the i2c device
     private enum Register {
-        DEVICE_ID       (1),
-        DEVICE_VERSION  (2),
-        DEVICE_STATUS   (3),
-        DEVICE_CONTROL  (4),
-        LOOP_TIME       (5),
-        X_ENCODER_VALUE (6),
-        Y_ENCODER_VALUE (7),
-        X_POSITION      (8),
-        Y_POSITION      (9),
-        H_ORIENTATION   (10),
-        X_VELOCITY      (11),
-        Y_VELOCITY      (12),
-        H_VELOCITY      (13),
-        MM_PER_TICK     (14),
-        X_POD_OFFSET    (15),
-        Y_POD_OFFSET    (16),
-        YAW_SCALAR      (17),
-        BULK_READ       (18);
+        DEVICE_ID(1),
+        DEVICE_VERSION(2),
+        DEVICE_STATUS(3),
+        DEVICE_CONTROL(4),
+        LOOP_TIME(5),
+        X_ENCODER_VALUE(6),
+        Y_ENCODER_VALUE(7),
+        X_POSITION(8),
+        Y_POSITION(9),
+        H_ORIENTATION(10),
+        X_VELOCITY(11),
+        Y_VELOCITY(12),
+        H_VELOCITY(13),
+        MM_PER_TICK(14),
+        X_POD_OFFSET(15),
+        Y_POD_OFFSET(16),
+        YAW_SCALAR(17),
+        BULK_READ(18);
 
         private final int bVal;
 
-        Register(int bVal){
+        Register(int bVal) {
             this.bVal = bVal;
         }
     }
 
     //Device Status enum that captures the current fault condition of the device
-    public enum DeviceStatus{
-        NOT_READY (0),
-        READY (1),
-        CALIBRATING (1 << 1),
-        FAULT_X_POD_NOT_DETECTED (1 << 2),
-        FAULT_Y_POD_NOT_DETECTED (1 << 3),
-        FAULT_NO_PODS_DETECTED (1 << 2 | 1 << 3),
-        FAULT_IMU_RUNAWAY (1 << 4);
+    public enum DeviceStatus {
+        NOT_READY(0),
+        READY(1),
+        CALIBRATING(1 << 1),
+        FAULT_X_POD_NOT_DETECTED(1 << 2),
+        FAULT_Y_POD_NOT_DETECTED(1 << 3),
+        FAULT_NO_PODS_DETECTED(1 << 2 | 1 << 3),
+        FAULT_IMU_RUNAWAY(1 << 4);
 
         private final int status;
 
-        DeviceStatus(int status){
+        DeviceStatus(int status) {
             this.status = status;
         }
     }
 
     //enum that captures the direction the encoders are set to
-    public enum EncoderDirection{
+    public enum EncoderDirection {
         FORWARD,
         REVERSED;
     }
@@ -133,13 +149,18 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         goBILDA_SWINGARM_POD,
         goBILDA_4_BAR_POD;
     }
+    //enum that captures a limited scope of read data. More options may be added in future update
+    public enum readData {
+        ONLY_UPDATE_HEADING,
+    }
+
 
     /** Writes an int to the i2c device
      @param reg the register to write the int to
      @param i the integer to write to the register
      */
-    private void writeInt(final Register reg, int i){
-        deviceClient.write(reg.bVal, TypeConversion.intToByteArray(i,ByteOrder.LITTLE_ENDIAN));
+    private void writeInt(final Register reg, int i) {
+        deviceClient.write(reg.bVal, TypeConversion.intToByteArray(i, ByteOrder.LITTLE_ENDIAN));
     }
 
     /**
@@ -147,8 +168,8 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * @param reg the register to read from
      * @return returns an int that contains the value stored in the read register
      */
-    private int readInt(Register reg){
-        return byteArrayToInt(deviceClient.read(reg.bVal,4), ByteOrder.LITTLE_ENDIAN);
+    private int readInt(Register reg) {
+        return byteArrayToInt(deviceClient.read(reg.bVal, 4), ByteOrder.LITTLE_ENDIAN);
     }
 
     /**
@@ -157,7 +178,7 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * @param byteOrder order of byte array to convert
      * @return the float value stored by the byte array
      */
-    private float byteArrayToFloat(byte[] byteArray, ByteOrder byteOrder){
+    private float byteArrayToFloat(byte[] byteArray, ByteOrder byteOrder) {
         return ByteBuffer.wrap(byteArray).order(byteOrder).getFloat();
     }
     /**
@@ -165,8 +186,9 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * @param reg the register to read
      * @return the float value stored in that register
      */
-    private float readFloat(Register reg){
-        return byteArrayToFloat(deviceClient.read(reg.bVal,4),ByteOrder.LITTLE_ENDIAN);
+
+    private float readFloat(Register reg) {
+        return byteArrayToFloat(deviceClient.read(reg.bVal, 4), ByteOrder.LITTLE_ENDIAN);
     }
 
 
@@ -175,7 +197,7 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * @param value the float array to convert
      * @return the byte array converted from the float
      */
-    private byte [] floatToByteArray (float value, ByteOrder byteOrder) {
+    private byte[] floatToByteArray(float value, ByteOrder byteOrder) {
         return ByteBuffer.allocate(4).order(byteOrder).putFloat(value).array();
     }
 
@@ -184,8 +206,8 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * @param reg the register to write to
      * @param bytes the byte array to write
      */
-    private void writeByteArray (Register reg, byte[] bytes){
-        deviceClient.write(reg.bVal,bytes);
+    private void writeByteArray(Register reg, byte[] bytes) {
+        deviceClient.write(reg.bVal, bytes);
     }
 
     /**
@@ -193,9 +215,9 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * @param reg the register to write to
      * @param f the float to write
      */
-    private void writeFloat (Register reg, float f){
+    private void writeFloat(Register reg, float f) {
         byte[] bytes = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putFloat(f).array();
-        deviceClient.write(reg.bVal,bytes);
+        deviceClient.write(reg.bVal, bytes);
     }
 
     /**
@@ -203,29 +225,28 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * @param s int to lookup
      * @return the Odometry Computer state
      */
-    private DeviceStatus lookupStatus (int s){
-        if ((s & DeviceStatus.CALIBRATING.status) != 0){
+    private DeviceStatus lookupStatus(int s) {
+        if ((s & DeviceStatus.CALIBRATING.status) != 0) {
             return DeviceStatus.CALIBRATING;
         }
         boolean xPodDetected = (s & DeviceStatus.FAULT_X_POD_NOT_DETECTED.status) == 0;
         boolean yPodDetected = (s & DeviceStatus.FAULT_Y_POD_NOT_DETECTED.status) == 0;
 
-        if(!xPodDetected  && !yPodDetected){
+        if (!xPodDetected && !yPodDetected) {
             return DeviceStatus.FAULT_NO_PODS_DETECTED;
         }
-        if (!xPodDetected){
+        if (!xPodDetected) {
             return DeviceStatus.FAULT_X_POD_NOT_DETECTED;
         }
-        if (!yPodDetected){
+        if (!yPodDetected) {
             return DeviceStatus.FAULT_Y_POD_NOT_DETECTED;
         }
-        if ((s & DeviceStatus.FAULT_IMU_RUNAWAY.status) != 0){
+        if ((s & DeviceStatus.FAULT_IMU_RUNAWAY.status) != 0) {
             return DeviceStatus.FAULT_IMU_RUNAWAY;
         }
-        if ((s & DeviceStatus.READY.status) != 0){
+        if ((s & DeviceStatus.READY.status) != 0) {
             return DeviceStatus.READY;
-        }
-        else {
+        } else {
             return DeviceStatus.NOT_READY;
         }
     }
@@ -233,18 +254,30 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     /**
      * Call this once per loop to read new data from the Odometry Computer. Data will only update once this is called.
      */
-    public void bulkUpdate(){
-        byte[] bArr   = deviceClient.read(Register.BULK_READ.bVal, 40);
-        deviceStatus  = byteArrayToInt(Arrays.copyOfRange  (bArr, 0, 4),  ByteOrder.LITTLE_ENDIAN);
-        loopTime      = byteArrayToInt(Arrays.copyOfRange  (bArr, 4, 8),  ByteOrder.LITTLE_ENDIAN);
-        xEncoderValue = byteArrayToInt(Arrays.copyOfRange  (bArr, 8, 12), ByteOrder.LITTLE_ENDIAN);
-        yEncoderValue = byteArrayToInt(Arrays.copyOfRange  (bArr, 12, 16),ByteOrder.LITTLE_ENDIAN);
-        xPosition     = byteArrayToFloat(Arrays.copyOfRange(bArr, 16, 20),ByteOrder.LITTLE_ENDIAN);
-        yPosition     = byteArrayToFloat(Arrays.copyOfRange(bArr, 20, 24),ByteOrder.LITTLE_ENDIAN);
-        hOrientation  = byteArrayToFloat(Arrays.copyOfRange(bArr, 24, 28),ByteOrder.LITTLE_ENDIAN);
-        xVelocity     = byteArrayToFloat(Arrays.copyOfRange(bArr,28,32),  ByteOrder.LITTLE_ENDIAN);
-        yVelocity     = byteArrayToFloat(Arrays.copyOfRange(bArr,32,36),  ByteOrder.LITTLE_ENDIAN);
-        hVelocity     = byteArrayToFloat(Arrays.copyOfRange(bArr,36,40),  ByteOrder.LITTLE_ENDIAN);
+    public void update() {
+        byte[] bArr = deviceClient.read(Register.BULK_READ.bVal, 40);
+        deviceStatus = byteArrayToInt(Arrays.copyOfRange(bArr, 0, 4), ByteOrder.LITTLE_ENDIAN);
+        loopTime = byteArrayToInt(Arrays.copyOfRange(bArr, 4, 8), ByteOrder.LITTLE_ENDIAN);
+        xEncoderValue = byteArrayToInt(Arrays.copyOfRange(bArr, 8, 12), ByteOrder.LITTLE_ENDIAN);
+        yEncoderValue = byteArrayToInt(Arrays.copyOfRange(bArr, 12, 16), ByteOrder.LITTLE_ENDIAN);
+        xPosition = byteArrayToFloat(Arrays.copyOfRange(bArr, 16, 20), ByteOrder.LITTLE_ENDIAN);
+        yPosition = byteArrayToFloat(Arrays.copyOfRange(bArr, 20, 24), ByteOrder.LITTLE_ENDIAN);
+        hOrientation = byteArrayToFloat(Arrays.copyOfRange(bArr, 24, 28), ByteOrder.LITTLE_ENDIAN);
+        xVelocity = byteArrayToFloat(Arrays.copyOfRange(bArr, 28, 32), ByteOrder.LITTLE_ENDIAN);
+        yVelocity = byteArrayToFloat(Arrays.copyOfRange(bArr, 32, 36), ByteOrder.LITTLE_ENDIAN);
+        hVelocity = byteArrayToFloat(Arrays.copyOfRange(bArr, 36, 40), ByteOrder.LITTLE_ENDIAN);
+    }
+
+    /**
+     * Call this once per loop to read new data from the Odometry Computer. This is an override of the update() function
+     * which allows a narrower range of data to be read from the device for faster read times. Currently ONLY_UPDATE_HEADING
+     * is supported.
+     * @param data GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING
+     */
+    public void update(readData data) {
+        if (data == readData.ONLY_UPDATE_HEADING) {
+            hOrientation = byteArrayToFloat(deviceClient.read(Register.H_ORIENTATION.bVal, 4), ByteOrder.LITTLE_ENDIAN);
+        }
     }
 
     /**
@@ -265,14 +298,18 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * <strong> Robot MUST be stationary </strong> <br><br>
      * Device takes a large number of samples, and uses those as the gyroscope zero-offset. This takes approximately 0.25 seconds.
      */
-    public void recalibrateIMU(){writeInt(Register.DEVICE_CONTROL,1<<0);}
+    public void recalibrateIMU() {
+        writeInt(Register.DEVICE_CONTROL, 1 << 0);
+    }
 
     /**
      * Resets the current position to 0,0,0 and recalibrates the Odometry Computer's internal IMU. <br><br>
      * <strong> Robot MUST be stationary </strong> <br><br>
      * Device takes a large number of samples, and uses those as the gyroscope zero-offset. This takes approximately 0.25 seconds.
      */
-    public void resetPosAndIMU(){writeInt(Register.DEVICE_CONTROL,1<<1);}
+    public void resetPosAndIMU() {
+        writeInt(Register.DEVICE_CONTROL, 1 << 1);
+    }
 
     /**
      * Can reverse the direction of each encoder.
@@ -280,10 +317,17 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * @param yEncoder FORWARD or REVERSED, Y (strafe) pod should increase when the robot is moving left
      */
     public void setEncoderDirections(EncoderDirection xEncoder, EncoderDirection yEncoder){
+        if (xEncoder == EncoderDirection.FORWARD) {
+            writeInt(Register.DEVICE_CONTROL, 1 << 5);
+        }
         if (xEncoder == EncoderDirection.REVERSED) {
             writeInt(Register.DEVICE_CONTROL,1<<4);
         }
-        if (yEncoder == EncoderDirection.REVERSED){
+
+        if (yEncoder == EncoderDirection.FORWARD) {
+            writeInt(Register.DEVICE_CONTROL, 1 << 3);
+        }
+        if (yEncoder == EncoderDirection.REVERSED) {
             writeInt(Register.DEVICE_CONTROL,1<<2);
         }
     }
@@ -296,8 +340,8 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         if (pods == GoBildaOdometryPods.goBILDA_SWINGARM_POD) {
             writeByteArray(Register.MM_PER_TICK, (floatToByteArray(goBILDA_SWINGARM_POD, ByteOrder.LITTLE_ENDIAN)));
         }
-        if (pods == GoBildaOdometryPods.goBILDA_4_BAR_POD){
-            writeByteArray(Register.MM_PER_TICK,(floatToByteArray(goBILDA_4_BAR_POD, ByteOrder.LITTLE_ENDIAN)));
+        if (pods == GoBildaOdometryPods.goBILDA_4_BAR_POD) {
+            writeByteArray(Register.MM_PER_TICK, (floatToByteArray(goBILDA_4_BAR_POD, ByteOrder.LITTLE_ENDIAN)));
         }
     }
 
@@ -306,8 +350,8 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * You can find this number by dividing the counts-per-revolution of your encoder by the circumference of the wheel.
      * @param ticks_per_mm should be somewhere between 10 ticks/mm and 100 ticks/mm a goBILDA Swingarm pod is ~13.26291192
      */
-    public void setEncoderResolution(double ticks_per_mm){
-        writeByteArray(Register.MM_PER_TICK,(floatToByteArray((float) ticks_per_mm,ByteOrder.LITTLE_ENDIAN)));
+    public void setEncoderResolution(double ticks_per_mm) {
+        writeByteArray(Register.MM_PER_TICK, (floatToByteArray((float) ticks_per_mm, ByteOrder.LITTLE_ENDIAN)));
     }
 
     /**
@@ -319,8 +363,8 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * If you find that to get an accurate heading number you need to apply a scalar of more than 1.05, or less than 0.95, your device may be bad. Please reach out to tech@gobilda.com
      * @param yawOffset A scalar for the robot's heading.
      */
-    public void setYawScalar(double yawOffset){
-        writeByteArray(Register.YAW_SCALAR,(floatToByteArray((float) yawOffset, ByteOrder.LITTLE_ENDIAN)));
+    public void setYawScalar(double yawOffset) {
+        writeByteArray(Register.YAW_SCALAR, (floatToByteArray((float) yawOffset, ByteOrder.LITTLE_ENDIAN)));
     }
 
     /**
@@ -345,10 +389,10 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * relative to that new, more accurate position.
      * @param pos a Pose2D describing the robot's new position.
      */
-    public Pose2D setPosition(Pose2D pos){
-        writeByteArray(Register.X_POSITION,(floatToByteArray((float) pos.getX(DistanceUnit.MM), ByteOrder.LITTLE_ENDIAN)));
-        writeByteArray(Register.Y_POSITION,(floatToByteArray((float) pos.getY(DistanceUnit.MM),ByteOrder.LITTLE_ENDIAN)));
-        writeByteArray(Register.H_ORIENTATION,(floatToByteArray((float) pos.getHeading(AngleUnit.RADIANS),ByteOrder.LITTLE_ENDIAN)));
+    public Pose2D setPosition(Pose2D pos) {
+        writeByteArray(Register.X_POSITION, (floatToByteArray((float) pos.getX(DistanceUnit.MM), ByteOrder.LITTLE_ENDIAN)));
+        writeByteArray(Register.Y_POSITION, (floatToByteArray((float) pos.getY(DistanceUnit.MM), ByteOrder.LITTLE_ENDIAN)));
+        writeByteArray(Register.H_ORIENTATION, (floatToByteArray((float) pos.getHeading(AngleUnit.RADIANS), ByteOrder.LITTLE_ENDIAN)));
         return pos;
     }
 
@@ -356,14 +400,20 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * Checks the deviceID of the Odometry Computer. Should return 1.
      * @return 1 if device is functional.
      */
-    public int getDeviceID(){return readInt(Register.DEVICE_ID);}
+    public int getDeviceID() {
+        return readInt(Register.DEVICE_ID);
+    }
 
     /**
      * @return the firmware version of the Odometry Computer
      */
-    public int getDeviceVersion(){return readInt(Register.DEVICE_VERSION); }
+    public int getDeviceVersion() {
+        return readInt(Register.DEVICE_VERSION);
+    }
 
-    public float getYawScalar(){return readFloat(Register.YAW_SCALAR); }
+    public float getYawScalar() {
+        return readFloat(Register.YAW_SCALAR);
+    }
 
     /**
      * Device Status stores any faults the Odometry Computer may be experiencing. These faults include:
@@ -375,25 +425,28 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
      * FAULT_X_POD_NOT_DETECTED - The device does not detect an X pod plugged in. BLUE LED <br>
      * FAULT_Y_POD_NOT_DETECTED - The device does not detect a Y pod plugged in. ORANGE LED <br>
      */
-    public DeviceStatus getDeviceStatus(){return lookupStatus(deviceStatus); }
+    public DeviceStatus getDeviceStatus() {
+        return lookupStatus(deviceStatus);
+    }
 
     /**
      * Checks the Odometry Computer's most recent loop time.<br><br>
      * If values less than 500, or more than 1100 are commonly seen here, there may be something wrong with your device. Please reach out to tech@gobilda.com
      * @return loop time in microseconds (1/1,000,000 seconds)
      */
-    public int getLoopTime(){return loopTime; }
+    public int getLoopTime() {
+        return loopTime;
+    }
 
     /**
      * Checks the Odometry Computer's most recent loop frequency.<br><br>
      * If values less than 900, or more than 2000 are commonly seen here, there may be something wrong with your device. Please reach out to tech@gobilda.com
      * @return Pinpoint Frequency in Hz (loops per second),
      */
-    public double getFrequency(){
-        if (loopTime != 0){
-            return 1000000.0/loopTime;
-        }
-        else {
+    public double getFrequency() {
+        if (loopTime != 0) {
+            return 1000000.0 / loopTime;
+        } else {
             return 0;
         }
     }
@@ -401,54 +454,74 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     /**
      * @return the raw value of the X (forward) encoder in ticks
      */
-    public int getEncoderX(){return xEncoderValue; }
+    public int getEncoderX() {
+        return xEncoderValue;
+    }
 
     /**
      * @return the raw value of the Y (strafe) encoder in ticks
      */
-    public int getEncoderY(){return yEncoderValue; }
+    public int getEncoderY() {
+        return yEncoderValue;
+    }
 
     /**
      * @return the estimated X (forward) position of the robot in mm
      */
-    public double getPosX(){return xPosition; }
+    public double getPosX() {
+        return xPosition;
+    }
 
     /**
      * @return the estimated Y (Strafe) position of the robot in mm
      */
-    public double getPosY(){return yPosition; }
+    public double getPosY() {
+        return yPosition;
+    }
 
     /**
      * @return the estimated H (heading) position of the robot in Radians
      */
-    public double getHeading(){return hOrientation;}
+    public double getHeading() {
+        return hOrientation;
+    }
 
     /**
      * @return the estimated X (forward) velocity of the robot in mm/sec
      */
-    public double getVelX(){return xVelocity; }
+    public double getVelX() {
+        return xVelocity;
+    }
 
     /**
      * @return the estimated Y (strafe) velocity of the robot in mm/sec
      */
-    public double getVelY(){return yVelocity; }
+    public double getVelY() {
+        return yVelocity;
+    }
 
     /**
      * @return the estimated H (heading) velocity of the robot in radians/sec
      */
-    public double getHeadingVelocity(){return hVelocity; }
+    public double getHeadingVelocity() {
+        return hVelocity;
+    }
 
     /**
      * <strong> This uses its own I2C read, avoid calling this every loop. </strong>
      * @return the user-set offset for the X (forward) pod
      */
-    public float getXOffset(){return readFloat(Register.X_POD_OFFSET);}
+    public float getXOffset() {
+        return readFloat(Register.X_POD_OFFSET);
+    }
 
     /**
      * <strong> This uses its own I2C read, avoid calling this every loop. </strong>
      * @return the user-set offset for the Y (strafe) pod
      */
-    public float getYOffset(){return readFloat(Register.Y_POD_OFFSET);}
+    public float getYOffset() {
+        return readFloat(Register.Y_POD_OFFSET);
+    }
 
     /**
      * @return a Pose2D containing the estimated position of the robot
@@ -472,22 +545,6 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynch> {
                 yVelocity,
                 AngleUnit.RADIANS,
                 hVelocity);
-    }
-
-
-    @Override
-    public Manufacturer getManufacturer() {
-        return Manufacturer.Other;
-    }
-
-    @Override
-    protected synchronized boolean doInitialize() {
-        return true;
-    }
-
-    @Override
-    public String getDeviceName() {
-        return "goBILDA® Pinpoint Odometry Computer";
     }
 
 }

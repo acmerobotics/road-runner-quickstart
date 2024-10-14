@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.util.control;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -47,9 +46,9 @@ public class KalmanFilter {
         estimateYVariance += time*time*Math.abs(translatedVel.y);
 
 
-        estimateState = new Pose2d(estimateState.getX() + translatedVel.x * time
-                ,estimateState.getY() + translatedVel.y * time
-                ,new Rotation2d(pinpoint.getHeading()));
+        estimateState = new Pose2d(estimateState.position.x + translatedVel.x * time
+                ,estimateState.position.y + translatedVel.y * time
+                ,pinpoint.getHeading());
         telemetry.update();
     }
     public void updateKalman(double variance, Pose2d measurement, Telemetry telemetry) {
@@ -65,10 +64,10 @@ public class KalmanFilter {
         telemetry.addData("estimateY", estimateYVariance);
         telemetry.addData("measurement", measurement);
         telemetry.addData("estimateState", estimateState);
-        estimateState = new Pose2d(estimateState.getX() + kalmanGainX*(measurement.getX() - estimateState.getX()),
-                estimateState.getY() + kalmanGainY*(measurement.getY() - estimateState.getY()),
-                new Rotation2d(pinpoint.getHeading()));
-        calculatedState = new Pose2d(estimateState.getX(), estimateState.getY(), estimateState.getRotation());
+        estimateState = new Pose2d(estimateState.position.x + kalmanGainX*(measurement.position.x - estimateState.position.x),
+                estimateState.position.y + kalmanGainY*(measurement.position.y - estimateState.position.y),
+                pinpoint.getHeading());
+        calculatedState = new Pose2d(estimateState.position.x, estimateState.position.y, estimateState.heading.toDouble());
 
         telemetry.addData("calculatedState", calculatedState);
 
@@ -76,7 +75,7 @@ public class KalmanFilter {
 
     public void aprilTagKalman(Telemetry telemetry){
         predictKalman(telemetry);
-        Pose2d atagPose = new Pose2d(limelight.getLatestResult().getBotpose().getPosition().x*39.3701007874, limelight.getLatestResult().getBotpose().getPosition().y*39.3701007874, new Rotation2d(pinpoint.getHeading()));
+        Pose2d atagPose = new Pose2d(limelight.getLatestResult().getBotpose().getPosition().x*39.3701007874, limelight.getLatestResult().getBotpose().getPosition().y*39.3701007874, pinpoint.getHeading());
         telemetry.addData("atagPose", atagPose);
         double xVar = Math.abs(translatedVel.x * X_MULT_VARIANCE);
         double yVar = Math.abs(translatedVel.y * Y_MULT_VARIANCE);
@@ -90,7 +89,7 @@ public class KalmanFilter {
 
     public void odoKalman(Telemetry telemetry){
         predictKalman(telemetry);
-        calculatedState = new Pose2d(estimateState.getX(), estimateState.getY(), estimateState.getRotation());
+        calculatedState = new Pose2d(estimateState.position.x, estimateState.position.y, estimateState.heading.toDouble());
 
         //filterKalman(ODO_VARIANCE, new Pose2d(pinpoint.getPosX()*0.03937, pinpoint.getPosY()*0.03937, new Rotation2d(0)),telemetry);
     }

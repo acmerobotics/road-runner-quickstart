@@ -60,7 +60,7 @@ public class KalmanTuner extends LinearOpMode {
         cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
         odo = hardwareMap.get(GoBildaPinpoint.class,"pinpoint");
         otos = hardwareMap.get(SparkFunOTOS.class, "otos");
-        KalmanFilter kalman = new KalmanFilter(new com.arcrobotics.ftclib.geometry.Pose2d(startingX, startingY, new Rotation2d(startingHeading)), odo, cv.limelight);
+        KalmanFilter kalman = new KalmanFilter(new Pose2d(startingX, startingY, startingHeading), odo, cv.limelight);
 
         cv.start();
         cv.setLLPipeline(CVMaster.LLPipeline.APRILTAGS);
@@ -95,7 +95,7 @@ public class KalmanTuner extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
-            odo.bulkUpdate();
+            odo.update();
             Pose2D pos = odo.getPosition();
             Pose2d ppPose = new Pose2d(pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.RADIANS));
             SparkFunOTOS.Pose2D otosPos = otos.getPosition();
@@ -120,14 +120,14 @@ public class KalmanTuner extends LinearOpMode {
             Canvas c = packet.fieldOverlay();
 
             kalman.odoKalman(telemetry);
-            fusedX = kalman.getCalculatedState().getX();
-            fusedY = kalman.getCalculatedState().getY();
+            fusedX = kalman.getCalculatedState().position.x;
+            fusedY = kalman.getCalculatedState().position.y;
 
             if (llPose != null) {
                 kalman.aprilTagKalman(telemetry);
 
-                fusedX = kalman.getCalculatedState().getX();
-                fusedY = kalman.getCalculatedState().getY();
+                fusedX = kalman.getCalculatedState().position.x;
+                fusedY = kalman.getCalculatedState().position.y;
                 c.setStroke("#34ad38");
                 Drawing.drawRobot(c, llPose);
 

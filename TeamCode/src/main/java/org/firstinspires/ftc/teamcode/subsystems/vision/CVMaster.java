@@ -45,7 +45,7 @@ public class CVMaster {
     public final float WEBCAM_X_OFFSET = 0;
     public final float WEBCAM_Y_OFFSET = 0;
     public final float WEBCAM_Z_OFFSET = 0;
-    public final float WEBCAM_PITCH_OFFSET = 0;
+    public final double WEBCAM_YAW_OFFSET = Math.PI;
     public final double YWEBCAM_A = 1.000798;
     public final double YWEBCAM_K = 1043.367;
     public final double YWEBCAM_H = 1.653406;
@@ -227,16 +227,15 @@ public class CVMaster {
 
         // convert from image coords to inches
         double world_x = Math.pow(YWEBCAM_A, (x+YWEBCAM_K))+YWEBCAM_H;
-        double world_y = ((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W)-1)*WEBCAM_INCHESTOP - WEBCAM_INCHESTOP;
+        double world_y = ((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W))*WEBCAM_INCHESTOP;
 
-        // Calculate the coords of the camera on the field using the offsets
-        double cam_x = poseAtSnapshot.position.x + (WEBCAM_X_OFFSET * Math.cos(poseAtSnapshot.heading.toDouble())) - (WEBCAM_Y_OFFSET * Math.sin(poseAtSnapshot.heading.toDouble()));
-        double cam_y = poseAtSnapshot.position.y + (WEBCAM_X_OFFSET * Math.sin(poseAtSnapshot.heading.toDouble())) + (WEBCAM_Y_OFFSET * Math.cos(poseAtSnapshot.heading.toDouble()));
-
+        double dist = Math.sqrt(world_x*world_x + world_y*world_y);
+        // Calculate the coords of the object relative to x,y plane
+        double cam_x = dist*Math.sin(Math.atan(world_y/world_x) - ((Math.PI/2)-poseAtSnapshot.heading.toDouble())-WEBCAM_YAW_OFFSET);
+        double cam_y = dist*Math.cos(Math.atan(world_y/world_x) - ((Math.PI/2)-poseAtSnapshot.heading.toDouble())-WEBCAM_YAW_OFFSET);
         // Finally calculate the field coords of the target
-        double field_x = cam_x + (world_x * Math.cos(poseAtSnapshot.heading.toDouble())) - (cam_y * Math.sin(poseAtSnapshot.heading.toDouble()));
-        double field_y = cam_y + (world_x * Math.sin(poseAtSnapshot.heading.toDouble())) + (world_y * Math.cos(poseAtSnapshot.heading.toDouble()));
-
+        double field_x = cam_x + poseAtSnapshot.position.x;
+        double field_y = cam_y + poseAtSnapshot.position.y;
         return new Pose3D(
                 new Position(DistanceUnit.INCH, field_x, field_y, 0, System.currentTimeMillis()),
                 new YawPitchRollAngles(AngleUnit.DEGREES, 0, 0, 0, System.currentTimeMillis()));

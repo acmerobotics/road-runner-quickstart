@@ -91,7 +91,7 @@ public class LocalizationTuner extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
-            odo.bulkUpdate();
+            odo.update();
             Pose2D pos = odo.getPosition();
             Pose2d ppPose = new Pose2d(pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.RADIANS));
             SparkFunOTOS.Pose2D otosPos = otos.getPosition();

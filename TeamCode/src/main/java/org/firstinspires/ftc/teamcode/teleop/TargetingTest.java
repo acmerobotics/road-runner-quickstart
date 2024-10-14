@@ -40,9 +40,9 @@ public class TargetingTest extends LinearOpMode {
 
     public static CVMaster.EOCVPipeline pipeline = CVMaster.EOCVPipeline.YELLOW_SAMPLE;
 
-    public double startingX = 63.75;
-    public double startingY = 54.25;
-    public double startingHeading = Math.toRadians(0);
+    public double startingX = 0;
+    public double startingY = -36;
+    public double startingHeading = Math.toRadians(-90);
 
     double fusedX;
     double fusedY;
@@ -52,7 +52,7 @@ public class TargetingTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
         odo = hardwareMap.get(GoBildaPinpoint.class,"pinpoint");
-        KalmanFilter kalman = new KalmanFilter(new com.arcrobotics.ftclib.geometry.Pose2d(startingX, startingY, new Rotation2d(startingHeading)), odo, cv.limelight);
+        KalmanFilter kalman = new KalmanFilter(new Pose2d(startingX, startingY, startingHeading), odo, cv.limelight);
 
         cv.start();
         cv.setLLPipeline(CVMaster.LLPipeline.APRILTAGS);
@@ -72,7 +72,7 @@ public class TargetingTest extends LinearOpMode {
 
 
         while (!opModeIsActive() && !isStopRequested()) {
-            odo.bulkUpdate();
+            odo.update();
             Pose2D pos = odo.getPosition();
             Pose2d ppPose = new Pose2d(pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.RADIANS));
             LLResult result = cv.mt2RelocalizeRAW(pos.getHeading(AngleUnit.RADIANS));
@@ -95,14 +95,14 @@ public class TargetingTest extends LinearOpMode {
             Canvas c = packet.fieldOverlay();
 
             kalman.odoKalman(telemetry);
-            fusedX = kalman.getCalculatedState().getX();
-            fusedY = kalman.getCalculatedState().getY();
+            fusedX = kalman.getCalculatedState().position.x;
+            fusedY = kalman.getCalculatedState().position.y;
 
             if (llPose != null) {
                 kalman.aprilTagKalman(telemetry);
 
-                fusedX = kalman.getCalculatedState().getX();
-                fusedY = kalman.getCalculatedState().getY();
+                fusedX = kalman.getCalculatedState().position.x;
+                fusedY = kalman.getCalculatedState().position.y;
                 c.setStroke("#34ad38");
                 Drawing.drawRobot(c, llPose);
 
