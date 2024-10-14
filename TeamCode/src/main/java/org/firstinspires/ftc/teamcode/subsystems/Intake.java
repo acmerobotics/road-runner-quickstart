@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import android.content.res.Configuration;
 
+import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,9 +15,18 @@ public class Intake extends Mechanism {
     CRServo bristles;
     Servo leftHinge;
     Servo rightHinge;
-    final double downHingePosition = -0.5;
-    final double neutralHingePosition = 0;
-    final double upHingePosition = 0.5;
+    final double DOWN_HINGE_POSITION = -0.5;
+    final double NEUTRAL_HINGE_POSITION = 0;
+    final double UP_HINGE_POSITION = 0.5;
+
+    enum HingeState {
+        DOWN, NEUTRAL, UP, CUSTOM
+    }
+
+    HingeState activeHingeState = HingeState.UP;
+
+    double hingeTargetPosition = UP_HINGE_POSITION;
+
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -25,29 +35,75 @@ public class Intake extends Mechanism {
         rightHinge = hwMap.get(Servo.class, ConfigurationInfo.rightHinge.getDeviceName());
     }
 
+    @Override
+    public void loop(AIMPad aimpad) {
+        switch(activeHingeState) {
+            case DOWN:
+                downState();
+                break;
+            case NEUTRAL:
+                neutralState();
+                break;
+            case UP:
+                upState();
+                break;
+            case CUSTOM:
+                break;
+        }
+        hingeToPosition(hingeTargetPosition);
+    }
+
+    public void setActiveHingeState(HingeState activeHingeState) {
+        this.activeHingeState = activeHingeState;
+    }
+
+    public void setHingeStateCustom(double position) {
+        setActiveHingeState(HingeState.CUSTOM);
+        hingeTargetPosition = position;
+    }
+
+    public void downState() {
+        hingeTargetPosition = DOWN_HINGE_POSITION;
+    }
+
+    public void upState() {
+        hingeTargetPosition = UP_HINGE_POSITION;
+    }
+
+    public void neutralState() {
+        hingeTargetPosition = NEUTRAL_HINGE_POSITION;
+    }
+
+
+
     public void bristlesIn() {bristles.setPower(1);}
 
     public void bristlesOut() {bristles.setPower(-1);}
 
-    public void intakeOff(){
+    public void bristlesOff(){
         bristles.setPower(0);
     }
 
+    public void bristlesAtPower(double bristlesPower) {
+        bristles.setPower(bristlesPower);
+    }
+
+
     public void hingeNeutral() {
-        leftHinge.setPosition(neutralHingePosition);
-        rightHinge.setPosition(neutralHingePosition);
+        hingeToPosition(NEUTRAL_HINGE_POSITION);
     }
 
     public void hingeUp() {
-        leftHinge.setPosition(upHingePosition);
-        rightHinge.setPosition(upHingePosition);
+        hingeToPosition(UP_HINGE_POSITION);
     }
 
     public void hingeDown() {
-        leftHinge.setPosition(downHingePosition);
-        rightHinge.setPosition(downHingePosition);
+        hingeToPosition(DOWN_HINGE_POSITION);
     }
 
-
-
+    public void hingeToPosition(double hingePosition) {
+        double clampedHingePosition = Math.max(DOWN_HINGE_POSITION, Math.min(hingePosition, UP_HINGE_POSITION));
+        leftHinge.setPosition(clampedHingePosition);
+        rightHinge.setPosition(clampedHingePosition);
+    }
 }
