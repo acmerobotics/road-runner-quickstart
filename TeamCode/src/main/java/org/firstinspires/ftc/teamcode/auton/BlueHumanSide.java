@@ -24,27 +24,26 @@ public class BlueHumanSide extends LinearOpMode {
         
         // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(-11,58))
+                .strafeTo(new Vector2d(-11,48))
                 .waitSeconds(2.5)
                 .strafeToLinearHeading(new Vector2d(-56,48), Math.toRadians(295))
                 .waitSeconds(3)
+                .turn(Math.toRadians(-30))
+                .waitSeconds(2)
                 .turn(Math.toRadians(-25))
-                .waitSeconds(2)
-                .turn(Math.toRadians(-27.5))
                 .waitSeconds(1)
-                .turn(Math.toRadians(27.5))
+                .turn(Math.toRadians(25))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(-4,52), Math.toRadians(270))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(-56,48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(-11,58))
+                .strafeTo(new Vector2d(-4,52))
                 .waitSeconds(2)
                 .strafeTo(new Vector2d(-56,48))
                 .waitSeconds(2)
-                .strafeTo(new Vector2d(-11,58))
-                .waitSeconds(2)
-                .strafeTo(new Vector2d(-56,48))
-                .waitSeconds(2)
-                .strafeTo(new Vector2d(-11,58));
+                .strafeTo(new Vector2d(-4,52))
+                .waitSeconds(2);
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();
