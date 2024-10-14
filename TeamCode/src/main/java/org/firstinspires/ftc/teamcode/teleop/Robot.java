@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -28,9 +29,12 @@ public class Robot {
     CRServo intakeLeft, intakeRight;
     MecanumDrive drive;
     AnalogInput axonLeft, axonRight;
+    PIDController armController, slideController;
 
     public final double gripClawOpen = 0, gripClawClosed = 0.1;
     public double intakeLeftPos, intakeRightPos;
+    public double flipPos, slidePos;
+    public int armTarget = 0, slideTarget = 0;
 
     public Robot(HardwareMap hardwareMap) {
 //        axonLeft = hardwareMap.get(AnalogInput.class, "axonLeft");
@@ -73,6 +77,9 @@ public class Robot {
         for (DcMotor motor: motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
+
+        armController = new PIDController(armPIDValues.fP, armPIDValues.fI, armPIDValues.fD);
+        slideController = new PIDController(armPIDValues.sP,armPIDValues.sI,armPIDValues.sD);
     }
 
     public Action pidfLoopFlip(double target) {
@@ -178,4 +185,38 @@ public class Robot {
 //        intakeLeftPos = axonLeft.getVoltage() / 3.3 * 360;
 //        intakeRightPos = axonRight.getVoltage() / 3.3 * 360;
 //    }
+
+    public void TeleopPID(Gamepad gamepad) {
+        armTarget += (int) ((int) -gamepad.right_stick_y * 9.45);
+        slideTarget += (int) -gamepad.left_stick_y * 28;
+
+        if (armTarget < 0) armTarget = 0;
+        else if (armTarget > 1200) armTarget = 1200;
+
+        if (slideTarget < 0) slideTarget = 0;
+        else if (slideTarget > 5000) slideTarget = 5000;
+
+        flipPos = flip.getCurrentPosition();
+        slidePos = slide.getCurrentPosition();
+
+        double pid = armController.calculate(flipPos, armTarget);
+        double ff = Math.cos(Math.toRadians(armTarget / armPIDValues.ticks_in_degree)) * armPIDValues.fF;
+
+        double power = pid + ff;
+
+        flip.setPower(power);
+
+        double pid2 = slideController.calculate(slidePos, slideTarget);
+
+        slide.setPower(pid2);
+    }
+
+    public static class armPIDValues {
+        public static double fP = 0.002, fI = 0, fD = 0.00001;
+        public static double fF = 0.0022;
+        public static double sP = 0.005, sI, sD;
+
+        private static final double ticks_in_degree = 931 / 90.0;
+    }
 }
+

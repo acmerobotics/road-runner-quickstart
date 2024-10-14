@@ -14,8 +14,9 @@ public class TeleopV1 extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             bot.arcadeDriveWithSlowMode(gamepad1);
-            bot.slideControl(gamepad2);
-            bot.tiltControl(gamepad2);
+//            bot.slideControl(gamepad2);
+//            bot.tiltControl(gamepad2);
+            bot.TeleopPID(gamepad2);
             bot.wristControl(gamepad2);
 //            bot.gripClawControl(gamepad2);
             bot.intakeControl(gamepad2);
@@ -26,6 +27,10 @@ public class TeleopV1 extends LinearOpMode {
             telemetry.addData("FlipPos", bot.flip.getCurrentPosition());
             telemetry.addData("SlidePos", bot.slide.getCurrentPosition());
             telemetry.addData("wristPos", bot.wrist.getPosition());
+            telemetry.addData("flipTarget", bot.armTarget);
+            telemetry.addData("slideTarget", bot.slideTarget);
+            telemetry.addData("fliPower", bot.flip.getPower());
+            telemetry.addData("slidePower", bot.slide.getPower());
             telemetry.update();
         }
     }

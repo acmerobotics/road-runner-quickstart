@@ -9,12 +9,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 @TeleOp
-public class pidfTuner extends OpMode {
+public class PidfTuner extends OpMode {
     private PIDController armController, slideController;
 
     public static double fP = 0.002, fI = 0, fD = 0.00001;
