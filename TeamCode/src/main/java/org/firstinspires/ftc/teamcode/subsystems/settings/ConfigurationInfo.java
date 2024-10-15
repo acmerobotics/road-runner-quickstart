@@ -23,12 +23,12 @@ public class ConfigurationInfo {
     public static HardwareInterface leftBack = new HardwareInterface("BLD", true, 0);
     public static HardwareInterface rightBack = new HardwareInterface("BRD", false, 0);
 
-    // PAL
-    public static HardwareInterface releaseServo = new HardwareInterface("REL", false, 2);
-
     // SLIDES
-    public static HardwareInterface leftSlide = new HardwareInterface("LVS", false, 2);
-    public static HardwareInterface rightSlide = new HardwareInterface("RVS", true, 2);
+    public static HardwareInterface leftIntakeSlide = new HardwareInterface("LIS", false, 2);
+    public static HardwareInterface rightIntakeSlide = new HardwareInterface("RIS", true, 2);
+
+    public static HardwareInterface leftIntakeSlidePivot = new HardwareInterface("LISP", false, 2);
+    public static HardwareInterface rightIntakeSlidePivot = new HardwareInterface("RISP", true, 2);
 
     // CAMERA
     public static HardwareInterface camera = new HardwareInterface("Ray", true, 0);
