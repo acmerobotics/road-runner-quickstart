@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.util.control;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -101,10 +102,11 @@ public class KalmanFilter {
     }
 
     public void kalmanSmart() {
-//        if (limelight.getLatestResult() != null && limelight.getLatestResult().isValid()) {
-//            aprilTagKalman();
-//        } else {
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid() && result.getBotpose_MT2() != null) {
+            aprilTagKalman();
+        } else {
             odoKalman();
-//        }
+        }
     }
 }

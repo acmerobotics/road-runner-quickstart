@@ -14,17 +14,18 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.roadrunner.KalmanDrive;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
 
 @Autonomous(name = "HPSideRed", group = "Autonomous")
 public class HPSideRed extends LinearOpMode {
     KalmanDrive drive;
-    Limelight3A limelight;
+    CVMaster cv;
     public void runOpMode() {
         Pose2d beginPose = new Pose2d(12, -60, Math.toRadians(90));
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        drive = new KalmanDrive(hardwareMap, beginPose, limelight);
+        cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
+        drive = new KalmanDrive(hardwareMap, beginPose, cv.limelight);
 
         Action auton = drive.actionBuilder(drive.pose)
 //                .turn(Math.toRadians(180))
