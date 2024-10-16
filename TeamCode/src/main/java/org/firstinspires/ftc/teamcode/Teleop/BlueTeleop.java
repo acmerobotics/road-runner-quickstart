@@ -66,7 +66,7 @@ public class BlueTeleop extends LinearOpMode {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
-    private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR};
+    private enum LiftState {LIFTSTART, LIFTDEPOSIT};
     private LiftState liftState = LiftState.LIFTSTART;
 
     private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT, EXTENDOSPIT};
@@ -136,7 +136,7 @@ public class BlueTeleop extends LinearOpMode {
             case EXTENDORETRACT:
                 //TODO: Set to the transfer position
                 if (extendo.getPos() < 0) {
-                    intake.intakeMotor.setPower(-0.2);
+                    intake.intakeMotor.setPower(-0.3);
                     extendoState = ExtendoState.EXTENDOSPIT;
                 }
                 break;
@@ -149,79 +149,27 @@ public class BlueTeleop extends LinearOpMode {
                 break;
         }
 
-
-
         switch (liftState) {
             case LIFTSTART:
                 if (gamepad2.x) {
                     if (gamepad2.left_trigger < 0.9) {
-                        runningActions.add(new SequentialAction(
-                                slides.slideTopBasket(),
-                                claw.flip()
-                        ));
+                        runningActions.add(slides.slideTopBasket());
                     } else {
-                        runningActions.add(new SequentialAction(
-                                slides.slideBottomBasket(),
-                                claw.flip()
-                        ));
+                        runningActions.add(slides.slideBottomBasket());
                     }
                     liftState = LiftState.LIFTDEPOSIT;
-                }
-                if (gamepad2.y) {
-                    runningActions.add(new SequentialAction(
-                            claw.open(),
-                            slides.slideWallLevel(),
-                            claw.flip()
-                    ));
-                    liftState = LiftState.LIFTWALL;
                 }
                 break;
             case LIFTDEPOSIT:
                 if (gamepad2.x) {
                     runningActions.add(new SequentialAction(
-                            claw.open(),
-                            claw.flop(),
+                            claw.flip(),
+                            new SleepAction(0.5),
                             slides.retract()
                     ));
                     liftState = LiftState.LIFTSTART;
                 }
                 if (gamepad2.b) {
-                    runningActions.add(new SequentialAction(
-                            claw.flop(),
-                            slides.retract()
-                    ));
-                    liftState = LiftState.LIFTSTART;
-                }
-                break;
-            case LIFTWALL:
-                if (gamepad2.y) {
-                    if (gamepad2.left_trigger < 0.9) {
-                        runningActions.add(new SequentialAction(
-                                claw.close(),
-                                slides.slideTopBar()
-                        ));
-                        liftState = LiftState.LIFTTOPBAR;
-                    } else {
-                        runningActions.add(new SequentialAction(
-                                claw.close(),
-                                slides.slideBottomBar()
-                        ));
-                        liftState = LiftState.LIFTBOTTOMBAR;
-                    }
-                }
-                break;
-            case LIFTTOPBAR:
-                if (gamepad2.y) {
-                    runningActions.add(new SequentialAction(
-                            slides.slideBottomBar(),
-                            new SleepAction(1.2),
-                            slides.retract()
-                    ));
-                    liftState = LiftState.LIFTSTART;
-                }
-                break;
-            case LIFTBOTTOMBAR:
-                if (gamepad2.y) {
                     runningActions.add(slides.retract());
                     liftState = LiftState.LIFTSTART;
                 }
