@@ -212,8 +212,8 @@ public class Robot {
     }
 
     public static class armPIDValues {
-        public static double fP = 0.002, fI = 0, fD = 0.00001;
-        public static double fF = 0.0022;
+        public static double fP = 0.0018, fI = 0, fD = 0.00009;
+        public static double fF = 0.0037;
         public static double sP = 0.005, sI, sD;
 
         private static final double ticks_in_degree = 931 / 90.0;
