@@ -34,9 +34,18 @@ public class RedAutoPaths extends LinearOpMode {
         //drive.setPoseEstimate(StartPose1);
 
         TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
-                .strafeTo(new Vector2d(30,20))
-                .strafeTo(new Vector2d(0,-10))
-                .splineToLinearHeading(new Pose2d(60, -5, Math.toRadians(90)),90);
+                .strafeToLinearHeading(new Vector2d(25,-29.5), Math.toRadians(0))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(15.17, 18.10), Math.toRadians(90))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(23.24,-48.10), Math.toRadians(-10))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(15.17, 18.10), Math.toRadians(90))
+                .waitSeconds(1)
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(15.17, 18.10), Math.toRadians(90))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(8,-10));
 
         Action path = basket.build();
                 waitForStart();

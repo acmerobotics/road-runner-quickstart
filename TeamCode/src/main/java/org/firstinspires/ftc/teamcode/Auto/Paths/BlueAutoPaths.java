@@ -54,7 +54,7 @@ public class BlueAutoPaths extends LinearOpMode {
                 .waitSeconds(0.5)
                 .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(25.86, 40.74), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(25.86, 38.74), Math.toRadians(0))
                 .waitSeconds(0.5)
                 .strafeToLinearHeading(new Vector2d(5.74, 36.60), Math.toRadians(-45))
                 .waitSeconds(1)
@@ -63,20 +63,14 @@ public class BlueAutoPaths extends LinearOpMode {
                 .waitSeconds(0.5)
                 .strafeToLinearHeading(new Vector2d(6.74, 35.60), Math.toRadians(-45))
                 .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(53.00, 4, Math.toRadians(-90)),-90);
-
-        Pose2d StartPose2 = new Pose2d(-24, 59.5, Math.toRadians(90));
-
+                .strafeToLinearHeading(new Vector2d(60, 25.67), Math.toRadians(90))
+                .strafeTo(new Vector2d(60,4.67));
 
 
-        Action basketA = basket.build();
-        Action basket2A = basket.build();
-        Action basket3A = basket.build();
-        Action basket4A = basket.build();
-        Action block1A = block1.build();
-        Action block2A = block2.build();
-        Action block3A = block3.build();
-        Action parkA = park.build();
+
+
+
+
         Action auto = trajecotryegrig.build();
         waitForStart();
 
