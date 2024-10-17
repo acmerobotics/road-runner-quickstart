@@ -2,14 +2,15 @@ package org.firstinspires.ftc.teamcode.voidvision;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 
-@TeleOp(name="baby teleop", group="Pushbot")
-public class babyteleop extends LinearOpMode {
-    babyhwmap robot=new babyhwmap();
+@TeleOp(name="teenage teleop", group="Pushbot")
+public class teenageteleop extends LinearOpMode {
+    teenagehwmap robot=new teenagehwmap();
     //
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -25,6 +26,7 @@ public class babyteleop extends LinearOpMode {
     static double closed = .5;
     static double direction = -1;
     static double rangeServoDirection = .01;
+    static double basketServoAmount = .01;
 
 
     private boolean changed1 = false;
@@ -57,6 +59,9 @@ public class babyteleop extends LinearOpMode {
 
             slowamount = .5;
 
+            /**
+             * GAMEPAD1
+             * */
 
             if (gamepad1.right_bumper){
                 flipWheelConfigurationBackward();
@@ -73,7 +78,7 @@ public class babyteleop extends LinearOpMode {
             if(gamepad1.left_bumper){
                 slowamount = .25;
             }
-            else{slowamount = .6;}
+            else{slowamount = gamepad1.right_trigger*.6;}
 
             //robot.armMotorTwo.setPower(gamepad2.left_stick_y);
             //robot.armMotorOne.setPower(-gamepad2.right_stick_y*.5);
@@ -116,16 +121,11 @@ public class babyteleop extends LinearOpMode {
             while(gamepad1.dpad_right){
                 robot.rightbackDrive.setPower(1);
             }
-            while(gamepad2.x){
-                robot.servo.setPosition(.25);
-            }
-            while(gamepad2.y){
-                robot.servo.setPosition(.5);
-            }
-            while(gamepad2.b){
-                robot.servo.setPosition(.6);
-            }
-            while(gamepad2.a){
+
+            /**
+             * GAMEPAD2
+             * */
+            if(gamepad2.a){
                 if(rangeServoDirection*1.05<(140/360)){
                     /**ARM Extension**/
                     /**
@@ -133,21 +133,32 @@ public class babyteleop extends LinearOpMode {
                      * the basket servo also goes a full 180 degrees to flip out he basket.
                      * Since these amounts mirror each other, they can be extended to the same
                      * position to reach super-extension of the basket and arm at the same time*/
-                    robot.servo.setPosition(rangeServoDirection);
-                    telemetry.addData("ServoPosition",robot.servo.getPosition());
+                    robot.range1Servo.setPosition(rangeServoDirection);
+                    robot.basketServo1.setPosition(rangeServoDirection);
                     extendRangeServoDirection();
 
+                    if((rangeServoDirection<.25) &&(rangeServoDirection>.125)){
+                        startOuttake();
+                    }
+                    else if(rangeServoDirection>.25){
+                        startIntake();
+                    }
                 }
             }
             if(gamepad2.right_bumper){
                 rangeServoDirection = .01;
-                robot.servo.setPosition(rangeServoDirection);
+                robot.range1Servo.setPosition(rangeServoDirection);
             }
+
             testTriggerRight();
             testTriggerLeft();
             telemetry.update();
         }
     }
+
+    /*
+    * Helper Methods*/
+
     public void flipWheelConfigurationBackward(){
         /**
          * negating the power switches the direction:
@@ -172,7 +183,14 @@ public class babyteleop extends LinearOpMode {
     public void testTriggerLeft(){
         telemetry.addData("Left Trigger",gamepad1.left_trigger);
     }
+
     public void extendRangeServoDirection(){
-        rangeServoDirection *= 1.05;
+        rangeServoDirection = (100/360);
+    }
+    public void startOuttake(){
+        robot.intakeServo.setPower(-5);
+    }
+    public void startIntake(){
+        robot.intakeServo.setPower(5);
     }
 }
