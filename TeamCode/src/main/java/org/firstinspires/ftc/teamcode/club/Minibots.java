@@ -22,7 +22,7 @@ public class Minibots extends OpMode {
 
         // Set motor directions
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
-        rightMotor.setDirection(DcMotor.Direction.FORWARD); //TODO SWITCH TO REVERSE FOR THE 4 WHEEL
+        rightMotor.setDirection(DcMotor.Direction.REVERSE); //TODO SWITCH TO REVERSE FOR THE 4 WHEEL
 
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -33,7 +33,7 @@ public class Minibots extends OpMode {
     @Override
     public void loop() {
         double y = -gamepad1.left_stick_y * 0.65;
-        double turn = gamepad1.left_stick_x * 0.4;
+        double turn = gamepad1.right_stick_x * 0.4;
 
         if (gamepad1.b) {
             y = (gamepad1.right_trigger + -gamepad1.left_trigger) * 0.8;

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,8 +13,6 @@ public class IntakeSystem extends Mechanism {
     Intake intake;
     SlidesBase intakeSlides;
 
-    Servo leftSlidePivot;
-    Servo rightSlidePivot;
 
     private static final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
     private static final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.FORWARD;
@@ -29,6 +28,20 @@ public class IntakeSystem extends Mechanism {
     private static final double kG = 0.0;
     private static final double lowPassGain = 0.0;
 
+    Servo leftSlidePivot;
+    Servo rightSlidePivot;
+
+    private final static double DOWN_HINGE_POSITION = -0.5;
+    private final static double UP_HINGE_POSITION = 0.5;
+
+    private double pivotTargetPosition = UP_HINGE_POSITION;
+
+    private enum PivotState {
+        DOWN, UP, CUSTOM
+    }
+
+    private PivotState activePivotState = PivotState.DOWN;
+
     @Override
     public void init(HardwareMap hwMap) {
         intake = new Intake();
@@ -41,6 +54,42 @@ public class IntakeSystem extends Mechanism {
         rightSlidePivot = hwMap.get(Servo.class, ConfigurationInfo.rightIntakeSlidePivot.getDeviceName());
     }
 
+    @Override
+    public void loop(AIMPad aimpad) {
+        switch (activePivotState) {
+            case DOWN:
+                downState();
+                break;
+            case UP:
+                upState();
+                break;
+            case CUSTOM:
+                break;
+        }
+        pivotToPosition(pivotTargetPosition);
+    }
 
+    public void setPivotTargetPosition(double pivotTargetPosition) {
+        this.pivotTargetPosition = pivotTargetPosition;
+    }
+
+    public void setPivotStateCustom(double position) {
+        activePivotState = PivotState.CUSTOM;
+        pivotTargetPosition = position;
+    }
+
+    public void downState() {
+        pivotTargetPosition = DOWN_HINGE_POSITION;
+    }
+
+    public void upState() {
+        pivotTargetPosition = UP_HINGE_POSITION;
+    }
+
+    public void pivotToPosition(double pivotPosition) {
+        double clampedPivotPosition = Math.max(DOWN_HINGE_POSITION, Math.min(pivotPosition, UP_HINGE_POSITION));
+        leftSlidePivot.setPosition(clampedPivotPosition);
+        rightSlidePivot.setPosition(clampedPivotPosition);
+    }
 
 }
