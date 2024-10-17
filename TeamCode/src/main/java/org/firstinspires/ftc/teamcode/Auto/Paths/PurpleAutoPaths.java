@@ -19,24 +19,24 @@ public class PurpleAutoPaths extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d StartPose1 = new Pose2d(0, 8, 0);
+        Pose2d StartPose1 = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap,StartPose1);
 
 
         TrajectoryActionBuilder basket2 = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(25,-29.5), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(16.39,-38), Math.toRadians(0))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15, -29.5), Math.toRadians(-180))
+                .strafeTo(new Vector2d(16.39,-51))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(23.24,-46.10), Math.toRadians(-10))
+                .strafeToLinearHeading(new Vector2d(38,-30), Math.toRadians(-90))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15, -46.10), Math.toRadians(-180))
+                .strafeToLinearHeading(new Vector2d(10,-30), Math.toRadians(0))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(40.54, -30), Math.toRadians(-90))
-                .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(40.54, -30), Math.toRadians(-180))
-                .waitSeconds(1)
-                .strafeTo(new Vector2d(15,-15));
+                .lineToX(20)
+                .waitSeconds(10)
+                .lineToX(5);
+
+
 
         Action path2 = basket2.build();
         waitForStart();

@@ -27,27 +27,27 @@ public class RedAutoPaths extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d StartPose1 = new Pose2d(0, 8, 0);
+        Pose2d StartPose1 = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap,StartPose1);
 
         //Pose2d StartPose1 = new Pose2d(-40, -60, 0);
         //drive.setPoseEstimate(StartPose1);
 
         TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(25,-29.5), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(25,-37.5), Math.toRadians(0))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15.17, 18.10), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(15.17, 10.10), Math.toRadians(90))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(23.24,-46.10), Math.toRadians(-10))
+                .strafeToLinearHeading(new Vector2d(23.24,-54.10), Math.toRadians(-10))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15.17, 18.10), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(15.17, 10.10), Math.toRadians(90))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15.17, -24), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(40.54, -30), Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(15.17, -32), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(40.54, -38), Math.toRadians(-90))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15.17, 18.10), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(15.17, 10.10), Math.toRadians(90))
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(15,-15));
+                .strafeTo(new Vector2d(15,-23));
 
         Action path = basket.build();
                 waitForStart();
