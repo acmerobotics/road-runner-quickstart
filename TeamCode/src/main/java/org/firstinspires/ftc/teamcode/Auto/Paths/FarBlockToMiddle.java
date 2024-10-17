@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous
-public class PurpleAutoPaths extends LinearOpMode {
+public class FarBlockToMiddle extends LinearOpMode {
 
     @Override
     public void runOpMode() {
