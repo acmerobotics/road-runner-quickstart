@@ -38,6 +38,7 @@ public class Robot {
     boolean auton;
     boolean intaking = false;
     Levels state = Levels.INIT;
+    Gamepiece mode = Gamepiece.SAMPLE;
 
     Motor backLeft;
     Motor backRight;
@@ -218,5 +219,10 @@ public class Robot {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public enum Gamepiece {
+        SAMPLE,
+        SPECIMEN
     }
 }

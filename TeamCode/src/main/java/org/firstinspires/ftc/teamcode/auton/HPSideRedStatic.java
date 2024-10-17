@@ -16,12 +16,15 @@ import org.firstinspires.ftc.teamcode.roadrunner.KalmanDrive;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
 
 @Autonomous(name = "HPSideRed", group = "Autonomous")
-public class HPSideRed extends LinearOpMode {
+public class HPSideRedStatic extends LinearOpMode {
     KalmanDrive drive;
     CVMaster cv;
     public void runOpMode() {
         Pose2d beginPose = new Pose2d(12, -60, Math.toRadians(90));
         cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
+        cv.start();
+        cv.setLLPipeline(CVMaster.LLPipeline.APRILTAGS);
+
         drive = new KalmanDrive(hardwareMap, beginPose, cv.limelight);
 
         Action auton = drive.actionBuilder(drive.pose)
