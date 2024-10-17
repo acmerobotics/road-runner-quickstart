@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -147,13 +152,13 @@ public class Robot {
     }
 
     public void wristControl(Gamepad gamepad) {
-        if (gamepad.b) {
+        if (gamepad.dpad_up) {
             wrist.setPosition(1);
         }
-        else if (gamepad.a) {
+        else if (gamepad.dpad_down) {
             wrist.setPosition(0);
         }
-        else if (gamepad.y) {
+        else if (gamepad.dpad_right) {
             wrist.setPosition(0.5);
         }
     }
@@ -185,6 +190,49 @@ public class Robot {
 //        intakeLeftPos = axonLeft.getVoltage() / 3.3 * 360;
 //        intakeRightPos = axonRight.getVoltage() / 3.3 * 360;
 //    }
+
+    public void scoringMacro(Gamepad gamepad) {
+        if (gamepad.y) {
+            Actions.runBlocking(new ParallelAction(
+                    new Action() {
+                        @Override
+                        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                            armTarget = 1075;
+                            return false;
+                        }
+                    },
+                    new Action() {
+                        @Override
+                        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                            while (Math.abs(flip.getCurrentPosition() - armTarget) > 6) {}
+                            slideTarget = 3000;
+
+                            return false;
+                        }
+                    }
+            ));
+        }
+        if (gamepad.a) {
+            Actions.runBlocking(new ParallelAction(
+                    new Action() {
+                        @Override
+                        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                            slideTarget = 0;
+                            return false;
+                        }
+                    },
+                    new Action() {
+                        @Override
+                        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                            while (Math.abs(flip.getCurrentPosition() - armTarget) > 6) {}
+                            armTarget = 0;
+
+                            return false;
+                        }
+                    }
+            ));
+        }
+    }
 
     public void TeleopPID(Gamepad gamepad) {
         armTarget += (int) ((int) -gamepad.right_stick_y * 9.45);
