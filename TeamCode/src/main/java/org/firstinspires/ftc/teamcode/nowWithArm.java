@@ -58,6 +58,8 @@ public class nowWithArm extends LinearOpMode {
     }
 
     private void manualMove() {
+        final int armMaxEncoder = -3360;
+        final int armMinEncoder = -190;
         float y = gamepad1.left_stick_y;
         float x = -gamepad1.left_stick_x;
         float t = -gamepad1.right_stick_x;
@@ -89,10 +91,13 @@ public class nowWithArm extends LinearOpMode {
         backLeft.setPower(0.75 * backLeftPower);
         frontRight.setPower(0.75 * frontRightPower);
         backRight.setPower(0.75 * backRightPower);
+        int position = arm.getCurrentPosition();
+        telemetry.addData("Encoder position, ", position);
+        telemetry.update();
 
-        if (armUp) {
+        if (armUp && (armMaxEncoder > arm.getCurrentPosition())) {
             arm.setPower(0.5);
-        } else if (armDown){
+        } else if (armDown && (armMinEncoder < arm.getCurrentPosition())){
             arm.setPower(-0.5);
         } else {
             arm.setPower(0);

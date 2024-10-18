@@ -9,9 +9,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@*-(name = "ChassisMovement2425")
+@TeleOp(name = "ChassisMovement2425")
 public class ChassisMovement2425 extends LinearOpMode {
-333333
     private IMU imu;
     private DcMotor backRight;
     private DcMotor frontRight;
@@ -88,5 +87,6 @@ public class ChassisMovement2425 extends LinearOpMode {
         backLeft.setPower(0.75 * backLeftPower);
         frontRight.setPower(0.75 * frontRightPower);
         backRight.setPower(0.75 * backRightPower);
+
     }
 }
