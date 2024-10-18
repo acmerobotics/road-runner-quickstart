@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.util.enums.AllianceColor;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,9 @@ import java.util.ArrayList;
 @Config
 public class TeleOpMainRed extends LinearOpMode {
     double oldTime = 0;
+
+    // STATES
+    boolean manualExtension = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,11 +32,36 @@ public class TeleOpMainRed extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
 
-//            if (gamepad1.left_bumper) {
-//                actionsQueue.add(new SequentialAction(
-//                        new InstantAction(() -> servo.setPosition(0.5))
-//                ));
-//            }
+            if (gamepad1.left_bumper) {
+                actionsQueue.add(new SequentialAction(
+                        new InstantAction(() -> robot.teleDepositPreset())
+                ));
+            }
+            if (gamepad1.right_bumper) {
+                actionsQueue.add(new SequentialAction(
+                        new InstantAction(() -> robot.intakePreset())
+                ));
+            }
+            if (gamepad1.triangle) {
+                actionsQueue.add(new SequentialAction(
+                        new InstantAction(() -> robot.toggleGamepiece())
+                ));
+            }
+            if (gamepad1.square) {
+                actionsQueue.add(new SequentialAction(
+                        new InstantAction(() -> setManualExtension())
+                ));
+            }
+            if (gamepad1.circle) {
+                actionsQueue.add(new SequentialAction(
+                        new InstantAction(() -> robot.toggleGamepieceColor(AllianceColor.RED))
+                ));
+            }
+            if (gamepad1.cross) {
+                actionsQueue.add(new SequentialAction(
+                        new InstantAction(() -> robot.smartOuttake())
+                ));
+            }
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : actionsQueue) {
@@ -57,5 +86,9 @@ public class TeleOpMainRed extends LinearOpMode {
             robot.setDrivePower(-x, y, rx);
 
         }
+    }
+
+    private void setManualExtension() {
+        manualExtension = !manualExtension;
     }
 }

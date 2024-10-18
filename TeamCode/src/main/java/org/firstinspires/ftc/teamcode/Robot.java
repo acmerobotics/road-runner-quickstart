@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.extension.Extension;
 import org.firstinspires.ftc.teamcode.subsystems.lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.arm.Arm;
+import org.firstinspires.ftc.teamcode.util.enums.AllianceColor;
 import org.firstinspires.ftc.teamcode.util.hardware.Component;
 import org.firstinspires.ftc.teamcode.util.hardware.ContinuousServo;
 import org.firstinspires.ftc.teamcode.util.enums.Levels;
@@ -39,6 +40,7 @@ public class Robot {
     boolean intaking = false;
     Levels state = Levels.INIT;
     Gamepiece mode = Gamepiece.SAMPLE;
+    SampleColors targetColor = SampleColors.YELLOW;
 
     Motor backLeft;
     Motor backRight;
@@ -88,6 +90,30 @@ public class Robot {
         backRight = (Motor) components[1];
         frontLeft = (Motor) components[2];
         frontRight = (Motor) components[3];
+    }
+
+    public void toggleGamepiece() {
+        if (mode == Gamepiece.SAMPLE) {
+            mode = Gamepiece.SPECIMEN;
+        } else {
+            mode = Gamepiece.SAMPLE
+        }
+    }
+
+    public void toggleGamepiece(Gamepiece p) {
+        mode = p;
+    }
+
+    public void toggleGamepieceColor(AllianceColor allianceColor) {
+        if (targetColor == SampleColors.BLUE || targetColor == SampleColors.RED) {
+            targetColor = SampleColors.YELLOW;
+        } else {
+            if (allianceColor == AllianceColor.RED) {
+                targetColor = SampleColors.RED;
+            } else {
+                targetColor = SampleColors.BLUE;
+            }
+        }
     }
 
     // INTAKE PRESETS
@@ -156,6 +182,15 @@ public class Robot {
         arm.runToPreset(Levels.HIGH_RUNG);
         lift.runToPreset(Levels.HIGH_RUNG);
         state = Levels.HIGH_RUNG;
+    }
+
+
+    public void teleDepositPreset() {
+        if (mode == Gamepiece.SAMPLE) {
+            highBasket();
+        } else {
+            highRung();
+        }
     }
 
     // OUTTAKE
