@@ -87,15 +87,6 @@ public class Robot {
         slideController = new PIDController(armPIDValues.sP,armPIDValues.sI,armPIDValues.sD);
     }
 
-    public Action pidfLoopFlip(double target) {
-        pidfLoop loop = new pidfLoop();
-        return loop.getPivotLoop(flip, target);
-    }
-
-    public Action pidfLoopSlides(double target) {
-        pidfLoop loop = new pidfLoop();
-        return loop.getSlidesLoop(slide, target);
-    }
 
     public void setTelemToDashboard(Telemetry telem) {
         telem = new MultipleTelemetry(telem, FtcDashboard.getInstance().getTelemetry());
