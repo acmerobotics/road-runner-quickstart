@@ -66,10 +66,10 @@ public class BlueTeleop extends LinearOpMode {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
-    private enum LiftState {LIFTSTART, LIFTDEPOSIT};
+    private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR}
     private LiftState liftState = LiftState.LIFTSTART;
 
-    private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT, EXTENDOSPIT};
+    private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT, EXTENDOSPIT}
     private ExtendoState extendoState = ExtendoState.EXTENDONOTHING;
 
     Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
@@ -102,14 +102,11 @@ public class BlueTeleop extends LinearOpMode {
             case EXTENDONOTHING:
                 //TODO: change values to the min/max of how far extendo extends
                 if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
-                    extendo.extendoLeft.setPower(y);
-                    extendo.extendoRight.setPower(y);
+                    extendo.extendoMotor.setPower(y);
                 } else if (extendo.getPos() > 10000) {
-                    extendo.extendoLeft.setPower(-0.6);
-                    extendo.extendoRight.setPower(-0.6);
+                    extendo.extendoMotor.setPower(-0.6);
                 } else if (extendo.getPos() < 0) {
-                    extendo.extendoLeft.setPower(0.6);
-                    extendo.extendoRight.setPower(0.6);
+                    extendo.extendoMotor.setPower(0.6);
                 }
                 //TODO: change value to how far until its a bit extended out in front of the robot
                 if (extendo.getPos() > 200) {
@@ -143,7 +140,6 @@ public class BlueTeleop extends LinearOpMode {
             case EXTENDOSPIT:
                 if (!vision.colorDetected().equals("Blue") && !vision.colorDetected().equals("Yellow")) {
                     intake.intakeMotor.setPower(0);
-                    runningActions.add(claw.close());
                     extendoState = ExtendoState.EXTENDONOTHING;
                 }
                 break;
@@ -153,11 +149,18 @@ public class BlueTeleop extends LinearOpMode {
             case LIFTSTART:
                 if (gamepad2.x) {
                     if (gamepad2.left_trigger < 0.9) {
-                        runningActions.add(slides.slideTopBasket());
+                        runningActions.add(new SequentialAction(slides.slideTopBasket()));
                     } else {
-                        runningActions.add(slides.slideBottomBasket());
+                        runningActions.add(new SequentialAction(slides.slideBottomBasket()));
                     }
                     liftState = LiftState.LIFTDEPOSIT;
+                }
+                if (gamepad2.y) {
+                    runningActions.add(new SequentialAction(
+                            slides.slideWallLevel(),
+                            claw.open()
+                    ));
+                    liftState = LiftState.LIFTWALL;
                 }
                 break;
             case LIFTDEPOSIT:
@@ -165,11 +168,41 @@ public class BlueTeleop extends LinearOpMode {
                     runningActions.add(new SequentialAction(
                             claw.flip(),
                             new SleepAction(0.5),
+                            claw.flop(),
                             slides.retract()
                     ));
                     liftState = LiftState.LIFTSTART;
                 }
-                if (gamepad2.b) {
+                break;
+            case LIFTWALL:
+                if (gamepad2.y) {
+                    if (gamepad2.left_trigger < 0.9) {
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideTopBar()
+                        ));
+                        liftState = LiftState.LIFTTOPBAR;
+                    } else {
+                        runningActions.add(new SequentialAction(
+                                claw.close(),
+                                slides.slideBottomBar()
+                        ));
+                        liftState = LiftState.LIFTBOTTOMBAR;
+                    }
+                }
+                break;
+            case LIFTTOPBAR:
+                if (gamepad2.y) {
+                    runningActions.add(new SequentialAction(
+                            slides.slideBottomBar(),
+                            new SleepAction(1.2),
+                            slides.retract()
+                    ));
+                    liftState = LiftState.LIFTSTART;
+                }
+                break;
+            case LIFTBOTTOMBAR:
+                if (gamepad2.y) {
                     runningActions.add(slides.retract());
                     liftState = LiftState.LIFTSTART;
                 }

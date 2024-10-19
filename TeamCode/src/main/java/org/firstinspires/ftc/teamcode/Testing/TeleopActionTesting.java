@@ -24,6 +24,8 @@ class Things {
 
     ElapsedTime time = new ElapsedTime();
 
+    boolean actionOn = false;
+
     public Things(HardwareMap HW) {
         FL = HW.get(DcMotor.class, "FL");
         FR = HW.get(DcMotor.class, "FR");
@@ -39,24 +41,36 @@ class Things {
         BL.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
+    public boolean getOn() {
+        return actionOn;
+    }
+
     public class SpinRight implements Action {
         private boolean init = false;
 
         @Override
         public boolean run(@NonNull TelemetryPacket Packet) {
             if (!init) {
-                FR.setPower(0.5);
-                BR.setPower(0.5);
+                actionOn = true;
+                FR.setPower(0.3);
+                BR.setPower(0.3);
+                FL.setPower(-0.3);
+                BL.setPower(-0.3);
                 time.reset();
                 init = true;
             }
 
-            if (time.seconds() > 2) {
+            if (time.seconds() > 2.0) {
                 FR.setPower(0);
                 BR.setPower(0);
+                FL.setPower(0);
+                BL.setPower(0);
+                actionOn = false;
                 return false;
+
             }
             return true;
+
 
         }
     }
@@ -71,18 +85,26 @@ class Things {
         @Override
         public boolean run(@NonNull TelemetryPacket Packet) {
             if (!init) {
-                FL.setPower(0.5);
-                BL.setPower(0.5);
+                actionOn = true;
+                FR.setPower(-0.3);
+                BR.setPower(-0.3);
+                FL.setPower(0.3);
+                BL.setPower(0.3);
                 time.reset();
                 init = true;
             }
 
             if (time.seconds() > 2) {
+                FR.setPower(0);
+                BR.setPower(0);
                 FL.setPower(0);
                 BL.setPower(0);
+                actionOn = false;
                 return false;
             }
+
             return true;
+
 
         }
     }
@@ -98,10 +120,15 @@ public class TeleopActionTesting extends LinearOpMode {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
+
+
     @Override
     public void runOpMode() {
 
         Things drivea = new Things(hardwareMap);
+
+        boolean lastA = false;
+        boolean lastB = false;
 
         waitForStart();
 
@@ -119,22 +146,27 @@ public class TeleopActionTesting extends LinearOpMode {
             double frontRightPower = (y - x - rx) / denominator;
             double backRightPower = (y + x - rx) / denominator;
 
-            if (gamepad1.a) {
+            if (gamepad1.a && !drivea.getOn()) {
                 runningActions.add(drivea.spinRight());
+
             }
 
-            if (gamepad1.b) {
+            if (gamepad1.b && !drivea.getOn()) {
                 runningActions.add(new SequentialAction(
                         drivea.spinLeft(),
                         drivea.spinRight(),
                         drivea.spinLeft()
                 ));
+
             }
 
-            drivea.FL.setPower(frontLeftPower/1.5);
-            drivea.BL.setPower(backLeftPower/1.5);
-            drivea.FR.setPower(frontRightPower/1.5);
-            drivea.BR.setPower(backRightPower/1.5);
+            if (!drivea.getOn()) {
+                drivea.FL.setPower(frontLeftPower / 1.5);
+                drivea.BL.setPower(backLeftPower / 1.5);
+                drivea.FR.setPower(frontRightPower / 1.5);
+                drivea.BR.setPower(backRightPower / 1.5);
+
+            }
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {
@@ -146,6 +178,9 @@ public class TeleopActionTesting extends LinearOpMode {
             runningActions = newActions;
 
             dash.sendTelemetryPacket(packet);
+
+            lastA = gamepad1.a;
+            lastB = gamepad1.b;
         }
 
     }
