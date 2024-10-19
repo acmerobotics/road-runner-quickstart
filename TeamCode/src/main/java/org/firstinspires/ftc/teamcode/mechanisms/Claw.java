@@ -8,21 +8,23 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Claw {
+    private Servo bucketLeftServo;
+    private Servo bucketRightServo;
     private Servo clawLeftServo;
     private Servo clawRightServo;
-    private Servo clawServo;
 
     public Claw(HardwareMap HWMap) {
+        bucketLeftServo = HWMap.get(Servo.class, "bucketLeftServo");
+        bucketRightServo = HWMap.get(Servo.class, "bucketLeftServo");
         clawLeftServo = HWMap.get(Servo.class, "clawLeftServo");
         clawRightServo = HWMap.get(Servo.class, "clawLeftServo");
-        clawServo = HWMap.get(Servo.class, "clawServo");
     }
 
     public class Flip implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawLeftServo.setPosition(1);
-            clawRightServo.setPosition(1);
+            bucketLeftServo.setPosition(1);
+            bucketRightServo.setPosition(1);
             return false;
         }
     }
@@ -34,8 +36,8 @@ public class Claw {
     public class Flop implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawLeftServo.setPosition(0);
-            clawRightServo.setPosition(0);
+            bucketLeftServo.setPosition(0);
+            bucketRightServo.setPosition(0);
             return false;
         }
     }
@@ -47,7 +49,8 @@ public class Claw {
     public class Close implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawServo.setPosition(1);
+            clawLeftServo.setPosition(1);
+            clawRightServo.setPosition(1);
             return false;
         }
     }
@@ -59,7 +62,8 @@ public class Claw {
     public class Open implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawServo.setPosition(1);
+            clawLeftServo.setPosition(0);
+            clawRightServo.setPosition(0);
             return false;
         }
     }
@@ -71,7 +75,8 @@ public class Claw {
     public class Up implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawServo.setPosition(0.5);
+            bucketLeftServo.setPosition(0.5);
+            bucketRightServo.setPosition(0.5);
             return false;
         }
     }
