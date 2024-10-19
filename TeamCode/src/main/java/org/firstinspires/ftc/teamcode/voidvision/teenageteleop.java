@@ -21,7 +21,7 @@ public class teenageteleop extends LinearOpMode {
     static double lfPower;
     static double rbPower;
     static double rfPower;
-    static double slowamount ;
+    static double slowamount;
     static double open = .3;
     static double closed = .5;
     static double direction = -1;
@@ -44,12 +44,13 @@ public class teenageteleop extends LinearOpMode {
 
             fwdBackPower = direction * -gamepad1.left_stick_y * slowamount;
             strafePower = direction * -gamepad1.left_stick_x * slowamount;
-            turnPower = -gamepad1.right_stick_x * slowamount;
+            turnPower = gamepad1.right_stick_x * slowamount;
 
             lfPower = (fwdBackPower - turnPower - strafePower);
             rfPower = (fwdBackPower + turnPower + strafePower);
             lbPower = (fwdBackPower - turnPower + strafePower);
             rbPower = (fwdBackPower + turnPower - strafePower);
+            telemetry.addData("slo",slowamount);
 
 
             robot.leftfrontDrive.setPower(lfPower);
@@ -57,7 +58,7 @@ public class teenageteleop extends LinearOpMode {
             robot.rightfrontDrive.setPower(rfPower);
             robot.rightbackDrive.setPower(rbPower);
 
-            slowamount = .5;
+            slowamount = 1;
 
             /**
              * GAMEPAD1
@@ -78,7 +79,6 @@ public class teenageteleop extends LinearOpMode {
             if(gamepad1.left_bumper){
                 slowamount = .25;
             }
-            else{slowamount = gamepad1.right_trigger*.6;}
 
             //robot.armMotorTwo.setPower(gamepad2.left_stick_y);
             //robot.armMotorOne.setPower(-gamepad2.right_stick_y*.5);
@@ -126,7 +126,7 @@ public class teenageteleop extends LinearOpMode {
              * GAMEPAD2
              * */
             if(gamepad2.a){
-                if(rangeServoDirection*1.05<(140/360)){
+                if(true){
                     /**ARM Extension**/
                     /**
                      * As the extender motor rotates almost a full 180 degrees to extend the arm,
@@ -134,22 +134,43 @@ public class teenageteleop extends LinearOpMode {
                      * Since these amounts mirror each other, they can be extended to the same
                      * position to reach super-extension of the basket and arm at the same time*/
                     robot.range1Servo.setPosition(rangeServoDirection);
-                    robot.basketServo1.setPosition(rangeServoDirection);
+                    telemetry.addData("1Pos",robot.range1Servo.getPosition());
+                    robot.range2Servo.setPosition(rangeServoDirection-robot.Finalrange);
+                    telemetry.addData("2Pos",robot.range2Servo.getPosition());
                     extendRangeServoDirection();
 
-                    if((rangeServoDirection<.25) &&(rangeServoDirection>.125)){
-                        startOuttake();
-                    }
-                    else if(rangeServoDirection>.25){
-                        startIntake();
-                    }
                 }
             }
-            if(gamepad2.right_bumper){
-                rangeServoDirection = .01;
-                robot.range1Servo.setPosition(rangeServoDirection);
+            if (gamepad2.b){
+                startIntake();
+                robot.basketServo1.setPosition(basketServoAmount);
+                robot.basketServo2.setPosition(basketServoAmount-robot.FinalrangeBasket);
+                extendRangeServoDirection();
             }
+            if(gamepad2.right_bumper){
+                rangeServoDirection = 0;
+                basketServoAmount = 0;
+                //Deal with basket
+                robot.basketServo1.setPosition(basketServoAmount);
+                robot.basketServo2.setPosition(basketServoAmount+robot.FinalrangeBasket);
+                //Deal with extension arm
+                robot.range1Servo.setPosition(rangeServoDirection);
+                robot.range2Servo.setPosition(rangeServoDirection+robot.Finalrange);
+                endIntake();
 
+            }
+            if(gamepad2.dpad_up){
+                robot.intakeServo.setPower(5);
+                telemetry.addData("intake",5);
+            }
+            else if(gamepad2.dpad_down){
+                robot.intakeServo.setPower(-5);
+                telemetry.addData("intake",-5);
+            }
+            else{
+                robot.intakeServo.setPower(0);
+                telemetry.addData("intake",0);
+            }
             testTriggerRight();
             testTriggerLeft();
             telemetry.update();
@@ -166,7 +187,7 @@ public class teenageteleop extends LinearOpMode {
          * strafe right is now strafe left
          * the turnPower variable is left alone bc it doesn't switch when the wheels switch
          **/
-        direction = -1;
+        direction = 1;
     }
     public void flipWheelConfigurationNormal(){
         /**
@@ -175,7 +196,7 @@ public class teenageteleop extends LinearOpMode {
          * strafe right is now strafe left
          * the turnPower variable is left alone bc it doesn't switch when the wheels switch
          **/
-        direction = 1;
+        direction = -1;
     }
     public void testTriggerRight(){
         telemetry.addData("Right Trigger",gamepad1.right_trigger);
@@ -185,12 +206,21 @@ public class teenageteleop extends LinearOpMode {
     }
 
     public void extendRangeServoDirection(){
-        rangeServoDirection = (100/360);
+        //rangeServoDirection = (100/360f);
+        //rangeServoDirection *= 1.05;
+        rangeServoDirection = robot.Finalrange;
+        basketServoAmount = robot.FinalrangeBasket;
     }
     public void startOuttake(){
         robot.intakeServo.setPower(-5);
+        telemetry.addData("Intake",robot.intakeServo.getPower());
     }
     public void startIntake(){
-        robot.intakeServo.setPower(5);
+        robot.intakeServo.setPower(5.0);
+        telemetry.addData("Intake",robot.intakeServo.getPower());
+    }
+    public void endIntake(){
+        robot.intakeServo.setPower(0);
+        telemetry.addData("Intake",robot.intakeServo.getPower());
     }
 }

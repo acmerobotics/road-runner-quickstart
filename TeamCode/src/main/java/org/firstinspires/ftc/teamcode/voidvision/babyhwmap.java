@@ -28,7 +28,7 @@ public class babyhwmap extends HardwareMapUtil {
         rightfrontDrive = HardwareInitMotor("rightFront", false);
         leftbackDrive = HardwareInitMotor("leftBack", true);
         rightbackDrive = HardwareInitMotor("rightBack", false);
-        servo = HardwareInitServo("servo",0);
+        //servo = HardwareInitServo("servo",0);
         //armMotorOne = HardwareInitMotor("arm_1", true);
         //armMotorTwo = HardwareInitMotor("arm_2", true);
         //armServo = hwMap.get(CRServo.class, "servo");

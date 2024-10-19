@@ -116,6 +116,7 @@ public class babyteleop extends LinearOpMode {
             while(gamepad1.dpad_right){
                 robot.rightbackDrive.setPower(1);
             }
+            /*
             while(gamepad2.x){
                 robot.servo.setPosition(.25);
             }
@@ -127,12 +128,12 @@ public class babyteleop extends LinearOpMode {
             }
             while(gamepad2.a){
                 if(rangeServoDirection*1.05<(140/360)){
-                    /**ARM Extension**/
+                    /**ARM Extension*
                     /**
                      * As the extender motor rotates almost a full 180 degrees to extend the arm,
                      * the basket servo also goes a full 180 degrees to flip out he basket.
                      * Since these amounts mirror each other, they can be extended to the same
-                     * position to reach super-extension of the basket and arm at the same time*/
+                     * position to reach super-extension of the basket and arm at the same time*
                     robot.servo.setPosition(rangeServoDirection);
                     telemetry.addData("ServoPosition",robot.servo.getPosition());
                     extendRangeServoDirection();
@@ -143,6 +144,7 @@ public class babyteleop extends LinearOpMode {
                 rangeServoDirection = .01;
                 robot.servo.setPosition(rangeServoDirection);
             }
+            **/
             testTriggerRight();
             testTriggerLeft();
             telemetry.update();

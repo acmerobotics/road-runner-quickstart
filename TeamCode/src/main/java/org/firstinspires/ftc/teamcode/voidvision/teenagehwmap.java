@@ -22,11 +22,18 @@ public class teenagehwmap extends HardwareMapUtil {
     public CRServo armServo = null;
     public Servo posServo = null;
     public Servo range1Servo = null;
+    //0 for left
     public Servo range2Servo = null;
+    //1 for right
     public Servo basketServo1 = null;
+    //3for left
     public Servo basketServo2 = null;
+    //4for right
     public CRServo intakeServo = null;
     public ColorSensor colorSensor = null;
+
+    public double Finalrange = .25;
+    public double FinalrangeBasket = .5;
 
 
 //
@@ -42,17 +49,16 @@ public class teenagehwmap extends HardwareMapUtil {
         //armServo = hwMap.get(CRServo.class, "servo");
         //posServo = hwMap.get(Servo.class, "posServo");
         range1Servo = HardwareInitServo("hippo1",0);
-        range2Servo = HardwareInitServo("hippo2",0);
+        range2Servo = HardwareInitServo("hippo2",Finalrange);
         intakeServo = HardwareInitCRServo("intake",true);
-        //range1Servo = hwMap.get(Servo.class, "range1Servo");
-        //range2Servo = hwMap.get(Servo.class, "range2Servo");
-        //intakeServo = hwMap.get(CRServo.class, "intakeServo");
+        basketServo1 = HardwareInitServo("basket1",0);
+        basketServo2 = HardwareInitServo("basket2",FinalrangeBasket);
 
-        colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
+        //colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
 
         /**Set Servos**/
         //armServo.setDirection(DcMotorSimple.Direction.FORWARD);
-        //intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
 
