@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -19,8 +19,6 @@ public class nowWithArm extends LinearOpMode {
     private DcMotor backLeft;
     private DcMotor frontLeft;
     private DcMotor arm;
-
-
 
     private void setupMovement() {
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
@@ -37,7 +35,7 @@ public class nowWithArm extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     @Override
@@ -48,18 +46,24 @@ public class nowWithArm extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         arm = hardwareMap.get(DcMotor.class, "arm");
-
         setupMovement();
-        waitForStart();
 
+        // Arm SetUp
+        final int ARMMIN = arm.getCurrentPosition();
+        final int ARMMAX = ARMMIN - 3470;
+        final int INCREMENT = 10;
+        arm.setPower(0.5);
+
+        waitForStart();
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (opModeIsActive()) {
-            manualMove();
+            chassisMovement();
+            armMovement(ARMMAX, ARMMIN, INCREMENT);
+            printPosition();
         }
     }
 
-    private void manualMove() {
-        final int armMaxEncoder = -3360;
-        final int armMinEncoder = -190;
+    private void chassisMovement() {
         float y = gamepad1.left_stick_y;
         float x = -gamepad1.left_stick_x;
         float t = -gamepad1.right_stick_x;
@@ -71,10 +75,6 @@ public class nowWithArm extends LinearOpMode {
         double backLeftPower;
         double frontRightPower;
         double backRightPower;
-        boolean armUp = gamepad1.dpad_up;
-        boolean armDown = gamepad1.dpad_down;
-
-
         if (gamepad1.start) {
             imu.resetYaw();
         }
@@ -91,16 +91,25 @@ public class nowWithArm extends LinearOpMode {
         backLeft.setPower(0.75 * backLeftPower);
         frontRight.setPower(0.75 * frontRightPower);
         backRight.setPower(0.75 * backRightPower);
+    }
+    private void armMovement(int ARMMAX, int ARMMIN, int INCREMENT) {
+        int armPosition = arm.getCurrentPosition();
+        while(!arm.isBusy()) {
+            if (gamepad1.dpad_down && (ARMMIN <= (armPosition + INCREMENT))) {      // if (DPAD-down) is being pressed and if not yet the min
+                arm.setTargetPosition(armPosition + INCREMENT);                     // Position in
+            } else if (gamepad1.dpad_up && (ARMMAX >= (armPosition - INCREMENT))) { // if (DPAD-up) is being pressed and if not yet max
+                arm.setTargetPosition(armPosition - INCREMENT);                     // Position Out
+            }
+        }
+    }
+    private void armHotKeys(int[] targets) {
+        
+        arm.setTargetPosition();
+    }
+    private void printPosition() {
         int position = arm.getCurrentPosition();
         telemetry.addData("Encoder position, ", position);
         telemetry.update();
-
-        if (armUp && (armMaxEncoder > arm.getCurrentPosition())) {
-            arm.setPower(0.5);
-        } else if (armDown && (armMinEncoder < arm.getCurrentPosition())){
-            arm.setPower(-0.5);
-        } else {
-            arm.setPower(0);
-        }
     }
+
 }
