@@ -5,7 +5,7 @@ package org.firstinspires.ftc.teamcode.Auto.Paths;
 // RR-specific imports
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
-        import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
@@ -13,10 +13,10 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-        import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous
-public class FarBlocktoObservation extends LinearOpMode {
+public class FarBlocktoObservation2 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -27,30 +27,30 @@ public class FarBlocktoObservation extends LinearOpMode {
         //drive.setPoseEstimate(StartPose1);
 
         TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(25,-37.5), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-29.46,-12.24), Math.toRadians(0))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15.17, 10.10), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-12.42,41.71), Math.toRadians(178))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(23.24,-54.10), Math.toRadians(-10))
+                .strafeToLinearHeading(new Vector2d(-17.55,34.21), Math.toRadians(-3))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15.17, 10.10), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-18.42,48.71), Math.toRadians(178))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15.17, -32), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(40.54, -38), Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(-17.55,34.21), Math.toRadians(-3))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(15.17, 10.10), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-30.81,38.9), Math.toRadians(89))
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(15,-23));
+                .strafeToLinearHeading(new Vector2d(-17.55,34.21), Math.toRadians(-3))
+                .waitSeconds(4)
+                .strafeToLinearHeading(new Vector2d(0,34.21), Math.toRadians(180));
 
 
 
-// RR-specific imports
 
 
 
         Action path = basket.build();
-                waitForStart();
-                Actions.runBlocking(path);
+        waitForStart();
+        Actions.runBlocking(path);
 
     }
 }
