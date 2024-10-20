@@ -45,11 +45,11 @@ public class meepmep {
                 .turn(Math.toRadians(-55))
                 .waitSeconds(2)
                 .strafeToLinearHeading(new Vector2d(33,9), Math.toRadians(180))
-                .waitSeconds(3.5)
+                .waitSeconds(3)
                 .strafeToLinearHeading(new Vector2d(56,48), Math.toRadians(245))
                 .waitSeconds(2)
                 .strafeToLinearHeading(new Vector2d(33,9), Math.toRadians(180))
-                .waitSeconds(2)
+                .waitSeconds(1.2)
                 .build());
 
         BlueHumanSide.runAction(BlueHumanSide.getDrive().actionBuilder(new Pose2d(-15, 63, Math.toRadians(270)))
@@ -90,11 +90,11 @@ public class meepmep {
                 .turn(Math.toRadians(-55))
                 .waitSeconds(2)
                 .strafeToLinearHeading(new Vector2d(-33,-9), Math.toRadians(0))
-                .waitSeconds(3.5)
+                .waitSeconds(3)
                 .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(65))
                 .waitSeconds(2)
                 .strafeToLinearHeading(new Vector2d(-33,-9), Math.toRadians(0))
-                .waitSeconds(2)
+                .waitSeconds(1.2)
                 .build());
 
         RedHumanSide.runAction(RedHumanSide.getDrive().actionBuilder(new Pose2d(15, -63, Math.toRadians(90)))
