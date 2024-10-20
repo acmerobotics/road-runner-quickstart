@@ -44,6 +44,12 @@ public class meepmep {
                 .waitSeconds(1)
                 .turn(Math.toRadians(-55))
                 .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(33,9), Math.toRadians(180))
+                .waitSeconds(3.5)
+                .strafeToLinearHeading(new Vector2d(56,48), Math.toRadians(245))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(33,9), Math.toRadians(180))
+                .waitSeconds(2)
                 .build());
 
         BlueHumanSide.runAction(BlueHumanSide.getDrive().actionBuilder(new Pose2d(-15, 63, Math.toRadians(270)))
