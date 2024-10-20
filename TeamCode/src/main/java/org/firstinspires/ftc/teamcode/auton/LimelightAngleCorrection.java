@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auton;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,8 +15,8 @@ public class LimelightAngleCorrection extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
         telemetry.setMsTransmissionInterval(11);
 
@@ -33,7 +34,10 @@ public class LimelightAngleCorrection extends LinearOpMode {
         telemetry.update();
 
         if (tx >= 0) {
-
+            drive.setPowers(0.1, -0.1, 0.1, -0.1);
+        }
+        else if (tx <= 0) {
+            drive.setPowers(-0.1, 0.1, -0.1, 0.1);
         }
     }
 }
