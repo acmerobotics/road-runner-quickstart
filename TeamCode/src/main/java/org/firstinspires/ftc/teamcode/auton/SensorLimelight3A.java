@@ -77,6 +77,7 @@ public class SensorLimelight3A extends LinearOpMode {
                     status.getName());
             telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
                     status.getTemp(), status.getCpu(),(int)status.getFps());
+            telemetry.addData("TempF", (status.getTemp() * (9/5)) + 32);
             telemetry.addData("Pipeline", "Index: %d, Type: %s",
                     status.getPipelineIndex(), status.getPipelineType());
 
