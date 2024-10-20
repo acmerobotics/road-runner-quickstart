@@ -30,26 +30,26 @@ public class LimelightAngleCorrection extends LinearOpMode {
         waitForStart();
         limelight.start();
 
-        LLResult result = limelight.getLatestResult();
-        double tx = result.getTx();
-        double ty = result.getTy();
+        while (opModeIsActive() && !isStopRequested()) {
+            LLResult result = limelight.getLatestResult();
+            double tx = result.getTx();
+            double ty = result.getTy();
 
-        telemetry.addData("tx", tx);
-        telemetry.addData("ty", ty);
-        telemetry.update();
+            telemetry.addData("tx", tx);
+            telemetry.addData("ty", ty);
+            telemetry.update();
 
-        if (tx >= 0) {
-            drive.setPowers(0.1, -0.1, 0.1, -0.1);
-            telemetry.addLine("Turning Right");
+            if (tx >= 0) {
+                drive.setPowers(0.1, -0.1, 0.1, -0.1);
+                telemetry.addLine("Turning Right");
+            } else if (tx <= 0) {
+                drive.setPowers(-0.1, 0.1, -0.1, 0.1);
+                telemetry.addLine("Tuning Left");
+            } else {
+                drive.setPowers(0, 0, 0, 0);
+                telemetry.addLine("Doing Nothing");
+            }
+            telemetry.update();
         }
-        else if (tx <= 0) {
-            drive.setPowers(-0.1, 0.1, -0.1, 0.1);
-            telemetry.addLine("Tuning Left");
-        }
-        else {
-            drive.setPowers(0,0,0,0);
-            telemetry.addLine("Doing Nothing");
-        }
-        telemetry.update();
     }
 }
