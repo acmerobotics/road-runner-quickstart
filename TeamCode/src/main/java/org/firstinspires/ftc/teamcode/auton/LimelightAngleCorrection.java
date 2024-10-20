@@ -39,11 +39,15 @@ public class LimelightAngleCorrection extends LinearOpMode {
             telemetry.addData("ty", ty);
             telemetry.update();
 
-            if (tx >= 0) {
-                drive.setPowers(0.1, -0.1, 0.1, -0.1);
+            double power = 0.2 * (tx/5);
+
+            telemetry.addData("power", power);
+
+            if (tx > 0) {
+                drive.setPowers(power, -power, power, -power);
                 telemetry.addLine("Turning Right");
-            } else if (tx <= 0) {
-                drive.setPowers(-0.1, 0.1, -0.1, 0.1);
+            } else if (tx < 0) {
+                drive.setPowers(-power, power, -power, power);
                 telemetry.addLine("Tuning Left");
             } else {
                 drive.setPowers(0, 0, 0, 0);
