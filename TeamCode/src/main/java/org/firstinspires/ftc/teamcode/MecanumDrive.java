@@ -491,4 +491,10 @@ public final class MecanumDrive {
                 defaultVelConstraint, defaultAccelConstraint
         );
     }
+    public void setPowers(double flPower, double frPower, double blPower, double brPower) {
+        leftFront.setPower(flPower);
+        rightFront.setPower(frPower);
+        leftBack.setPower(blPower);
+        rightBack.setPower(brPower);
+    }
 }
