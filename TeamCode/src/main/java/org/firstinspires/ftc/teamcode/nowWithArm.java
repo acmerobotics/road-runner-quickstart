@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import java.lang.Math;
+
 
 @TeleOp(name = "nowWithArm")
 public class nowWithArm extends LinearOpMode {
@@ -50,8 +52,8 @@ public class nowWithArm extends LinearOpMode {
 
         // Arm SetUp
         final int ARMMIN = arm.getCurrentPosition();
-        final int ARMMAX = ARMMIN - 3470;
-        final int INCREMENT = 50;
+        final int ARMMAX = ARMMIN - 3000;
+        final int INCREMENT = 200;
         arm.setPower(1);
         waitForStart();
 
@@ -95,16 +97,16 @@ public class nowWithArm extends LinearOpMode {
     }
     private void armMovement(int ARMMAX, int ARMMIN, int INCREMENT) {
         int armPosition = arm.getCurrentPosition();
-        if (gamepad1.dpad_down && (ARMMIN >= (armPosition + INCREMENT))) {      // if (DPAD-down) is being pressed and if not yet the min
-            arm.setTargetPosition(armPosition + INCREMENT);                     // Position in
-        } else if (gamepad1.dpad_up && (ARMMAX <= (armPosition - INCREMENT))) { // if (DPAD-up) is being pressed and if not yet max
-            arm.setTargetPosition(armPosition - INCREMENT);                     // Position Out
+        if (gamepad1.dpad_down) {      // if (DPAD-down) is being pressed and if not yet the min
+            arm.setTargetPosition(Math.max((armPosition + INCREMENT), ARMMIN));                    // Position in
+        } else if (gamepad1.dpad_up) { // if (DPAD-up) is being pressed and if not yet max
+            arm.setTargetPosition(Math.min((armPosition - INCREMENT), ARMMAX));                     // Position Out
         }
     }
-    private void armHotKeys(int[] targets) {
-        
-        //arm.setTargetPosition();
-    }
+//    private void armHotKeys(int[] targets) {
+//
+//        //arm.setTargetPosition();
+//    }
     private void printPosition(int ARMMAX, int ARMMIN) {
         int position = arm.getCurrentPosition();
         int target = arm.getTargetPosition();
