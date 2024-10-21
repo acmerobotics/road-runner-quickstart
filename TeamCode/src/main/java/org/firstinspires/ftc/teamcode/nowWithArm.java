@@ -53,16 +53,14 @@ public class nowWithArm extends LinearOpMode {
         final int ARMMAX = ARMMIN - 3470;
         final int INCREMENT = 50;
         arm.setPower(1);
-
         waitForStart();
-        telemetry.addData("max: ", ARMMAX);
-        telemetry.addData("min: ", ARMMIN);
+
         arm.setTargetPosition(arm.getCurrentPosition());
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (opModeIsActive()) {
             chassisMovement();
             armMovement(ARMMAX, ARMMIN, INCREMENT);
-            printPosition();
+            printPosition(ARMMAX, ARMMIN);
         }
     }
 
@@ -97,9 +95,9 @@ public class nowWithArm extends LinearOpMode {
     }
     private void armMovement(int ARMMAX, int ARMMIN, int INCREMENT) {
         int armPosition = arm.getCurrentPosition();
-        if (gamepad1.dpad_down && (ARMMIN <= (armPosition + INCREMENT))) {      // if (DPAD-down) is being pressed and if not yet the min
-                arm.setTargetPosition(armPosition + INCREMENT);                     // Position in
-        } else if (gamepad1.dpad_up && (ARMMAX >= (armPosition - INCREMENT))) { // if (DPAD-up) is being pressed and if not yet max
+        if (gamepad1.dpad_down && (ARMMIN >= (armPosition + INCREMENT))) {      // if (DPAD-down) is being pressed and if not yet the min
+            arm.setTargetPosition(armPosition + INCREMENT);                     // Position in
+        } else if (gamepad1.dpad_up && (ARMMAX <= (armPosition - INCREMENT))) { // if (DPAD-up) is being pressed and if not yet max
             arm.setTargetPosition(armPosition - INCREMENT);                     // Position Out
         }
     }
@@ -107,9 +105,11 @@ public class nowWithArm extends LinearOpMode {
         
         //arm.setTargetPosition();
     }
-    private void printPosition() {
+    private void printPosition(int ARMMAX, int ARMMIN) {
         int position = arm.getCurrentPosition();
         int target = arm.getTargetPosition();
+        telemetry.addData("max: ", ARMMAX);
+        telemetry.addData("min: ", ARMMIN);
 
         telemetry.addData("Encoder position, ", position);
         telemetry.addData("Encoder target, ", target);
