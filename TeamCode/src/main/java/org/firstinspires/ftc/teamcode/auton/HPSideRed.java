@@ -38,7 +38,7 @@ public class HPSideRed extends LinearOpMode {
                 .turn(Math.toRadians(20))
                 .waitSeconds(0.5)
 
-                .turn(Math.toRadians(-35))
+                .turn(Math.toRadians(-20))
                 .waitSeconds(0.5)
 
                 .turn(Math.toRadians(-20))
