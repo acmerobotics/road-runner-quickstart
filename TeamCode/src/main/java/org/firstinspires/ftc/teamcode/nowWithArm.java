@@ -97,11 +97,13 @@ public class nowWithArm extends LinearOpMode {
     }
     private void armMovement(int ARMMAX, int ARMMIN, int INCREMENT) {
         int armPosition = arm.getCurrentPosition();
-        if (gamepad1.dpad_down) {      // if (DPAD-down) is being pressed and if not yet the min
-            arm.setTargetPosition(Math.max((armPosition + INCREMENT), ARMMIN));                    // Position in
-        } else if (gamepad1.dpad_up) { // if (DPAD-up) is being pressed and if not yet max
-            arm.setTargetPosition(Math.min((armPosition - INCREMENT), ARMMAX));                     // Position Out
+        if (gamepad1.dpad_down) {       // if (DPAD-down) is being pressed and if not yet the min
+            armPosition += INCREMENT;   // Position in
+        } else if (gamepad1.dpad_up) {  // if (DPAD-up) is being pressed and if not yet max
+            armPosition -= INCREMENT;   // Position Out
         }
+        armPosition = Math.max(Math.min(armPosition, ARMMIN), ARMMAX);
+        arm.setTargetPosition(armPosition);
     }
 //    private void armHotKeys(int[] targets) {
 //
