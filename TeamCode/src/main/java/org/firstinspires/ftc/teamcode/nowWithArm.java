@@ -51,10 +51,13 @@ public class nowWithArm extends LinearOpMode {
         // Arm SetUp
         final int ARMMIN = arm.getCurrentPosition();
         final int ARMMAX = ARMMIN - 3470;
-        final int INCREMENT = 10;
-        arm.setPower(0.5);
+        final int INCREMENT = 50;
+        arm.setPower(1);
 
         waitForStart();
+        telemetry.addData("max: ", ARMMAX);
+        telemetry.addData("min: ", ARMMIN);
+        arm.setTargetPosition(arm.getCurrentPosition());
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (opModeIsActive()) {
             chassisMovement();
@@ -94,21 +97,23 @@ public class nowWithArm extends LinearOpMode {
     }
     private void armMovement(int ARMMAX, int ARMMIN, int INCREMENT) {
         int armPosition = arm.getCurrentPosition();
-        while(!arm.isBusy()) {
-            if (gamepad1.dpad_down && (ARMMIN <= (armPosition + INCREMENT))) {      // if (DPAD-down) is being pressed and if not yet the min
+        if (gamepad1.dpad_down && (ARMMIN <= (armPosition + INCREMENT))) {      // if (DPAD-down) is being pressed and if not yet the min
                 arm.setTargetPosition(armPosition + INCREMENT);                     // Position in
-            } else if (gamepad1.dpad_up && (ARMMAX >= (armPosition - INCREMENT))) { // if (DPAD-up) is being pressed and if not yet max
-                arm.setTargetPosition(armPosition - INCREMENT);                     // Position Out
-            }
+        } else if (gamepad1.dpad_up && (ARMMAX >= (armPosition - INCREMENT))) { // if (DPAD-up) is being pressed and if not yet max
+            arm.setTargetPosition(armPosition - INCREMENT);                     // Position Out
         }
     }
     private void armHotKeys(int[] targets) {
         
-        arm.setTargetPosition();
+        //arm.setTargetPosition();
     }
     private void printPosition() {
         int position = arm.getCurrentPosition();
+        int target = arm.getTargetPosition();
+
         telemetry.addData("Encoder position, ", position);
+        telemetry.addData("Encoder target, ", target);
+
         telemetry.update();
     }
 
