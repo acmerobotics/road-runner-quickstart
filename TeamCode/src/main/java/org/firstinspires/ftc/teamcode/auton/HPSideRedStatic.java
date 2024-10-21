@@ -16,15 +16,20 @@ import org.firstinspires.ftc.teamcode.roadrunner.KalmanDrive;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
 
 @Autonomous(name = "HPSideRed", group = "Autonomous")
-public class HPSideRed extends LinearOpMode {
+public class HPSideRedStatic extends LinearOpMode {
     KalmanDrive drive;
     CVMaster cv;
     public void runOpMode() {
         Pose2d beginPose = new Pose2d(12, -60, Math.toRadians(90));
         cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
+        cv.start();
+        cv.setLLPipeline(CVMaster.LLPipeline.APRILTAGS);
+
         drive = new KalmanDrive(hardwareMap, beginPose, cv.limelight);
 
         Action auton = drive.actionBuilder(drive.pose)
+//                .turn(Math.toRadians(180))
+
                 .setTangent(Math.toRadians(110))
                 .splineToLinearHeading(new Pose2d(0, -40, Math.toRadians(90)), Math.toRadians(110))
                 .waitSeconds(0.5)
@@ -43,15 +48,16 @@ public class HPSideRed extends LinearOpMode {
                 .waitSeconds(1)
 
                 // gonna see me cycling
+                .turn(Math.toRadians(200))
                 .setTangent(9 * Math.PI/10)
-                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(90)), 9 * Math.PI/10)
+                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(-90)), 9 * Math.PI/10)
                 .waitSeconds(0.5)
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(-90)), -Math.PI/10)
                 .waitSeconds(0.5)
 
                 .setTangent(9 * Math.PI/10)
-                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(90)), 9 * Math.PI/10)
+                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(- 90)), 9 * Math.PI/10)
 
                 .build();
         telemetry.addData("is","starting");

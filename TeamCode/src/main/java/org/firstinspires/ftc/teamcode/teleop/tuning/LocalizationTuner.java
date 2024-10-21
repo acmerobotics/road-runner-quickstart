@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.teleop.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.util.hardware.Motor;
 
 @TeleOp(name="cv tuner")
 @Config
-public class KalmanTuner extends LinearOpMode {
+public class LocalizationTuner extends LinearOpMode {
     CVMaster cv;
     GoBildaPinpoint odo;
     SparkFunOTOS otos;
@@ -50,17 +50,13 @@ public class KalmanTuner extends LinearOpMode {
     public double startingY = 54.25;
     public double startingHeading = Math.toRadians(0);
 
-    double fusedX;
-    double fusedY;
-
-
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
         odo = hardwareMap.get(GoBildaPinpoint.class,"pinpoint");
         otos = hardwareMap.get(SparkFunOTOS.class, "otos");
-        KalmanFilter kalman = new KalmanFilter(new Pose2d(startingX, startingY, startingHeading), odo, cv.limelight);
+        //KalmanFilter kalman = new KalmanFilter(new com.arcrobotics.ftclib.geometry.Pose2d(startingX, startingY, new Rotation2d(startingHeading)), odo, cv.limelight);
 
         cv.start();
         cv.setLLPipeline(CVMaster.LLPipeline.APRILTAGS);
@@ -115,33 +111,27 @@ public class KalmanTuner extends LinearOpMode {
             double frequency = 1/loopTime;
             oldTime = newTime;
 
+            double fusedX = 0;
+            double fusedY = 0;
 
             TelemetryPacket packet = new TelemetryPacket();
             Canvas c = packet.fieldOverlay();
-
-            kalman.odoKalman();
-            fusedX = kalman.getCalculatedState().position.x;
-            fusedY = kalman.getCalculatedState().position.y;
-
             if (llPose != null) {
-                kalman.aprilTagKalman();
 
-                fusedX = kalman.getCalculatedState().position.x;
-                fusedY = kalman.getCalculatedState().position.y;
+                fusedX = ((Kpp) * ppPose.position.x) + ((Kotos) * otosPose.position.x) + (Kll * llPose.position.x);
+                fusedY = ((Kpp) * ppPose.position.y) + ((Kotos) * otosPose.position.y) + (Kll * llPose.position.y);
+
                 c.setStroke("#34ad38");
                 Drawing.drawRobot(c, llPose);
 
-//                telemetry.addData("x", llPose.position.x);
-//                telemetry.addData("y", llPose.position.y);
-//                telemetry.addData("heading", llPose.heading.toDouble());
-//                telemetry.addData("rawPose", pose3d.toString());
-//                telemetry.addData("ll", "true");
-
+                telemetry.addData("x", llPose.position.x);
+                telemetry.addData("y", llPose.position.y);
+                telemetry.addData("heading", llPose.heading.toDouble());
+                telemetry.addData("rawPose", pose3d.toString());
 //                telemetry.addData("currentTime", System.currentTimeMillis());
 //                telemetry.addData("limelight timestamp", result.getTimestamp() );
             }
-            telemetry.addData("fusedX", fusedX);
-            telemetry.addData("fusedY", fusedY);
+
             Pose2d fusedPose = new Pose2d(fusedX, fusedY, ppPose.heading.toDouble());
 
             c.setStroke("#edd100");
