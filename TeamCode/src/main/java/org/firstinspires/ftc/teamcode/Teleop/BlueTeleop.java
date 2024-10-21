@@ -72,7 +72,7 @@ public class BlueTeleop extends LinearOpMode {
     private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT, EXTENDOSPIT}
     private ExtendoState extendoState = ExtendoState.EXTENDONOTHING;
 
-    Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
+    Pose2d StartPose1 = new Pose2d(0, 0, Math.toRadians(0));
     MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
 
@@ -95,8 +95,6 @@ public class BlueTeleop extends LinearOpMode {
 
     public void buttonpress(Extendo extendo, Intake intake, Slides slides, Claw claw) {
         double y = gamepad2.left_stick_y;
-        double robotX = drive.pose.position.x;
-        double robotY = drive.pose.position.y;
 
         switch (extendoState) {
             case EXTENDONOTHING:

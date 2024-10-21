@@ -29,7 +29,7 @@ public class Intake {
             //TODO: set values to actual servo positions
             intakeServoLeft.setPosition(1);
             intakeServoRight.setPosition(1);
-            intakeMotor.setPower(1.0);
+            //intakeMotor.setPower(1.0);
             flipped = true;
             return false;
         }

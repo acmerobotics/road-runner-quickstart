@@ -60,169 +60,64 @@ import java.util.List;
 @TeleOp
 public class RedTeleop extends LinearOpMode {
 
-    Pipeline vision = new Pipeline(telemetry);
-    OpenCvWebcam webcam1 = null;
 
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
-    private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR};
+    private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR}
     private LiftState liftState = LiftState.LIFTSTART;
 
-    private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT, EXTENDOSPIT};
+    private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT, EXTENDOSPIT}
     private ExtendoState extendoState = ExtendoState.EXTENDONOTHING;
-
-    Pose2d StartPose1 = new Pose2d(40, 60, Math.toRadians(180));
-    MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
-
-
-    public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
-        double y = gamepad1.left_stick_y;
-        double x = -gamepad1.left_stick_x;
-        double rx = -gamepad1.right_stick_x;
-
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double frontLeftPower = (y + x + rx) / denominator;
-        double backLeftPower = (y - x + rx) / denominator;
-        double frontRightPower = (y - x - rx) / denominator;
-        double backRightPower = (y + x - rx) / denominator;
-
-        FL.setPower(frontLeftPower);
-        BL.setPower(backLeftPower);
-        FR.setPower(frontRightPower);
-        BR.setPower(backRightPower);
-    }
+//
+//    public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
+//        double y = gamepad1.left_stick_y;
+//        double x = -gamepad1.left_stick_x;
+//        double rx = -gamepad1.right_stick_x;
+//
+//        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+//        double frontLeftPower = (y + x + rx) / denominator;
+//        double backLeftPower = (y - x + rx) / denominator;
+//        double frontRightPower = (y - x - rx) / denominator;
+//        double backRightPower = (y + x - rx) / denominator;
+//
+//        FL.setPower(frontLeftPower);
+//        BL.setPower(backLeftPower);
+//        FR.setPower(frontRightPower);
+//        BR.setPower(backRightPower);
+//    }
 
     public void buttonpress(Extendo extendo, Intake intake, Slides slides, Claw claw) {
-        double y = gamepad2.left_stick_y;
-        double robotX = drive.pose.position.x;
-        double robotY = drive.pose.position.y;
+        double lefty = gamepad2.left_stick_y;
+        double righty = gamepad2.right_stick_y;
 
-        switch (extendoState) {
-            case EXTENDONOTHING:
-                //TODO: change values to the min/max of how far extendo extends
-                if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
-                    extendo.extendoLeft.setPower(y);
-                    extendo.extendoRight.setPower(y);
-                } else if (extendo.getPos() > 10000) {
-                    extendo.extendoLeft.setPower(-0.6);
-                    extendo.extendoRight.setPower(-0.6);
-                } else if (extendo.getPos() < 0) {
-                    extendo.extendoLeft.setPower(0.6);
-                    extendo.extendoRight.setPower(0.6);
-                }
-                //TODO: change value to how far until its a bit extended out in front of the robot
-                if (extendo.getPos() > 200) {
-                    if (!Intake.flipped) {
-                        runningActions.add(intake.flip());
-                    }
-                    if (vision.colorDetected().equals("Red") || vision.colorDetected().equals("Yellow")) {
-                        intake.intakeMotor.setPower(0);
-                        runningActions.add(new SequentialAction(
-                                intake.flop(),
-                                extendo.retract()
-                        ));
-                        extendoState = ExtendoState.EXTENDORETRACT;
-                    } else if (vision.colorDetected().equals("Blue")) {
-                        intake.intakeMotor.setPower(-1);
-                    } else {
-                        intake.intakeMotor.setPower(1);
-                    }
-                } else {
-                    if (Intake.flipped) {
-                        runningActions.add(intake.flop());
-                    }
-                }
-                break;
-            case EXTENDORETRACT:
-                //TODO: Set to the transfer position
-                if (extendo.getPos() < 0) {
-                    intake.intakeMotor.setPower(-0.2);
-                    extendoState = ExtendoState.EXTENDOSPIT;
-                }
-                break;
-            case EXTENDOSPIT:
-                if (!vision.colorDetected().equals("Red") && !vision.colorDetected().equals("Yellow")) {
-                    intake.intakeMotor.setPower(0);
-                    extendoState = ExtendoState.EXTENDONOTHING;
-                }
-                break;
+        extendo.extendoMotor.setPower(lefty);
+
+        slides.slidesRightMotor.setPower(righty);
+        slides.slidesLeftMotor.setPower(righty);
+
+        if (gamepad2.x) {
+            intake.intakeMotor.setPower(1);
+        } else if (gamepad2.b) {
+            intake.intakeMotor.setPower(-0.3);
+        } else {
+            intake.intakeMotor.setPower(0);
         }
 
+        if (gamepad2.a) {
+            if (gamepad2.left_trigger < 0.9) {
+                runningActions.add(intake.flip());
+            } else {
+                runningActions.add(intake.flop());
+            }
+        }
 
-
-        switch (liftState) {
-            case LIFTSTART:
-                if (gamepad2.x) {
-                    if (gamepad2.left_trigger < 0.9) {
-                        runningActions.add(new SequentialAction(
-                                claw.close(),
-                                slides.slideTopBasket(),
-                                claw.flip()
-                        ));
-                    } else {
-                        runningActions.add(new SequentialAction(
-                                claw.close(),
-                                slides.slideBottomBasket(),
-                                claw.flip()
-                        ));
-                    }
-                    liftState = LiftState.LIFTDEPOSIT;
-                }
-                if (gamepad2.y) {
-                    runningActions.add(new SequentialAction(
-                            slides.slideWallLevel(),
-                            claw.flip()
-                    ));
-                    liftState = LiftState.LIFTWALL;
-                }
-                break;
-            case LIFTDEPOSIT:
-                if (gamepad2.x) {
-                    runningActions.add(new SequentialAction(
-                            claw.open(),
-                            claw.flop(),
-                            slides.retract()
-                    ));
-                    liftState = LiftState.LIFTSTART;
-                }
-                break;
-            case LIFTWALL:
-                if (gamepad2.y) {
-                    if (gamepad2.left_trigger < 0.9) {
-                        runningActions.add(new SequentialAction(
-                                claw.close(),
-                                slides.slideTopBar()
-                        ));
-                        liftState = LiftState.LIFTTOPBAR;
-                    } else {
-                        runningActions.add(new SequentialAction(
-                                claw.close(),
-                                slides.slideBottomBar()
-                        ));
-                        liftState = LiftState.LIFTBOTTOMBAR;
-                    }
-                }
-                break;
-            case LIFTTOPBAR:
-                if (gamepad2.y) {
-                    runningActions.add(new SequentialAction(
-                            slides.slideBottomBar(),
-                            new SleepAction(1.2),
-                            slides.retract()
-                    ));
-                    liftState = LiftState.LIFTSTART;
-                }
-                break;
-            case LIFTBOTTOMBAR:
-                if (gamepad2.y) {
-                    runningActions.add(slides.retract());
-                    liftState = LiftState.LIFTSTART;
-                }
-                break;
-            default:
-                liftState = LiftState.LIFTSTART;
-                break;
+        if (gamepad2.y) {
+            if (gamepad2.left_trigger < 0.9) {
+                runningActions.add(claw.flip());
+            } else {
+                runningActions.add(claw.flop());
+            }
         }
     }
     @Override
@@ -233,27 +128,12 @@ public class RedTeleop extends LinearOpMode {
         Slides slides = new Slides(hardwareMap);
         Claw claw = new Claw(hardwareMap);
 
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam1");
-        int cameraMoniterViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMoniterViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(webcamName,cameraMoniterViewId);
-        webcam1.setPipeline(new Pipeline(telemetry));
-        webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener(){
-            public void onOpened(){
-                webcam1.startStreaming(640,480, OpenCvCameraRotation.UPRIGHT);
-
-            }
-            public void onError(int errorCode){
-
-            }
-
-        });
 
         waitForStart();
 
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
 
-            drivetrain(drive.leftFront, drive.rightFront, drive.leftBack, drive.rightBack);
             buttonpress(extendo, intake, slides, claw);
 
             List<Action> newActions = new ArrayList<>();
@@ -267,9 +147,6 @@ public class RedTeleop extends LinearOpMode {
 
             dash.sendTelemetryPacket(packet);
 
-            telemetry.addData("intakeCamera", vision.colorDetected());
-            telemetry.update();
-            drive.updatePoseEstimate();
         }
     }
 }
