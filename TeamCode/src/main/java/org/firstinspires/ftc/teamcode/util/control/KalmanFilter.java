@@ -101,10 +101,10 @@ public class KalmanFilter {
     }
 
     public void kalmanSmart() {
-//        if (limelight.getLatestResult() != null && limelight.getLatestResult().isValid()) {
-//            aprilTagKalman();
-//        } else {
+        if (limelight.getLatestResult() != null && limelight.getLatestResult().isValid()) {
+            aprilTagKalman();
+        } else {
             odoKalman();
-//        }
+        }
     }
 }

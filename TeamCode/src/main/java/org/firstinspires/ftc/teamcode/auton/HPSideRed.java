@@ -27,8 +27,6 @@ public class HPSideRed extends LinearOpMode {
         drive = new KalmanDrive(hardwareMap, beginPose, limelight);
 
         Action auton = drive.actionBuilder(drive.pose)
-//                .turn(Math.toRadians(180))
-
                 .setTangent(Math.toRadians(110))
                 .splineToLinearHeading(new Pose2d(0, -40, Math.toRadians(90)), Math.toRadians(110))
                 .waitSeconds(0.5)
@@ -40,23 +38,22 @@ public class HPSideRed extends LinearOpMode {
                 .turn(Math.toRadians(20))
                 .waitSeconds(0.5)
 
-                .turn(Math.toRadians(-20))
+                .turn(Math.toRadians(-35))
                 .waitSeconds(0.5)
 
                 .turn(Math.toRadians(-20))
                 .waitSeconds(1)
 
                 // gonna see me cycling
-                .turn(Math.toRadians(200))
                 .setTangent(9 * Math.PI/10)
-                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(-90)), 9 * Math.PI/10)
+                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(90)), 9 * Math.PI/10)
                 .waitSeconds(0.5)
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(-90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(90)), -Math.PI/10)
                 .waitSeconds(0.5)
 
                 .setTangent(9 * Math.PI/10)
-                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(- 90)), 9 * Math.PI/10)
+                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(90)), 9 * Math.PI/10)
 
                 .build();
         telemetry.addData("is","starting");
