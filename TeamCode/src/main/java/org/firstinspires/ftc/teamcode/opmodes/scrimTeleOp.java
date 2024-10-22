@@ -1,49 +1,18 @@
 package org.firstinspires.ftc.teamcode.opmodes;
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.reflection.ReflectionConfig;
-import com.acmerobotics.roadrunner.MotorFeedforward;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.AngularRampLogger;
-import com.acmerobotics.roadrunner.ftc.DeadWheelDirectionDebugger;
-import com.acmerobotics.roadrunner.ftc.DriveType;
-import com.acmerobotics.roadrunner.ftc.DriveView;
-import com.acmerobotics.roadrunner.ftc.DriveViewFactory;
-import com.acmerobotics.roadrunner.ftc.Encoder;
-import com.acmerobotics.roadrunner.ftc.ForwardPushTest;
-import com.acmerobotics.roadrunner.ftc.ForwardRampLogger;
-import com.acmerobotics.roadrunner.ftc.LateralPushTest;
-import com.acmerobotics.roadrunner.ftc.LateralRampLogger;
-import com.acmerobotics.roadrunner.ftc.ManualFeedforwardTuner;
-import com.acmerobotics.roadrunner.ftc.MecanumMotorDirectionDebugger;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
-import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
-import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.TankDrive;
-import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
-import org.firstinspires.ftc.teamcode.TwoDeadWheelLocalizer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.Elbow;
-import org.firstinspires.ftc.teamcode.hardware.Mouth;
-import org.firstinspires.ftc.teamcode.hardware.Neck;
-import org.firstinspires.ftc.teamcode.hardware.Viper;
-import org.firstinspires.ftc.teamcode.hardware.Wrist;
+import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Elbow;
+import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Mouth;
+import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Neck;
+import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Viper;
+import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Wrist;
 
 // I AM DOCTOR IVO ROBOTNIK!
 @TeleOp(name = "scrimTeleOp", group = "OpModes")

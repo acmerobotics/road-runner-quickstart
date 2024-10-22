@@ -27,20 +27,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hardware;
+package org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-public class Viper {
+public class Elbow {
 
-    static final double VIPER_EXTENDED_TIME = 0.2;
-    static final double VIPER_RETRACTED_POS = 0;
+    static final double ELBOW_UP_POS = -1;
+    static final double ELBOW_DOWN_POS = 1;
     static final int SLEEP_TIME = 500;
 
     static final double COUNTS_PER_REVOLUTION = 5700.4; //Placeholder
     static final double GEAR_RATIO = 50.9 / 1; //Placeholder
+    public static final double NEW_P = 2.5;
+    public static final double NEW_I = 0.1;
+    public static final double NEW_D = 0.2;
+    public static final double NEW_F = 0.5;
 
 
     private double power_auto_move = 0.6;
@@ -53,13 +58,19 @@ public class Viper {
     static final double  POWER_DOWN_MUL = 0.8;
     // Define class members
 
-    private DcMotorEx viper;
+    private DcMotorEx elbow;
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
+
+    PIDFCoefficients pidfNew = new PIDFCoefficients(NEW_P, NEW_I, NEW_D, NEW_F);
+
+
+
+
     private double deg = 0.0;
 
-    public Viper(OpMode opmode) {
+    public Elbow(OpMode opmode) {
         myOpMode = opmode;
     }
 
@@ -69,29 +80,30 @@ public class Viper {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        viper = myOpMode.hardwareMap.get(DcMotorEx.class, "viper");
+        elbow = myOpMode.hardwareMap.get(DcMotorEx.class, "elbow");
 
-        viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elbow.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
     }
 
-    public void moveViperUp() {
+    public void moveElbowUp() {
         deg = 150;
         moveToDegree(deg);
     }
 
-    public void moveViperUpMore() {
+    public void moveElbowUpMore() {
         deg = 180;
         moveToDegree(deg);
     }
 
-    public void moveViperDown() {
+    public void moveElbowDown() {
         deg = 0.0;
         moveToDegree(deg);
     }
 
-    public boolean isViperUp() {
+    public boolean isElbowUp() {
         if (deg >= 100) {
             return true;
         }
@@ -103,7 +115,7 @@ public class Viper {
     }
 
     public double positionToDeg(int pos) {
-        return (double) viper.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
+        return (double) elbow.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
     }
 
     public void moveToDegree(double deg) {
@@ -112,30 +124,30 @@ public class Viper {
         boolean isGoingUp = deg > 120;
 
 
-        viper.setTargetPosition(((int)targetPos));
-        viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elbow.setTargetPosition(((int)targetPos));
+        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
 
         // Set the required driving speed  (must be positive for RUN_TO_POSITION)
         // Start driving straight, and then enter the control loop
-        viper.setPower(power_auto_move);
+        elbow.setPower(power_auto_move);
 
         // keep looping while we are still active, and BOTH motors are running.
-        while (viper.isBusy()) {
+        while (elbow.isBusy()) {
 
             // decide if we reach a threshold to slow down
             if ((isGoingUp
-                    && (viper.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI)
+                    && (elbow.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI)
                     )
             ) || ( !isGoingUp
-                    && (viper.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO)
+                    && (elbow.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO)
                     )
             )) {
 
-                viper.setPower(0.1);
+                elbow.setPower(0.1);
             } else {
-                viper.setPower(power_auto_move);
+                elbow.setPower(power_auto_move);
                             }
 
             // Display drive status for the driver.
@@ -143,46 +155,47 @@ public class Viper {
         }
 
         // Stop all motion & Turn off RUN_TO_POSITION
-        viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        viper.setPower(0);
+        elbow.setPower(0);
         this.deg = deg;
 
     }
 
     public void sendTelemetry() {
-        myOpMode.telemetry.addData("Viper Degree", "%4d",
-                viper.getCurrentPosition());
+        myOpMode.telemetry.addData("Elbow Degree", "%4d",
+                elbow.getCurrentPosition());
     }
 
-    public void moveViperByPower(double power) {
-        viper.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public void moveElbowByPower(double power) {
+        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         if (true || (power < 0) && (deg > 0)
                 || (power > 0) && (deg < 210)) {
-            viper.setPower(power);
+            elbow.setPower(power);
         }
 
-        deg = positionToDeg(viper.getCurrentPosition());
+        deg = positionToDeg(elbow.getCurrentPosition());
 
-        myOpMode.telemetry.addData("Viper deg: ", "%.2f", deg);
+        myOpMode.telemetry.addData("Elbow deg: ", "%.2f", deg);
         sendTelemetry();
     }
 
     public void listen() {
 
-        // move viper according to the left stick y
+        // move elbow according to the right stick y
 
 
-        double power = -myOpMode.gamepad2.left_stick_y;
+        double power = myOpMode.gamepad2.right_stick_y;
         if (Math.abs(power) > 0.1) {
-            moveViperByPower(power);
+            moveElbowByPower(power);
         } else {
-            viper.setPower(0.0);
+            elbow.setPower(0.0);
         }
 
         if (myOpMode.gamepad2.dpad_right) {
-            viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         }
 

@@ -27,36 +27,59 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hardware.tests;
+package org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 
-import org.firstinspires.ftc.teamcode.hardware.Elbow;
-import org.firstinspires.ftc.teamcode.hardware.Mouth;
-
-@TeleOp(name = "Test: Mouth", group = "HardwareTest")
-public class TestMouth extends LinearOpMode {
+public class Mouth {
 
 
-    Mouth mouth = new Mouth(this);
-
-    @Override
-    public void runOpMode() {
-
-        //starts hardware.
-        mouth.init();
+    // Define class members
 
 
 
-        waitForStart();
+    private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+    double left_trigger;
+    double right_trigger;
+    double power;
 
-            mouth.listen();
-            mouth.sendTelemetry();
-            updateTelemetry(telemetry);
-        }
+
+
+    CRServo mouth = null;
+    public Mouth(OpMode opmode) {
+        myOpMode = opmode;
+    }
+
+    public void init() {
+        // Define and Initialize Motors (note: need to use reference to actual OpMode).
+        mouth = myOpMode.hardwareMap.get(CRServo.class, "mouth");
+
+
+    }
+
+
+
+    public void listen() {
+        left_trigger = myOpMode.gamepad2.left_trigger;
+        right_trigger = myOpMode.gamepad2.right_trigger;
+
+        power = -left_trigger + right_trigger;
+
+        mouth.setPower(power);
+
+
+        myOpMode.telemetry.addData("Left Trigger", "%.2f", left_trigger);
+        myOpMode.telemetry.addData("Right Trigger", "%.2f", right_trigger);
+        myOpMode.telemetry.addData("Power", "%.2f", power);
+
+    }
+
+
+    public void sendTelemetry() {
+        myOpMode.telemetry.addData("Left Trigger", "%.2f", left_trigger);
+        myOpMode.telemetry.addData("Right Trigger", "%.2f", right_trigger);
+        myOpMode.telemetry.addData("Power", "%.2f", power);
     }
 }

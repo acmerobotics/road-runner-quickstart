@@ -27,50 +27,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hardware.tests;
+package org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.hardware.Elbow;
-
-/*
- * This OpMode scans a single servo back and forward until Stop is pressed.
- * The code is structured as a LinearOpMode
- * INCREMENT sets how much to increase/decrease the servo position each cycle
- * CYCLE_MS sets the update period.
- *
- * This code assumes a Servo configured with the name "left_hand" as is found on a Robot.
- *
- * NOTE: When any servo position is set, ALL attached servos are activated, so ensure that any other
- * connected servos are able to move freely before running this test.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
-@TeleOp(name = "Test: Elbow", group = "Concept")
-public class TestElbow extends LinearOpMode {
+public class Neck {
 
 
-    Elbow elbow = new Elbow(this);
+    // Define class members
+    double neckPosition = 0.5;
+    ElapsedTime neckDelay = new ElapsedTime();
 
-    @Override
-    public void runOpMode() {
+    private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
-        // initialize all the hardware, using the hardware class. See how clean and simple this is?
-        elbow.init();
+    Servo servo = null;
+    public Neck(OpMode opmode) {
+        myOpMode = opmode;
+    }
+
+    public void init() {
+        // Define and Initialize Motors (note: need to use reference to actual OpMode).
+        servo = myOpMode.hardwareMap.get(Servo.class, "neck");
+
+    }
 
 
-        // Send telemetry message to signify robot waiting;
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+    public void listen() {
 
-            elbow.listen();
-            elbow.sendTelemetry();
-            updateTelemetry(telemetry);
+        servo.setPosition(neckPosition);
+        // rotate right
+        if (myOpMode.gamepad2.right_bumper && neckDelay.seconds() > 1) {
+            neckDelay.reset();
+            neckPosition -=0.1;
+        // rotate left
+        } else if (myOpMode.gamepad2.left_bumper && neckDelay.seconds() > 1) {
+            neckDelay.reset();
+            neckPosition +=0.1;
+
         }
+    }
+
+
+    public void sendTelemetry() {
+        myOpMode.telemetry.addData("Neck Position", "%.2f", neckPosition);
     }
 }

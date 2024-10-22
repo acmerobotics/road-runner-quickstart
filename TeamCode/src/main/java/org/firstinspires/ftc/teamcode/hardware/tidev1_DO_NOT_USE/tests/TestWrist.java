@@ -27,53 +27,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hardware;
+package org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.tests;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Wrist;
 
-public class Wrist {
-
-
-    // Define class members
-    double wristPosition = 0.0;
+@TeleOp(name = "Test: Wrist", group = "HardwareTest")
+public class TestWrist extends LinearOpMode {
 
 
-    private OpMode myOpMode;   // gain access to methods in the calling OpMode.
+    Wrist wrist = new Wrist(this);
 
-    Servo servo = null;
-    public Wrist(OpMode opmode) {
-        myOpMode = opmode;
-    }
+    @Override
+    public void runOpMode() {
 
-    public void init() {
-        // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        servo = myOpMode.hardwareMap.get(Servo.class, "wrist");
-    }
+        //starts hardware.
+        wrist.init();
 
 
 
-    public void listen() {
+        waitForStart();
 
-        servo.setPosition(wristPosition);
-        //bring wrist back
-        if (myOpMode.gamepad2.x) {
-            wristPosition = 0;
-            //strech wrist
-        } else if (myOpMode.gamepad2.a) {
-            wristPosition = 0.7;
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
 
-        } else if (myOpMode.gamepad2.b) {
-            wristPosition = 1;
+            wrist.listen();
+            wrist.sendTelemetry();
+            updateTelemetry(telemetry);
         }
     }
-
-    public void sendTelemetry() {
-        myOpMode.telemetry.addData("Wrist Position", "%.2f", wristPosition);
-    }
 }
+

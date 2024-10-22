@@ -27,50 +27,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hardware.tests;
+package org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.hardware.Viper;
-
-/*
- * This OpMode scans a single servo back and forward until Stop is pressed.
- * The code is structured as a LinearOpMode
- * INCREMENT sets how much to increase/decrease the servo position each cycle
- * CYCLE_MS sets the update period.
- *
- * This code assumes a Servo configured with the name "left_hand" as is found on a Robot.
- *
- * NOTE: When any servo position is set, ALL attached servos are activated, so ensure that any other
- * connected servos are able to move freely before running this test.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
-@TeleOp(name = "Test: Viper", group = "Concept")
-public class TestViper extends LinearOpMode {
+public class Wrist {
 
 
-    Viper viper = new Viper(this);
-
-    @Override
-    public void runOpMode() {
-
-        // initialize all the hardware, using the hardware class. See how clean and simple this is?
-        viper.init();
+    // Define class members
+    double wristPosition = 0.0;
 
 
-        // Send telemetry message to signify robot waiting;
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
+    private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+    Servo servo = null;
+    public Wrist(OpMode opmode) {
+        myOpMode = opmode;
+    }
 
-            viper.listen();
-            viper.sendTelemetry();
-            updateTelemetry(telemetry);
+    public void init() {
+        // Define and Initialize Motors (note: need to use reference to actual OpMode).
+        servo = myOpMode.hardwareMap.get(Servo.class, "wrist");
+    }
+
+
+
+    public void listen() {
+
+        servo.setPosition(wristPosition);
+        //bring wrist back
+        if (myOpMode.gamepad2.x) {
+            wristPosition = 0;
+            //strech wrist
+        } else if (myOpMode.gamepad2.a) {
+            wristPosition = 0.7;
+
+        } else if (myOpMode.gamepad2.b) {
+            wristPosition = 1;
         }
+    }
+
+    public void sendTelemetry() {
+        myOpMode.telemetry.addData("Wrist Position", "%.2f", wristPosition);
     }
 }
