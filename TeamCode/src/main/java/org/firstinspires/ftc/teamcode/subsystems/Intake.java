@@ -106,4 +106,18 @@ public class Intake extends Mechanism {
         leftHinge.setPosition(clampedHingePosition);
         rightHinge.setPosition(clampedHingePosition);
     }
+
+    public void systemsCheck(AIMPad aimpad) {
+        loop(aimpad);
+        if (aimpad.isAPressed()) {
+            setActiveHingeState(HingeState.UP);
+        } else if (aimpad.isBPressed()) {
+            setActiveHingeState(HingeState.DOWN);
+        } else if (aimpad.isXPressed()) {
+            setActiveHingeState(HingeState.NEUTRAL);
+        } else if (aimpad.isLeftStickMovementEngaged()) {
+            setHingeStateCustom(aimpad.getLeftStickX());
+        }
+    }
+
 }
