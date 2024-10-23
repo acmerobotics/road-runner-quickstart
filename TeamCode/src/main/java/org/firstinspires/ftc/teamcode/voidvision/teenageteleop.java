@@ -115,25 +115,8 @@ public class teenageteleop extends LinearOpMode {
     }
 
     private void handleGamepad2Controls() {
-        if (gamepad2.a) {
-            robot.range1Servo.setPosition(rangeServoDirection);
-            robot.range2Servo.setPosition(rangeServoDirection - robot.Finalrange);
-            telemetry.addData("Range Servo 1 Pos", robot.range1Servo.getPosition());
-            telemetry.addData("Range Servo 2 Pos", robot.range2Servo.getPosition());
-            extendRangeServoDirection();
-        }
-
-        if (gamepad2.b) {
-            startIntake();
-            robot.basketServo1.setPosition(basketServoAmount);
-            robot.basketServo2.setPosition(basketServoAmount - robot.FinalrangeBasket);
-            extendRangeServoDirection();
-        }
-
-        if (gamepad2.right_bumper) {
-            resetServos();
-        }
-
+        robot.range1Servo.setPosition(gamepad2.left_trigger);
+        telemetry.addData("servoPos:", robot.range1Servo.getPosition());
         controlIntakeServo();
     }
 

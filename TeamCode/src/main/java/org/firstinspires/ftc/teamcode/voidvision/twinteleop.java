@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name="teenage teleop with Servo Subroutines", group="Pushbot")
+@TeleOp(name="twinteleop with Servo Subroutines", group="Pushbot")
 public class twinteleop extends LinearOpMode {
     teenagehwmap robot = new teenagehwmap();
     private ElapsedTime runtime = new ElapsedTime();
@@ -69,13 +69,13 @@ public class twinteleop extends LinearOpMode {
             // ---- First Servo Sequence (Triggered by gamepad2.a) ----
             if (gamepad2.a && !isRoutineRunning) {
                 isRoutineRunning = true;
-                runFirstServoSequence();  // Execute the servo sequence
+                new Thread(() -> runFirstServoSequence()).start();  // Execute the servo sequence in a separate thread
             }
 
             // ---- Second Servo Subroutine (Triggered by gamepad2.b) ----
             if (gamepad2.b && !isRoutineRunning) {
                 isRoutineRunning = true;
-                runSecondServoSequence();  // Make this synchronous for proper control
+                new Thread(() -> runSecondServoSequence()).start();  // Execute the servo sequence in a separate thread  // Make this synchronous for proper control
             }
 
             telemetry.update();
