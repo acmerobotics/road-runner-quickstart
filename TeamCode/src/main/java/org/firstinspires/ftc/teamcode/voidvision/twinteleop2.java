@@ -19,8 +19,6 @@ public class twinteleop2 extends LinearOpMode {
     static double rfPower;
     static double slowamount;
 
-    private boolean changed1 = false;
-
     // New variables for servo control
     private boolean retract = false;  // Start with retract set to false
     private boolean servoMovementInProgress = false;
@@ -31,6 +29,7 @@ public class twinteleop2 extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
         waitForStart();
@@ -53,14 +52,15 @@ public class twinteleop2 extends LinearOpMode {
 
             slowamount = 1;
 
-            // Servo movement subroutine
-            if (gamepad2.b && !servoMovementInProgress && !retract) {
-                // Move range1Servo from 0 to 0.25 and range2Servo from 0.25 to 0 simultaneously
-                servoMovementInProgress = true;
-                servoStartTime = System.currentTimeMillis();
-            } else if (gamepad2.left_bumper) {
-                // Switch retract state to true and initiate retract motion
-                retract = true;
+            // Manual toggle of retract for testing purposes
+            if (gamepad2.left_bumper) {
+                retract = !retract;  // Toggle retract state
+                sleep(500);  // Debounce the button press
+            }
+
+            // Servo movement subroutine based on retract flag
+            if (!servoMovementInProgress && retract) {
+                // Start retract action if retract is true
                 servoMovementInProgress = true;
                 servoStartTime = System.currentTimeMillis();
             }
@@ -72,7 +72,7 @@ public class twinteleop2 extends LinearOpMode {
 
                 if (elapsedTime >= 1.0) {
                     elapsedTime = 1.0;  // Cap at 1.0 to prevent overshooting
-                    servoMovementInProgress = false;
+                    servoMovementInProgress = false;  // Finish movement after time
                 }
 
                 // Calculate new servo positions based on whether retract is true or false
