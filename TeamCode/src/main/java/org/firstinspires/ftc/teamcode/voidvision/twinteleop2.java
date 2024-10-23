@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class twinteleop2 extends LinearOpMode {
     teenagehwmap robot = new teenagehwmap();
     private ElapsedTime runtime = new ElapsedTime();
-    private ElapsedTime servoTimer = new ElapsedTime(); // Timer to track servo movements
 
     static double turnPower;
     static double fwdBackPower;
@@ -19,26 +18,27 @@ public class twinteleop2 extends LinearOpMode {
     static double rbPower;
     static double rfPower;
     static double slowamount;
-    static double direction = -1;
 
-    static double range1ServoTarget = 0;
-    static double range2ServoTarget = 0;
-    private boolean retract = false;
+    private boolean changed1 = false;
+
+    // New variables for servo control
+    private boolean retract = false;  // Start with retract set to false
     private boolean servoMovementInProgress = false;
+    private long servoStartTime = 0;
+    private static final int durationMillis = 1000;  // Servo movement duration
+    private static final double servoSpeed = 0.8;    // Servo speed as 80% of normal speed
 
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
-
-        telemetry.addData("Status,", "Ready to run");
+        telemetry.addData("Status", "Ready to run");
         telemetry.update();
         waitForStart();
 
         while (opModeIsActive()) {
-
-            // ---- Drive Control (gamepad1) ----
-            fwdBackPower = direction * -gamepad1.left_stick_y * slowamount;
-            strafePower = direction * -gamepad1.left_stick_x * slowamount;
+            // Drive base code (unchanged)
+            fwdBackPower = -gamepad1.left_stick_y * slowamount;
+            strafePower = -gamepad1.left_stick_x * slowamount;
             turnPower = gamepad1.right_stick_x * slowamount;
 
             lfPower = (fwdBackPower - turnPower - strafePower);
@@ -51,60 +51,52 @@ public class twinteleop2 extends LinearOpMode {
             robot.rightfrontDrive.setPower(rfPower);
             robot.rightbackDrive.setPower(rbPower);
 
-            // Speed control (gamepad1.left_bumper)
-            slowamount = gamepad1.left_bumper ? 0.25 : 1;
+            slowamount = 1;
 
-            // ---- Servo Control (gamepad2) ----
-            if (gamepad2.b && !servoMovementInProgress) {
-                // Start the retract action
-                range1ServoTarget = 0.25;
-                range2ServoTarget = 0.0;
-                retract = false;
+            // Servo movement subroutine
+            if (gamepad2.b && !servoMovementInProgress && !retract) {
+                // Move range1Servo from 0 to 0.25 and range2Servo from 0.25 to 0 simultaneously
                 servoMovementInProgress = true;
-                servoTimer.reset(); // Start the timer for the movement
-            }
-
-            if (gamepad2.left_bumper && servoMovementInProgress) {
-                // Switch retract state
+                servoStartTime = System.currentTimeMillis();
+            } else if (gamepad2.left_bumper) {
+                // Switch retract state to true and initiate retract motion
                 retract = true;
-                range1ServoTarget = 0.0;
-                range2ServoTarget = 0.25;
-                servoTimer.reset(); // Reset timer to track retract movement
+                servoMovementInProgress = true;
+                servoStartTime = System.currentTimeMillis();
             }
 
-            // Continuously monitor servo movement (non-blocking)
+            // Update servo positions based on time elapsed
             if (servoMovementInProgress) {
-                moveServosNonBlocking(robot.range1Servo, robot.range2Servo, range1ServoTarget, range2ServoTarget, servoTimer, 1000);
+                long currentTime = System.currentTimeMillis();
+                double elapsedTime = (double)(currentTime - servoStartTime) / durationMillis;
 
-                // End the movement when done
-                if (servoTimer.milliseconds() > 1000) { // Assuming the move takes 1 second
+                if (elapsedTime >= 1.0) {
+                    elapsedTime = 1.0;  // Cap at 1.0 to prevent overshooting
                     servoMovementInProgress = false;
                 }
+
+                // Calculate new servo positions based on whether retract is true or false
+                double range1Position, range2Position;
+                if (retract) {
+                    // Retract positions
+                    range1Position = (1.0 - elapsedTime) * 0.25;  // Move back from 0.25 to 0
+                    range2Position = elapsedTime * 0.25;          // Move back from 0 to 0.25
+                } else {
+                    // Extend positions
+                    range1Position = elapsedTime * 0.25;          // Move from 0 to 0.25
+                    range2Position = (1.0 - elapsedTime) * 0.25;  // Move from 0.25 to 0
+                }
+
+                // Set servo positions with 80% speed
+                robot.range1Servo.setPosition(range1Position * servoSpeed);
+                robot.range2Servo.setPosition(range2Position * servoSpeed);
             }
 
-            telemetry.addData("Servo Movement:", servoMovementInProgress);
-            telemetry.addData("Range1Servo Position:", robot.range1Servo.getPosition());
-            telemetry.addData("Range2Servo Position:", robot.range2Servo.getPosition());
-            telemetry.addData("Drive Powers (lf, lb, rf, rb):", "%f, %f, %f, %f", lfPower, lbPower, rfPower, rbPower);
+            // Telemetry feedback
+            telemetry.addData("Servo1 Position", robot.range1Servo.getPosition());
+            telemetry.addData("Servo2 Position", robot.range2Servo.getPosition());
+            telemetry.addData("Retract Status", retract);
             telemetry.update();
         }
-    }
-
-    /**
-     * Non-blocking method to move servos gradually over time.
-     */
-    private void moveServosNonBlocking(Servo servo1, Servo servo2, double targetPosition1, double targetPosition2, ElapsedTime timer, long durationMillis) {
-        double elapsed = timer.milliseconds();
-        double fraction = Math.min(elapsed / durationMillis, 1.0); // Clamp fraction to 1.0 (done)
-
-        // Calculate intermediate positions based on the fraction of time elapsed
-        double currentPosition1 = servo1.getPosition();
-        double currentPosition2 = servo2.getPosition();
-        double newPosition1 = currentPosition1 + (targetPosition1 - currentPosition1) * fraction;
-        double newPosition2 = currentPosition2 + (targetPosition2 - currentPosition2) * fraction;
-
-        // Set new positions to the servos
-        servo1.setPosition(newPosition1);
-        servo2.setPosition(newPosition2);
     }
 }
