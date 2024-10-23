@@ -153,6 +153,27 @@ public class twinteleop extends LinearOpMode {
     }
 
     /*
+     * Helper method to move a servo smoothly at a specified speed
+     * speedFactor should be between 0 and 1, where 1 is full speed
+     */
+    private void moveServoSmoothly(Servo servo, double targetPosition, double speedFactor) {
+        double currentPosition = servo.getPosition();
+        double stepSize = 0.01 * speedFactor;
+
+        // Gradually move the servo towards the target position
+        while (Math.abs(currentPosition - targetPosition) > stepSize && opModeIsActive()) {
+            if (currentPosition < targetPosition) {
+                currentPosition += stepSize;
+            } else {
+                currentPosition -= stepSize;
+            }
+            servo.setPosition(currentPosition);
+            sleepWithOpModeCheck(20);  // Small delay to smooth out the motion
+        }
+        servo.setPosition(targetPosition);  // Ensure final position is set
+    }
+
+    /*
      * Sleep method that checks if opMode is active to allow for safe exiting
      */
     private void sleepWithOpModeCheck(long milliseconds) {

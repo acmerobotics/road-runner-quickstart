@@ -1,15 +1,20 @@
-
 package org.firstinspires.ftc.teamcode.voidvision;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-@TeleOp(name="teenage Teleop", group="Pushbot")
+/**
+ * This class defines the teleop mode for controlling the robot.
+ * It uses inputs from the gamepad to drive the robot and control the linear actuator.
+ */
+@TeleOp(name="practice teleop", group="Pushbot")
 public class practiceteleop extends Auto_Util {
-    practicehwmap robot=new practicehwmap();
-//
+
+    // Hardware map and elapsed time instance
+    practicehwmap robot = new practicehwmap();
     private ElapsedTime runtime = new ElapsedTime();
 
+    // Variables for motor power
     static double turnPower;
     static double fwdBackPower;
     static double strafePower;
@@ -17,49 +22,45 @@ public class practiceteleop extends Auto_Util {
     static double lfPower;
     static double rbPower;
     static double rfPower;
-    static double lAPower;
+    static double lAPower;  // Linear actuator power
 
     @Override
-    public void runOpMode(){
+    public void runOpMode() {
+        // Initialize robot hardware and autonomous utilities
         robot.init(hardwareMap);
         initAuto();
-        telemetry.addData("Status,", "Ready to run");
+
+        telemetry.addData("Status", "Ready to run");
         telemetry.update();
+
+        // Wait for the driver to press start
         waitForStart();
 
-        while(opModeIsActive()) {
+        // Main control loop
+        while (opModeIsActive()) {
 
-            //Drive
+            // Gamepad inputs for driving
+            fwdBackPower = -gamepad1.left_stick_y;  // Forward and backward movement
+            strafePower = -gamepad1.left_stick_x;   // Strafing movement (left and right)
+            turnPower = -gamepad1.right_stick_x;    // Turning left and right
+            lAPower = -gamepad2.left_stick_y;       // Control for the linear actuator (using gamepad2)
 
-            fwdBackPower = -gamepad1.left_stick_y;
-            strafePower =-gamepad1.left_stick_x;
-            turnPower=-gamepad1.right_stick_x;
-            lAPower =-gamepad2.left_stick_y;
+            // Calculate motor power for mecanum drive
+            lfPower = (fwdBackPower - turnPower - strafePower);
+            rfPower = (fwdBackPower + turnPower + strafePower);
+            lbPower = (fwdBackPower - turnPower + strafePower);
+            rbPower = (fwdBackPower + turnPower - strafePower);
 
-            lfPower = (fwdBackPower - turnPower-strafePower);
-            rfPower = (fwdBackPower+turnPower+strafePower);
-            lbPower = (fwdBackPower-turnPower+strafePower);
-            rbPower = (fwdBackPower+turnPower-strafePower);
+            // Set motor powers to the robot's drive motors
+            robot.leftfrontDrive.setPower(lfPower);
+            robot.rightfrontDrive.setPower(rfPower);
+            robot.leftbackDrive.setPower(lbPower);
+            robot.rightbackDrive.setPower(rbPower);
 
+            // Set power for the linear actuator
+            robot.linearActuator.setPower(lAPower);
+
+            telemetry.update();
         }
-
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
 }
