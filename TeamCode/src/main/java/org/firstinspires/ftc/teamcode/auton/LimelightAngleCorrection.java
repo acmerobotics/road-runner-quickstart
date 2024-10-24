@@ -32,6 +32,8 @@ public class LimelightAngleCorrection extends LinearOpMode {
         String targetLabel2 = "blocksBlue";
         String targetLabel3 = "blocksRed";
 
+        String detectorResults;
+
         waitForStart();
         limelight.start();
 
@@ -51,6 +53,8 @@ public class LimelightAngleCorrection extends LinearOpMode {
             if (tx > 0.5) {
                 drive.setPowers(power, -power, power, -power);
                 telemetry.addLine("Turning Right");
+                result.getDetectorResults();
+
             } else if (tx < -0.5) {
                 drive.setPowers(power, -power, power, -power);
                 telemetry.addLine("Turning Left");
