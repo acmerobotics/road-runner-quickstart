@@ -29,6 +29,9 @@ public class twinteleop2 extends LinearOpMode {
     static final double startIntakePosition = 0.12;
     static final double lowerBasketPosition = 0.25;
 
+    // New flag for left joystick control during the subroutine
+    private boolean isLiftMotorRoutineRunning = false;
+
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
@@ -69,6 +72,11 @@ public class twinteleop2 extends LinearOpMode {
             }
 
 
+            if(!isLiftMotorRoutineRunning){
+                robot.liftMotor.setPower(gamepad2.left_stick_y);
+                telemetry.addData("liftMotorPower",robot.liftMotor.getPower());
+            }
+
             // ---- First Servo Sequence (Triggered by gamepad2.a) ----
             if (gamepad2.a && !isRoutineRunning) {
                 isRoutineRunning = true;
@@ -79,6 +87,13 @@ public class twinteleop2 extends LinearOpMode {
             if (gamepad2.b && !isRoutineRunning) {
                 isRoutineRunning = true;
                 new Thread(() -> runSecondServoSequence()).start();  // Execute the servo sequence in a separate thread
+            }
+
+
+            // ---- Trigger the lift motor routine with gamepad2.x ----
+            if (gamepad2.x && !isLiftMotorRoutineRunning) {
+                isLiftMotorRoutineRunning = true;
+                new Thread(() -> runLiftMotorRoutine()).start(); // Run lift motor routine in a separate thread
             }
 
             telemetry.update();
@@ -116,7 +131,9 @@ public class twinteleop2 extends LinearOpMode {
         robot.intakeServo.setPower(1.0); // Adjust the power as needed
 
         // Step 1: Move range1Servo to 0.25 and range2Servo to 0 at the same time at 80% speed
-        moveServosSimultaneously(robot.range1Servo, 0.25, robot.range2Servo, 0, 0.8);
+        //moveServosSimultaneously(robot.range1Servo, .25, robot.range2Servo, robot.Finalrange-.25, 0.8);
+        //sleepWithOpModeCheck(1000*10);
+        moveServosSimultaneously(robot.range1Servo, robot.Finalrange, robot.range2Servo, 0, 0.6);
 
         // Simultaneously move basketServo1 to 0.5 and basketServo2 to 0
         moveServosSimultaneously(robot.basketServo1, 0.5, robot.basketServo2, 0, 0.8);
@@ -134,7 +151,7 @@ public class twinteleop2 extends LinearOpMode {
             moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, 0.5, 0.75);
 
             // Step 3: Move range1Servo back to 0 and range2Servo to 0.25 at the same time at 80% speed
-            moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, 0.25, 0.8);
+            moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
         }
 
         // Stop the intake servo when the second servo sequence ends
@@ -142,6 +159,67 @@ public class twinteleop2 extends LinearOpMode {
 
         isRoutineRunning = false;
     }
+
+    /*
+     * Subroutine to control the lift motor (liffMotor)
+     * Changes motor power as requested and ignores left joystick input during execution.
+     */
+    private void runLiftMotorRoutine() {
+        telemetry.addData("Lift Motor Routine", "Started");
+        telemetry.update();
+
+        // Step 1: Set motor power to 5 for 1.25 seconds
+        robot.liftMotor.setPower(.6);
+        sleepWithOpModeCheck(1250);
+
+        // Step 2: Wait for 1 second
+        robot.liftMotor.setPower(.05);
+        sleepWithOpModeCheck(1000);
+
+        // Step 3: Set motor power to -5 for 1.25 seconds
+        robot.liftMotor.setPower(-0.4);
+        sleepWithOpModeCheck(1200);
+
+        // Step 4: Set motor power to 0
+        robot.liftMotor.setPower(0);
+
+        isLiftMotorRoutineRunning = false; // Re-enable left joystick input
+        telemetry.addData("Lift Motor Routine", "Completed");
+        telemetry.update();
+    }
+
+    private void controlLiftWithResistance() {
+        // Extend the lift until the motor encounters resistance (e.g., reaching max extension)
+        telemetry.addData("Lift", "Extending...");
+        telemetry.update();
+        robot.liftMotor.setPower(1.0); // Set power to extend
+        while (opModeIsActive() && !robot.liftMotor.isBusy()) {
+            // Simulate resistance detection by checking if the motor is "busy" (stalled or reaching a hard limit)
+            // Depending on the hardware, you might need a specific condition here to detect resistance.
+            sleep(50);
+        }
+
+        // Hold the position briefly after encountering resistance
+        telemetry.addData("Lift", "Holding...");
+        telemetry.update();
+        robot.liftMotor.setPower(0.1); // Small power to hold position
+        sleepWithOpModeCheck(500); // Hold for 0.5 seconds
+
+        // Retract the lift until the motor encounters resistance (e.g., fully retracted)
+        telemetry.addData("Lift", "Retracting...");
+        telemetry.update();
+        robot.liftMotor.setPower(-1.0); // Set power to retract
+        while (opModeIsActive() && !robot.liftMotor.isBusy()) {
+            // Simulate resistance detection again
+            sleep(50);
+        }
+
+        // Stop the motor when fully retracted
+        robot.liftMotor.setPower(0);
+        telemetry.addData("Lift", "Fully retracted.");
+        telemetry.update();
+    }
+
 
     private void monitorColorSensor(Color allianceColor) {
         while (opModeIsActive()) {

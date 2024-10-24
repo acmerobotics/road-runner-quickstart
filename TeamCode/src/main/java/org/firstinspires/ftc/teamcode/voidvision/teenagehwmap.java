@@ -19,7 +19,7 @@ public class teenagehwmap extends HardwareMapUtil {
     public DcMotor rightfrontDrive = null;
     public DcMotor leftbackDrive = null;
     public DcMotor rightbackDrive = null;
-    public DcMotor armMotorOne = null;
+    public DcMotor liftMotor = null;
     public DcMotor armMotorTwo = null;
     public CRServo armServo = null;
     public Servo posServo = null;
@@ -31,7 +31,9 @@ public class teenagehwmap extends HardwareMapUtil {
     public ColorSensor colorSensor = null;
 
     // Default positions for range and basket servos
-    public double Finalrange = 0.25;
+    public double Finalrange = 0.45;
+    //.4 is good
+    //.6 is bad
     public double FinalrangeBasket = 0.5;
 
     /**
@@ -49,7 +51,7 @@ public class teenagehwmap extends HardwareMapUtil {
         rightbackDrive = HardwareInitMotor("rightBack", false);
 
         // Initialize arm motors and servos (commented out if not needed yet)
-        // armMotorOne = HardwareInitMotor("arm_1", true);
+        liftMotor = HardwareInitMotor("liftMotor", false);
         // armMotorTwo = HardwareInitMotor("arm_2", true);
         // armServo = hwMap.get(CRServo.class, "servo");
         // posServo = hwMap.get(Servo.class, "posServo");
@@ -73,7 +75,7 @@ public class teenagehwmap extends HardwareMapUtil {
         rightfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        // armMotorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // armMotorTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 }
