@@ -64,11 +64,6 @@ public class RedTeleop extends LinearOpMode {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
-    private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR}
-    private LiftState liftState = LiftState.LIFTSTART;
-
-    private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT, EXTENDOSPIT}
-    private ExtendoState extendoState = ExtendoState.EXTENDONOTHING;
 //
 //    public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
 //        double y = gamepad1.left_stick_y;
@@ -87,19 +82,19 @@ public class RedTeleop extends LinearOpMode {
 //        BR.setPower(backRightPower);
 //    }
 
-    public void buttonpress(Extendo extendo, Intake intake, Slides slides, Claw claw) {
+    public void buttonpress(Extendo extendo, Intake intake, Slides slides) {
         double lefty = gamepad2.left_stick_y;
         double righty = gamepad2.right_stick_y;
 
-        extendo.extendoMotor.setPower(lefty);
+        extendo.extendoMotor.setPower(lefty/2.5);
 
-        slides.slidesRightMotor.setPower(righty);
-        slides.slidesLeftMotor.setPower(righty);
+        slides.slidesRightMotor.setPower(righty/3);
+        slides.slidesLeftMotor.setPower(righty/3);
 
         if (gamepad2.x) {
-            intake.intakeMotor.setPower(1);
+            intake.intakeMotor.setPower(-1);
         } else if (gamepad2.b) {
-            intake.intakeMotor.setPower(-0.3);
+            intake.intakeMotor.setPower(0.3);
         } else {
             intake.intakeMotor.setPower(0);
         }
@@ -112,13 +107,13 @@ public class RedTeleop extends LinearOpMode {
             }
         }
 
-        if (gamepad2.y) {
-            if (gamepad2.left_trigger < 0.9) {
-                runningActions.add(claw.flip());
-            } else {
-                runningActions.add(claw.flop());
-            }
-        }
+//        if (gamepad2.y) {
+//            if (gamepad2.left_trigger < 0.9) {
+//                runningActions.add(claw.flip());
+//            } else {
+//                runningActions.add(claw.flop());
+//            }
+//        }
     }
     @Override
     public void runOpMode() {
@@ -126,7 +121,7 @@ public class RedTeleop extends LinearOpMode {
         Extendo extendo = new Extendo(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         Slides slides = new Slides(hardwareMap);
-        Claw claw = new Claw(hardwareMap);
+        //Claw claw = new Claw(hardwareMap);
 
 
         waitForStart();
@@ -134,7 +129,7 @@ public class RedTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
 
-            buttonpress(extendo, intake, slides, claw);
+            buttonpress(extendo, intake, slides);
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {

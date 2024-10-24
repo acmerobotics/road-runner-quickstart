@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <LynxModule>
+        <SerialNumber>19190023160</SerialNumber>
+        <Port>1</Port>
+        <Devices>
+            <Servo name="servo" port="1"/>
+        </Devices>
+    </LynxModule>
+</Robot>

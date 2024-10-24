@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.PIDFController;
@@ -23,6 +24,11 @@ public class Slides {
     public Slides(HardwareMap HWMap){
         slidesLeftMotor = HWMap.get(DcMotor.class, "leftSlidesMotor");
         slidesRightMotor = HWMap.get(DcMotor.class, "rightSlidesMotor");
+
+        slidesLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slidesRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        slidesRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public class SlideTopBasket implements Action {
