@@ -44,11 +44,7 @@ public class LimelightAngleCorrection extends LinearOpMode {
             telemetry.addData("ty", ty);
             telemetry.update();
 
-<<<<<<< HEAD
             double power = 0.2 * (tx/10);
-=======
-            double power = 0.2 * (tx / 5);
->>>>>>> 78feec57d6cea7f91dad3acfcf4f95d4f113d482
 
             telemetry.addData("power", power);
 
