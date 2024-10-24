@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class Demo extends LinearOpMode {
     DcMotor leftFront, leftBack, rightFront, rightBack;
     public void runOpMode() throws InterruptedException {
-        Robot2 bot = new Robot2(hardwareMap);
 
         leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -35,10 +34,10 @@ public class Demo extends LinearOpMode {
             double rightFrontPower = (y - x - rx) / denominator;
             double rightBackPower = (y + x - rx) / denominator;
 
-            bot.leftFront.setPower(leftFrontPower);
-            bot.leftBack.setPower(leftBackPower);
-            bot.rightFront.setPower(rightFrontPower);
-            bot.rightBack.setPower(rightBackPower);
+            leftFront.setPower(leftFrontPower);
+            leftBack.setPower(leftBackPower);
+            rightFront.setPower(rightFrontPower);
+            rightBack.setPower(rightBackPower);
         }
     }
 }
