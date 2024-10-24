@@ -9,7 +9,6 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous
@@ -26,6 +25,11 @@ public class LimelightAngleCorrection extends LinearOpMode {
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
         limelight.pipelineSwitch(0);
+
+        String targetLabel1 = "blocksYellow";
+        String targetLabel2 = "blocksBlue";
+        String targetLabel3 = "blocksRed";
+
 
         waitForStart();
         limelight.start();
