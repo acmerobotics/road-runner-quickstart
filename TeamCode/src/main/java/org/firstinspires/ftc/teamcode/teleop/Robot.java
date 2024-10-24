@@ -26,7 +26,7 @@ import java.util.List;
 
 //TODO: change claw opened and closed values
 public class Robot {
-    DcMotor leftFront, leftBack, rightFront, rightBack;
+    DcMotor leftFront, leftBack, rightFront, rightBack, leftHang, rightHang;
     DcMotor flip, slide;
     Servo wrist;
     Servo claw;
@@ -57,6 +57,8 @@ public class Robot {
 
         flip = hardwareMap.dcMotor.get("flip");
         slide = hardwareMap.dcMotor.get("slide");
+        leftHang = hardwareMap.dcMotor.get("leftHang");
+        rightHang = hardwareMap.dcMotor.get("rightHang");
 
         intakeLeft = hardwareMap.crservo.get("intakeLeft");
         intakeRight = hardwareMap.crservo.get("intakeRight");
@@ -75,6 +77,11 @@ public class Robot {
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         flip.setDirection(DcMotorSimple.Direction.FORWARD);
+        flip.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        leftHang.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightHang.setDirection(DcMotorSimple.Direction.FORWARD);
+
 
         intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -166,6 +173,19 @@ public class Robot {
     public void intakeControl(Gamepad gamepad) {
         intakeLeft.setPower(-gamepad.left_trigger + gamepad.right_trigger);
          intakeRight.setPower(gamepad.left_trigger - gamepad.right_trigger);
+    }
+
+    public void hangControl(Gamepad gamepad) {
+        if (gamepad.dpad_up)
+        {
+            leftHang.setPower(0.5);
+            rightHang.setPower(0.5);
+        }
+        else if (gamepad.dpad_up)
+        {
+            leftHang.setPower(-0.5);
+            rightHang.setPower(-0.5);
+        }
     }
 
     public void intakeOpen(Gamepad gamepad) {

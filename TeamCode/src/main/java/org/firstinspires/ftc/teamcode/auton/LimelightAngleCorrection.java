@@ -9,7 +9,6 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous
@@ -27,6 +26,11 @@ public class LimelightAngleCorrection extends LinearOpMode {
 
         limelight.pipelineSwitch(0);
 
+        String targetLabel1 = "blocksYellow";
+        String targetLabel2 = "blocksBlue";
+        String targetLabel3 = "blocksRed";
+
+
         waitForStart();
         limelight.start();
 
@@ -43,12 +47,12 @@ public class LimelightAngleCorrection extends LinearOpMode {
 
             telemetry.addData("power", power);
 
-            if (tx > 0) {
-                drive.setPowers(power, -power, power, -power);
+            if (tx > 0.5) {
+                drive.setPowers(0.2, -0.2, 0.2, -0.2);
                 telemetry.addLine("Turning Right");
-            } else if (tx < 0) {
-                drive.setPowers(-power, power, -power, power);
-                telemetry.addLine("Tuning Left");
+            } else if (tx < -0.5) {
+                drive.setPowers(-0.2, 0.2, -0.2, 0.2);
+                telemetry.addLine("Turning Left");
             } else {
                 drive.setPowers(0, 0, 0, 0);
                 telemetry.addLine("Doing Nothing");
