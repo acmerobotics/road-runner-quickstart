@@ -71,10 +71,10 @@ public class ArenaCentric extends LinearOpMode {
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
 
-            FL.setPower(frontLeftPower);
-            BL.setPower(backLeftPower);
-            FR.setPower(frontRightPower);
-            BR.setPower(backRightPower);
+            FL.setPower(frontLeftPower/3);
+            BL.setPower(backLeftPower/3);
+            FR.setPower(frontRightPower/3);
+            BR.setPower(backRightPower/3);
 
 
         }

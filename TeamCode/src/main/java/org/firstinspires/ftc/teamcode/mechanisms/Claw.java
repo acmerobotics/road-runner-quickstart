@@ -15,16 +15,20 @@ public class Claw {
 
     public Claw(HardwareMap HWMap) {
         bucketLeftServo = HWMap.get(Servo.class, "bucketLeftServo");
-        bucketRightServo = HWMap.get(Servo.class, "bucketLeftServo");
-        clawLeftServo = HWMap.get(Servo.class, "clawLeftServo");
-        clawRightServo = HWMap.get(Servo.class, "clawLeftServo");
+//        bucketRightServo = HWMap.get(Servo.class, "bucketLeftServo");
+//        clawLeftServo = HWMap.get(Servo.class, "clawLeftServo");
+//        clawRightServo = HWMap.get(Servo.class, "clawLeftServo");
+    }
+
+    public double getBucketPos() {
+        return bucketLeftServo.getPosition();
     }
 
     public class Flip implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketLeftServo.setPosition(1);
-            bucketRightServo.setPosition(1);
+                bucketLeftServo.setPosition(1);
+//            bucketRightServo.setPosition(1);
             return false;
         }
     }
@@ -36,8 +40,8 @@ public class Claw {
     public class Flop implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketLeftServo.setPosition(0);
-            bucketRightServo.setPosition(0);
+                bucketLeftServo.setPosition(0);
+//            bucketRightServo.setPosition(0);
             return false;
         }
     }
@@ -50,7 +54,7 @@ public class Claw {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             clawLeftServo.setPosition(1);
-            clawRightServo.setPosition(1);
+//            clawRightServo.setPosition(1);
             return false;
         }
     }
@@ -63,7 +67,7 @@ public class Claw {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             clawLeftServo.setPosition(0);
-            clawRightServo.setPosition(0);
+//            clawRightServo.setPosition(0);
             return false;
         }
     }
@@ -76,7 +80,7 @@ public class Claw {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             bucketLeftServo.setPosition(0.5);
-            bucketRightServo.setPosition(0.5);
+//            bucketRightServo.setPosition(0.5);
             return false;
         }
     }

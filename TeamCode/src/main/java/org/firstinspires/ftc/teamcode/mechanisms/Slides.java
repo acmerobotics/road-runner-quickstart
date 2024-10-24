@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.PIDFController;
 
 public class Slides {
-    DcMotor slidesLeftMotor;
-    DcMotor slidesRightMotor;
+    public DcMotor slidesLeftMotor;
+    public DcMotor slidesRightMotor;
 
     public PIDFController.PIDCoefficients slidesLeftCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
     public PIDFController.PIDCoefficients slidesRightCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
