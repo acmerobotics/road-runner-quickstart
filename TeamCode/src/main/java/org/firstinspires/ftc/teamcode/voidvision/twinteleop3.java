@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp(name="twinteleop2 with Servo Subroutines", group="Pushbot")
-public class twinteleop2 extends LinearOpMode {
+@TeleOp(name = "twinteleop3 with Servo Subroutines", group = "Pushbot")
+public class twinteleop3 extends LinearOpMode {
     teenagehwmap robot = new teenagehwmap();
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -68,17 +68,16 @@ public class twinteleop2 extends LinearOpMode {
                 slowamount = .25;
             }
 
-
             // ---- First Servo Sequence (Triggered by gamepad2.a) ----
             if (gamepad2.a && !isRoutineRunning) {
                 isRoutineRunning = true;
-                new Thread(() -> runFirstServoSequence()).start();  // Execute the servo sequence in a separate thread
+                new Thread(this::runFirstServoSequence).start();  // Execute the servo sequence in a separate thread
             }
 
             // ---- Second Servo Subroutine (Triggered by gamepad2.b) ----
             if (gamepad2.b && !isRoutineRunning) {
                 isRoutineRunning = true;
-                new Thread(() -> runSecondServoSequence()).start();  // Execute the servo sequence in a separate thread
+                new Thread(this::runSecondServoSequence).start();  // Execute the servo sequence in a separate thread
             }
 
             telemetry.update();
@@ -206,9 +205,6 @@ public class twinteleop2 extends LinearOpMode {
         }
     }
 
-
-
-
     /*
      * Helper method to move servos with additional logic for intake and basket
      * The intakeServo starts when range1Servo reaches startIntakePosition,
@@ -225,161 +221,75 @@ public class twinteleop2 extends LinearOpMode {
         for (int i = 0; i < steps && opModeIsActive(); i++) {
             double currentPosition1 = startPosition1 + (delta1 * i);
 
-            // Move range1Servo and range2Servo
+            // Start the intake servo if range1Servo is above startIntakePosition
+            if (currentPosition1 >= startIntakePosition) {
+                robot.intakeServo.setPower(1.0);
+            } else {
+                robot.intakeServo.setPower(0);
+            }
+
+            double currentPosition2 = startPosition2 + (delta2 * i);
             range1Servo.setPosition(currentPosition1);
-            range2Servo.setPosition(startPosition2 + (delta2 * i));
-
-            // Check if range1Servo has reached the startIntakePosition
-            if (currentPosition1 >= startIntakePosition && robot.intakeServo.getPower() == 0) {
-                telemetry.addData("Intake", "Starting intake at position " + currentPosition1);
-                robot.intakeServo.setPower(5.0);
-            }
-
-            // Check if range1Servo has reached lowerBasketPosition
-            if (currentPosition1 >= lowerBasketPosition && robot.basketServo1.getPosition() != 0.5 && robot.basketServo2.getPosition() != 0) {
-                telemetry.addData("Basket", "Lowering basket at position " + currentPosition1);
-                moveServosSimultaneously(robot.basketServo1, 0.5, robot.basketServo2, 0, 0.7);
-            }
-
-            sleep((long) (20 * (1 - speedFactor))); // Adjust sleep for smooth movement
-            telemetry.update();
+            range2Servo.setPosition(currentPosition2);
+            sleep((long) (10 * speedFactor)); // Adjust sleep time for speed control
         }
-
-        // Ensure both servos end at their exact target positions
-        range1Servo.setPosition(targetPosition1);
-        range2Servo.setPosition(targetPosition2);
     }
 
     /*
-     * Helper method to move two servos simultaneously
-     * targetPosition1: Target for servo1, targetPosition2: Target for servo2
-     * speedFactor should be between 0 and 1, where 1 is 100% speed
+     * General method to move two servos simultaneously
      */
     private void moveServosSimultaneously(Servo servo1, double targetPosition1, Servo servo2, double targetPosition2, double speedFactor) {
-        double startPosition1 = servo1.getPosition();
-        double startPosition2 = servo2.getPosition();
-
-        int steps = 100; // Number of steps for smooth movement
-        double delta1 = (targetPosition1 - startPosition1) / steps;
-        double delta2 = (targetPosition2 - startPosition2) / steps;
-
-        for (int i = 0; i < steps; i++) {
-            servo1.setPosition(startPosition1 + (delta1 * i));
-            servo2.setPosition(startPosition2 + (delta2 * i));
-            sleep((long) (20 * (1 - speedFactor))); // Sleep adjusted based on speed factor
-        }
-
-        // Ensure both servos end at their exact target positions
-        servo1.setPosition(targetPosition1);
-        servo2.setPosition(targetPosition2);
+        moveServosWithSpecialLogic(servo1, targetPosition1, servo2, targetPosition2, speedFactor);
     }
 
     /*
-     * Helper method to move four servos simultaneously (for retract)
+     * Method to handle sleep with op mode checks
      */
-    private void moveMultipleServosSimultaneously(Servo servo1, double targetPosition1, Servo servo2, double targetPosition2,
-                                                  Servo servo3, double targetPosition3, Servo servo4, double targetPosition4, double speedFactor) {
-        double startPosition1 = servo1.getPosition();
-        double startPosition2 = servo2.getPosition();
-        double startPosition3 = servo3.getPosition();
-        double startPosition4 = servo4.getPosition();
-
-        int steps = 100;
-        double delta1 = (targetPosition1 - startPosition1) / steps;
-        double delta2 = (targetPosition2 - startPosition2) / steps;
-        double delta3 = (targetPosition3 - startPosition3) / steps;
-        double delta4 = (targetPosition4 - startPosition4) / steps;
-
-        for (int i = 0; i < steps; i++) {
-            servo1.setPosition(startPosition1 + (delta1 * i));
-            servo2.setPosition(startPosition2 + (delta2 * i));
-            servo3.setPosition(startPosition3 + (delta3 * i));
-            servo4.setPosition(startPosition4 + (delta4 * i));
-            sleep((long) (20 * (1 - speedFactor)));
-        }
-
-        // Ensure all servos end at their exact target positions
-        servo1.setPosition(targetPosition1);
-        servo2.setPosition(targetPosition2);
-        servo3.setPosition(targetPosition3);
-        servo4.setPosition(targetPosition4);
-    }
-
-    private void moveServosDynamically(Servo[] servos, double[] targetPositions, double speedFactor) {
-        if (servos.length != targetPositions.length) {
-            throw new IllegalArgumentException("Number of servos must match the number of target positions.");
-        }
-
-        int numServos = servos.length;
-        double[] startPositions = new double[numServos];
-        double[] deltas = new double[numServos];
-
-        // Get starting positions and calculate the difference (delta) for each servo
-        for (int i = 0; i < numServos; i++) {
-            startPositions[i] = servos[i].getPosition();
-            deltas[i] = (targetPositions[i] - startPositions[i]) / 100;  // Assume 100 steps for smooth movement
-        }
-
-        // Move the servos in steps
-        for (int step = 0; step <= 100; step++) {
-            for (int i = 0; i < numServos; i++) {
-                double newPosition = startPositions[i] + (deltas[i] * step);
-                servos[i].setPosition(newPosition);  // Update each servo's position incrementally
-            }
-            sleep((long) (20 * (1 - speedFactor)));  // Adjust sleep based on speed factor
-        }
-
-        // Ensure all servos end at their exact target positions
-        for (int i = 0; i < numServos; i++) {
-            servos[i].setPosition(targetPositions[i]);
+    private void sleepWithOpModeCheck(long millis) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < millis && opModeIsActive()) {
+            sleep(50); // Sleep in smaller increments to allow for op mode checks
         }
     }
 
-    /**
-     * EXAMPLE FOR CODE ABOVE
-     * Servo[] servos = {robot.servo1, robot.servo2, robot.servo3, robot.servo4};
-     * double[] targetPositions = {0.5, 0.25, 0.75, 1.0};
-     * moveServosDynamically(servos, targetPositions, 0.8);  // 80% speed
+    private void flipWheelConfigurationNormal() {
+        direction = -1;
+    }
+
+    private void flipWheelConfigurationBackward() {
+        direction = 1;
+    }
+
+    /*
+     * New Method to Move Multiple Servos with Speeds
      */
-
-    private void moveMultipleServosWithSpeeds(Servo[] servos, double[] targetPositions, double[] speedFactors) {
-        int numServos = servos.length;
-
-        // Ensure the number of servos matches the number of target positions and speeds
-        if (targetPositions.length != numServos || speedFactors.length != numServos) {
-            telemetry.addData("Error", "Mismatch in the number of servos, target positions, or speed factors");
-            telemetry.update();
-            return;
+    private void moveMultipleServosWithSpeeds(Servo[] servos, double[] targetPositions, double[] speeds) {
+        if (servos.length != targetPositions.length || servos.length != speeds.length) {
+            throw new IllegalArgumentException("All input arrays must have the same length.");
         }
 
-        // Store the initial positions of all servos
-        double[] startPositions = new double[numServos];
-        for (int i = 0; i < numServos; i++) {
-            startPositions[i] = servos[i].getPosition();
+        int steps = 100; // Number of steps for smooth movement
+        double[] startingPositions = new double[servos.length];
+
+        // Store starting positions
+        for (int i = 0; i < servos.length; i++) {
+            startingPositions[i] = servos[i].getPosition();
         }
 
-        int steps = 100;  // Define the number of steps for smooth movement
-
-        // Calculate deltas for each servo based on its speed
-        double[] deltas = new double[numServos];
-        for (int i = 0; i < numServos; i++) {
-            deltas[i] = (targetPositions[i] - startPositions[i]) / steps;
-        }
-
-        // Move all servos in small increments based on the speed factor
-        for (int step = 0; step < steps && opModeIsActive(); step++) {
-            for (int i = 0; i < numServos; i++) {
-                double newPosition = startPositions[i] + (deltas[i] * step * speedFactors[i]);
-                servos[i].setPosition(newPosition);
+        double[][] deltas = new double[servos.length][steps];
+        // Calculate deltas for each servo
+        for (int i = 0; i < servos.length; i++) {
+            double delta = (targetPositions[i] - startingPositions[i]) / steps;
+            for (int j = 0; j < steps; j++) {
+                deltas[i][j] = startingPositions[i] + (delta * j);
             }
-
-            // Adjust the sleep time to allow slower movements
-            sleep(20);
         }
 
-        // Ensure all servos reach their exact target positions
-        for (int i = 0; i < numServos; i++) {
-            servos[i].setPosition(targetPositions[i]);
+        for (int i = 0; i < steps && opModeIsActive(); i++) {
+            for (int j = 0; j < servos.length; j++) {
+                servos[j].setPosition(deltas[j][i]);
+            }
+            sleep(10); // Control speed of execution
         }
     }
 
@@ -390,21 +300,6 @@ public class twinteleop2 extends LinearOpMode {
      *     new double[] { 0.25, 0.5, 0.75, 1.0 },                                  // Target positions for each servo
      *     new double[] { 0.8, 0.6, 0.4, 1.0 }                                     // Speed factors for each servo
      * );
-     * */
+     */
 
-    // ---- Drive Configuration Methods ----
-    public void flipWheelConfigurationBackward() {
-        direction = 1;
-    }
-
-    public void flipWheelConfigurationNormal() {
-        direction = -1;
-    }
-
-    private void sleepWithOpModeCheck(long milliseconds) {
-        long endTime = System.currentTimeMillis() + milliseconds;
-        while (System.currentTimeMillis() < endTime && opModeIsActive()) {
-            // Do nothing, just wait
-        }
-    }
 }
