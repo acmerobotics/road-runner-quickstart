@@ -27,16 +27,16 @@ public class BlueHumanSide extends LinearOpMode {
                 .strafeTo(new Vector2d(-11,48))
                 .waitSeconds(1.86)
                 .strafeToLinearHeading(new Vector2d(-30,48), Math.toRadians(255))
-                .strafeToLinearHeading(new Vector2d(-38,14), Math.toRadians(260))
-                .strafeToLinearHeading(new Vector2d(-45,12), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(-45,50), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(-45,13), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(-56,13), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(-56,50), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(-56,13), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(-61,13), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(-61,50), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(-48,54), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-38,11), Math.toRadians(260))
+                .strafeToLinearHeading(new Vector2d(-45,11), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-45,54), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-45,11), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-56,11), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-56,54), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-56,11), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-61,11), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-61,54), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-48,55), Math.toRadians(270))
                 .waitSeconds(1.5)
                 .strafeToLinearHeading(new Vector2d(-4,45), Math.toRadians(270))
                 .waitSeconds(1.86)
@@ -44,7 +44,7 @@ public class BlueHumanSide extends LinearOpMode {
                 .waitSeconds(1.5)
                 .strafeTo(new Vector2d(-4,45))
                 .waitSeconds(1.86)
-                .strafeToLinearHeading(new Vector2d(-42,50), Math.toRadians(270));
+                .strafeToLinearHeading(new Vector2d(-42,52), Math.toRadians(270));
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();
