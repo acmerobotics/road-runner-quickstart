@@ -82,17 +82,17 @@ public class RedTeleop extends LinearOpMode {
 //        BR.setPower(backRightPower);
 //    }
 
-    public void buttonpress(Extendo extendo, Intake intake, Slides slides) {
+    public void buttonpress(Extendo extendo, Intake intake, Slides slides, Claw claw) {
         double lefty = gamepad2.left_stick_y;
         double righty = gamepad2.right_stick_y;
 
-        extendo.extendoMotor.setPower(lefty/2.5);
+        extendo.extendoMotor.setPower(lefty/1.5);
 
         slides.slidesRightMotor.setPower(righty/3);
         slides.slidesLeftMotor.setPower(righty/3);
 
         if (gamepad2.x) {
-            intake.intakeMotor.setPower(-1);
+            intake.intakeMotor.setPower(-0.9);
         } else if (gamepad2.b) {
             intake.intakeMotor.setPower(0.3);
         } else {
@@ -107,13 +107,13 @@ public class RedTeleop extends LinearOpMode {
             }
         }
 
-//        if (gamepad2.y) {
-//            if (gamepad2.left_trigger < 0.9) {
-//                runningActions.add(claw.flip());
-//            } else {
-//                runningActions.add(claw.flop());
-//            }
-//        }
+        if (gamepad2.y) {
+            if (gamepad2.left_trigger < 0.9) {
+                runningActions.add(claw.flip());
+            } else {
+                runningActions.add(claw.flop());
+            }
+        }
     }
     @Override
     public void runOpMode() {
@@ -121,7 +121,7 @@ public class RedTeleop extends LinearOpMode {
         Extendo extendo = new Extendo(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         Slides slides = new Slides(hardwareMap);
-        //Claw claw = new Claw(hardwareMap);
+        Claw claw = new Claw(hardwareMap);
 
 
         waitForStart();
@@ -129,7 +129,7 @@ public class RedTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
 
-            buttonpress(extendo, intake, slides);
+            buttonpress(extendo, intake, slides, claw);
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {
