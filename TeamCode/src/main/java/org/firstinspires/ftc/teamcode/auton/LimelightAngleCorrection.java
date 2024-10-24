@@ -5,6 +5,8 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLResultTypes.DetectorResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -30,7 +32,6 @@ public class LimelightAngleCorrection extends LinearOpMode {
         String targetLabel2 = "blocksBlue";
         String targetLabel3 = "blocksRed";
 
-
         waitForStart();
         limelight.start();
 
@@ -43,7 +44,11 @@ public class LimelightAngleCorrection extends LinearOpMode {
             telemetry.addData("ty", ty);
             telemetry.update();
 
+<<<<<<< HEAD
             double power = 0.2 * (tx/10);
+=======
+            double power = 0.2 * (tx / 5);
+>>>>>>> 78feec57d6cea7f91dad3acfcf4f95d4f113d482
 
             telemetry.addData("power", power);
 
@@ -58,6 +63,8 @@ public class LimelightAngleCorrection extends LinearOpMode {
                 telemetry.addLine("Doing Nothing");
             }
             telemetry.update();
+
         }
+
     }
 }

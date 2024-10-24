@@ -49,7 +49,8 @@ public class RedBasketSideSample extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
 
-        // Execute the defined trajectory
+        // Execute the defined traj
+        //                       ;'[/p]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]ectory
         Action trajectoryActionChosen = tab1.build();
         Actions.runBlocking(
                 new SequentialAction(

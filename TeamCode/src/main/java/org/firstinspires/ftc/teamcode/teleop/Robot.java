@@ -28,6 +28,18 @@ import java.util.List;
 public class Robot {
     DcMotor leftFront, leftBack, rightFront, rightBack, leftHang, rightHang;
     DcMotor flip, slide;
+
+
+
+
+
+
+
+
+
+
+
+
     Servo wrist;
     Servo claw;
 //    Servo intakeRight;
