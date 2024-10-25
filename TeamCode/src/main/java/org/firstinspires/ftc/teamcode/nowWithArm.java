@@ -87,14 +87,29 @@ public class nowWithArm extends LinearOpMode {
         telemetry.addData("Encoder position, ", position);
         telemetry.addData("Encoder target, ", target);
 
-        telemetry.addData("Red", colorDetector.red());
-        telemetry.addData("Green", colorDetector.green());
-        telemetry.addData("Blue", colorDetector.blue());
-        float RG = ((float)colorDetector.green() / colorDetector.red());
-        float RB = ((float)colorDetector.blue() / colorDetector.red());
-        String ratioRedGreen = String.valueOf(RG);
-        String ratioRedBlue = String.valueOf(RB);
-        telemetry.addData("Ratio R-G-B: 1-", ratioRedGreen, "-", ratioRedBlue);
+        float ratioGreenOverRed = ((float)colorDetector.green() / colorDetector.red());
+        float ratioBlueOverRed = ((float)colorDetector.blue() / colorDetector.red());
+        /*
+        Detection Ratios from evidence, made bounds bigger for better detection in code:
+        Yellow: (G/R 1.2-1.4) & (B/R 0.25-0.4)
+        Blue: (G/R 1.8-2.2) & (B/R 3.7-4.6)
+        Red: (G/R 0.45-0.7) & (B/R 0.2-0.4)
+         */
+
+        if ((ratioGreenOverRed >= 1.1 && ratioGreenOverRed <= 2.0) &&
+                (ratioBlueOverRed >= 0.1 && ratioBlueOverRed <= 0.8)) {
+            telemetry.addData("Yellow Detected", ratioGreenOverRed);
+        }
+        if ((ratioGreenOverRed >= 1.5 && ratioGreenOverRed <= 2.7) &&
+                (ratioBlueOverRed >= 2.0 && ratioBlueOverRed <= 10.0)) {
+            telemetry.addData("Blue Detected", ratioGreenOverRed);
+            telemetry.addData("Other value", ratioBlueOverRed);
+        }
+        if ((ratioGreenOverRed >= 0.2 && ratioGreenOverRed <= 1) &&
+                (ratioBlueOverRed >= 0.1 && ratioBlueOverRed <= 0.8)) {
+            telemetry.addData("Red Detected", ratioGreenOverRed);
+            telemetry.addData("Other value", ratioBlueOverRed);
+        }
         telemetry.update();
     }
 
