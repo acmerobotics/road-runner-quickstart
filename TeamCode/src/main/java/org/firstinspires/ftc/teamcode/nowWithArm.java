@@ -6,11 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-
-
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
 import java.lang.Math;
 
 
@@ -93,6 +90,11 @@ public class nowWithArm extends LinearOpMode {
         telemetry.addData("Red", colorDetector.red());
         telemetry.addData("Green", colorDetector.green());
         telemetry.addData("Blue", colorDetector.blue());
+        float RG = ((float)colorDetector.green() / colorDetector.red());
+        float RB = ((float)colorDetector.blue() / colorDetector.red());
+        String ratioRedGreen = String.valueOf(RG);
+        String ratioRedBlue = String.valueOf(RB);
+        telemetry.addData("Ratio R-G-B: 1-", ratioRedGreen, "-", ratioRedBlue);
         telemetry.update();
     }
 
@@ -104,7 +106,7 @@ public class nowWithArm extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         arm = hardwareMap.get(DcMotor.class, "arm");
-        colorDetector = hardwareMap.get(ColorSensor.class, "Color");
+        colorDetector = hardwareMap.get(ColorSensor.class, "colorDetector");
         setupMovement();
 
         // Arm SetUp
