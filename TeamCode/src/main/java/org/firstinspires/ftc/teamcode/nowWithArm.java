@@ -51,9 +51,9 @@ public class nowWithArm extends LinearOpMode {
         setupMovement();
 
         // Arm SetUp
-        final int ARMMIN = arm.getCurrentPosition();
-        final int ARMMAX = ARMMIN - 3000;
-        final int INCREMENT = 200;
+        final int ARMMIN = arm.getCurrentPosition() - 3;
+        final int ARMMAX = ARMMIN - 3200;
+        final int INCREMENT = 250;
         arm.setPower(1);
         waitForStart();
 
