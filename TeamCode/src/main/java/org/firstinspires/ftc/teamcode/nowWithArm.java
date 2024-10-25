@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -14,13 +16,13 @@ import java.lang.Math;
 
 @TeleOp(name = "nowWithArm")
 public class nowWithArm extends LinearOpMode {
-
     private IMU imu;
     private DcMotor backRight;
     private DcMotor frontRight;
     private DcMotor backLeft;
     private DcMotor frontLeft;
     private DcMotor arm;
+    private ColorSensor colorDetector;
 
     private void setupMovement() {
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
@@ -32,38 +34,11 @@ public class nowWithArm extends LinearOpMode {
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-    @Override
-    public void runOpMode() {
-        imu = hardwareMap.get(IMU.class, "imu");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        setupMovement();
-
-        // Arm SetUp
-        final int ARMMIN = arm.getCurrentPosition() - 3;
-        final int ARMMAX = ARMMIN - 3200;
-        final int INCREMENT = 250;
-        arm.setPower(1);
-        waitForStart();
-
-        arm.setTargetPosition(arm.getCurrentPosition());
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (opModeIsActive()) {
-            chassisMovement();
-            armMovement(ARMMAX, ARMMIN, INCREMENT);
-            printPosition(ARMMAX, ARMMIN);
-        }
     }
 
     private void chassisMovement() {
@@ -105,10 +80,7 @@ public class nowWithArm extends LinearOpMode {
         armPosition = Math.max(Math.min(armPosition, ARMMIN), ARMMAX);
         arm.setTargetPosition(armPosition);
     }
-//    private void armHotKeys(int[] targets) {
-//
-//        //arm.setTargetPosition();
-//    }
+
     private void printPosition(int ARMMAX, int ARMMIN) {
         int position = arm.getCurrentPosition();
         int target = arm.getTargetPosition();
@@ -118,7 +90,36 @@ public class nowWithArm extends LinearOpMode {
         telemetry.addData("Encoder position, ", position);
         telemetry.addData("Encoder target, ", target);
 
+        telemetry.addData("Red", colorDetector.red());
+        telemetry.addData("Green", colorDetector.green());
+        telemetry.addData("Blue", colorDetector.blue());
         telemetry.update();
     }
 
+    @Override
+    public void runOpMode() {
+        imu = hardwareMap.get(IMU.class, "imu");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        colorDetector = hardwareMap.get(ColorSensor.class, "Color");
+        setupMovement();
+
+        // Arm SetUp
+        final int ARMMIN = arm.getCurrentPosition() - 3;
+        final int ARMMAX = ARMMIN - 3200;
+        final int INCREMENT = 250;
+        arm.setPower(1);
+        waitForStart();
+
+        arm.setTargetPosition(arm.getCurrentPosition());
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (opModeIsActive()) {
+            chassisMovement();
+            armMovement(ARMMAX, ARMMIN, INCREMENT);
+            printPosition(ARMMAX, ARMMIN);
+        }
+    }
 }
