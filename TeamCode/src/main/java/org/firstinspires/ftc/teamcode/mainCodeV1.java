@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
@@ -89,16 +90,9 @@ public class mainCodeV1 extends LinearOpMode {
         arm.setTargetPosition(armPosition);
     }
 
-    private void printPosition() {
-        int position = arm.getCurrentPosition();
-        int target = arm.getTargetPosition();
+    private void printThings() {
 
-        telemetry.addData("Encoder position, ", position);
-        telemetry.addData("Encoder target, ", target);
-
-        telemetry.addData("Red", colorDetector.red());
-        telemetry.addData("Green", colorDetector.green());
-        telemetry.addData("Blue", colorDetector.blue());
+        telemetry.addData("Color", colorDetection());
         telemetry.update();
     }
 
@@ -130,6 +124,30 @@ public class mainCodeV1 extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    private String colorDetection() {
+        String[] colors = {"Yellow", "Blue", "Red"};
+        String color = "";
+        float ratioGreenOverRed = ((float)colorDetector.green() / colorDetector.red());
+        float ratioBlueOverRed = ((float)colorDetector.blue() / colorDetector.red());
+
+        if ((ratioGreenOverRed >= 1.1 && ratioGreenOverRed <= 2.0) &&
+                (ratioBlueOverRed >= 0.1 && ratioBlueOverRed <= 0.8)) {
+            color = colors[0];
+        }
+        else if ((ratioGreenOverRed >= 1.5 && ratioGreenOverRed <= 2.7) &&
+                (ratioBlueOverRed >= 2.0 && ratioBlueOverRed <= 10.0)) {
+            color = colors[1];
+        }
+        else if ((ratioGreenOverRed >= 0.2 && ratioGreenOverRed <= 1) &&
+                (ratioBlueOverRed >= 0.1 && ratioBlueOverRed <= 0.8)) {
+            color = colors[2];
+        }
+        else {
+            color = "";
+        }
+
+        return color;
+    }
 
     @Override
     public void runOpMode() {
@@ -139,7 +157,7 @@ public class mainCodeV1 extends LinearOpMode {
         while (opModeIsActive()) {
             chassisMovement();
             armMovement(ARMMAX, ARMMIN, INCREMENT);
-            printPosition();
+            printThings();
         }
     }
 }
