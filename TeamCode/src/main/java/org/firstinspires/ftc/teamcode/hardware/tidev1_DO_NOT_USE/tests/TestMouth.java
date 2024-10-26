@@ -29,11 +29,13 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Mouth;
 
+@Disabled
 @TeleOp(name = "Test: Mouth", group = "HardwareTest")
 public class TestMouth extends LinearOpMode {
 

@@ -32,7 +32,7 @@ package org.firstinspires.ftc.teamcode.hardware.tidev2.tests;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.tidev2.Arm;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
 
 /*
  * This OpMode scans a single servo back and forward until Stop is pressed.
@@ -52,13 +52,13 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Arm;
 public class TestArm extends LinearOpMode {
 
 
-    Arm arm = new Arm(this);
+    Shoulder shoulder = new Shoulder(this);
 
     @Override
     public void runOpMode() {
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
-        arm.init();
+        shoulder.init();
 
 
         // Send telemetry message to signify robot waiting;
@@ -68,7 +68,7 @@ public class TestArm extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            arm.listen();
+            shoulder.listen();
             // Pace this loop so hands move at a reasonable speed.
             sleep(50);
         }
