@@ -32,16 +32,20 @@ package org.firstinspires.ftc.teamcode.hardware.tidev2;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-public class Shoulder {
+public class Elbow {
 
-    static final double ARM_UP_POS = -1;
-    static final double ARM_DOWN_POS = 1;
+    static final double ELBOW_UP_POS = -1;
+    static final double ELBOW_DOWN_POS = 1;
     static final int SLEEP_TIME = 500;
 
-    static final int COUNTS_PER_REVOLUTION = 288;
-    static final double GEAR_RATIO = 40 / 10;
+    static final double COUNTS_PER_REVOLUTION = 5700.4; //Placeholder
+    static final double GEAR_RATIO = 50.9 / 1; //Placeholder
+    public static final double NEW_P = 2.5;
+    public static final double NEW_I = 0.1;
+    public static final double NEW_D = 0.2;
+    public static final double NEW_F = 0.5;
 
 
     private double power_auto_move = 0.6;
@@ -54,15 +58,19 @@ public class Shoulder {
     static final double  POWER_DOWN_MUL = 0.8;
     // Define class members
 
+    private DcMotorEx elbow;
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
+
+//    PIDFCoefficients pidfNew = new PIDFCoefficients(NEW_P, NEW_I, NEW_D, NEW_F);
+
+
+
+
     private double deg = 0.0;
 
-    private DcMotorEx shoulder_right;
-    private DcMotorEx shoulder_left;
-
-    public Shoulder(OpMode opmode) {
+    public Elbow(OpMode opmode) {
         myOpMode = opmode;
     }
 
@@ -72,35 +80,30 @@ public class Shoulder {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        shoulder_right = myOpMode.hardwareMap.get(DcMotorEx.class, "left_tower");
-        shoulder_left = myOpMode.hardwareMap.get(DcMotorEx.class, "right_tower");
+        elbow = myOpMode.hardwareMap.get(DcMotorEx.class, "elbow");
 
-        shoulder_right.setDirection(DcMotorSimple.Direction.FORWARD);
-        shoulder_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        elbow.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
-        shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shoulder_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shoulder_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void moveArmUp() {
+    public void moveElbowUp() {
         deg = 150;
         moveToDegree(deg);
     }
 
-    public void moveArmUpMore() {
+    public void moveElbowUpMore() {
         deg = 180;
         moveToDegree(deg);
     }
 
-    public void moveArmDown() {
+    public void moveElbowDown() {
         deg = 0.0;
         moveToDegree(deg);
     }
 
-    public boolean isArmUp() {
+    public boolean isElbowUp() {
         if (deg >= 100) {
             return true;
         }
@@ -112,97 +115,86 @@ public class Shoulder {
     }
 
     public double positionToDeg(int pos) {
-        return (double) shoulder_right.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
+        return (double) elbow.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
     }
 
     public void moveToDegree(double deg) {
         double targetPos = degToPosition(deg);
-//        boolean isGoingUp = targetPos > arm_right.getCurrentPosition();
+//        boolean isGoingUp = targetPos > elbow.getCurrentPosition();
         boolean isGoingUp = deg > 120;
 
 
-        shoulder_right.setTargetPosition(((int)targetPos));
-        shoulder_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elbow.setTargetPosition(((int)targetPos));
+        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        shoulder_left.setTargetPosition(((int)targetPos));
-        shoulder_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set the required driving speed  (must be positive for RUN_TO_POSITION)
         // Start driving straight, and then enter the control loop
-        shoulder_right.setPower(power_auto_move);
-        shoulder_left.setPower(power_auto_move);
+        elbow.setPower(power_auto_move);
 
         // keep looping while we are still active, and BOTH motors are running.
-        while (shoulder_right.isBusy() && shoulder_left.isBusy()) {
+        while (elbow.isBusy()) {
 
             // decide if we reach a threshold to slow down
             if ((isGoingUp
-                    && (shoulder_right.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI)
-                    || shoulder_left.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI))
+                    && (elbow.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI)
+                    )
             ) || ( !isGoingUp
-                    && (shoulder_right.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO)
-                    || shoulder_left.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO))
+                    && (elbow.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO)
+                    )
             )) {
 
-                shoulder_right.setPower(0.1);
-                shoulder_left.setPower(0.1);
+                elbow.setPower(0.1);
             } else {
-                shoulder_right.setPower(power_auto_move);
-                shoulder_left.setPower(power_auto_move);
-            }
+                elbow.setPower(power_auto_move);
+                            }
 
             // Display drive status for the driver.
             sendTelemetry();
         }
 
         // Stop all motion & Turn off RUN_TO_POSITION
-        shoulder_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shoulder_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        shoulder_right.setPower(0);
-        shoulder_left.setPower(0);
-
+        elbow.setPower(0);
         this.deg = deg;
 
     }
 
     public void sendTelemetry() {
-        myOpMode.telemetry.addData("Arm pos Left/Right", "%4d / %4d",
-                shoulder_left.getCurrentPosition(),
-                shoulder_right.getCurrentPosition());
+        myOpMode.telemetry.addData("Elbow Degree", "%4d",
+                elbow.getCurrentPosition());
     }
 
-    public void moveArmByPower(double power) {
-        shoulder_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public void moveElbowByPower(double power) {
+        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // TODO: allows pushing the arm down for now
+
         if (true || (power < 0) && (deg > 0)
                 || (power > 0) && (deg < 210)) {
-            shoulder_right.setPower(power);
-            shoulder_left.setPower(power);
+            elbow.setPower(power);
         }
 
-        deg = positionToDeg(shoulder_left.getCurrentPosition());
+        deg = positionToDeg(elbow.getCurrentPosition());
 
-        myOpMode.telemetry.addData("Arm deg: ", "%.2f", deg);
+        myOpMode.telemetry.addData("Elbow deg: ", "%.2f", deg);
         sendTelemetry();
     }
 
     public void listen() {
 
-        // move arm according to the left stick y
+        // move elbow according to the right stick y
 
-//        moveToDegree(30);
-        double power = myOpMode.gamepad2.right_stick_y / 2.0;
-        if (Math.abs(power) > 0.1 && (shoulder_left.getCurrentPosition() < 480 && shoulder_right.getCurrentPosition() < 480) ) {
-            moveArmByPower(power);
+
+        double power = myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger;
+        if (Math.abs(power) > 0.1) {
+            moveElbowByPower(power);
         }
 
         if (myOpMode.gamepad2.dpad_right) {
-            shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         }
 
     }

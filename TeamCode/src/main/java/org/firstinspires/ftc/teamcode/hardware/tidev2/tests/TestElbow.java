@@ -29,10 +29,11 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 
 /*
  * This OpMode scans a single servo back and forward until Stop is pressed.
@@ -48,17 +49,18 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "Test: Arm", group = "Concept")
-public class TestArm extends LinearOpMode {
+//@Disabled
+@TeleOp(name = "Test: Elbow", group = "HardwareTest")
+public class TestElbow extends LinearOpMode {
 
 
-    Shoulder shoulder = new Shoulder(this);
+    Elbow elbow = new Elbow(this);
 
     @Override
     public void runOpMode() {
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
-        shoulder.init();
+        elbow.init();
 
 
         // Send telemetry message to signify robot waiting;
@@ -68,9 +70,9 @@ public class TestArm extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            shoulder.listen();
-            // Pace this loop so hands move at a reasonable speed.
-            sleep(50);
+            elbow.listen();
+            elbow.sendTelemetry();
+            updateTelemetry(telemetry);
         }
     }
 }
