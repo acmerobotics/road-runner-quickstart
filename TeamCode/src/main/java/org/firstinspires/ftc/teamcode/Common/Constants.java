@@ -36,4 +36,7 @@ public class Constants {
     public static final String HangingHighName = "HH";
     public static final String HangingLowName = "HL";
 
+    public static final double ExtensionOut = 1;
+    public static final double ExtensionIn = 0;
+
 }

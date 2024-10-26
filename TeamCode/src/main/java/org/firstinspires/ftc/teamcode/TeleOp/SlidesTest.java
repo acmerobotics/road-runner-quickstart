@@ -21,6 +21,10 @@ public class SlidesTest extends LinearOpMode {
     static MotorEx SlideLeft;
     static MotorEx SlideRight;
     static SimpleServo extension;
+    static SimpleServo extension2;
+    static SimpleServo claw1;
+    static SimpleServo claw2;
+    static SimpleServo angleServo;
 
     public void HardwareStart(){
         FrontLeft = new MotorEx(hardwareMap, "FL", Motor.GoBILDA.RPM_312);
@@ -37,7 +41,13 @@ public class SlidesTest extends LinearOpMode {
 //        SlideRight = new MotorEx(hardwareMap, "SR", Motor.GoBILDA.RPM_312);
 //        SlideRight.setRunMode(Motor.RunMode.VelocityControl);
 
-        extension = new SimpleServo(hardwareMap, "ES", 0.0, 1.0);
+        extension = new SimpleServo(hardwareMap, "ES", 0, 1);
+        extension2 = new SimpleServo(hardwareMap, "ES2", 0.0, 1.0);
+
+        claw1 = new SimpleServo(hardwareMap, "C1", 0, 1);
+        claw2 = new SimpleServo(hardwareMap, "C2", 0, 1);
+
+        angleServo = new SimpleServo(hardwareMap, "AS", 0, 1);
 
         gamepadone = new GamepadEx(gamepad1);
         gamepadtwo = new GamepadEx(gamepad2);
@@ -56,11 +66,13 @@ public class SlidesTest extends LinearOpMode {
             );
 
             if(gamepad2.a){
-                extension.setPosition(0);
+                extension.setPosition(0.45);
+                extension2.setPosition(0);
             }
 
             if(gamepad2.b){
                 extension.setPosition(1);
+                extension2.setPosition(0.4);
             }
 
             if(gamepad2.dpad_up){
@@ -73,6 +85,24 @@ public class SlidesTest extends LinearOpMode {
                 SlideLeft.set(-1);
             } else {
                 SlideLeft.set(0);
+            }
+
+            if(gamepad2.x){
+                claw1.setPosition(1);
+                claw2.setPosition(1);
+            }
+
+            if(gamepad2.y){
+                claw1.setPosition(0);
+                claw2.setPosition(0);
+            }
+
+            if(gamepad2.left_bumper){
+                angleServo.setPosition(1);
+            }
+
+            if(gamepad2.right_bumper){
+                angleServo.setPosition(0);
             }
         }
     }

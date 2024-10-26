@@ -18,9 +18,9 @@ public class Test2 extends LinearOpMode {
     public void HardwareStart(){
 
         SlideLeft = new MotorEx(hardwareMap, "SL", Motor.GoBILDA.RPM_312);
-        SlideLeft.setRunMode(Motor.RunMode.RawPower);
-        SlideLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-//        SlideLeft.setRunMode(Motor.RunMode.PositionControl);
+//        SlideLeft.setRunMode(Motor.RunMode.RawPower);
+//        SlideLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        SlideLeft.setRunMode(Motor.RunMode.PositionControl);
 
         gamepadone = new GamepadEx(gamepad1);
         gamepadtwo = new GamepadEx(gamepad2);
@@ -31,12 +31,17 @@ public class Test2 extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            if(gamepad2.dpad_up){
+            /*if(gamepad2.dpad_up){
                 SlideLeft.set(-1);
             } else if(gamepad2.dpad_down){
                 SlideLeft.set(1);
             } else {
                 SlideLeft.set(-0.009375);
+            }*/
+
+            SlideLeft.set(0.25);
+            if (gamepad1.a){
+                SlideLeft.setTargetPosition(-1000);
             }
 
 //            SlideLeft.set(1);
