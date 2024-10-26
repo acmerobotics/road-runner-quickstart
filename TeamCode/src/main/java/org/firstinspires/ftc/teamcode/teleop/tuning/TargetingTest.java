@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.teleop.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -24,46 +24,39 @@ import org.firstinspires.ftc.teamcode.util.control.KalmanFilter;
 import org.firstinspires.ftc.teamcode.util.hardware.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.util.hardware.Motor;
 
-@TeleOp(name="cv tuner")
+@TeleOp(name="target test")
 @Config
-public class KalmanTuner extends LinearOpMode {
+public class TargetingTest extends LinearOpMode {
     CVMaster cv;
     GoBildaPinpoint odo;
-    SparkFunOTOS otos;
     double oldTime = 0;
     Motor backLeft;
     Motor backRight;
     Motor frontLeft;
     Motor frontRight;
 
-    public static double odoXOffset = 43.18;
-    public static double odoYOffset = 22.225;
-    public static double otosXOffset = 0;
-    public static double otosYOffset =  6.625; //6.625
-    public static double otosHeadingOffset = Math.toRadians(90);
+    public double odoXOffset = 43.18;
+    public double odoYOffset = 22.225;
 
-    public static double Kpp = 0.25;
-    public static double Kotos = 0.25;
-    public static double Kll = 0.5;
+    public static CVMaster.EOCVPipeline pipeline = CVMaster.EOCVPipeline.YELLOW_SAMPLE;
 
-    public double startingX = 63.75;
-    public double startingY = 54.25;
-    public double startingHeading = Math.toRadians(0);
+    public double startingX = 0;
+    public double startingY = -36;
+    public double startingHeading = Math.toRadians(-90);
 
     double fusedX;
     double fusedY;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
         odo = hardwareMap.get(GoBildaPinpoint.class,"pinpoint");
-        otos = hardwareMap.get(SparkFunOTOS.class, "otos");
         KalmanFilter kalman = new KalmanFilter(new Pose2d(startingX, startingY, startingHeading), odo, cv.limelight);
 
         cv.start();
         cv.setLLPipeline(CVMaster.LLPipeline.APRILTAGS);
+        cv.setEOCVPipeline(pipeline);
 
 //        odo.resetPosAndIMU();
         odo.setOffsets(odoXOffset, odoYOffset);
@@ -72,34 +65,16 @@ public class KalmanTuner extends LinearOpMode {
         odo.setEncoderDirections(GoBildaPinpoint.EncoderDirection.FORWARD, GoBildaPinpoint.EncoderDirection.REVERSED);
         odo.setPosition(new Pose2D(DistanceUnit.INCH, startingX, startingY, AngleUnit.RADIANS, startingHeading));
 
-        otos.setLinearUnit(DistanceUnit.INCH);
-        otos.setAngularUnit(AngleUnit.RADIANS);
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(otosXOffset, otosYOffset, otosHeadingOffset);
-        otos.setOffset(offset);
-        otos.setLinearScalar(1.0);
-        otos.setAngularScalar(1.0);
-        otos.calibrateImu();
-        otos.resetTracking();
-        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(startingX, startingY, startingHeading);
-        otos.setPosition(currentPosition);
-        // Get the hardware and firmware version
-        SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
-        SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
-        otos.getVersionInfo(hwVersion, fwVersion);
-
         backLeft = new Motor(3, "leftBack", hardwareMap, true);
         backRight = new Motor(3, "rightBack", hardwareMap, false);
         frontLeft = new Motor(3, "leftFront", hardwareMap, true);
         frontRight = new Motor(3, "rightFront", hardwareMap, false);
 
-        waitForStart();
-        if (isStopRequested()) return;
-        while (opModeIsActive() && !isStopRequested()) {
+
+        while (!opModeIsActive() && !isStopRequested()) {
             odo.update();
             Pose2D pos = odo.getPosition();
             Pose2d ppPose = new Pose2d(pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.RADIANS));
-            SparkFunOTOS.Pose2D otosPos = otos.getPosition();
-            Pose2d otosPose = new Pose2d(otosPos.x, otosPos.y, otosPos.h);
             LLResult result = cv.mt2RelocalizeRAW(pos.getHeading(AngleUnit.RADIANS));
             Pose3D pose3d = null;
             Pose2d llPose = null;
@@ -131,12 +106,6 @@ public class KalmanTuner extends LinearOpMode {
                 c.setStroke("#34ad38");
                 Drawing.drawRobot(c, llPose);
 
-//                telemetry.addData("x", llPose.position.x);
-//                telemetry.addData("y", llPose.position.y);
-//                telemetry.addData("heading", llPose.heading.toDouble());
-//                telemetry.addData("rawPose", pose3d.toString());
-//                telemetry.addData("ll", "true");
-
 //                telemetry.addData("currentTime", System.currentTimeMillis());
 //                telemetry.addData("limelight timestamp", result.getTimestamp() );
             }
@@ -147,22 +116,30 @@ public class KalmanTuner extends LinearOpMode {
             c.setStroke("#edd100");
             Drawing.drawRobot(c, ppPose);
 
-            c.setStroke("#d90209");
-            Drawing.drawRobot(c, otosPose);
-
             c.setStroke("#fc8c03");
             Drawing.drawRobot(c, fusedPose);
 
+            cv.updatePotentialTargetList(pipeline, fusedPose, telemetry);
+
+            String dcolor = "#f5d142";
+            if (pipeline == CVMaster.EOCVPipeline.RED_SAMPLE) {
+                dcolor = "#f54245";
+            } else if (pipeline == CVMaster.EOCVPipeline.BLUE_SAMPLE) {
+                dcolor = "#4254f5";
+            }
+
+            c.setStroke(dcolor);
+            c.setFill(dcolor);
+            c.setAlpha(1);
+            for (Pose3D p : cv.targets) {
+                c.fillRect(p.getPosition().x, p.getPosition().y, 2, 4);
+                telemetry.addLine(p.toString());
+            }
+
+
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
-//            telemetry.addData("pose", pose);
-            double otosError = Math.sqrt((Math.pow((ppPose.position.x - otosPose.position.x), 2) + Math.pow((ppPose.position.y - otosPose.position.y), 2)));
-            telemetry.addData("otosError", otosError);
-            telemetry.addData("px", pos.getX(DistanceUnit.INCH));
-            telemetry.addData("py", pos.getY(DistanceUnit.INCH));
-            telemetry.addData("pheading", pos.getHeading(AngleUnit.RADIANS));
-
-//            telemetry.addData("looptime: ", frequency);
+            telemetry.addData("looptime: ", frequency);
             telemetry.update();
 
             double x,y,rx;
@@ -179,6 +156,8 @@ public class KalmanTuner extends LinearOpMode {
             setDrivePower(-x, y, rx);
 
         }
+        waitForStart();
+        if (isStopRequested()) return;
     }
 
     public void setDrivePower(double x, double y, double rx) {

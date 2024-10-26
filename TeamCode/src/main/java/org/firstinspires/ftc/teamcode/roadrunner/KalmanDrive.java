@@ -5,7 +5,7 @@ package org.firstinspires.ftc.teamcode.roadrunner;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.ftc.FlightRecorder;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointRR;
+import org.firstinspires.ftc.teamcode.util.hardware.GoBildaPinpointRR;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -35,8 +35,8 @@ public class KalmanDrive extends MecanumDrive {
          */
         //These are tuned for 3110-0002-0001 Product Insight #1
         // RR localizer note: These units are inches, presets are converted from mm (which is why they are inexact)
-        public double xOffset = 1.7;
-        public double yOffset = 0.875;
+        public double xOffset = -1.75;
+        public double yOffset = -0.875;
 
         /*
         Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
@@ -55,8 +55,8 @@ public class KalmanDrive extends MecanumDrive {
         increase when you move the robot forward. And the Y (strafe) pod should increase when
         you move the robot to the left.
          */
-        public GoBildaPinpoint.EncoderDirection xDirection = GoBildaPinpoint.EncoderDirection.FORWARD;
-        public GoBildaPinpoint.EncoderDirection yDirection = GoBildaPinpoint.EncoderDirection.REVERSED;
+        public GoBildaPinpoint.EncoderDirection xDirection = GoBildaPinpoint.EncoderDirection.REVERSED;
+        public GoBildaPinpoint.EncoderDirection yDirection = GoBildaPinpoint.EncoderDirection.FORWARD;
     }
 
     public static Params PARAMS = new Params();
@@ -89,7 +89,7 @@ public class KalmanDrive extends MecanumDrive {
         an incorrect starting value for x, y, and heading.
          */
         pinpoint.recalibrateIMU();
-        pinpoint.resetPosAndIMU();
+        //pinpoint.resetPosAndIMU();
         // wait for pinpoint to finish calibrating
         try {
             Thread.sleep(300);
@@ -98,23 +98,24 @@ public class KalmanDrive extends MecanumDrive {
         }
 
         pinpoint.setPosition(pose);
+        this.pose = pose;
     }
     @Override
     public PoseVelocity2d updatePoseEstimate() {
-        if (lastPinpointPose != pose) {
-            // RR localizer note:
-            // Something else is modifying our pose (likely for relocalization),
-            // so we override otos pose with the new pose.
-            // This could potentially cause up to 1 loop worth of drift.
-            // I don't like this solution at all, but it preserves compatibility.
-            // The only alternative is to add getter and setters, but that breaks compat.
-            // Potential alternate solution: timestamp the pose set and backtrack it based on speed?
-            pinpoint.setPosition(pose);
-        }
+//        if (lastPinpointPose != pose) {
+//            // RR localizer note:
+//            // Something else is modifying our pose (likely for relocalization),
+//            // so we override otos pose with the new pose.
+//            // This could potentially cause up to 1 loop worth of drift.
+//            // I don't like this solution at all, but it preserves compatibility.
+//            // The only alternative is to add getter and setters, but that breaks compat.
+//            // Potential alternate solution: timestamp the pose set and backtrack it based on speed?
+//            pinpoint.setPosition(pose);
+//        }
         pinpoint.update();
         kalman.kalmanSmart();
-        pose = kalman.getCalculatedState();
-        lastPinpointPose = pose;
+        pose = new Pose2d(kalman.getCalculatedState().position.x, kalman.getCalculatedState().position.y, pinpoint.getPositionRR().heading.toDouble());
+
 
         // RR standard
         poseHistory.add(pose);

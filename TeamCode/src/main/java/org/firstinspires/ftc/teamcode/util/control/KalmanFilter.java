@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.util.control;
 
+import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.roadrunner.Drawing;
 import org.firstinspires.ftc.teamcode.util.hardware.GoBildaPinpoint;
 
 public class KalmanFilter {
@@ -101,8 +106,23 @@ public class KalmanFilter {
     }
 
     public void kalmanSmart() {
-        if (limelight.getLatestResult().isValid()) {
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid() && result.getBotpose_MT2() != null) {
             aprilTagKalman();
+        } else {
+            odoKalman();
+        }
+    }
+
+    public void kalmanSmart(Canvas c) {
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid() && result.getBotpose_MT2() != null) {
+            aprilTagKalman();
+
+            Pose3D pose3d = result.getBotpose_MT2();
+            Pose2d llPose = new Pose2d((pose3d.getPosition().x*39.3701007874), (pose3d.getPosition().y*39.3701007874), pose3d.getOrientation().getYaw(AngleUnit.RADIANS));
+            c.setStroke("#34ad38");
+            Drawing.drawRobot(c, llPose);
         } else {
             odoKalman();
         }
