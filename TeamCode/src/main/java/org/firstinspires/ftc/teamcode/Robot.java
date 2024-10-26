@@ -96,7 +96,7 @@ public class Robot {
         if (mode == Gamepiece.SAMPLE) {
             mode = Gamepiece.SPECIMEN;
         } else {
-            mode = Gamepiece.SAMPLE
+            mode = Gamepiece.SAMPLE;
         }
     }
 
