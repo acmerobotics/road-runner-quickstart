@@ -22,8 +22,7 @@ import java.util.Objects;
 @Config
 public class LimelightAngleCorrection extends LinearOpMode {
     Limelight3A limelight;
-
-
+    
     public static String targetColor = "blocksBlue";
 
     @Override
