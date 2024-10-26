@@ -34,7 +34,7 @@ public class teenagehwmap extends HardwareMapUtil {
     public double Finalrange = 0.45;
     //.4 is good
     //.6 is bad
-    public double FinalrangeBasket = 0.5;
+    public double FinalrangeBasket = 0.48;
 
     /**
      * Initializes all hardware components and sets their initial states.

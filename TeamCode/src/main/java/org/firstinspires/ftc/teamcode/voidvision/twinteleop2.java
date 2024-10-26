@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.voidvision;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -81,6 +82,7 @@ public class twinteleop2 extends LinearOpMode {
             if (gamepad2.a && !isRoutineRunning) {
                 isRoutineRunning = true;
                 new Thread(() -> runFirstServoSequence()).start();  // Execute the servo sequence in a separate thread
+
             }
 
             // ---- Second Servo Subroutine (Triggered by gamepad2.b) ----
@@ -96,6 +98,8 @@ public class twinteleop2 extends LinearOpMode {
                 new Thread(() -> runLiftMotorRoutine()).start(); // Run lift motor routine in a separate thread
             }
 
+            telemetry.addData("motorencoder",robot.liftMotor.getCurrentPosition());
+
             telemetry.update();
         }
     }
@@ -109,7 +113,7 @@ public class twinteleop2 extends LinearOpMode {
         telemetry.update();
 
         // Step 1: Move range1Servo to position 0.25 and range2Servo to position 0.8 at 80% speed
-        moveServosSimultaneously(robot.range1Servo, 0.25, robot.range2Servo, 0.8, 0.8);
+        moveServosSimultaneously(robot.range1Servo, .25, robot.range2Servo, robot.Finalrange-.25, 0.8);
         sleepWithOpModeCheck(1000); // Wait for 1 second
 
         // Step 2: Move both servos back to their starting positions at the same time
@@ -130,35 +134,69 @@ public class twinteleop2 extends LinearOpMode {
         // Start the intake servo when the second servo sequence starts
         robot.intakeServo.setPower(1.0); // Adjust the power as needed
 
-        // Step 1: Move range1Servo to 0.25 and range2Servo to 0 at the same time at 80% speed
-        //moveServosSimultaneously(robot.range1Servo, .25, robot.range2Servo, robot.Finalrange-.25, 0.8);
-        //sleepWithOpModeCheck(1000*10);
-        moveServosSimultaneously(robot.range1Servo, robot.Finalrange, robot.range2Servo, 0, 0.6);
+        // Step 1: Move to Zero Position
+        moveServosSimultaneously(robot.range1Servo, .15, robot.range2Servo, robot.Finalrange - .15, 0.8);
+        if (checkForCancel()) return;
 
-        // Simultaneously move basketServo1 to 0.5 and basketServo2 to 0
-        moveServosSimultaneously(robot.basketServo1, 0.5, robot.basketServo2, 0, 0.8);
+        // Step 2: Move basketServo1 and basketServo2 simultaneously
+        moveServosSimultaneously(robot.basketServo1, robot.FinalrangeBasket, robot.basketServo2, 0, 0.8);
+        if (checkForCancel()) return;
+
+        // Step 3: Move range1Servo and range2Servo simultaneously
+        moveServosSimultaneously(robot.range1Servo, robot.Finalrange, robot.range2Servo, 0, 0.6);
+        if (checkForCancel()) return;
 
         // Wait for gamepad2.left_bumper to be pressed to set retract to true
         while (!gamepad2.left_bumper && opModeIsActive()) {
             telemetry.addData("Waiting for Left Bumper", "Press gamepad2.left_bumper to retract");
             telemetry.update();
+            if (checkForCancel()) return;
         }
 
         retract = true;
 
         if (retract) {
-            // Step 2: Move basketServo1 back to 0 and basketServo2 to 0.5 simultaneously
-            moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, 0.5, 0.75);
+            // Step 4: Move basketServo1 and basketServo2 to retract positions
+            moveServosSimultaneously(robot.basketServo1, 0 + robot.FinalrangeBasket * 0.75, robot.basketServo2, robot.FinalrangeBasket * 0.25, 0.99);
+            if (checkForCancel()) return;
 
-            // Step 3: Move range1Servo back to 0 and range2Servo to 0.25 at the same time at 80% speed
+            // Step 5: Move range1Servo and range2Servo to final positions
             moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
+            if (checkForCancel()) return;
+
+            // Step 6: Return basketServo1 and basketServo2 to starting positions
+            moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, robot.FinalrangeBasket, 0.99);
+            robot.range1Servo.setPosition(0);
+            robot.range2Servo.setPosition(robot.Finalrange);
+            if (checkForCancel()) return;
         }
+
+        sleepWithOpModeCheck(1000);
 
         // Stop the intake servo when the second servo sequence ends
         robot.intakeServo.setPower(0); // Stop the intake servo
 
         isRoutineRunning = false;
+        telemetry.addData("Second Servo Sequence", "Completed");
+        telemetry.update();
     }
+
+    /**
+     * Checks if the cancel button (gamepad2.b) is pressed and stops the routine if true.
+     * @return true if canceled, false otherwise
+     */
+    private boolean checkForCancel() {
+        if (gamepad2.b) {  // Use gamepad2.b as the cancel button
+            telemetry.addData("Sequence", "Canceled by user");
+            telemetry.update();
+            // Stop the intake servo immediately
+            robot.intakeServo.setPower(0);
+            isRoutineRunning = false;
+            return true;
+        }
+        return false;
+    }
+
 
     /*
      * Subroutine to control the lift motor (liffMotor)
@@ -168,25 +206,81 @@ public class twinteleop2 extends LinearOpMode {
         telemetry.addData("Lift Motor Routine", "Started");
         telemetry.update();
 
-        // Step 1: Set motor power to 5 for 1.25 seconds
-        robot.liftMotor.setPower(.6);
-        sleepWithOpModeCheck(1250);
+        // Get the current position as a baseline
+        int initialPosition = robot.liftMotor.getCurrentPosition();
 
-        // Step 2: Wait for 1 second
-        robot.liftMotor.setPower(.05);
+        // Step 1: Move the motor up by 3000 encoder counts at full speed
+        int targetPositionMAX = initialPosition + 3080; // Adjust based on desired lift distance
+        int targetPositionLowerBasket = 1203; // Adjust based on desired lift distance
+        int targetPositionUpperBasket = 2570; // Adjust based on desired lift distance
+        int targetPositionLowerRung = 662; // Adjust based on desired lift distance
+        int targetPositionUpperRung = 1880; // Adjust based on desired lift distance
+
+        moveMotorToPosition(robot.liftMotor, targetPositionLowerRung,.8);
+        robot.liftMotor.setPower(0.05);
         sleepWithOpModeCheck(1000);
 
-        // Step 3: Set motor power to -5 for 1.25 seconds
-        robot.liftMotor.setPower(-0.4);
-        sleepWithOpModeCheck(1200);
+        moveMotorToPosition(robot.liftMotor, targetPositionUpperRung,.8);
+        robot.liftMotor.setPower(0.05);
+        sleepWithOpModeCheck(1000);
 
-        // Step 4: Set motor power to 0
+        moveMotorToPosition(robot.liftMotor, targetPositionLowerBasket,.8);
+        robot.liftMotor.setPower(0.05);
+        sleepWithOpModeCheck(1000);
+
+        moveMotorToPosition(robot.liftMotor, targetPositionUpperBasket, .8);
+
+        // Step 2: Hold the position briefly with a low power to maintain
+        robot.liftMotor.setPower(0.05);
+        sleepWithOpModeCheck(1000);
+
+        moveMotorToPosition(robot.liftMotor, targetPositionMAX, .6);
+
+        // Step 2: Hold the position briefly with a low power to maintain
+        robot.liftMotor.setPower(0.05);
+        sleepWithOpModeCheck(1000);
+
+        // Step 3: Move the motor down by 3000 encoder counts at 0.4 speed
+        int targetPosition2 = initialPosition; // Return to the original position
+        moveMotorToPosition(robot.liftMotor, targetPosition2, 0.4);
+
+        // Step 4: Ensure motor is stopped
         robot.liftMotor.setPower(0);
 
         isLiftMotorRoutineRunning = false; // Re-enable left joystick input
         telemetry.addData("Lift Motor Routine", "Completed");
+        telemetry.addData("motorEncoder",robot.liftMotor.getCurrentPosition());
         telemetry.update();
     }
+
+    /**
+     * Moves a DC motor to a target position with a specified speed.
+     *
+     * @param motor The DC motor to control.
+     * @param targetPosition The encoder target position to move to.
+     * @param speed The motor power (0.0 to 1.0) used to reach the target.
+     */
+    private void moveMotorToPosition(DcMotor motor, int targetPosition, double speed) {
+        // Set the target position and configure the motor to run to it
+        motor.setTargetPosition(targetPosition);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Set the motor power (speed) while ensuring it’s non-negative
+        motor.setPower(Math.abs(speed));
+
+        // Wait until the motor reaches the target position
+        while (motor.isBusy()) {
+            // You can add telemetry or perform other tasks here while waiting
+            telemetry.addData("Motor Position", motor.getCurrentPosition());
+            telemetry.addData("Target Position", targetPosition);
+            telemetry.update();
+        }
+
+        // Stop the motor once the target is reached
+        motor.setPower(0);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
 
     private void controlLiftWithResistance() {
         // Extend the lift until the motor encounters resistance (e.g., reaching max extension)
