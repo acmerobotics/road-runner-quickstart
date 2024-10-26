@@ -16,6 +16,7 @@ import java.util.ArrayList;
 @Config
 public class TeleOpMainRed extends LinearOpMode {
     double oldTime = 0;
+    AllianceColor allianceColor = AllianceColor.RED;
 
     // STATES
     boolean manualExtension = false;
@@ -54,7 +55,7 @@ public class TeleOpMainRed extends LinearOpMode {
             }
             if (gamepad1.circle) {
                 actionsQueue.add(new SequentialAction(
-                        new InstantAction(() -> robot.toggleGamepieceColor(AllianceColor.RED))
+                        new InstantAction(() -> robot.toggleGamepieceColor(allianceColor))
                 ));
             }
             if (gamepad1.cross) {
