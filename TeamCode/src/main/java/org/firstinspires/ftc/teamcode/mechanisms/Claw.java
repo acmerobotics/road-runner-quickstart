@@ -12,7 +12,6 @@ public class Claw {
     private Servo bucketRightServo;
     private Servo clawLeftServo;
     private Servo clawRightServo;
-
     public Claw(HardwareMap HWMap) {
         bucketLeftServo = HWMap.get(Servo.class, "bucketLeftServo");
 //        bucketRightServo = HWMap.get(Servo.class, "bucketLeftServo");
@@ -27,7 +26,7 @@ public class Claw {
     public class Flip implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-                bucketLeftServo.setPosition(1);
+            bucketLeftServo.setPosition(1);
 //            bucketRightServo.setPosition(1);
             return false;
         }
@@ -40,7 +39,7 @@ public class Claw {
     public class Flop implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-                bucketLeftServo.setPosition(0);
+                bucketLeftServo.setPosition(0.5);
 //            bucketRightServo.setPosition(0);
             return false;
         }

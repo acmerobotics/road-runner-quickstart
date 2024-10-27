@@ -27,8 +27,8 @@ public class Intake {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             //TODO: set values to actual servo positions
-            intakeServoLeft.setPosition(0.93);
-            intakeServoRight.setPosition(0.07);
+            intakeServoLeft.setPosition(0.87);
+            intakeServoRight.setPosition(0.13);
             //intakeMotor.setPower(1.0);
             flipped = true;
             return false;

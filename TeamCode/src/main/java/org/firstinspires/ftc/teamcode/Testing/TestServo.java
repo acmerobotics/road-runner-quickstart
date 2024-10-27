@@ -6,26 +6,22 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class TestServo extends LinearOpMode {
-    private Servo servo1;
     @Override
     public void runOpMode() {
 
-        servo1 = hardwareMap.get(Servo.class, "servo1");
+        Servo left = hardwareMap.get(Servo.class, "left");
+        Servo right = hardwareMap.get(Servo.class, "right");
 
 
         waitForStart();
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                servo1.setPosition(0.5);
+                left.setPosition(1);
             }
 
             if (gamepad1.b) {
-                servo1.setPosition(1);
-            }
-
-            if (gamepad1.x) {
-                servo1.setPosition(0);
+                left.setPosition(0);
             }
 
         }
