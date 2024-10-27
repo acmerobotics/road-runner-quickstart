@@ -25,22 +25,22 @@ public class Basket2 extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
         TrajectoryActionBuilder trajecotryegrig = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(-30.03, 14.07), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-31.26, 13.07), Math.toRadians(0))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-12.4, -30.87), Math.toRadians(-175))
+                .strafeToLinearHeading(new Vector2d(-25.82, -25.72), Math.toRadians(-180))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(7, -38), Math.toRadians(143))
+                .strafeToLinearHeading(new Vector2d(8, -39), Math.toRadians(132))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-12.4, -38), Math.toRadians(-170))
+                .strafeToLinearHeading(new Vector2d(-7.12, -36.617), Math.toRadians(-180))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(7, -38), Math.toRadians(143))
+                .strafeToLinearHeading(new Vector2d(8, -39), Math.toRadians(132))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-32.34, -31.87), Math.toRadians(-91))
+                .strafeToLinearHeading(new Vector2d(-32.81, -27.32), Math.toRadians(-90))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(7, -38), Math.toRadians(143))
+                .strafeToLinearHeading(new Vector2d(8, -39), Math.toRadians(132))
                 .waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(-48, -30), Math.toRadians(-90))
-                .strafeToLinearHeading(new Vector2d(-46, 0), Math.toRadians(-90));
+                .strafeToLinearHeading(new Vector2d(-48, 10), Math.toRadians(-90));
 
         Action auto = trajecotryegrig.build();
         waitForStart();
