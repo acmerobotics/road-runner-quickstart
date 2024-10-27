@@ -67,7 +67,7 @@ public class BlueTeleop extends LinearOpMode {
     private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR}
     private LiftState liftState = LiftState.LIFTSTART;
 
-    private enum ExtendoState {EXTENDOSTART, EXTENDOEXTEND, EXTENDORETRACT, EXTENDOSPIT}
+    private enum ExtendoState {EXTENDOSTART, EXTENDOEXTEND, EXTENDORETRACT}
     private ExtendoState extendoState = ExtendoState.EXTENDOSTART;
 
 
