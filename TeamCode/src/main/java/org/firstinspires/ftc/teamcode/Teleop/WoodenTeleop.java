@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
-import org.firstinspires.ftc.teamcode.mechanisms.Intake;
+import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class WoodenTeleop extends LinearOpMode {
     public void runOpMode() {
 
         Extendo extendo = new Extendo(hardwareMap);
-        Intake intake = new Intake(hardwareMap);
+        Intaker intake = new Intaker(hardwareMap);
         Slides slides = new Slides(hardwareMap);
         Claw claw = new Claw(hardwareMap);
 
@@ -68,7 +68,7 @@ public class WoodenTeleop extends LinearOpMode {
 
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
-        
+
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
 
@@ -114,11 +114,11 @@ public class WoodenTeleop extends LinearOpMode {
             slides.slidesLeftMotor.setPower(righty/3);
 
             if (currentGamepad2.x) {
-                intake.intakeMotor.setPower(-0.9);
+                runningActions.add(intake.intake());
             } else if (currentGamepad2.b) {
-                intake.intakeMotor.setPower(0.3);
+                runningActions.add(intake.extake());
             } else {
-                intake.intakeMotor.setPower(0);
+                runningActions.add(intake.off());
             }
 
             if (currentGamepad2.a && !previousGamepad2.a) {

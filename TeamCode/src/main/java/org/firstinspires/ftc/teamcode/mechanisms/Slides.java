@@ -15,10 +15,10 @@ public class Slides {
     public DcMotor slidesLeftMotor;
     public DcMotor slidesRightMotor;
 
-    public PIDFController.PIDCoefficients slidesLeftCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
-    public PIDFController.PIDCoefficients slidesRightCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
-    public PIDFController slidesLeftPID = new PIDFController(slidesLeftCoeffs);
-    public PIDFController slidesRightPID = new PIDFController(slidesRightCoeffs);
+    private PIDFController.PIDCoefficients slidesLeftCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
+    private PIDFController.PIDCoefficients slidesRightCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
+    private PIDFController slidesLeftPID = new PIDFController(slidesLeftCoeffs);
+    private PIDFController slidesRightPID = new PIDFController(slidesRightCoeffs);
 
 
     public Slides(HardwareMap HWMap){

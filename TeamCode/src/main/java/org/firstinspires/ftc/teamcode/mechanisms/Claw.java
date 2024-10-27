@@ -12,6 +12,7 @@ public class Claw {
     private Servo bucketRightServo;
     private Servo clawLeftServo;
     private Servo clawRightServo;
+
     public Claw(HardwareMap HWMap) {
         bucketLeftServo = HWMap.get(Servo.class, "bucketLeftServo");
 //        bucketRightServo = HWMap.get(Servo.class, "bucketLeftServo");

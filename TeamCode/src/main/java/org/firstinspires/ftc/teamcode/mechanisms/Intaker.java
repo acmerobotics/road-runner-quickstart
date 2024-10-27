@@ -8,13 +8,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Intake {
-    public Servo intakeServoLeft;
-    public Servo intakeServoRight;
-    public DcMotor intakeMotor;
-    public static boolean flipped = false;
+public class Intaker {
+    private Servo intakeServoLeft;
+    private Servo intakeServoRight;
+    private DcMotor intakeMotor;
 
-    public Intake(HardwareMap HWMap){
+    public Intaker(HardwareMap HWMap){
         intakeServoLeft = HWMap.get(Servo.class, "intakeServoLeft");
         intakeServoRight = HWMap.get(Servo.class, "intakeServoRight");
         intakeMotor = HWMap.get(DcMotor.class, "intakeMotor");
@@ -26,11 +25,9 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            //TODO: set values to actual servo positions
             intakeServoLeft.setPosition(0.87);
             intakeServoRight.setPosition(0.13);
-            //intakeMotor.setPower(1.0);
-            flipped = true;
+
             return false;
         }
     }
@@ -42,14 +39,62 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            //TODO: set values to actual servo positions
             intakeServoLeft.setPosition(0.05);
             intakeServoRight.setPosition(0.95);
-            flipped = false;
             return false;
         }
     }
     public Action flop() {
         return new Flop();
     }
+
+    public class Intake implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intakeMotor.setPower(-0.9);
+            return false;
+        }
+    }
+    public Action intake() {
+        return new Intake();
+    }
+
+    public class Extake implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intakeMotor.setPower(0.3);
+            return false;
+        }
+    }
+    public Action extake() {
+        return new Extake();
+    }
+
+    public class Off implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intakeMotor.setPower(0);
+            return false;
+        }
+    }
+    public Action off() {
+        return new Off();
+    }
+
+    public class Creep implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intakeMotor.setPower(-0.2);
+            return false;
+        }
+    }
+    public Action creep() {
+        return new Creep();
+    }
+
+
 }

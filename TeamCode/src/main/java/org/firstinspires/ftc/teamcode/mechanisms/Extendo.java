@@ -13,10 +13,9 @@ import org.firstinspires.ftc.teamcode.PIDFController;
 public class Extendo {
     public DcMotor extendoMotor;
 
-    public PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
-    public PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
+    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
+    private PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
 
-    //public boolean moving = false;
     public Extendo(HardwareMap HWMap){
         extendoMotor = HWMap.get(DcMotor.class, "extendoMotor");
 
@@ -38,15 +37,38 @@ public class Extendo {
             extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
 
             if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 15) {
-                Intake.flipped = false;
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
     }
     public Action retract() {
         return new Retract();
     }
+
+    public class Extend implements Action {
+        private boolean init = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!init) {
+                //TODO: set value to extended extendo position
+                extendoMotorPID.setTargetPosition(100);
+                init = true;
+            }
+
+            extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
+
+            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 15) {
+                return false;
+            }
+            return true;
+        }
+    }
+    public Action extend() {
+        return new Extend();
+    }
+
 
     public double getPos() {
         return (double) (extendoMotor.getCurrentPosition()) / 2;
