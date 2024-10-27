@@ -30,11 +30,11 @@ import com.acmerobotics.roadrunner.ftc.LynxFirmware;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -53,6 +53,18 @@ import java.util.List;
 
 @Config
 public final class MecanumDrive {
+    public DcMotorEx leftFront, leftBack, rightFront, rightBack;
+
+    public MecanumDrive(Motor leftFront, Motor rightFront, Motor leftBack, Motor rightBack, VoltageSensor voltageSensor, LazyImu lazyImu, Localizer localizer) {
+        this.voltageSensor = voltageSensor;
+        this.lazyImu = lazyImu;
+        this.localizer = localizer;
+    }
+
+    public void driveRobotCentric(double leftX, double leftY, double rightY) {
+
+    }
+
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -106,8 +118,6 @@ public final class MecanumDrive {
     public final AccelConstraint defaultAccelConstraint =
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
-    public final DcMotorEx leftFront, leftBack, rightBack, rightFront;
-
     public final VoltageSensor voltageSensor;
 
     public final LazyImu lazyImu;
@@ -139,8 +149,10 @@ public final class MecanumDrive {
             imu = lazyImu.get();
 
             // TODO: reverse encoders if needed
-            //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
+            leftFront.setDirection(DcMotor.Direction.REVERSE);
+            leftBack.setDirection(DcMotor.Direction.REVERSE);
+            rightFront.setDirection(DcMotor.Direction.FORWARD);
+            rightBack.setDirection(DcMotor.Direction.FORWARD);}
 
         @Override
         public Twist2dDual<Time> update() {
@@ -217,10 +229,10 @@ public final class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        leftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
+        rightBack = hardwareMap.get(DcMotorEx.class, "backRight");
+        rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
