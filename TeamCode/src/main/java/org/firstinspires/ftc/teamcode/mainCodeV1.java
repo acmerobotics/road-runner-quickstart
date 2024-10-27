@@ -5,13 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
-
 
 
 @TeleOp(name = "mainCodeV1")
@@ -28,6 +25,22 @@ public class mainCodeV1 extends LinearOpMode {
     int ARMMAX;
     int INCREMENT;
 
+    private void hardwareMapping() {
+        imu = hardwareMap.get(IMU.class, "imu");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        colorDetector = hardwareMap.get(ColorSensor.class, "colorDetector");
+    }
+
+    private void armSetup() {
+        arm.setPower(1);
+        ARMMIN = arm.getCurrentPosition() - 3;
+        ARMMAX = ARMMIN - 3200;
+        INCREMENT = 250;
+    }
 
     private void setupChassis() {
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
@@ -47,6 +60,12 @@ public class mainCodeV1 extends LinearOpMode {
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    private void initializeAndSetUp() {
+        hardwareMapping();
+        setupChassis();
+        armSetup();
     }
 
     private void chassisMovement() {
@@ -79,49 +98,25 @@ public class mainCodeV1 extends LinearOpMode {
         backRight.setPower(0.75 * backRightPower);
     }
 
-    private void armMovement(int ARMMAX, int ARMMIN, int INCREMENT) {
+    private void armMovement() {
         int armPosition = arm.getCurrentPosition();
         if (gamepad1.dpad_down) {       // if (DPAD-down) is being pressed and if not yet the min
             armPosition += INCREMENT;   // Position in
         } else if (gamepad1.dpad_up) {  // if (DPAD-up) is being pressed and if not yet max
             armPosition -= INCREMENT;   // Position Out
         }
-        armPosition = Math.max(Math.min(armPosition, ARMMIN), ARMMAX);
+        armPosition = Math.max(Math.min(armPosition, ARMMIN), ARMMAX);  //clamp the values to be between min and max
         arm.setTargetPosition(armPosition);
     }
 
-    private void printThings() {
-
-        telemetry.addData("Color", colorDetection());
-        telemetry.update();
-    }
-
-    private void hardwareMapping() {
-        imu = hardwareMap.get(IMU.class, "imu");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        colorDetector = hardwareMap.get(ColorSensor.class, "colorDetector");
-    }
-
-    private void initializeSetUp() {
-        hardwareMapping();
-        setupChassis();
-        armSetup();
-    }
-
-    private void armSetup() {
-        arm.setPower(1);
-        ARMMIN = arm.getCurrentPosition() - 3;
-        ARMMAX = ARMMIN - 3200;
-        INCREMENT = 250;
-    }
-
-    private void startSetUp() {
+    private void postStartSetUp() {
         arm.setTargetPosition(arm.getCurrentPosition());
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    private void printThings() {
+        telemetry.addData("Color: ", colorDetection());
+        telemetry.update();
     }
 
     private String colorDetection() {
@@ -132,31 +127,27 @@ public class mainCodeV1 extends LinearOpMode {
 
         if ((ratioGreenOverRed >= 1.1 && ratioGreenOverRed <= 2.0) &&
                 (ratioBlueOverRed >= 0.1 && ratioBlueOverRed <= 0.8)) {
-            color = colors[0];
+            color = colors[0]; // Yellow
         }
-        else if ((ratioGreenOverRed >= 1.5 && ratioGreenOverRed <= 2.7) &&
+        if ((ratioGreenOverRed >= 1.5 && ratioGreenOverRed <= 2.7) &&
                 (ratioBlueOverRed >= 2.0 && ratioBlueOverRed <= 10.0)) {
-            color = colors[1];
+            color = colors[1]; // Blue
         }
-        else if ((ratioGreenOverRed >= 0.2 && ratioGreenOverRed <= 1) &&
+        if ((ratioGreenOverRed >= 0.2 && ratioGreenOverRed <= 1) &&
                 (ratioBlueOverRed >= 0.1 && ratioBlueOverRed <= 0.8)) {
-            color = colors[2];
+            color = colors[2]; // Red
         }
-        else {
-            color = "";
-        }
-
         return color;
     }
 
     @Override
     public void runOpMode() {
-        initializeSetUp();
+        initializeAndSetUp();
         waitForStart();
-        startSetUp();
+        postStartSetUp();
         while (opModeIsActive()) {
             chassisMovement();
-            armMovement(ARMMAX, ARMMIN, INCREMENT);
+            armMovement();
             printThings();
         }
     }
