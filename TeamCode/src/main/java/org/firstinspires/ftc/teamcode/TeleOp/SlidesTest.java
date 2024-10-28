@@ -65,36 +65,36 @@ public class SlidesTest extends LinearOpMode {
                     true
             );
 
-            if(gamepad2.a){
-                extension.setPosition(0.45);
-                extension2.setPosition(0);
+            if(gamepad2.a){ //retract
+                extension.setPosition(0.1);
+                extension2.setPosition(1);
             }
 
-            if(gamepad2.b){
-                extension.setPosition(1);
-                extension2.setPosition(0.4);
+            if(gamepad2.b){ // Extending
+                extension.setPosition(0.5);
+                extension2.setPosition(0);
             }
 
             if(gamepad2.dpad_up){
                 SlideLeft.set(1);
             } else {
-                SlideLeft.set(0);
+                SlideLeft.set(-0.009375);
             }
 
             if(gamepad2.dpad_down){
                 SlideLeft.set(-1);
             } else {
-                SlideLeft.set(0);
+                SlideLeft.set(-0.009375);
             }
 
             if(gamepad2.x){
                 claw1.setPosition(1);
-                claw2.setPosition(1);
+                claw2.setPosition(0);
             }
 
             if(gamepad2.y){
                 claw1.setPosition(0);
-                claw2.setPosition(0);
+                claw2.setPosition(1);
             }
 
             if(gamepad2.left_bumper){
