@@ -13,7 +13,6 @@ public class CompTeleOp extends OpMode {
     Robot robot;
     AIMPad aimPad1;
     AIMPad aimPad2;
-    Gamepad hi = new Gamepad();
 
     @Override
     public void init() {
