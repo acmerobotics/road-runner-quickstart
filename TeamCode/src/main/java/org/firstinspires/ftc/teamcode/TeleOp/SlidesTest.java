@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,10 +22,13 @@ public class SlidesTest extends LinearOpMode {
     static MotorEx SlideLeft;
     static MotorEx SlideRight;
     static SimpleServo extension;
-    static SimpleServo extension2;
+//    static SimpleServo extension2;
+    static CRServo extension2;
     static SimpleServo claw1;
     static SimpleServo claw2;
     static SimpleServo angleServo;
+
+    long startTime ;
 
     public void HardwareStart(){
         FrontLeft = new MotorEx(hardwareMap, "FL", Motor.GoBILDA.RPM_312);
@@ -42,7 +46,8 @@ public class SlidesTest extends LinearOpMode {
 //        SlideRight.setRunMode(Motor.RunMode.VelocityControl);
 
         extension = new SimpleServo(hardwareMap, "ES", 0, 1);
-        extension2 = new SimpleServo(hardwareMap, "ES2", 0.0, 1.0);
+//        extension2 = new SimpleServo(hardwareMap, "ES2", 0.0, 1.0);
+        extension2 = new CRServo(hardwareMap, "ES2");
 
         claw1 = new SimpleServo(hardwareMap, "C1", 0, 1);
         claw2 = new SimpleServo(hardwareMap, "C2", 0, 1);
@@ -67,12 +72,21 @@ public class SlidesTest extends LinearOpMode {
 
             if(gamepad2.a){ //retract
                 extension.setPosition(0.1);
-                extension2.setPosition(1);
+//                extension2.setPosition(1);
+                startTime = System.currentTimeMillis();
+                extension2.set(1);
+//                telemetry.addData("Extension Position:", extension2.get());
             }
-
             if(gamepad2.b){ // Extending
                 extension.setPosition(0.5);
-                extension2.setPosition(0);
+//                extension2.setPosition(0);
+                startTime = System.currentTimeMillis();
+                extension2.set(-1);
+            }
+
+            if ((System.currentTimeMillis() - startTime) >= 2000) {
+                extension2.set(0);
+                startTime = Long.MAX_VALUE;
             }
 
             if(gamepad2.dpad_up){
