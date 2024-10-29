@@ -34,9 +34,14 @@ public class IntakeSystem extends Mechanism {
     private final static double DOWN_HINGE_POSITION = -0.5;
     private final static double UP_HINGE_POSITION = 0.5;
 
+    public final double SLIDES_RESET_POS = 0;
+    public final double SLIDES_LOW_CLIP_POS = 200;
+    public final double SLIDES_HIGH_CLIP_POS = 400;
+    public final double SLIDES_LOW_BUCKET_POS = 600;
+    public final double SLIDES_HIGH_BUCKET_POS = 800;
     private double pivotTargetPosition = UP_HINGE_POSITION;
 
-    private enum PivotState {
+    public enum PivotState {
         DOWN, UP, CUSTOM
     }
 
@@ -69,8 +74,8 @@ public class IntakeSystem extends Mechanism {
         pivotToPosition(pivotTargetPosition);
     }
 
-    public void setPivotTargetPosition(double pivotTargetPosition) {
-        this.pivotTargetPosition = pivotTargetPosition;
+    public void setActivePivotState(PivotState activePivotState) {
+        this.activePivotState = activePivotState;
     }
 
     public void setPivotStateCustom(double position) {

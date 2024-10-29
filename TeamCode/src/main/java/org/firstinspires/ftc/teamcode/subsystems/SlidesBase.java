@@ -128,8 +128,9 @@ public class SlidesBase extends Mechanism {
      * Set the target position for the slides
      * @param targetPosition the target position for the slides
      */
-    private void setTargetPosition(double targetPosition) {
+    public void setTargetPosition(double targetPosition) {
         activeTargetPosition = targetPosition;
+        controlSystem.setTarget(activeTargetPosition);
     }
 
     /**
@@ -137,7 +138,7 @@ public class SlidesBase extends Mechanism {
      * @return the output power for the slide motors
      */
     private double getTargetOutputPower() {
-        return controlSystem.update(activeTargetPosition);
+        return controlSystem.update(getCurrentPosition());
     }
 
     /**
