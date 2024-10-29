@@ -77,7 +77,7 @@ public class Robot {
         flip.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftHang.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightHang.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightHang.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -147,10 +147,10 @@ public class Robot {
     }
 
     public void wristControl(Gamepad gamepad) {
-        if (gamepad.dpad_up) {
-            wrist.setPosition(1);
+        if (gamepad.dpad_down) {
+            wrist.setPosition(0.92);
         }
-        else if (gamepad.dpad_down) {
+        else if (gamepad.dpad_up) {
             wrist.setPosition(0);
         }
         else if (gamepad.dpad_right) {
@@ -158,10 +158,9 @@ public class Robot {
         }
     }
 
-
     public void intakeControl(Gamepad gamepad) {
-        intakeLeft.setPower(-gamepad.left_trigger + gamepad.right_trigger);
-         intakeRight.setPower(gamepad.left_trigger - gamepad.right_trigger);
+        intakeRight.setPower(-gamepad.left_trigger + gamepad.right_trigger);
+         intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger);
     }
 
     public void hangControl(Gamepad gamepad) {
@@ -170,10 +169,14 @@ public class Robot {
             leftHang.setPower(0.5);
             rightHang.setPower(0.5);
         }
-        else if (gamepad.dpad_up)
+        else if (gamepad.dpad_down)
         {
             leftHang.setPower(-0.5);
             rightHang.setPower(-0.5);
+        }
+        else {
+            leftHang.setPower(0);
+            rightHang.setPower(0);
         }
     }
 
