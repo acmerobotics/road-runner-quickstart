@@ -158,7 +158,7 @@ public class Robot {
             wrist.setPosition(0.5);
         }
     }
-    
+
 
     public void intakeControl(Gamepad gamepad) {
         intakeLeft.setPower(-gamepad.left_trigger + gamepad.right_trigger);
