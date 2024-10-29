@@ -200,7 +200,7 @@ public class Robot {
                     new Action() {
                         @Override
                         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                            armTarget = 1075;
+                            armTarget = 1800;
                             return false;
                         }
                     },
