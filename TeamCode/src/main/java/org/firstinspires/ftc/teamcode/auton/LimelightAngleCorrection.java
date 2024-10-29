@@ -74,13 +74,11 @@ public class LimelightAngleCorrection extends LinearOpMode {
                     drive.setPowers(0, 0, 0, 0);
                     telemetry.addLine("Doing Nothing");
                 }
-
                 if (!results.isEmpty()) {
                     telemetry.addData("Result name", results.get(0).getClassName());
                     telemetry.addData("Result Confidence", results.get(0).getConfidence());
                 }
             }
-
             telemetry.addData("TempC", (limelight.getStatus().getTemp()));
             telemetry.addData("TempF", ((limelight.getStatus().getTemp()* 1.8)) + 32);
             telemetry.update();
