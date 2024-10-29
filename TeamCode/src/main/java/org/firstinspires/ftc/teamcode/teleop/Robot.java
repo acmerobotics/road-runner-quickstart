@@ -28,20 +28,7 @@ import java.util.List;
 public class Robot {
     DcMotor leftFront, leftBack, rightFront, rightBack, leftHang, rightHang;
     DcMotor flip, slide;
-
-
-
-
-
-
-
-
-
-
-
-
     Servo wrist;
-    Servo claw;
 //    Servo intakeRight;
     CRServo intakeLeft, intakeRight;
     MecanumDrive drive;
@@ -74,7 +61,6 @@ public class Robot {
 
         intakeLeft = hardwareMap.crservo.get("intakeLeft");
         intakeRight = hardwareMap.crservo.get("intakeRight");
-//        claw = hardwareMap.servo.get("claw");
         wrist = hardwareMap.servo.get("wrist");
 
         List<DcMotor> motors = Arrays.asList(leftBack, leftFront, rightBack, rightFront, flip, slide);
@@ -172,15 +158,7 @@ public class Robot {
             wrist.setPosition(0.5);
         }
     }
-
-//    public void gripClawControl(Gamepad gamepad) {
-//        if (gamepad.a) {
-//            claw.setPosition(gripClawClosed);
-//        }
-//        else if (gamepad.b) {
-//            claw.setPosition(gripClawOpen);
-//        }
-//    }
+    
 
     public void intakeControl(Gamepad gamepad) {
         intakeLeft.setPower(-gamepad.left_trigger + gamepad.right_trigger);
