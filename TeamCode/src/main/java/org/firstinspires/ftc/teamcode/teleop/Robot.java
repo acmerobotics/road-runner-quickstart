@@ -29,7 +29,6 @@ public class Robot {
     DcMotor leftFront, leftBack, rightFront, rightBack, leftHang, rightHang;
     DcMotor flip, slide;
     Servo wrist;
-//    Servo intakeRight;
     CRServo intakeLeft, intakeRight;
     MecanumDrive drive;
     AnalogInput axonLeft, axonRight;
