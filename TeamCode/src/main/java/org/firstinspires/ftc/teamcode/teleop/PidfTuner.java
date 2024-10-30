@@ -71,13 +71,12 @@ public class PidfTuner extends OpMode {
         slidePos = slide.getCurrentPosition();
         double pid2 = slideController.calculate(slidePos, slideTarget);
 
-//      double ff2 = Math.cos(Math.toRadians(slideTarget / ticks_in_degree)) * sF;
-
         slide.setPower(pid2);
 
         wrist.setPosition(servoTarget);
 
         telemetry.addData("armPos", armPos);
+        telemetry.addData("flipPower", power);
         telemetry.addData("slidePos", slidePos);
         telemetry.addData("slidePower", slide.getPower());
         telemetry.update();
