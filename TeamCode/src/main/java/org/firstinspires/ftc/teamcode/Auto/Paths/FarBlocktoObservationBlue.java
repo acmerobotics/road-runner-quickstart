@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous
-public class FarBlocktoObservation2 extends LinearOpMode {
+public class FarBlocktoObservationBlue extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -29,19 +29,19 @@ public class FarBlocktoObservation2 extends LinearOpMode {
         TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
                 .strafeToLinearHeading(new Vector2d(-29.46,-12.24), Math.toRadians(0))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-12.42,26.71), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-9.42,41.09), Math.toRadians(180))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(-12.55,37.21), Math.toRadians(0))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(-12.54,51.44), Math.toRadians(180))
                 .waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(-14.55,37.21), Math.toRadians(0))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-18.42,50.71), Math.toRadians(180))
-                .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-14.55,37.21), Math.toRadians(0))
-                .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-30.81,49.9), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-28.81,38.9), Math.toRadians(90))
                 .waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(-14.55,37.21), Math.toRadians(0))
                 .waitSeconds(4)
-                .strafeToLinearHeading(new Vector2d(0,34.21), Math.toRadians(180));
+                .strafeToLinearHeading(new Vector2d(4.85,40), Math.toRadians(180));
 
 
 
