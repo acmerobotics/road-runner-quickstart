@@ -65,9 +65,10 @@ public class PidfTuner extends OpMode {
 
         double power = pid + ff;
 
-        if (Math.abs(armTarget-armPos) < 100) {
+        if (Math.abs(armTarget-armPos) <= 300 && armTarget >= 1600) {
             multiplier = 0.001;
         }
+        else multiplier = 0.5;
 
         flip.setPower(power * multiplier);
 
