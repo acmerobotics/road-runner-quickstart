@@ -58,9 +58,6 @@ import java.util.List;
 @TeleOp
 public class BlueTeleop extends LinearOpMode {
 
-    private Pipeline vision = new Pipeline(telemetry);
-    private OpenCvWebcam webcam1 = null;
-
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
@@ -94,20 +91,6 @@ public class BlueTeleop extends LinearOpMode {
         Claw claw = new Claw(hardwareMap);
         Control control = new Control();
 
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam1");
-        int cameraMoniterViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMoniterViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(webcamName,cameraMoniterViewId);
-        webcam1.setPipeline(new Pipeline(telemetry));
-        webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener(){
-            public void onOpened(){
-                webcam1.startStreaming(640,480, OpenCvCameraRotation.UPRIGHT);
-
-            }
-            public void onError(int errorCode){
-
-            }
-
-        });
 
         waitForStart();
 
@@ -155,7 +138,7 @@ public class BlueTeleop extends LinearOpMode {
                     break;
                 case EXTENDOEXTEND:
                     if (!control.getBusy()) {
-                        if (vision.colorDetected().equals("Blue") || vision.colorDetected().equals("Yellow")) {
+                        if (currentGamepad2.y && !previousGamepad2.y) {
                             runningActions.add(new SequentialAction(
                                     control.start(),
                                     intake.creep(),
@@ -163,6 +146,16 @@ public class BlueTeleop extends LinearOpMode {
                                     extendo.retract(),
                                     control.done()
                             ));
+                        }
+
+                        if (currentGamepad2.b && !previousGamepad2.b) {
+                            runningActions.add(new SequentialAction(
+                                    control.start(),
+                                    intake.flop(),
+                                    extendo.retract(),
+                                    control.done()
+                            ));
+                            extendoState = ExtendoState.EXTENDOSTART;
                         }
 
                         extendo.extendoMotor.setPower(lefty2 / 2);
@@ -175,7 +168,7 @@ public class BlueTeleop extends LinearOpMode {
                     }
                     break;
                 case EXTENDORETRACT:
-                    if (!vision.colorDetected().equals("Blue") && !vision.colorDetected().equals("Yellow")) {
+                    if (currentGamepad2.y && !previousGamepad2.y) {
                         runningActions.add(intake.off());
                         extendoState = ExtendoState.EXTENDOSTART;
                     }
@@ -277,8 +270,6 @@ public class BlueTeleop extends LinearOpMode {
             runningActions = newActions;
             dash.sendTelemetryPacket(packet);
 
-            telemetry.addData("intakeCamera", vision.colorDetected());
-            telemetry.update();
         }
     }
 }
