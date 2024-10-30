@@ -100,7 +100,13 @@ public class twinteleop2 extends LinearOpMode {
 
             telemetry.addData("motorencoder",robot.liftMotor.getCurrentPosition());
             telemetry.addData("intake power", robot.intakeServo.getPower());
-
+            telemetry.addData("R",isColorInRange(robot.colorSensor.red(),robot.colorSensor.green(),robot.colorSensor.blue(),Color.RED));
+            telemetry.addData("G",isColorInRange(robot.colorSensor.red(),robot.colorSensor.green(),robot.colorSensor.blue(),Color.GREEN));
+            telemetry.addData("B",isColorInRange(robot.colorSensor.red(),robot.colorSensor.green(),robot.colorSensor.blue(),Color.BLUE));
+            telemetry.addData("Y",isColorInRange(robot.colorSensor.red(),robot.colorSensor.green(),robot.colorSensor.blue(),Color.YELLOW));
+            telemetry.addData("red",robot.colorSensor.red());
+            telemetry.addData("green",robot.colorSensor.green());
+            telemetry.addData("blue",robot.colorSensor.blue());
             telemetry.update();
         }
     }
@@ -132,13 +138,15 @@ public class twinteleop2 extends LinearOpMode {
         telemetry.addData("Second Servo Sequence", "Started");
         telemetry.update();
 
-        //moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
-        //moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, robot.FinalrangeBasket, 0.99);
+        moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, robot.FinalrangeBasket, 0.99);
+        moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
+        /**
         moveMultipleServosWithSpeeds(
                 new Servo[] { robot.range1Servo, robot.range2Servo, robot.basketServo1, robot.basketServo2 },
                 new double[] { 0, robot.Finalrange, 0, robot.FinalrangeBasket },
                 new double[] { 0.6, 0.6, 0.7, 0.7 }
         );
+         **/
 
         if (checkForCancel()) {isRoutineRunning = false;return;}
 
@@ -150,7 +158,7 @@ public class twinteleop2 extends LinearOpMode {
         // Step 1: Move to Zero Position
         moveServosSimultaneously(robot.range1Servo, .15, robot.range2Servo, robot.Finalrange - .15, 0.8);
         if (checkForCancel()) {isRoutineRunning = false;return;}
-        sleepWithOpModeCheck(1000);
+        sleepWithOpModeCheck(10000);
 
         // Step 2: Move basketServo1 and basketServo2 simultaneously
         moveServosSimultaneously(robot.basketServo1, robot.FinalrangeBasket, robot.basketServo2, 0, 0.8);
@@ -380,13 +388,13 @@ public class twinteleop2 extends LinearOpMode {
     private boolean isColorInRange(float red, float green, float blue, Color targetColor) {
         switch (targetColor) {
             case RED:
-                return (red > 100 && green < 75 && blue < 75); // Adjust these thresholds as necessary
+                return ((300<red) && (green<1700) && (50<blue&&blue<2000)); // Adjust these thresholds as necessary
             case GREEN:
-                return (green > 100 && red < 75 && blue < 75); // Adjust these thresholds as necessary
+                return ((0<red && red<100) && (0<green && green<100) && (0<blue && blue<100)); // Adjust these thresholds as necessary
             case BLUE:
-                return (blue > 100 && red < 75 && green < 75); // Adjust these thresholds as necessary
+                return ((red<600) && (390<green) && (600<blue)); // Adjust these thresholds as necessary
             case YELLOW:
-                return (red > 100 && green > 100 && blue < 75); // Adjust these thresholds as necessary
+                return ((2350<red) && (1700<green) && (700<blue)); // Adjust these thresholds as necessary
             default:
                 return false;
         }
