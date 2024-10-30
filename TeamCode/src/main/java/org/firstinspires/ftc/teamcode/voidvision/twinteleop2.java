@@ -99,6 +99,7 @@ public class twinteleop2 extends LinearOpMode {
             }
 
             telemetry.addData("motorencoder",robot.liftMotor.getCurrentPosition());
+            telemetry.addData("intake power", robot.intakeServo.getPower());
 
             telemetry.update();
         }
@@ -131,20 +132,33 @@ public class twinteleop2 extends LinearOpMode {
         telemetry.addData("Second Servo Sequence", "Started");
         telemetry.update();
 
+        //moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
+        //moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, robot.FinalrangeBasket, 0.99);
+        moveMultipleServosWithSpeeds(
+                new Servo[] { robot.range1Servo, robot.range2Servo, robot.basketServo1, robot.basketServo2 },
+                new double[] { 0, robot.Finalrange, 0, robot.FinalrangeBasket },
+                new double[] { 0.6, 0.6, 0.7, 0.7 }
+        );
+
+        if (checkForCancel()) {isRoutineRunning = false;return;}
+
         // Start the intake servo when the second servo sequence starts
         robot.intakeServo.setPower(1.0); // Adjust the power as needed
 
+
+
         // Step 1: Move to Zero Position
         moveServosSimultaneously(robot.range1Servo, .15, robot.range2Servo, robot.Finalrange - .15, 0.8);
-        if (checkForCancel()) return;
+        if (checkForCancel()) {isRoutineRunning = false;return;}
+        sleepWithOpModeCheck(1000);
 
         // Step 2: Move basketServo1 and basketServo2 simultaneously
         moveServosSimultaneously(robot.basketServo1, robot.FinalrangeBasket, robot.basketServo2, 0, 0.8);
-        if (checkForCancel()) return;
+        if (checkForCancel()) {isRoutineRunning = false;return;}
 
         // Step 3: Move range1Servo and range2Servo simultaneously
         moveServosSimultaneously(robot.range1Servo, robot.Finalrange, robot.range2Servo, 0, 0.6);
-        if (checkForCancel()) return;
+        if (checkForCancel()) {isRoutineRunning = false;return;}
 
         // Wait for gamepad2.left_bumper to be pressed to set retract to true
         while (!gamepad2.left_bumper && opModeIsActive()) {
@@ -158,17 +172,17 @@ public class twinteleop2 extends LinearOpMode {
         if (retract) {
             // Step 4: Move basketServo1 and basketServo2 to retract positions
             moveServosSimultaneously(robot.basketServo1, 0 + robot.FinalrangeBasket * 0.75, robot.basketServo2, robot.FinalrangeBasket * 0.25, 0.99);
-            if (checkForCancel()) return;
+            if (checkForCancel()) {isRoutineRunning = false;return;}
 
             // Step 5: Move range1Servo and range2Servo to final positions
             moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
-            if (checkForCancel()) return;
+            if (checkForCancel()) {isRoutineRunning = false;return;}
 
             // Step 6: Return basketServo1 and basketServo2 to starting positions
             moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, robot.FinalrangeBasket, 0.99);
             robot.range1Servo.setPosition(0);
             robot.range2Servo.setPosition(robot.Finalrange);
-            if (checkForCancel()) return;
+            if (checkForCancel()) {isRoutineRunning = false;return;}
         }
 
         sleepWithOpModeCheck(1000);
@@ -186,7 +200,7 @@ public class twinteleop2 extends LinearOpMode {
      * @return true if canceled, false otherwise
      */
     private boolean checkForCancel() {
-        if (gamepad2.b) {  // Use gamepad2.b as the cancel button
+        if (gamepad2.right_bumper) {  // Use gamepad2.b as the cancel button
             telemetry.addData("Sequence", "Canceled by user");
             telemetry.update();
             // Stop the intake servo immediately
@@ -436,6 +450,7 @@ public class twinteleop2 extends LinearOpMode {
         double delta2 = (targetPosition2 - startPosition2) / steps;
 
         for (int i = 0; i < steps; i++) {
+            if (checkForCancel()) return;
             servo1.setPosition(startPosition1 + (delta1 * i));
             servo2.setPosition(startPosition2 + (delta2 * i));
             sleep((long) (20 * (1 - speedFactor))); // Sleep adjusted based on speed factor
