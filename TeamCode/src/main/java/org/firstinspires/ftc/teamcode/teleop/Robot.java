@@ -116,9 +116,9 @@ public class Robot {
     public void arcadeDriveWithSlowMode(Gamepad gamepad) {
         double y,x,rx;
         if (gamepad.right_trigger > 0) {
-            y = -0.2*gamepad.left_stick_y;
-            x = 0.2*gamepad.left_stick_x;
-            rx = 0.2*gamepad.right_stick_x;
+            y = -0.5*gamepad.left_stick_y;
+            x = 0.5*gamepad.left_stick_x;
+            rx = 0.5*gamepad.right_stick_x;
         }
         else {
             y = -gamepad.left_stick_y;
@@ -166,13 +166,13 @@ public class Robot {
     public void hangControl(Gamepad gamepad) {
         if (gamepad.dpad_up)
         {
-            leftHang.setPower(0.5);
-            rightHang.setPower(0.5);
+            leftHang.setPower(1);
+            rightHang.setPower(1);
         }
         else if (gamepad.dpad_down)
         {
-            leftHang.setPower(-0.5);
-            rightHang.setPower(-0.5);
+            leftHang.setPower(-1);
+            rightHang.setPower(-1);
         }
         else {
             leftHang.setPower(0);
