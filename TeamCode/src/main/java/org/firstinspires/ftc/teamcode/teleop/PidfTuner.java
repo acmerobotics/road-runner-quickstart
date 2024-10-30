@@ -25,8 +25,16 @@ public class PidfTuner extends OpMode {
     public static int slideTarget = 500;
     public static double servoTarget = 0.5;
 
+<<<<<<< Updated upstream
     public static double multiplier = 0.5;
 
+=======
+<<<<<<< HEAD
+=======
+    public static double multiplier = 0.5;
+
+>>>>>>> d67674a9115b2365b382ad4e5a22bb8014446121
+>>>>>>> Stashed changes
     private final double ticks_in_degree = 2048 / 90.0;
 
     private DcMotorEx flip, slide;
