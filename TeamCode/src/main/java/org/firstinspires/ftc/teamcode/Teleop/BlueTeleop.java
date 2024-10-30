@@ -32,21 +32,19 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.InstantAction;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Auto.Vision.Pipeline;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
-import org.firstinspires.ftc.teamcode.mechanisms.Intake;
+import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -60,8 +58,8 @@ import java.util.List;
 @TeleOp
 public class BlueTeleop extends LinearOpMode {
 
-    Pipeline vision = new Pipeline(telemetry);
-    OpenCvWebcam webcam1 = null;
+    private Pipeline vision = new Pipeline(telemetry);
+    private OpenCvWebcam webcam1 = null;
 
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
@@ -69,154 +67,32 @@ public class BlueTeleop extends LinearOpMode {
     private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR}
     private LiftState liftState = LiftState.LIFTSTART;
 
-    private enum ExtendoState {EXTENDONOTHING, EXTENDORETRACT, EXTENDOSPIT}
-    private ExtendoState extendoState = ExtendoState.EXTENDONOTHING;
-
-    Pose2d StartPose1 = new Pose2d(0, 0, Math.toRadians(0));
-    MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
+    private enum ExtendoState {EXTENDOSTART, EXTENDOEXTEND, EXTENDORETRACT}
+    private ExtendoState extendoState = ExtendoState.EXTENDOSTART;
 
 
-    public void drivetrain(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
-        double y = gamepad1.left_stick_y;
-        double x = -gamepad1.left_stick_x;
-        double rx = -gamepad1.right_stick_x;
-
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double frontLeftPower = (y + x + rx) / denominator;
-        double backLeftPower = (y - x + rx) / denominator;
-        double frontRightPower = (y - x - rx) / denominator;
-        double backRightPower = (y + x - rx) / denominator;
-
-        FL.setPower(frontLeftPower);
-        BL.setPower(backLeftPower);
-        FR.setPower(frontRightPower);
-        BR.setPower(backRightPower);
-    }
-
-    public void buttonpress(Extendo extendo, Intake intake, Slides slides, Claw claw) {
-        double y = gamepad2.left_stick_y;
-
-        switch (extendoState) {
-            case EXTENDONOTHING:
-                //TODO: change values to the min/max of how far extendo extends
-                if (extendo.getPos() > 0 && extendo.getPos() < 10000) {
-                    extendo.extendoMotor.setPower(y);
-                } else if (extendo.getPos() > 10000) {
-                    extendo.extendoMotor.setPower(-0.6);
-                } else if (extendo.getPos() < 0) {
-                    extendo.extendoMotor.setPower(0.6);
-                }
-                //TODO: change value to how far until its a bit extended out in front of the robot
-                if (extendo.getPos() > 200) {
-                    if (!Intake.flipped) {
-                        runningActions.add(intake.flip());
-                    }
-                    if (vision.colorDetected().equals("Blue") || vision.colorDetected().equals("Yellow")) {
-                        runningActions.add(new SequentialAction(
-                                intake.flop(),
-                                extendo.retract()
-                        ));
-                        extendoState = ExtendoState.EXTENDORETRACT;
-                    } else if (vision.colorDetected().equals("Red")) {
-                        intake.intakeMotor.setPower(-1);
-                    } else {
-                        intake.intakeMotor.setPower(1);
-                    }
-                } else {
-                    if (Intake.flipped) {
-                        runningActions.add(intake.flop());
-                    }
-                }
-                break;
-            case EXTENDORETRACT:
-                //TODO: Set to the transfer position
-                if (extendo.getPos() < 0) {
-                    intake.intakeMotor.setPower(-0.3);
-                    extendoState = ExtendoState.EXTENDOSPIT;
-                }
-                break;
-            case EXTENDOSPIT:
-                if (!vision.colorDetected().equals("Blue") && !vision.colorDetected().equals("Yellow")) {
-                    intake.intakeMotor.setPower(0);
-                    extendoState = ExtendoState.EXTENDONOTHING;
-                }
-                break;
-        }
-
-        switch (liftState) {
-            case LIFTSTART:
-                if (gamepad2.x) {
-                    if (gamepad2.left_trigger < 0.9) {
-                        runningActions.add(new SequentialAction(slides.slideTopBasket()));
-                    } else {
-                        runningActions.add(new SequentialAction(slides.slideBottomBasket()));
-                    }
-                    liftState = LiftState.LIFTDEPOSIT;
-                }
-                if (gamepad2.y) {
-                    runningActions.add(new SequentialAction(
-                            slides.slideWallLevel(),
-                            claw.open()
-                    ));
-                    liftState = LiftState.LIFTWALL;
-                }
-                break;
-            case LIFTDEPOSIT:
-                if (gamepad2.x) {
-                    runningActions.add(new SequentialAction(
-                            claw.flip(),
-                            new SleepAction(0.5),
-                            claw.flop(),
-                            slides.retract()
-                    ));
-                    liftState = LiftState.LIFTSTART;
-                }
-                break;
-            case LIFTWALL:
-                if (gamepad2.y) {
-                    if (gamepad2.left_trigger < 0.9) {
-                        runningActions.add(new SequentialAction(
-                                claw.close(),
-                                slides.slideTopBar()
-                        ));
-                        liftState = LiftState.LIFTTOPBAR;
-                    } else {
-                        runningActions.add(new SequentialAction(
-                                claw.close(),
-                                slides.slideBottomBar()
-                        ));
-                        liftState = LiftState.LIFTBOTTOMBAR;
-                    }
-                }
-                break;
-            case LIFTTOPBAR:
-                if (gamepad2.y) {
-                    runningActions.add(new SequentialAction(
-                            slides.slideBottomBar(),
-                            new SleepAction(1.2),
-                            slides.retract()
-                    ));
-                    liftState = LiftState.LIFTSTART;
-                }
-                break;
-            case LIFTBOTTOMBAR:
-                if (gamepad2.y) {
-                    runningActions.add(slides.retract());
-                    liftState = LiftState.LIFTSTART;
-                }
-                break;
-            default:
-                liftState = LiftState.LIFTSTART;
-                break;
-        }
-    }
     @Override
     public void runOpMode() {
 
+        DcMotor FL = hardwareMap.get(DcMotor.class, "FL");
+        DcMotor BL = hardwareMap.get(DcMotor.class, "BL");
+        DcMotor FR = hardwareMap.get(DcMotor.class, "FR");
+        DcMotor BR = hardwareMap.get(DcMotor.class, "BR");
+
+        FR.setDirection(DcMotorSimple.Direction.REVERSE);
+        BR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        Gamepad currentGamepad1 = new Gamepad();
+        Gamepad currentGamepad2 = new Gamepad();
+
+        Gamepad previousGamepad1 = new Gamepad();
+        Gamepad previousGamepad2 = new Gamepad();
+
         Extendo extendo = new Extendo(hardwareMap);
-        Intake intake = new Intake(hardwareMap);
+        Intaker intake = new Intaker(hardwareMap);
         Slides slides = new Slides(hardwareMap);
         Claw claw = new Claw(hardwareMap);
+        Control control = new Control();
 
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam1");
         int cameraMoniterViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMoniterViewId", "id", hardwareMap.appContext.getPackageName());
@@ -238,8 +114,158 @@ public class BlueTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
 
-            drivetrain(drive.leftFront, drive.rightFront, drive.leftBack, drive.rightBack);
-            buttonpress(extendo, intake, slides, claw);
+            previousGamepad1.copy(currentGamepad1);
+            previousGamepad2.copy(currentGamepad2);
+
+            currentGamepad1.copy(gamepad1);
+            currentGamepad2.copy(gamepad2);
+
+            double lefty1 = currentGamepad1.left_stick_y;
+            double leftx1 = -currentGamepad1.left_stick_x;
+            double rightx1 = -currentGamepad1.right_stick_x;
+            double lefty2 = currentGamepad2.left_stick_y;
+
+            double denominator = Math.max(Math.abs(lefty1) + Math.abs(leftx1) + Math.abs(rightx1), 1);
+            double frontLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
+            double backLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
+            double frontRightPower = (lefty1 - leftx1 - rightx1) / denominator;
+            double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
+
+            FL.setPower(frontLeftPower);
+            BL.setPower(backLeftPower);
+            FR.setPower(frontRightPower);
+            BR.setPower(backRightPower);
+
+
+            switch (extendoState) {
+                case EXTENDOSTART:
+                    if (currentGamepad2.y && !previousGamepad2.y && !control.getBusy()) {
+                        runningActions.add(new SequentialAction(
+                                control.start(),
+                                extendo.extend(),
+                                intake.flip(),
+                                intake.intake(),
+                                control.done()
+                        ));
+                    }
+                    if (control.getFinished()) {
+                        control.resetFinished();
+                        extendoState = ExtendoState.EXTENDOEXTEND;
+                    }
+                    break;
+                case EXTENDOEXTEND:
+                    if (!control.getBusy()) {
+                        if (vision.colorDetected().equals("Blue") || vision.colorDetected().equals("Yellow")) {
+                            runningActions.add(new SequentialAction(
+                                    control.start(),
+                                    intake.creep(),
+                                    intake.flop(),
+                                    extendo.retract(),
+                                    control.done()
+                            ));
+                        }
+
+                        extendo.extendoMotor.setPower(lefty2 / 2);
+                    }
+
+                    if (control.getFinished()) {
+                        control.resetFinished();
+                        runningActions.add(intake.extake());
+                        extendoState = ExtendoState.EXTENDORETRACT;
+                    }
+                    break;
+                case EXTENDORETRACT:
+                    if (!vision.colorDetected().equals("Blue") && !vision.colorDetected().equals("Yellow")) {
+                        runningActions.add(intake.off());
+                        extendoState = ExtendoState.EXTENDOSTART;
+                    }
+                    break;
+                default:
+                    extendoState = ExtendoState.EXTENDOSTART;
+                    break;
+            }
+
+            switch (liftState) {
+                case LIFTSTART:
+                    if (currentGamepad2.x && !previousGamepad2.x) {
+                        if (currentGamepad2.left_trigger < 0.9) {
+                            runningActions.add(slides.slideTopBasket());
+                        } else {
+                            runningActions.add(slides.slideBottomBasket());
+                        }
+                        liftState = LiftState.LIFTDEPOSIT;
+                    }
+
+                    if (currentGamepad2.y && !previousGamepad2.y) {
+                        runningActions.add(new SequentialAction(
+                                slides.slideWallLevel(),
+                                claw.open()
+                        ));
+                        liftState = LiftState.LIFTWALL;
+                    }
+                    break;
+                case LIFTDEPOSIT:
+                    if (currentGamepad2.x && !previousGamepad2.x && !control.getBusy()) {
+                        runningActions.add(new SequentialAction(
+                                control.start(),
+                                claw.flip(),
+                                new SleepAction(0.5),
+                                claw.flop(),
+                                slides.retract(),
+                                control.done()
+                        ));
+                    }
+
+                    if (currentGamepad2.b && !previousGamepad2.b) {
+                        runningActions.add(new SequentialAction(
+                                slides.retract(),
+                                claw.flop()
+                        ));
+                    }
+
+                    if (control.getFinished()) {
+                        control.resetFinished();
+                        liftState = LiftState.LIFTSTART;
+                    }
+
+                    break;
+                case LIFTWALL:
+                    if (currentGamepad2.y && !previousGamepad2.y) {
+                        if (currentGamepad2.left_trigger < 0.9) {
+                            runningActions.add(new SequentialAction(
+                                    claw.close(),
+                                    slides.slideTopBar()
+                            ));
+                            liftState = LiftState.LIFTTOPBAR;
+                        } else {
+                            runningActions.add(new SequentialAction(
+                                    claw.close(),
+                                    slides.slideBottomBar()
+                            ));
+                            liftState = LiftState.LIFTBOTTOMBAR;
+                        }
+                    }
+                    break;
+                case LIFTTOPBAR:
+                    if (currentGamepad2.y && !previousGamepad2.y) {
+                        runningActions.add(new SequentialAction(
+                                slides.slideBottomBar(),
+                                new SleepAction(1),
+                                slides.retract()
+                        ));
+                        liftState = LiftState.LIFTSTART;
+                    }
+                    break;
+                case LIFTBOTTOMBAR:
+                    if (currentGamepad2.y && !previousGamepad2.y) {
+                        runningActions.add(slides.retract());
+                        liftState = LiftState.LIFTSTART;
+                    }
+                    break;
+                default:
+                    liftState = LiftState.LIFTSTART;
+                    break;
+            }
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {
@@ -249,12 +275,10 @@ public class BlueTeleop extends LinearOpMode {
                 }
             }
             runningActions = newActions;
-
             dash.sendTelemetryPacket(packet);
 
             telemetry.addData("intakeCamera", vision.colorDetected());
             telemetry.update();
-            drive.updatePoseEstimate();
         }
     }
 }
