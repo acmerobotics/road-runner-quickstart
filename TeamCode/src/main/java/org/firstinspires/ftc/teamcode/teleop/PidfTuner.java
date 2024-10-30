@@ -25,7 +25,7 @@ public class PidfTuner extends OpMode {
     public static int slideTarget = 500;
     public static double servoTarget = 0.5;
 
-    private final double ticks_in_degree = 2080 / 90.0;
+    private final double ticks_in_degree = 2048 / 90.0;
 
     private DcMotorEx flip, slide;
     private Servo wrist;
