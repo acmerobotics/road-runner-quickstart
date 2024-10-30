@@ -267,7 +267,7 @@ public class Robot {
         public static double fF = 0.0037;
         public static double sP = 0.005, sI, sD;
 
-        private static final double ticks_in_degree = 931 / 90.0;
+        private static final double ticks_in_degree = 2048 / 90.0;
     }
 }
 
