@@ -64,8 +64,9 @@ public class PidfTuner extends OpMode {
         double ff = Math.cos(Math.toRadians(armTarget / ticks_in_degree)) * fF;
 
         double power = pid + ff;
-        if (Math.abs(armTarget-armPos)<100){
-            multiplier=0.001;
+
+        if (Math.abs(armTarget-armPos) < 100) {
+            multiplier = 0.001;
         }
 
         flip.setPower(power * multiplier);
