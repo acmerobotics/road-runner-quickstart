@@ -62,15 +62,11 @@ public class PidfTuner extends OpMode {
         armPos = flip.getCurrentPosition();
         double pid = armController.calculate(armPos, armTarget);
         double ff = Math.cos(Math.toRadians(armTarget / ticks_in_degree)) * fF;
-
+        pid *= Math.cos(Math.toRadians(armPos/ticks_in_degree));
+        
         double power = pid + ff;
 
-        if (Math.abs(armTarget-armPos) <= 300 && armTarget >= 1600) {
-            multiplier = 0.001;
-        }
-        else multiplier = 0.5;
-
-        flip.setPower(power * multiplier);
+        flip.setPower(power);
 
         slideController.setPID(sP,sI,sD);
         slidePos = slide.getCurrentPosition();
