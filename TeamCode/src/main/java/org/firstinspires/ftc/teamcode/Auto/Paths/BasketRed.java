@@ -5,7 +5,6 @@ package org.firstinspires.ftc.teamcode.Auto.Paths;
 // RR-specific imports
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -17,7 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous
-public class Basket2 extends LinearOpMode {
+public class BasketRed extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -40,7 +39,7 @@ public class Basket2 extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(8, -39), Math.toRadians(132))
                 .waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(-48, -30), Math.toRadians(-90))
-                .strafeToLinearHeading(new Vector2d(-48, 10), Math.toRadians(-90));
+                .strafeToLinearHeading(new Vector2d(-48, 0), Math.toRadians(-90));
 
         Action auto = trajecotryegrig.build();
         waitForStart();
