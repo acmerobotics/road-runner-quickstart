@@ -35,7 +35,7 @@ public class ColorSensorCode extends LinearOpMode {
 
 
 
-        ElapsedTime timer = new ElapsedTime();
+        // ElapsedTime timer = new ElapsedTime();
 
         waitForStart();
 
@@ -87,7 +87,7 @@ public class ColorSensorCode extends LinearOpMode {
                 telemetry.addData("Block Color", "none");
             }
 
-            timer.reset();
+            //timer.reset();
             telemetry.update();
 
         }
