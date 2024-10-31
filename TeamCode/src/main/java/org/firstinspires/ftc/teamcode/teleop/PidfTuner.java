@@ -17,7 +17,7 @@ public class PidfTuner extends OpMode {
     private PIDController armController, slideController;
 
     public static double fP = 0.0018, fI = 0, fD = 0.00009;  //fD = 0.00001, fP = 0.002
-    public static double fF = 0.0037; //fF = 0.0022
+    public static double fF = 0.0037;//fF = 0.0022
     public static double sP = 0.005, sI, sD;
     public static double sF;
 
@@ -57,9 +57,11 @@ public class PidfTuner extends OpMode {
     @Override
     public void loop() {
         int armPos, slidePos;
-
-        armController.setPID(fP, fI, fD);
         armPos = flip.getCurrentPosition();
+
+        if (armPos > 1850) armController.setPID(fP*0.01, fI, fD);
+        else armController.setPID(fP, fI, fD);
+
         double pid = armController.calculate(armPos, armTarget);
         double ff = Math.cos(Math.toRadians(armTarget / ticks_in_degree)) * fF;
         if (armPos > 0) pid *= Math.cos(Math.toRadians(armPos/ticks_in_degree));
