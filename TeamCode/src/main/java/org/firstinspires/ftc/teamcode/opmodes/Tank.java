@@ -47,6 +47,7 @@ public class Tank extends OpMode {
 
     @Override
     public void loop() {
+        drive.updatePoseEstimate();
         poseEstimate = drive.pose;
 
 

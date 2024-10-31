@@ -43,8 +43,7 @@ public class Headless extends OpMode {
         float xDir = -gamepad1.left_stick_x;
         float yDir = -gamepad1.left_stick_y;
 
-        //translated vector for headlessness. do later.
-        drive.updatePoseEstimate();
+
         double transXDir = xDir * Math.cos(drive.pose.heading.toDouble()) - yDir * Math.sin(drive.pose.heading.toDouble());
         double transYDir = xDir * Math.sin(drive.pose.heading.toDouble()) + yDir * Math.cos(drive.pose.heading.toDouble());
 
@@ -68,17 +67,27 @@ public class Headless extends OpMode {
 
     @Override
     public void loop() {
+        drive.updatePoseEstimate();
         poseEstimate = drive.pose;
 
 
 
 
         gamepadToMovement();
-        drive.setDrivePowers(
-                new PoseVelocity2d(
-                        input, -gamepad1.right_stick_x
-                )
-        );
+        if (!gamepad1.left_bumper) {
+            drive.setDrivePowers(
+                    new PoseVelocity2d(
+                            input, -gamepad1.right_stick_x
+                    )
+            );
+        } else {
+            drive.setDrivePowers(
+                    new PoseVelocity2d(
+                            new Vector2d(0,0), 0
+                    )
+            );
+        }
+
 
 
         updateTelemetry(telemetry);

@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.donotuse;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
 
 // I AM DOCTOR IVO ROBOTNIK!
 @TeleOp(name = "scrimTeleOp", group = "OpModes")
+@Disabled
 public class scrimTeleOp extends OpMode {
 
     // Insert whatever initialization your own code does
