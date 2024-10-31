@@ -251,6 +251,7 @@ public class Robot {
         slidePos = slide.getCurrentPosition();
 
         double pid = armController.calculate(flipPos, armTarget);
+        if (flipPos > 0) pid *= Math.cos(Math.toRadians(flipPos/armPIDValues.ticks_in_degree));
         double ff = Math.cos(Math.toRadians(armTarget / armPIDValues.ticks_in_degree)) * armPIDValues.fF;
 
         double power = pid + ff;
