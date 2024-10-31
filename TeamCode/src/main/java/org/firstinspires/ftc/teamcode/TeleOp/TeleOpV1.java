@@ -125,8 +125,8 @@ public class TeleOpV1 extends LinearOpMode {
     public static double INTAKE_DEPOSIT    =  0.5;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    public static double WRIST_FOLDED_IN   = 0;
-    public static double WRIST_FOLDED_OUT  = 1;
+    public static double WRIST_FOLDED_IN   = -0.2;
+    public static double WRIST_FOLDED_OUT  = 0.4;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     public static double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
@@ -316,7 +316,7 @@ public class TeleOpV1 extends LinearOpMode {
             else if (gamepad1.dpad_right){
                 /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
                 armPosition = ARM_SCORE_SPECIMEN;
-                wrist.setPosition(WRIST_FOLDED_IN);
+                wrist.setPosition(WRIST_FOLDED_OUT);
             }
 
             else if (gamepad1.dpad_up){
