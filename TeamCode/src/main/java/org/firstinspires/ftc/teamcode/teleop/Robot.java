@@ -267,15 +267,7 @@ public class Robot {
         public static double fF = 0.0037;
         public static double sP = 0.005, sI, sD;
 
-<<<<<<< Updated upstream
         private static final double ticks_in_degree = 2048 / 90.0;
-=======
-<<<<<<< HEAD
-        private static final double ticks_in_degree = 2080 / 90.0;
-=======
-        private static final double ticks_in_degree = 2048 / 90.0;
->>>>>>> d67674a9115b2365b382ad4e5a22bb8014446121
->>>>>>> Stashed changes
     }
 }
 
