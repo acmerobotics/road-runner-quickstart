@@ -25,7 +25,7 @@ public class PidfTuner extends OpMode {
     public static int slideTarget = 500;
     public static double servoTarget = 0.5;
     
-    public static double multiplier = 0.5;
+    public static double multiplier = 0.01;
 
     private final double ticks_in_degree = 2048 / 90.0;
 
@@ -59,13 +59,12 @@ public class PidfTuner extends OpMode {
         int armPos, slidePos;
         armPos = flip.getCurrentPosition();
 
-//        if (armPos > 1850) armController.setPID(fP*0.01, fI, fD);
-//        else
-        armController.setPID(fP, fI, fD);
+        if (armPos > 1850) armController.setPID(fP*multiplier, fI, fD);
+        else armController.setPID(fP, fI, fD);
 
         double pid = armController.calculate(armPos, armTarget);
         double ff = Math.cos(Math.toRadians(armTarget / ticks_in_degree)) * fF;
-        if (armPos > 0) pid *= Math.cos(Math.toRadians(armPos/ticks_in_degree));
+//        if (armPos > 0) pid *= Math.cos(Math.toRadians(armPos/ticks_in_degree));
 
         double power = pid + ff;
 
