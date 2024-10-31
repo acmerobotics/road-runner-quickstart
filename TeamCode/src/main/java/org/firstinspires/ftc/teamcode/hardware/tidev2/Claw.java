@@ -27,51 +27,56 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hardware.tidev2.tests;
+package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
-
-/*
- * This OpMode scans a single servo back and forward until Stop is pressed.
- * The code is structured as a LinearOpMode
- * INCREMENT sets how much to increase/decrease the servo position each cycle
- * CYCLE_MS sets the update period.
- *
- * This code assumes a Servo configured with the name "left_hand" as is found on a Robot.
- *
- * NOTE: When any servo position is set, ALL attached servos are activated, so ensure that any other
- * connected servos are able to move freely before running this test.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
-//@Disabled
-@TeleOp(name = "Test: Viper", group = "HardwareTest")
-public class TestViper extends LinearOpMode {
+public class Claw {
 
 
-    Viper viper = new Viper(this);
+    // Define class members
+    double torqueClose = 1;
+    double torqueOpen = 0;
 
-    @Override
-    public void runOpMode() {
+    double speedClose = 0;
+    double speedOpen = 0.67;
 
-        // initialize all the hardware, using the hardware class. See how clean and simple this is?
-        viper.init();
+    private OpMode myOpMode;   // gain access to methods in the calling OpMode.
+    boolean pos;
+    Servo torque;
+    Servo speed;
+    public Claw(OpMode opmode) {
+        myOpMode = opmode;
+    }
+
+    public void init() {
+        // Define and Initialize Motors (note: need to use reference to actual OpMode).
+        torque = myOpMode.hardwareMap.get(Servo.class, "torque");
+        speed = myOpMode.hardwareMap.get(Servo.class, "speed");
+        torque.setPosition(0.25);
+        speed.setPosition(0);
+    }
 
 
-        // Send telemetry message to signify robot waiting;
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+    public void listen() {
 
-            viper.listen();
-            updateTelemetry(telemetry);
+
+        if (myOpMode.gamepad2.x) {
+            pos = !pos;
         }
+
+        if(pos) {
+//            torque.setPosition(torqueClose);
+            speed.setPosition(speedClose);
+        } else {
+//            torque.setPosition(torqueOpen);
+            speed.setPosition(speedOpen);
+        }
+    }
+
+    public void sendTelemetry() {
+        myOpMode.telemetry.addData("Claw Position",pos);
     }
 }

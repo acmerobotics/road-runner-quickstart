@@ -83,8 +83,6 @@ public class Intake {
 
 
     public void sendTelemetry() {
-        myOpMode.telemetry.addData("Left Bumper", "%.2f", left_bumper);
-        myOpMode.telemetry.addData("Right Bumper", "%.2f", right_bumper);
-        myOpMode.telemetry.addData("Power", "%.2f", power);
+        myOpMode.telemetry.addData("Intake Power", "%.2f", power);
     }
 }

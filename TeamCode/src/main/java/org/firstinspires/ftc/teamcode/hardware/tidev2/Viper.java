@@ -69,23 +69,23 @@ public class Viper {
     }
 
 
-    public static final double NEW_P = 2.5;
-    public static final double NEW_I = 0.1;
-    public static final double NEW_D = 0.2;
-    public static final double NEW_F = 0.5;
-
-    PIDFCoefficients pidfNew = new PIDFCoefficients(NEW_P, NEW_I, NEW_D, NEW_F);
+//    public static final double NEW_P = 2.5;
+//    public static final double NEW_I = 0.1;
+//    public static final double NEW_D = 0.2;
+//    public static final double NEW_F = 0.5;
+//
+//    PIDFCoefficients pidfNew = new PIDFCoefficients(NEW_P, NEW_I, NEW_D, NEW_F);
 
 
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        viper = myOpMode.hardwareMap.get(DcMotorEx.class, "viper");
+        viper = myOpMode.hardwareMap.get(DcMotorEx.class, "viper_slide");
 
         viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        viper.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
+//        viper.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
     }
 
@@ -151,8 +151,6 @@ public class Viper {
                 viper.setPower(power_auto_move);
                             }
 
-            // Display drive status for the driver.
-            sendTelemetry();
         }
 
         // Stop all motion & Turn off RUN_TO_POSITION
@@ -163,10 +161,7 @@ public class Viper {
 
     }
 
-    public void sendTelemetry() {
-        myOpMode.telemetry.addData("Viper Degree", "%4d",
-                viper.getCurrentPosition());
-    }
+
 
     public void moveViperByPower(double power) {
         viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -177,9 +172,6 @@ public class Viper {
         }
 
         deg = positionToDeg(viper.getCurrentPosition());
-
-        myOpMode.telemetry.addData("Viper deg: ", "%.2f", deg);
-        sendTelemetry();
     }
 
     public void listen() {
@@ -190,6 +182,8 @@ public class Viper {
         double power = myOpMode.gamepad2.left_stick_y;
         if (Math.abs(power) > 0.1) {
             moveViperByPower(power);
+        } else {
+            moveViperByPower(0);
         }
 
         if (myOpMode.gamepad2.dpad_right) {

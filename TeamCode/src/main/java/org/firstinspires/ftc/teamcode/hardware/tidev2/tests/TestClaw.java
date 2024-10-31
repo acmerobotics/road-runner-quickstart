@@ -32,46 +32,33 @@ package org.firstinspires.ftc.teamcode.hardware.tidev2.tests;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Wrist;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 
-import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
-
-/*
- * This OpMode scans a single servo back and forward until Stop is pressed.
- * The code is structured as a LinearOpMode
- * INCREMENT sets how much to increase/decrease the servo position each cycle
- * CYCLE_MS sets the update period.
- *
- * This code assumes a Servo configured with the name "left_hand" as is found on a Robot.
- *
- * NOTE: When any servo position is set, ALL attached servos are activated, so ensure that any other
- * connected servos are able to move freely before running this test.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
 //@Disabled
-@TeleOp(name = "Test: Viper", group = "HardwareTest")
-public class TestViper extends LinearOpMode {
+@TeleOp(name = "Test: Claw", group = "HardwareTest")
+public class TestClaw extends LinearOpMode {
 
 
-    Viper viper = new Viper(this);
+    Claw claw = new Claw(this);
 
     @Override
     public void runOpMode() {
 
-        // initialize all the hardware, using the hardware class. See how clean and simple this is?
-        viper.init();
+        //starts hardware.
+        claw.init();
 
 
-        // Send telemetry message to signify robot waiting;
-        // Wait for the game to start (driver presses PLAY)
+
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            viper.listen();
+            claw.listen();
+            claw.sendTelemetry();
             updateTelemetry(telemetry);
         }
     }
 }
+

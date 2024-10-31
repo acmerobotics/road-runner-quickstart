@@ -150,8 +150,6 @@ public class Elbow {
                 elbow.setPower(power_auto_move);
                             }
 
-            // Display drive status for the driver.
-            sendTelemetry();
         }
 
         // Stop all motion & Turn off RUN_TO_POSITION
@@ -162,10 +160,6 @@ public class Elbow {
 
     }
 
-    public void sendTelemetry() {
-        myOpMode.telemetry.addData("Elbow Degree", "%4d",
-                elbow.getCurrentPosition());
-    }
 
     public void moveElbowByPower(double power) {
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -178,8 +172,6 @@ public class Elbow {
 
         deg = positionToDeg(elbow.getCurrentPosition());
 
-        myOpMode.telemetry.addData("Elbow deg: ", "%.2f", deg);
-        sendTelemetry();
     }
 
     public void listen() {
@@ -187,9 +179,11 @@ public class Elbow {
         // move elbow according to the right stick y
 
 
-        double power = myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger;
+        double power = (myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger) / 4;
         if (Math.abs(power) > 0.1) {
             moveElbowByPower(power);
+        } else {
+            moveElbowByPower(0);
         }
 
         if (myOpMode.gamepad2.dpad_right) {

@@ -29,10 +29,13 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2.tests;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 /*
@@ -49,18 +52,25 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-//@Disabled
-@TeleOp(name = "Test: Viper", group = "HardwareTest")
-public class TestViper extends LinearOpMode {
+@TeleOp(name = "Test: All Attachments", group = "HardwareTest")
+public class AllAttachments extends LinearOpMode {
 
 
+    Shoulder shoulder = new Shoulder(this);
+    Elbow elbow = new Elbow(this);
+    Intake intake = new Intake(this);
     Viper viper = new Viper(this);
+    Claw claw = new Claw(this);
 
     @Override
     public void runOpMode() {
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
+        shoulder.init();
+        elbow.init();
+        intake.init();
         viper.init();
+        claw.init();
 
 
         // Send telemetry message to signify robot waiting;
@@ -70,8 +80,19 @@ public class TestViper extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            shoulder.listen();
+            elbow.listen();
+            intake.listen();
             viper.listen();
+            claw.listen();
+
+            shoulder.sendTelemetry();
+            intake.sendTelemetry();
+            claw.sendTelemetry();
+
             updateTelemetry(telemetry);
+            // Pace this loop so hands move at a reasonable speed.
+            sleep(50);
         }
     }
 }
