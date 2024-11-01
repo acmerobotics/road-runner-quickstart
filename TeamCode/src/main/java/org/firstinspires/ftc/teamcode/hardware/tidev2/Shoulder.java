@@ -31,9 +31,10 @@ package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-public class Arm {
+public class Shoulder {
 
     static final double ARM_UP_POS = -1;
     static final double ARM_DOWN_POS = 1;
@@ -58,10 +59,10 @@ public class Arm {
 
     private double deg = 0.0;
 
-    private DcMotor arm_right = null;
-    private DcMotor arm_left = null;
+    private DcMotorEx shoulder_right;
+    private DcMotorEx shoulder_left;
 
-    public Arm (OpMode opmode) {
+    public Shoulder(OpMode opmode) {
         myOpMode = opmode;
     }
 
@@ -71,14 +72,17 @@ public class Arm {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        arm_right = myOpMode.hardwareMap.get(DcMotor.class, "arm_right");
-        arm_left = myOpMode.hardwareMap.get(DcMotor.class, "arm_left");
+        shoulder_right = myOpMode.hardwareMap.get(DcMotorEx.class, "shoulder_right");
+        shoulder_left = myOpMode.hardwareMap.get(DcMotorEx.class, "shoulder_left");
 
-        arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shoulder_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        shoulder_left.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shoulder_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shoulder_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void moveArmUp() {
@@ -108,7 +112,7 @@ public class Arm {
     }
 
     public double positionToDeg(int pos) {
-        return (double) arm_right.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
+        return (double) shoulder_right.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
     }
 
     public void moveToDegree(double deg) {
@@ -117,35 +121,35 @@ public class Arm {
         boolean isGoingUp = deg > 120;
 
 
-        arm_right.setTargetPosition(((int)targetPos));
-        arm_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        shoulder_right.setTargetPosition(((int)targetPos));
+        shoulder_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        arm_left.setTargetPosition(((int)targetPos));
-        arm_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        shoulder_left.setTargetPosition(((int)targetPos));
+        shoulder_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set the required driving speed  (must be positive for RUN_TO_POSITION)
         // Start driving straight, and then enter the control loop
-        arm_right.setPower(power_auto_move);
-        arm_left.setPower(power_auto_move);
+        shoulder_right.setPower(power_auto_move);
+        shoulder_left.setPower(power_auto_move);
 
         // keep looping while we are still active, and BOTH motors are running.
-        while (arm_right.isBusy() && arm_left.isBusy()) {
+        while (shoulder_right.isBusy() && shoulder_left.isBusy()) {
 
             // decide if we reach a threshold to slow down
             if ((isGoingUp
-                    && (arm_right.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI)
-                    || arm_left.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI))
+                    && (shoulder_right.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI)
+                    || shoulder_left.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI))
             ) || ( !isGoingUp
-                    && (arm_right.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO)
-                    || arm_left.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO))
+                    && (shoulder_right.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO)
+                    || shoulder_left.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO))
             )) {
 
-                arm_right.setPower(0.1);
-                arm_left.setPower(0.1);
+                shoulder_right.setPower(0.1);
+                shoulder_left.setPower(0.1);
             } else {
-                arm_right.setPower(power_auto_move);
-                arm_left.setPower(power_auto_move);
+                shoulder_right.setPower(power_auto_move);
+                shoulder_left.setPower(power_auto_move);
             }
 
             // Display drive status for the driver.
@@ -153,11 +157,11 @@ public class Arm {
         }
 
         // Stop all motion & Turn off RUN_TO_POSITION
-        arm_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoulder_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoulder_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        arm_right.setPower(0);
-        arm_left.setPower(0);
+        shoulder_right.setPower(0);
+        shoulder_left.setPower(0);
 
         this.deg = deg;
 
@@ -165,22 +169,22 @@ public class Arm {
 
     public void sendTelemetry() {
         myOpMode.telemetry.addData("Arm pos Left/Right", "%4d / %4d",
-                arm_left.getCurrentPosition(),
-                arm_right.getCurrentPosition());
+                shoulder_left.getCurrentPosition(),
+                shoulder_right.getCurrentPosition());
     }
 
     public void moveArmByPower(double power) {
-        arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shoulder_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // TODO: allows pushing the arm down for now
         if (true || (power < 0) && (deg > 0)
                 || (power > 0) && (deg < 210)) {
-            arm_right.setPower(power);
-            arm_left.setPower(power);
+            shoulder_right.setPower(power);
+            shoulder_left.setPower(power);
         }
 
-        deg = positionToDeg(arm_left.getCurrentPosition());
+        deg = positionToDeg(shoulder_left.getCurrentPosition());
 
         myOpMode.telemetry.addData("Arm deg: ", "%.2f", deg);
         sendTelemetry();
@@ -190,18 +194,18 @@ public class Arm {
 
         // move arm according to the left stick y
 
-
+//        moveToDegree(30);
         double power = -myOpMode.gamepad2.right_stick_y;
         if (Math.abs(power) > 0.1) {
             moveArmByPower(power);
         } else {
-            arm_right.setPower(0.0);
-            arm_left.setPower(0.0);
+            shoulder_right.setPower(0.0);
+            shoulder_left.setPower(0.0);
         }
 
         if (myOpMode.gamepad2.dpad_right) {
-            arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
 
     }

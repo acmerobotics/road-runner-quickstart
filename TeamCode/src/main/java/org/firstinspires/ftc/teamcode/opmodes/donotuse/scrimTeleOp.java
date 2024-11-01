@@ -1,29 +1,24 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.donotuse;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Elbow;
-import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Mouth;
-import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Neck;
-import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Viper;
-import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Wrist;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
+
 
 // I AM DOCTOR IVO ROBOTNIK!
 @TeleOp(name = "scrimTeleOp", group = "OpModes")
+@Disabled
 public class scrimTeleOp extends OpMode {
 
     // Insert whatever initialization your own code does
-    Elbow elbow;
-    Mouth mouth;
-    Neck neck;
-    Viper viper;
-    Wrist wrist;
+    Shoulder shoulder = new Shoulder(this);
     // Assuming you're using StandardTrackingWheelLocalizer.java
     // Switch this class to something else (Like TwoWheeTrackingLocalizer.java) if your configuration is different
     MecanumDrive drive;
@@ -69,17 +64,6 @@ public class scrimTeleOp extends OpMode {
     public void init() {
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        elbow = new Elbow(this);
-        mouth = new Mouth(this);
-        neck = new Neck(this);
-        viper = new Viper(this);
-        wrist = new Wrist(this);
-
-        elbow.init();
-        mouth.init();
-        neck.init();
-        viper.init();
-        wrist.init();
 
     }
 
@@ -88,7 +72,7 @@ public class scrimTeleOp extends OpMode {
         poseEstimate = drive.pose;
 
 
-
+        shoulder.listen();
 
 
         gamepadToMovement();
@@ -101,17 +85,7 @@ public class scrimTeleOp extends OpMode {
                 )
         );
 
-        elbow.listen();
-        mouth.listen();
-        neck.listen();
-        viper.listen();
-        wrist.listen();
 
-        elbow.sendTelemetry();
-        mouth.sendTelemetry();
-        neck.sendTelemetry();
-        viper.sendTelemetry();
-        wrist.sendTelemetry();
         updateTelemetry(telemetry);
 
     }
@@ -119,7 +93,7 @@ public class scrimTeleOp extends OpMode {
     @Override
     public void init_loop(){}
     @Override
-    public void start(){}
+    public void start(){    }
     @Override
     public void stop(){}
 
