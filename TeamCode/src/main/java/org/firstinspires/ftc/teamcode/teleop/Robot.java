@@ -145,9 +145,9 @@ public class Robot {
             rx = 0.5*gamepad.right_stick_x;
         }
         else {
-            y = -0.75*gamepad.left_stick_y;
-            x = 0.75*gamepad.left_stick_x;
-            rx = 0.6*gamepad.right_stick_x;
+            y = -0.4*gamepad.left_stick_y;
+            x = 0.4*gamepad.left_stick_x;
+            rx = 0.2*gamepad.right_stick_x;
         }
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
