@@ -283,5 +283,6 @@ public class Robot {
 
         private static final double ticks_in_degree = 2048 / 90.0;
     }
+    //4000, 2000
 }
 
