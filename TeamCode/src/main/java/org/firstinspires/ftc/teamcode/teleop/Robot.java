@@ -137,6 +137,30 @@ public class Robot {
         rightFront.setPower(rightFrontPower);
         rightBack.setPower(rightBackPower);
     }
+    public void arcadeDriveWithSlowModeForLittleChildren(Gamepad gamepad) {
+        double y,x,rx;
+        if (gamepad.right_trigger > 0) {
+            y = -0.5*gamepad.left_stick_y;
+            x = 0.5*gamepad.left_stick_x;
+            rx = 0.5*gamepad.right_stick_x;
+        }
+        else {
+            y = -0.75*gamepad.left_stick_y;
+            x = 0.75*gamepad.left_stick_x;
+            rx = 0.6*gamepad.right_stick_x;
+        }
+
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        double leftFrontPower = (y + x + rx) / denominator;
+        double leftBackPower = (y - x + rx) / denominator;
+        double rightFrontPower = (y - x - rx) / denominator;
+        double rightBackPower = (y + x - rx) / denominator;
+
+        leftFront.setPower(leftFrontPower);
+        leftBack.setPower(leftBackPower);
+        rightFront.setPower(rightFrontPower);
+        rightBack.setPower(rightBackPower);
+    }
 
     public void slideControl(Gamepad gamepad) {
         slide.setPower(-gamepad.left_stick_y * 0.3);

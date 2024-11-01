@@ -16,7 +16,8 @@ public class TeleopV1 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-            bot.arcadeDriveWithSlowMode(gamepad1);
+//            bot.arcadeDriveWithSlowMode(gamepad1);
+            bot.arcadeDriveWithSlowModeForLittleChildren(gamepad1);
 //            bot.slideControl(gamepad2);
             bot.tiltControl(gamepad2);
 //           bot.TeleopPID(gamepad2);
