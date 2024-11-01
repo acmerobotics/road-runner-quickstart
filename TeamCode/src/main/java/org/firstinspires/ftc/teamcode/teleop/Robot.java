@@ -262,6 +262,19 @@ public class Robot {
 
         slide.setPower(pid2);
     }
+    public void slidesPID(Gamepad gamepad) {
+//        double ff = Math.cos(Math.toRadians(armTarget / armPIDValues.ticks_in_degree)) * armPIDValues.fF;
+//        flip.setPower((-gamepad.right_stick_y * 0.25) + ff);
+
+        slideTarget += (int) -gamepad.left_stick_y * 28;
+        if (slideTarget < 0) slideTarget = 0;
+        else if (slideTarget > 5000) slideTarget = 5000;
+        slidePos = slide.getCurrentPosition();
+
+        double pid2 = slideController.calculate(slidePos, slideTarget);
+
+        slide.setPower(pid2);
+    }
 
     public static class armPIDValues {
         public static double fP = 0.0018, fI = 0, fD = 0.00009;

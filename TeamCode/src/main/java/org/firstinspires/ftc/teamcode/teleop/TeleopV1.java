@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,14 +11,16 @@ public class TeleopV1 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Robot bot = new Robot(hardwareMap);
         bot.setTelemToDashboard(telemetry);
+        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
             bot.arcadeDriveWithSlowMode(gamepad1);
 //            bot.slideControl(gamepad2);
-//            bot.tiltControl(gamepad2)h;
-           bot.TeleopPID(gamepad2);
+            bot.tiltControl(gamepad2);
+//           bot.TeleopPID(gamepad2);
+            bot.slidesPID(gamepad2);
             bot.wristControl(gamepad2);
             bot.intakeControl(gamepad2);
 //            bot.scoringMacro(gamepad2);

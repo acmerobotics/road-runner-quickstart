@@ -21,6 +21,8 @@ public class PidfTuner extends OpMode {
     public static double fP2 = 0.0001, fI2 = 0, fD2 = 0.00009, fF2 = 0.0037;
     public static double sP = 0.005, sI, sD;
     public static double sF;
+    public static boolean twoPIDs = false;
+
 
     public static int armTarget = 500;
     public static int slideTarget = 500;
@@ -60,7 +62,10 @@ public class PidfTuner extends OpMode {
         int armPos, slidePos;
         armPos = flip.getCurrentPosition();
 
-        if (armPos > 1850) armController.setPID(fP2, fI2, fD2);
+        if (twoPIDs) {
+            if (armPos > 1850) armController.setPID(fP2, fI2, fD2);
+            else armController.setPID(fP, fI, fD);
+        }
         else armController.setPID(fP, fI, fD);
 
         double pid = armController.calculate(armPos, armTarget);
