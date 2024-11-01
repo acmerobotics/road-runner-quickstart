@@ -70,7 +70,7 @@ public class Robot {
         slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flip.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         flip.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -147,10 +147,10 @@ public class Robot {
     }
 
     public void wristControl(Gamepad gamepad) {
-        if (gamepad.dpad_down) {
+        if (gamepad.dpad_up) {
             wrist.setPosition(0.92);
         }
-        else if (gamepad.dpad_up) {
+        else if (gamepad.dpad_down) {
             wrist.setPosition(0);
         }
         else if (gamepad.dpad_right) {
