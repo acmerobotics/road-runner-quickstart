@@ -1,58 +1,69 @@
 package org.firstinspires.ftc.teamcode.hardware.tidev2.pidftuning;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
-
-
+@Config
 @TeleOp
-public class ShoulderPIDF extends LinearOpMode {
+public class ShoulderPIDF extends OpMode {
+    private PIDFController controller;
 
-    DcMotorEx shoulder_right;
-    DcMotorEx shoulder_left;
-    double currentVelocity;
-    double maxVelocity = 0.0;
+    public static double p = 0.004, i = 0.0001, d = 0;
+    public static double f = 0.003;
 
-    private OpMode myOpMode;
+    public static int target = 0;
+
+    private final double ticks_in_degree = 537.7 / 360.0;
+
+
+    private DcMotorEx shoulder_right;
+    private DcMotorEx shoulder_left;
+    private DcMotorEx viper;
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        shoulder_right = hardwareMap.get(DcMotorEx.class, "shoulder_right");
-        shoulder_left = hardwareMap.get(DcMotorEx.class, "shoulder_left");
-        shoulder_right.setDirection(DcMotorSimple.Direction.FORWARD);
-        shoulder_left.setDirection(DcMotorSimple.Direction.REVERSE);
+    public void init() {
+        controller = new PIDFController(p, i, d, f);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        shoulder_right = hardwareMap.get(DcMotorEx.class, "left_tower");
+        shoulder_left = hardwareMap.get(DcMotorEx.class, "right_tower");
+        viper = hardwareMap.get(DcMotorEx.class, "viper_slide");
 
 
-        waitForStart();
-        while (opModeIsActive()) {
-            if (myOpMode.gamepad2.x) {
-                shoulder_left.setPower(1);
-                shoulder_right.setPower(1);
-            } else if (myOpMode.gamepad2.a) {
-                shoulder_left.setPower(-1);
-                shoulder_right.setPower(-1);
-            } else {
-                shoulder_left.setPower(0);
-                shoulder_right.setPower(0);
-            }
+        shoulder_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        shoulder_left.setDirection(DcMotorSimple.Direction.FORWARD);
 
-            currentVelocity = (shoulder_left.getVelocity() + shoulder_right.getVelocity()) / 2;
+        shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            if (currentVelocity > maxVelocity) {
-                maxVelocity = currentVelocity;
-            }
-
-            telemetry.addData("current velocity", currentVelocity);
-            telemetry.addData("maximum velocity", maxVelocity);
-            telemetry.update();
+        shoulder_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoulder_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        }
+        viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+
+    }
+
+    @Override
+    public void loop() {
+        controller.setPIDF(p, i, d, f);
+        int armPos = shoulder_left.getCurrentPosition();
+        double pidf = controller.calculate(armPos, target);
+
+        shoulder_right.setPower(pidf);
+        shoulder_left.setPower(pidf);
+
+        telemetry.addData("pidf", pidf);
+        telemetry.addData("pos", armPos);
+        telemetry.addData("target", target);
     }
 }

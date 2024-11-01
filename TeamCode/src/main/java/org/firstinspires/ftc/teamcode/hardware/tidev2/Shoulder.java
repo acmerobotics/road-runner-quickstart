@@ -72,8 +72,8 @@ public class Shoulder {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        shoulder_right = myOpMode.hardwareMap.get(DcMotorEx.class, "shoulder_right");
-        shoulder_left = myOpMode.hardwareMap.get(DcMotorEx.class, "shoulder_left");
+        shoulder_right = myOpMode.hardwareMap.get(DcMotorEx.class, "left_tower");
+        shoulder_left = myOpMode.hardwareMap.get(DcMotorEx.class, "right_tower");
 
         shoulder_right.setDirection(DcMotorSimple.Direction.FORWARD);
         shoulder_left.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -106,13 +106,13 @@ public class Shoulder {
         }
         return false;
     }
-
+    // useless method?
     public int degToPosition(double deg) {
         return (int)(deg / 360 * COUNTS_PER_REVOLUTION * GEAR_RATIO);
     }
 
     public double positionToDeg(int pos) {
-        return (double) shoulder_right.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
+        return (double) shoulder_left.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
     }
 
     public void moveToDegree(double deg) {
@@ -185,8 +185,10 @@ public class Shoulder {
         }
 
         deg = positionToDeg(shoulder_left.getCurrentPosition());
+        double contPower = myOpMode.gamepad2.right_stick_y;
 
-        myOpMode.telemetry.addData("Arm deg: ", "%.2f", deg);
+        myOpMode.telemetry.addData("Shoulder deg to pos: ", "%.2f", deg);
+        myOpMode.telemetry.addData("Shoulder Power: ", "%.2f", contPower);
         sendTelemetry();
     }
 
@@ -195,12 +197,17 @@ public class Shoulder {
         // move arm according to the left stick y
 
 //        moveToDegree(30);
-        double power = -myOpMode.gamepad2.right_stick_y;
-        if (Math.abs(power) > 0.1) {
-            moveArmByPower(power);
+        double normPower = myOpMode.gamepad2.right_stick_y;
+        double upPower = myOpMode.gamepad2.right_stick_y * 0.8;
+        double downPower = -0.1;
+
+        boolean canMove = (shoulder_left.getCurrentPosition() < 480 && shoulder_right.getCurrentPosition() < 480);
+        if (canMove && normPower < -0.1) {
+            moveArmByPower(upPower);
+        } else if (canMove && normPower > 0.1) {
+            moveArmByPower(downPower);
         } else {
-            shoulder_right.setPower(0.0);
-            shoulder_left.setPower(0.0);
+            moveArmByPower(0);
         }
 
         if (myOpMode.gamepad2.dpad_right) {
