@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -18,21 +19,22 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import java.util.List;
 
 @Config
-@Autonomous(name = "\uD83D\uDD34 - Red V1", group = "RoadRunner 1.0")
-public class RedV1 extends LinearOpMode {
+@Autonomous(name = "\uD83D\uDD34 - RedPark", group = "RoadRunner 1.0")
+public class RedPark extends LinearOpMode {
 
 
     // Start position red near
-    Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-9), Math.PI/2.0);
+    Pose2d RED_PARK_START_POSE = new Pose2d(11, -61, Math.PI/2.0);
 
 
     @Override
     public void runOpMode() {
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_NEAR_START_POSE);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_PARK_START_POSE);
+        TrajectoryActionBuilder traj = drive.actionBuilder(RED_PARK_START_POSE)
+                .strafeToLinearHeading(new Vector2d(60, -61), Math.toRadians(90));
 
-        // Set to true when an AprilTag target is detected
-        boolean targetFound = false;
+
 
         while(!isStopRequested() && !opModeIsActive()) {
 
@@ -41,7 +43,7 @@ public class RedV1 extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-
+        Actions.runBlocking(traj.build());
 
     } // runOpMode
 
