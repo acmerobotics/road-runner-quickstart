@@ -189,6 +189,8 @@ public class Elbow {
         if (myOpMode.gamepad2.dpad_right) {
             elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         }
 
     }

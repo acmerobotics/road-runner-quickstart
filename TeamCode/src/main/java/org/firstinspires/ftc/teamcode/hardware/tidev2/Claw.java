@@ -46,7 +46,7 @@ public class Claw {
     ElapsedTime toggle_time = new ElapsedTime();
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
-    boolean pos;
+    boolean pos = false;
     Servo torque;
     Servo speed;
     public Claw(OpMode opmode) {
@@ -57,8 +57,6 @@ public class Claw {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         torque = myOpMode.hardwareMap.get(Servo.class, "torque");
         speed = myOpMode.hardwareMap.get(Servo.class, "speed");
-
-        speed.setPosition(0);
     }
 
 

@@ -231,25 +231,31 @@ public class Shoulder {
         int armPos = shoulder_left.getCurrentPosition();
         boolean controlled = false;
 
+        double right_stick = -myOpMode.gamepad2.right_stick_y;
 
-
-        if (Math.abs(myOpMode.gamepad2.right_stick_y) > deadzone
-                && armPos <= 900 && armPos >= -100
+        if (Math.abs(right_stick) > deadzone
+                && armPos <= 950 && armPos >= -100
         ) {
-            target += (int) -myOpMode.gamepad2.right_stick_y * 50;
-
-            if (target > 900) {
-                target = 900;
+            if (right_stick > 0) {
+                target += (int) right_stick * 50;
+            } else {
+                target += (int) right_stick * 10;
             }
-            if (target < 100) {
-                target = 100;
+
+            if (target > 850) {
+                target = 850;
+            }
+            if (target < 0) {
+                target = 0;
             }
 
         }
             armPos = shoulder_left.getCurrentPosition();
             pidf = controller.calculate(armPos, target);
 
-
+            if (armPos > 850) {
+                pidf = pidf - f;
+            }
 
 
         shoulder_right.setPower(pidf);
@@ -266,6 +272,9 @@ public class Shoulder {
         if (myOpMode.gamepad2.dpad_right) {
             shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            shoulder_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
     }

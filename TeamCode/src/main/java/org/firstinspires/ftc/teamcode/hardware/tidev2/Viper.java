@@ -189,6 +189,8 @@ public class Viper {
         if (myOpMode.gamepad2.dpad_right) {
             viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+            viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         }
 
     }
