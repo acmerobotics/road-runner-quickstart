@@ -21,7 +21,7 @@ public class Arm {
     counts per rotation of the arm. We divide that by 360 to get the counts per degree. */
     public static double ARM_TICKS_PER_DEGREE =
             28 // number of encoder ticks per rotation of the bare motor
-                    * 19.2032085561 // This is the exact gear ratio of the 19.2:1 Yellow Jacket gearbox
+                    * 72.1 // Gear ratio for the for the motor used in V1 robot
                     * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
                     * 1/360.0; // we want ticks per degree, not per rotation
 
@@ -38,7 +38,7 @@ public class Arm {
     as far from the starting position, decrease it. */
 
     public static double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    public static double ARM_COLLECT               = 6500; // 231 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_COLLECT               = 231 * ARM_TICKS_PER_DEGREE; //6500; ?
     public static double ARM_CLEAR_BARRIER         = 219 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SPECIMEN        = 174 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SAMPLE_IN_LOW   = 174 * ARM_TICKS_PER_DEGREE;
