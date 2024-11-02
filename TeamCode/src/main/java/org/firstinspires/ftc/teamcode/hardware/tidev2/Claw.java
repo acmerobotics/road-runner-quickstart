@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Claw {
 
@@ -41,6 +42,8 @@ public class Claw {
 
     double speedClose = 0;
     double speedOpen = 0.67;
+
+    ElapsedTime toggle_time = new ElapsedTime();
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
     boolean pos;
@@ -54,7 +57,7 @@ public class Claw {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         torque = myOpMode.hardwareMap.get(Servo.class, "torque");
         speed = myOpMode.hardwareMap.get(Servo.class, "speed");
-        torque.setPosition(0.3);
+
         speed.setPosition(0);
     }
 
@@ -62,8 +65,10 @@ public class Claw {
 
     public void listen() {
 
+        torque.setPosition(0.25);
 
-        if (myOpMode.gamepad2.x) {
+        if (myOpMode.gamepad2.x && toggle_time.seconds() > 0.1) {
+            toggle_time.reset();
             pos = !pos;
         }
 
