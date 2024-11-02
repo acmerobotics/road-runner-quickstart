@@ -8,7 +8,11 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
 // I AM DOCTOR IVO ROBOTNIK!
@@ -17,6 +21,10 @@ public class Headless extends OpMode {
 
     // Insert whatever initialization your own code does
     Shoulder shoulder = new Shoulder(this);
+    Elbow elbow = new Elbow(this);
+    Intake intake = new Intake(this);
+    Viper viper = new Viper(this);
+    Claw claw = new Claw(this);
     // Assuming you're using StandardTrackingWheelLocalizer.java
     // Switch this class to something else (Like TwoWheeTrackingLocalizer.java) if your configuration is different
     MecanumDrive drive;
@@ -63,6 +71,12 @@ public class Headless extends OpMode {
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
+        shoulder.init();
+        elbow.init();
+        intake.init();
+        viper.init();
+        claw.init();
+
     }
 
     @Override
@@ -88,6 +102,15 @@ public class Headless extends OpMode {
             );
         }
 
+        shoulder.listen();
+        elbow.listen();
+        intake.listen();
+        viper.listen();
+        claw.listen();
+
+        shoulder.sendTelemetry();
+        intake.sendTelemetry();
+        claw.sendTelemetry();
 
 
         updateTelemetry(telemetry);

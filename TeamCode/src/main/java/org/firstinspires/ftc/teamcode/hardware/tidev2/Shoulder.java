@@ -29,16 +29,20 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class Shoulder {
 
-    static final double ARM_UP_POS = -1;
-    static final double ARM_DOWN_POS = 1;
-    static final int SLEEP_TIME = 500;
+    static final double ramp_y_offset = 0.1;
+    static final double maxArmPos = 700.0;
+    static final double ramp_slope = -0.100001 / maxArmPos;
+
+    static final double deadzone = 0.3;
 
     static final int COUNTS_PER_REVOLUTION = 288;
     static final double GEAR_RATIO = 40 / 10;
@@ -53,6 +57,16 @@ public class Shoulder {
     static final double  POWER_UP_MUL = 0.8;
     static final double  POWER_DOWN_MUL = 0.8;
     // Define class members
+
+    private PIDFController controller;
+    private PIDFCoefficients pidfcoeff;
+
+    public static final double p = 0.003, i = 0.003, d = 0.0001;
+    public static final double f = 0.00003;
+
+    public static int target = 100;
+
+    double pidf;
 
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
@@ -72,17 +86,28 @@ public class Shoulder {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
+        pidfcoeff = new PIDFCoefficients(p, i, d ,f);
+        controller = new PIDFController(p, i, d, f);
         shoulder_right = myOpMode.hardwareMap.get(DcMotorEx.class, "left_tower");
         shoulder_left = myOpMode.hardwareMap.get(DcMotorEx.class, "right_tower");
 
-        shoulder_right.setDirection(DcMotorSimple.Direction.FORWARD);
-        shoulder_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        shoulder_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        shoulder_left.setDirection(DcMotorSimple.Direction.FORWARD);
 
         shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulder_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulder_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+//        shoulder_right.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+//        shoulder_left.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+//        shoulder_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        shoulder_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoulder_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        pidf = 0;
     }
 
     public void moveArmUp() {
@@ -133,6 +158,8 @@ public class Shoulder {
         shoulder_right.setPower(power_auto_move);
         shoulder_left.setPower(power_auto_move);
 
+
+
         // keep looping while we are still active, and BOTH motors are running.
         while (shoulder_right.isBusy() && shoulder_left.isBusy()) {
 
@@ -174,8 +201,8 @@ public class Shoulder {
     }
 
     public void moveArmByPower(double power) {
-        shoulder_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shoulder_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoulder_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // TODO: allows pushing the arm down for now
         if (true || (power < 0) && (deg > 0)
@@ -193,22 +220,56 @@ public class Shoulder {
     }
 
     public void listen() {
+//        pidf = -myOpMode.gamepad2.right_stick_y;
+//
+//        shoulder_right.setPower(pidf);
+//        shoulder_left.setPower(pidf);
+//
+//        // move arm according to the left stick y
+//
+        int armPos = shoulder_left.getCurrentPosition();
+        boolean controlled = false;
 
-        // move arm according to the left stick y
 
-//        moveToDegree(30);
-        double normPower = myOpMode.gamepad2.right_stick_y;
-        double upPower = myOpMode.gamepad2.right_stick_y * 0.8;
-        double downPower = -0.1;
 
-        boolean canMove = (shoulder_left.getCurrentPosition() < 480 && shoulder_right.getCurrentPosition() < 480);
-        if (canMove && normPower < -0.1) {
-            moveArmByPower(upPower);
-        } else if (canMove && normPower > 0.1) {
-            moveArmByPower(downPower);
+        if (Math.abs(myOpMode.gamepad2.right_stick_y) > deadzone
+                && armPos <= 700 && armPos >= -100
+        )  {
+            pidf = -myOpMode.gamepad2.right_stick_y;
+
+            controlled = true;
+
+            if (pidf < 0) {
+                pidf += (ramp_y_offset + ramp_slope * armPos + deadzone);
+            }
+
         } else {
-            moveArmByPower(0);
+            armPos = shoulder_left.getCurrentPosition();
+            pidf = controller.calculate(armPos, target);
         }
+
+
+        if (controlled) {
+            target = shoulder_left.getCurrentPosition() + 100;
+
+            if (target > 700) {
+                target = 700;
+            }
+            if (target < 100) {
+                target = 100;
+            }
+        }
+
+        shoulder_right.setPower(pidf);
+        shoulder_left.setPower(pidf);
+
+
+
+        myOpMode.telemetry.addData("pidf", pidf);
+        myOpMode.telemetry.addData("pos", armPos);
+        myOpMode.telemetry.addData("target", target);
+
+
 
         if (myOpMode.gamepad2.dpad_right) {
             shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

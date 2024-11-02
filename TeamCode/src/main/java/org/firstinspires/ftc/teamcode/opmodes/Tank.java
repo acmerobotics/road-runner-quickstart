@@ -9,7 +9,11 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
 // I AM DOCTOR IVO ROBOTNIK!
@@ -25,6 +29,10 @@ public class Tank extends OpMode {
     DcMotorEx rightFront;
 
     Shoulder shoulder = new Shoulder(this);
+    Elbow elbow = new Elbow(this);
+    Intake intake = new Intake(this);
+    Viper viper = new Viper(this);
+    Claw claw = new Claw(this);
 
     MecanumDrive drive;
 
@@ -43,6 +51,12 @@ public class Tank extends OpMode {
         leftBack = hardwareMap.get(DcMotorEx.class, "left_back_drive");
         rightBack = hardwareMap.get(DcMotorEx.class, "right_back_drive");
         rightFront = hardwareMap.get(DcMotorEx.class, "right_front_drive");
+
+        shoulder.init();
+        elbow.init();
+        intake.init();
+        viper.init();
+        claw.init();
     }
 
     @Override
@@ -73,6 +87,16 @@ public class Tank extends OpMode {
             rightFront.setPower(-max * gamepad1.right_trigger);
             rightBack.setPower(max * gamepad1.right_trigger);
         }
+
+        shoulder.listen();
+        elbow.listen();
+        intake.listen();
+        viper.listen();
+        claw.listen();
+
+        shoulder.sendTelemetry();
+        intake.sendTelemetry();
+        claw.sendTelemetry();
 
 
         updateTelemetry(telemetry);
