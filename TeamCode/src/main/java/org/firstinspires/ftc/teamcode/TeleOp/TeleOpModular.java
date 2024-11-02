@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Arm;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
+import org.firstinspires.ftc.teamcode.mechanisms.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 
 @TeleOp(name="Teleop Modular", group="Robot")
@@ -22,6 +23,21 @@ public class TeleOpModular extends LinearOpMode {
     double armPosition = (int)Arm.ARM_COLLAPSED_INTO_ROBOT;
     double armPositionFudgeFactor = 0;
 
+
+    final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
+
+    final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
+    final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
+    final double LIFT_SCORING_IN_HIGH_BASKET = 480 * LIFT_TICKS_PER_MM;
+
+    double liftPosition = LIFT_COLLAPSED;
+
+    double cycletime = 0;
+    double looptime = 0;
+    double oldtime = 0;
+
+    double armLiftComp = 0;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -30,6 +46,7 @@ public class TeleOpModular extends LinearOpMode {
         Arm arm = new Arm(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         Wrist wrist = new Wrist(hardwareMap);
+        Lift lift = new Lift(hardwareMap);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -165,11 +182,69 @@ public class TeleOpModular extends LinearOpMode {
             rounds it to the nearest whole number.
             */
 
+
+
+            /* Here we set the lift position based on the driver input.
+            This is a.... weird, way to set the position of a "closed loop" device. The lift is run
+            with encoders. So it knows exactly where it is, and there's a limit to how far in and
+            out it should run. Normally with mechanisms like this we just tell it to run to an exact
+            position. This works a lot like our arm. Where we click a button and it goes to a position, then stops.
+            But the drivers wanted more "open loop" controls. So we want the lift to keep extending for
+            as long as we hold the bumpers, and when we let go of the bumper, stop where it is at.
+            This allows the driver to manually set the position, and not have to have a bunch of different
+            options for how far out it goes. But it also lets us enforce the end stops for the slide
+            in software. So that the motor can't run past it's endstops and stall.
+            We have our liftPosition variable, which we increment or decrement for every cycle (every
+            time our main robot code runs) that we're holding the button. Now since every cycle can take
+            a different amount of time to complete, and we want the lift to move at a constant speed,
+            we measure how long each cycle takes with the cycletime variable. Then multiply the
+            speed we want the lift to run at (in mm/sec) by the cycletime variable. There's no way
+            that our lift can move 2800mm in one cycle, but since each cycle is only a fraction of a second,
+            we are only incrementing it a small amount each cycle.
+             */
+
+            if (gamepad2.right_bumper){
+                liftPosition += 2800 * cycletime;
+            }
+            else if (gamepad2.left_bumper){
+                liftPosition -= 2800 * cycletime;
+            }
+            /*here we check to see if the lift is trying to go higher than the maximum extension.
+             *if it is, we set the variable to the max.
+             */
+            if (liftPosition > LIFT_SCORING_IN_HIGH_BASKET){
+                liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
+            }
+            //same as above, we see if the lift is trying to go below 0, and if it is, we set it to 0.
+            if (liftPosition < 0){
+                liftPosition = 0;
+            }
+
+            lift.motor.setTargetPosition((int) (liftPosition));
+
+            lift.motor.setVelocity(300);
+            lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
             /* Check to see if our arm is over the current limit, and report via telemetry. */
             if (arm.motor.isOverCurrent()){
                 telemetry.addLine("MOTOR EXCEEDED CURRENT LIMIT!");
             }
 
+            /* This is how we check our loop time. We create three variables:
+            looptime is the current time when we hit this part of the code
+            cycletime is the amount of time in seconds our current loop took
+            oldtime is the time in seconds that the previous loop started at
+
+            we find cycletime by just subtracting the old time from the current time.
+            For example, lets say it is 12:01.1, and then a loop goes by and it's 12:01.2.
+            We can take the current time (12:01.2) and subtract the oldtime (12:01.1) and we're left
+            with just the difference, 0.1 seconds.
+
+             */
+            looptime = getRuntime();
+            cycletime = looptime-oldtime;
+            oldtime = looptime;
 
             /* send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("wrist servo", wrist.wrist.getPosition());
