@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-public class Shoulder {
+public class ShoulderV0 {
 
     static final double ramp_y_offset = 0.2;
     static final double maxArmPos = 700.0;
@@ -62,7 +62,7 @@ public class Shoulder {
     private PIDFController controller;
     private PIDFCoefficients pidfcoeff;
 
-    public static final double p = 0.004, i = 0.003, d = 0.0001;
+    public static final double p = 0.003, i = 0.003, d = 0.0001;
     public static final double f = 0.00003;
 
     public static int target = 100;
@@ -77,7 +77,7 @@ public class Shoulder {
     private DcMotorEx shoulder_right;
     private DcMotorEx shoulder_left;
 
-    public Shoulder(OpMode opmode) {
+    public ShoulderV0(OpMode opmode) {
         myOpMode = opmode;
     }
 
@@ -234,23 +234,37 @@ public class Shoulder {
 
 
         if (Math.abs(myOpMode.gamepad2.right_stick_y) > deadzone
-                && armPos <= 900 && armPos >= -100
-        ) {
-            target += (int) -myOpMode.gamepad2.right_stick_y * 50;
+                && armPos <= 700 && armPos >= -100
+        )  {
+            pidf = -myOpMode.gamepad2.right_stick_y;
 
-            if (target > 900) {
-                target = 900;
+            controlled = true;
+
+            if (pidf < 0) {
+                // ignores control altogether and come down at a reasonable speed
+                pidf = (-ramp_a * Math.exp(ramp_rate * armPos) + ramp_y_offset) + pidf * 0.01;
+            }
+
+        } else {
+            armPos = shoulder_left.getCurrentPosition();
+            pidf = controller.calculate(armPos, target);
+        }
+
+
+        if (controlled) {
+            int correction = 100;
+            if (pidf < 0) {
+                correction = 0;
+            }
+            target = shoulder_left.getCurrentPosition() + correction;
+
+            if (target > 700) {
+                target = 700;
             }
             if (target < 100) {
                 target = 100;
             }
-
         }
-            armPos = shoulder_left.getCurrentPosition();
-            pidf = controller.calculate(armPos, target);
-
-
-
 
         shoulder_right.setPower(pidf);
         shoulder_left.setPower(pidf);

@@ -67,7 +67,7 @@ public class Claw {
 
         torque.setPosition(0.25);
 
-        if (myOpMode.gamepad2.x && toggle_time.seconds() > 0.1) {
+        if (myOpMode.gamepad2.x && toggle_time.seconds() > 0.5) {
             toggle_time.reset();
             pos = !pos;
         }
