@@ -21,6 +21,7 @@ public class Intaker {
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+
     public class Flip implements Action {
 
         @Override

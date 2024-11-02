@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
-public class TESTDRIVING extends LinearOpMode {
+public class TestWheels extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -26,20 +26,13 @@ public class TESTDRIVING extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            double y = gamepad1.left_stick_y;
-            double x = -1 * gamepad1.left_stick_x;
-            double rx = 1 * gamepad1.right_stick_x;
+            double lefty = gamepad1.left_stick_y;
+            double righty = gamepad1.right_stick_y;
 
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
-
-            FL.setPower(frontLeftPower/3);
-            BL.setPower(backLeftPower/3);
-            FR.setPower(frontRightPower/3);
-            BR.setPower(backRightPower/3);
+            FL.setPower(lefty);
+            BL.setPower(lefty);
+            FR.setPower(righty);
+            BR.setPower(righty);
         }
 
     }

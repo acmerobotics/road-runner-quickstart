@@ -8,26 +8,21 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Claw {
-    private Servo bucketLeftServo;
-    private Servo bucketRightServo;
+    private Servo bucketServo;;
     private Servo clawLeftServo;
     private Servo clawRightServo;
 
     public Claw(HardwareMap HWMap) {
-        bucketLeftServo = HWMap.get(Servo.class, "bucketLeftServo");
-//        bucketRightServo = HWMap.get(Servo.class, "bucketLeftServo");
+        bucketServo = HWMap.get(Servo.class, "bucketServo");
 //        clawLeftServo = HWMap.get(Servo.class, "clawLeftServo");
 //        clawRightServo = HWMap.get(Servo.class, "clawLeftServo");
     }
 
-    public double getBucketPos() {
-        return bucketLeftServo.getPosition();
-    }
 
     public class Flip implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketLeftServo.setPosition(1);
+            bucketServo.setPosition(1);
 //            bucketRightServo.setPosition(1);
             return false;
         }
@@ -40,7 +35,7 @@ public class Claw {
     public class Flop implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-                bucketLeftServo.setPosition(0.5);
+                bucketServo.setPosition(0.5);
 //            bucketRightServo.setPosition(0);
             return false;
         }
@@ -79,7 +74,7 @@ public class Claw {
     public class Up implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketLeftServo.setPosition(0.5);
+            bucketServo.setPosition(0.5);
 //            bucketRightServo.setPosition(0.5);
             return false;
         }
