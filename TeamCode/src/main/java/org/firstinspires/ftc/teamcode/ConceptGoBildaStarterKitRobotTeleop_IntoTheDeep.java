@@ -151,10 +151,10 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
 
         /* Define and Initialize Motors */
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftfront"); //the left drivetrain motor
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightfront"); //the right drivetrain motor
-        leftBackDrive = hardwareMap.get(DcMotor.class, "leftback"); //the left drivetrain motor
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightback"); //the right drivetrain motor
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFront"); //the left drivetrain motor
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront"); //the right drivetrain motor
+        leftBackDrive = hardwareMap.get(DcMotor.class, "leftBack"); //the left drivetrain motor
+        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack"); //the right drivetrain motor
         armMotor   = hardwareMap.get(DcMotor.class, "arm"); //the arm motor
 
 
