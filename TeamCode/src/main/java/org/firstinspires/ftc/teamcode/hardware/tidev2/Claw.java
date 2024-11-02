@@ -54,7 +54,7 @@ public class Claw {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         torque = myOpMode.hardwareMap.get(Servo.class, "torque");
         speed = myOpMode.hardwareMap.get(Servo.class, "speed");
-        torque.setPosition(0.25);
+        torque.setPosition(0.3);
         speed.setPosition(0);
     }
 
