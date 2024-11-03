@@ -28,7 +28,7 @@ public class TeleOpModular extends LinearOpMode {
 
     final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
     final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
-    final double LIFT_SCORING_IN_HIGH_BASKET = 480 * LIFT_TICKS_PER_MM;
+    final double LIFT_SCORING_IN_HIGH_BASKET = 480 * LIFT_TICKS_PER_MM * 1.3;
 
     double liftPosition = LIFT_COLLAPSED;
 
@@ -203,6 +203,9 @@ public class TeleOpModular extends LinearOpMode {
             we are only incrementing it a small amount each cycle.
              */
 
+            double liftPower = (gamepad2.right_trigger - gamepad2.left_trigger);
+            liftPosition += liftPower;
+
             if (gamepad2.right_bumper){
                 liftPosition += 2800 * cycletime;
             }
@@ -222,7 +225,7 @@ public class TeleOpModular extends LinearOpMode {
 
             lift.motor.setTargetPosition((int) (liftPosition));
 
-            lift.motor.setVelocity(300);
+            lift.motor.setVelocity(1300);
             lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
@@ -250,6 +253,8 @@ public class TeleOpModular extends LinearOpMode {
             telemetry.addData("wrist servo", wrist.wrist.getPosition());
             telemetry.addData("armTarget: ", arm.motor.getTargetPosition());
             telemetry.addData("arm Encoder: ", arm.motor.getCurrentPosition());
+            telemetry.addData("lift target" , lift.motor.getTargetPosition());
+            telemetry.addData("lift position", lift.motor.getCurrentPosition());
             telemetry.update();
 
         }
