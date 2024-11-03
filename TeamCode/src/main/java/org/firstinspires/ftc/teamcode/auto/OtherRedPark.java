@@ -19,12 +19,12 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import java.util.List;
 
 @Config
-@Autonomous(name = "\uD83D\uDD34 - BluePark", group = "RoadRunner 1.0")
-public class BluePark extends LinearOpMode {
+@Autonomous(name = "\uD83D\uDD34 - RedPark", group = "RoadRunner 1.0")
+public class OtherRedPark extends LinearOpMode {
 
 
     // Start position red near
-    Pose2d RED_PARK_START_POSE = new Pose2d(-12, 60, -Math.PI/2.0);
+    Pose2d RED_PARK_START_POSE = new Pose2d(-36, -60, Math.PI/2.0);
 
 
     @Override
@@ -32,7 +32,12 @@ public class BluePark extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, RED_PARK_START_POSE);
         TrajectoryActionBuilder traj = drive.actionBuilder(RED_PARK_START_POSE)
-                .strafeToLinearHeading(new Vector2d(-60, 60), -Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-36, 0), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-26, 0), Math.toRadians(0));
+
+
+
+
 
         while(!isStopRequested() && !opModeIsActive()) {
 

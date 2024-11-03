@@ -23,7 +23,7 @@ public class RedV1 extends LinearOpMode {
 
 
     // Start position red near
-    Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-9), Math.PI/2.0);
+    Pose2d RED_NEAR_START_POSE = new Pose2d(12, -60, Math.PI/2.0);
 
 
     @Override

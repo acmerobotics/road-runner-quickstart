@@ -24,7 +24,7 @@ public class RedPark extends LinearOpMode {
 
 
     // Start position red near
-    Pose2d RED_PARK_START_POSE = new Pose2d(11, -61, Math.PI/2.0);
+    Pose2d RED_PARK_START_POSE = new Pose2d(12, -60, Math.PI/2.0);
 
 
     @Override
@@ -32,7 +32,7 @@ public class RedPark extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, RED_PARK_START_POSE);
         TrajectoryActionBuilder traj = drive.actionBuilder(RED_PARK_START_POSE)
-                .strafeToLinearHeading(new Vector2d(60, -61), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(60, -60), Math.toRadians(90));
 
 
 
