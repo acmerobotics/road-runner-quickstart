@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 public class SlidesBase extends Mechanism {
 
     private DcMotorEx leftSlide;
@@ -31,6 +33,7 @@ public class SlidesBase extends Mechanism {
     SimpleControlSystem controlSystem;
 
     public static final double PROXIMITY_THRESHOLD = 10;
+    private static final double BOUNDS_CURRENT_THRESHOLD = 5000;
 
     /**
      * Constructor for the slides base
@@ -125,6 +128,14 @@ public class SlidesBase extends Mechanism {
     }
 
     /**
+     * Hold the position of the slides
+     */
+    public void holdPosition() {
+        setTargetPosition(getLastPosition());
+        update();
+    }
+
+    /**
      * Set the target position for the slides
      * @param targetPosition the target position for the slides
      */
@@ -171,4 +182,13 @@ public class SlidesBase extends Mechanism {
     public double getLastPosition() {
         return lastActiveEncoderPosition;
     }
+
+    /**
+     * Check if the slides are over the current threshold
+     * @return true if the slides are over the current threshold
+     */
+    public boolean currentSpikeDetected() {
+        return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > BOUNDS_CURRENT_THRESHOLD;
+    }
 }
+
