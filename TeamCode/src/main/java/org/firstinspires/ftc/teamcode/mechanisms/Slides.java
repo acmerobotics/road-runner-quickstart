@@ -15,8 +15,8 @@ public class Slides {
     public DcMotor slidesLeftMotor;
     public DcMotor slidesRightMotor;
 
-    private PIDFController.PIDCoefficients slidesLeftCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
-    private PIDFController.PIDCoefficients slidesRightCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
+    private PIDFController.PIDCoefficients slidesLeftCoeffs = new PIDFController.PIDCoefficients(0.5, 0 , 0);
+    private PIDFController.PIDCoefficients slidesRightCoeffs = new PIDFController.PIDCoefficients(0.5, 0 , 0);
     private PIDFController slidesLeftPID = new PIDFController(slidesLeftCoeffs);
     private PIDFController slidesRightPID = new PIDFController(slidesRightCoeffs);
 
@@ -24,6 +24,12 @@ public class Slides {
     public Slides(HardwareMap HWMap){
         slidesLeftMotor = HWMap.get(DcMotor.class, "leftSlidesMotor");
         slidesRightMotor = HWMap.get(DcMotor.class, "rightSlidesMotor");
+
+        slidesLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        slidesLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slidesRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         slidesLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slidesRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

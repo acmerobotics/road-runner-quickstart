@@ -18,10 +18,16 @@ public class TestServo extends LinearOpMode {
         while (opModeIsActive()) {
             if (gamepad1.a) {
                 left.setPosition(1);
+                right.setPosition(0);
             }
 
+            if (gamepad1.x) {
+                left.setPosition(0.5);
+                right.setPosition(0.5);
+            }
             if (gamepad1.b) {
                 left.setPosition(0);
+                right.setPosition(1);
             }
 
         }

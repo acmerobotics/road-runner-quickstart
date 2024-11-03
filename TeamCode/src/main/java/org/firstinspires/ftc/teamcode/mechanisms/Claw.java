@@ -22,7 +22,7 @@ public class Claw {
     public class Flip implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(1);
+            bucketServo.setPosition(0.4);
 //            bucketRightServo.setPosition(1);
             return false;
         }
@@ -35,7 +35,7 @@ public class Claw {
     public class Flop implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-                bucketServo.setPosition(0.5);
+                bucketServo.setPosition(0.1);
 //            bucketRightServo.setPosition(0);
             return false;
         }
@@ -48,7 +48,7 @@ public class Claw {
     public class Close implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawLeftServo.setPosition(1);
+//            clawLeftServo.setPosition(1);
 //            clawRightServo.setPosition(1);
             return false;
         }
@@ -61,7 +61,7 @@ public class Claw {
     public class Open implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawLeftServo.setPosition(0);
+//            clawLeftServo.setPosition(0);
 //            clawRightServo.setPosition(0);
             return false;
         }

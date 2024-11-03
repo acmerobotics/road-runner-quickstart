@@ -61,14 +61,6 @@ public class WoodenTeleop extends LinearOpMode {
         Slides slides = new Slides(hardwareMap);
         Claw claw = new Claw(hardwareMap);
 
-        DcMotor FL = hardwareMap.get(DcMotor.class, "FL");
-        DcMotor BL = hardwareMap.get(DcMotor.class, "BL");
-        DcMotor FR = hardwareMap.get(DcMotor.class, "FR");
-        DcMotor BR = hardwareMap.get(DcMotor.class, "BR");
-
-        FR.setDirection(DcMotorSimple.Direction.REVERSE);
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
-
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
 
@@ -90,23 +82,8 @@ public class WoodenTeleop extends LinearOpMode {
             currentGamepad1.copy(gamepad1);
             currentGamepad2.copy(gamepad2);
 
-            double y = currentGamepad1.left_stick_y;
-            double x = -currentGamepad1.left_stick_x;
-            double rx = -currentGamepad1.right_stick_x;
-
             double lefty = currentGamepad2.left_stick_y;
             double righty = currentGamepad2.right_stick_y;
-
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
-
-            FL.setPower(frontLeftPower);
-            BL.setPower(backLeftPower);
-            FR.setPower(frontRightPower);
-            BR.setPower(backRightPower);
 
             extendo.extendoMotor.setPower(lefty/1.5);
 

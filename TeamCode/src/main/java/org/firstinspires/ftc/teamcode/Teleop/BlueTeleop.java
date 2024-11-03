@@ -76,17 +76,17 @@ public class BlueTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+        //NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
 
         final float[] hsvValues = new float[3];
 
-        if (colorSensor instanceof SwitchableLight) {
-            ((SwitchableLight)colorSensor).enableLight(true);
-        }
-
-        NormalizedRGBA colors;
-
-        String intakeColor;
+//        if (colorSensor instanceof SwitchableLight) {
+//            ((SwitchableLight)colorSensor).enableLight(true);
+//        }
+//
+//        NormalizedRGBA colors;
+//
+//        String intakeColor;
 
         DcMotor FL = hardwareMap.get(DcMotor.class, "FL");
         DcMotor BL = hardwareMap.get(DcMotor.class, "BL");
@@ -114,21 +114,21 @@ public class BlueTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
 
-            colorSensor.setGain(50);
-
-            colors = colorSensor.getNormalizedColors();
-
-            Color.colorToHSV(colors.toColor(), hsvValues);
-
-            if (colors.red > 0.5 && colors.green > 0.7 && colors.blue < 0.42) {
-                intakeColor = "yellow";
-            } else if (colors.red > 0.5 && colors.green < 0.4 && colors.blue < 0.3) {
-                intakeColor = "red";
-            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.35) {
-                intakeColor = "blue";
-            } else {
-                intakeColor = "none";
-            }
+//            colorSensor.setGain(50);
+//
+//            colors = colorSensor.getNormalizedColors();
+//
+//            Color.colorToHSV(colors.toColor(), hsvValues);
+//
+//            if (colors.red > 0.5 && colors.green > 0.7 && colors.blue < 0.42) {
+//                intakeColor = "yellow";
+//            } else if (colors.red > 0.5 && colors.green < 0.4 && colors.blue < 0.3) {
+//                intakeColor = "red";
+//            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.35) {
+//                intakeColor = "blue";
+//            } else {
+//                intakeColor = "none";
+//            }
 
             previousGamepad1.copy(currentGamepad1);
             previousGamepad2.copy(currentGamepad2);
@@ -171,7 +171,7 @@ public class BlueTeleop extends LinearOpMode {
                     break;
                 case EXTENDOEXTEND:
                     if (!control.getBusy()) {
-                        if ((currentGamepad2.y && !previousGamepad2.y) || (intakeColor.equals("blue"))|| (intakeColor.equals("yellow"))) {
+                        if ((currentGamepad2.y && !previousGamepad2.y)/* || (intakeColor.equals("blue"))|| (intakeColor.equals("yellow"))*/) {
                             runningActions.add(new SequentialAction(
                                     control.start(),
                                     intake.creep(),
@@ -180,9 +180,9 @@ public class BlueTeleop extends LinearOpMode {
                                     control.done()
                             ));
                         }
-                        if (intakeColor.equals("red")) {
-                            runningActions.add(intake.extake());
-                        }
+//                        if (intakeColor.equals("red")) {
+//                            runningActions.add(intake.extake());
+//                        }
 
                         if (currentGamepad2.b && !previousGamepad2.b) {
                             runningActions.add(new SequentialAction(
@@ -204,7 +204,7 @@ public class BlueTeleop extends LinearOpMode {
                     }
                     break;
                 case EXTENDORETRACT:
-                    if ((currentGamepad2.y && !previousGamepad2.y) || intakeColor.equals("none")) {
+                    if ((currentGamepad2.y && !previousGamepad2.y)/* || intakeColor.equals("none")*/) {
                         runningActions.add(intake.off());
                         extendoState = ExtendoState.EXTENDOSTART;
                     }

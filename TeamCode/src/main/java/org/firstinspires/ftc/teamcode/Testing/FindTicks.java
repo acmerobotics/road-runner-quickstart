@@ -10,11 +10,14 @@ import org.firstinspires.ftc.teamcode.mechanisms.Slides;
 
 @TeleOp
 public class FindTicks extends LinearOpMode {
-    Extendo extendo = new Extendo(hardwareMap);
-    Slides slides = new Slides(hardwareMap);
+
+    //Slides slides = new Slides(hardwareMap);
 
     @Override
     public void runOpMode() {
+
+        Extendo extendo = new Extendo(hardwareMap);
+        Slides slides = new Slides(hardwareMap);
 
         waitForStart();
 

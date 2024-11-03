@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -13,12 +14,13 @@ import org.firstinspires.ftc.teamcode.PIDFController;
 public class Extendo {
     public DcMotor extendoMotor;
 
-    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(1, 0 , 0);
+    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(0.5, 0 , 0);
     private PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
 
     public Extendo(HardwareMap HWMap){
         extendoMotor = HWMap.get(DcMotor.class, "extendoMotor");
-
+        extendoMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         extendoMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
@@ -30,13 +32,13 @@ public class Extendo {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set value to retracted extendo position
-                extendoMotorPID.setTargetPosition(0);
+                extendoMotorPID.setTargetPosition(-6);
                 init = true;
             }
 
             extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
 
-            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 15) {
+            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 3) {
                 return false;
             }
             return true;
@@ -52,14 +54,13 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                //TODO: set value to extended extendo position
-                extendoMotorPID.setTargetPosition(100);
+                extendoMotorPID.setTargetPosition(65);
                 init = true;
             }
 
             extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
 
-            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 15) {
+            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 5) {
                 return false;
             }
             return true;
@@ -71,7 +72,7 @@ public class Extendo {
 
 
     public double getPos() {
-        return (double) (extendoMotor.getCurrentPosition()) / 2;
+        return (extendoMotor.getCurrentPosition());
     }
 }
 
