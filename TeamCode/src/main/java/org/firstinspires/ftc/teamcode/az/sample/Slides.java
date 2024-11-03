@@ -1,19 +1,17 @@
 package org.firstinspires.ftc.teamcode.az.sample;
 
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
 public class Slides extends LinearOpMode {
 
     DcMotorEx slides;
     LinearOpMode opMode;
+    public static final double POWER = 1;
+    public static final int INCREMENT = 20;
 
     public Slides() {
         super();
@@ -25,7 +23,14 @@ public class Slides extends LinearOpMode {
     }
 
     public void move() {
-        moveToPosition(SlidesPos.MOVE);
+        AZUtil.setMotorTargetPosition(slides, SlidesPos.MOVE.value, POWER);
+    }
+    public void collect() {
+        AZUtil.setMotorTargetPosition(slides, SlidesPos.COLLECT.value, POWER);
+    }
+
+    public void specimenHang() {
+        AZUtil.setMotorTargetPosition(slides, SlidesPos.SPECIMEN_HANG.value, POWER);
     }
 
     public enum SlidesPos {
@@ -37,8 +42,10 @@ public class Slides extends LinearOpMode {
         MOVE(600),
         SPECIMEN_HANG(1500),
         LOWER_BASKET_DROP(1500),
-        BASKET_DROP(3500),
+        BASKET_DROP(3700),
+        HALFWAYRESET(700),
         RESET(0);
+
 
         private int value;
 
@@ -57,15 +64,34 @@ public class Slides extends LinearOpMode {
         slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    public void moveUp(){
+        int newPos = slides.getCurrentPosition() + INCREMENT;
+        setPos(newPos);
+    }
+
+    public void moveDown(){
+        int newPos = slides.getCurrentPosition() - INCREMENT;
+        setPos(newPos);
+    }
+    public void setPos(int pos){
+        AZUtil.setMotorTargetPosition(slides, pos, POWER);
+    }
 
 
-    public void extend() {
-        AZUtil.setMotorTargetPosition(slides, );
+
+    public void extend(float factor) {
+        int position = Math.round(SlidesPos.COLLECT.value + factor *1000);
+        AZUtil.setMotorTargetPosition(slides, position, POWER);
     }
 
     public void reset() {
-        AZUtil.setMotorTargetPosition(slides, SlidesPos.RESET.value, .7);
+        AZUtil.setMotorTargetPosition(slides, SlidesPos.RESET.value, POWER);
     }
+
+    public void halfwayReset() {
+        AZUtil.setMotorTargetPosition(slides, SlidesPos.HALFWAYRESET.value, POWER);
+    }
+
 
     public void moveToPosition(SlidesPos slidesPos){
         AZUtil.setMotorTargetPosition(slides, slidesPos.value, .7);

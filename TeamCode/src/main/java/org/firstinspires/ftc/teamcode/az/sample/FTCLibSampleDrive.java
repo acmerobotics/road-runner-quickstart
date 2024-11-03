@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.az.sample;
 
 
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.LazyImu;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -10,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.Localizer;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @TeleOp
 public class FTCLibSampleDrive extends LinearOpMode {

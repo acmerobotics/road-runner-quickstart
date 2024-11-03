@@ -28,15 +28,16 @@ public class Gripper extends LinearOpMode {
 
         WRIST_SAMPLE_DROP(0.5),
 
-        WRIST_SPECIMENT_DROP(0),
+        WRIST_SPECIMEN_HANG(0),
+        WRISTHALFWAYRESET(0.2),
         WRISTRESET(0),
 
         WRIST_MOVE(0.5),
 
         WRISTCOLLECT(0.5),
 
-        ROLLERDROP(0.5),
-        ROLLERCOLLECT(-0.5);
+        ROLLERDROP(1),
+        ROLLERCOLLECT(-1);
 
 
         private double value;
@@ -67,12 +68,13 @@ public class Gripper extends LinearOpMode {
 
     public void sampleDrop() {
         roller.setPower(GripperPos.ROLLERDROP.value);
-        wrist.setPosition(GripperPos.WRIST_SAMPLE_DROP.value);
+        sleep(200);
+        //wrist.setPosition(GripperPos.WRIST_SAMPLE_DROP.value);
     }
 
     public void move() {
         roller.setPower(0);
-        wrist.setPosition(GripperPos.WRIST_MOVE);
+        wrist.setPosition(GripperPos.WRIST_MOVE.value);
     }
 
     public void collect() {
@@ -83,6 +85,16 @@ public class Gripper extends LinearOpMode {
     public void reset() {
         wrist.setPosition(GripperPos.WRISTRESET.value);
         roller.setPower(0);
+    }
+
+    public void halfwayReset() {
+        wrist.setPosition(GripperPos.WRISTHALFWAYRESET.value);
+        roller.setPower(0);
+    }
+
+    public void specimenHang(){
+        roller.setPower(0);
+        wrist.setPosition(GripperPos.WRIST_SPECIMEN_HANG.value);
     }
 
     @Override

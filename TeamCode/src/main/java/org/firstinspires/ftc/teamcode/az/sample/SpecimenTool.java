@@ -43,7 +43,7 @@ public class SpecimenTool extends LinearOpMode {
     }
 
     public void collect() {
-        slides.move();
+        slides.collect();
         sleep(1000);
         gripper.collect();
         sleep(500);
@@ -51,20 +51,62 @@ public class SpecimenTool extends LinearOpMode {
         sleep(1000);
     }
 
-
-    public void move() {
-        slides.move();
+    public void specimenHang() {
+        slides.specimenHang();
+        sleep(1000);
+        gripper.specimenHang();
         sleep(500);
-        gripper.move();
-        arm.move();
+        arm.specimenHang();
         sleep(1000);
     }
 
-    public void reset() {
-        arm.reset();
+
+    public void move() {
+        gripper.move();
+        arm.move();
         sleep(1000);
+        slides.move();
+        sleep(500);
+
+    }
+
+    public void specimenToolInit() {
+        slides.move();
+        sleep(500);
+        arm.move();
+        sleep(1000);
+        gripper.move();
+
+
+    }
+
+    public void reset() {
+        slides.reset();
+        sleep(1000);
+        arm.reset();
+        sleep(500);
         gripper.reset();
         sleep(500);
+    }
+
+    public void halfwayReset() {
+        slides.halfwayReset();
+        sleep(500);
+        gripper.reset();
+        sleep(500);
+        slides.reset();
+        sleep(1000);
+        arm.reset();
+        sleep(500);
+    }
+
+    public void highReset () {
+        slides.move();
+        gripper.move();
+        sleep(500);
+        arm.move();
+        sleep(1000);
+
     }
 
     public void arm_drop() {

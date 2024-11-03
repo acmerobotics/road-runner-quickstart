@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.az.sample;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous
-public class InitArmAuto extends LinearOpMode{
+public class InitArmPosition extends LinearOpMode{
 
     Arm arm = null;
     LinearOpMode opMode;

@@ -20,7 +20,9 @@ public class IntoTheDeepTeleOp extends LinearOpMode {
     Arm arm = null;
     Slides slides = null;
     private boolean dpadUpProcessing;
+    private boolean gamepad2DpadUpProcessing;
     private boolean dpadDownProcessing;
+    private boolean gamepad2DpadDownProcessing;
     private boolean dpadRightProcessing;
     private boolean buttonAProcessing;
     private boolean buttonBProcessing;
@@ -52,7 +54,6 @@ public class IntoTheDeepTeleOp extends LinearOpMode {
         specimenTool = new SpecimenTool(this);
 
 
-
         RevIMU imu = new RevIMU(hardwareMap);
         imu.init();
 
@@ -61,10 +62,13 @@ public class IntoTheDeepTeleOp extends LinearOpMode {
 
         waitForStart();
 
+        specimenTool.specimenToolInit();
+
         while (!isStopRequested()) {
 
+
 //            slides = new Motor(hardwareMap, "slides");
-            if (gamepad1.a) {
+            if (gamepad1.a) { //x
                if(!buttonAProcessing ){
                    AZUtil.runInParallel(new Runnable() {
                        @Override
@@ -77,7 +81,7 @@ public class IntoTheDeepTeleOp extends LinearOpMode {
                }
             }
 
-            if (gamepad1.b) {
+            if (gamepad1.b) { //circle
                 if( !buttonBProcessing){
                     AZUtil.runInParallel(new Runnable() {
                         @Override
@@ -90,13 +94,19 @@ public class IntoTheDeepTeleOp extends LinearOpMode {
                 }
             }
 
-            if( gamepad1.x){
+            if( gamepad1.x){ //square
                 if( !buttonXProcessing){
                     AZUtil.runInParallel(new Runnable() {
                         @Override
                         public void run() {
                             buttonXProcessing = true;
-                            specimenTool.move();
+
+                            if(arm.getCurrentPos() < 0) {
+                                specimenTool.move();
+                            }
+                            else {
+                                specimenTool.highReset();
+                            }
                             buttonXProcessing = false;
                         }
                     });
@@ -126,9 +136,7 @@ public class IntoTheDeepTeleOp extends LinearOpMode {
                         @Override
                         public void run() {
                             dpadDownProcessing = true;
-                            slides.moveToPosition(Slides.SlidesPos.RESET);
-                            sleep(1000);
-                            arm.setArmPos(Arm.ArmPos.RESET);
+                            specimenTool.halfwayReset();
                             dpadDownProcessing = false;
                         }
                     });
@@ -152,11 +160,92 @@ public class IntoTheDeepTeleOp extends LinearOpMode {
             }
 
             //extend the slides
-//            if( gamepad1.right_trigger > 0){
-//                if( rightTriggerProcessing){
+            if( gamepad1.right_trigger > 0){
+                //if not processing then perform this operation
+                if( !rightTriggerProcessing) {
+                    AZUtil.runInParallel(new Runnable() {
+                        @Override
+                        public void run() {
+                            rightTriggerProcessing = true;
+                            specimenTool.extend(gamepad1.right_trigger);
+                            rightTriggerProcessing = false;
+                        }
+                    });
+                }
+            } else {
+
 //                    specimenTool.extend(gamepad1.right_trigger);
-//                }
-//            }
+                }
+
+            if(gamepad1.right_bumper){
+                if( !rightBumperProcessing){
+                    AZUtil.runInParallel(new Runnable() {
+                        @Override
+                        public void run() {
+                            rightBumperProcessing = true;
+                            arm.moveUp();
+                            rightBumperProcessing = false;
+                        }
+                    });
+                }
+
+            }
+
+            if(gamepad1.left_bumper){
+                if( !leftBumperProcessing){
+                    AZUtil.runInParallel(new Runnable() {
+                        @Override
+                        public void run() {
+                            leftBumperProcessing = true;
+                            arm.moveDown();
+                            leftBumperProcessing = false;
+                        }
+                    });
+                }
+
+            }
+
+            if(gamepad2.dpad_right){
+                if( !gamepad2DpadUpProcessing){
+                    AZUtil.runInParallel(new Runnable() {
+                        @Override
+                        public void run() {
+                            gamepad2DpadUpProcessing = true;
+                            slides.moveUp();
+                            gamepad2DpadUpProcessing = false;
+                        }
+                    });
+                }
+
+            }
+
+            if(gamepad2.dpad_left){
+                if( !gamepad2DpadDownProcessing){
+                    AZUtil.runInParallel(new Runnable() {
+                        @Override
+                        public void run() {
+                            gamepad2DpadDownProcessing = true;
+                            slides.moveDown();
+                            gamepad2DpadDownProcessing = false;
+                        }
+                    });
+                }
+
+            }
+
+            if(gamepad1.y){
+                if( !buttonYProcessing){
+                    AZUtil.runInParallel(new Runnable() {
+                        @Override
+                        public void run() {
+                            buttonYProcessing = true;
+                            specimenTool.specimenHang();
+                            buttonYProcessing = false;
+                        }
+                    });
+                }
+
+            }
 
 
             if (!FIELD_CENTRIC) {

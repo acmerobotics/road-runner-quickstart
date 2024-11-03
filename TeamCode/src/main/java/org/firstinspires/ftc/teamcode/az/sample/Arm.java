@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.az.sample;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class Arm extends LinearOpMode {
 
     public static final double POWER = 1.0;
-    public static final int INCREMENT = 250;
+    public static final int INCREMENT = 25;
     private DcMotor arm;
     LinearOpMode opMode;
 
@@ -29,14 +28,15 @@ public class Arm extends LinearOpMode {
     }
 
     public enum ArmPos {
-        DROP(200),
+        DROP(180),
         RESET(0),
-        COLLECT(-1300),
+        COLLECT(-1150),
         CARRY(0),
-        SPECIMEN_HANG(1000),
+        SPECIMEN_HANG(160),
 
         MOVE(-700),
         BASKET_DROP(1000);
+
 
 
         private int value;
@@ -87,6 +87,11 @@ public class Arm extends LinearOpMode {
         int newPos = arm.getCurrentPosition() + INCREMENT;
         setPos(newPos);
     }
+    public void specimenHang() {
+        AZUtil.setMotorTargetPosition(arm, ArmPos.SPECIMEN_HANG.value, POWER);
+    }
+
+
 
     public int getCurrentPos(){
         return arm.getCurrentPosition();
@@ -118,6 +123,9 @@ public class Arm extends LinearOpMode {
             if(gamepad1.dpad_down){
                setArmPos(ArmPos.RESET);
             }
+
+
+
             telemetry.addData("Pos", arm.getCurrentPosition());
             telemetry.update();
         }
