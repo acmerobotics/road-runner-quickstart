@@ -38,7 +38,7 @@ public class Arm {
     as far from the starting position, decrease it. */
 
     public static double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    public static double ARM_COLLECT               = 231 * ARM_TICKS_PER_DEGREE; //6500; ?
+    public static double ARM_COLLECT               = 225 * ARM_TICKS_PER_DEGREE; //6500; ?
     public static double ARM_CLEAR_BARRIER         = 219 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SPECIMEN        = 174 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SAMPLE_IN_LOW   = 174 * ARM_TICKS_PER_DEGREE;
