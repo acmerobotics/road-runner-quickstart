@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import java.util.List;
 
 @Config
-@Autonomous(name = "\uD83D\uDD34 - BluePark", group = "RoadRunner 1.0")
+@Autonomous(name = "\uD83D\uDD35 - BluePark", group = "RoadRunner 1.0")
 public class BluePark extends LinearOpMode {
 
 

@@ -19,10 +19,15 @@ public class MeepMeepTesting {
 //                        .strafeToLinearHeading(new Vector2d(60, -61), Math.toRadians(90))
 //                                .build());
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-36,-61, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-36, 0), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(-26, 0), Math.toRadians(0))
+//        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-36,-61, Math.toRadians(90)))
+//                .strafeToLinearHeading(new Vector2d(-36, -10), Math.toRadians(90))
+//                .strafeToLinearHeading(new Vector2d(-26, -10), Math.toRadians(0))
+//                .build());
 
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-36,-60, Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(-36, -48), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-53, -53), Math.toRadians(180+45))
+                .strafeToLinearHeading(new Vector2d(-36, -12), Math.toRadians(180))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)

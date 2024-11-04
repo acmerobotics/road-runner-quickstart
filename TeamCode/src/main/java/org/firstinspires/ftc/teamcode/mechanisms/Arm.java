@@ -1,6 +1,11 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Actions;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -42,6 +47,7 @@ public class Arm {
     public static double ARM_CLEAR_BARRIER         = 219 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SPECIMEN        = 174 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SAMPLE_IN_LOW   = 174 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_SCORE_SAMPLE_IN_HIGH   = 135 * ARM_TICKS_PER_DEGREE;
     public static double ARM_ATTACH_HANGING_HOOK   = 120 * ARM_TICKS_PER_DEGREE;
     public static double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
 
@@ -59,5 +65,38 @@ public class Arm {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
+    // auto
+    public class ArmScoreAuto implements Action {
+        private boolean initialized = false;
+        private double beginTs = -1;
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            double duration;
+            if (!initialized){
+                beginTs = Actions.now();
+                initialized = true;
+                motor.setTargetPosition((int) (ARM_SCORE_SAMPLE_IN_HIGH));
+                motor.setVelocity(2500);
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            double pos = motor.getCurrentPosition();
+            packet.put("ArmPos", pos);
+            if (pos < (int)(ARM_SCORE_SAMPLE_IN_HIGH*0.98)) {
+                motor.setTargetPosition((int) (ARM_SCORE_SAMPLE_IN_HIGH));
+                motor.setVelocity(2500);
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                return true;
+            } else {
+                motor.setPower(0);
+                return false;
+            }
+        }
+    }
+
+    public Action armScoreAction() {
+        return new ArmScoreAuto();
+    }
+
 
 }
