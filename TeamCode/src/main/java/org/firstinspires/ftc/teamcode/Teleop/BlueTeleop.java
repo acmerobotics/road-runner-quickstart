@@ -93,6 +93,11 @@ public class BlueTeleop extends LinearOpMode {
         DcMotor FR = hardwareMap.get(DcMotor.class, "FR");
         DcMotor BR = hardwareMap.get(DcMotor.class, "BR");
 
+        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -108,6 +113,7 @@ public class BlueTeleop extends LinearOpMode {
         Claw claw = new Claw(hardwareMap);
         Control control = new Control();
 
+        runningActions.add(intake.flop());
 
         waitForStart();
 
@@ -142,8 +148,8 @@ public class BlueTeleop extends LinearOpMode {
             double lefty2 = currentGamepad2.left_stick_y;
 
             double denominator = Math.max(Math.abs(lefty1) + Math.abs(leftx1) + Math.abs(rightx1), 1);
-            double frontLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
-            double backLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
+            double frontLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
+            double backLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
             double frontRightPower = (lefty1 - leftx1 - rightx1) / denominator;
             double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
 
@@ -155,7 +161,7 @@ public class BlueTeleop extends LinearOpMode {
 
             switch (extendoState) {
                 case EXTENDOSTART:
-                    if (currentGamepad2.y && !previousGamepad2.y && !control.getBusy()) {
+                    if (currentGamepad2.a && !previousGamepad2.a && !control.getBusy()) {
                         runningActions.add(new SequentialAction(
                                 control.start(),
                                 extendo.extend(),
@@ -168,10 +174,11 @@ public class BlueTeleop extends LinearOpMode {
                         control.resetFinished();
                         extendoState = ExtendoState.EXTENDOEXTEND;
                     }
+                    extendo.extendoMotor.setPower(0.1);
                     break;
                 case EXTENDOEXTEND:
                     if (!control.getBusy()) {
-                        if ((currentGamepad2.y && !previousGamepad2.y)/* || (intakeColor.equals("blue"))|| (intakeColor.equals("yellow"))*/) {
+                        if ((currentGamepad2.a && !previousGamepad2.a)/* || (intakeColor.equals("blue"))|| (intakeColor.equals("yellow"))*/) {
                             runningActions.add(new SequentialAction(
                                     control.start(),
                                     intake.creep(),
@@ -185,26 +192,27 @@ public class BlueTeleop extends LinearOpMode {
 //                        }
 
                         if (currentGamepad2.b && !previousGamepad2.b) {
-                            runningActions.add(new SequentialAction(
-                                    control.start(),
-                                    intake.flop(),
-                                    extendo.retract(),
-                                    control.done()
-                            ));
-                            extendoState = ExtendoState.EXTENDOSTART;
+                            if (currentGamepad2.left_trigger < 0.9) {
+                                runningActions.add(intake.middle());
+                            } else {
+                                runningActions.add(intake.flip());
+                            }
                         }
 
-                        extendo.extendoMotor.setPower(lefty2 / 2);
+                        extendo.extendoMotor.setPower(lefty2 / 3);
                     }
 
                     if (control.getFinished()) {
                         control.resetFinished();
-                        runningActions.add(intake.extake());
+                        runningActions.add(new SequentialAction(
+                                new SleepAction(1),
+                                intake.extake()
+                        ));
                         extendoState = ExtendoState.EXTENDORETRACT;
                     }
                     break;
                 case EXTENDORETRACT:
-                    if ((currentGamepad2.y && !previousGamepad2.y)/* || intakeColor.equals("none")*/) {
+                    if ((currentGamepad2.a && !previousGamepad2.a)/* || intakeColor.equals("none")*/) {
                         runningActions.add(intake.off());
                         extendoState = ExtendoState.EXTENDOSTART;
                     }
@@ -305,6 +313,9 @@ public class BlueTeleop extends LinearOpMode {
             }
             runningActions = newActions;
             dash.sendTelemetryPacket(packet);
+
+
+
 
         }
     }

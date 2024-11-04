@@ -36,12 +36,27 @@ public class Intaker {
         return new Flip();
     }
 
+    public class Middle implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intakeServoLeft.setPosition(0.6);
+            intakeServoRight.setPosition(0.4);
+
+            return false;
+        }
+    }
+    public Action middle() {
+        return new Middle();
+    }
+
+
     public class Flop implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeServoLeft.setPosition(0.1);
-            intakeServoRight.setPosition(0.9);
+            intakeServoLeft.setPosition(0);
+            intakeServoRight.setPosition(1);
             return false;
         }
     }
@@ -89,7 +104,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeMotor.setPower(-0.2);
+            intakeMotor.setPower(-0.5);
             return false;
         }
     }

@@ -32,13 +32,13 @@ public class Extendo {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set value to retracted extendo position
-                extendoMotorPID.setTargetPosition(-6);
+                extendoMotorPID.setTargetPosition(0);
                 init = true;
             }
 
             extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
 
-            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 3) {
+            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
                 return false;
             }
             return true;
@@ -54,13 +54,13 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                extendoMotorPID.setTargetPosition(65);
+                extendoMotorPID.setTargetPosition(-65);
                 init = true;
             }
 
             extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
 
-            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 5) {
+            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
                 return false;
             }
             return true;
