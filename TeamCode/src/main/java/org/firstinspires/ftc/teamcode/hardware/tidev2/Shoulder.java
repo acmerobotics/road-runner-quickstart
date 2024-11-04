@@ -109,6 +109,8 @@ public class Shoulder {
         shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         pidf = 0;
+
+        target = 100;
     }
 
     public void moveArmUp() {
@@ -232,8 +234,12 @@ public class Shoulder {
         boolean controlled = false;
 
         double right_stick = -myOpMode.gamepad2.right_stick_y;
+        boolean override_deadzone = myOpMode.gamepad2.dpad_up;
 
-        if (Math.abs(right_stick) > deadzone
+        if (override_deadzone) {
+            target += right_stick * 50;
+
+        } else if (Math.abs(right_stick) > deadzone
                 && armPos <= 950 && armPos >= -100
         ) {
             if (right_stick > 0) {
