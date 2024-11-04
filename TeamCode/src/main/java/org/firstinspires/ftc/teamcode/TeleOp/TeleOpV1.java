@@ -23,6 +23,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
  */
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -69,7 +70,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 
 @TeleOp(name="Official TeleOp M1", group="Robot")
-//@Disabled
+@Disabled
 @Config
 public class TeleOpV1 extends LinearOpMode {
 

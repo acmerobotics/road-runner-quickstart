@@ -68,8 +68,8 @@ public final class MecanumDrive {
         public double trackWidthTicks = 4264.681383859044   ;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.8882966267235468;
-        public double kV = 0.0005948339515810528;
+        public double kS = 1.29229; // 0.8882966267235468;
+        public double kV = 0.000524;//0.0005948339515810528;
         public double kA = 0.00001;
 
         // path profile parameters (in inches)
@@ -487,4 +487,41 @@ public final class MecanumDrive {
                 defaultVelConstraint, defaultAccelConstraint
         );
     }
+
+    /**
+     * Move robot according to desired axes motions
+     * <p>
+     * Positive X is forward
+     * <p>
+     * Positive Y is strafe left
+     * <p>
+     * Positive Yaw is counter-clockwise
+     */
+    public void moveRobot(double axial, double lateral, double yaw) {
+        // Calculate wheel powers. The formula is correct for X forward, +lateral => left, +yaw => counter-clockwise.
+        // Note: This is different from usual basic omni opmode.
+        double leftFrontPower    =  axial -lateral -yaw;
+        double rightFrontPower   =  axial +lateral +yaw;
+        double leftBackPower     =  axial +lateral -yaw;
+        double rightBackPower    =  axial -lateral +yaw;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+        max = Math.max(max, Math.abs(leftBackPower));
+        max = Math.max(max, Math.abs(rightBackPower));
+
+        if (max > 1.0) {
+            leftFrontPower /= max;
+            rightFrontPower /= max;
+            leftBackPower /= max;
+            rightBackPower /= max;
+        }
+
+        // Send powers to the wheels.
+        leftFront.setPower(leftFrontPower);
+        rightFront.setPower(rightFrontPower);
+        leftBack.setPower(leftBackPower);
+        rightBack.setPower(rightBackPower);
+    }
+
 }
