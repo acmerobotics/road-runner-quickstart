@@ -266,14 +266,20 @@ public class ShoulderV0 {
             }
         }
 
-        shoulder_right.setPower(pidf);
-        shoulder_left.setPower(pidf);
 
+        if (myOpMode.gamepad2.y) {
+            shoulder_right.setPower(-1);
+            shoulder_left.setPower(-1);
+        } else {
+            shoulder_right.setPower(pidf);
+            shoulder_left.setPower(pidf);
+        }
 
 
         myOpMode.telemetry.addData("pidf", pidf);
         myOpMode.telemetry.addData("pos", armPos);
         myOpMode.telemetry.addData("target", target);
+
 
 
 
