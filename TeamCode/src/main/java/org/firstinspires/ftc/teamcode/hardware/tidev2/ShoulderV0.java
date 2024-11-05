@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-public class Shoulder {
+public class ShoulderV0 {
 
     static final double ramp_y_offset = 0.2;
     static final double maxArmPos = 700.0;
@@ -62,7 +62,7 @@ public class Shoulder {
     private PIDFController controller;
     private PIDFCoefficients pidfcoeff;
 
-    public static final double p = 0.004, i = 0.003, d = 0.0001;
+    public static final double p = 0.003, i = 0.003, d = 0.0001;
     public static final double f = 0.00003;
 
     public static int target = 100;
@@ -77,7 +77,7 @@ public class Shoulder {
     private DcMotorEx shoulder_right;
     private DcMotorEx shoulder_left;
 
-    public Shoulder(OpMode opmode) {
+    public ShoulderV0(OpMode opmode) {
         myOpMode = opmode;
     }
 
@@ -231,36 +231,49 @@ public class Shoulder {
         int armPos = shoulder_left.getCurrentPosition();
         boolean controlled = false;
 
-        double right_stick = -myOpMode.gamepad2.right_stick_y;
 
-        if (Math.abs(right_stick) > deadzone
-                && armPos <= 950 && armPos >= -100
-        ) {
-            if (right_stick > 0) {
-                target += (int) right_stick * 50;
-            } else {
-                target += (int) right_stick * 10;
+
+        if (Math.abs(myOpMode.gamepad2.right_stick_y) > deadzone
+                && armPos <= 700 && armPos >= -100
+        )  {
+            pidf = -myOpMode.gamepad2.right_stick_y;
+
+            controlled = true;
+
+            if (pidf < 0) {
+                // ignores control altogether and come down at a reasonable speed
+                pidf = (-ramp_a * Math.exp(ramp_rate * armPos) + ramp_y_offset) + pidf * 0.01;
             }
 
-            if (target > 850) {
-                target = 850;
-            }
-            if (target < 0) {
-                target = 0;
-            }
-
-        }
+        } else {
             armPos = shoulder_left.getCurrentPosition();
             pidf = controller.calculate(armPos, target);
+        }
 
-            if (armPos > 850) {
-                pidf = pidf - f;
+
+        if (controlled) {
+            int correction = 100;
+            if (pidf < 0) {
+                correction = 0;
             }
+            target = shoulder_left.getCurrentPosition() + correction;
+
+            if (target > 700) {
+                target = 700;
+            }
+            if (target < 100) {
+                target = 100;
+            }
+        }
 
 
-        shoulder_right.setPower(pidf);
-        shoulder_left.setPower(pidf);
-
+        if (myOpMode.gamepad2.y) {
+            shoulder_right.setPower(-1);
+            shoulder_left.setPower(-1);
+        } else {
+            shoulder_right.setPower(pidf);
+            shoulder_left.setPower(pidf);
+        }
 
 
         myOpMode.telemetry.addData("pidf", pidf);
@@ -269,12 +282,10 @@ public class Shoulder {
 
 
 
+
         if (myOpMode.gamepad2.dpad_right) {
             shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            shoulder_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
     }

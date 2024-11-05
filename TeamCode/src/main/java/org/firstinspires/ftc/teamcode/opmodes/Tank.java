@@ -8,11 +8,12 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
-import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.ShoulderV0;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
@@ -28,7 +29,7 @@ public class Tank extends OpMode {
     DcMotorEx rightBack;
     DcMotorEx rightFront;
 
-    Shoulder shoulder = new Shoulder(this);
+    ShoulderV0 shoulder = new ShoulderV0(this);
     Elbow elbow = new Elbow(this);
     Intake intake = new Intake(this);
     Viper viper = new Viper(this);
@@ -38,6 +39,9 @@ public class Tank extends OpMode {
 
     Pose2d poseEstimate;
     Vector2d input;
+    double speed;
+
+    ElapsedTime speedTimer = new ElapsedTime();
 
 
 
@@ -57,6 +61,7 @@ public class Tank extends OpMode {
         intake.init();
         viper.init();
         claw.init();
+        speed = 1;
     }
 
     @Override
@@ -68,10 +73,10 @@ public class Tank extends OpMode {
 
         float Lx = -gamepad1.left_stick_y;
         float Rx = -gamepad1.right_stick_y;
-        leftFront.setPower(Lx * max);
-        leftBack.setPower(Lx * max);
-        rightFront.setPower(Rx * max);
-        rightBack.setPower(Rx * max);
+        leftFront.setPower(Lx * max * speed);
+        leftBack.setPower(Lx * max * speed);
+        rightFront.setPower(Rx * max * speed);
+        rightBack.setPower(Rx * max * speed);
 
 
         if (gamepad1.left_trigger != 0 && gamepad1.right_trigger != 0) {
@@ -88,6 +93,14 @@ public class Tank extends OpMode {
             rightBack.setPower(max * gamepad1.right_trigger);
         }
 
+        if (gamepad1.dpad_right && speed < 1 && speedTimer.seconds() > 0.25) {
+            speedTimer.reset();
+            speed += 0.25;
+        } else if (gamepad1.dpad_left && speed > 0.25 && speedTimer.seconds() > 0.25) {
+            speedTimer.reset();
+            speed -= 0.25;
+        }
+
         shoulder.listen();
         elbow.listen();
         intake.listen();
@@ -98,7 +111,7 @@ public class Tank extends OpMode {
         intake.sendTelemetry();
         claw.sendTelemetry();
 
-
+        telemetry.addData("Speed:", speed);
         updateTelemetry(telemetry);
 
     }
