@@ -35,8 +35,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Shoulder {
+
+    public enum BucketState{
+        ZERO_BUCKETSTATE,
+        MIDDLE_BUCKETSTATE,
+        HIGH_BUCKETSTATE
+    };
+
+    private BucketState bucketState;
+
+    private ElapsedTime bucketStateTimer = new ElapsedTime();
 
     static final double ramp_y_offset = 0.2;
     static final double maxArmPos = 700.0;
@@ -87,6 +98,9 @@ public class Shoulder {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
+        bucketState = BucketState.ZERO_BUCKETSTATE;
+        bucketStateTimer = new ElapsedTime();
+
         pidfcoeff = new PIDFCoefficients(p, i, d ,f);
         controller = new PIDFController(p, i, d, f);
         shoulder_right = myOpMode.hardwareMap.get(DcMotorEx.class, "left_tower");
@@ -235,6 +249,26 @@ public class Shoulder {
 
         double right_stick = -myOpMode.gamepad2.right_stick_y;
         boolean override_deadzone = myOpMode.gamepad2.dpad_up;
+        boolean to_bucket = myOpMode.gamepad2.dpad_left;
+
+        if(to_bucket) {
+            if (bucketStateTimer.seconds() >= 1.0) {
+                switch (bucketState) {
+                    case ZERO_BUCKETSTATE:
+                    case HIGH_BUCKETSTATE:
+                        target = 620;
+                        bucketStateTimer.reset();
+                        bucketState = BucketState.MIDDLE_BUCKETSTATE;
+                        break;
+
+                    case MIDDLE_BUCKETSTATE:
+                        target = 790;
+                        bucketStateTimer.reset();
+                        bucketState = BucketState.HIGH_BUCKETSTATE;
+                        break;
+                }
+            }
+        }
 
         if (override_deadzone) {
             target += right_stick * 50;
@@ -242,6 +276,8 @@ public class Shoulder {
         } else if (Math.abs(right_stick) > deadzone
                 && armPos <= 950 && armPos >= -100
         ) {
+            bucketState = BucketState.ZERO_BUCKETSTATE;
+
             if (right_stick > 0) {
                 target += (int) right_stick * 50;
             } else {
