@@ -183,8 +183,8 @@ public class Robot {
     }
 
     public void intakeControl(Gamepad gamepad) {
-        intakeRight.setPower(-gamepad.left_trigger + gamepad.right_trigger);
-         intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger);
+        intakeRight.setPower((-gamepad.left_trigger * 0.5 + gamepad.right_trigger));
+         intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger * 0.5);
     }
 
     public void hangControl(Gamepad gamepad) {
