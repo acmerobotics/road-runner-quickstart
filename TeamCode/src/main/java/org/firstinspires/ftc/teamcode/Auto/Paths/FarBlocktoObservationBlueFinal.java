@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
+import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
 
@@ -24,6 +25,7 @@ public class FarBlocktoObservationBlueFinal extends LinearOpMode {
     Intaker intake = new Intaker(hardwareMap);
     Claw claw = new Claw(hardwareMap);
     Slides slides = new Slides(hardwareMap);
+    Extendo extendo = new Extendo(hardwareMap);
     @Override
     public void runOpMode() {
         Pose2d StartPose1 = new Pose2d(0, 0, 0);

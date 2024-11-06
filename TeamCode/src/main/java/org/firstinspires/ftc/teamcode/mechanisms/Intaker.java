@@ -26,8 +26,8 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeServoLeft.setPosition(0.8);
-            intakeServoRight.setPosition(0.2);
+            intakeServoLeft.setPosition(0.95);
+            intakeServoRight.setPosition(0.05);
 
             return false;
         }
@@ -55,8 +55,8 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeServoLeft.setPosition(0);
-            intakeServoRight.setPosition(1);
+            intakeServoLeft.setPosition(0.13);
+            intakeServoRight.setPosition(0.87);
             return false;
         }
     }
@@ -80,7 +80,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeMotor.setPower(0.3);
+            intakeMotor.setPower(0.50);
             return false;
         }
     }

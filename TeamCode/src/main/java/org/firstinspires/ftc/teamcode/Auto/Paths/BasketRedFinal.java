@@ -9,6 +9,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -29,7 +30,7 @@ public class BasketRedFinal extends LinearOpMode {
     Slides slides = new Slides(hardwareMap);
     Claw claw = new Claw(hardwareMap);
     Intaker intake = new Intaker(hardwareMap);
-
+    Extendo extendo = new Extendo(hardwareMap);
 
     @Override
     public void runOpMode() {
@@ -95,30 +96,45 @@ public class BasketRedFinal extends LinearOpMode {
                 back,
                 slides.retract(),
                 block1,
+                extendo.extend(),
                 intake.flip(),
                 intake.intake(),
                 intake.flop(),
+                intake.creep(),
+                extendo.retract(),
                 intake.extake(),
+                new SleepAction(1),
+                intake.off(),
                 toBasket,
                 slides.slideTopBasket(),
                 claw.flip(),
                 claw.flop(),
                 slides.retract(),
                 block2,
+                extendo.extend(),
                 intake.flip(),
                 intake.intake(),
                 intake.flop(),
+                intake.creep(),
+                extendo.retract(),
                 intake.extake(),
+                new SleepAction(1),
+                intake.off(),
                 toBasket,
                 slides.slideTopBasket(),
                 claw.flip(),
                 claw.flop(),
                 slides.retract(),
                 block3,
+                extendo.extend(),
                 intake.flip(),
                 intake.intake(),
                 intake.flop(),
+                intake.creep(),
+                extendo.retract(),
                 intake.extake(),
+                new SleepAction(1),
+                intake.off(),
                 toBasket,
                 slides.slideTopBasket(),
                 claw.flip(),

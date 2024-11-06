@@ -31,8 +31,7 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                //TODO: set value to retracted extendo position
-                extendoMotorPID.setTargetPosition(0);
+                extendoMotorPID.setTargetPosition(-5);
                 init = true;
             }
 

@@ -44,8 +44,8 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set values to the motor position of top basket
-                slidesLeftPID.setTargetPosition(-3140);
-                slidesRightPID.setTargetPosition(200);
+                slidesLeftPID.setTargetPosition(-3345);
+                slidesRightPID.setTargetPosition(-3345);
                 init = true;
             }
             slidesLeftMotor.setPower(slidesLeftPID.update(slidesLeftMotor.getCurrentPosition()));

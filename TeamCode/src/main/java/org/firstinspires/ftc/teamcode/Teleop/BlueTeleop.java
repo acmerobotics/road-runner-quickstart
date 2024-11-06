@@ -162,6 +162,8 @@ public class BlueTeleop extends LinearOpMode {
             switch (extendoState) {
                 case EXTENDOSTART:
                     if (currentGamepad2.a && !previousGamepad2.a && !control.getBusy()) {
+//                        extendo.extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                        extendo.extendoMotor.setPower(0);
                         runningActions.add(new SequentialAction(
                                 control.start(),
                                 extendo.extend(),
@@ -169,12 +171,16 @@ public class BlueTeleop extends LinearOpMode {
                                 intake.intake(),
                                 control.done()
                         ));
+                    } else {
+//                        extendo.extendoMotor.setTargetPosition(0);
+//                        extendo.extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                        extendo.extendoMotor.setPower(0.8);
                     }
                     if (control.getFinished()) {
                         control.resetFinished();
                         extendoState = ExtendoState.EXTENDOEXTEND;
                     }
-                    extendo.extendoMotor.setPower(0.1);
+
                     break;
                 case EXTENDOEXTEND:
                     if (!control.getBusy()) {
