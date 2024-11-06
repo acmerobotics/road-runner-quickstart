@@ -31,15 +31,16 @@ public class ScoringSystem extends Mechanism {
                 resettingState();
                 break;
             case SEARCHING:
-                searchingState();
+                searchingState(aimpad, aimpad2);
                 break;
             case TRANSITIONING:
-                transitioningState();
+                transitioningState(aimpad, aimpad2);
                 break;
             case SLIDES_POSITIONING:
-                slidesPositioningState();
+                slidesPositioningState(aimpad, aimpad2);
                 break;
         }
+        intakeSystem.loop(aimpad);
     }
 
     public void setActiveScoringState(ScoringState activeScoringState) {
@@ -48,19 +49,25 @@ public class ScoringSystem extends Mechanism {
     }
     public void resettingState() {
         intakeSystem.intake.setActiveHingeState(Intake.HingeState.DOWN);
-        intakeSystem.setActivePivotState(IntakeSystem.PivotState.DOWN);
-        intakeSystem.intakeSlides.setTargetPosition(intakeSystem.SLIDES_RESET_POS);
-        if (!intakeSystem.intakeSlides.isAtTargetPosition()){
-            intakeSystem.intakeSlides.update();
-        } else {
+        intakeSystem.setActivePivotState(IntakeSystem.PivotState.PIVOT_DOWN);
+        intakeSystem.setAutoSlidesPosition(IntakeSystem.AutoSlidesPosition.RESET);
+        if (intakeSystem.intakeSlides.isAtTargetPosition()){
             setActiveScoringState(ScoringState.SEARCHING);
-
         }
     }
     public void searchingState(AIMPad aimpad, AIMPad aimpad2) {
-        intakeSystem.intakeSlides.setTargetPosition(aimpad.getLeftStickX());
-        intakeSystem.intake.hingeToPosition(aimpad.getRightStickX());
+        intakeSystem.intake.setActiveHingeState(Intake.HingeState.NEUTRAL);
+        intakeSystem.setAutoSlidesPosition(IntakeSystem.AutoSlidesPosition.SHORT);
 
+        if (aimpad.isRightBumperPressed()) {
+            intakeSystem.setAutoSlidesPosition(intakeSystem.getNextSlidePosition(intakeSystem.activeAutoSlidesPosition));
+        } else if (aimpad.isLeftBumperPressed()) {
+            intakeSystem.setAutoSlidesPosition(intakeSystem.getPreviousSlidePosition(intakeSystem.activeAutoSlidesPosition));
+        }
+
+        if (intakeSystem.intakeSlides.isAtTargetPosition()){
+            setActiveScoringState(ScoringState.TRANSITIONING);
+        }
     }
     public void transitioningState(AIMPad aimpad, AIMPad aimpad2) {
     }

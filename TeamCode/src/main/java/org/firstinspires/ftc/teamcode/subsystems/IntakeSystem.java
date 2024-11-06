@@ -44,21 +44,14 @@ public class IntakeSystem extends Mechanism {
     public enum PivotState {
         PIVOT_DOWN, PIVOT_UP, PIVOT_CUSTOM
     }
-  
-    public final double SLIDES_RESET_POS = 0;
-    public final double SLIDES_LOW_CLIP_POS = 200;
-    public final double SLIDES_HIGH_CLIP_POS = 400;
-    public final double SLIDES_LOW_BUCKET_POS = 600;
-    public final double SLIDES_HIGH_BUCKET_POS = 800;
-    private double pivotTargetPosition = UP_HINGE_POSITION;
 
     private PivotState activePivotState = PivotState.PIVOT_DOWN;
 
 
-    private enum AutoSlidesPosition {
+    enum AutoSlidesPosition {
         RESET, SHORT, MEDIUM, LONG
     }
-    private AutoSlidesPosition activeAutoSlidesPosition = AutoSlidesPosition.RESET;
+    public AutoSlidesPosition activeAutoSlidesPosition = AutoSlidesPosition.RESET;
 
     private enum SlidesControlState {
         AUTONOMOUS, MANUAL
@@ -120,6 +113,7 @@ public class IntakeSystem extends Mechanism {
         }
 
         pivotToPosition(pivotTargetPosition);
+        intake.loop(aimpad);
     }
   
     /**
@@ -230,6 +224,31 @@ public class IntakeSystem extends Mechanism {
             setActiveControlState(SlidesControlState.MANUAL);
         }
         loop(aimpad);
+    }
+
+    private static final IntakeSystem.AutoSlidesPosition[] SLIDE_POSITIONS = {
+            IntakeSystem.AutoSlidesPosition.RESET,
+            IntakeSystem.AutoSlidesPosition.SHORT,
+            IntakeSystem.AutoSlidesPosition.MEDIUM,
+            IntakeSystem.AutoSlidesPosition.LONG
+    };
+
+    public IntakeSystem.AutoSlidesPosition getNextSlidePosition(IntakeSystem.AutoSlidesPosition currentPosition) {
+        if (currentPosition == IntakeSystem.AutoSlidesPosition.LONG) {
+            return IntakeSystem.AutoSlidesPosition.LONG;
+        }
+        int currentIndex = java.util.Arrays.asList(SLIDE_POSITIONS).indexOf(currentPosition);
+        int nextIndex = (currentIndex + 1) % SLIDE_POSITIONS.length;
+        return SLIDE_POSITIONS[nextIndex];
+    }
+
+    public IntakeSystem.AutoSlidesPosition getPreviousSlidePosition(IntakeSystem.AutoSlidesPosition currentPosition) {
+        if (currentPosition == IntakeSystem.AutoSlidesPosition.RESET) {
+            return IntakeSystem.AutoSlidesPosition.RESET;
+        }
+        int currentIndex = java.util.Arrays.asList(SLIDE_POSITIONS).indexOf(currentPosition);
+        int previousIndex = (currentIndex - 1 + SLIDE_POSITIONS.length) % SLIDE_POSITIONS.length;
+        return SLIDE_POSITIONS[previousIndex];
     }
 
 }

@@ -20,8 +20,8 @@ public class ConfigurationInfo {
     public static HardwareInterface rightIntakeSlidePivot = new HardwareInterface("RISP", true, 2);
 
     // OUTAKE SLIDES
-    public static HardwareInterface leftOutakeSlide = new HardwareInterface("LOS", false, 2);
-    public static HardwareInterface rightOutakeSlide = new HardwareInterface("ROS", true, 2);
+    public static HardwareInterface leftOuttakeSlide = new HardwareInterface("LOS", false, 2);
+    public static HardwareInterface rightOuttakeSlide = new HardwareInterface("ROS", true, 2);
 
     // OUTAKE ARM HINGES
     public static HardwareInterface leftArmHinge = new HardwareInterface("OLAH", true, 0);
