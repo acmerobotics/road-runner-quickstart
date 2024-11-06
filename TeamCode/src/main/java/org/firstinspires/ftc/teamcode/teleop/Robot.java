@@ -190,12 +190,12 @@ public class Robot {
     public void hangControl(Gamepad gamepad) {
         if (gamepad.dpad_up)
         {
-            leftHang.setPower(1);
+            leftHang.setPower(-1);
             rightHang.setPower(1);
         }
         else if (gamepad.dpad_down)
         {
-            leftHang.setPower(-1);
+            leftHang.setPower(1);
             rightHang.setPower(-1);
         }
         else {
@@ -269,7 +269,7 @@ public class Robot {
         else if (armTarget > 2200) armTarget = 2200;
 
         if (slideTarget < 0) slideTarget = 0;
-        else if (slideTarget > 5000) slideTarget = 5000;
+        else if (slideTarget > 3950) slideTarget = 3950;
 
         flipPos = flip.getCurrentPosition();
         slidePos = slide.getCurrentPosition();
