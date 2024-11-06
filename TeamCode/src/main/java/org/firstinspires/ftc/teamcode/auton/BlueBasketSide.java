@@ -26,18 +26,31 @@ public class BlueBasketSide extends LinearOpMode {
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(9,48))
                 .waitSeconds(2.5)
+                //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(56,48), Math.toRadians(245))
                 .waitSeconds(3)
+                //intake
                 .turn(Math.toRadians(30))
                 .waitSeconds(1)
+                //Arm to high basket
+                //outtake
+                //Arm back down
                 .turn(Math.toRadians(-30))
                 .waitSeconds(2)
+                //intake
                 .turn(Math.toRadians(55))
                 .waitSeconds(1)
+                //Arm to high basket
+                //outtake
+                //Arm back down
                 .turn(Math.toRadians(-55))
                 .waitSeconds(2)
+                //intake
                 .strafeToLinearHeading(new Vector2d(33,9), Math.toRadians(180))
                 .waitSeconds(3)
+                //Arm to high basket
+                //outtake
+                //Arm back down
                 .strafeToLinearHeading(new Vector2d(56,48), Math.toRadians(245))
                 .waitSeconds(2)
                 .strafeToLinearHeading(new Vector2d(33,9), Math.toRadians(180))
