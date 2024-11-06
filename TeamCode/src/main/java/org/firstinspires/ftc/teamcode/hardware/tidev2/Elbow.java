@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -56,6 +57,13 @@ public class Elbow {
 
     static final double  POWER_UP_MUL = 0.8;
     static final double  POWER_DOWN_MUL = 0.8;
+
+    private PIDFController controller;
+
+    public static double p = 0.001, i = 0.0001, d = 0.0001;
+    public static double f = 0;
+
+    public static int target = 0;
     // Define class members
 
     private DcMotorEx elbow;
@@ -79,12 +87,14 @@ public class Elbow {
     }
 
     public void init() {
+        controller = new PIDFController(p, i, d, f);
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         elbow = myOpMode.hardwareMap.get(DcMotorEx.class, "elbow");
 
         elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        elbow.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
+        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
@@ -176,15 +186,23 @@ public class Elbow {
 
     public void listen() {
 
-        // move elbow according to the right stick y
-
-
-        double power = (myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger) / 4;
-        if (Math.abs(power) > 0.1) {
-            moveElbowByPower(power);
+        if (target <=  0 && target >= -600) {
+            target += (int) (myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger) * 50;
+        } else if (target > 0) {
+            target = 0;
         } else {
-            moveElbowByPower(0);
+            target = -600;
         }
+
+        int elbPos = elbow.getCurrentPosition();
+        double pidf = controller.calculate(elbPos, target);
+
+        elbow.setPower(pidf);
+
+        myOpMode.telemetry.addData("Elbow Position:", elbPos);
+        myOpMode.telemetry.addData("Power:", pidf);
+        myOpMode.telemetry.addData("Target Position:", target);
+
 
         if (myOpMode.gamepad2.dpad_right) {
             elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

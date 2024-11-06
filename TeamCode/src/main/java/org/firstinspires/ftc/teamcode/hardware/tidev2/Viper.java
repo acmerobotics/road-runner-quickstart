@@ -185,7 +185,7 @@ public class Viper {
         } else {
             moveViperByPower(0);
         }
-
+        myOpMode.telemetry.addData("Viper Pos", viper.getCurrentPosition());
         if (myOpMode.gamepad2.dpad_right) {
             viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
