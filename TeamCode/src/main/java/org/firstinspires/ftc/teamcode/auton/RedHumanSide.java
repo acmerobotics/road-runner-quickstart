@@ -25,6 +25,7 @@ public class RedHumanSide extends LinearOpMode {
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(11,-48))
                 .waitSeconds(1.86)
+                //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(30,-48), Math.toRadians(75))
                 .strafeToLinearHeading(new Vector2d(38,-14), Math.toRadians(80))
                 .strafeToLinearHeading(new Vector2d(45,-12), Math.toRadians(90))

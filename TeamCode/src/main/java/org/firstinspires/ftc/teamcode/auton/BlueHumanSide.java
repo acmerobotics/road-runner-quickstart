@@ -26,6 +26,7 @@ public class BlueHumanSide extends LinearOpMode {
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(-11,48))
                 .waitSeconds(1.86)
+                //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(-30,48), Math.toRadians(255))
                 .strafeToLinearHeading(new Vector2d(-38,11), Math.toRadians(260))
                 .strafeToLinearHeading(new Vector2d(-45,11), Math.toRadians(270))
