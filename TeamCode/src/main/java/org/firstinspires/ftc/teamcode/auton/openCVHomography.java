@@ -41,8 +41,8 @@ public class openCVHomography {
         // Define corresponding points in the destination (world) coordinates
         List<Point> dstPoints = new ArrayList<>();
         dstPoints.add(new Point(0, 0));     // Example world points
-        dstPoints.add(new Point(1, 0));
-        dstPoints.add(new Point(1, 1));
+        dstPoints.add(new Point(1, 0));     //X is distance from left to right
+        dstPoints.add(new Point(1, 1));     //Y is distance forward to the sample
         dstPoints.add(new Point(0, 1));
 
         // Convert lists to MatOfPoint2f
