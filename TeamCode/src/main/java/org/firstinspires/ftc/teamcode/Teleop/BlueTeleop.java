@@ -115,7 +115,10 @@ public class BlueTeleop extends LinearOpMode {
 
         runningActions.add(intake.flop());
 
+
         waitForStart();
+
+        extendo.extendoMotorPID.setTargetPosition(-1);
 
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
@@ -319,9 +322,7 @@ public class BlueTeleop extends LinearOpMode {
             }
             runningActions = newActions;
             dash.sendTelemetryPacket(packet);
-
-
-
+            
 
         }
     }

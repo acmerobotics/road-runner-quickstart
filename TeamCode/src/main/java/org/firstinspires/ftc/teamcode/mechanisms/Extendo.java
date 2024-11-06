@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.PIDFController;
 public class Extendo {
     public DcMotor extendoMotor;
 
-    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(0.5, 0 , 0);
-    private PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
+    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(0.5, 0, 0.5);
+    public PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
 
     public Extendo(HardwareMap HWMap){
         extendoMotor = HWMap.get(DcMotor.class, "extendoMotor");
@@ -31,11 +31,11 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                extendoMotorPID.setTargetPosition(-5);
+                extendoMotorPID.setTargetPosition(-12);
                 init = true;
             }
 
-            extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
+            updateMotor();
 
             if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
                 return false;
@@ -57,7 +57,7 @@ public class Extendo {
                 init = true;
             }
 
-            extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
+            updateMotor();
 
             if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
                 return false;
@@ -72,6 +72,10 @@ public class Extendo {
 
     public double getPos() {
         return (extendoMotor.getCurrentPosition());
+    }
+
+    public void updateMotor() {
+        extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
     }
 }
 
