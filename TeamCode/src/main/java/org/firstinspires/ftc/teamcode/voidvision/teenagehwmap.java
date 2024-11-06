@@ -28,6 +28,7 @@ public class teenagehwmap extends HardwareMapUtil {
     public Servo basketServo1 = null; // Servo for left basket
     public Servo basketServo2 = null; // Servo for right basket
     public Servo clawServo = null;
+    public Servo clawRotateServo = null;
     public CRServo intakeServo = null;
     public ColorSensor colorSensor = null;
 
@@ -36,6 +37,7 @@ public class teenagehwmap extends HardwareMapUtil {
     //.4 is good
     //.6 is bad
     public double FinalrangeBasket = 0.48;
+    public double FinalrangeClawRotate = .25;
 
     /**
      * Initializes all hardware components and sets their initial states.
@@ -61,9 +63,11 @@ public class teenagehwmap extends HardwareMapUtil {
         range1Servo = HardwareInitServo("hippo1", 0); // Left range servo
         range2Servo = HardwareInitServo("hippo2", Finalrange); // Right range servo
         intakeServo = HardwareInitCRServo("intake", true); // Intake servo
-        basketServo1 = HardwareInitServo("basket1", 0); // Left basket servo
-        basketServo2 = HardwareInitServo("basket2", FinalrangeBasket); // Right basket servo
-        //clawServo = HardwareInitServo("claw",0);
+        basketServo1 = HardwareInitServo("basket2", 0); // Left basket servo
+        basketServo2 = HardwareInitServo("basket1", FinalrangeBasket); // Right basket servo
+        //these are flipped because Will flipped them
+        clawServo = HardwareInitServo("claw",0);
+        clawRotateServo = HardwareInitServo("terminator",FinalrangeClawRotate);
 
         // Initialize color sensor (commented out if not needed yet)
         colorSensor = hwMap.get(ColorSensor.class, "color");

@@ -79,11 +79,9 @@ public class twinteleop2 extends LinearOpMode {
             }
 
             // ---- First Servo Sequence (Triggered by gamepad2.a) ----
-            if (gamepad2.a && !isRoutineRunning) {
-                isRoutineRunning = true;
-                new Thread(() -> runFirstServoSequence()).start();  // Execute the servo sequence in a separate thread
 
-            }
+            robot.clawServo.setPosition(gamepad2.left_trigger);
+
 
             // ---- Second Servo Subroutine (Triggered by gamepad2.b) ----
             if (gamepad2.b && !isRoutineRunning) {
@@ -107,6 +105,7 @@ public class twinteleop2 extends LinearOpMode {
             telemetry.addData("red",robot.colorSensor.red());
             telemetry.addData("green",robot.colorSensor.green());
             telemetry.addData("blue",robot.colorSensor.blue());
+            telemetry.addData("claw",robot.clawServo.getPosition());
             telemetry.update();
         }
     }
@@ -233,33 +232,38 @@ public class twinteleop2 extends LinearOpMode {
 
         // Step 1: Move the motor up by 3000 encoder counts at full speed
         int targetPositionMAX = initialPosition + 3080; // Adjust based on desired lift distance
-        int targetPositionLowerBasket = 1203; // Adjust based on desired lift distance
+        int targetPositionLowerBasket = 1802; // Adjust based on desired lift distance
         int targetPositionUpperBasket = 2570; // Adjust based on desired lift distance
-        int targetPositionLowerRung = 662; // Adjust based on desired lift distance
-        int targetPositionUpperRung = 1880; // Adjust based on desired lift distance
+        int targetPositionLowerRung = 902; // Adjust based on desired lift distance
+        int targetPositionUpperRung = 3080; // Adjust based on desired lift distance
 
         moveMotorToPosition(robot.liftMotor, targetPositionLowerRung,.8);
-        robot.liftMotor.setPower(0.05);
+        robot.liftMotor.setPower(0.01);
+        rotateClaw();
         sleepWithOpModeCheck(1000);
 
         moveMotorToPosition(robot.liftMotor, targetPositionUpperRung,.8);
-        robot.liftMotor.setPower(0.05);
+        robot.liftMotor.setPower(0.01);
+        rotateClaw();
         sleepWithOpModeCheck(1000);
 
         moveMotorToPosition(robot.liftMotor, targetPositionLowerBasket,.8);
-        robot.liftMotor.setPower(0.05);
+        robot.liftMotor.setPower(0.01);
+        rotateClaw();
         sleepWithOpModeCheck(1000);
 
         moveMotorToPosition(robot.liftMotor, targetPositionUpperBasket, .8);
 
         // Step 2: Hold the position briefly with a low power to maintain
-        robot.liftMotor.setPower(0.05);
+        robot.liftMotor.setPower(0.01);
+        rotateClaw();
         sleepWithOpModeCheck(1000);
 
-        moveMotorToPosition(robot.liftMotor, targetPositionMAX, .6);
+        //moveMotorToPosition(robot.liftMotor, targetPositionMAX, .6);
 
         // Step 2: Hold the position briefly with a low power to maintain
-        robot.liftMotor.setPower(0.05);
+        robot.liftMotor.setPower(0.01);
+        rotateClaw();
         sleepWithOpModeCheck(1000);
 
         // Step 3: Move the motor down by 3000 encoder counts at 0.4 speed
@@ -577,6 +581,22 @@ public class twinteleop2 extends LinearOpMode {
             servos[i].setPosition(targetPositions[i]);
         }
     }
+    private void moveServoToPosition(Servo servo, double targetPosition, double speedFactor) {
+        double startPosition = servo.getPosition();
+
+        int steps = 100; // Number of steps for smooth movement
+        double delta = (targetPosition - startPosition) / steps;
+
+        for (int i = 0; i < steps; i++) {
+            if (checkForCancel()) return;
+            servo.setPosition(startPosition + (delta * i));
+            sleep((long) (20 * (1 - speedFactor))); // Sleep adjusted based on speed factor
+        }
+
+        // Ensure the servo ends at the exact target position
+        servo.setPosition(targetPosition);
+    }
+
 
     /**
      * EXAMPLE FOR CODE ABOVE
@@ -586,6 +606,12 @@ public class twinteleop2 extends LinearOpMode {
      *     new double[] { 0.8, 0.6, 0.4, 1.0 }                                     // Speed factors for each servo
      * );
      * */
+    public void rotateClaw(){
+        moveServoToPosition(robot.clawRotateServo,0,.8);
+        sleepWithOpModeCheck(500);
+        moveServoToPosition(robot.clawRotateServo,robot.FinalrangeClawRotate,.8);
+        sleepWithOpModeCheck(500);
+    }
 
     // ---- Drive Configuration Methods ----
     public void flipWheelConfigurationBackward() {
