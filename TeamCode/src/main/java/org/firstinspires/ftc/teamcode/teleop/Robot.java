@@ -166,14 +166,14 @@ public class Robot {
         slide.setPower(-gamepad.left_stick_y * 0.3);
     }
 
-    public void tiltControl(Gamepad gamepad) {
+//    public void tiltControl(Gamepad gamepad) {
 //        flip.setPower(-gamepad.right_stick_y * 0.25);
-        if (gamepad.a) {
-            flip.setPower(1);
-        }
-        else if (gamepad.b) flip.setPower(-1);
-        else flip.setPower(0);
-    }
+//        if (gamepad.a) {
+//            flip.setPower(1);
+//        }
+//        else if (gamepad.b) flip.setPower(-1);
+//        else flip.setPower(0);
+//    }
 
     public void wristControl(Gamepad gamepad) {
         if (gamepad.dpad_up) {
