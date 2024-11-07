@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -60,6 +61,13 @@ public class Viper {
 
     private double deg = 0.0;
 
+    private PIDFController controller;
+
+    public static double p = 0.001, i = 0, d = 0;
+    public static double f = 0;
+
+    public static int target = 0;
+
     public Viper(OpMode opmode) {
         myOpMode = opmode;
     }
@@ -69,21 +77,18 @@ public class Viper {
     }
 
 
-//    public static final double NEW_P = 2.5;
-//    public static final double NEW_I = 0.1;
-//    public static final double NEW_D = 0.2;
-//    public static final double NEW_F = 0.5;
-//
-//    PIDFCoefficients pidfNew = new PIDFCoefficients(NEW_P, NEW_I, NEW_D, NEW_F);
 
 
 
     public void init() {
+        controller = new PIDFController(p, i, d, f);
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         viper = myOpMode.hardwareMap.get(DcMotorEx.class, "viper_slide");
 
         viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 //        viper.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
@@ -179,12 +184,23 @@ public class Viper {
         // move viper according to the left stick y
 
 
-        double power = myOpMode.gamepad2.left_stick_y;
-        if (Math.abs(power) > 0.1) {
-            moveViperByPower(power);
+        if (target >=  0 && target <= 5500) {
+            target += (int) (-myOpMode.gamepad2.left_stick_y) * 100;
+        } else if (target < 0) {
+            target = 0;
         } else {
-            moveViperByPower(0);
+            target = 5500;
         }
+
+        int vipPos = viper.getCurrentPosition();
+        double pidf = controller.calculate(vipPos, target);
+
+        viper.setPower(pidf);
+
+        myOpMode.telemetry.addData("Viper Position:", vipPos);
+        myOpMode.telemetry.addData("Power:", pidf);
+        myOpMode.telemetry.addData("Target Position:", target);
+
 
         if (myOpMode.gamepad2.dpad_right) {
             viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
