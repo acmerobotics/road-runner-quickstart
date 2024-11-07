@@ -256,7 +256,7 @@ public class Robot {
     }
 
     public void TeleopPID(Gamepad gamepad) {
-        armTarget += (int) ((int) -gamepad.right_stick_y * 15);
+        armTarget += (int) ((int) -gamepad.right_stick_y * 20);
         slideTarget += (int) -gamepad.left_stick_y * 28;
 
         if (armTarget < 0) armTarget = 0;
@@ -294,26 +294,16 @@ public class Robot {
     }
     public void extraD1Features(Gamepad gamepad) {
         if (gamepad.dpad_up) {
-            armTarget = 2200;
-            while (Math.abs(armTarget - flip.getCurrentPosition()) > 1700) {
-                arcadeDrive(gamepad);
-            }
-            slideTarget = 3000;
+            slideTarget += 28;
         }
-        if (gamepad.dpad_down) {
-            slideTarget = 0;
-            while (Math.abs(slideTarget - slide.getCurrentPosition()) > 1500) {
-                arcadeDrive(gamepad);
-            }
-            armTarget = 0;
+        else if (gamepad.dpad_down) {
+            slideTarget -= 28;
         }
-        if (gamepad.dpad_right) {
-            slideTarget = 1200;
-            wrist.setPosition(0);
+        else if (gamepad.dpad_right) {
+            armTarget += 15;
         }
         else if (gamepad.dpad_left) {
-            slideTarget = 0;
-            wrist.setPosition(0.5);
+            armTarget -= 15;
         }
 
         intakeRight.setPower((-gamepad.left_trigger * 0.5 + gamepad.right_trigger));
