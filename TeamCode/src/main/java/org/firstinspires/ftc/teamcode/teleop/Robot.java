@@ -87,6 +87,11 @@ public class Robot {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
 
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         armController = new PIDController(armPIDValues.fP, armPIDValues.fI, armPIDValues.fD);
         slideController = new PIDController(armPIDValues.sP,armPIDValues.sI,armPIDValues.sD);
     }
