@@ -23,7 +23,7 @@ public class TeleopV1 extends LinearOpMode {
 //            bot.slidesPID(gamepad2);
             bot.wristControl(gamepad2);
             bot.intakeControl(gamepad2);
-//            bot.scoringMacro(gamepad2);
+            bot.scoringMacro(gamepad2);
             bot.intakeOpen(gamepad2);
             bot.hangControl(gamepad1);
             bot.extraD1Features(gamepad1);

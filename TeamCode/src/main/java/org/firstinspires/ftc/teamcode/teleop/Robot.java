@@ -230,9 +230,13 @@ public class Robot {
         if (gamepad.a) {
         }
         if (gamepad.b) {
-            slideTarget = 2348;
+            slideTarget = 1200;
+            wrist.setPosition(0);
         }
-
+        else if (gamepad.x) {
+            slideTarget = 0;
+            wrist.setPosition(0.5);
+        }
     }
 
     public void TeleopPID(Gamepad gamepad) {
