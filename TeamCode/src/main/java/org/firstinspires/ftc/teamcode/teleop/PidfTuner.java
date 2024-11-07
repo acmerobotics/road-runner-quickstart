@@ -16,8 +16,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class PidfTuner extends OpMode {
     private PIDController armController, slideController;
 
-    public static double fP = 0.0018, fI = 0, fD = 0.00009;  //fD = 0.00001, fP = 0.002
-    public static double fF = 0.0037; //fF = 0.0022
+    public static double fP = 0.002, fI = 0.0002, fD = 0.0001;  //fD = 0.00001, fP = 0.002
+    public static double fF = 0.005; //fF = 0.0022
     public static double fP2 = 0.0001, fI2 = 0, fD2 = 0.00009, fF2 = 0.0037;
     public static double sP = 0.005, sI, sD;
     public static double sF;
@@ -49,7 +49,7 @@ public class PidfTuner extends OpMode {
         wrist = bot.wrist;
 
         flip.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        flip.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        flip.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         slide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);

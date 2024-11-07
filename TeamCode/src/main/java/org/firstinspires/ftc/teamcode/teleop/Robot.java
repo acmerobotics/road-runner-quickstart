@@ -67,8 +67,8 @@ public class Robot {
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         flip.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flip.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -84,7 +84,7 @@ public class Robot {
         intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         for (DcMotor motor: motors) {
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
 
         armController = new PIDController(armPIDValues.fP, armPIDValues.fI, armPIDValues.fD);
@@ -167,7 +167,12 @@ public class Robot {
     }
 
     public void tiltControl(Gamepad gamepad) {
-        flip.setPower(-gamepad.right_stick_y * 0.25);
+//        flip.setPower(-gamepad.right_stick_y * 0.25);
+        if (gamepad.a) {
+            flip.setPower(1);
+        }
+        else if (gamepad.b) flip.setPower(-1);
+        else flip.setPower(0);
     }
 
     public void wristControl(Gamepad gamepad) {
@@ -301,8 +306,8 @@ public class Robot {
     }
 
     public static class armPIDValues {
-        public static double fP = 0.0018, fI = 0, fD = 0.00009;
-        public static double fF = 0.0037;
+        public static double fP = 0.002, fI = 0.0002, fD = 0.0001;  //fD = 0.00001, fP = 0.002
+        public static double fF = 0.005;
         public static double sP = 0.005, sI, sD;
 
         private static final double ticks_in_degree = 2048 / 90.0;
