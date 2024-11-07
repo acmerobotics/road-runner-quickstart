@@ -193,12 +193,12 @@ public class Robot {
     }
 
     public void hangControl(Gamepad gamepad) {
-        if (gamepad.y)
+        if (gamepad.x)
         {
             leftHang.setPower(-1);
             rightHang.setPower(1);
         }
-        else if (gamepad.a)
+        else if (gamepad.b)
         {
             leftHang.setPower(1);
             rightHang.setPower(-1);
@@ -236,7 +236,7 @@ public class Robot {
     }
 
     public void TeleopPID(Gamepad gamepad) {
-        armTarget += (int) ((int) -gamepad.right_stick_y * 9.45);
+        armTarget += (int) ((int) -gamepad.right_stick_y * 15);
         slideTarget += (int) -gamepad.left_stick_y * 28;
 
         if (armTarget < 0) armTarget = 0;
@@ -249,7 +249,6 @@ public class Robot {
         slidePos = slide.getCurrentPosition();
 
         double pid = armController.calculate(flipPos, armTarget);
-        if (flipPos > 0) pid *= Math.cos(Math.toRadians(flipPos/armPIDValues.ticks_in_degree));
         double ff = Math.cos(Math.toRadians(armTarget / armPIDValues.ticks_in_degree)) * armPIDValues.fF;
 
         double power = pid + ff;
@@ -281,22 +280,22 @@ public class Robot {
             slideTarget -= 28;
         }
         else if (gamepad.dpad_right) {
-            armTarget += (int) 9.45;
+            armTarget += 15;
         }
         else if (gamepad.dpad_left) {
-            armTarget -= (int) 9.45;
+            armTarget -= 15;
         }
 
         intakeRight.setPower((-gamepad.left_trigger * 0.5 + gamepad.right_trigger));
         intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger * 0.5);
 
-        if (gamepad.right_bumper) {
+        if (gamepad.y) {
             wrist.setPosition(0.92);
         }
         else if (gamepad.left_bumper) {
             wrist.setPosition(0);
         }
-        else if (gamepad.left_bumper && gamepad.right_bumper) {
+        else if (gamepad.right_bumper) {
             wrist.setPosition(0.5);
         }
     }
