@@ -223,17 +223,28 @@ public class Robot {
 //        intakeRightPos = axonRight.getVoltage() / 3.3 * 360;
 //    }
 
-    public void scoringMacro(Gamepad gamepad) {
-        if (gamepad.y) {
-
+    public void scoringMacro(Gamepad gamepad1, Gamepad gamepad2) {
+        if (gamepad2.y) {
+            armTarget = 2200;
+            while (Math.abs(armTarget - flip.getCurrentPosition()) > 1700) {
+                TeleopPID(gamepad2);
+                arcadeDrive(gamepad1);
+            }
+            slideTarget = 3000;
         }
-        if (gamepad.a) {
+        if (gamepad2.a) {
+            slideTarget = 0;
+            while (Math.abs(slideTarget - slide.getCurrentPosition()) > 1500) {
+                TeleopPID(gamepad2);
+                arcadeDrive(gamepad1);
+            }
+            armTarget = 0;
         }
-        if (gamepad.b) {
+        if (gamepad2.b) {
             slideTarget = 1200;
             wrist.setPosition(0);
         }
-        else if (gamepad.x) {
+        else if (gamepad2.x) {
             slideTarget = 0;
             wrist.setPosition(0.5);
         }
