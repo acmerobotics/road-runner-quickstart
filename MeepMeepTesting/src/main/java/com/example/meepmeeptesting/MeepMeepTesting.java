@@ -12,7 +12,7 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .setConstraints(80, 80, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(12, -60, Math.toRadians(90)))
@@ -63,45 +63,60 @@ public class MeepMeepTesting {
                 .waitSeconds(0.5)
 
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(58, -50, Math.toRadians(90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(58, -51, Math.toRadians(90)), -Math.PI/10)
                 .waitSeconds(0.5)
 
-                .turn(Math.toRadians(20))
-                .waitSeconds(0.5)
+                .lineToYLinearHeading(-47, Math.toRadians(90))
+                .waitSeconds(0.25)
+                .lineToYLinearHeading(-51, Math.toRadians(90))
+                .waitSeconds(0.25)
+                .lineToYLinearHeading(-45, Math.toRadians(110))
+                .waitSeconds(0.15)
+                .lineToYLinearHeading(-51, Math.toRadians(90))
+                .waitSeconds(0.15)
+                .lineToYLinearHeading(-45, Math.toRadians(70))
+                .waitSeconds(0.15)
+                .lineToYLinearHeading(-51, Math.toRadians(90))
+                .waitSeconds(0.25)
 
-                .turn(Math.toRadians(-20))
-                .waitSeconds(0.5)
-
-                .turn(Math.toRadians(-20))
+                .lineToYLinearHeading(-43, Math.toRadians(-90))
                 .waitSeconds(1)
+//                .turn(Math.toRadians(20))
+//                .waitSeconds(0.5)
+//
+//                .turn(Math.toRadians(-20))
+//                .waitSeconds(0.5)
+//
+//                .turn(Math.toRadians(-20))
+//                .waitSeconds(1)
 
                 // gonna see me cycling
                 .setTangent(9 * Math.PI/10)
                 .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(-90)), 9 * Math.PI/10)
                 .waitSeconds(0.5)
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(-90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(17, -42, Math.toRadians(-65)), -Math.PI/10)
                 .waitSeconds(0.5)
 
                 .setTangent(9 * Math.PI/10)
                 .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(-90)), 9 * Math.PI/10)
                 .waitSeconds(0.5)
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(-90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(17, -42, Math.toRadians(-65)), -Math.PI/10)
                 .waitSeconds(0.5)
 
                 .setTangent(9 * Math.PI/10)
                 .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(-90)), 9 * Math.PI/10)
                 .waitSeconds(0.5)
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(-90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(17, -42, Math.toRadians(-65)), -Math.PI/10)
                 .waitSeconds(0.5)
 
                 .setTangent(9 * Math.PI/10)
                 .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(-90)), 9 * Math.PI/10)
                 .waitSeconds(0.5)
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(-90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(17, -42, Math.toRadians(-65)), -Math.PI/10)
                 .waitSeconds(0.5)
 
                 .setTangent(9 * Math.PI/10)

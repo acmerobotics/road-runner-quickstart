@@ -198,7 +198,7 @@ public class CVMaster {
         return null;
     }
 
-    public void updatePotentialTargetList(EOCVPipeline color, Pose2d robotPose, Telemetry telemetry) {
+    public void updatePotentialTargetList(EOCVPipeline color, Pose2d robotPose) {
         if (activeCV != color) {
             setEOCVPipeline(color);
         }
@@ -219,34 +219,34 @@ public class CVMaster {
 
         targets = new ArrayList<>();
         for (int i = 0; i < Math.min(5, rawTargets.size()); i++) {
-            targets.add(calculateBlobFieldCoordinates(rawTargets.get(i), telemetry));
+            targets.add(calculateBlobFieldCoordinates(rawTargets.get(i)));
         }
 
         rawPotTargets = rawTargets;
         poseAtSnapshot = robotPose;
     }
 
-    public Pose3D calculateBlobFieldCoordinates(ColorBlobLocatorProcessor.Blob blob, Telemetry telemetry) {
+    public Pose3D calculateBlobFieldCoordinates(ColorBlobLocatorProcessor.Blob blob) {
         // Find pixel coordinates of the target
         double x = blob.getBoxFit().center.x;
         double y = WEBCAM_HA- blob.getBoxFit().center.y;
 
 
-        telemetry.addData("pixelx: ", x);
-        telemetry.addData("pixely: ", y);
+//        telemetry.addData("pixelx: ", x);
+//        telemetry.addData("pixely: ", y);
         // convert from image coords to inches
         double world_y = Math.pow(YWEBCAM_A, (y+YWEBCAM_K))+YWEBCAM_H;
         double world_x = (2*((XWEBCAM_FB + (1-XWEBCAM_FB)*(y/WEBCAM_H))*(x/WEBCAM_W))-1)*0.5*WEBCAM_INCHESTOP;
 
-        telemetry.addData("relative to cameraX: ", world_x+ WEBCAM_X_OFFSET);
-        telemetry.addData("relative to cameraY: ", world_y+WEBCAM_Y_OFFSET );
-        telemetry.addData("heading ", poseAtSnapshot.heading.toDouble() );
+//        telemetry.addData("relative to cameraX: ", world_x+ WEBCAM_X_OFFSET);
+//        telemetry.addData("relative to cameraY: ", world_y+WEBCAM_Y_OFFSET );
+//        telemetry.addData("heading ", poseAtSnapshot.heading.toDouble() );
 
 
         Vector2d cam = rotateVector(rotateVector(new Vector2d(world_x + WEBCAM_X_OFFSET, world_y+WEBCAM_Y_OFFSET), -1 * ((Math.PI/2) - poseAtSnapshot.heading.toDouble())), WEBCAM_YAW_OFFSET);
 
-        telemetry.addData("relative to worldx: ", cam.x);
-        telemetry.addData("relative to worldy: ", cam.y );
+//        telemetry.addData("relative to worldx: ", cam.x);
+//        telemetry.addData("relative to worldy: ", cam.y );
 
         // Finally calculate the field coords of the target
         double field_x = cam.x + poseAtSnapshot.position.x;

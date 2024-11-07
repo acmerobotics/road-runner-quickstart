@@ -2,17 +2,22 @@ package org.firstinspires.ftc.teamcode;
 
 // IMPORT SUBSYSTEMS
 
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import com.acmerobotics.roadrunner.Pose2d;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.commands.CommandMaster;
+import org.firstinspires.ftc.teamcode.roadrunner.KalmanDrive;
 import org.firstinspires.ftc.teamcode.subsystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.extension.Extension;
 import org.firstinspires.ftc.teamcode.subsystems.lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.arm.Arm;
+import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
 import org.firstinspires.ftc.teamcode.util.enums.AllianceColor;
 import org.firstinspires.ftc.teamcode.util.hardware.Component;
 import org.firstinspires.ftc.teamcode.util.hardware.ContinuousServo;
@@ -26,7 +31,8 @@ public class Robot {
 
     // SUBSYSTEM DECLARATIONS
     public Component[] components;
-    public MecanumDrive drive;
+    public KalmanDrive drive;
+    public CVMaster cv;
     public Lift lift;
     public Extension extension;
     public Arm arm;
@@ -51,7 +57,9 @@ public class Robot {
     public Robot(HardwareMap map, boolean auton){
         this.auton = auton;
 
-        this.drive = new MecanumDrive(map, new Pose2d(0,0,0));
+        Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limelight");
+
+        this.drive = new KalmanDrive(map, new Pose2d(0,0,0), limelight);
 
 //        this.cv = new CVMaster(map);
         this.components = new Component[]{
@@ -84,12 +92,17 @@ public class Robot {
         this.claw = new Claw((ContinuousServo) components[10], (ContinuousServo) components[11], colorSensor);
 
         this.commands = new CommandMaster(this);
+        this.cv = new CVMaster(limelight, hardwareMap.get(WebcamName.class, "Webcam 1"));
         this.hardwareMap = map;
 
         backLeft = (Motor) components[0];
         backRight = (Motor) components[1];
         frontLeft = (Motor) components[2];
         frontRight = (Motor) components[3];
+    }
+
+    public Pose2d calculateRobotTargetCapturePose(Pose3D target, Pose2d robotPose) {
+        return new Pose2d(target.getPosition().x, (robotPose.position.y), robotPose.heading.toDouble());
     }
 
     public void toggleGamepiece() {
@@ -132,6 +145,21 @@ public class Robot {
         }).start();
     }
 
+    public void intakePreset(double extTicks) {
+        lift.runToPreset(Levels.INTAKE);
+        arm.runToPreset(Levels.INTAKE_INTERMEDIATE);
+        //TODO: CONVERT FROM INCHES TO TICKS
+        extension.runToPosition((float) extTicks);
+
+        new Thread(() -> {
+            sleep(3000);
+            arm.runToPreset(Levels.INTAKE);
+            claw.startIntake();
+            intaking = true;
+            state = Levels.INTAKE;
+        }).start();
+    }
+
     public void intermediatePreset() {
         arm.runToPreset(Levels.INTERMEDIATE);
         extension.runToPreset(Levels.INTERMEDIATE);
@@ -145,16 +173,19 @@ public class Robot {
         intermediatePreset();
     }
 
-    public void autoStopIntakeUpdate(SampleColors... colors) {
+    public boolean autoStopIntakeUpdate(SampleColors... colors) {
         int r = claw.smartStopDetect(colors);
         switch (r) {
             case 0:
+                return true;
                 break;
             case 1:
                 stopIntake();
+                return false;
                 break;
             case -1:
                 claw.eject();
+                return true;
                 break;
         }
     }
@@ -184,6 +215,12 @@ public class Robot {
         state = Levels.HIGH_RUNG;
     }
 
+    public void preloadHighRung() {
+        arm.runToPosition(0);
+        lift.runToPosition(0);
+        state = Levels.HIGH_RUNG;
+    }
+
 
     public void teleDepositPreset() {
         if (mode == Gamepiece.SAMPLE) {
@@ -204,6 +241,16 @@ public class Robot {
         new Thread(() -> {
             sleep(50);
             claw.eject();
+        }).start();
+    }
+
+    public void outtakeSpecimenPreload() {
+        lift.runToPosition(lift.getPos() - 10);
+        new Thread(() -> {
+            sleep(50);
+            claw.eject();
+            lift.runToPosition(0);
+
         }).start();
     }
 

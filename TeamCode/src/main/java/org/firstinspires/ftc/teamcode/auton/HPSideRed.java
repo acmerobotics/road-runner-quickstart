@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auton;
 
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -12,33 +13,31 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.roadrunner.KalmanDrive;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
+import org.firstinspires.ftc.teamcode.util.enums.SampleColors;
+import org.firstinspires.ftc.teamcode.util.misc.FullPose2d;
 
 import java.util.ArrayList;
 
 @Autonomous(name = "HPSideRed NOT", group = "Autonomous")
 public class HPSideRed extends LinearOpMode {
-    KalmanDrive drive;
+    Robot robot;
     CVMaster cv;
     public void runOpMode() {
         Pose2d beginPose = new Pose2d(12, -60, Math.toRadians(90));
-        cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
-        drive = new KalmanDrive(hardwareMap, beginPose, cv.limelight);
-        ArrayList<Pose2d> simPoses = new ArrayList<>();
-        simPoses.add(new Pose2d(1, -41, Math.toRadians(90)));
-        simPoses.add(new Pose2d(2, -42, Math.toRadians(90)));
-        simPoses.add(new Pose2d(3, -40, Math.toRadians(90)));
-        simPoses.add(new Pose2d(-1, -40, Math.toRadians(90)));
-        simPoses.add(new Pose2d(-2, -40, Math.toRadians(90)));
+//        robot = new KalmanDrive(hardwareMap, beginPose, cv.limelight);
+        robot = new Robot(hardwareMap, true);
 
-        Action auton1 = drive.actionBuilder(drive.pose)
+        Action preloadDrive = robot.drive.actionBuilder(robot.drive.pose)
                 .setTangent(Math.toRadians(110))
                 .splineToLinearHeading(new Pose2d(0, -40, Math.toRadians(90)), Math.toRadians(110))
-                .waitSeconds(0.5)
                 .build();
 
-        Action auton2 = drive.actionBuilder(new Pose2d(0, -40, Math.toRadians(90)))
+        Action auton2 = robot.drive.actionBuilder(new Pose2d(0, -40, Math.toRadians(90)))
                 .setTangent(-Math.PI/10)
                 .splineToLinearHeading(new Pose2d(58, -50, Math.toRadians(90)), -Math.PI/10)
                 .waitSeconds(0.5)
@@ -72,19 +71,32 @@ public class HPSideRed extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        auton1
+                        new ParallelAction(
+                                preloadDrive,
+                                new InstantAction(robot::preloadHighRung)
+                        ),
+                        new InstantAction(robot::outtakeSpecimen),
+                        robot.commands.locateTargetsCV(CVMaster.EOCVPipeline.RED_SAMPLE)
                 ));
-        Pose2d target = simPoses.get((int) (Math.random()*simPoses.size()));
+
+        Pose3D target = robot.cv.findOptimalTarget(robot.drive.pose);
+        FullPose2d robotCapturePose = robot.cv.calculateRobotFullPose(target, target.getPosition().x, robot.drive.pose.position.y);
         telemetry.addData("TARGET POSE", target.toString());
         telemetry.update();
-        Action autonDyno = drive.actionBuilder(drive.pose)
+
+        Action intakeAdjustment = robot.drive.actionBuilder(robot.drive.pose)
                 .setTangent(Math.toRadians(110))
-                .splineToLinearHeading(target, Math.toRadians(110))
-                .waitSeconds(0.5)
+                .splineToLinearHeading(robotCapturePose.getRobotPose(), Math.toRadians(110))
                 .build();
+
         Actions.runBlocking(
                 new SequentialAction(
-                    autonDyno,
+                    new ParallelAction(
+                            intakeAdjustment,
+                            new InstantAction(() -> robot.intakePreset(robotCapturePose.intakeExtension))
+                    ),
+                    robot.commands.stopIntake(SampleColors.RED),
+                    new SleepAction(1),
                     auton2
                 )
         );

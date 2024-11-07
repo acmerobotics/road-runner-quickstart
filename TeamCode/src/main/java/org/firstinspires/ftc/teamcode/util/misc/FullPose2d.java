@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.util.misc;
 
-import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
+
+import com.acmerobotics.roadrunner.Pose2d;
 
 public class FullPose2d {
     double x;
     double y;
     double heading;
-    double intakeExtension;
+    public double intakeExtension;
 
     public FullPose2d(double x1, double y1, double heading1) {
         x = x1;
@@ -23,6 +23,6 @@ public class FullPose2d {
     }
 
     public Pose2d getRobotPose() {
-        return new Pose2d(x, y, new Rotation2d(heading));
+        return new Pose2d(x, y, heading);
     }
 }
