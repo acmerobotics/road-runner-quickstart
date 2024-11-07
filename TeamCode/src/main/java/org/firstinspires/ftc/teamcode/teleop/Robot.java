@@ -271,7 +271,7 @@ public class Robot {
         slideTarget += (int) -gamepad.left_stick_y * 28;
 
         if (armTarget < 0) armTarget = 0;
-        else if (armTarget > 2200) armTarget = 2200;
+        else if (armTarget > 3000) armTarget = 3000;
 
         if (slideTarget < 0) slideTarget = 0;
         else if (slideTarget > 3950) slideTarget = 3950;
