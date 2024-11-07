@@ -225,45 +225,14 @@ public class Robot {
 
     public void scoringMacro(Gamepad gamepad) {
         if (gamepad.y) {
-            Actions.runBlocking(new ParallelAction(
-                    new Action() {
-                        @Override
-                        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                            armTarget = 1800;
-                            return false;
-                        }
-                    },
-                    new Action() {
-                        @Override
-                        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                            while (Math.abs(flip.getCurrentPosition() - armTarget) > 6) {}
-                            slideTarget = 3000;
 
-                            return false;
-                        }
-                    }
-            ));
         }
         if (gamepad.a) {
-            Actions.runBlocking(new ParallelAction(
-                    new Action() {
-                        @Override
-                        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                            slideTarget = 0;
-                            return false;
-                        }
-                    },
-                    new Action() {
-                        @Override
-                        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                            while (Math.abs(flip.getCurrentPosition() - armTarget) > 6) {}
-                            armTarget = 0;
-
-                            return false;
-                        }
-                    }
-            ));
         }
+        if (gamepad.b) {
+            slideTarget = 2348;
+        }
+
     }
 
     public void TeleopPID(Gamepad gamepad) {
