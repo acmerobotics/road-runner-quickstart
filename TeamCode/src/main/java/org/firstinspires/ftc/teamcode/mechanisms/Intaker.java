@@ -112,5 +112,11 @@ public class Intaker {
         return new Creep();
     }
 
+    public void downExtake() {
+        intakeMotor.setPower(0.8);
+    }
 
+    public void downIntake() {
+        intakeMotor.setPower(-0.9);
+    }
 }
