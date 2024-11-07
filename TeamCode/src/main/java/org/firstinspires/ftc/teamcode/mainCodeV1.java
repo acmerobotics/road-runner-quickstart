@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
@@ -68,10 +69,7 @@ public class mainCodeV1 extends LinearOpMode {
         armSetup();
     }
 
-    private void chassisMovement() {
-        float y = gamepad1.left_stick_y;
-        float x = -gamepad1.left_stick_x;
-        float t = -gamepad1.right_stick_x;
+    private void chassisMovement(float y, float x, float t) {
         double botHeading;
         double rotX;
         double rotY;
@@ -116,6 +114,7 @@ public class mainCodeV1 extends LinearOpMode {
 
     private void printThings() {
         telemetry.addData("Color: ", colorDetection());
+        telemetry.addData("Degree: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         telemetry.update();
     }
 
@@ -140,13 +139,30 @@ public class mainCodeV1 extends LinearOpMode {
         return color;
     }
 
+    private void rotateTo(double targetDegree) {
+        double botHeading;
+        botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        float direction = 0; // 1 is clockwise, -1 is counterclock
+        if (Math.abs(botHeading - targetDegree) > 4) {
+            if (targetDegree > botHeading) {
+                direction = (float) 0.5;
+            }
+            else if (targetDegree < botHeading) {
+                direction = (float) -0.5;
+            }
+            chassisMovement(0,0,direction);
+        }
+    }
     @Override
     public void runOpMode() {
         initializeAndSetUp();
         waitForStart();
         postStartSetUp();
         while (opModeIsActive()) {
-            chassisMovement();
+            chassisMovement(gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            if (gamepad1.a) {
+                rotateTo(90);
+            }
             armMovement();
             printThings();
         }
