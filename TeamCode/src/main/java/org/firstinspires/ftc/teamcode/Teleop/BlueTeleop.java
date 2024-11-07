@@ -198,21 +198,15 @@ public class BlueTeleop extends LinearOpMode {
 //                        }
 
 
-                        if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left) {
-                            if (currentGamepad2.left_trigger < 0.9) {
-                                intake.downExtake();
+                        if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && currentGamepad2.left_trigger < 0.9) {
+                            if (!intakeUp) {
+                                runningActions.add(intake.middle());
+                                intakeUp = true;
                             } else {
-                                if (!intakeUp) {
-                                    runningActions.add(intake.middle());
-                                    intakeUp = true;
-                                } else {
-                                    runningActions.add(intake.flip());
-                                    intakeUp = false;
-                                }
+                                runningActions.add(intake.flip());
+                                intakeUp = false;
                             }
-                        }
-
-                        if (currentGamepad2.dpad_left) {
+                        } else if (currentGamepad2.dpad_left) {
                             intake.downExtake();
                         } else {
                             intake.downIntake();
@@ -340,6 +334,20 @@ public class BlueTeleop extends LinearOpMode {
 //                    liftState = LiftState.LIFTSTART;
 //                    break;
 //            }
+
+            if (currentGamepad2.b && !previousGamepad2.b) {
+                liftState = LiftState.LIFTSTART;
+                extendoState = ExtendoState.EXTENDOSTART;
+
+                runningActions.add(new SequentialAction(
+                        intake.off(),
+                        intake.flop(),
+                        claw.flop(),
+                        extendo.retract(),
+                        slides.retract(),
+                        claw.open()
+                ));
+            }
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {
