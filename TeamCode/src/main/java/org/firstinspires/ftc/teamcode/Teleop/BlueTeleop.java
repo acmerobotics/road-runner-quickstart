@@ -71,7 +71,7 @@ public class BlueTeleop extends LinearOpMode {
 
     private enum ExtendoState {EXTENDOSTART, EXTENDOEXTEND, EXTENDORETRACT}
     private ExtendoState extendoState = ExtendoState.EXTENDOSTART;
-
+    private boolean intakeUp = false;
 
     @Override
     public void runOpMode() {
@@ -113,12 +113,15 @@ public class BlueTeleop extends LinearOpMode {
         Claw claw = new Claw(hardwareMap);
         Control control = new Control();
 
-        runningActions.add(intake.flop());
+        runningActions.add(new SequentialAction(
+                intake.flop(),
+                claw.flop()
+        ));
 
 
         waitForStart();
 
-        extendo.extendoMotorPID.setTargetPosition(-1);
+        extendo.changetarget(-6);
 
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
@@ -165,8 +168,6 @@ public class BlueTeleop extends LinearOpMode {
             switch (extendoState) {
                 case EXTENDOSTART:
                     if (currentGamepad2.a && !previousGamepad2.a && !control.getBusy()) {
-//                        extendo.extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                        extendo.extendoMotor.setPower(0);
                         runningActions.add(new SequentialAction(
                                 control.start(),
                                 extendo.extend(),
@@ -174,16 +175,12 @@ public class BlueTeleop extends LinearOpMode {
                                 intake.intake(),
                                 control.done()
                         ));
-                    } else {
-//                        extendo.extendoMotor.setTargetPosition(0);
-//                        extendo.extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                        extendo.extendoMotor.setPower(0.8);
                     }
                     if (control.getFinished()) {
                         control.resetFinished();
+                        intakeUp = false;
                         extendoState = ExtendoState.EXTENDOEXTEND;
                     }
-
                     break;
                 case EXTENDOEXTEND:
                     if (!control.getBusy()) {
@@ -200,15 +197,29 @@ public class BlueTeleop extends LinearOpMode {
 //                            runningActions.add(intake.extake());
 //                        }
 
-                        if (currentGamepad2.b && !previousGamepad2.b) {
+
+                        if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left) {
                             if (currentGamepad2.left_trigger < 0.9) {
-                                runningActions.add(intake.middle());
+                                intake.downExtake();
                             } else {
-                                runningActions.add(intake.flip());
+                                if (!intakeUp) {
+                                    runningActions.add(intake.middle());
+                                    intakeUp = true;
+                                } else {
+                                    runningActions.add(intake.flip());
+                                    intakeUp = false;
+                                }
                             }
                         }
 
-                        extendo.extendoMotor.setPower(lefty2 / 3);
+                        if (currentGamepad2.dpad_left) {
+                            intake.downExtake();
+                        } else {
+                            intake.downIntake();
+                        }
+
+
+                        extendo.changetarget(lefty2 / 3);
                     }
 
                     if (control.getFinished()) {
@@ -222,7 +233,7 @@ public class BlueTeleop extends LinearOpMode {
                     break;
                 case EXTENDORETRACT:
                     if ((currentGamepad2.a && !previousGamepad2.a)/* || intakeColor.equals("none")*/) {
-                        runningActions.add(intake.off());
+                        runningActions.add(new SequentialAction(intake.off(), claw.up()));
                         extendoState = ExtendoState.EXTENDOSTART;
                     }
                     break;
@@ -233,85 +244,102 @@ public class BlueTeleop extends LinearOpMode {
 
             switch (liftState) {
                 case LIFTSTART:
-                    if (currentGamepad2.x && !previousGamepad2.x) {
-                        if (currentGamepad2.left_trigger < 0.9) {
-                            runningActions.add(slides.slideTopBasket());
-                        } else {
-                            runningActions.add(slides.slideBottomBasket());
-                        }
-                        liftState = LiftState.LIFTDEPOSIT;
-                    }
-
                     if (currentGamepad2.y && !previousGamepad2.y) {
-                        runningActions.add(new SequentialAction(
-                                slides.slideWallLevel(),
-                                claw.open()
-                        ));
-                        liftState = LiftState.LIFTWALL;
+                        runningActions.add(claw.flip());
+                        liftState = LiftState.LIFTDEPOSIT;
                     }
                     break;
                 case LIFTDEPOSIT:
-                    if (currentGamepad2.x && !previousGamepad2.x && !control.getBusy()) {
-                        runningActions.add(new SequentialAction(
-                                control.start(),
-                                claw.flip(),
-                                new SleepAction(0.5),
-                                claw.flop(),
-                                slides.retract(),
-                                control.done()
-                        ));
-                    }
-
-                    if (currentGamepad2.b && !previousGamepad2.b) {
-                        runningActions.add(new SequentialAction(
-                                slides.retract(),
-                                claw.flop()
-                        ));
-                    }
-
-                    if (control.getFinished()) {
-                        control.resetFinished();
+                    if (currentGamepad2.y && !previousGamepad2.y) {
+                        runningActions.add(claw.flop());
                         liftState = LiftState.LIFTSTART;
                     }
-
-                    break;
-                case LIFTWALL:
-                    if (currentGamepad2.y && !previousGamepad2.y) {
-                        if (currentGamepad2.left_trigger < 0.9) {
-                            runningActions.add(new SequentialAction(
-                                    claw.close(),
-                                    slides.slideTopBar()
-                            ));
-                            liftState = LiftState.LIFTTOPBAR;
-                        } else {
-                            runningActions.add(new SequentialAction(
-                                    claw.close(),
-                                    slides.slideBottomBar()
-                            ));
-                            liftState = LiftState.LIFTBOTTOMBAR;
-                        }
-                    }
-                    break;
-                case LIFTTOPBAR:
-                    if (currentGamepad2.y && !previousGamepad2.y) {
-                        runningActions.add(new SequentialAction(
-                                slides.slideBottomBar(),
-                                new SleepAction(1),
-                                slides.retract()
-                        ));
-                        liftState = LiftState.LIFTSTART;
-                    }
-                    break;
-                case LIFTBOTTOMBAR:
-                    if (currentGamepad2.y && !previousGamepad2.y) {
-                        runningActions.add(slides.retract());
-                        liftState = LiftState.LIFTSTART;
-                    }
-                    break;
-                default:
-                    liftState = LiftState.LIFTSTART;
                     break;
             }
+
+            extendo.updateMotor();
+
+//            switch (liftState) {
+//                case LIFTSTART:
+//                    if (currentGamepad2.x && !previousGamepad2.x) {
+//                        if (currentGamepad2.left_trigger < 0.9) {
+//                            runningActions.add(slides.slideTopBasket());
+//                        } else {
+//                            runningActions.add(slides.slideBottomBasket());
+//                        }
+//                        liftState = LiftState.LIFTDEPOSIT;
+//                    }
+//
+//                    if (currentGamepad2.y && !previousGamepad2.y) {
+//                        runningActions.add(new SequentialAction(
+//                                slides.slideWallLevel(),
+//                                claw.open()
+//                        ));
+//                        liftState = LiftState.LIFTWALL;
+//                    }
+//                    break;
+//                case LIFTDEPOSIT:
+//                    if (currentGamepad2.x && !previousGamepad2.x && !control.getBusy()) {
+//                        runningActions.add(new SequentialAction(
+//                                control.start(),
+//                                claw.flip(),
+//                                new SleepAction(0.5),
+//                                claw.flop(),
+//                                slides.retract(),
+//                                control.done()
+//                        ));
+//                    }
+//
+//                    if (currentGamepad2.b && !previousGamepad2.b) {
+//                        runningActions.add(new SequentialAction(
+//                                slides.retract(),
+//                                claw.flop()
+//                        ));
+//                    }
+//
+//                    if (control.getFinished()) {
+//                        control.resetFinished();
+//                        liftState = LiftState.LIFTSTART;
+//                    }
+//
+//                    break;
+//                case LIFTWALL:
+//                    if (currentGamepad2.y && !previousGamepad2.y) {
+//                        if (currentGamepad2.left_trigger < 0.9) {
+//                            runningActions.add(new SequentialAction(
+//                                    claw.close(),
+//                                    slides.slideTopBar()
+//                            ));
+//                            liftState = LiftState.LIFTTOPBAR;
+//                        } else {
+//                            runningActions.add(new SequentialAction(
+//                                    claw.close(),
+//                                    slides.slideBottomBar()
+//                            ));
+//                            liftState = LiftState.LIFTBOTTOMBAR;
+//                        }
+//                    }
+//                    break;
+//                case LIFTTOPBAR:
+//                    if (currentGamepad2.y && !previousGamepad2.y) {
+//                        runningActions.add(new SequentialAction(
+//                                slides.slideBottomBar(),
+//                                new SleepAction(1),
+//                                slides.retract()
+//                        ));
+//                        liftState = LiftState.LIFTSTART;
+//                    }
+//                    break;
+//                case LIFTBOTTOMBAR:
+//                    if (currentGamepad2.y && !previousGamepad2.y) {
+//                        runningActions.add(slides.retract());
+//                        liftState = LiftState.LIFTSTART;
+//                    }
+//                    break;
+//                default:
+//                    liftState = LiftState.LIFTSTART;
+//                    break;
+//            }
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {
@@ -322,8 +350,11 @@ public class BlueTeleop extends LinearOpMode {
             }
             runningActions = newActions;
             dash.sendTelemetryPacket(packet);
-            
 
+
+
+            telemetry.addData("extendo", extendo.extendoMotor.getCurrentPosition());
+            telemetry.update();
         }
     }
 }

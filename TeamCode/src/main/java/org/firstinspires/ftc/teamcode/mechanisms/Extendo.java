@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -14,8 +16,10 @@ import org.firstinspires.ftc.teamcode.PIDFController;
 public class Extendo {
     public DcMotor extendoMotor;
 
-    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(0.5, 0, 0.5);
+    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(0.12, 0, 0);
     public PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
+
+    double extendo_target = -6;
 
     public Extendo(HardwareMap HWMap){
         extendoMotor = HWMap.get(DcMotor.class, "extendoMotor");
@@ -31,7 +35,8 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                extendoMotorPID.setTargetPosition(-12);
+                extendo_target = -12;
+                extendoMotorPID.setTargetPosition(extendo_target);
                 init = true;
             }
 
@@ -53,7 +58,8 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                extendoMotorPID.setTargetPosition(-65);
+                extendo_target = -65;
+                extendoMotorPID.setTargetPosition(extendo_target);
                 init = true;
             }
 
@@ -76,6 +82,11 @@ public class Extendo {
 
     public void updateMotor() {
         extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
+    }
+
+    public void changetarget(double change){
+        extendo_target+=change;
+        extendoMotorPID.setTargetPosition(extendo_target);
     }
 }
 
