@@ -99,7 +99,7 @@ public class Robot {
     public void arcadeDrive(Gamepad gamepad1) {
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
+        double rx = 0.75*gamepad1.right_stick_x;
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double leftFrontPower = (y + x + rx) / denominator;
@@ -189,16 +189,16 @@ public class Robot {
 
     public void intakeControl(Gamepad gamepad) {
         intakeRight.setPower((-gamepad.left_trigger * 0.5 + gamepad.right_trigger));
-         intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger * 0.5);
+        intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger * 0.5);
     }
 
     public void hangControl(Gamepad gamepad) {
-        if (gamepad.dpad_up)
+        if (gamepad.y)
         {
             leftHang.setPower(-1);
             rightHang.setPower(1);
         }
-        else if (gamepad.dpad_down)
+        else if (gamepad.a)
         {
             leftHang.setPower(1);
             rightHang.setPower(-1);
@@ -272,6 +272,33 @@ public class Robot {
         double pid2 = slideController.calculate(slidePos, slideTarget);
 
         slide.setPower(pid2);
+    }
+    public void extraD1Features(Gamepad gamepad) {
+        if (gamepad.dpad_up) {
+            slideTarget += 28;
+        }
+        else if (gamepad.dpad_down) {
+            slideTarget -= 28;
+        }
+        else if (gamepad.dpad_right) {
+            armTarget += (int) 9.45;
+        }
+        else if (gamepad.dpad_left) {
+            armTarget -= (int) 9.45;
+        }
+
+        intakeRight.setPower((-gamepad.left_trigger * 0.5 + gamepad.right_trigger));
+        intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger * 0.5);
+
+        if (gamepad.right_bumper) {
+            wrist.setPosition(0.92);
+        }
+        else if (gamepad.left_bumper) {
+            wrist.setPosition(0);
+        }
+        else if (gamepad.left_bumper && gamepad.right_bumper) {
+            wrist.setPosition(0.5);
+        }
     }
 
     public static class armPIDValues {
