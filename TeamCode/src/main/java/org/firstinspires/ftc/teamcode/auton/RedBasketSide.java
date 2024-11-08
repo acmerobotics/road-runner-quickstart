@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auton;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -9,16 +10,20 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.teleop.Robot;
 
 @Config
 @Autonomous(name = "RedBasketSide", group = "Autonomous")
 public class RedBasketSide extends LinearOpMode {
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         // Starting position of the robot (x = -11.8, y = -61.7, heading = -90 degrees)
         Pose2d initialPose = new Pose2d(-15, -63, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+        Robot bot = new Robot(hardwareMap);
 
         // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
@@ -58,17 +63,29 @@ public class RedBasketSide extends LinearOpMode {
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
+        Action waitAndArm = drive.actionBuilder(initialPose)
+                .afterTime(5, bot.setPidVals(2200,0))
+                .afterTime(30, bot.stopPID())
+                .build();
         // Wait for the start of the op mode
         waitForStart();
+
+        bot.startPID();
+        bot.setPidValues(0,0);
         if (isStopRequested()) return;
 
         // Execute the defined trajectory
         Action trajectoryActionChosen = tab1.build();
+
+
         Actions.runBlocking(
-                new SequentialAction(
-                        trajectoryActionChosen,
-                        trajectoryActionCloseOut
+                new ParallelAction(
+                        new SequentialAction(
+                            trajectoryActionChosen,
+                            trajectoryActionCloseOut),
+                        waitAndArm
                 )
+
         );
     }
 }

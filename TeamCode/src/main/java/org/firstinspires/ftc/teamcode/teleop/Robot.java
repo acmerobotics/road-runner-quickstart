@@ -38,6 +38,9 @@ public class Robot {
     public double intakeLeftPos, intakeRightPos;
     public double flipPos, slidePos;
     public int armTarget = 0, slideTarget = 0;
+    public int armTargetAuto = 0, slideTargetAuto = 0;
+    public static boolean stopPid = false;
+    Thread currentThread;
 
     public Robot(HardwareMap hardwareMap) {
 //        axonLeft = hardwareMap.get(AnalogInput.class, "axonLeft");
@@ -318,6 +321,66 @@ public class Robot {
         else if (gamepad.right_bumper) {
             wrist.setPosition(0.5);
         }
+    }
+    public void startPID() {
+        Thread thread = new Thread(new pidfLoopAuton());
+        currentThread = thread;
+        currentThread.start();
+    }
+    public Action setPidVals(int arm, int slide) {
+        return new ValAction(arm, slide);
+    }
+    public class ValAction implements Action {
+        int armTarget, slidetarget;
+        public ValAction(int arm, int slide) {
+            armTarget = arm;
+            slideTarget = slide;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setPidValues(armTarget, slidetarget);
+            return false;
+        }
+    }
+    private class pidfLoopAuton implements Runnable {
+        @Override
+        public void run() {
+            while (!stopPid) {
+                flipPos = flip.getCurrentPosition();
+                slidePos = slide.getCurrentPosition();
+
+                double pid = armController.calculate(flipPos, armTargetAuto);
+                double ff = Math.cos(Math.toRadians(armTargetAuto / armPIDValues.ticks_in_degree)) * armPIDValues.fF;
+
+                double power = pid + ff;
+
+                flip.setPower(power);
+
+                double pid2 = slideController.calculate(slidePos, slideTargetAuto);
+
+                slide.setPower(pid2);
+            }
+        }
+    }
+    public Action stopPID() {
+        return new stopPid();
+    }
+    public class stopPid implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            Robot.stopPid = true;
+            currentThread.stop();
+            armTargetAuto = 0;
+            slideTargetAuto = 0;
+            flip.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            return false;
+        }
+    }
+    public void setPidValues(int arm, int slide) {
+        armTargetAuto = arm;
+        slideTargetAuto = slide;
     }
 
     public static class armPIDValues {
