@@ -37,26 +37,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class Elbow {
 
-    static final double ELBOW_UP_POS = -1;
-    static final double ELBOW_DOWN_POS = 1;
-    static final int SLEEP_TIME = 500;
 
-    static final double COUNTS_PER_REVOLUTION = 5700.4; //Placeholder
-    static final double GEAR_RATIO = 50.9 / 1; //Placeholder
-    public static final double NEW_P = 2.5;
-    public static final double NEW_I = 0.1;
-    public static final double NEW_D = 0.2;
-    public static final double NEW_F = 0.5;
-
-
-    private double power_auto_move = 0.6;
-
-    static final double THRESHOLD_TO_SLOW_IN_DEG_HI = 70;
-    static final double THRESHOLD_TO_SLOW_IN_DEG_LO = 40;
-
-
-    static final double  POWER_UP_MUL = 0.8;
-    static final double  POWER_DOWN_MUL = 0.8;
 
     private PIDFController controller;
 
@@ -73,17 +54,8 @@ public class Elbow {
 
 //    PIDFCoefficients pidfNew = new PIDFCoefficients(NEW_P, NEW_I, NEW_D, NEW_F);
 
-
-
-
-    private double deg = 0.0;
-
     public Elbow(OpMode opmode) {
         myOpMode = opmode;
-    }
-
-    public void setPowerAutoMove(double power) {
-        power_auto_move = power;
     }
 
     public void init() {
@@ -98,89 +70,16 @@ public class Elbow {
 
     }
 
-    public void moveElbowUp() {
-        deg = 150;
-        moveToDegree(deg);
+    public void setElbow(int tar) {
+        target = tar;
     }
 
-    public void moveElbowUpMore() {
-        deg = 180;
-        moveToDegree(deg);
-    }
+    public void autoListen() {
 
-    public void moveElbowDown() {
-        deg = 0.0;
-        moveToDegree(deg);
-    }
+        int elbPos = elbow.getCurrentPosition();
+        double pidf = controller.calculate(elbPos, target);
 
-    public boolean isElbowUp() {
-        if (deg >= 100) {
-            return true;
-        }
-        return false;
-    }
-
-    public int degToPosition(double deg) {
-        return (int)(deg / 360 * COUNTS_PER_REVOLUTION * GEAR_RATIO);
-    }
-
-    public double positionToDeg(int pos) {
-        return (double) elbow.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
-    }
-
-    public void moveToDegree(double deg) {
-        double targetPos = degToPosition(deg);
-//        boolean isGoingUp = targetPos > elbow.getCurrentPosition();
-        boolean isGoingUp = deg > 120;
-
-
-        elbow.setTargetPosition(((int)targetPos));
-        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-
-        // Set the required driving speed  (must be positive for RUN_TO_POSITION)
-        // Start driving straight, and then enter the control loop
-        elbow.setPower(power_auto_move);
-
-        // keep looping while we are still active, and BOTH motors are running.
-        while (elbow.isBusy()) {
-
-            // decide if we reach a threshold to slow down
-            if ((isGoingUp
-                    && (elbow.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI)
-                    )
-            ) || ( !isGoingUp
-                    && (elbow.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO)
-                    )
-            )) {
-
-                elbow.setPower(0.1);
-            } else {
-                elbow.setPower(power_auto_move);
-                            }
-
-        }
-
-        // Stop all motion & Turn off RUN_TO_POSITION
-        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        elbow.setPower(0);
-        this.deg = deg;
-
-    }
-
-
-    public void moveElbowByPower(double power) {
-        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        if (true || (power < 0) && (deg > 0)
-                || (power > 0) && (deg < 210)) {
-            elbow.setPower(power);
-        }
-
-        deg = positionToDeg(elbow.getCurrentPosition());
+        elbow.setPower(pidf);
 
     }
 

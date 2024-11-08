@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Intake {
 
@@ -45,7 +46,7 @@ public class Intake {
     double right_bumper;
     double power;
 
-
+    ElapsedTime timer = new ElapsedTime();
 
     CRServo intake = null;
     public Intake(OpMode opmode) {
@@ -57,6 +58,20 @@ public class Intake {
         intake = myOpMode.hardwareMap.get(CRServo.class, "intake");
 
 
+    }
+
+    public void outtake() {
+        timer.reset();
+        while (timer.seconds() < 3) {
+            intake.setPower(-1);
+        }
+    }
+
+    public void intake() {
+        timer.reset();
+        while (timer.seconds() < 3) {
+            intake.setPower(1);
+        }
     }
 
 
@@ -80,6 +95,8 @@ public class Intake {
 
 
     }
+
+
 
 
     public void sendTelemetry() {
