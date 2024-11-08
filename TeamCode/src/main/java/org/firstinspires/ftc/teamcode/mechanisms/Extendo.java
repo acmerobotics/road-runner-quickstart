@@ -85,7 +85,7 @@ public class Extendo {
     }
 
     public void changetarget(double change){
-        extendo_target+=change;
+        extendo_target += change;
         extendoMotorPID.setTargetPosition(extendo_target);
     }
 }
