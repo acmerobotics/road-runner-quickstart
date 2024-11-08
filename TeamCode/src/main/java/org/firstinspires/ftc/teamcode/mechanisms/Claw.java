@@ -15,7 +15,7 @@ public class Claw {
     public Claw(HardwareMap HWMap) {
         bucketServo = HWMap.get(Servo.class, "bucketServo");
 //        clawLeftServo = HWMap.get(Servo.class, "clawLeftServo");
-//        clawRightServo = HWMap.get(Servo.class, "clawLeftServo");
+//        clawRightServo = HWMap.get(Servo.class, "clawRightServo");
     }
 
 
