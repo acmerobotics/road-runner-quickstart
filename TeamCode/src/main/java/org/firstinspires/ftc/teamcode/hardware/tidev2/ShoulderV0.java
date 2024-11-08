@@ -234,7 +234,7 @@ public class ShoulderV0 {
 
 
         if (Math.abs(myOpMode.gamepad2.right_stick_y) > deadzone
-                && armPos <= 700 && armPos >= -100
+                && armPos <= 850 && armPos >= -100
         )  {
             pidf = -myOpMode.gamepad2.right_stick_y;
 
