@@ -37,22 +37,10 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class Viper {
 
-    static final double VIPER_EXTENDED_TIME = 0.2;
-    static final double VIPER_RETRACTED_POS = 0;
-    static final int SLEEP_TIME = 500;
-
-    static final double COUNTS_PER_REVOLUTION = 5700.4; //Placeholder
-    static final double GEAR_RATIO = 50.9 / 1; //Placeholder
 
 
-    private double power_auto_move = 0.6;
-
-    static final double THRESHOLD_TO_SLOW_IN_DEG_HI = 70;
-    static final double THRESHOLD_TO_SLOW_IN_DEG_LO = 40;
 
 
-    static final double  POWER_UP_MUL = 0.8;
-    static final double  POWER_DOWN_MUL = 0.8;
     // Define class members
 
     private DcMotorEx viper;
@@ -72,9 +60,8 @@ public class Viper {
         myOpMode = opmode;
     }
 
-    public void setPowerAutoMove(double power) {
-        power_auto_move = power;
-    }
+
+    public static double pidf = 0;
 
 
 
@@ -94,90 +81,22 @@ public class Viper {
 
     }
 
-    public void moveViperUp() {
-        deg = 150;
-        moveToDegree(deg);
+
+
+
+    public void setTarget(int tar) {
+        target = tar;
     }
 
-    public void moveViperUpMore() {
-        deg = 180;
-        moveToDegree(deg);
-    }
+    public void autoListen() {
+        int armPos = viper.getCurrentPosition();
+        pidf = controller.calculate(armPos, target);
 
-    public void moveViperDown() {
-        deg = 0.0;
-        moveToDegree(deg);
-    }
-
-    public boolean isViperUp() {
-        if (deg >= 100) {
-            return true;
-        }
-        return false;
-    }
-
-    public int degToPosition(double deg) {
-        return (int)(deg / 360 * COUNTS_PER_REVOLUTION * GEAR_RATIO);
-    }
-
-    public double positionToDeg(int pos) {
-        return (double) viper.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
-    }
-
-    public void moveToDegree(double deg) {
-        double targetPos = degToPosition(deg);
-//        boolean isGoingUp = targetPos > elbow.getCurrentPosition();
-        boolean isGoingUp = deg > 120;
-
-
-        viper.setTargetPosition(((int)targetPos));
-        viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-
-        // Set the required driving speed  (must be positive for RUN_TO_POSITION)
-        // Start driving straight, and then enter the control loop
-        viper.setPower(power_auto_move);
-
-        // keep looping while we are still active, and BOTH motors are running.
-        while (viper.isBusy()) {
-
-            // decide if we reach a threshold to slow down
-            if ((isGoingUp
-                    && (viper.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI)
-                    )
-            ) || ( !isGoingUp
-                    && (viper.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO)
-                    )
-            )) {
-
-                viper.setPower(0.1);
-            } else {
-                viper.setPower(power_auto_move);
-                            }
-
-        }
-
-        // Stop all motion & Turn off RUN_TO_POSITION
-        viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        viper.setPower(0);
-        this.deg = deg;
-
+        viper.setPower(pidf);
+        viper.setPower(pidf);
     }
 
 
-
-    public void moveViperByPower(double power) {
-        viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        if (true || (power < 0) && (deg > 0)
-                || (power > 0) && (deg < 210)) {
-            viper.setPower(power);
-        }
-
-        deg = positionToDeg(viper.getCurrentPosition());
-    }
 
     public void listen() {
 
@@ -193,7 +112,7 @@ public class Viper {
         }
 
         int vipPos = viper.getCurrentPosition();
-        double pidf = controller.calculate(vipPos, target);
+        pidf = controller.calculate(vipPos, target);
 
         viper.setPower(pidf);
 

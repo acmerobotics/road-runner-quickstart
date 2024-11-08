@@ -39,28 +39,15 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class ShoulderV0 {
 
     static final double ramp_y_offset = 0.2;
-    static final double maxArmPos = 700.0;
     static final double ramp_rate = 0.001;
     static final double ramp_a = 0.1;
 
     static final double deadzone = 0.3;
 
-    static final int COUNTS_PER_REVOLUTION = 288;
-    static final double GEAR_RATIO = 40 / 10;
 
-
-    private double power_auto_move = 0.6;
-
-    static final double THRESHOLD_TO_SLOW_IN_DEG_HI = 70;
-    static final double THRESHOLD_TO_SLOW_IN_DEG_LO = 40;
-
-
-    static final double  POWER_UP_MUL = 0.8;
-    static final double  POWER_DOWN_MUL = 0.8;
     // Define class members
 
     private PIDFController controller;
-    private PIDFCoefficients pidfcoeff;
 
     public static final double p = 0.003, i = 0.003, d = 0.0001;
     public static final double f = 0.00003;
@@ -72,7 +59,6 @@ public class ShoulderV0 {
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
-    private double deg = 0.0;
 
     private DcMotorEx shoulder_right;
     private DcMotorEx shoulder_left;
@@ -81,13 +67,9 @@ public class ShoulderV0 {
         myOpMode = opmode;
     }
 
-    public void setPowerAutoMove(double power) {
-        power_auto_move = power;
-    }
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        pidfcoeff = new PIDFCoefficients(p, i, d ,f);
         controller = new PIDFController(p, i, d, f);
         shoulder_right = myOpMode.hardwareMap.get(DcMotorEx.class, "left_tower");
         shoulder_left = myOpMode.hardwareMap.get(DcMotorEx.class, "right_tower");
@@ -101,99 +83,14 @@ public class ShoulderV0 {
         shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulder_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-//        shoulder_right.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
-//        shoulder_left.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
-//        shoulder_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        shoulder_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shoulder_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         pidf = 0;
     }
 
-    public void moveArmUp() {
-        deg = 150;
-        moveToDegree(deg);
-    }
-
-    public void moveArmUpMore() {
-        deg = 180;
-        moveToDegree(deg);
-    }
-
-    public void moveArmDown() {
-        deg = 0.0;
-        moveToDegree(deg);
-    }
-
-    public boolean isArmUp() {
-        if (deg >= 100) {
-            return true;
-        }
-        return false;
-    }
-    // useless method?
-    public int degToPosition(double deg) {
-        return (int)(deg / 360 * COUNTS_PER_REVOLUTION * GEAR_RATIO);
-    }
-
-    public double positionToDeg(int pos) {
-        return (double) shoulder_left.getCurrentPosition() * 360  / (COUNTS_PER_REVOLUTION * GEAR_RATIO);
-    }
-
-    public void moveToDegree(double deg) {
-        double targetPos = degToPosition(deg);
-//        boolean isGoingUp = targetPos > arm_right.getCurrentPosition();
-        boolean isGoingUp = deg > 120;
 
 
-        shoulder_right.setTargetPosition(((int)targetPos));
-        shoulder_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-        shoulder_left.setTargetPosition(((int)targetPos));
-        shoulder_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // Set the required driving speed  (must be positive for RUN_TO_POSITION)
-        // Start driving straight, and then enter the control loop
-        shoulder_right.setPower(power_auto_move);
-        shoulder_left.setPower(power_auto_move);
-
-
-
-        // keep looping while we are still active, and BOTH motors are running.
-        while (shoulder_right.isBusy() && shoulder_left.isBusy()) {
-
-            // decide if we reach a threshold to slow down
-            if ((isGoingUp
-                    && (shoulder_right.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI)
-                    || shoulder_left.getCurrentPosition() > degToPosition(THRESHOLD_TO_SLOW_IN_DEG_HI))
-            ) || ( !isGoingUp
-                    && (shoulder_right.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO)
-                    || shoulder_left.getCurrentPosition() < degToPosition(THRESHOLD_TO_SLOW_IN_DEG_LO))
-            )) {
-
-                shoulder_right.setPower(0.1);
-                shoulder_left.setPower(0.1);
-            } else {
-                shoulder_right.setPower(power_auto_move);
-                shoulder_left.setPower(power_auto_move);
-            }
-
-            // Display drive status for the driver.
-            sendTelemetry();
-        }
-
-        // Stop all motion & Turn off RUN_TO_POSITION
-        shoulder_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shoulder_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        shoulder_right.setPower(0);
-        shoulder_left.setPower(0);
-
-        this.deg = deg;
-
-    }
 
     public void sendTelemetry() {
         myOpMode.telemetry.addData("Arm pos Left/Right", "%4d / %4d",
@@ -201,33 +98,10 @@ public class ShoulderV0 {
                 shoulder_right.getCurrentPosition());
     }
 
-    public void moveArmByPower(double power) {
-        shoulder_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shoulder_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // TODO: allows pushing the arm down for now
-        if (true || (power < 0) && (deg > 0)
-                || (power > 0) && (deg < 210)) {
-            shoulder_right.setPower(power);
-            shoulder_left.setPower(power);
-        }
 
-        deg = positionToDeg(shoulder_left.getCurrentPosition());
-        double contPower = myOpMode.gamepad2.right_stick_y;
-
-        myOpMode.telemetry.addData("Shoulder deg to pos: ", "%.2f", deg);
-        myOpMode.telemetry.addData("Shoulder Power: ", "%.2f", contPower);
-        sendTelemetry();
-    }
 
     public void listen() {
-//        pidf = -myOpMode.gamepad2.right_stick_y;
-//
-//        shoulder_right.setPower(pidf);
-//        shoulder_left.setPower(pidf);
-//
-//        // move arm according to the left stick y
-//
         int armPos = shoulder_left.getCurrentPosition();
         boolean controlled = false;
 

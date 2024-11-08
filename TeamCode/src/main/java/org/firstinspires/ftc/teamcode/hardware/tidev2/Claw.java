@@ -37,8 +37,8 @@ public class Claw {
 
 
     // Define class members
-    double torqueClose = 1;
-    double torqueOpen = 0;
+    double torqueClose = 0.25;
+    double torqueOpen = 1;
 
     double speedClose = 0;
     double speedOpen = 0.67;
@@ -59,11 +59,26 @@ public class Claw {
         speed = myOpMode.hardwareMap.get(Servo.class, "speed");
     }
 
+    public void speedOpen(boolean open) {
+        if (open) {
+            speed.setPosition(speedOpen);
+        } else {
+            speed.setPosition(speedClose);
+        }
+    }
+
+    public void torqueState(boolean open) {
+        if (open) {
+            torque.setPosition(torqueOpen);
+        } else {
+            torque.setPosition(torqueClose);
+        }
+    }
 
 
     public void listen() {
 
-        torque.setPosition(0.25);
+        torque.setPosition(torqueClose);
 
         if (myOpMode.gamepad2.x && toggle_time.seconds() > 0.5) {
             toggle_time.reset();
@@ -80,6 +95,6 @@ public class Claw {
     }
 
     public void sendTelemetry() {
-        myOpMode.telemetry.addData("Claw Position",pos);
+        myOpMode.telemetry.addData("Claw Position: ",pos);
     }
 }
