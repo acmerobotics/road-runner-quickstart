@@ -20,7 +20,6 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 @TeleOp(name = "Decapitated Robot", group = "OpModes")
 public class Headless extends OpMode {
 
-    boolean stance;
     // Insert whatever initialization your own code does
     Shoulder shoulder = new Shoulder(this);
     ShoulderV0 shoulderV0 = new ShoulderV0(this);
@@ -106,7 +105,7 @@ public class Headless extends OpMode {
             );
         }
 
-        if (gamepad2.right_stick_y < 0) {
+        if (gamepad2.right_stick_y <= 0) {
             shoulder.listen();
         } else {
             shoulderV0.listen();

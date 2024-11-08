@@ -39,7 +39,6 @@ public class Tank extends OpMode {
     MecanumDrive drive;
 
     Pose2d poseEstimate;
-    Vector2d input;
     double speed;
 
     ElapsedTime speedTimer = new ElapsedTime();
@@ -102,7 +101,7 @@ public class Tank extends OpMode {
             speed -= 0.25;
         }
 
-        if (gamepad2.right_stick_y < 0) {
+        if (gamepad2.right_stick_y <= 0) {
             shoulder.listen();
         } else {
             shoulderV0.listen();
