@@ -15,7 +15,7 @@ public class Slides {
     public DcMotor slidesLeftMotor;
     public DcMotor slidesRightMotor;
 
-    private PIDFController.PIDCoefficients slidesCoeffs = new PIDFController.PIDCoefficients(0.3, 0 , 0);
+    private PIDFController.PIDCoefficients slidesCoeffs = new PIDFController.PIDCoefficients(0.05, 0.5, 0);
     private PIDFController slidesPID = new PIDFController(slidesCoeffs);
 
     private double target = 0;
@@ -43,7 +43,7 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set value to the motor position of top basket
-                target = -3345;
+                target = -2650;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
