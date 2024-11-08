@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.ShoulderV0;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
@@ -20,7 +21,10 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 public class Headless extends OpMode {
 
 
-    ShoulderV0 shoulder = new ShoulderV0(this);
+    // Insert whatever initialization your own code does
+    Shoulder shoulder = new Shoulder(this);
+    ShoulderV0 shoulderV0 = new ShoulderV0(this);
+
     Elbow elbow = new Elbow(this);
     Intake intake = new Intake(this);
     Viper viper = new Viper(this);
@@ -61,6 +65,7 @@ public class Headless extends OpMode {
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         headlessHeading = 0;
         shoulder.init();
+        shoulderV0.init();
         elbow.init();
         intake.init();
         viper.init();
@@ -95,13 +100,18 @@ public class Headless extends OpMode {
             );
         }
 
-        shoulder.listen();
+        if (gamepad2.right_stick_y <= 0) {
+            shoulder.listen();
+        } else {
+            shoulderV0.listen();
+        }
         elbow.listen();
         intake.listen();
         viper.listen();
         claw.listen();
 
-        shoulder.sendTelemetry();
+
+        shoulderV0.sendTelemetry();
         intake.sendTelemetry();
         claw.sendTelemetry();
 
