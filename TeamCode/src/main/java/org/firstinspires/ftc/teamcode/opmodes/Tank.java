@@ -56,6 +56,7 @@ public class Tank extends OpMode {
         rightBack = hardwareMap.get(DcMotorEx.class, "right_back_drive");
         rightFront = hardwareMap.get(DcMotorEx.class, "right_front_drive");
 
+        shoulder.init();
         shoulderV0.init();
         elbow.init();
         intake.init();
