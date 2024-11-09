@@ -360,8 +360,8 @@ public class BlueTeleop extends LinearOpMode {
                 slides.slidesRightMotor.setPower(0);
             }
 
-            slides.updateMotor();
-            //extendo.updateMotor();
+            //slides.updateMotor();
+            extendo.updateMotor();
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {
