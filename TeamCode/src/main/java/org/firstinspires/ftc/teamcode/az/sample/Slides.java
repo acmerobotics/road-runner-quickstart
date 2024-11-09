@@ -8,7 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 @TeleOp
 public class Slides extends LinearOpMode {
 
-    DcMotorEx slides;
+    DcMotorEx slideMotor1;
+    DcMotorEx slideMotor2;
     LinearOpMode opMode;
     public static final double POWER = 1;
     public static final int INCREMENT = 20;
@@ -23,14 +24,14 @@ public class Slides extends LinearOpMode {
     }
 
     public void move() {
-        AZUtil.setMotorTargetPosition(slides, SlidesPos.MOVE.value, POWER);
+        AZUtil.setMotorTargetPosition(slideMotor1, SlidesPos.MOVE.value, POWER);
     }
     public void collect() {
-        AZUtil.setMotorTargetPosition(slides, SlidesPos.COLLECT.value, POWER);
+        AZUtil.setMotorTargetPosition(slideMotor1, SlidesPos.COLLECT.value, POWER);
     }
 
     public void specimenHang() {
-        AZUtil.setMotorTargetPosition(slides, SlidesPos.SPECIMEN_HANG.value, POWER);
+        AZUtil.setMotorTargetPosition(slideMotor1, SlidesPos.SPECIMEN_HANG.value, POWER);
     }
 
     public enum SlidesPos {
@@ -59,46 +60,51 @@ public class Slides extends LinearOpMode {
     }
 
     public void setup() {
-        slides = opMode.hardwareMap.get(DcMotorEx.class, "slides");
-        slides.setDirection(DcMotor.Direction.FORWARD);
-        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor1 = opMode.hardwareMap.get(DcMotorEx.class, "slides1");
+        slideMotor2 = opMode.hardwareMap.get(DcMotorEx.class, "slides2");
+        slideMotor1.setDirection(DcMotor.Direction.FORWARD);
+        slideMotor2.setDirection(DcMotor.Direction.REVERSE);
+        setMode();
+    }
+
+    private void setMode() {
+        slideMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void moveUp(){
-        int newPos = slides.getCurrentPosition() + INCREMENT;
+        int newPos = slideMotor1.getCurrentPosition() + INCREMENT;
         setPos(newPos);
     }
 
     public void moveDown(){
-        int newPos = slides.getCurrentPosition() - INCREMENT;
+        int newPos = slideMotor1.getCurrentPosition() - INCREMENT;
         setPos(newPos);
     }
-    public void setPos(int pos){
-        AZUtil.setMotorTargetPosition(slides, pos, POWER);
+    private void setPos(int pos){
+        AZUtil.setBothMotorTargetPosition(slideMotor1, slideMotor2, pos, POWER);
     }
-
-
 
     public void extend(float factor) {
         int position = Math.round(SlidesPos.COLLECT.value + factor*1200);
-        AZUtil.setMotorTargetPosition(slides, position, POWER);
+        setPos(position);
     }
 
     public void reset() {
-        AZUtil.setMotorTargetPosition(slides, SlidesPos.RESET.value, POWER);
+        setPos(SlidesPos.RESET.value);
     }
 
     public void halfwayReset() {
-        AZUtil.setMotorTargetPosition(slides, SlidesPos.HALFWAYRESET.value, POWER);
+        setPos(SlidesPos.HALFWAYRESET.value);
     }
 
 
     public void moveToPosition(SlidesPos slidesPos){
-        AZUtil.setMotorTargetPosition(slides, slidesPos.value, .7);
+        setPos(slidesPos.value);
     }
 
     public int getCurrentPos(){
-        return slides.getCurrentPosition();
+        return slideMotor1.getCurrentPosition();
     }
     @Override
     public void runOpMode() {
@@ -128,18 +134,31 @@ public class Slides extends LinearOpMode {
 
 
     public void moveDownSlider() {
-        AZUtil.setMotorTargetPosition(slides, 0, 1);
+        setPos(0);
     }
 
     public void moveUpSlider() {
-        AZUtil.setMotorTargetPosition(slides, 1000, 1);
+        setPos(1000);
     }
 
-    private void autoMode() {
-        AZUtil.setMotorTargetPosition(slides, 800, 1);
-        sleep(10000);
 
-        AZUtil.setMotorTargetPosition(slides, 0, 1);
-        sleep(10000);
+    private void autoMode() {
+
+        telemetry.addLine("Init");
+        telemetry.update();
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+
+            setup();
+            sleep(2000);
+
+            setPos(-40);
+            sleep(10000);
+
+            setPos(0);
+            sleep(10000);
+        }
     }
 }
