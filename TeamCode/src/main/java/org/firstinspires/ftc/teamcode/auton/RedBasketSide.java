@@ -77,7 +77,6 @@ public class RedBasketSide extends LinearOpMode {
         // Execute the defined trajectory
         Action trajectoryActionChosen = tab1.build();
 
-
         Actions.runBlocking(
                 new ParallelAction(
                         new SequentialAction(
