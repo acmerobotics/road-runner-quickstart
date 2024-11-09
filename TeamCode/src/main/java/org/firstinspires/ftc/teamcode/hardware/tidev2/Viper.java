@@ -79,6 +79,8 @@ public class Viper {
 
 //        viper.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
+        pidf = 0;
+        target = 0;
     }
 
 
@@ -103,12 +105,12 @@ public class Viper {
         // move viper according to the left stick y
 
 
-        if (target >=  0 && target <= 5500) {
+        if (target >=  0 && target <= 4100) {
             target += (int) (-myOpMode.gamepad2.left_stick_y) * 100;
         } else if (target < 0) {
             target = 0;
         } else {
-            target = 5500;
+            target = 4100;
         }
 
         int vipPos = viper.getCurrentPosition();

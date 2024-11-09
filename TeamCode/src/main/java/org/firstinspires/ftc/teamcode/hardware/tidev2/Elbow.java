@@ -68,6 +68,8 @@ public class Elbow {
 //        elbow.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        target = 0;
+
     }
 
     public void setElbow(int tar) {

@@ -80,18 +80,18 @@ public class Tank extends OpMode {
         rightBack.setPower(Rx * max * speed);
 
 
-        if (gamepad1.left_trigger != 0 && gamepad1.right_trigger != 0) {
+        if (gamepad1.left_bumper && gamepad1.right_bumper) {
             ;
-        } else if (gamepad1.left_trigger != 0) {
-            leftFront.setPower(-max * gamepad1.left_trigger);
-            leftBack.setPower(max * gamepad1.left_trigger);
-            rightFront.setPower(max * gamepad1.left_trigger);
-            rightBack.setPower(-max * gamepad1.left_trigger);
-        } else if (gamepad1.right_trigger != 0) {
-            leftFront.setPower(max * gamepad1.right_trigger);
-            leftBack.setPower(-max * gamepad1.right_trigger);
-            rightFront.setPower(-max * gamepad1.right_trigger);
-            rightBack.setPower(max * gamepad1.right_trigger);
+        } else if (gamepad1.left_bumper) {
+            leftFront.setPower(-max);
+            leftBack.setPower(max);
+            rightFront.setPower(max);
+            rightBack.setPower(-max);
+        } else if (gamepad1.right_bumper) {
+            leftFront.setPower(max);
+            leftBack.setPower(-max);
+            rightFront.setPower(-max);
+            rightBack.setPower(max);
         }
 
         if (gamepad1.dpad_right && speed < 1 && speedTimer.seconds() > 0.25) {
@@ -106,6 +106,7 @@ public class Tank extends OpMode {
             shoulder.listen();
         } else {
             shoulderV0.listen();
+            shoulder.setTarget(shoulderV0.getTarget());
         }
         elbow.listen();
         intake.listen();
