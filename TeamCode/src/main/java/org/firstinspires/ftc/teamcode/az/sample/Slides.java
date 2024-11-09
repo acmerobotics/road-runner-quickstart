@@ -80,7 +80,7 @@ public class Slides extends LinearOpMode {
 
 
     public void extend(float factor) {
-        int position = Math.round(SlidesPos.COLLECT.value + factor *1000);
+        int position = Math.round(SlidesPos.COLLECT.value + factor*1200);
         AZUtil.setMotorTargetPosition(slides, position, POWER);
     }
 

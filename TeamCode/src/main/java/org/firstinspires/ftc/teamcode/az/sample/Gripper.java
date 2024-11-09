@@ -68,7 +68,7 @@ public class Gripper extends LinearOpMode {
 
     public void sampleDrop() {
         roller.setPower(GripperPos.ROLLERDROP.value);
-        sleep(200);
+        //sleep(200);
         //wrist.setPosition(GripperPos.WRIST_SAMPLE_DROP.value);
     }
 

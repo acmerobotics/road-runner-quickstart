@@ -30,7 +30,7 @@ public class Arm extends LinearOpMode {
     public enum ArmPos {
         DROP(180),
         RESET(0),
-        COLLECT(-1150),
+        COLLECT(-1200),
         CARRY(0),
         SPECIMEN_HANG(160),
 
