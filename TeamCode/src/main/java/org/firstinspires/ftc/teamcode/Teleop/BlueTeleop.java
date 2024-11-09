@@ -355,6 +355,9 @@ public class BlueTeleop extends LinearOpMode {
             } else if (currentGamepad2.dpad_down) {
                 slides.slidesLeftMotor.setPower(0.5);
                 slides.slidesRightMotor.setPower(0.5);
+            } else {
+                slides.slidesLeftMotor.setPower(0);
+                slides.slidesRightMotor.setPower(0);
             }
 
             slides.updateMotor();
