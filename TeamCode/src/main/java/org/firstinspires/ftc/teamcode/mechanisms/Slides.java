@@ -15,10 +15,10 @@ public class Slides {
     public DcMotor slidesLeftMotor;
     public DcMotor slidesRightMotor;
 
-    private PIDFController.PIDCoefficients slidesCoeffs = new PIDFController.PIDCoefficients(0.05, 0.5, 0);
-    private PIDFController slidesPID = new PIDFController(slidesCoeffs);
+    //private PIDFController.PIDCoefficients slidesCoeffs = new PIDFController.PIDCoefficients(0.1, 0.5, 0);
+    //private PIDFController slidesPID = new PIDFController(slidesCoeffs);
 
-    private double target = 0;
+    private int target = 0;
 
     public Slides(HardwareMap HWMap){
         slidesLeftMotor = HWMap.get(DcMotor.class, "leftSlidesMotor");
@@ -26,9 +26,6 @@ public class Slides {
 
         slidesLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        slidesLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        slidesRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         slidesLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slidesRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -44,13 +41,21 @@ public class Slides {
             if (!init) {
                 //TODO: set value to the motor position of top basket
                 target = -2650;
-                slidesPID.setTargetPosition(target);
+                slidesLeftMotor.setTargetPosition(target);
+                slidesRightMotor.setTargetPosition(target);
+
+                slidesLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slidesRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                slidesLeftMotor.setPower(-0.7);
+                slidesRightMotor.setPower(-0.7);
+                //slidesPID.setTargetPosition(target);
                 init = true;
             }
 
-            updateMotor();
 
-            if (Math.abs(slidesPID.getTargetPosition() - getPos()) <  2) {
+
+            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) <  2) {
                 return false;
             }
             return true;
@@ -68,13 +73,19 @@ public class Slides {
             if (!init) {
                 //TODO: set values to the motor position of bottom basket
                 target = 100;
-                slidesPID.setTargetPosition(target);
+                slidesLeftMotor.setTargetPosition(target);
+                slidesRightMotor.setTargetPosition(target);
+
+                slidesLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slidesRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                slidesLeftMotor.setPower(0.7);
+                slidesRightMotor.setPower(0.7);
                 init = true;
             }
 
-            updateMotor();
 
-            if (Math.abs(slidesPID.getTargetPosition() - getPos()) < 2) {
+            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) < 2) {
                 return false;
             }
             return true;
@@ -92,13 +103,20 @@ public class Slides {
             if (!init) {
                 //TODO: set values to the motor position of the wall
                 target = 200;
-                slidesPID.setTargetPosition(target);
+                slidesLeftMotor.setTargetPosition(target);
+                slidesRightMotor.setTargetPosition(target);
+
+                slidesLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slidesRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                slidesLeftMotor.setPower(0.7);
+                slidesRightMotor.setPower(0.7);
                 init = true;
             }
 
-            updateMotor();
 
-            if (Math.abs(slidesPID.getTargetPosition() - getPos()) < 2) {
+
+            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) < 2) {
                 return false;
             }
             return true;
@@ -116,13 +134,20 @@ public class Slides {
             if (!init) {
                 //TODO: set values to the motor position of a bit above the top speciman bar
                 target = 250;
-                slidesPID.setTargetPosition(target);
+                slidesLeftMotor.setTargetPosition(target);
+                slidesRightMotor.setTargetPosition(target);
+
+                slidesLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slidesRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                slidesLeftMotor.setPower(0.7);
+                slidesRightMotor.setPower(0.7);
                 init = true;
             }
 
-            updateMotor();
 
-            if (Math.abs(slidesPID.getTargetPosition() - getPos()) < 2) {
+
+            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) < 2) {
                 return false;
             }
             return true;
@@ -140,13 +165,21 @@ public class Slides {
             if (!init) {
                 //TODO: set values to the motor position of a bit above the bottom speciman bar
                 target = 250;
-                slidesPID.setTargetPosition(target);
+                slidesLeftMotor.setTargetPosition(target);
+                slidesRightMotor.setTargetPosition(target);
+
+                slidesLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slidesRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                slidesLeftMotor.setPower(0.7);
+                slidesRightMotor.setPower(0.7);
+
                 init = true;
             }
 
-            updateMotor();
 
-            if (Math.abs(slidesPID.getTargetPosition() - getPos()) < 15) {
+
+            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) < 15) {
                 return true;
             }
             return false;
@@ -163,14 +196,21 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set values to the motor position of retracted position
-                target = 0;
-                slidesPID.setTargetPosition(0);
+                target = 10;
+                slidesLeftMotor.setTargetPosition(target);
+                slidesRightMotor.setTargetPosition(target);
+
+                slidesLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slidesRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                slidesLeftMotor.setPower(0.7);
+                slidesRightMotor.setPower(0.7);
                 init = true;
             }
 
-            updateMotor();
 
-            if (Math.abs(slidesPID.getTargetPosition() - getPos()) < 2) {
+
+            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) < 2) {
                 return true;
             }
             return false;
@@ -185,14 +225,11 @@ public class Slides {
         return (double) (slidesLeftMotor.getCurrentPosition() + slidesRightMotor.getCurrentPosition()) / 2;
     }
 
-    public void updateMotor() {
-        slidesLeftMotor.setPower(slidesPID.update(getPos()));
-        slidesRightMotor.setPower(slidesPID.update(getPos()));
-    }
 
-    public void changeTarget(double change) {
+    public void changeTarget(int change) {
         target += change;
-        slidesPID.setTargetPosition(target);
+        slidesLeftMotor.setTargetPosition(target);
+        slidesRightMotor.setTargetPosition(target);
     }
 
 }

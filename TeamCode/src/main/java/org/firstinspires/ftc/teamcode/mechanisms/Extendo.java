@@ -16,15 +16,15 @@ import org.firstinspires.ftc.teamcode.PIDFController;
 public class Extendo {
     public DcMotor extendoMotor;
 
-    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(0.12, 0, 0);
-    public PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
+//    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(0.12, 0, 0);
+//    public PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
 
-    double extendo_target = -6;
+    int target = -10;
 
     public Extendo(HardwareMap HWMap){
         extendoMotor = HWMap.get(DcMotor.class, "extendoMotor");
         extendoMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         extendoMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
@@ -35,14 +35,16 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                extendo_target = -12;
-                extendoMotorPID.setTargetPosition(extendo_target);
+                target = -12;
+                extendoMotor.setTargetPosition(target);
+                extendoMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                extendoMotor.setPower(0.5);
+                //extendoMotorPID.setTargetPosition(extendo_target);
                 init = true;
             }
 
-            updateMotor();
 
-            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 2) {
                 return false;
             }
             return true;
@@ -58,14 +60,15 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                extendo_target = -65;
-                extendoMotorPID.setTargetPosition(extendo_target);
+                target = -55;
+                extendoMotor.setTargetPosition(target);
+                extendoMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                extendoMotor.setPower(-0.5);
                 init = true;
             }
 
-            updateMotor();
 
-            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 2) {
                 return false;
             }
             return true;
@@ -80,13 +83,10 @@ public class Extendo {
         return (extendoMotor.getCurrentPosition());
     }
 
-    public void updateMotor() {
-        extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
-    }
 
     public void changetarget(double change){
-        extendo_target += change;
-        extendoMotorPID.setTargetPosition(extendo_target);
+        target += 0.5+change;
+        extendoMotor.setTargetPosition(target);
     }
 }
 

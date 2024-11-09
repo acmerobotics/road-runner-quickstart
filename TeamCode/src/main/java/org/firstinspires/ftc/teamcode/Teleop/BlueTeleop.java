@@ -154,8 +154,8 @@ public class BlueTeleop extends LinearOpMode {
             double lefty2 = currentGamepad2.left_stick_y;
 
             double denominator = Math.max(Math.abs(lefty1) + Math.abs(leftx1) + Math.abs(rightx1), 1);
-            double frontLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
-            double backLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
+            double frontLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
+            double backLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
             double frontRightPower = (lefty1 - leftx1 - rightx1) / denominator;
             double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
 
@@ -184,7 +184,7 @@ public class BlueTeleop extends LinearOpMode {
                     break;
                 case EXTENDOEXTEND:
                     if (!control.getBusy()) {
-                        if ((currentGamepad2.a && !previousGamepad2.a) || (intakeColor.equals("blue")) || (intakeColor.equals("yellow"))) {
+                        if ((currentGamepad2.a && !previousGamepad2.a)/* || (intakeColor.equals("blue")) || (intakeColor.equals("yellow"))*/) {
                             runningActions.add(new SequentialAction(
                                     control.start(),
                                     intake.creep(),
@@ -198,7 +198,7 @@ public class BlueTeleop extends LinearOpMode {
                         }
 
 
-                        if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && currentGamepad2.left_trigger < 0.9) {
+                        if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && currentGamepad2.left_trigger > 0.9) {
                             if (!intakeUp) {
                                 runningActions.add(intake.middle());
                                 intakeUp = true;
@@ -226,7 +226,7 @@ public class BlueTeleop extends LinearOpMode {
                     }
                     break;
                 case EXTENDORETRACT:
-                    if ((currentGamepad2.a && !previousGamepad2.a) || intakeColor.equals("none")) {
+                    if ((currentGamepad2.a && !previousGamepad2.a)) /*|| intakeColor.equals("none"))*/ {
                         runningActions.add(new SequentialAction(intake.off(), claw.up()));
                         extendoState = ExtendoState.EXTENDOSTART;
                     }
@@ -235,105 +235,100 @@ public class BlueTeleop extends LinearOpMode {
                     extendoState = ExtendoState.EXTENDOSTART;
                     break;
             }
-
-            switch (liftState) {
-                case LIFTSTART:
-                    if (currentGamepad2.y && !previousGamepad2.y) {
-                        runningActions.add(claw.flip());
-                        liftState = LiftState.LIFTDEPOSIT;
-                    }
-                    break;
-                case LIFTDEPOSIT:
-                    if (currentGamepad2.y && !previousGamepad2.y) {
-                        runningActions.add(claw.flop());
-                        liftState = LiftState.LIFTSTART;
-                    }
-                    break;
-            }
-
-
-
+//
 //            switch (liftState) {
 //                case LIFTSTART:
-//                    if (currentGamepad2.x && !previousGamepad2.x) {
-//                        if (currentGamepad2.left_trigger < 0.9) {
-//                            runningActions.add(slides.slideTopBasket());
-//                        } else {
-//                            runningActions.add(slides.slideBottomBasket());
-//                        }
-//                        liftState = LiftState.LIFTDEPOSIT;
-//                    }
-//
 //                    if (currentGamepad2.y && !previousGamepad2.y) {
-//                        runningActions.add(new SequentialAction(
-//                                slides.slideWallLevel(),
-//                                claw.open()
-//                        ));
-//                        liftState = LiftState.LIFTWALL;
+//                        runningActions.add(claw.flip());
+//                        liftState = LiftState.LIFTDEPOSIT;
 //                    }
 //                    break;
 //                case LIFTDEPOSIT:
-//                    if (currentGamepad2.x && !previousGamepad2.x && !control.getBusy()) {
-//                        runningActions.add(new SequentialAction(
-//                                control.start(),
-//                                claw.flip(),
-//                                new SleepAction(0.5),
-//                                claw.flop(),
-//                                slides.retract(),
-//                                control.done()
-//                        ));
-//                    }
-//
-//                    if (currentGamepad2.b && !previousGamepad2.b) {
-//                        runningActions.add(new SequentialAction(
-//                                slides.retract(),
-//                                claw.flop()
-//                        ));
-//                    }
-//
-//                    if (control.getFinished()) {
-//                        control.resetFinished();
+//                    if (currentGamepad2.y && !previousGamepad2.y) {
+//                        runningActions.add(claw.flop());
 //                        liftState = LiftState.LIFTSTART;
 //                    }
-//
-//                    break;
-//                case LIFTWALL:
-//                    if (currentGamepad2.y && !previousGamepad2.y) {
-//                        if (currentGamepad2.left_trigger < 0.9) {
-//                            runningActions.add(new SequentialAction(
-//                                    claw.close(),
-//                                    slides.slideTopBar()
-//                            ));
-//                            liftState = LiftState.LIFTTOPBAR;
-//                        } else {
-//                            runningActions.add(new SequentialAction(
-//                                    claw.close(),
-//                                    slides.slideBottomBar()
-//                            ));
-//                            liftState = LiftState.LIFTBOTTOMBAR;
-//                        }
-//                    }
-//                    break;
-//                case LIFTTOPBAR:
-//                    if (currentGamepad2.y && !previousGamepad2.y) {
-//                        runningActions.add(new SequentialAction(
-//                                slides.slideBottomBar(),
-//                                new SleepAction(1),
-//                                slides.retract()
-//                        ));
-//                        liftState = LiftState.LIFTSTART;
-//                    }
-//                    break;
-//                case LIFTBOTTOMBAR:
-//                    if (currentGamepad2.y && !previousGamepad2.y) {
-//                        runningActions.add(slides.retract());
-//                        liftState = LiftState.LIFTSTART;
-//                    }
-//                    break;
-//                default:
-//                    liftState = LiftState.LIFTSTART;
 //                    break;
 //            }
+
+
+
+            switch (liftState) {
+                case LIFTSTART:
+                    if (currentGamepad2.x && !previousGamepad2.x) {
+                        if (currentGamepad2.left_trigger < 0.9) {
+                            runningActions.add(slides.slideTopBasket());
+                        } else {
+                            runningActions.add(slides.slideBottomBasket());
+                        }
+                        liftState = LiftState.LIFTDEPOSIT;
+                    }
+
+                    if (currentGamepad2.y && !previousGamepad2.y) {
+                        runningActions.add(new SequentialAction(
+                                slides.slideWallLevel(),
+                                claw.open()
+                        ));
+                        liftState = LiftState.LIFTWALL;
+                    }
+                    break;
+                case LIFTDEPOSIT:
+                    if (currentGamepad2.x && !previousGamepad2.x && !control.getBusy()) {
+                        runningActions.add(new SequentialAction(
+                                control.start(),
+                                claw.flip(),
+                                new SleepAction(1),
+                                claw.flop(),
+                                slides.retract(),
+                                intake.off(),
+                                control.done()
+                        ));
+                    }
+
+
+                    if (control.getFinished()) {
+                        control.resetFinished();
+                        liftState = LiftState.LIFTSTART;
+                    }
+
+                    break;
+                case LIFTWALL:
+                    if (currentGamepad2.y && !previousGamepad2.y) {
+                        if (currentGamepad2.left_trigger < 0.9) {
+                            runningActions.add(new SequentialAction(
+                                    claw.close(),
+                                    slides.slideTopBar()
+                            ));
+                            liftState = LiftState.LIFTTOPBAR;
+                        } else {
+                            runningActions.add(new SequentialAction(
+                                    claw.close(),
+                                    slides.slideBottomBar()
+                            ));
+                            liftState = LiftState.LIFTBOTTOMBAR;
+                        }
+                    }
+                    break;
+                case LIFTTOPBAR:
+                    if (currentGamepad2.y && !previousGamepad2.y) {
+                        runningActions.add(new SequentialAction(
+                                slides.slideBottomBar(),
+                                new SleepAction(1),
+                                slides.retract()
+                        ));
+                        liftState = LiftState.LIFTSTART;
+                    }
+                    break;
+                case LIFTBOTTOMBAR:
+                    if (currentGamepad2.y && !previousGamepad2.y) {
+                        runningActions.add(slides.retract());
+                        liftState = LiftState.LIFTSTART;
+                    }
+                    break;
+                default:
+                    liftState = LiftState.LIFTSTART;
+                    break;
+            }
 
             if (currentGamepad2.b && !previousGamepad2.b) {
                 liftState = LiftState.LIFTSTART;
@@ -350,8 +345,8 @@ public class BlueTeleop extends LinearOpMode {
             }
 
             if (currentGamepad2.dpad_up) {
-                slides.slidesLeftMotor.setPower(-0.5);
-                slides.slidesRightMotor.setPower(-0.5);
+                slides.slidesLeftMotor.setPower(-1);
+                slides.slidesRightMotor.setPower(-1);
             } else if (currentGamepad2.dpad_down) {
                 slides.slidesLeftMotor.setPower(0.5);
                 slides.slidesRightMotor.setPower(0.5);
@@ -360,8 +355,7 @@ public class BlueTeleop extends LinearOpMode {
                 slides.slidesRightMotor.setPower(0);
             }
 
-            //slides.updateMotor();
-            extendo.updateMotor();
+            //extendo.updateMotor();
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {
@@ -376,6 +370,7 @@ public class BlueTeleop extends LinearOpMode {
 
 
             telemetry.addData("extendo", extendo.extendoMotor.getCurrentPosition());
+            telemetry.addData("slides", slides.getPos());
             telemetry.addData("color", intakeColor);
             telemetry.update();
         }
