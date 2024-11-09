@@ -79,6 +79,8 @@ public class Viper {
 
 //        viper.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
+        pidf = 0;
+        target = 0;
     }
 
 
