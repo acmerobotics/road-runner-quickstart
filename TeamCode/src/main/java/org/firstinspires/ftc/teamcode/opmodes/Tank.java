@@ -43,6 +43,8 @@ public class Tank extends OpMode {
 
     ElapsedTime speedTimer = new ElapsedTime();
 
+    ElapsedTime resetTimer = new ElapsedTime();
+
 
 
 
@@ -102,23 +104,32 @@ public class Tank extends OpMode {
             speed -= 0.25;
         }
 
-        if (gamepad2.right_stick_y <= 0) {
+        if (gamepad2.right_stick_y <= 0.3) {
             shoulder.listen();
+            shoulder.sendTelemetry();
         } else {
             shoulderV0.listen();
             shoulder.setTarget(shoulderV0.getTarget());
+            shoulderV0.sendTelemetry();
         }
         elbow.listen();
         intake.listen();
         viper.listen();
         claw.listen();
 
-        shoulderV0.sendTelemetry();
+        if (gamepad2.a) {
+            resetTimer.reset();
+            elbow.setElbow(0);
+            viper.setTarget(0);
+        }
+        if (resetTimer.seconds() > 1 && resetTimer.seconds() < 1.2) {
+            shoulder.setTarget(200);
+        }
+
+        elbow.sendTelemetry();
         intake.sendTelemetry();
         claw.sendTelemetry();
-
-        telemetry.addData("Speed:", speed);
-        updateTelemetry(telemetry);
+        viper.sendTelemetry();
 
     }
 

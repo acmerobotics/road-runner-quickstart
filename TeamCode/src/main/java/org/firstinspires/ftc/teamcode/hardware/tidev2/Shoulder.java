@@ -72,6 +72,8 @@ public class Shoulder {
         myOpMode = opmode;
     }
 
+    int armPos;
+
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
@@ -109,6 +111,9 @@ public class Shoulder {
         myOpMode.telemetry.addData("Arm pos Left/Right", "%4d / %4d",
                 shoulder_left.getCurrentPosition(),
                 shoulder_right.getCurrentPosition());
+        myOpMode.telemetry.addData("Shoulder pidf:", pidf);
+        myOpMode.telemetry.addData("Shoulder pos:", armPos);
+        myOpMode.telemetry.addData("Shoulder target:", target);
     }
 
 
@@ -133,7 +138,7 @@ public class Shoulder {
 //
 //        // move arm according to the left stick y
 //
-        int armPos = shoulder_left.getCurrentPosition();
+        armPos = shoulder_left.getCurrentPosition();
         boolean controlled = false;
 
         double right_stick = -myOpMode.gamepad2.right_stick_y;
@@ -194,9 +199,7 @@ public class Shoulder {
 
 
 
-        myOpMode.telemetry.addData("Shoulder pidf:", pidf);
-        myOpMode.telemetry.addData("Shoulder pos:", armPos);
-        myOpMode.telemetry.addData("Shoulder target:", target);
+
 
 
 

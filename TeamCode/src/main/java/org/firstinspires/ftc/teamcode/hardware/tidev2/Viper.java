@@ -56,6 +56,8 @@ public class Viper {
 
     public static int target = 0;
 
+    int vipPos;
+
     public Viper(OpMode opmode) {
         myOpMode = opmode;
     }
@@ -98,6 +100,11 @@ public class Viper {
         viper.setPower(pidf);
     }
 
+    public void sendTelemetry() {
+        myOpMode.telemetry.addData("Viper Position:", vipPos);
+        myOpMode.telemetry.addData("Power:", pidf);
+        myOpMode.telemetry.addData("Target Position:", target);
+    }
 
 
     public void listen() {
@@ -113,14 +120,12 @@ public class Viper {
             target = 4100;
         }
 
-        int vipPos = viper.getCurrentPosition();
+        vipPos = viper.getCurrentPosition();
         pidf = controller.calculate(vipPos, target);
 
         viper.setPower(pidf);
 
-        myOpMode.telemetry.addData("Viper Position:", vipPos);
-        myOpMode.telemetry.addData("Power:", pidf);
-        myOpMode.telemetry.addData("Target Position:", target);
+
 
 
         if (myOpMode.gamepad2.dpad_right) {

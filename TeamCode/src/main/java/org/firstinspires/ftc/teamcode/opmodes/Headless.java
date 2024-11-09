@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
@@ -32,8 +33,12 @@ public class Headless extends OpMode {
     Viper viper = new Viper(this);
     Claw claw = new Claw(this);
 
+    ElapsedTime resetTimer = new ElapsedTime();
+
 
     MecanumDrive drive;
+
+    boolean pressed_a = false;
 
 
     // Read pose
@@ -73,6 +78,9 @@ public class Headless extends OpMode {
         viper.init();
         claw.init();
 
+        resetTimer.reset();
+
+        pressed_a = false;
     }
 
     @Override
@@ -103,21 +111,34 @@ public class Headless extends OpMode {
             );
         }
 
-        if (gamepad2.right_stick_y <= 0) {
+        if (gamepad2.right_stick_y <= 0.3) {
             shoulder.listen();
+            shoulder.sendTelemetry();
         } else {
             shoulderV0.listen();
             shoulder.setTarget(shoulderV0.getTarget());
+            shoulderV0.sendTelemetry();
         }
         elbow.listen();
         intake.listen();
         viper.listen();
         claw.listen();
 
+        if (gamepad2.a) {
+            pressed_a = true;
+            resetTimer.reset();
+            elbow.setElbow(0);
+            viper.setTarget(0);
+        }
 
-        shoulderV0.sendTelemetry();
+        if (pressed_a && resetTimer.seconds() > 1 && resetTimer.seconds() < 1.2) {
+            shoulder.setTarget(200);
+        }
+
+        elbow.sendTelemetry();
         intake.sendTelemetry();
         claw.sendTelemetry();
+        viper.sendTelemetry();
 
 
 

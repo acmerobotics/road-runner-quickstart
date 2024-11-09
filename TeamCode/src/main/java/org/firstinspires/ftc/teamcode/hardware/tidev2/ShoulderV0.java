@@ -56,6 +56,7 @@ public class ShoulderV0 {
 
     double pidf;
 
+    int armPos;
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
@@ -97,6 +98,9 @@ public class ShoulderV0 {
         myOpMode.telemetry.addData("Arm pos Left/Right", "%4d / %4d",
                 shoulder_left.getCurrentPosition(),
                 shoulder_right.getCurrentPosition());
+        myOpMode.telemetry.addData("Shoulder v0 pidf:", pidf);
+        myOpMode.telemetry.addData("Shoulder v0 pos:", armPos);
+        myOpMode.telemetry.addData("Shoulder v0 target:", target);
     }
 
     public int getTarget() {
@@ -105,7 +109,7 @@ public class ShoulderV0 {
 
 
     public void listen() {
-        int armPos = shoulder_left.getCurrentPosition();
+        armPos = shoulder_left.getCurrentPosition();
         boolean controlled = false;
 
 

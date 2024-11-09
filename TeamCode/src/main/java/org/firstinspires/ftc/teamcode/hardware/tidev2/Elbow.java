@@ -41,7 +41,7 @@ public class Elbow {
 
     private PIDFController controller;
 
-    public static double p = 0.001, i = 0.0001, d = 0.0001;
+    public static double p = 0.001, i = 0.0003, d = 0.0002;
     public static double f = 0;
 
     public static int target = 0;
@@ -51,6 +51,9 @@ public class Elbow {
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
+    int elbPos;
+
+    double pidf;
 
 //    PIDFCoefficients pidfNew = new PIDFCoefficients(NEW_P, NEW_I, NEW_D, NEW_F);
 
@@ -85,24 +88,28 @@ public class Elbow {
 
     }
 
+    public void sendTelemetry() {
+        myOpMode.telemetry.addData("Elbow Position:", elbPos);
+        myOpMode.telemetry.addData("Power:", pidf);
+        myOpMode.telemetry.addData("Target Position:", target);
+    }
+
     public void listen() {
 
-        if (target <=  0 && target >= -600) {
+        if (target <=  0 && target >= -750) {
             target += (int) (myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger) * 50;
         } else if (target > 0) {
             target = 0;
         } else {
-            target = -600;
+            target = -750;
         }
 
-        int elbPos = elbow.getCurrentPosition();
-        double pidf = controller.calculate(elbPos, target);
+        elbPos = elbow.getCurrentPosition();
+        pidf = controller.calculate(elbPos, target);
 
         elbow.setPower(pidf);
 
-        myOpMode.telemetry.addData("Elbow Position:", elbPos);
-        myOpMode.telemetry.addData("Power:", pidf);
-        myOpMode.telemetry.addData("Target Position:", target);
+
 
 
         if (myOpMode.gamepad2.dpad_right) {
