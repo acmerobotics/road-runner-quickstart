@@ -26,13 +26,13 @@ import java.util.List;
 
 //TODO: change claw opened and closed values
 public class Robot {
-    DcMotor leftFront, leftBack, rightFront, rightBack, leftHang, rightHang;
-    DcMotor flip, slide;
-    Servo wrist;
-    CRServo intakeLeft, intakeRight;
-    MecanumDrive drive;
-    AnalogInput axonLeft, axonRight;
-    PIDController armController, slideController;
+    public DcMotor leftFront, leftBack, rightFront, rightBack, leftHang, rightHang;
+    public DcMotor flip, slide;
+    public Servo wrist;
+    public CRServo intakeLeft, intakeRight;
+    public MecanumDrive drive;
+    public AnalogInput axonLeft, axonRight;
+    public PIDController armController, slideController;
 
     public final double gripClawOpen = 0, gripClawClosed = 0.1;
     public double intakeLeftPos, intakeRightPos;

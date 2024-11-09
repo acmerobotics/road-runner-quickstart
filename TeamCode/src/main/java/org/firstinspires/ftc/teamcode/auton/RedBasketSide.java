@@ -67,6 +67,13 @@ public class RedBasketSide extends LinearOpMode {
                 .afterTime(5, bot.setPidVals(2200,0))
                 .afterTime(30, bot.stopPID())
                 .build();
+
+        bot.slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bot.flip.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        bot.slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bot.flip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        
         // Wait for the start of the op mode
         waitForStart();
 
