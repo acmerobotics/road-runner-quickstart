@@ -87,6 +87,7 @@ public class ShoulderV0 {
         shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         pidf = 0;
+        target = 0;
     }
 
 
@@ -98,7 +99,9 @@ public class ShoulderV0 {
                 shoulder_right.getCurrentPosition());
     }
 
-
+    public int getTarget() {
+        return target;
+    }
 
 
     public void listen() {
@@ -150,9 +153,9 @@ public class ShoulderV0 {
         }
 
 
-        myOpMode.telemetry.addData("pidf", pidf);
-        myOpMode.telemetry.addData("pos", armPos);
-        myOpMode.telemetry.addData("target", target);
+        myOpMode.telemetry.addData("Shoulder v0 pidf:", pidf);
+        myOpMode.telemetry.addData("Shoulder v0 pos:", armPos);
+        myOpMode.telemetry.addData("Shoulder v0 target:", target);
 
 
 

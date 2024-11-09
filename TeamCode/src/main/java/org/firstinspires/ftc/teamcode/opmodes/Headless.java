@@ -109,6 +109,7 @@ public class Headless extends OpMode {
             shoulder.listen();
         } else {
             shoulderV0.listen();
+            shoulder.setTarget(shoulderV0.getTarget());
         }
         elbow.listen();
         intake.listen();
