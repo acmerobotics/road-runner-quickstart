@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auton;
 
+import org.firstinspires.ftc.teamcode.teleop.Robot;
 import org.opencv.core.Point;
 
 public class CoordinateProcessor {
