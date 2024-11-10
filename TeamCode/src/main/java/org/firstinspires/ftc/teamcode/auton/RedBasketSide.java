@@ -93,5 +93,6 @@ public class RedBasketSide extends LinearOpMode {
                 )
 
         );
+        bot.stopPID();
     }
 }

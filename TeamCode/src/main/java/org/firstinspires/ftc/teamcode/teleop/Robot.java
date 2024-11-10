@@ -39,7 +39,7 @@ public class Robot {
     public double flipPos, slidePos;
     public int armTarget = 0, slideTarget = 0;
     public int armTargetAuto = 0, slideTargetAuto = 0;
-    public static boolean stopPid = false;
+    public static volatile boolean stopPid = false;
     Thread currentThread;
 
     public Robot(HardwareMap hardwareMap) {
@@ -315,9 +315,12 @@ public class Robot {
         }
     }
     public void startPID() {
-        Thread thread = new Thread(new pidfLoopAuton());
-        currentThread = thread;
-        currentThread.start();
+        if (currentThread == null || !currentThread.isAlive()) {
+            stopPid = false;
+            Thread thread = new Thread(new pidfLoopAuton());
+            currentThread = thread;
+            currentThread.start();
+        }
     }
     public Action setPidVals(int arm, int slide) {
         return new ValAction(arm, slide);
@@ -352,6 +355,12 @@ public class Robot {
                 double pid2 = slideController.calculate(slidePos, slideTargetAuto);
 
                 slide.setPower(pid2);
+
+                try {
+                    Thread.sleep(10); // Adjust the sleep time as needed
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
     }
@@ -362,7 +371,15 @@ public class Robot {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             Robot.stopPid = true;
-            currentThread.stop();
+            try {
+                if (currentThread != null && currentThread.isAlive()) {
+                    currentThread.join(); // Wait for the thread to finish
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+           // currentThread.stop();
+
             armTargetAuto = 0;
             slideTargetAuto = 0;
             flip.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
