@@ -26,9 +26,9 @@ import java.util.List;
 
 //TODO: change claw opened and closed values
 public class Robot {
-    public DcMotor leftFront, leftBack, rightFront, rightBack, leftHang, rightHang;
+    public DcMotor leftFront, leftBack, rightFront, rightBack;
     public DcMotor flip, slide;
-    public Servo wrist;
+    public Servo wrist, leftHang, rightHang;
     public CRServo intakeLeft, intakeRight;
     public MecanumDrive drive;
     public AnalogInput axonLeft, axonRight;
@@ -58,8 +58,8 @@ public class Robot {
 
         flip = hardwareMap.dcMotor.get("flip");
         slide = hardwareMap.dcMotor.get("slide");
-        leftHang = hardwareMap.dcMotor.get("leftHang");
-        rightHang = hardwareMap.dcMotor.get("rightHang");
+        leftHang = hardwareMap.servo.get("leftHang");
+        rightHang = hardwareMap.servo.get("rightHang");
 
         intakeLeft = hardwareMap.crservo.get("intakeLeft");
         intakeRight = hardwareMap.crservo.get("intakeRight");
@@ -78,10 +78,6 @@ public class Robot {
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         flip.setDirection(DcMotorSimple.Direction.FORWARD);
         flip.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        leftHang.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightHang.setDirection(DcMotorSimple.Direction.REVERSE);
-
 
         intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -203,17 +199,13 @@ public class Robot {
     public void hangControl(Gamepad gamepad) {
         if (gamepad.x)
         {
-            leftHang.setPower(-1);
-            rightHang.setPower(1);
+            leftHang.setPosition(1);
+            rightHang.setPosition(-1);
         }
         else if (gamepad.b)
         {
-            leftHang.setPower(1);
-            rightHang.setPower(-1);
-        }
-        else {
-            leftHang.setPower(0);
-            rightHang.setPower(0);
+            leftHang.setPosition(-1);
+            rightHang.setPosition(1);
         }
     }
 
