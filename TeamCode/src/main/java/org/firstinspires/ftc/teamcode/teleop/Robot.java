@@ -265,7 +265,7 @@ public class Robot {
         if (armTarget < 0) armTarget = 0;
         else if (armTarget > 2500) armTarget = 2500;
 
-        if (slideTarget < 0) slideTarget = 0;
+        if (slideTarget < 0 && armTarget < 1500) slideTarget = 0;
         else if (slideTarget > 3950) slideTarget = 3950;
 
         flipPos = flip.getCurrentPosition();
