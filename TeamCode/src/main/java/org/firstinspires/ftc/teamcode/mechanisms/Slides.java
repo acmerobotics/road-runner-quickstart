@@ -40,15 +40,15 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set value to the motor position of top basket
-                target = -2650;
+                target = -2790;
                 slidesLeftMotor.setTargetPosition(target);
                 slidesRightMotor.setTargetPosition(target);
 
                 slidesLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slidesRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                slidesLeftMotor.setPower(-0.7);
-                slidesRightMotor.setPower(-0.7);
+                slidesLeftMotor.setPower(-1);
+                slidesRightMotor.setPower(-1);
                 //slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -72,7 +72,7 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set values to the motor position of bottom basket
-                target = 100;
+                target = -1660;
                 slidesLeftMotor.setTargetPosition(target);
                 slidesRightMotor.setTargetPosition(target);
 
@@ -102,7 +102,7 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set values to the motor position of the wall
-                target = 200;
+                target = -324;
                 slidesLeftMotor.setTargetPosition(target);
                 slidesRightMotor.setTargetPosition(target);
 
@@ -133,7 +133,7 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set values to the motor position of a bit above the top speciman bar
-                target = 250;
+                target = -1625;
                 slidesLeftMotor.setTargetPosition(target);
                 slidesRightMotor.setTargetPosition(target);
 
@@ -164,7 +164,7 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set values to the motor position of a bit above the bottom speciman bar
-                target = 250;
+                target = -710;
                 slidesLeftMotor.setTargetPosition(target);
                 slidesRightMotor.setTargetPosition(target);
 

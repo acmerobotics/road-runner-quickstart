@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intaker {
     private Servo intakeServoLeft;
     private Servo intakeServoRight;
-    private DcMotor intakeMotor;
+    public DcMotor intakeMotor;
 
     public Intaker(HardwareMap HWMap){
         intakeServoLeft = HWMap.get(Servo.class, "intakeServoLeft");
@@ -80,7 +80,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeMotor.setPower(0.55);
+            intakeMotor.setPower(0.6);
             return false;
         }
     }

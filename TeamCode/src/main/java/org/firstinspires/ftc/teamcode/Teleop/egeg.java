@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import android.graphics.Color;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -46,23 +45,17 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Auto.Vision.Pipeline;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 @TeleOp
-public class BlueTeleop extends LinearOpMode {
+public class egeg extends LinearOpMode {
 
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
@@ -180,7 +173,16 @@ public class BlueTeleop extends LinearOpMode {
                                 intake.intake(),
                                 control.done()
                         ));
+
+
                     }
+
+                    if (currentGamepad2.dpad_left) {
+                        intake.intakeMotor.setPower(0.55);
+                    } else {
+                        intake.intakeMotor.setPower(0);
+                    }
+
                     if (control.getFinished()) {
                         control.resetFinished();
                         intakeUp = false;
@@ -223,19 +225,14 @@ public class BlueTeleop extends LinearOpMode {
 
                     if (control.getFinished()) {
                         control.resetFinished();
-                        runningActions.add(new SequentialAction(
-                                claw.flop(),
-                                new SleepAction(0.3),
-                                intake.extake()
-                        ));
+                        runningActions.add(
+                                claw.flop()
+                        );
                         extendoState = ExtendoState.EXTENDORETRACT;
                     }
                     break;
                 case EXTENDORETRACT:
-                    if ((currentGamepad2.a && !previousGamepad2.a)) /*|| intakeColor.equals("none"))*/ {
-                        runningActions.add(new SequentialAction(intake.off(), claw.up()));
-                        extendoState = ExtendoState.EXTENDOSTART;
-                    }
+                    extendoState = ExtendoState.EXTENDOSTART;
                     break;
                 default:
                     extendoState = ExtendoState.EXTENDOSTART;
@@ -336,17 +333,7 @@ public class BlueTeleop extends LinearOpMode {
             }
 
             if (currentGamepad2.b && !previousGamepad2.b) {
-                liftState = LiftState.LIFTSTART;
-                extendoState = ExtendoState.EXTENDOSTART;
 
-                runningActions.add(new SequentialAction(
-                        intake.off(),
-                        intake.flop(),
-                        claw.flop(),
-                        extendo.retract(),
-                        slides.retract(),
-                        claw.open()
-                ));
             }
 
             if (currentGamepad2.dpad_up) {

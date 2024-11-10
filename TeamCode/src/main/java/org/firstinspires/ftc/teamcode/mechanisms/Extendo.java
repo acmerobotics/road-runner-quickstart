@@ -35,9 +35,9 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -12;
+                target = -8;
                 extendoMotor.setTargetPosition(target);
-                extendoMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 extendoMotor.setPower(0.5);
                 //extendoMotorPID.setTargetPosition(extendo_target);
                 init = true;
@@ -60,9 +60,9 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -55;
+                target = -52;
                 extendoMotor.setTargetPosition(target);
-                extendoMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 extendoMotor.setPower(-0.5);
                 init = true;
             }
