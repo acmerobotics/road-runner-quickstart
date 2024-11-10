@@ -142,15 +142,33 @@ public class mainCodeV1 extends LinearOpMode {
     private void rotateTo(double targetDegree) {
         double botHeading;
         botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        float direction = 0; // 1 is clockwise, -1 is counterclock
+        float direction = (float) 0.5; // 1 is clockwise, -1 is counterclock
         if (Math.abs(botHeading - targetDegree) > 4) {
-            if (targetDegree > botHeading) {
-                direction = (float) 0.5;
+            if ((botHeading >= 0 && targetDegree > 0) || (botHeading < 0 && targetDegree < 0)) {
+                if ((targetDegree - botHeading) >= 0) {
+                    direction *= (float) -1;
+                }
+                else {
+                    direction *= (float) 1;
+                }
             }
-            else if (targetDegree < botHeading) {
-                direction = (float) -0.5;
+            else if (botHeading < 0 && targetDegree >= 0) {
+                if (botHeading - targetDegree > -360 - botHeading + targetDegree) {
+                    direction *= (float) -1;
+                }
+                else {
+                    direction *= (float) 1;
+                }
             }
-            chassisMovement(0,0,direction);
+            else if (botHeading >= 0 && targetDegree < 0) {
+                if (botHeading - targetDegree < 360 - botHeading + targetDegree) {
+                    direction *= (float) 1;
+                }
+                else {
+                    direction *= (float) -1;
+                }
+            }
+            
         }
     }
     @Override
