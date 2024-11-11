@@ -11,7 +11,6 @@ public class TeleopV1 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Robot bot = new Robot(hardwareMap);
         bot.setTelemToDashboard(telemetry);
-        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
         waitForStart();
 
@@ -24,7 +23,6 @@ public class TeleopV1 extends LinearOpMode {
             bot.wristControl(gamepad2);
             bot.intakeControl(gamepad2);
             bot.scoringMacro(gamepad1, gamepad2);
-            bot.intakeOpen(gamepad2);
             bot.hangControl(gamepad1);
             bot.extraD1Features(gamepad1);
 
@@ -37,6 +35,8 @@ public class TeleopV1 extends LinearOpMode {
             telemetry.addData("slideTarget", bot.slideTarget);
             telemetry.addData("fliPower", bot.flip.getPower());
             telemetry.addData("slidePower", bot.slide.getPower());
+            telemetry.addData("intakeLeft", bot.intakeLeft.getPower());
+            telemetry.addData("intakeRight", bot.intakeRight.getPower());
             telemetry.update();
         }
     }
