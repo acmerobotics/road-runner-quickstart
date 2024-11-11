@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Shoulder {
-    public final double MAX_POWER = 1.0;
+    public final double MAX_POWER = 2.0;
     public final double MIN_POWER = -0.5;
 
     public enum BucketState{
@@ -56,7 +56,7 @@ public class Shoulder {
 
     private PIDFController controller;
 
-    public static final double p = 0.003, i = 0.003, d = 0.0002;
+    public static final double p = 0.003, i = 0.013, d = 0.0002;
     public static final double f = 0.00003;
 
     public static int target = 100;
@@ -83,6 +83,8 @@ public class Shoulder {
         bucketStateTimer = new ElapsedTime();
 
         controller = new PIDFController(p, i, d, f);
+        controller.setTolerance(5, 10);
+
         shoulder_right = myOpMode.hardwareMap.get(DcMotorEx.class, "left_tower");
         shoulder_left = myOpMode.hardwareMap.get(DcMotorEx.class, "right_tower");
 
@@ -172,20 +174,19 @@ public class Shoulder {
         }
 
         if (override_deadzone) {
-            target += right_stick * 50;
+            target += (int) (right_stick * 50);
             if (target > 950) {
                 target = 950;
             }
 
         } else if (Math.abs(right_stick) > deadzone
-                && armPos <= 950 && armPos >= -100
         ) {
             bucketState = BucketState.ZERO_BUCKETSTATE;
 
             if (right_stick > 0) {
-                target += (int) right_stick * 50;
+                target += (int) (right_stick * 50);
             } else {
-                target += (int) right_stick * 10;
+                target += (int) (right_stick * 20);
             }
 
             if (target > 850) {
@@ -208,13 +209,14 @@ public class Shoulder {
         shoulder_left.setPower(normalize_power(pidf));
 
 
-        if (myOpMode.gamepad2.dpad_right) {
+        if (myOpMode.gamepad2.start) {
+            // Reset the target to zero
+            target = 0;
             shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             shoulder_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             shoulder_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-
     }
 }

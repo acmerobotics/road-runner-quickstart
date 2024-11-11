@@ -164,7 +164,8 @@ public class ShoulderV0 {
 
 
 
-        if (myOpMode.gamepad2.dpad_right) {
+        if (myOpMode.gamepad2.start) {
+            target = 0;
             shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }

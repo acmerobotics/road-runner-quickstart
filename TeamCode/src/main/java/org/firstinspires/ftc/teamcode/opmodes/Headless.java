@@ -112,6 +112,7 @@ public class Headless extends OpMode {
         }
 
         shoulder.listen();
+        shoulder.sendTelemetry();
 //        if (gamepad2.right_stick_y <= 0.3) {
 //            shoulder.listen();
 //            shoulder.sendTelemetry();

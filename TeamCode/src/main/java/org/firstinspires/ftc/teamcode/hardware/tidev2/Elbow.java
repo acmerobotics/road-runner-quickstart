@@ -33,17 +33,20 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class Elbow {
 
+    public final double MAX_POWER = 1.0;
+    public final double MIN_POWER = -1.0;
 
-    public final int MAX_ELBOW = -650;
-    public final int MAX_STRETCH = -750;
+    public final int MAX_ELBOW = 650;
+    public final int MAX_STRETCH = 750;
 
     private PIDFController controller;
 
-    public static double p = 0.001, i = 0.0003, d = 0.0002;
+    public static double p = 0.005, i = 0.0013, d = 0.0002;
     public static double f = 0;
 
     public static int target = 0;
@@ -65,11 +68,13 @@ public class Elbow {
 
     public void init() {
         controller = new PIDFController(p, i, d, f);
+        controller.setTolerance(5, 10);
 
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         elbow = myOpMode.hardwareMap.get(DcMotorEx.class, "elbow");
 
         elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elbow.setDirection(DcMotor.Direction.REVERSE);
         elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        elbow.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -82,12 +87,22 @@ public class Elbow {
         target = tar;
     }
 
+    public double normalize_power(double power) {
+        if (power > MAX_POWER) {
+            power = MAX_POWER;
+        }
+        if ( power < MIN_POWER ) {
+            power = MIN_POWER;
+        }
+        return power;
+    }
+
     public void autoListen() {
 
         elbPos = elbow.getCurrentPosition();
         pidf = controller.calculate(elbPos, target);
 
-        elbow.setPower(pidf);
+        elbow.setPower(normalize_power(pidf));
 
     }
 
@@ -100,16 +115,15 @@ public class Elbow {
     }
 
     public void listen_simple() {
-        pidf = myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger;
+        pidf = -myOpMode.gamepad2.right_trigger +myOpMode.gamepad2.left_trigger;
         if (pidf != 0.0) {
-            elbow.setPower(pidf);
+            elbow.setPower(normalize_power(pidf));
             target = elbow.getCurrentPosition();
         }
     }
 
     public void listen() {
         listen_complex();
-        sendTelemetry();
     }
     public void listen_complex() {
 
@@ -119,22 +133,26 @@ public class Elbow {
 
         } else {
 
-            if (target <=  0 && target >= MAX_STRETCH) {
-                target += (int) (myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger) * 50;
-            } else if (target > 0) {
+            target += (int) (-(myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger) * 10);
+
+            if (target < 0) {
                 target = 0;
-            } else {
+            }
+            if (target > MAX_STRETCH) {
                 target = MAX_STRETCH;
             }
 
             elbPos = elbow.getCurrentPosition();
             pidf = controller.calculate(elbPos, target);
 
-            elbow.setPower(pidf);
+            elbow.setPower(normalize_power(pidf));
 
         }
 
-        if (myOpMode.gamepad2.dpad_right) {
+        if (myOpMode.gamepad2.start) {
+            // Reset the target to zero
+            target = 0;
+
             elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
