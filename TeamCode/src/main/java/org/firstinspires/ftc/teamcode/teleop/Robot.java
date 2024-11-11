@@ -197,15 +197,15 @@ public class Robot {
     }
 
     public void hangControl(Gamepad gamepad) {
-        if (gamepad.x)
+        if (gamepad.a)
         {
             leftHang.setPosition(1);
             rightHang.setPosition(-1);
         }
-        else if (gamepad.b)
+        else if (gamepad.y)
         {
             leftHang.setPosition(-1);
-            rightHang.setPosition(1);
+            rightHang.setPosition(0.93);
         }
     }
 
