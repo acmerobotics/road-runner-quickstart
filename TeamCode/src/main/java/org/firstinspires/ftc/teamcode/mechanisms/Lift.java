@@ -45,7 +45,7 @@ public class Lift {
                 motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
             double pos = motor.getCurrentPosition();
-            packet.put("LiftPos", pos);
+            packet.put("LiftUpPos", pos);
             if (pos < (int)(LIFT_SCORING_IN_HIGH_BASKET*0.98)) {
                 motor.setTargetPosition((int) (LIFT_SCORING_IN_HIGH_BASKET));
                 motor.setVelocity(1300);
@@ -87,7 +87,41 @@ public class Lift {
                 motor.setPower(0);
                 return false;
             }
+
         }
+    }
+
+    public class LiftScoreAuto implements Action {
+        private boolean initialized = false;
+        private double beginTs = -1;
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            double duration;
+            if (!initialized){
+                beginTs = Actions.now();
+                initialized = true;
+                motor.setTargetPosition((int) (LIFT_SCORING_IN_HIGH_BASKET));
+                motor.setVelocity(2500);
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            double pos = motor.getCurrentPosition();
+            packet.put("ArmPos", pos);
+            if (pos < (int)(LIFT_SCORING_IN_HIGH_BASKET*0.98)) {
+                motor.setTargetPosition((int) (LIFT_SCORING_IN_HIGH_BASKET));
+                motor.setVelocity(1200);
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                return true;
+            } else {
+                motor.setTargetPosition((int) (pos));
+                motor.setVelocity(100);
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                return false;
+            }
+        }
+    }
+
+    public Action LiftScoreAction() {
+        return new Lift.LiftScoreAuto();
     }
 
     public Action liftDownAction() {

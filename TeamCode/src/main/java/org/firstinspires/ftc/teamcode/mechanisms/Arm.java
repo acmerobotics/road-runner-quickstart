@@ -26,7 +26,7 @@ public class Arm {
     counts per rotation of the arm. We divide that by 360 to get the counts per degree. */
     public static double ARM_TICKS_PER_DEGREE =
             28 // number of encoder ticks per rotation of the bare motor
-                    * 72.1 // Gear ratio for the for the motor used in V1 robot
+                    * 71.2 // Gear ratio for the for the motor used in V1 robot
                     * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
                     * 1/360.0; // we want ticks per degree, not per rotation
 
@@ -42,8 +42,8 @@ public class Arm {
     If you'd like it to move further, increase that number. If you'd like it to not move
     as far from the starting position, decrease it. */
 
-    public static double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    public static double ARM_COLLECT               = 225 * ARM_TICKS_PER_DEGREE; //6500; ?
+    public static double ARM_COLLAPSED_INTO_ROBOT  = 0 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_COLLECT               = 225 * ARM_TICKS_PER_DEGREE;
     public static double ARM_CLEAR_BARRIER         = 219 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SPECIMEN        = 174 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SAMPLE_IN_LOW   = 174 * ARM_TICKS_PER_DEGREE;
@@ -68,35 +68,31 @@ public class Arm {
 
     // auto
     public class ArmScoreAuto implements Action {
-        private boolean initialized = false;
-        private double beginTs = -1;
+        private final int _targetPos;
+        // Constructor
+        public ArmScoreAuto(int targetPos){
+            _targetPos = targetPos;
+        }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            double duration;
-            if (!initialized){
-                beginTs = Actions.now();
-                initialized = true;
-                motor.setTargetPosition((int) (ARM_SCORE_SAMPLE_IN_HIGH));
-                motor.setVelocity(2500);
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            double pos = motor.getCurrentPosition();
-            packet.put("ArmPos", pos);
-            if (pos < (int)(ARM_SCORE_SAMPLE_IN_HIGH*0.98)) {
-                motor.setTargetPosition((int) (ARM_SCORE_SAMPLE_IN_HIGH));
-                motor.setVelocity(2500);
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                return true;
-            } else {
-                motor.setPower(0);
-                return false;
-            }
+
+            motor.setTargetPosition(_targetPos);
+            motor.setVelocity(2500);
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            int currentPosition = motor.getCurrentPosition();
+            int error = Math.abs(_targetPos - currentPosition);
+            packet.put("Target", _targetPos);
+            packet.put("ArmPos Lift", currentPosition);
+            packet.put("Error", error);
+            // keep running until we're close enough
+            return error > 5; // ticks
         }
     }
-
     public Action armScoreAction() {
-        return new ArmScoreAuto();
+        return new ArmScoreAuto((int)ARM_SCORE_SAMPLE_IN_HIGH);
     }
-
-
+    public Action armPositionAction() {
+        return new ArmScoreAuto((int)ARM_COLLAPSED_INTO_ROBOT);
+    }
 }
