@@ -20,7 +20,10 @@ public class RobotNew {
     public MotorEx SlideRight;
     public MotorGroup Slides;
 
-    public SimpleServo Extension;
+    public MotorEx ExtensionRight;
+    public MotorEx ExtensionLeft;
+    public MotorGroup Extension;
+
     public SimpleServo HangingLowBar;
     public SimpleServo HangingHighBar;
     public SimpleServo Claw;
@@ -43,11 +46,20 @@ public class RobotNew {
 
         Slides = new MotorGroup(SlideLeft, SlideRight);
 
-        YServo = new SimpleServo(hwMapRobot, Constants.YServoConfigName, 0.0, 1.0);
-        Claw = new SimpleServo(hwMapRobot, Constants.Claw1ConfigName, 0.0, 1.0);
-        Extension = new SimpleServo(hwMap, Constants.ExtensionName, 0.0, 1.0);
-        HangingHighBar = new SimpleServo(hwMap, Constants.HangingHighName, 0.0, 1.0);
-        HangingLowBar = new SimpleServo(hwMap, Constants.HangingLowName, 0.0, 1.0);
+        ExtensionRight = new MotorEx(hwMap, "ER");
+        ExtensionRight.setRunMode(Motor.RunMode.RawPower);
+        ExtensionRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        ExtensionLeft = new MotorEx(hwMap, "EL");
+        ExtensionLeft.setRunMode(Motor.RunMode.RawPower);
+        ExtensionLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        Extension = new MotorGroup(ExtensionLeft, ExtensionRight);
+
+//        YServo = new SimpleServo(hwMapRobot, Constants.YServoConfigName, 0.0, 1.0);
+//        Claw = new SimpleServo(hwMapRobot, Constants.Claw1ConfigName, 0.0, 1.0);
+//        HangingHighBar = new SimpleServo(hwMap, Constants.HangingHighName, 0.0, 1.0);
+//        HangingLowBar = new SimpleServo(hwMap, Constants.HangingLowName, 0.0, 1.0);
 
         FrontLeft = new MotorEx(hwMap, "FL", Motor.GoBILDA.RPM_312);
 

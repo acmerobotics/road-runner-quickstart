@@ -24,8 +24,8 @@ public class TeleopNew extends LinearOpMode {
         robot.init(hardwareMap);
         drive = new MecanumDrive(robot.FrontLeft, robot.FrontRight, robot.BackLeft, robot.BackRight);
 
-        extension = new Extension(robot.Extension);
-        slides = new SlideGroup(robot.Slides);
+//        extension = new Extension(robot.Extension);
+//        slides = new SlideGroup(robot.Slides);
 
         gamepad1Ex = new GamepadEx(gamepad1);
         gamepad2Ex = new GamepadEx(gamepad2);
@@ -43,26 +43,32 @@ public class TeleopNew extends LinearOpMode {
                     gamepad1Ex.getRightX(),
                     true
             );
-
-            if (gamepad2Ex.getButton(GamepadKeys.Button.A)) {
-                extension.extend();
-            }
-
-            if (gamepad2Ex.getButton(GamepadKeys.Button.B)) {
-                extension.retract();
-            }
-
             if (gamepad2Ex.getButton(GamepadKeys.Button.DPAD_DOWN)) { // Slides Up
-                robot.Slides.set(1);
+                robot.SlideLeft.set(-0.8);
+                robot.SlideRight.set(0.8);
             } else if (gamepad2Ex.getButton(GamepadKeys.Button.DPAD_UP)) { // Slides Down
-                robot.Slides.set(-1);
+                robot.SlideLeft.set(0.8);
+                robot.SlideRight.set(-0.8);
             } else { // Hold Slide Position
-                robot.Slides.set(-0.009375);
+//                robot.Slides.set(-0.009375);
+                robot.SlideLeft.set(0.15);
+                robot.SlideRight.set(-0.2);
             }
 
-            if (gamepad2Ex.getButton(GamepadKeys.Button.X)){
+            /*if (gamepad2Ex.getButton(GamepadKeys.Button.X)){
                 slides.resetEncoder();
                 slides.slidesToPosition(10);
+            }*/
+
+            if (gamepad2Ex.getButton(GamepadKeys.Button.DPAD_RIGHT)) { // Extension Out
+                robot.ExtensionLeft.set(1);
+                robot.ExtensionRight.set(-1);
+            } else if (gamepad2Ex.getButton(GamepadKeys.Button.DPAD_LEFT)) { // Extension In
+                robot.ExtensionLeft.set(-1);
+                robot.ExtensionRight.set(1);
+            } else {
+                robot.ExtensionLeft.set(0);
+                robot.ExtensionRight.set(0);
             }
         }
     }
