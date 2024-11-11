@@ -11,5 +11,9 @@ public enum Levels {
     HIGH_RUNG,
     CLIMB_EXTENDED,
     CLIMB_RETRACTED,
+    CLIMB_PRIMED,
+    ASCENDING,
+    CLIMB_L2,
+    CLIMB_L3,
     INTAKE_INTERMEDIATE
 }

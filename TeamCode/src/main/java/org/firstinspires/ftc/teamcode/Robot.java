@@ -11,6 +11,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import com.acmerobotics.roadrunner.Pose2d;
@@ -52,7 +53,8 @@ public class Robot {
     // STATE VARS
     boolean auton;
     boolean intaking = false;
-    Levels state = Levels.INIT;
+    public boolean l3ClimbOverride = false;
+    public Levels state = Levels.INIT;
     Gamepiece mode = Gamepiece.SAMPLE;
     public SampleColors targetColor = SampleColors.YELLOW;
 
@@ -60,6 +62,8 @@ public class Robot {
     Motor backRight;
     Motor frontLeft;
     Motor frontRight;
+
+    public IMU imu;
 
 
     public Robot(HardwareMap map, boolean auton){
@@ -102,6 +106,8 @@ public class Robot {
         this.arm = new Arm((StepperServo) components[8], (StepperServo) components[9]);
         this.claw = new Claw((ContinuousServo) components[10], (ContinuousServo) components[11], colorSensor);
         this.climbWinch = new ClimbWinch((StepperServo) components[12], (StepperServo) components[13]);
+
+        this.imu = hardwareMap.get(IMU.class, "imu");
 
         this.commands = new CommandMaster(this);
         this.cv = new CVMaster(limelight, hardwareMap.get(WebcamName.class, "Webcam 1"));
@@ -398,11 +404,34 @@ public class Robot {
         return new NullAction();
     }
 
-    public Action startClimbL2() {
+
+    public Action primeClimb() {
+        return new InstantAction(() -> {
+                    climbWinch.up();
+                    if (state == Levels.CLIMB_PRIMED) {
+                        lift.runToPreset(Levels.INTERMEDIATE);
+                        state = Levels.INTERMEDIATE;
+                    } else {
+                        lift.runToPreset(Levels.CLIMB_EXTENDED);
+                        state = Levels.CLIMB_PRIMED;
+                    }
+                });
+    }
+    public Action startClimbL2(Gamepad gamepad) {
         return new SequentialAction(
-                new InstantAction(climbWinch::climb),
-                new InstantAction(() -> lift.runToPreset(Levels.CLIMB_EXTENDED))
+                new InstantAction(() -> {
+                    climbWinch.climb();
+                    state = Levels.ASCENDING;
+                }),
+                commands.waitL2WinchClimbCompletion(gamepad)
         );
+    }
+
+    public Action startClimbL3() {
+        return new InstantAction(() -> {
+            lift.runToPreset(Levels.CLIMB_RETRACTED);
+            state = Levels.CLIMB_L3;
+        });
     }
 
     //DRIVE

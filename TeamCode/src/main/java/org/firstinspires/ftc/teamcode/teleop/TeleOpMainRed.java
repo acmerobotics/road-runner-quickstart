@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.util.enums.AllianceColor;
@@ -24,6 +25,9 @@ public class TeleOpMainRed extends LinearOpMode {
 
     // STATES
     boolean manualExtension = false;
+    int climbOverride = 3;
+
+    Gamepad oldGamepad = new Gamepad();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -37,32 +41,39 @@ public class TeleOpMainRed extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
 
-            if (gamepad1.left_bumper) {
+            if (gamepad1.left_bumper && !oldGamepad.left_bumper) {
                 actionsQueue.add(new InstantAction(robot::teleDepositPreset));
             }
-            if (gamepad1.right_bumper) {
+            if (gamepad1.right_bumper && !oldGamepad.right_bumper) {
                 actionsQueue.add(robot.generateTeleOpAutomatedIntake(gamepad1));
             }
-            if (gamepad1.triangle) {
+            if (gamepad1.triangle && !oldGamepad.triangle) {
                 actionsQueue.add(new InstantAction(robot::toggleGamepiece));
             }
-            if (gamepad1.square) {
+            if (gamepad1.square && !oldGamepad.square) {
                 actionsQueue.add(new InstantAction(this::setManualExtension));
             }
-            if (gamepad1.circle) {
+            if (gamepad1.circle && !oldGamepad.circle) {
                 actionsQueue.add(new InstantAction(() -> robot.toggleGamepieceColor(allianceColor)));
             }
-            if (gamepad1.cross) {
+            if (gamepad1.cross && !oldGamepad.cross) {
                 actionsQueue.add(robot.smartOuttake(true));
             }
-            if (gamepad1.dpad_right) {
-                actionsQueue.add(new InstantAction(robot.climbWinch::up));
+
+            if (gamepad1.dpad_up && !oldGamepad.dpad_up) {
+                actionsQueue.add(robot.primeClimb());
             }
-            if (gamepad1.dpad_left) {
-                actionsQueue.add(robot.startClimbL2());
-            }
-            if (gamepad1.dpad_down) {
-                actionsQueue.add(new InstantAction(() -> robot.lift.runToPreset(Levels.CLIMB_RETRACTED)));
+            if (gamepad1.dpad_down && !oldGamepad.dpad_down) {
+                if (robot.state == Levels.CLIMB_PRIMED) {
+                    actionsQueue.add(robot.startClimbL2(gamepad1));
+                } else if (robot.state == Levels.CLIMB_L2) {
+                    actionsQueue.add(robot.startClimbL3());
+                } else if (robot.state == Levels.ASCENDING && climbOverride != 0) {
+                    gamepad1.rumbleBlips(climbOverride);
+                    climbOverride -= 1;
+                } else if (robot.state == Levels.ASCENDING) {
+                    robot.l3ClimbOverride = true;
+                }
             }
 
             List<Action> newActions = new ArrayList<>();
@@ -79,7 +90,8 @@ public class TeleOpMainRed extends LinearOpMode {
             double frequency = 1/loopTime;
             oldTime = newTime;
 
-            telemetry.addData("looptime: ", frequency);
+            telemetry.addData("LOOPTIME: ", frequency);
+            telemetry.addData("STATE: ", robot.state);
             telemetry.update();
 
             double x = -gamepad1.left_stick_x;
@@ -87,6 +99,7 @@ public class TeleOpMainRed extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
             robot.setDrivePower(-x, y, rx);
 
+            oldGamepad.copy(gamepad1);
         }
     }
 

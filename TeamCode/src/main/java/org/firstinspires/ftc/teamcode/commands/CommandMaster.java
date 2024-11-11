@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
@@ -20,5 +21,9 @@ public class CommandMaster {
 
     public Action stopIntake(SampleColors... colors) {
         return new StopIntake(robot, colors);
+    }
+
+    public Action waitL2WinchClimbCompletion(Gamepad gamepad) {
+        return new L2WinchClimbPoll(robot, gamepad);
     }
 }
