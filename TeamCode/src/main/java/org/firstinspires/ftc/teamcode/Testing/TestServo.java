@@ -9,24 +9,25 @@ public class TestServo extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Servo left = hardwareMap.get(Servo.class, "bucketServo");
+        Servo left = hardwareMap.get(Servo.class, "intakeServoLeft");
+        Servo right = hardwareMap.get(Servo.class, "intakeServoRight");
 
         waitForStart();
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
                 left.setPosition(1);
-                //right.setPosition(0);
+                right.setPosition(0);
             }
 
             if (gamepad1.x) {
-                left.setPosition(0.3);
-                //right.setPosition(0.8);
+                left.setPosition(0.5);
+                right.setPosition(0.5);
             }
 
             if (gamepad1.b) {
                 left.setPosition(0);
-                //right.setPosition(1);
+                right.setPosition(1);
             }
 
 

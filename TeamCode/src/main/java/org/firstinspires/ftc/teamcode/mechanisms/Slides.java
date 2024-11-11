@@ -26,6 +26,9 @@ public class Slides {
 
         slidesLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//        slidesLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        slidesRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         slidesLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slidesRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
