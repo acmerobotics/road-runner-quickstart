@@ -123,7 +123,7 @@ public class Tank extends OpMode {
             viper.setTarget(0);
         }
         if (resetTimer.seconds() > 1 && resetTimer.seconds() < 1.2) {
-            shoulder.setTarget(200);
+            shoulder.setTarget(400);
         }
 
         elbow.sendTelemetry();

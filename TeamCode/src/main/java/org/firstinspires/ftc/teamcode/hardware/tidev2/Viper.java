@@ -106,8 +106,19 @@ public class Viper {
         myOpMode.telemetry.addData("Target Position:", target);
     }
 
+    public void listen_simple() {
+        pidf = -myOpMode.gamepad2.left_stick_y;
+        if (pidf != 0.0) {
+            viper.setPower(pidf);
+            target = viper.getCurrentPosition();
+        }
+    }
 
     public void listen() {
+        if (myOpMode.gamepad2.dpad_up) {
+            listen_simple();
+            return;
+        }
 
         // move viper according to the left stick y
 

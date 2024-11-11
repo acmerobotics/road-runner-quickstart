@@ -111,14 +111,16 @@ public class Headless extends OpMode {
             );
         }
 
-        if (gamepad2.right_stick_y <= 0.3) {
-            shoulder.listen();
-            shoulder.sendTelemetry();
-        } else {
-            shoulderV0.listen();
-            shoulder.setTarget(shoulderV0.getTarget());
-            shoulderV0.sendTelemetry();
-        }
+        shoulder.listen();
+//        if (gamepad2.right_stick_y <= 0.3) {
+//            shoulder.listen();
+//            shoulder.sendTelemetry();
+//        } else {
+//            shoulderV0.listen();
+//            shoulder.setTarget(shoulderV0.getTarget());
+//            shoulderV0.sendTelemetry();
+//        }
+
         elbow.listen();
         intake.listen();
         viper.listen();
@@ -132,7 +134,7 @@ public class Headless extends OpMode {
         }
 
         if (pressed_a && resetTimer.seconds() > 1 && resetTimer.seconds() < 1.2) {
-            shoulder.setTarget(200);
+            shoulder.setTarget(400);
         }
 
         elbow.sendTelemetry();

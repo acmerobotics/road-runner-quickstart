@@ -38,6 +38,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Shoulder {
+    public final double MAX_POWER = 1.0;
+    public final double MIN_POWER = -0.5;
 
     public enum BucketState{
         ZERO_BUCKETSTATE,
@@ -54,7 +56,7 @@ public class Shoulder {
 
     private PIDFController controller;
 
-    public static final double p = 0.003, i = 0.003, d = 0.0001;
+    public static final double p = 0.003, i = 0.003, d = 0.0002;
     public static final double f = 0.00003;
 
     public static int target = 100;
@@ -101,12 +103,6 @@ public class Shoulder {
     }
 
 
-
-
-
-
-
-
     public void sendTelemetry() {
         myOpMode.telemetry.addData("Arm pos Left/Right", "%4d / %4d",
                 shoulder_left.getCurrentPosition(),
@@ -117,6 +113,16 @@ public class Shoulder {
     }
 
 
+    public double normalize_power(double power) {
+        if (power > MAX_POWER) {
+            power = MAX_POWER;
+        }
+        if ( power < MIN_POWER ) {
+            power = MIN_POWER;
+        }
+        return power;
+    }
+
 
     public void setTarget(int tar) {
         target = tar;
@@ -126,11 +132,12 @@ public class Shoulder {
         int armPos = shoulder_left.getCurrentPosition();
         pidf = controller.calculate(armPos, target);
 
-        shoulder_right.setPower(pidf);
-        shoulder_left.setPower(pidf);
+        shoulder_right.setPower(normalize_power(pidf));
+        shoulder_left.setPower(normalize_power(pidf));
     }
 
     public void listen() {
+
 //        pidf = -myOpMode.gamepad2.right_stick_y;
 //
 //        shoulder_right.setPower(pidf);
@@ -166,6 +173,9 @@ public class Shoulder {
 
         if (override_deadzone) {
             target += right_stick * 50;
+            if (target > 950) {
+                target = 950;
+            }
 
         } else if (Math.abs(right_stick) > deadzone
                 && armPos <= 950 && armPos >= -100
@@ -194,13 +204,8 @@ public class Shoulder {
             }
 
 
-        shoulder_right.setPower(pidf);
-        shoulder_left.setPower(pidf);
-
-
-
-
-
+        shoulder_right.setPower(normalize_power(pidf));
+        shoulder_left.setPower(normalize_power(pidf));
 
 
         if (myOpMode.gamepad2.dpad_right) {

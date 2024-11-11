@@ -38,6 +38,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class Elbow {
 
 
+    public final int MAX_ELBOW = -650;
+    public final int MAX_STRETCH = -750;
 
     private PIDFController controller;
 
@@ -63,6 +65,7 @@ public class Elbow {
 
     public void init() {
         controller = new PIDFController(p, i, d, f);
+
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         elbow = myOpMode.hardwareMap.get(DcMotorEx.class, "elbow");
 
@@ -81,36 +84,55 @@ public class Elbow {
 
     public void autoListen() {
 
-        int elbPos = elbow.getCurrentPosition();
-        double pidf = controller.calculate(elbPos, target);
+        elbPos = elbow.getCurrentPosition();
+        pidf = controller.calculate(elbPos, target);
 
         elbow.setPower(pidf);
 
     }
 
     public void sendTelemetry() {
+        elbPos = elbow.getCurrentPosition();
+
         myOpMode.telemetry.addData("Elbow Position:", elbPos);
         myOpMode.telemetry.addData("Power:", pidf);
         myOpMode.telemetry.addData("Target Position:", target);
     }
 
-    public void listen() {
-
-        if (target <=  0 && target >= -750) {
-            target += (int) (myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger) * 50;
-        } else if (target > 0) {
-            target = 0;
-        } else {
-            target = -750;
+    public void listen_simple() {
+        pidf = myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger;
+        if (pidf != 0.0) {
+            elbow.setPower(pidf);
+            target = elbow.getCurrentPosition();
         }
+    }
 
-        elbPos = elbow.getCurrentPosition();
-        pidf = controller.calculate(elbPos, target);
+    public void listen() {
+        listen_complex();
+        sendTelemetry();
+    }
+    public void listen_complex() {
 
-        elbow.setPower(pidf);
+        // accommodate the override
+        if (myOpMode.gamepad2.dpad_up) {
+            listen_simple();
 
+        } else {
 
+            if (target <=  0 && target >= MAX_STRETCH) {
+                target += (int) (myOpMode.gamepad2.right_trigger - myOpMode.gamepad2.left_trigger) * 50;
+            } else if (target > 0) {
+                target = 0;
+            } else {
+                target = MAX_STRETCH;
+            }
 
+            elbPos = elbow.getCurrentPosition();
+            pidf = controller.calculate(elbPos, target);
+
+            elbow.setPower(pidf);
+
+        }
 
         if (myOpMode.gamepad2.dpad_right) {
             elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
