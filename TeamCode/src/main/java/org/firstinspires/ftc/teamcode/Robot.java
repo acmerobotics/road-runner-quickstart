@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 // IMPORT SUBSYSTEMS
 
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -160,6 +164,30 @@ public class Robot {
         }).start();
     }
 
+    public Action intakePreset(double extTicks, boolean action) {
+        return new SequentialAction(
+                new InstantAction(() -> {
+                    lift.runToPreset(Levels.INTAKE);
+                    arm.runToPreset(Levels.INTAKE_INTERMEDIATE);
+                    //TODO: CONVERT FROM INCHES TO TICKS
+                    extension.runToPosition((float) extTicks);
+                }),
+                new SleepAction(3),
+                new InstantAction(() -> {
+                    arm.runToPreset(Levels.INTAKE);
+                    claw.startIntake();
+                    intaking = true;
+                    state = Levels.INTAKE;
+                })
+        );
+    }
+
+    public void autonObParkPreset() {
+        lift.runToPreset(Levels.INTAKE);
+        arm.runToPreset(Levels.INTAKE_INTERMEDIATE);
+        extension.runToPosition(100);
+    }
+
     public void intermediatePreset() {
         arm.runToPreset(Levels.INTERMEDIATE);
         extension.runToPreset(Levels.INTERMEDIATE);
@@ -178,16 +206,14 @@ public class Robot {
         switch (r) {
             case 0:
                 return true;
-                break;
             case 1:
                 stopIntake();
                 return false;
-                break;
             case -1:
                 claw.eject();
                 return true;
-                break;
         }
+        return true;
     }
 
     // DEPOSIT PRESETS
@@ -217,8 +243,18 @@ public class Robot {
 
     public void preloadHighRung() {
         arm.runToPosition(0);
+        extension.runToPosition(0);
         lift.runToPosition(0);
         state = Levels.HIGH_RUNG;
+    }
+
+    /**
+     * <h1>Drop preload to the goat <u><b>DITA RAJEEV</b></u></h1>
+     */
+    public void preloadDropPreset() {
+        arm.runToPreset(Levels.HIGH_RUNG);
+        lift.runToPreset(Levels.HIGH_RUNG);
+        state = Levels.LOW_BASKET;
     }
 
 
@@ -236,12 +272,24 @@ public class Robot {
         claw.eject();
     }
 
+    public Action outtakeSample(boolean action) {
+        return claw.eject(true);
+    }
+
     public void outtakeSpecimen() {
         lift.runToPosition(lift.getPos() - 10);
         new Thread(() -> {
             sleep(50);
             claw.eject();
         }).start();
+    }
+
+    public Action outtakeSpecimen(boolean action) {
+        return new SequentialAction(
+                new InstantAction(() -> lift.runToPosition(lift.getPos() - 10)),
+                new SleepAction(0.15),
+                claw.eject(true)
+        );
     }
 
     public void outtakeSpecimenPreload() {

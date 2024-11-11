@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems.claw;
 
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -68,6 +72,20 @@ public class Claw {
 
     public void eject() {
         setPower((float) -0.5);
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        setPower(0);
+    }
+
+    public Action eject(boolean action) {
+        return new SequentialAction(
+                new InstantAction(() -> setPower((float) -0.5)),
+                new SleepAction(0.05),
+                new InstantAction(() -> setPower(0))
+        );
     }
 
     public SampleColors detectSample() {
