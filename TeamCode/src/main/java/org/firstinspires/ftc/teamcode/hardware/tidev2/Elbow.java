@@ -83,6 +83,10 @@ public class Elbow {
 
     }
 
+    public int getPosition() {
+        return elbow.getCurrentPosition();
+    }
+
     public void setElbow(int tar) {
         target = tar;
     }

@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.OperatorFSM;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.ShoulderV0;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
@@ -45,7 +46,7 @@ public class Tank extends OpMode {
 
     ElapsedTime resetTimer = new ElapsedTime();
 
-
+    OperatorFSM operatorFSM;
 
 
     @Override
@@ -65,6 +66,9 @@ public class Tank extends OpMode {
         viper.init();
         claw.init();
         speed = 1;
+
+        operatorFSM = new OperatorFSM(gamepad2, shoulder, viper, elbow, claw, intake);
+
     }
 
     @Override
@@ -104,14 +108,17 @@ public class Tank extends OpMode {
             speed -= 0.25;
         }
 
-        if (gamepad2.right_stick_y <= 0.3) {
-            shoulder.listen();
-            shoulder.sendTelemetry();
-        } else {
-            shoulderV0.listen();
-            shoulder.setTarget(shoulderV0.getTarget());
-            shoulderV0.sendTelemetry();
-        }
+        operatorFSM.listen();
+        shoulder.listen();
+        shoulder.sendTelemetry();
+//        if (gamepad2.right_stick_y <= 0.3) {
+//            shoulder.listen();
+//            shoulder.sendTelemetry();
+//        } else {
+//            shoulderV0.listen();
+//            shoulder.setTarget(shoulderV0.getTarget());
+//            shoulderV0.sendTelemetry();
+//        }
         elbow.listen();
         intake.listen();
         viper.listen();

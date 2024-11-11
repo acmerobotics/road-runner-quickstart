@@ -86,6 +86,9 @@ public class Viper {
     }
 
 
+    public int getPosition() {
+        return viper.getCurrentPosition();
+    }
 
 
     public void setTarget(int tar) {

@@ -41,15 +41,7 @@ public class Shoulder {
     public final double MAX_POWER = 2.0;
     public final double MIN_POWER = -0.5;
 
-    public enum BucketState{
-        ZERO_BUCKETSTATE,
-        MIDDLE_BUCKETSTATE,
-        HIGH_BUCKETSTATE
-    };
 
-    private BucketState bucketState;
-
-    private ElapsedTime bucketStateTimer = new ElapsedTime();
 
     static final double deadzone = 0.3;
 
@@ -79,8 +71,6 @@ public class Shoulder {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        bucketState = BucketState.ZERO_BUCKETSTATE;
-        bucketStateTimer = new ElapsedTime();
 
         controller = new PIDFController(p, i, d, f);
         controller.setTolerance(5, 10);
@@ -130,6 +120,10 @@ public class Shoulder {
         target = tar;
     }
 
+    public int getCurrentPosition() {
+        return shoulder_left.getCurrentPosition();
+    }
+
     public void autoListen() {
         int armPos = shoulder_left.getCurrentPosition();
         pidf = controller.calculate(armPos, target);
@@ -152,26 +146,6 @@ public class Shoulder {
 
         double right_stick = -myOpMode.gamepad2.right_stick_y;
         boolean override_deadzone = myOpMode.gamepad2.dpad_up;
-        boolean to_bucket = myOpMode.gamepad2.dpad_left;
-
-        if(to_bucket) {
-            if (bucketStateTimer.seconds() >= 1.0) {
-                switch (bucketState) {
-                    case ZERO_BUCKETSTATE:
-                    case HIGH_BUCKETSTATE:
-                        target = 620;
-                        bucketStateTimer.reset();
-                        bucketState = BucketState.MIDDLE_BUCKETSTATE;
-                        break;
-
-                    case MIDDLE_BUCKETSTATE:
-                        target = 790;
-                        bucketStateTimer.reset();
-                        bucketState = BucketState.HIGH_BUCKETSTATE;
-                        break;
-                }
-            }
-        }
 
         if (override_deadzone) {
             target += (int) (right_stick * 50);
@@ -181,7 +155,6 @@ public class Shoulder {
 
         } else if (Math.abs(right_stick) > deadzone
         ) {
-            bucketState = BucketState.ZERO_BUCKETSTATE;
 
             if (right_stick > 0) {
                 target += (int) (right_stick * 50);
