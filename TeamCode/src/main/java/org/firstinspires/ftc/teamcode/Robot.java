@@ -4,10 +4,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.NullAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -18,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.commands.CommandMaster;
 import org.firstinspires.ftc.teamcode.roadrunner.KalmanDrive;
 import org.firstinspires.ftc.teamcode.subsystems.claw.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.climb.ClimbWinch;
 import org.firstinspires.ftc.teamcode.subsystems.extension.Extension;
 import org.firstinspires.ftc.teamcode.subsystems.lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.arm.Arm;
@@ -27,9 +30,9 @@ import org.firstinspires.ftc.teamcode.util.hardware.Component;
 import org.firstinspires.ftc.teamcode.util.hardware.ContinuousServo;
 import org.firstinspires.ftc.teamcode.util.enums.Levels;
 import org.firstinspires.ftc.teamcode.util.hardware.Motor;
-import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.util.enums.SampleColors;
 import org.firstinspires.ftc.teamcode.util.hardware.StepperServo;
+import org.firstinspires.ftc.teamcode.util.misc.FullPose2d;
 
 public class Robot {
 
@@ -41,6 +44,7 @@ public class Robot {
     public Extension extension;
     public Arm arm;
     public Claw claw;
+    public ClimbWinch climbWinch;
 
     public CommandMaster commands;
     public HardwareMap hardwareMap;
@@ -50,7 +54,7 @@ public class Robot {
     boolean intaking = false;
     Levels state = Levels.INIT;
     Gamepiece mode = Gamepiece.SAMPLE;
-    SampleColors targetColor = SampleColors.YELLOW;
+    public SampleColors targetColor = SampleColors.YELLOW;
 
     Motor backLeft;
     Motor backRight;
@@ -82,7 +86,10 @@ public class Robot {
 
                 new StepperServo(0, "elbow", map),                   //9
                 new ContinuousServo(1, "intake1", map),              //10
-                new ContinuousServo(2, "intake2", map)               //11
+                new ContinuousServo(2, "intake2", map),              //11
+
+                new StepperServo(0, "climb1", map),                  //12
+                new StepperServo(0, "climb2", map)                   //13
         };
 
         VoltageSensor voltageSensor = map.voltageSensor.iterator().next();
@@ -94,6 +101,7 @@ public class Robot {
         this.extension = new Extension((StepperServo) components[6], (StepperServo) components[7]);
         this.arm = new Arm((StepperServo) components[8], (StepperServo) components[9]);
         this.claw = new Claw((ContinuousServo) components[10], (ContinuousServo) components[11], colorSensor);
+        this.climbWinch = new ClimbWinch((StepperServo) components[12], (StepperServo) components[13]);
 
         this.commands = new CommandMaster(this);
         this.cv = new CVMaster(limelight, hardwareMap.get(WebcamName.class, "Webcam 1"));
@@ -105,8 +113,63 @@ public class Robot {
         frontRight = (Motor) components[3];
     }
 
-    public Pose2d calculateRobotTargetCapturePose(Pose3D target, Pose2d robotPose) {
-        return new Pose2d(target.getPosition().x, (robotPose.position.y), robotPose.heading.toDouble());
+    public Action generateTeleOpAutomatedIntake(Gamepad gamepad) {
+        CVMaster.EOCVPipeline targetPipeline = CVMaster.EOCVPipeline.YELLOW_SAMPLE;
+        switch (targetColor) {
+            case RED:
+                targetPipeline = CVMaster.EOCVPipeline.RED_SAMPLE;
+                break;
+            case BLUE:
+                targetPipeline = CVMaster.EOCVPipeline.BLUE_SAMPLE;
+                break;
+        }
+        cv.updatePotentialTargetList(targetPipeline, drive.pose);
+        Pose3D targetPose = cv.findOptimalTarget(drive.pose);
+        FullPose2d robotTargetPose = cv.calculateRobotFullPose(targetPose, drive.pose.position.x, drive.pose.position.y);
+        if (robotTargetPose.intakeExtension > extension.MAXIMUM_EXTENSION) {
+            // WHEN JUST TURNING ISNT ENOUGH FOR THE BOT TO REACH THE SAMPLE
+
+            //        if (drive.pose.position.x > 12 && drive.pose.position.y > -24 && drive.pose.position.y < 24) {
+//            // ZONE I
+//        } else if (drive.pose.position.x < -12 && drive.pose.position.y > -24 && drive.pose.position.y < 24) {
+//            // ZONE II
+//        }
+
+            double normalHeading = normalizeRadians(drive.pose.heading.toDouble());
+            if (normalHeading > ((3*Math.PI)/4) && normalHeading < ((5*Math.PI)/4)) {
+                // ZONE I (Facing Right)
+                robotTargetPose = cv.calculateRobotFullPose(targetPose, drive.pose.position.x, targetPose.getPosition().y);
+            } else if (normalHeading > ((7*Math.PI)/4) || normalHeading < (Math.PI/4)) {
+                // ZONE II (Facing Left)
+                robotTargetPose = cv.calculateRobotFullPose(targetPose, drive.pose.position.x, targetPose.getPosition().y);
+            } else if (normalHeading > ((5*Math.PI)/4) && normalHeading < ((7*Math.PI)/4)) {
+                // ZONE III (Facing Down)
+                robotTargetPose = cv.calculateRobotFullPose(targetPose, targetPose.getPosition().x, drive.pose.position.y);
+            } else if (normalHeading > (Math.PI/4) && normalHeading < ((3*Math.PI)/4)) {
+                // ZONE IV (Facing Up)
+                robotTargetPose = cv.calculateRobotFullPose(targetPose, targetPose.getPosition().x, drive.pose.position.y);
+            }
+        }
+
+        if (Math.sqrt(Math.pow((drive.pose.position.x - robotTargetPose.getRobotPose().position.x), 2) + Math.pow((drive.pose.position.y - robotTargetPose.getRobotPose().position.y), 2)) > 30) {
+            // FAILSAFE TO STOP THE BOT FROM TRYING TO GO TO SOME CRAZY AHH LOCATION
+            return new InstantAction(() -> gamepad.rumbleBlips(3));
+        }
+
+        Action path = drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(robotTargetPose.getRobotPose(), robotTargetPose.getRobotPose().heading)
+                .build();
+        Action pathBack = drive.actionBuilder(robotTargetPose.getRobotPose())
+                .setReversed(true)
+                .splineToLinearHeading(drive.pose, drive.pose.heading)
+                .build();
+        return new SequentialAction(
+                path,
+                intakePreset(robotTargetPose.intakeExtension, true),
+                commands.stopIntake(targetColor),
+                new SleepAction(0.5),
+                pathBack
+        );
     }
 
     public void toggleGamepiece() {
@@ -314,6 +377,34 @@ public class Robot {
         }
     }
 
+    public Action smartOuttake(boolean action) {
+        if (state == Levels.LOW_BASKET || state == Levels.HIGH_BASKET) {
+            return new SequentialAction(
+                    outtakeSample(true),
+                    new InstantAction(() -> {
+                        intermediatePreset();
+                        state = Levels.INTERMEDIATE;
+                    })
+            );
+        } else if (state == Levels.LOW_RUNG || state == Levels.HIGH_RUNG) {
+            return new SequentialAction(
+                    outtakeSpecimen(true),
+                    new InstantAction(() -> {
+                        intermediatePreset();
+                        state = Levels.INTERMEDIATE;
+                    })
+            );
+        }
+        return new NullAction();
+    }
+
+    public Action startClimbL2() {
+        return new SequentialAction(
+                new InstantAction(climbWinch::climb),
+                new InstantAction(() -> lift.runToPreset(Levels.CLIMB_EXTENDED))
+        );
+    }
+
     //DRIVE
     public void setDrivePower(double x, double y, double rx) {
         double powerFrontLeft = y + x + rx;
@@ -354,5 +445,13 @@ public class Robot {
     public enum Gamepiece {
         SAMPLE,
         SPECIMEN
+    }
+
+    public static double normalizeRadians(double angle) {
+        angle = angle % (2 * Math.PI);
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+        return angle;
     }
 }

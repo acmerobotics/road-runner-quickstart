@@ -6,12 +6,12 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.util.enums.AllianceColor;
+import org.firstinspires.ftc.teamcode.util.enums.Levels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,6 @@ public class TeleOpMainRed extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Robot robot = new Robot(hardwareMap, false);
         List<Action> actionsQueue = new ArrayList<>();
-        List<Action> runningActions = new ArrayList<>();
 
         waitForStart();
         if (isStopRequested()) return;
@@ -39,34 +38,31 @@ public class TeleOpMainRed extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
 
             if (gamepad1.left_bumper) {
-                actionsQueue.add(new SequentialAction(
-                        new InstantAction(robot::teleDepositPreset)
-                ));
+                actionsQueue.add(new InstantAction(robot::teleDepositPreset));
             }
             if (gamepad1.right_bumper) {
-                actionsQueue.add(new SequentialAction(
-                        new InstantAction(robot::intakePreset)
-                ));
+                actionsQueue.add(robot.generateTeleOpAutomatedIntake(gamepad1));
             }
             if (gamepad1.triangle) {
-                actionsQueue.add(new SequentialAction(
-                        new InstantAction(robot::toggleGamepiece)
-                ));
+                actionsQueue.add(new InstantAction(robot::toggleGamepiece));
             }
             if (gamepad1.square) {
-                actionsQueue.add(new SequentialAction(
-                        new InstantAction(this::setManualExtension)
-                ));
+                actionsQueue.add(new InstantAction(this::setManualExtension));
             }
             if (gamepad1.circle) {
-                actionsQueue.add(new SequentialAction(
-                        new InstantAction(() -> robot.toggleGamepieceColor(allianceColor))
-                ));
+                actionsQueue.add(new InstantAction(() -> robot.toggleGamepieceColor(allianceColor)));
             }
             if (gamepad1.cross) {
-                actionsQueue.add(new SequentialAction(
-                        new InstantAction(robot::smartOuttake)
-                ));
+                actionsQueue.add(robot.smartOuttake(true));
+            }
+            if (gamepad1.dpad_right) {
+                actionsQueue.add(new InstantAction(robot.climbWinch::up));
+            }
+            if (gamepad1.dpad_left) {
+                actionsQueue.add(robot.startClimbL2());
+            }
+            if (gamepad1.dpad_down) {
+                actionsQueue.add(new InstantAction(() -> robot.lift.runToPreset(Levels.CLIMB_RETRACTED)));
             }
 
             List<Action> newActions = new ArrayList<>();
@@ -76,7 +72,7 @@ public class TeleOpMainRed extends LinearOpMode {
                     newActions.add(action);
                 }
             }
-            runningActions = newActions;
+            actionsQueue = newActions;
 
             double newTime = getRuntime();
             double loopTime = newTime-oldTime;

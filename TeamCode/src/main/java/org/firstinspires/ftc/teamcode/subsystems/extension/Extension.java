@@ -9,6 +9,8 @@ public class Extension {
 
     float target = 0;
 
+    public int MAXIMUM_EXTENSION = 100;
+
     public Extension(StepperServo s1, StepperServo s2) {
         servo1 = s1;
         servo2 = s2;

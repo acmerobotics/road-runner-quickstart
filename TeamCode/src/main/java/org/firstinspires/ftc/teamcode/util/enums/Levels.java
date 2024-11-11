@@ -9,7 +9,7 @@ public enum Levels {
     HIGH_BASKET,
     LOW_RUNG,
     HIGH_RUNG,
-    CLIMB_STAGE_1,
-    CLIMB_STAGE_2,
+    CLIMB_EXTENDED,
+    CLIMB_RETRACTED,
     INTAKE_INTERMEDIATE
 }
