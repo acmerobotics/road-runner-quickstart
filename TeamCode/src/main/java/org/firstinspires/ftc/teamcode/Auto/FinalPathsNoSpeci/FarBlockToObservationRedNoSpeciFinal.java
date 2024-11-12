@@ -53,11 +53,14 @@ public class FarBlockToObservationRedNoSpeciFinal extends LinearOpMode {
                 .waitSeconds(4)
                 .strafeToLinearHeading(new Vector2d(4.85,40), Math.toRadians(180));
 
+        TrajectoryActionBuilder upALil = drive.actionBuilder(StartPose1)
+                .strafeToConstantHeading(new Vector2d(0, 12))
+                .waitSeconds(1);
         TrajectoryActionBuilder basket = drive.actionBuilder(StartPose1)
                 .strafeToLinearHeading(new Vector2d(-69.66, 9.5), Math.toRadians(45))
                 .waitSeconds(1);
         TrajectoryActionBuilder observation = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(30,9.5), Math.toRadians(45))
+                .strafeToConstantHeading(new Vector2d(30,9.5))
                 .waitSeconds(1);
         TrajectoryActionBuilder firstBlock = drive.actionBuilder(StartPose1)
                 .strafeToLinearHeading(new Vector2d(-12.55,37.21), Math.toRadians(0))
@@ -72,6 +75,7 @@ public class FarBlockToObservationRedNoSpeciFinal extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-14.55,37.21), Math.toRadians(0))
                 .waitSeconds(4);
 
+        Action up = upALil.build();
         Action toBasket = basket.build();
         Action toObservation = observation.build();
         Action block1 = firstBlock.build();
@@ -82,6 +86,7 @@ public class FarBlockToObservationRedNoSpeciFinal extends LinearOpMode {
         waitForStart();
         Actions.runBlocking(new SequentialAction(
                 intake.flop(),
+                up,
                 toBasket,
                 slides.slideTopBasket(),
                 claw.flip(),
