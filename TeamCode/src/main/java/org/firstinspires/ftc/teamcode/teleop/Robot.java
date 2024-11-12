@@ -38,7 +38,7 @@ public class Robot {
     public int armTarget = 0, slideTarget = 0;
     public int armTargetAuto = 0, slideTargetAuto = 0;
     public static volatile boolean stopPid = false;
-    Thread currentThread;
+    Thread currentThread = null;
 
     public Robot(HardwareMap hardwareMap) {
         drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
