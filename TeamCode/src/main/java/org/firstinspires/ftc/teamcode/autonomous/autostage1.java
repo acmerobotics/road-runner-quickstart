@@ -45,7 +45,7 @@ public class autostage1 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         startPose = new Pose2d(14, -61, Math.toRadians(90));
         drive = new MecanumDrive(hardwareMap, startPose);
-
+        TrajectoryActionBuilder build = null;
 
         while (!isStopRequested() && !opModeIsActive()) {
 
@@ -56,24 +56,34 @@ public class autostage1 extends LinearOpMode {
             viper.init();
             claw.init();
 
-            TrajectoryActionBuilder build = drive.actionBuilder(startPose).strafeTo(new Vector2d(10, -34))
+             build = drive.actionBuilder(startPose)
                     //put arm up while strafing
+                    .afterTime(0, viper.autonDown())
+                    .afterTime(0, shoulder.autonHC())
+                    .waitSeconds(0.5)
 
+                    .strafeTo(new Vector2d(10, -32))
+                    //put arm up while strafing
+                    //stop at (10, -34) and place the sample on the bar
+                    .waitSeconds(0.5)
+                    .afterTime(0, shoulder.autonDownHC())
+                    .waitSeconds(1)
                     .setReversed(true)
+                     .strafeTo(new Vector2d(10, -36))
                     .splineTo(new Vector2d(30, -36), Math.toRadians(0))
                     //move arm down to gathering position while splining
+                    .afterTime(0, shoulder.autonDown())
                     .splineTo(new Vector2d(35, -5), Math.toRadians(90))
                     .setReversed(false)
 
                     .splineToConstantHeading(new Vector2d(48, -20), Math.toRadians(-90))
 
-                    .splineToConstantHeading(new Vector2d(48, -50), Math.toRadians(-90))
+                    .splineToConstantHeading(new Vector2d(48, -50), Math.toRadians(-90));
 
 
-                    //run intake while strafing to point
-                    //end intake after meeting the point
+            //run intake while strafing to point
+            //end intake after meeting the point
 
-                    ;
 
 
         }
@@ -83,9 +93,15 @@ public class autostage1 extends LinearOpMode {
 
 
         waitForStart();
-        Actions.runBlocking(new ParallelAction(
-                shoulder.autonListen()
-        ));
+        if (build != null) {
+            Actions.runBlocking(new ParallelAction(
+                    shoulder.autonListen(),
+                    viper.autonListen(),
+                    build.build()
+
+
+            ));
+        }
 
     }
 }

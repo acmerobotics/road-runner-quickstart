@@ -38,7 +38,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Shoulder {
@@ -106,8 +105,9 @@ public class Shoulder {
     public class AutonListen implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            autoListen();
-            return false;
+
+                autoListen();
+            return true;
         }
     }
     public Action autonListen() {
@@ -115,26 +115,37 @@ public class Shoulder {
     }
 
 
-    public class AutonHighCham implements Action {
+    public class AutonHC implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setTarget(630);
+            setTarget(640);
             return false;
         }
     }
-    public Action autonHighCham() {
-        return new AutonHighCham();
+    public Action autonHC() {
+        return new AutonHC();
     }
 
     public class AutonDown implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setTarget(0);
+            setTarget(70);
             return false;
         }
     }
     public Action autonDown() {
         return new AutonDown();
+    }
+
+    public class AutonDownHC implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setTarget(400);
+            return false;
+        }
+    }
+    public Action autonDownHC() {
+        return new AutonDownHC();
     }
 
 
