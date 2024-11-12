@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.Paths;
+package org.firstinspires.ftc.teamcode.Auto.FinalPathsNoSpeci;
 
 
 
@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
 
 @Autonomous
-public class FarBlocktoObservationBlueFinal extends LinearOpMode {
+public class FarBlockToObservationRedNoSpeciFinal extends LinearOpMode {
     Intaker intake = new Intaker(hardwareMap);
     Claw claw = new Claw(hardwareMap);
     Slides slides = new Slides(hardwareMap);
@@ -34,72 +34,51 @@ public class FarBlocktoObservationBlueFinal extends LinearOpMode {
         //Pose2d StartPose1 = new Pose2d(-40, -60, 0);
         //drive.setPoseEstimate(StartPose1);
 
-        TrajectoryActionBuilder Model = drive.actionBuilder(StartPose1)
-                //speci
-                .strafeToLinearHeading(new Vector2d(-29.46,-12.24), Math.toRadians(0))
-                .waitSeconds(1)
-                //first block
+        TrajectoryActionBuilder model = drive.actionBuilder(StartPose1)
+                //.strafeToLinearHeading(new Vector2d(-29.46,-12.24), Math.toRadians(0))
+                //.waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(-9.42,41.09), Math.toRadians(180))
                 .waitSeconds(1)
-                //extake
                 .strafeToLinearHeading(new Vector2d(-12.55,37.21), Math.toRadians(0))
                 .waitSeconds(1)
-                //second block
-                .strafeToLinearHeading(new Vector2d(-12.54,51.44), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-9.86,49.11), Math.toRadians(180))
                 .waitSeconds(1)
-                // extake
                 .strafeToLinearHeading(new Vector2d(-14.55,37.21), Math.toRadians(0))
                 .waitSeconds(1)
-                // third block
                 .strafeToLinearHeading(new Vector2d(-28.81,38.9), Math.toRadians(90))
                 .waitSeconds(1)
-                // extake
                 .strafeToLinearHeading(new Vector2d(-14.55,37.21), Math.toRadians(0))
                 .waitSeconds(4)
-                // park
                 .strafeToLinearHeading(new Vector2d(4.85,40), Math.toRadians(180));
-        TrajectoryActionBuilder speciToTopBar = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(-29.46,-12.24), Math.toRadians(0))
-                .waitSeconds(1);
-        TrajectoryActionBuilder backALil = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(-31.26, 11.07), Math.toRadians(0))
-                .waitSeconds(1);
-        TrajectoryActionBuilder firstBlock = drive.actionBuilder(StartPose1)
+        TrajectoryActionBuilder observation = drive.actionBuilder(StartPose1)
                 .strafeToLinearHeading(new Vector2d(-9.42,41.09), Math.toRadians(180))
                 .waitSeconds(1);
-        TrajectoryActionBuilder backToObservation = drive.actionBuilder(StartPose1)
-            .strafeToLinearHeading(new Vector2d(-12.55,37.21), Math.toRadians(0))
+        TrajectoryActionBuilder firstBlock = drive.actionBuilder(StartPose1)
+                .strafeToLinearHeading(new Vector2d(-12.55,37.21), Math.toRadians(0))
                 .waitSeconds(1);
         TrajectoryActionBuilder secondBlock = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(-12.54,51.44), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-14.55,37.21), Math.toRadians(0))
                 .waitSeconds(1);
         TrajectoryActionBuilder thirdBlock = drive.actionBuilder(StartPose1)
                 .strafeToLinearHeading(new Vector2d(-28.81,38.9), Math.toRadians(90))
                 .waitSeconds(1);
-        TrajectoryActionBuilder lastObservation = drive.actionBuilder(StartPose1)
+        TrajectoryActionBuilder parking = drive.actionBuilder(StartPose1)
                 .strafeToLinearHeading(new Vector2d(-14.55,37.21), Math.toRadians(0))
                 .waitSeconds(4);
-        TrajectoryActionBuilder parking = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(4.85,40), Math.toRadians(180));
 
-
-        Action speci = speciToTopBar.build();
-        Action back = backALil.build();
+        Action toObservation = observation.build();
         Action block1 = firstBlock.build();
-        Action toObservation = backToObservation.build();
         Action block2 = secondBlock.build();
         Action block3 = thirdBlock.build();
-        Action finalObs = lastObservation.build();
         Action park = parking.build();
-
 
         waitForStart();
         Actions.runBlocking(new SequentialAction(
                 claw.flop(),
-                speci,
-                slides.slideTopBar(),
-                back,
-                slides.retract(),
+                toObservation,
+                intake.flip(),
+                intake.extake(),
+                intake.flop(),
                 block1,
                 intake.flip(),
                 intake.intake(),
@@ -120,13 +99,18 @@ public class FarBlocktoObservationBlueFinal extends LinearOpMode {
                 intake.flip(),
                 intake.intake(),
                 intake.flop(),
-                finalObs,
+                toObservation,
                 intake.flip(),
                 intake.extake(),
                 intake.flop(),
                 park
 
+
+
+
+
         ));
 
     }
 }
+

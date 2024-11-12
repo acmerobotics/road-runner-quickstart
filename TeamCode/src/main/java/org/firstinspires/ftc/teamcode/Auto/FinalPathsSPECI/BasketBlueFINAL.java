@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.Paths;
+package org.firstinspires.ftc.teamcode.Auto.FinalPathsSPECI;
 
 
 
@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
 
 @Autonomous
-public class BasketBlueFinal extends LinearOpMode {
+public class BasketBlueFINAL extends LinearOpMode {
     Slides slides = new Slides(hardwareMap);
     Claw claw = new Claw(hardwareMap);
     Intaker intake = new Intaker(hardwareMap);
