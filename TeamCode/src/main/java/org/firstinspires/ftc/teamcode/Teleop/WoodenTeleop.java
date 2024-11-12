@@ -85,10 +85,16 @@ public class WoodenTeleop extends LinearOpMode {
             double lefty = currentGamepad2.left_stick_y;
             double righty = currentGamepad2.right_stick_y;
 
-            extendo.extendoMotor.setPower(lefty/1.5);
-
-            slides.slidesRightMotor.setPower(righty/3);
-            slides.slidesLeftMotor.setPower(righty/3);
+            if (currentGamepad1.dpad_down) {
+                extendo.extendoMotor.setPower(1);
+            } else if (currentGamepad1.dpad_up) {
+                extendo.extendoMotor.setPower(-1);
+            } else {
+                extendo.extendoMotor.setPower(0);
+            }
+//
+//            slides.slidesRightMotor.setPower(lefty/2);
+//            slides.slidesLeftMotor.setPower(righty/2);
 
             if (currentGamepad2.x) {
                 runningActions.add(intake.intake());

@@ -20,7 +20,7 @@ public class ColorSensorCode extends LinearOpMode {
 
 
 
-        float gain = 50;
+        float gain = 100;
 
         final float[] hsvValues = new float[3];
 
@@ -77,11 +77,11 @@ public class ColorSensorCode extends LinearOpMode {
                     .addData("Value", "%.3f", hsvValues[2]);
             telemetry.addData("Alpha", "%.3f", colors.alpha);
 
-            if (colors.red > 0.5 && colors.green > 0.7 && colors.blue < 0.42) {
+            if (colors.red > 0.4 && colors.green > 0.6 && colors.blue < 0.26) {
                 telemetry.addData("Block Color", "yellow");
-            } else if (colors.red > 0.5 && colors.green < 0.4 && colors.blue < 0.3) {
+            } else if (colors.red > 0.3 && colors.green < 0.45 && colors.blue < 0.21) {
                 telemetry.addData("Block Color", "red");
-            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.35) {
+            } else if (colors.red < 0.15 && colors.green < 0.25 && colors.blue > 0.32) {
                 telemetry.addData("Block Color", "blue");
             } else {
                 telemetry.addData("Block Color", "none");

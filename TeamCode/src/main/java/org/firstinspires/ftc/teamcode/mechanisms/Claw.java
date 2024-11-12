@@ -14,16 +14,15 @@ public class Claw {
 
     public Claw(HardwareMap HWMap) {
         bucketServo = HWMap.get(Servo.class, "bucketServo");
-//        clawLeftServo = HWMap.get(Servo.class, "clawLeftServo");
-//        clawRightServo = HWMap.get(Servo.class, "clawRightServo");
+        clawLeftServo = HWMap.get(Servo.class, "clawLeftServo");
+        clawRightServo = HWMap.get(Servo.class, "clawRightServo");
     }
 
 
     public class Flip implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(0.3);
-//            bucketRightServo.setPosition(1);
+            bucketServo.setPosition(0.5);
             return false;
         }
     }
@@ -35,8 +34,7 @@ public class Claw {
     public class Flop implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-                bucketServo.setPosition(0.03);
-//            bucketRightServo.setPosition(0);
+            bucketServo.setPosition(0);
             return false;
         }
     }
@@ -48,8 +46,8 @@ public class Claw {
     public class Close implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-//            clawLeftServo.setPosition(1);
-//            clawRightServo.setPosition(1);
+            clawLeftServo.setPosition(0.55);
+            clawRightServo.setPosition(0.45);
             return false;
         }
     }
@@ -61,8 +59,8 @@ public class Claw {
     public class Open implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-//            clawLeftServo.setPosition(0);
-//            clawRightServo.setPosition(0);
+            clawLeftServo.setPosition(0.3);
+            clawRightServo.setPosition(0.8);
             return false;
         }
     }
@@ -74,7 +72,7 @@ public class Claw {
     public class Up implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(0.05);
+            bucketServo.setPosition(0.15);
 //            bucketRightServo.setPosition(0.5);
             return false;
         }

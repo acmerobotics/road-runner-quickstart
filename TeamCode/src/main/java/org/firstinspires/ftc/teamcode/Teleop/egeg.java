@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import android.graphics.Color;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -46,24 +45,17 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Auto.Vision.Pipeline;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 @TeleOp
-public class BlueTeleop extends LinearOpMode {
-
+public class egeg extends LinearOpMode {
 
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
@@ -78,13 +70,13 @@ public class BlueTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        //NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+        NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
 
         final float[] hsvValues = new float[3];
 
-//        if (colorSensor instanceof SwitchableLight) {
-//            ((SwitchableLight)colorSensor).enableLight(true);
-//        }
+        if (colorSensor instanceof SwitchableLight) {
+            ((SwitchableLight)colorSensor).enableLight(true);
+        }
 
         NormalizedRGBA colors;
 
@@ -119,32 +111,34 @@ public class BlueTeleop extends LinearOpMode {
         runningActions.add(new SequentialAction(
                 intake.flop(),
                 claw.flop(),
-                claw.open()//,
-                //extendo.retract()
+                claw.open(),
+                extendo.retract()
 
         ));
 
 
         waitForStart();
 
+        extendo.changetarget(-6);
+
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
-//
-//            colorSensor.setGain(50);
-//
-//            colors = colorSensor.getNormalizedColors();
-//
-//            Color.colorToHSV(colors.toColor(), hsvValues);
-//
-//            if (colors.red > 0.5 && colors.green > 0.7 && colors.blue < 0.42) {
-//                intakeColor = "yellow";
-//            } else if (colors.red > 0.5 && colors.green < 0.4 && colors.blue < 0.3) {
-//                intakeColor = "red";
-//            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.35) {
-//                intakeColor = "blue";
-//            } else {
-//                intakeColor = "none";
-//            }
+
+            colorSensor.setGain(50);
+
+            colors = colorSensor.getNormalizedColors();
+
+            Color.colorToHSV(colors.toColor(), hsvValues);
+
+            if (colors.red > 0.5 && colors.green > 0.7 && colors.blue < 0.42) {
+                intakeColor = "yellow";
+            } else if (colors.red > 0.5 && colors.green < 0.4 && colors.blue < 0.3) {
+                intakeColor = "red";
+            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.35) {
+                intakeColor = "blue";
+            } else {
+                intakeColor = "none";
+            }
 
             previousGamepad1.copy(currentGamepad1);
             previousGamepad2.copy(currentGamepad2);
@@ -163,38 +157,30 @@ public class BlueTeleop extends LinearOpMode {
             double frontRightPower = (lefty1 - leftx1 - rightx1) / denominator;
             double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
 
-            if (currentGamepad1.left_trigger < 0.9) {
-                FL.setPower(frontLeftPower);
-                BL.setPower(backLeftPower);
-                FR.setPower(frontRightPower);
-                BR.setPower(backRightPower);
-            } else {
-                FL.setPower(frontLeftPower * 0.6);
-                BL.setPower(backLeftPower * 0.6);
-                FR.setPower(frontRightPower * 0.6);
-                BR.setPower(backRightPower * 0.6);
-            }
-
+            FL.setPower(frontLeftPower);
+            BL.setPower(backLeftPower);
+            FR.setPower(frontRightPower);
+            BR.setPower(backRightPower);
 
 
             switch (extendoState) {
                 case EXTENDOSTART:
-                    if (!control.getBusy()) {
-                        if (currentGamepad2.a && !previousGamepad2.a) {
-                            runningActions.add(new SequentialAction(
-                                    control.start(),
-                                    extendo.extend(),
-                                    intake.flip(),
-                                    intake.intake(),
-                                    control.done()
-                            ));
-                        }
+                    if (currentGamepad2.a && !previousGamepad2.a && !control.getBusy()) {
+                        runningActions.add(new SequentialAction(
+                                control.start(),
+                                extendo.extend(),
+                                intake.flip(),
+                                intake.intake(),
+                                control.done()
+                        ));
 
-                        if (currentGamepad2.dpad_left) {
-                            intake.intakeMotor.setPower(0.55);
-                        } else {
-                            intake.intakeMotor.setPower(0);
-                        }
+
+                    }
+
+                    if (currentGamepad2.dpad_left) {
+                        intake.intakeMotor.setPower(0.55);
+                    } else {
+                        intake.intakeMotor.setPower(0);
                     }
 
                     if (control.getFinished()) {
@@ -214,9 +200,9 @@ public class BlueTeleop extends LinearOpMode {
                                     control.done()
                             ));
                         }
-//                        if (intakeColor.equals("red")) {
-//                            runningActions.add(intake.extake());
-//                        }
+                        if (intakeColor.equals("red")) {
+                            runningActions.add(intake.extake());
+                        }
 
 
                         if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && currentGamepad2.left_trigger > 0.9) {
@@ -233,36 +219,40 @@ public class BlueTeleop extends LinearOpMode {
                             intake.downIntake();
                         }
 
-                        //extendo.changetarget(lefty2/2);
 
+                        //extendo.changetarget(lefty2 / 3);
                     }
-
-
 
                     if (control.getFinished()) {
                         control.resetFinished();
-                        runningActions.add(claw.flop());
+                        runningActions.add(
+                                claw.flop()
+                        );
                         extendoState = ExtendoState.EXTENDORETRACT;
                     }
                     break;
                 case EXTENDORETRACT:
-                    if ((currentGamepad2.a && !previousGamepad2.a)) /*|| intakeColor.equals("none"))*/ {
-                        runningActions.add(intake.extake());
-                    }
-                    if (!currentGamepad2.a && previousGamepad2.a) {
-                        runningActions.add(new SequentialAction(
-                                intake.off(),
-                                claw.up()
-                        ));
-                        extendoState = ExtendoState.EXTENDOSTART;
-                    }
+                    extendoState = ExtendoState.EXTENDOSTART;
                     break;
                 default:
                     extendoState = ExtendoState.EXTENDOSTART;
                     break;
             }
-
-
+//
+//            switch (liftState) {
+//                case LIFTSTART:
+//                    if (currentGamepad2.y && !previousGamepad2.y) {
+//                        runningActions.add(claw.flip());
+//                        liftState = LiftState.LIFTDEPOSIT;
+//                    }
+//                    break;
+//                case LIFTDEPOSIT:
+//                    if (currentGamepad2.y && !previousGamepad2.y) {
+//                        runningActions.add(claw.flop());
+//                        liftState = LiftState.LIFTSTART;
+//                    }
+//                    break;
+//            }
 
 
             switch (liftState) {
@@ -275,14 +265,14 @@ public class BlueTeleop extends LinearOpMode {
                         }
                         liftState = LiftState.LIFTDEPOSIT;
                     }
-
-                    if (currentGamepad2.x && !previousGamepad2.x) {
-                        runningActions.add(new SequentialAction(
-                                slides.slideWallLevel(),
-                                claw.open()
-                        ));
-                        liftState = LiftState.LIFTWALL;
-                    }
+//
+//                    if (currentGamepad2.x && !previousGamepad2.x) {
+//                        runningActions.add(new SequentialAction(
+//                                slides.slideWallLevel(),
+//                                claw.open()
+//                        ));
+//                        liftState = LiftState.LIFTWALL;
+//            }
                     break;
                 case LIFTDEPOSIT:
                     if (currentGamepad2.y && !previousGamepad2.y && !control2.getBusy()) {
@@ -343,17 +333,7 @@ public class BlueTeleop extends LinearOpMode {
             }
 
             if (currentGamepad2.b && !previousGamepad2.b) {
-                liftState = LiftState.LIFTSTART;
-                extendoState = ExtendoState.EXTENDOSTART;
 
-                runningActions.add(new SequentialAction(
-                        intake.off(),
-                        intake.flop(),
-                        claw.flop(),
-                        extendo.retract(),
-                        slides.retract(),
-                        claw.open()
-                ));
             }
 
             if (currentGamepad2.dpad_up) {
@@ -361,8 +341,6 @@ public class BlueTeleop extends LinearOpMode {
             } else if (currentGamepad2.dpad_down) {
                 slides.changeTarget(10);
             }
-
-            extendo.updateMotor();
 
 
             List<Action> newActions = new ArrayList<>();
@@ -380,24 +358,8 @@ public class BlueTeleop extends LinearOpMode {
             telemetry.addData("extendo", extendo.extendoMotor.getCurrentPosition());
             telemetry.addData("slides left", slides.slidesLeftMotor.getCurrentPosition());
             telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
-            telemetry.addData("extendo target", extendo.extendoMotorPID.getTargetPosition());
-    //            telemetry.addData("color", intakeColor);
+            telemetry.addData("color", intakeColor);
             telemetry.update();
-
-            //            switch (liftState) {
-//                case LIFTSTART:
-//                    if (currentGamepad2.y && !previousGamepad2.y) {
-//                        runningActions.add(claw.flip());
-//                        liftState = LiftState.LIFTDEPOSIT;
-//                    }
-//                    break;
-//                case LIFTDEPOSIT:
-//                    if (currentGamepad2.y && !previousGamepad2.y) {
-//                        runningActions.add(claw.flop());
-//                        liftState = LiftState.LIFTSTART;
-//                    }
-//                    break;
-//            }
         }
     }
 }
