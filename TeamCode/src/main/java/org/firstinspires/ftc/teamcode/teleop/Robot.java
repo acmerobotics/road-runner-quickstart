@@ -186,14 +186,6 @@ public class Robot {
     public void intakeControl(Gamepad gamepad) {
         intakeRight.setPower((-gamepad.left_trigger + gamepad.right_trigger));
         intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger);
-//        if (gamepad.left_trigger > 0 && !(gamepad.right_trigger > 0)) {
-//            intakeLeft.setPower(1);
-////            intakeRight.setPower(-1);
-//        }
-//        if (gamepad.right_trigger > 0 && !(gamepad.left_trigger > 0)) {
-//            intakeLeft.setPower(-1);
-////            intakeRight.setPower(1);
-//        }
     }
 
     public void hangControl(Gamepad gamepad) {
@@ -228,7 +220,7 @@ public class Robot {
             }
             armTarget = 0;
         }
-        if (gamepad2.b) {
+        if (gamepad2.x) {
             slideTarget = 4000;
             while (Math.abs(slideTarget - slide.getCurrentPosition()) > 1500) {
                 TeleopPID(gamepad2);
@@ -236,7 +228,7 @@ public class Robot {
             }
             wrist.setPosition(0);
         }
-        else if (gamepad2.x) {
+        else if (gamepad2.b) {
             slideTarget = 0;
             wrist.setPosition(0.5);
         }
@@ -293,8 +285,17 @@ public class Robot {
             armTarget -= 15;
         }
 
-//        intakeRight.setPower((-gamepad.left_trigger * 0.5 + gamepad.right_trigger));
-//        intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger * 0.5);
+//        intakeRight.setPower((-gamepad.left_trigger + gamepad.right_trigger));
+//        intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger);
+
+//        if (gamepad.left_trigger > 0 && !(gamepad.right_trigger > 0)) {
+//            intakeLeft.setPower(1);
+//            intakeRight.setPower(-1);
+//        }
+//        if (gamepad.right_trigger > 0 && !(gamepad.left_trigger > 0)) {
+//            intakeLeft.setPower(-1);
+//            intakeRight.setPower(1);
+//        }
 
         if (gamepad.y) {
             wrist.setPosition(0.92);
