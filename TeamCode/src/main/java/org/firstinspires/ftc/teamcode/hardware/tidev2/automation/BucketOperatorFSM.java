@@ -27,13 +27,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hardware.tidev2;
+package org.firstinspires.ftc.teamcode.hardware.tidev2.automation;
 
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class OperatorFSM {
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
+
+public class BucketOperatorFSM {
 
     private final int POS_SHOULDER_MIDDLE_BUCKET = 620;
     private final int POS_SHOULDER_HIGH_BUCKET = 850;
@@ -65,7 +70,7 @@ public class OperatorFSM {
     private ElapsedTime bucketStateTimer = new ElapsedTime();
     private BucketState bucketState;
 
-    public OperatorFSM(Gamepad gamepad, Shoulder shoulder, Viper viper, Elbow elbow, Claw claw, Intake intake) {
+    public BucketOperatorFSM(Gamepad gamepad, Shoulder shoulder, Viper viper, Elbow elbow, Claw claw, Intake intake) {
         this.gamepad = gamepad;
         this.shoulder = shoulder;
         this.viper = viper;

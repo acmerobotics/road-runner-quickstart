@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -12,9 +11,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
-import org.firstinspires.ftc.teamcode.hardware.tidev2.OperatorFSM;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.automation.BucketOperatorFSM;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
-import org.firstinspires.ftc.teamcode.hardware.tidev2.ShoulderV0;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.automation.SubOperatorFSM;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
@@ -31,7 +30,6 @@ public class Tank extends OpMode {
     DcMotorEx rightFront;
 
     Shoulder shoulder = new Shoulder(this);
-    ShoulderV0 shoulderV0 = new ShoulderV0(this);
     Elbow elbow = new Elbow(this);
     Intake intake = new Intake(this);
     Viper viper = new Viper(this);
@@ -46,7 +44,8 @@ public class Tank extends OpMode {
 
     ElapsedTime resetTimer = new ElapsedTime();
 
-    OperatorFSM operatorFSM;
+    BucketOperatorFSM bucketOperatorFSM;
+    SubOperatorFSM subOperatorFSM;
 
 
     @Override
@@ -60,14 +59,14 @@ public class Tank extends OpMode {
         rightFront = hardwareMap.get(DcMotorEx.class, "right_front_drive");
 
         shoulder.init();
-        shoulderV0.init();
         elbow.init();
         intake.init();
         viper.init();
         claw.init();
         speed = 1;
 
-        operatorFSM = new OperatorFSM(gamepad2, shoulder, viper, elbow, claw, intake);
+        bucketOperatorFSM = new BucketOperatorFSM(gamepad2, shoulder, viper, elbow, claw, intake);
+        subOperatorFSM = new SubOperatorFSM(gamepad2, shoulder, viper, elbow, claw, intake);
 
     }
 
@@ -108,7 +107,8 @@ public class Tank extends OpMode {
             speed -= 0.25;
         }
 
-        operatorFSM.listen();
+        bucketOperatorFSM.listen();
+        subOperatorFSM.listen();
         shoulder.listen();
         shoulder.sendTelemetry();
 //        if (gamepad2.right_stick_y <= 0.3) {
