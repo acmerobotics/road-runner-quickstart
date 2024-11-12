@@ -40,16 +40,17 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 public class SubOperatorFSM {
 
-    private final int POS_SHOULDER_SUB = 300;
-    private final int THRESH_SHOULDER = 60;
+    private final int POS_SHOULDER_SUB = 250;
+    private final int POS_SHOULDER_READY = 750;
+    private final int THRESH_SHOULDER = 150;
     private final int THRESH_VIPER = 50;
-    private final int THRESH_ELBOW = 15;
+    private final int THRESH_ELBOW = 50;
 
     private final int POS_VIPER_SUB = 1000;
 
     private final int POS_ELBOW_EXTEND_HORIZ_SUB = 550;
-    private final int POS_ELBOW_EXTEND_ADJUST_SUB = 575;
-    private final int POS_ELBOW_EXTEND_MAX_SUB = 600;
+    private final int POS_ELBOW_EXTEND_ADJUST_SUB = 550;
+    private final int POS_ELBOW_EXTEND_MAX_SUB = 650;
 
 
     private Viper viper;
@@ -59,7 +60,9 @@ public class SubOperatorFSM {
     private Gamepad gamepad;
 
     public enum SubState {
-        ZERO_SUBSTATE, SHOULDER_RAISE_SUBSTATE, HORIZ_ELBOW_SUBSTATE, VIPER_EXTEND_SUBSTATE, MAX_ELBOW_SUBSTATE,
+        ZERO_SUBSTATE,
+        SHOULDER_READY,
+        SHOULDER_RAISE_SUBSTATE, HORIZ_ELBOW_SUBSTATE, VIPER_EXTEND_SUBSTATE, MAX_ELBOW_SUBSTATE,
         RETRACT_VIPER_SUBSTATE, RETRACT_ELBOW_SUBSTATE, CLEARANCE_ELBOW_SUBSTATE
     }
     private ElapsedTime subStateTimer = new ElapsedTime();
@@ -94,6 +97,23 @@ public class SubOperatorFSM {
                 }
                 break;
 
+            case SHOULDER_READY:
+                pos_shoulder = shoulder.getCurrentPosition();
+
+                if (subStateTimer.seconds() > 0.5) {
+                    if ((pos_shoulder >= POS_SHOULDER_READY - THRESH_SHOULDER)
+                            && (pos_shoulder <= POS_SHOULDER_READY + THRESH_SHOULDER)) {
+                        shoulder.setTarget(POS_SHOULDER_SUB);
+                        subState = SubState.SHOULDER_RAISE_SUBSTATE;
+
+                    }
+                }
+
+                if (gamepad.right_stick_y != 0.0) {
+                    subState = SubState.ZERO_SUBSTATE;
+                }
+                break;
+
             case SHOULDER_RAISE_SUBSTATE:
                 pos_shoulder = shoulder.getCurrentPosition();
 
@@ -103,8 +123,7 @@ public class SubOperatorFSM {
                         && (pos_shoulder <= POS_SHOULDER_SUB + THRESH_SHOULDER)) {
                     //go to horiz pos
                     elbow.setElbow(POS_ELBOW_EXTEND_HORIZ_SUB);
-
-
+                    subStateTimer.reset();
                     subState = SubState.HORIZ_ELBOW_SUBSTATE;
 
                 }
@@ -112,6 +131,7 @@ public class SubOperatorFSM {
                     subState = SubState.ZERO_SUBSTATE;
                 }
                 break;
+
             case HORIZ_ELBOW_SUBSTATE:
                 pos_elbow = elbow.getPosition();
 
@@ -130,6 +150,7 @@ public class SubOperatorFSM {
                         subState = SubState.ZERO_SUBSTATE;
                     }
                     break;
+
             case VIPER_EXTEND_SUBSTATE:
                 pos_viper = viper.getPosition();
 
@@ -146,6 +167,7 @@ public class SubOperatorFSM {
                     subState = SubState.ZERO_SUBSTATE;
                 }
                 break;
+
             case MAX_ELBOW_SUBSTATE:
                 pos_elbow = elbow.getPosition();
 
@@ -160,10 +182,9 @@ public class SubOperatorFSM {
 
                         subState = SubState.CLEARANCE_ELBOW_SUBSTATE;
                     } else if (gamepad.b) {
-                        //extend viper
-                        viper.setTarget(0);
-
-                        subState = SubState.RETRACT_VIPER_SUBSTATE;
+                        // retract elbow
+                        elbow.setElbow(0);
+                        subState = SubState.RETRACT_ELBOW_SUBSTATE;
                     }
 
                 }
@@ -172,6 +193,7 @@ public class SubOperatorFSM {
                     subState = SubState.ZERO_SUBSTATE;
                 }
                 break;
+
             case RETRACT_VIPER_SUBSTATE:
                 pos_viper = viper.getPosition();
 
@@ -182,6 +204,7 @@ public class SubOperatorFSM {
                     subState = SubState.ZERO_SUBSTATE;
                 }
                 break;
+
             case RETRACT_ELBOW_SUBSTATE:
                 pos_elbow = elbow.getPosition();
 
@@ -190,6 +213,7 @@ public class SubOperatorFSM {
 
                     subState = SubState.RETRACT_VIPER_SUBSTATE;
                 }
+                break;
 
             case CLEARANCE_ELBOW_SUBSTATE:
                 pos_elbow = elbow.getPosition();
@@ -204,9 +228,9 @@ public class SubOperatorFSM {
                         subState = SubState.MAX_ELBOW_SUBSTATE;
                     } else if (gamepad.b) {
                         //extend viper
-                        viper.setTarget(POS_VIPER_SUB);
+                        elbow.setElbow(0);
 
-                        subState = SubState.VIPER_EXTEND_SUBSTATE;
+                        subState = SubState.RETRACT_ELBOW_SUBSTATE;
                     }
 
                 }
