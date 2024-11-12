@@ -64,7 +64,7 @@ public class RedBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(5, bot.setPidVals(2200,0))
+                .afterTime(5, bot.setPidVals(2000,0))
                 .afterTime(30, bot.stopPID())
                 .build();
 
