@@ -29,12 +29,15 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Shoulder {
@@ -99,6 +102,51 @@ public class Shoulder {
     }
 
 
+    public class AutonListen implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+                autoListen();
+            return true;
+        }
+    }
+    public Action autonListen() {
+        return new AutonListen();
+    }
+
+
+    public class AutonHC implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setTarget(640);
+            return false;
+        }
+    }
+    public Action autonHC() {
+        return new AutonHC();
+    }
+
+    public class AutonDown implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setTarget(70);
+            return false;
+        }
+    }
+    public Action autonDown() {
+        return new AutonDown();
+    }
+
+    public class AutonDownHC implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setTarget(400);
+            return false;
+        }
+    }
+    public Action autonDownHC() {
+        return new AutonDownHC();
+    }
 
 
 

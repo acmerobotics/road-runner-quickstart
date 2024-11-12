@@ -29,6 +29,10 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -83,6 +87,28 @@ public class Viper {
         target = 0;
     }
 
+    public class AutonListen implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            autoListen();
+            return true;
+        }
+    }
+    public Action autonListen() {
+        return new Viper.AutonListen();
+    }
+
+    public class AutonDown implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setTarget(0);
+            return false;
+        }
+    }
+    public Action autonDown() {
+        return new Viper.AutonDown();
+    }
 
 
 

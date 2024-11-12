@@ -96,11 +96,38 @@ public class Headless extends OpMode {
                     )
             );
         } else {
-            drive.setDrivePowers(
-                    new PoseVelocity2d(
-                            new Vector2d(0,0), 0
-                    )
-            );
+            if (!gamepad1.dpad_up && !gamepad1.dpad_down && !gamepad1.dpad_left && !gamepad1.dpad_right) {
+                drive.setDrivePowers(
+                        new PoseVelocity2d(
+                                new Vector2d(0, 0), 0
+                        )
+                );
+            } else if(gamepad1.dpad_up) {
+                drive.setDrivePowers(
+                        new PoseVelocity2d(
+                                new Vector2d(0, 0.5), 0
+                        )
+                );
+            } else if(gamepad1.dpad_down) {
+                drive.setDrivePowers(
+                        new PoseVelocity2d(
+                                new Vector2d(0, -0.5), 0
+                        )
+                );
+            } else if(gamepad1.dpad_left) {
+                drive.setDrivePowers(
+                        new PoseVelocity2d(
+                                new Vector2d(0.5, 0), 0
+                        )
+                );
+            } else if(gamepad1.dpad_right) {
+                drive.setDrivePowers(
+                        new PoseVelocity2d(
+                                new Vector2d(-0.5, 0), 0
+                        )
+                );
+            }
+
         }
 
         if (gamepad2.right_stick_y <= 0) {
