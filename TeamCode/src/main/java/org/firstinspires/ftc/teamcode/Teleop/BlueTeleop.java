@@ -397,6 +397,7 @@ public class BlueTeleop extends LinearOpMode {
             telemetry.addData("slides left", slides.slidesLeftMotor.getCurrentPosition());
             telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
             telemetry.addData("extendo target", extendo.extendoMotorPID.getTargetPosition());
+            telemetry.addData("extendo power", extendo.extendoMotor.getPower());
     //            telemetry.addData("color", intakeColor);
             telemetry.update();
 
