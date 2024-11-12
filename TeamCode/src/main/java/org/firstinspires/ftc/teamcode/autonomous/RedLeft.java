@@ -1,2 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.fragments;public class RedLeft {
+package org.firstinspires.ftc.teamcode.autonomous;
+
+public class RedLeft {
 }
