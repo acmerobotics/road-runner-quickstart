@@ -16,9 +16,10 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
+
 @Config
-@Autonomous(name = "Auto_2", group = "Auto Segments")
-public class template extends LinearOpMode {
+@Autonomous(name = "RedNeutral", group = "Auto Segments")
+public class autostage2 extends LinearOpMode {
     Shoulder shoulder = new Shoulder(this);
     Elbow elbow = new Elbow(this);
     Intake intake = new Intake(this);

@@ -194,7 +194,7 @@ public class Elbow {
             elbow.setPower(0.0);
         }
 
-        if (myOpMode.gamepad2.dpad_right) {
+        if (myOpMode.gamepad2.start) {
             elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         }

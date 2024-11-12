@@ -60,6 +60,8 @@ public class Viper {
 
     public static int target = 0;
 
+    int vipPos;
+
     public Viper(OpMode opmode) {
         myOpMode = opmode;
     }
@@ -110,6 +112,9 @@ public class Viper {
         return new Viper.AutonDown();
     }
 
+    public int getPosition() {
+        return viper.getCurrentPosition();
+    }
 
 
     public void setTarget(int tar) {
@@ -124,9 +129,25 @@ public class Viper {
         viper.setPower(pidf);
     }
 
+    public void sendTelemetry() {
+        myOpMode.telemetry.addData("Viper Position:", vipPos);
+        myOpMode.telemetry.addData("Power:", pidf);
+        myOpMode.telemetry.addData("Target Position:", target);
+    }
 
+    public void listen_simple() {
+        pidf = -myOpMode.gamepad2.left_stick_y;
+        if (pidf != 0.0) {
+            viper.setPower(pidf);
+            target = viper.getCurrentPosition();
+        }
+    }
 
     public void listen() {
+        if (myOpMode.gamepad2.dpad_up) {
+            listen_simple();
+            return;
+        }
 
         // move viper according to the left stick y
 
@@ -139,17 +160,18 @@ public class Viper {
             target = 4100;
         }
 
-        int vipPos = viper.getCurrentPosition();
+        vipPos = viper.getCurrentPosition();
         pidf = controller.calculate(vipPos, target);
 
         viper.setPower(pidf);
 
-        myOpMode.telemetry.addData("Viper Position:", vipPos);
-        myOpMode.telemetry.addData("Power:", pidf);
-        myOpMode.telemetry.addData("Target Position:", target);
 
 
-        if (myOpMode.gamepad2.dpad_right) {
+
+        if (myOpMode.gamepad2.start) {
+            // Reset the target to zero
+            target = 0;
+
             viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
