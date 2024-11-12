@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -12,8 +11,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.automation.BucketOperatorFSM;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
-import org.firstinspires.ftc.teamcode.hardware.tidev2.ShoulderV0;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.automation.SubOperatorFSM;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
@@ -30,7 +30,6 @@ public class Tank extends OpMode {
     DcMotorEx rightFront;
 
     Shoulder shoulder = new Shoulder(this);
-    ShoulderV0 shoulderV0 = new ShoulderV0(this);
     Elbow elbow = new Elbow(this);
     Intake intake = new Intake(this);
     Viper viper = new Viper(this);
@@ -43,7 +42,10 @@ public class Tank extends OpMode {
 
     ElapsedTime speedTimer = new ElapsedTime();
 
+    ElapsedTime resetTimer = new ElapsedTime();
 
+    BucketOperatorFSM bucketOperatorFSM;
+    SubOperatorFSM subOperatorFSM;
 
 
     @Override
@@ -57,12 +59,15 @@ public class Tank extends OpMode {
         rightFront = hardwareMap.get(DcMotorEx.class, "right_front_drive");
 
         shoulder.init();
-        shoulderV0.init();
         elbow.init();
         intake.init();
         viper.init();
         claw.init();
         speed = 1;
+
+        bucketOperatorFSM = new BucketOperatorFSM(gamepad2, shoulder, viper, elbow, claw, intake);
+        subOperatorFSM = new SubOperatorFSM(gamepad2, shoulder, viper, elbow, claw, intake);
+
     }
 
     @Override
@@ -102,23 +107,36 @@ public class Tank extends OpMode {
             speed -= 0.25;
         }
 
-        if (gamepad2.right_stick_y <= 0) {
-            shoulder.listen();
-        } else {
-            shoulderV0.listen();
-            shoulder.setTarget(shoulderV0.getTarget());
-        }
+        bucketOperatorFSM.listen();
+        subOperatorFSM.listen();
+        shoulder.listen();
+        shoulder.sendTelemetry();
+//        if (gamepad2.right_stick_y <= 0.3) {
+//            shoulder.listen();
+//            shoulder.sendTelemetry();
+//        } else {
+//            shoulderV0.listen();
+//            shoulder.setTarget(shoulderV0.getTarget());
+//            shoulderV0.sendTelemetry();
+//        }
         elbow.listen();
         intake.listen();
         viper.listen();
         claw.listen();
 
-        shoulderV0.sendTelemetry();
+        if (gamepad2.a) {
+            resetTimer.reset();
+            elbow.setElbow(0);
+            viper.setTarget(0);
+        }
+        if (resetTimer.seconds() > 1 && resetTimer.seconds() < 1.2) {
+            shoulder.setTarget(400);
+        }
+
+        elbow.sendTelemetry();
         intake.sendTelemetry();
         claw.sendTelemetry();
-
-        telemetry.addData("Speed:", speed);
-        updateTelemetry(telemetry);
+        viper.sendTelemetry();
 
     }
 
