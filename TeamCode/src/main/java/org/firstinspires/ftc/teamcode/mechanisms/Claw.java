@@ -34,7 +34,7 @@ public class Claw {
     public class Flop implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(0);
+            bucketServo.setPosition(0.05);
             return false;
         }
     }
@@ -72,7 +72,7 @@ public class Claw {
     public class Up implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(0.15);
+            bucketServo.setPosition(0.1);
 //            bucketRightServo.setPosition(0.5);
             return false;
         }

@@ -25,7 +25,7 @@ public class Extendo {
     private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(KP, KI, KD);
     public PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
 
-    private double target = -2;
+    private double target = 0;
 
     public Extendo(HardwareMap HWMap){
         extendoMotor = HWMap.get(DcMotor.class, "extendoMotor");
@@ -43,7 +43,7 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -6;
+                target = 0;
 //                extendoMotor.setTargetPosition(target);
 //                extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //                extendoMotor.setPower(1);
