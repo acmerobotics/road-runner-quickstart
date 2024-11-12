@@ -213,22 +213,27 @@ public class Robot {
     public void scoringMacro(Gamepad gamepad1, Gamepad gamepad2) {
         if (gamepad2.y) {
             armTarget = 2200;
-            while (Math.abs(armTarget - flip.getCurrentPosition()) > 1700) {
+            wrist.setPosition(0.5);
+            while (Math.abs(armTarget - flip.getCurrentPosition()) > 900) {
                 TeleopPID(gamepad2);
                 arcadeDrive(gamepad1);
             }
-            slideTarget = 3000;
+            slideTarget = 12000;
         }
         if (gamepad2.a) {
             slideTarget = 0;
-            while (Math.abs(slideTarget - slide.getCurrentPosition()) > 1500) {
+            while (Math.abs(slideTarget - slide.getCurrentPosition()) > 3000) {
                 TeleopPID(gamepad2);
                 arcadeDrive(gamepad1);
             }
             armTarget = 0;
         }
         if (gamepad2.b) {
-            slideTarget = 1200;
+            slideTarget = 4000;
+            while (Math.abs(slideTarget - slide.getCurrentPosition()) > 1500) {
+                TeleopPID(gamepad2);
+                arcadeDrive(gamepad1);
+            }
             wrist.setPosition(0);
         }
         else if (gamepad2.x) {
@@ -242,10 +247,10 @@ public class Robot {
         slideTarget += (int) -gamepad.left_stick_y * 28;
 
         if (armTarget < 0) armTarget = 0;
-        else if (armTarget > 2500) armTarget = 2500;
+        else if (armTarget > 3000) armTarget = 3000;
 
         if (slideTarget < 0 && armTarget < 1500) slideTarget = 0;
-        else if (slideTarget > 3950) slideTarget = 3950;
+        else if (slideTarget > 15500) slideTarget = 15500;
 
         flipPos = flip.getCurrentPosition();
         slidePos = slide.getCurrentPosition();
@@ -380,9 +385,9 @@ public class Robot {
     }
 
     public static class armPIDValues {
-        public static double fP = 0.002, fI = 0.0002, fD = 0.0001;  //fD = 0.00001, fP = 0.002
-        public static double fF = 0.005;
-        public static double sP = 0.005, sI, sD;
+        public static double fP = 0.002, fI = 0, fD = 0;  //fD = 0.00001, fP = 0.002
+        public static double fF = 0.0001; //fF = 0.0022
+        public static double sP = 0.002, sI, sD;
 
         private static final double ticks_in_degree = 2048 / 90.0;
     }
