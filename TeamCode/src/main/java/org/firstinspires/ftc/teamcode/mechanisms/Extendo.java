@@ -51,7 +51,7 @@ public class Extendo {
                 init = true;
             }
 
-            updateMotor();
+
 
             if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
                 extendoMotor.setPower(0);
@@ -104,11 +104,15 @@ public class Extendo {
         extendoMotorPID.setTargetPosition(target);
     }
 
-//    public void setValues(double kP, double kI, double kD) {
-//        this.kP = kP;
-//        this.kI = kI;
-//        this.kD = kD;
-//    }
+    public void setTarget(double pos) {
+        extendoMotorPID.setTargetPosition(pos);
+    }
+
+    public void setValues(double kP, double kI, double kD) {
+        KP = kP;
+        KI = kI;
+        KD = kD;
+    }
 
 }
 

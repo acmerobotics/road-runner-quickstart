@@ -62,8 +62,9 @@ import java.util.List;
 
 
 @TeleOp
+@Config
 public class BlueTeleop extends LinearOpMode {
-
+    public static double pos = 0;
 
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
@@ -128,9 +129,11 @@ public class BlueTeleop extends LinearOpMode {
         ));
 
 
+
         waitForStart();
 
         while (opModeIsActive()) {
+            extendo.setTarget(pos);
             TelemetryPacket packet = new TelemetryPacket();
 //
 //            colorSensor.setGain(50);
