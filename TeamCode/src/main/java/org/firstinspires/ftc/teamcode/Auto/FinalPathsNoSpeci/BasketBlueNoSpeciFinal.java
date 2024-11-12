@@ -74,7 +74,7 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
         Action park = parking.build();
         waitForStart();
         Actions.runBlocking(new SequentialAction(
-                claw.flop(),
+                //claw.flop(),
                 toBasket,
                 slides.slideTopBasket(),
                 claw.flip(),
