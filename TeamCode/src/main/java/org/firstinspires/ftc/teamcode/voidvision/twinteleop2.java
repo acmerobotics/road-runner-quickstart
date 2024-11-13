@@ -21,6 +21,7 @@ public class twinteleop2 extends LinearOpMode {
     static double rfPower;
     static double slowamount;
     static double direction = -1;
+    public boolean clamp= false;
 
     // Servo sequence control flags
     private boolean isRoutineRunning = false;
@@ -32,6 +33,13 @@ public class twinteleop2 extends LinearOpMode {
 
     // New flag for left joystick control during the subroutine
     private boolean isLiftMotorRoutineRunning = false;
+
+    //LiftMotorCOnstants
+    int initialPosition = 13;
+    int targetPositionLowerBasket = 1802; // Adjust based on desired lift distance
+    int targetPositionUpperBasket = 2570; // Adjust based on desired lift distance
+    int targetPositionLowerRung = 902; // Adjust based on desired lift distance
+    int targetPositionUpperRung = 3080; // Adjust based on desired lift distance
 
     @Override
     public void runOpMode() {
@@ -81,23 +89,66 @@ public class twinteleop2 extends LinearOpMode {
             // ---- First Servo Sequence (Triggered by gamepad2.a) ----
 
             robot.clawServo.setPosition(gamepad2.left_trigger);
+            if(gamepad2.x){clamp = !clamp;sleepWithOpModeCheck(250);}
+            if(clamp){robot.clawServo.setPosition(.19);}
+            else{robot.clawServo.setPosition(0);}
+            moveServosSimultaneously(robot.range1Servo,0+ robot.Finalrange*gamepad2.right_trigger, robot.range2Servo, robot.Finalrange-robot.Finalrange*gamepad2.right_trigger, 1);
+
 
 
             // ---- Second Servo Subroutine (Triggered by gamepad2.b) ----
             if (gamepad2.b && !isRoutineRunning) {
                 isRoutineRunning = true;
+                // // Adjust the power as needed
                 new Thread(() -> runSecondServoSequence()).start();  // Execute the servo sequence in a separate thread
+                //robot.intakeServo.setPower(0); // Adjust the power as needed
             }
 
 
             // ---- Trigger the lift motor routine with gamepad2.x ----
             if (gamepad2.x && !isLiftMotorRoutineRunning) {
-                isLiftMotorRoutineRunning = true;
-                new Thread(() -> runLiftMotorRoutine()).start(); // Run lift motor routine in a separate thread
+                //isLiftMotorRoutineRunning = true;
+                //new Thread(() -> runLiftMotorRoutine()).start(); // Run lift motor routine in a separate thread
+            }
+            if(gamepad2.dpad_up){
+
+
+                // Step 1: Move the motor up by 3000 encoder counts at full speed
+
+                moveMotorToPosition(robot.liftMotor, targetPositionUpperBasket,.8);
+                robot.liftMotor.setPower(0);
+                rotateClaw();
+            }
+            else if(gamepad2.dpad_right){
+
+
+                // Step 1: Move the motor up by 3000 encoder counts at full speed
+
+                moveMotorToPosition(robot.liftMotor, targetPositionUpperRung,.8);
+                robot.liftMotor.setPower(0);
+                rotateClaw();
+            }
+            else if(gamepad2.dpad_left){
+
+
+                // Step 1: Move the motor up by 3000 encoder counts at full speed
+
+                moveMotorToPosition(robot.liftMotor, targetPositionLowerRung,.8);
+                robot.liftMotor.setPower(0);
+                rotateClaw();
+            }
+            else if(gamepad2.dpad_down){
+
+                // Step 1: Move the motor up by 3000 encoder counts at full speed
+                rotateClaw2();
+                moveMotorToPosition(robot.liftMotor, initialPosition,.8);
+                robot.liftMotor.setPower(0);
+
             }
 
-            telemetry.addData("motorencoder",robot.liftMotor.getCurrentPosition());
+
             telemetry.addData("intake power", robot.intakeServo.getPower());
+            /**
             telemetry.addData("R",isColorInRange(robot.colorSensor.red(),robot.colorSensor.green(),robot.colorSensor.blue(),Color.RED));
             telemetry.addData("G",isColorInRange(robot.colorSensor.red(),robot.colorSensor.green(),robot.colorSensor.blue(),Color.GREEN));
             telemetry.addData("B",isColorInRange(robot.colorSensor.red(),robot.colorSensor.green(),robot.colorSensor.blue(),Color.BLUE));
@@ -105,7 +156,9 @@ public class twinteleop2 extends LinearOpMode {
             telemetry.addData("red",robot.colorSensor.red());
             telemetry.addData("green",robot.colorSensor.green());
             telemetry.addData("blue",robot.colorSensor.blue());
+            **/
             telemetry.addData("claw",robot.clawServo.getPosition());
+            telemetry.addData("LIFT",robot.liftMotor.getCurrentPosition());
             telemetry.update();
         }
     }
@@ -136,9 +189,10 @@ public class twinteleop2 extends LinearOpMode {
     private void runSecondServoSequence() {
         telemetry.addData("Second Servo Sequence", "Started");
         telemetry.update();
+        robot.intakeServo.setPower(-1.0);
 
-        moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, robot.FinalrangeBasket, 0.99);
-        moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
+        //moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, robot.FinalrangeBasket, 0.99);
+        //moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
         /**
         moveMultipleServosWithSpeeds(
                 new Servo[] { robot.range1Servo, robot.range2Servo, robot.basketServo1, robot.basketServo2 },
@@ -150,25 +204,26 @@ public class twinteleop2 extends LinearOpMode {
         if (checkForCancel()) {isRoutineRunning = false;return;}
 
         // Start the intake servo when the second servo sequence starts
-        robot.intakeServo.setPower(1.0); // Adjust the power as needed
 
 
 
         // Step 1: Move to Zero Position
-        moveServosSimultaneously(robot.range1Servo, .15, robot.range2Servo, robot.Finalrange - .15, 0.8);
+        //moveServosSimultaneously(robot.range1Servo, .15, robot.range2Servo, robot.Finalrange - .15, 0.8);
         if (checkForCancel()) {isRoutineRunning = false;return;}
-        sleepWithOpModeCheck(10000);
+        //sleepWithOpModeCheck(10000);
 
         // Step 2: Move basketServo1 and basketServo2 simultaneously
         moveServosSimultaneously(robot.basketServo1, robot.FinalrangeBasket, robot.basketServo2, 0, 0.8);
         if (checkForCancel()) {isRoutineRunning = false;return;}
 
         // Step 3: Move range1Servo and range2Servo simultaneously
-        moveServosSimultaneously(robot.range1Servo, robot.Finalrange, robot.range2Servo, 0, 0.6);
+        //moveServosSimultaneously(robot.range1Servo, robot.Finalrange, robot.range2Servo, 0, 0.6);
         if (checkForCancel()) {isRoutineRunning = false;return;}
+         // Adjust the power as needed
 
         // Wait for gamepad2.left_bumper to be pressed to set retract to true
         while (!gamepad2.left_bumper && opModeIsActive()) {
+            robot.intakeServo.setPower(-1.0);
             telemetry.addData("Waiting for Left Bumper", "Press gamepad2.left_bumper to retract");
             telemetry.update();
             if (checkForCancel()) return;
@@ -177,19 +232,23 @@ public class twinteleop2 extends LinearOpMode {
         retract = true;
 
         if (retract) {
+            robot.intakeServo.setPower(-1.0);
             // Step 4: Move basketServo1 and basketServo2 to retract positions
             moveServosSimultaneously(robot.basketServo1, 0 + robot.FinalrangeBasket * 0.75, robot.basketServo2, robot.FinalrangeBasket * 0.25, 0.99);
             if (checkForCancel()) {isRoutineRunning = false;return;}
+            sleepWithOpModeCheck(500);
 
             // Step 5: Move range1Servo and range2Servo to final positions
-            moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
+            //moveServosSimultaneously(robot.range1Servo, 0, robot.range2Servo, robot.Finalrange, 0.6);
             if (checkForCancel()) {isRoutineRunning = false;return;}
 
             // Step 6: Return basketServo1 and basketServo2 to starting positions
             moveServosSimultaneously(robot.basketServo1, 0, robot.basketServo2, robot.FinalrangeBasket, 0.99);
-            robot.range1Servo.setPosition(0);
-            robot.range2Servo.setPosition(robot.Finalrange);
+            //robot.range1Servo.setPosition(0);
+            //robot.range2Servo.setPosition(robot.Finalrange);
+
             if (checkForCancel()) {isRoutineRunning = false;return;}
+
         }
 
         sleepWithOpModeCheck(1000);
@@ -228,14 +287,10 @@ public class twinteleop2 extends LinearOpMode {
         telemetry.update();
 
         // Get the current position as a baseline
-        int initialPosition = robot.liftMotor.getCurrentPosition();
+        //int initialPosition = robot.liftMotor.getCurrentPosition();
 
         // Step 1: Move the motor up by 3000 encoder counts at full speed
-        int targetPositionMAX = initialPosition + 3080; // Adjust based on desired lift distance
-        int targetPositionLowerBasket = 1802; // Adjust based on desired lift distance
-        int targetPositionUpperBasket = 2570; // Adjust based on desired lift distance
-        int targetPositionLowerRung = 902; // Adjust based on desired lift distance
-        int targetPositionUpperRung = 3080; // Adjust based on desired lift distance
+
 
         moveMotorToPosition(robot.liftMotor, targetPositionLowerRung,.8);
         robot.liftMotor.setPower(0.01);
@@ -275,7 +330,7 @@ public class twinteleop2 extends LinearOpMode {
 
         isLiftMotorRoutineRunning = false; // Re-enable left joystick input
         telemetry.addData("Lift Motor Routine", "Completed");
-        telemetry.addData("motorEncoder",robot.liftMotor.getCurrentPosition());
+        //telemetry.addData("motorEncoder",robot.liftMotor.getCurrentPosition());
         telemetry.update();
     }
 
@@ -297,7 +352,7 @@ public class twinteleop2 extends LinearOpMode {
         // Wait until the motor reaches the target position
         while (motor.isBusy()) {
             // You can add telemetry or perform other tasks here while waiting
-            telemetry.addData("Motor Position", motor.getCurrentPosition());
+            //telemetry.addData("Motor Position", motor.getCurrentPosition());
             telemetry.addData("Target Position", targetPosition);
             telemetry.update();
         }
@@ -608,9 +663,12 @@ public class twinteleop2 extends LinearOpMode {
      * */
     public void rotateClaw(){
         moveServoToPosition(robot.clawRotateServo,0,.8);
-        sleepWithOpModeCheck(500);
+        //sleepWithOpModeCheck(500);
         moveServoToPosition(robot.clawRotateServo,robot.FinalrangeClawRotate,.8);
-        sleepWithOpModeCheck(500);
+        //sleepWithOpModeCheck(500);
+    }
+    public void rotateClaw2(){
+        moveServoToPosition(robot.clawRotateServo,robot.FinalrangeClawRotate,.8);
     }
 
     // ---- Drive Configuration Methods ----

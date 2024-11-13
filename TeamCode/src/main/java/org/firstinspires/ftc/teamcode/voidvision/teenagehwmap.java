@@ -66,7 +66,7 @@ public class teenagehwmap extends HardwareMapUtil {
         basketServo1 = HardwareInitServo("basket2", 0); // Left basket servo
         basketServo2 = HardwareInitServo("basket1", FinalrangeBasket); // Right basket servo
         //these are flipped because Will flipped them
-        clawServo = HardwareInitServo("claw",0);
+        clawServo = HardwareInitServo("claw",.19);
         clawRotateServo = HardwareInitServo("terminator",FinalrangeClawRotate);
 
         // Initialize color sensor (commented out if not needed yet)
