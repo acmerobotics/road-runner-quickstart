@@ -210,7 +210,7 @@ public class Robot {
                 TeleopPID(gamepad2);
                 arcadeDrive(gamepad1);
             }
-            slideTarget = 12000;
+            slideTarget = 6000;
         }
         if (gamepad2.a) {
             slideTarget = 0;
@@ -221,7 +221,7 @@ public class Robot {
             armTarget = 0;
         }
         if (gamepad2.x) {
-            slideTarget = 4000;
+            slideTarget = 2000;
             while (Math.abs(slideTarget - slide.getCurrentPosition()) > 1500) {
                 TeleopPID(gamepad2);
                 arcadeDrive(gamepad1);
@@ -297,15 +297,15 @@ public class Robot {
 //            intakeRight.setPower(1);
 //        }
 
-        if (gamepad.y) {
-            wrist.setPosition(0.92);
-        }
-        else if (gamepad.left_bumper) {
-            wrist.setPosition(0);
-        }
-        else if (gamepad.right_bumper) {
-            wrist.setPosition(0.5);
-        }
+//        if (gamepad.y) {
+//            wrist.setPosition(0.92);
+//        }
+//        else if (gamepad.left_bumper) {
+//            wrist.setPosition(0);
+//        }
+//        else if (gamepad.right_bumper) {
+//            wrist.setPosition(0.5);
+//        }
     }
     public void startPID() {
         if (currentThread == null || !currentThread.isAlive()) {
