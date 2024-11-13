@@ -51,6 +51,9 @@ public class BucketOperatorFSM {
 
     private final int POS_ELBOW_EXTEND_HIGH_BUCKET = 575;
     private final int POS_ELBOW_EXTEND_LOW_BUCKET = 500;
+    private final int POS_ELBOW_REST = 200;
+
+    private final double LAPSE_SEC_ELBOW_S1 = 0.5;
 
 
     private Viper viper;
@@ -63,8 +66,8 @@ public class BucketOperatorFSM {
 
     public enum BucketState{
         ZERO_BUCKETSTATE,
-        MIDDLE_BUCKETSTATE, MIDDLE_EXTEND_VIPER, MIDDLE_EXTEND_ELBOW, MIDDLE_RETRACT_VIPER, MIDDLE_RETRACT_ELBOW,
-        HIGH_BUCKETSTATE, HIGH_EXTEND_VIPER, HIGH_EXTEND_ELBOW, HIGH_RETRACT_VIPER, HIGH_RETRACT_ELBOW,
+        MIDDLE_BUCKETSTATE, MIDDLE_EXTEND_VIPER, MIDDLE_EXTEND_ELBOW, MIDDLE_RETRACT_VIPER, MIDDLE_RETRACT_ELBOW_S1, MIDDLE_RETRACT_ELBOW_S2,
+        HIGH_BUCKETSTATE, HIGH_EXTEND_VIPER, HIGH_EXTEND_ELBOW, HIGH_RETRACT_VIPER, HIGH_RETRACT_ELBOW_S1, HIGH_RETRACT_ELBOW_S2,
 
     };
     private ElapsedTime bucketStateTimer = new ElapsedTime();
@@ -87,6 +90,49 @@ public class BucketOperatorFSM {
         int pos_shoulder;
         int pos_viper;
 
+        // listen to the command to reset
+        if (bucketStateTimer.seconds() > 1) {
+            switch (bucketState) {
+                case ZERO_BUCKETSTATE:
+                    break;
+
+                case HIGH_BUCKETSTATE:
+                    if (gamepad.b) {
+                        elbow.setElbow(0);
+                        bucketStateTimer.reset();
+                        bucketState = BucketState.HIGH_RETRACT_ELBOW_S2;
+                    }
+                    break;
+
+                case HIGH_EXTEND_VIPER:
+                case HIGH_EXTEND_ELBOW:
+                    if (gamepad.b) {
+                        elbow.setElbow(POS_ELBOW_REST);
+                        bucketStateTimer.reset();
+                        bucketState = BucketState.HIGH_RETRACT_ELBOW_S1;
+                    }
+                    break;
+
+                case MIDDLE_BUCKETSTATE:
+                    if (gamepad.b) {
+                        elbow.setElbow(0);
+                        bucketStateTimer.reset();
+                        bucketState = BucketState.MIDDLE_RETRACT_ELBOW_S2;
+                    }
+                    break;
+
+                case MIDDLE_EXTEND_VIPER:
+                case MIDDLE_EXTEND_ELBOW:
+                    if (gamepad.b) {
+                        elbow.setElbow(POS_ELBOW_REST);
+                        bucketStateTimer.reset();
+                        bucketState = BucketState.MIDDLE_RETRACT_ELBOW_S1;
+                    }
+                    break;
+            }
+        }
+
+        // listen to other commands
         switch (bucketState) {
             case ZERO_BUCKETSTATE:
                 if (gamepad.dpad_left) {
@@ -101,11 +147,13 @@ public class BucketOperatorFSM {
                 pos_shoulder = shoulder.getCurrentPosition();
 
                 // stay until the shoulder is within threshold
-                if ((pos_shoulder >= POS_SHOULDER_HIGH_BUCKET-THRESH_SHOULDER)
+                if (bucketStateTimer.seconds() > 0.3
+                        || (pos_shoulder >= POS_SHOULDER_HIGH_BUCKET-THRESH_SHOULDER)
                         && (pos_shoulder <= POS_SHOULDER_HIGH_BUCKET+THRESH_SHOULDER)) {
                     if (gamepad.dpad_left) {
                         // go to the high bucket
                         shoulder.setTarget(POS_SHOULDER_MIDDLE_BUCKET);
+                        bucketStateTimer.reset();
                         bucketState = BucketState.MIDDLE_BUCKETSTATE;
                     }
                     if (gamepad.dpad_right) {
@@ -125,11 +173,13 @@ public class BucketOperatorFSM {
                 pos_shoulder = shoulder.getCurrentPosition();
 
                 // stay until the shoulder is within threshold
-                if ((pos_shoulder >= POS_SHOULDER_MIDDLE_BUCKET-THRESH_SHOULDER)
+                if (bucketStateTimer.seconds() > 0.3
+                        || (pos_shoulder >= POS_SHOULDER_MIDDLE_BUCKET-THRESH_SHOULDER)
                         && (pos_shoulder <= POS_SHOULDER_MIDDLE_BUCKET+THRESH_SHOULDER)) {
                     if (gamepad.dpad_left) {
                         // go to the high bucket
                         shoulder.setTarget(POS_SHOULDER_HIGH_BUCKET);
+                        bucketStateTimer.reset();
                         bucketState = BucketState.HIGH_BUCKETSTATE;
                     }
                     if (gamepad.dpad_right) {
@@ -154,42 +204,55 @@ public class BucketOperatorFSM {
                     elbow.setElbow(POS_ELBOW_EXTEND_LOW_BUCKET);
                     bucketState = BucketState.MIDDLE_EXTEND_ELBOW;
                 }
-                if (gamepad.left_stick_y != 0.0) {
-                    bucketState = BucketState.ZERO_BUCKETSTATE;
-                }
+
                 break;
 
             case MIDDLE_EXTEND_ELBOW:
                 pos_elbow = elbow.getPosition();
 
                 // stay until the elbow is within threshold
-                if ((pos_elbow >= POS_ELBOW_EXTEND_LOW_BUCKET -THRESH_ELBOW)
-                        && (pos_elbow <= POS_ELBOW_EXTEND_LOW_BUCKET +THRESH_ELBOW)) {
+                if (bucketStateTimer.seconds() > 0.3
+                        || ((pos_elbow >= POS_ELBOW_EXTEND_LOW_BUCKET -THRESH_ELBOW)
+                        && (pos_elbow <= POS_ELBOW_EXTEND_LOW_BUCKET +THRESH_ELBOW))) {
 
                     // listen to the command to retract
                     if (gamepad.b) {
-                        elbow.setElbow(0);
-                        bucketState = BucketState.MIDDLE_RETRACT_ELBOW;
+                        elbow.setElbow(POS_ELBOW_REST);
+                        bucketStateTimer.reset();
+                        bucketState = BucketState.MIDDLE_RETRACT_ELBOW_S1;
                     }
                 }
-                if (gamepad.left_trigger - gamepad.right_trigger != 0.0) {
-                    bucketState = BucketState.ZERO_BUCKETSTATE;
-                }
-                break;
 
-            case MIDDLE_RETRACT_ELBOW:
+                break;
+            case MIDDLE_RETRACT_ELBOW_S1:
                 pos_elbow = elbow.getPosition();
 
                 // stay until the elbow is within threshold
-                if (pos_elbow <= +THRESH_ELBOW) {
+                if (bucketStateTimer.seconds() > LAPSE_SEC_ELBOW_S1) {
+                    elbow.setElbow(0);
+                    bucketStateTimer.reset();
+                    bucketState = BucketState.MIDDLE_RETRACT_ELBOW_S2;
+                }
+                break;
+
+            case MIDDLE_RETRACT_ELBOW_S2:
+                pos_elbow = elbow.getPosition();
+
+                // stay until the elbow is within threshold
+                if (bucketStateTimer.seconds() > 1 ||
+                        ((pos_elbow >= 0 - THRESH_ELBOW)
+                        && (pos_elbow <= 0 +THRESH_ELBOW))) {
                     viper.setTarget(0);
+                    bucketStateTimer.reset();
                     bucketState = BucketState.MIDDLE_RETRACT_VIPER;
                 }
                 break;
 
             case MIDDLE_RETRACT_VIPER:
                 pos_viper = viper.getPosition();
-                if (pos_viper <= +THRESH_VIPER) {
+                if (bucketStateTimer.seconds() > 1 || pos_viper <= +THRESH_VIPER) {
+                    bucketStateTimer.reset();
+                    shoulder.setTarget(POS_SHOULDER_MIDDLE_BUCKET);
                     bucketState = BucketState.MIDDLE_BUCKETSTATE;
                 }
                 break;
@@ -216,25 +279,42 @@ public class BucketOperatorFSM {
 
                     // listen to the command to retract
                     if (gamepad.b) {
-                        elbow.setElbow(0);
-                        bucketState = BucketState.HIGH_RETRACT_ELBOW;
+                        elbow.setElbow(POS_ELBOW_REST);
+                        bucketStateTimer.reset();
+                        bucketState = BucketState.HIGH_RETRACT_ELBOW_S1;
                     }
                 }
                 break;
 
-            case HIGH_RETRACT_ELBOW:
+            case HIGH_RETRACT_ELBOW_S1:
                 pos_elbow = elbow.getPosition();
 
                 // stay until the elbow is within threshold
-                if (pos_elbow <= +THRESH_ELBOW) {
+                if (bucketStateTimer.seconds() > LAPSE_SEC_ELBOW_S1) {
+                    elbow.setElbow(0);
+                    bucketStateTimer.reset();
+                    bucketState = BucketState.HIGH_RETRACT_ELBOW_S2;
+                }
+                break;
+
+            case HIGH_RETRACT_ELBOW_S2:
+                pos_elbow = elbow.getPosition();
+
+                // stay until the elbow is within threshold
+                if (bucketStateTimer.seconds() > 1
+                        || ((pos_elbow >= 0 - THRESH_ELBOW)
+                        && (pos_elbow <= 0 +THRESH_ELBOW))) {
                     viper.setTarget(0);
+                    bucketStateTimer.reset();
                     bucketState = BucketState.HIGH_RETRACT_VIPER;
                 }
                 break;
 
             case HIGH_RETRACT_VIPER:
                 pos_viper = viper.getPosition();
-                if (pos_viper <= +THRESH_VIPER) {
+                if (bucketStateTimer.seconds() > 1 || pos_viper <= +THRESH_VIPER) {
+                    shoulder.setTarget(POS_SHOULDER_HIGH_BUCKET);
+                    bucketStateTimer.reset();
                     bucketState = BucketState.HIGH_BUCKETSTATE;
                 }
                 break;

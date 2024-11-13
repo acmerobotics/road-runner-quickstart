@@ -40,17 +40,18 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 public class SubOperatorFSM {
 
-    private final int POS_SHOULDER_SUB = 250;
-    private final int POS_SHOULDER_READY = 750;
+    private final int POS_SHOULDER_SUB = 350;
+    private final int POS_SHOULDER_LOWER = 350;
     private final int THRESH_SHOULDER = 150;
     private final int THRESH_VIPER = 50;
     private final int THRESH_ELBOW = 50;
 
     private final int POS_VIPER_SUB = 1000;
 
-    private final int POS_ELBOW_EXTEND_HORIZ_SUB = 550;
-    private final int POS_ELBOW_EXTEND_ADJUST_SUB = 550;
+    private final int POS_ELBOW_EXTEND_HORIZ_SUB = 400;
+    private final int POS_ELBOW_EXTEND_ADJUST_SUB = 400;
     private final int POS_ELBOW_EXTEND_MAX_SUB = 650;
+    private final int POS_ELBOW_REST = 200;
 
 
     private Viper viper;
@@ -61,9 +62,8 @@ public class SubOperatorFSM {
 
     public enum SubState {
         ZERO_SUBSTATE,
-        SHOULDER_READY,
         SHOULDER_RAISE_SUBSTATE, HORIZ_ELBOW_SUBSTATE, VIPER_EXTEND_SUBSTATE, MAX_ELBOW_SUBSTATE,
-        RETRACT_VIPER_SUBSTATE, RETRACT_ELBOW_SUBSTATE, CLEARANCE_ELBOW_SUBSTATE
+        RETRACT_VIPER_SUBSTATE, RETRACT_ELBOW_SUBSTATE_S1, RETRACT_ELBOW_SUBSTATE_S2, CLEARANCE_ELBOW_SUBSTATE
     }
     private ElapsedTime subStateTimer = new ElapsedTime();
     private SubState subState;
@@ -83,52 +83,57 @@ public class SubOperatorFSM {
         int pos_shoulder;
         int pos_viper;
 
+        // listen to the command to reset
+        if (subStateTimer.seconds() > 1) {
+            switch (subState) {
+                case ZERO_SUBSTATE:
+                    break;
+
+                case SHOULDER_RAISE_SUBSTATE:
+                case VIPER_EXTEND_SUBSTATE:
+                    if (gamepad.b) {
+                        elbow.setElbow(0);
+                        subStateTimer.reset();
+                        subState = SubState.RETRACT_ELBOW_SUBSTATE_S2;
+                    }
+                    break;
+
+                case HORIZ_ELBOW_SUBSTATE:
+                case MAX_ELBOW_SUBSTATE:
+                case CLEARANCE_ELBOW_SUBSTATE:
+                    if (gamepad.b) {
+                        elbow.setElbow(POS_ELBOW_REST);
+                        subStateTimer.reset();
+                        subState = SubState.RETRACT_ELBOW_SUBSTATE_S1;
+                    }
+                    break;
+
+            }
+        }
+
+        // listen to commands
         switch (subState) {
             case ZERO_SUBSTATE:
                 if (gamepad.dpad_down) {
                     // go to the shoulder sub pos
                     shoulder.setTarget(POS_SHOULDER_SUB);
-
                     subState = SubState.SHOULDER_RAISE_SUBSTATE;
                     subStateTimer.reset();
                 }
-                if (gamepad.right_stick_y != 0.0) {
-                    subState = SubState.ZERO_SUBSTATE;
-                }
+
                 break;
 
-            case SHOULDER_READY:
-                pos_shoulder = shoulder.getCurrentPosition();
-
-                if (subStateTimer.seconds() > 0.5) {
-                    if ((pos_shoulder >= POS_SHOULDER_READY - THRESH_SHOULDER)
-                            && (pos_shoulder <= POS_SHOULDER_READY + THRESH_SHOULDER)) {
-                        shoulder.setTarget(POS_SHOULDER_SUB);
-                        subState = SubState.SHOULDER_RAISE_SUBSTATE;
-
-                    }
-                }
-
-                if (gamepad.right_stick_y != 0.0) {
-                    subState = SubState.ZERO_SUBSTATE;
-                }
-                break;
 
             case SHOULDER_RAISE_SUBSTATE:
                 pos_shoulder = shoulder.getCurrentPosition();
 
-
                 // stay until the shoulder is within threshold
-                if ((pos_shoulder >= POS_SHOULDER_SUB - THRESH_SHOULDER)
-                        && (pos_shoulder <= POS_SHOULDER_SUB + THRESH_SHOULDER)) {
+                if (subStateTimer.seconds() > 0.3) {
                     //go to horiz pos
                     elbow.setElbow(POS_ELBOW_EXTEND_HORIZ_SUB);
                     subStateTimer.reset();
                     subState = SubState.HORIZ_ELBOW_SUBSTATE;
 
-                }
-                if (gamepad.right_stick_y != 0.0) {
-                    subState = SubState.ZERO_SUBSTATE;
                 }
                 break;
 
@@ -137,80 +142,74 @@ public class SubOperatorFSM {
 
 
                 // stay until elbow is within thresh
-                if ((pos_elbow >= POS_ELBOW_EXTEND_HORIZ_SUB - THRESH_ELBOW) && (pos_elbow <= POS_ELBOW_EXTEND_HORIZ_SUB + THRESH_ELBOW)) {
+                if (subStateTimer.seconds() > 0.3) {
 
                     //extend viper
                     viper.setTarget(POS_VIPER_SUB);
-
+                    subStateTimer.reset();
                     subState = SubState.VIPER_EXTEND_SUBSTATE;
                 }
-
-
-                    if (-gamepad.left_trigger + gamepad.right_trigger != 0.0) {
-                        subState = SubState.ZERO_SUBSTATE;
-                    }
-                    break;
+                break;
 
             case VIPER_EXTEND_SUBSTATE:
                 pos_viper = viper.getPosition();
 
 
                 // stay until viper is within thresh
-                if ((pos_viper >= POS_VIPER_SUB - THRESH_VIPER) && (pos_viper <= POS_VIPER_SUB + THRESH_VIPER)) {
+                if (subStateTimer.seconds() > 0.3 || (pos_viper >= POS_VIPER_SUB - THRESH_VIPER) && (pos_viper <= POS_VIPER_SUB + THRESH_VIPER)) {
                     //go to max pos
-                    elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
-
-                    subState = SubState.MAX_ELBOW_SUBSTATE;
+                    if (gamepad.a) {
+                        elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
+                        shoulder.setTarget(POS_SHOULDER_LOWER);
+                        subStateTimer.reset();
+                        subState = SubState.MAX_ELBOW_SUBSTATE;
+                    }
                 }
 
-                if (gamepad.right_stick_y != 0.0) {
-                    subState = SubState.ZERO_SUBSTATE;
-                }
                 break;
 
             case MAX_ELBOW_SUBSTATE:
                 pos_elbow = elbow.getPosition();
 
-
                 // stay until elbow is within thresh
-                if ((pos_elbow >= POS_ELBOW_EXTEND_MAX_SUB - THRESH_ELBOW) && (pos_elbow <= POS_ELBOW_EXTEND_MAX_SUB + THRESH_ELBOW)) {
-                    subState = SubState.VIPER_EXTEND_SUBSTATE;
+                if (subStateTimer.seconds() > 0.3) {
 
                     if (gamepad.a) {
                         //go to max pos
                         elbow.setElbow(POS_ELBOW_EXTEND_ADJUST_SUB);
-
+                        shoulder.setTarget(POS_SHOULDER_SUB);
+                        subStateTimer.reset();
                         subState = SubState.CLEARANCE_ELBOW_SUBSTATE;
-                    } else if (gamepad.b) {
-                        // retract elbow
-                        elbow.setElbow(0);
-                        subState = SubState.RETRACT_ELBOW_SUBSTATE;
+
                     }
 
                 }
 
-                if (-gamepad.left_trigger + gamepad.right_trigger != 0.0) {
-                    subState = SubState.ZERO_SUBSTATE;
-                }
                 break;
 
             case RETRACT_VIPER_SUBSTATE:
                 pos_viper = viper.getPosition();
 
-
-
                 // stay until viper is within thresh
-                if (pos_viper <= +THRESH_VIPER) {
+                if (subStateTimer.seconds() > 0.3 || pos_viper <= +THRESH_VIPER) {
                     subState = SubState.ZERO_SUBSTATE;
                 }
                 break;
 
-            case RETRACT_ELBOW_SUBSTATE:
+            case RETRACT_ELBOW_SUBSTATE_S1:
+                if (subStateTimer.seconds() > 0.3) {
+                    elbow.setElbow(0);
+                    subStateTimer.reset();
+                    subState = SubState.RETRACT_ELBOW_SUBSTATE_S2;
+                }
+                break;
+
+            case RETRACT_ELBOW_SUBSTATE_S2:
                 pos_elbow = elbow.getPosition();
 
-                if (pos_elbow <= THRESH_ELBOW) {
+                if (subStateTimer.seconds() > 0.3 || pos_elbow <= THRESH_ELBOW) {
                     viper.setTarget(0);
-
+                    subStateTimer.reset();
                     subState = SubState.RETRACT_VIPER_SUBSTATE;
                 }
                 break;
@@ -220,25 +219,18 @@ public class SubOperatorFSM {
 
 
                 // stay until elbow is within thresh
-                if ((pos_elbow >= POS_ELBOW_EXTEND_HORIZ_SUB - THRESH_ELBOW) && (pos_elbow <= POS_ELBOW_EXTEND_HORIZ_SUB + THRESH_ELBOW)) {
+                if (subStateTimer.seconds() > 0.3) {
 
                     if (gamepad.a) {
+                        shoulder.setTarget(POS_SHOULDER_LOWER);
                         elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
-
+                        subStateTimer.reset();
                         subState = SubState.MAX_ELBOW_SUBSTATE;
-                    } else if (gamepad.b) {
-                        //extend viper
-                        elbow.setElbow(0);
 
-                        subState = SubState.RETRACT_ELBOW_SUBSTATE;
                     }
 
                 }
 
-
-                if (-gamepad.left_trigger + gamepad.right_trigger != 0.0) {
-                    subState = SubState.ZERO_SUBSTATE;
-                }
                 break;
         }
     }
