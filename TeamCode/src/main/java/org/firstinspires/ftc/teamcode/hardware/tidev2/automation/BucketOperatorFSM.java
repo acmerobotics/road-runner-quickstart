@@ -148,7 +148,7 @@ public class BucketOperatorFSM {
 
                 // stay until the shoulder is within threshold
                 if (bucketStateTimer.seconds() > 0.3
-                        && (pos_shoulder >= POS_SHOULDER_HIGH_BUCKET-THRESH_SHOULDER)
+                        || (pos_shoulder >= POS_SHOULDER_HIGH_BUCKET-THRESH_SHOULDER)
                         && (pos_shoulder <= POS_SHOULDER_HIGH_BUCKET+THRESH_SHOULDER)) {
                     if (gamepad.dpad_left) {
                         // go to the high bucket
@@ -174,7 +174,7 @@ public class BucketOperatorFSM {
 
                 // stay until the shoulder is within threshold
                 if (bucketStateTimer.seconds() > 0.3
-                        && (pos_shoulder >= POS_SHOULDER_MIDDLE_BUCKET-THRESH_SHOULDER)
+                        || (pos_shoulder >= POS_SHOULDER_MIDDLE_BUCKET-THRESH_SHOULDER)
                         && (pos_shoulder <= POS_SHOULDER_MIDDLE_BUCKET+THRESH_SHOULDER)) {
                     if (gamepad.dpad_left) {
                         // go to the high bucket
@@ -211,8 +211,9 @@ public class BucketOperatorFSM {
                 pos_elbow = elbow.getPosition();
 
                 // stay until the elbow is within threshold
-                if ((pos_elbow >= POS_ELBOW_EXTEND_LOW_BUCKET -THRESH_ELBOW)
-                        && (pos_elbow <= POS_ELBOW_EXTEND_LOW_BUCKET +THRESH_ELBOW)) {
+                if (bucketStateTimer.seconds() > 0.3
+                        || ((pos_elbow >= POS_ELBOW_EXTEND_LOW_BUCKET -THRESH_ELBOW)
+                        && (pos_elbow <= POS_ELBOW_EXTEND_LOW_BUCKET +THRESH_ELBOW))) {
 
                     // listen to the command to retract
                     if (gamepad.b) {
