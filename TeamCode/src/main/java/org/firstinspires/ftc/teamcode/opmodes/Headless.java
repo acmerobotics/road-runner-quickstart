@@ -146,30 +146,11 @@ public class Headless extends OpMode {
         subOperatorFSM.listen();
         shoulder.listen();
         shoulder.sendTelemetry();
-//        if (gamepad2.right_stick_y <= 0.3) {
-//            shoulder.listen();
-//            shoulder.sendTelemetry();
-//        } else {
-//            shoulderV0.listen();
-//            shoulder.setTarget(shoulderV0.getTarget());
-//            shoulderV0.sendTelemetry();
-//        }
 
         elbow.listen();
         intake.listen();
         viper.listen();
         claw.listen();
-
-//        if (gamepad2.a) {
-//            pressed_a = true;
-//            resetTimer.reset();
-//            elbow.setElbow(0);
-//            viper.setTarget(0);
-//        }
-//
-//        if (pressed_a && resetTimer.seconds() > 1 && resetTimer.seconds() < 1.2) {
-//            shoulder.setTarget(400);
-//        }
 
         elbow.sendTelemetry();
         intake.sendTelemetry();
