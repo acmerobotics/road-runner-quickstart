@@ -80,7 +80,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeMotor.setPower(0.45);
+            intakeMotor.setPower(0.425);
             return false;
         }
     }

@@ -51,7 +51,7 @@ public class Extendo {
                 init = true;
             }
 
-
+            updateMotor();
 
             if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
                 extendoMotor.setPower(0);

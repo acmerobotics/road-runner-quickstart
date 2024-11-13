@@ -59,7 +59,7 @@ public class Claw {
     public class Open implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawLeftServo.setPosition(0.3);
+            clawLeftServo.setPosition(0.2);
             clawRightServo.setPosition(0.8);
             return false;
         }
