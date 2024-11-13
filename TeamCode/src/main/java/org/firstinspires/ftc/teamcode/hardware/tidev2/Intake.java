@@ -29,11 +29,16 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Intake {
+
 
 
     // Define class members
@@ -94,6 +99,45 @@ public class Intake {
 
 
 
+    }
+
+    public class AutoIntake implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intake.setPower(1);
+            return false;
+        }
+    }
+
+    public Action autoIntake() {
+        return new AutoIntake();
+    }
+
+    public class AutoOuttake implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intake.setPower(-1);
+            return false;
+        }
+    }
+
+    public Action autoOuttake() {
+        return new AutoOuttake();
+    }
+
+    public class AutoStoptake implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intake.setPower(0);
+            return false;
+        }
+    }
+
+    public Action autoStoptake() {
+        return new AutoStoptake();
     }
 
 
