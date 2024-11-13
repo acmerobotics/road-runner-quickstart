@@ -37,7 +37,9 @@ public class teenagehwmap extends HardwareMapUtil {
     //.4 is good
     //.6 is bad
     public double FinalrangeBasket = 0.48;
-    public double FinalrangeClawRotate = .25;
+    public double FinalrangeClawRotate = 0.25;
+    public double FinalposClawRotate = .3529+ FinalrangeClawRotate;
+
 
     /**
      * Initializes all hardware components and sets their initial states.

@@ -86,16 +86,19 @@ public class twinteleopScrimmage extends LinearOpMode {
 
             // ---- First Servo Sequence (Triggered by gamepad2.a) ----
 
-            robot.clawServo.setPosition(gamepad2.left_trigger);
+
             if(gamepad2.x){clamp = !clamp;sleepWithOpModeCheck(250);}
             if(clamp){robot.clawServo.setPosition(.19);}
             else{robot.clawServo.setPosition(0);}
             //extender
-            //moveServosSimultaneously(robot.range1Servo,0+ robot.Finalrange*gamepad2.right_trigger, robot.range2Servo, robot.Finalrange-robot.Finalrange*gamepad2.right_trigger, 1);
-            robot.clawRotateServo.setPosition(gamepad2.right_trigger);
+            moveServosSimultaneously(robot.range1Servo,0+ robot.Finalrange*gamepad2.right_trigger, robot.range2Servo, robot.Finalrange-robot.Finalrange*gamepad2.right_trigger, 1);
             if(gamepad2.y){liftClamp = !liftClamp;sleepWithOpModeCheck(250);}
-            if(liftClamp){rotateClaw();}
-            else{rotateClaw2();}
+            if(liftClamp){
+                rotateClaw();
+            }
+            else{
+                rotateClaw2();
+            }
 
 
             // ---- Second Servo Subroutine (Triggered by gamepad2.b) ----
@@ -114,7 +117,7 @@ public class twinteleopScrimmage extends LinearOpMode {
 
                 moveMotorToPosition(robot.liftMotor, targetPositionUpperBasket,.8);
                 robot.liftMotor.setPower(0);
-                rotateClaw();
+
             }
             else if(gamepad2.dpad_right){
 
@@ -123,7 +126,7 @@ public class twinteleopScrimmage extends LinearOpMode {
 
                 moveMotorToPosition(robot.liftMotor, targetPositionUpperRung,.8);
                 robot.liftMotor.setPower(0);
-                rotateClaw();
+
             }
             else if(gamepad2.dpad_left){
 
@@ -132,12 +135,12 @@ public class twinteleopScrimmage extends LinearOpMode {
 
                 moveMotorToPosition(robot.liftMotor, targetPositionLowerRung,.8);
                 robot.liftMotor.setPower(0);
-                rotateClaw();
+
             }
             else if(gamepad2.dpad_down){
 
                 // Step 1: Move the motor up by 3000 encoder counts at full speed
-                rotateClaw2();
+
                 moveMotorToPosition(robot.liftMotor, initialPosition,.8);
                 robot.liftMotor.setPower(0);
 
@@ -146,8 +149,9 @@ public class twinteleopScrimmage extends LinearOpMode {
 
             telemetry.addData("intake power", robot.intakeServo.getPower());
             telemetry.addData("claw",robot.clawServo.getPosition());
-            telemetry.addData("RotateClaw",robot.clawRotateServo.getPosition());
+            telemetry.addData("RotateClaw",robot.clawRotateServo.getPosition()-robot.FinalrangeClawRotate);
             telemetry.addData("LIFT",robot.liftMotor.getCurrentPosition());
+            telemetry.addData("LiftClamp",liftClamp);
             telemetry.update();
         }
     }
@@ -325,7 +329,7 @@ public class twinteleopScrimmage extends LinearOpMode {
         servo.setPosition(targetPosition);
     }
     public void rotateClaw(){
-        moveServoToPosition(robot.clawRotateServo,0,.8);
+        moveServoToPosition(robot.clawRotateServo,robot.FinalposClawRotate,.8);
     }
     public void rotateClaw2(){
         moveServoToPosition(robot.clawRotateServo,robot.FinalrangeClawRotate,.8);
