@@ -27,8 +27,8 @@ public class RedBasketSide extends LinearOpMode {
 
         // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(-9,-48))
-                .waitSeconds(2.5)
+                .strafeTo(new Vector2d(-9,-40))
+                .waitSeconds(5)
                 //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(65))
                 .waitSeconds(3)
@@ -64,8 +64,8 @@ public class RedBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(5, bot.setPidVals(2000,0))
-                .afterTime(30, bot.stopPID())
+                .afterTime(0,bot.setPidVals(600,3600, 0.3))
+                .afterTime(5, bot.setPidVals(0,3600,0.3))
                 .build();
 
         bot.slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -77,9 +77,9 @@ public class RedBasketSide extends LinearOpMode {
         // Wait for the start of the op mode
         waitForStart();
 
-        bot.startPID();
-        bot.setPidValues(0,0);
+        bot.setPidValues(0,0,0.5);
         if (isStopRequested()) return;
+        Robot.stopPid = false;
 
         // Execute the defined trajectory
         Action trajectoryActionChosen = tab1.build();
@@ -89,10 +89,10 @@ public class RedBasketSide extends LinearOpMode {
                         new SequentialAction(
                             trajectoryActionChosen,
                             trajectoryActionCloseOut),
-                        waitAndArm
+                        waitAndArm,
+                        bot.getPIDAction()
                 )
-
         );
-        bot.stopPID();
+        bot.stopPidAction();
     }
 }
