@@ -8,7 +8,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class meepmeepjonathan {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(750);
 
 
 
@@ -27,10 +27,7 @@ public class meepmeepjonathan {
                 .setReversed(true)
                 //.afterTime(0, )
 
-                .splineTo(new Vector2d(30, -36), Math.toRadians(0))
-                //move arm down to gathering position while splining
-                .splineTo(new Vector2d(35, -5), Math.toRadians(90))
-                .setReversed(false)
+
 
                 .splineToConstantHeading(new Vector2d(46, -20), Math.toRadians(-90))
 
