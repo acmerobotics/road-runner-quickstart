@@ -201,6 +201,11 @@ public class BlueTeleop extends LinearOpMode {
                         } else {
                             intake.intakeMotor.setPower(0);
                         }
+
+                        if (lefty2 != 0) {
+                            extendo.extendoMotor.setPower(lefty2/2);
+                        }
+
                     }
 
                     if (control.getFinished()) {
@@ -381,7 +386,7 @@ public class BlueTeleop extends LinearOpMode {
                 slides.changeTarget(10);
             }
 
-            extendo.updateMotor();
+            if (liftState.equals(LiftState.LIFTSTART) && lefty2 == 0) extendo.updateMotor();
 
 
             List<Action> newActions = new ArrayList<>();
