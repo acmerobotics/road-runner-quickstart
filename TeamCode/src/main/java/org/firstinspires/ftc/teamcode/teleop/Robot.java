@@ -207,7 +207,7 @@ public class Robot {
         if (gamepad2.y) {
             armTarget = 2200;
             wrist.setPosition(0.5);
-            while (Math.abs(armTarget - flip.getCurrentPosition()) > 900) {
+            while (Math.abs(armTarget - flip.getCurrentPosition()) > 100) {
                 TeleopPID(gamepad2);
                 arcadeDrive(gamepad1);
             }
