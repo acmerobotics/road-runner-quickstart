@@ -97,14 +97,14 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                pid = false;
+                //pid = false;
                 target = -90;
                 extendoMotor.setPower(-0.3);
                 init = true;
             }
 
             if (Math.abs(-90 - getPos()) < 2) {
-                pid = true;
+                //pid = true;
                 return false;
             }
             return true;

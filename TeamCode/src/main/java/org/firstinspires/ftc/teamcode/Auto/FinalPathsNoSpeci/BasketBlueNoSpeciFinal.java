@@ -48,7 +48,7 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-21.66, 9.5), Math.toRadians(45));
         //    .waitSeconds(1);
         TrajectoryActionBuilder block2Traj = basket1Traj.fresh()
-                .strafeToLinearHeading(new Vector2d(-23.77, 21), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-21.77, 21), Math.toRadians(90));
         //    .waitSeconds(1);
         TrajectoryActionBuilder basket2Traj = basketStartTraj.fresh()
                 .strafeToLinearHeading(new Vector2d(-21.66, 9.5), Math.toRadians(45));
@@ -107,6 +107,9 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 new SleepAction(1.5),
                 intake.off(),
                 new SleepAction(0.5),
+                claw.up(),
+                new SleepAction(0.25),
+                claw.flop(),
                 new ParallelAction(
                         slides.slideTopBasket(),
                         basket1
@@ -136,6 +139,9 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 new SleepAction(1.5),
                 intake.off(),
                 new SleepAction(0.5),
+                claw.up(),
+                new SleepAction(0.25),
+                claw.flop(),
                 new ParallelAction(
                         slides.slideTopBasket(),
                         basket2
