@@ -90,7 +90,7 @@ public class twinteleopScrimmage extends LinearOpMode {
                     robot.liftMotor.setPower(-1*gamepad2.left_stick_y);
                     telemetry.addData("liftMotorPower",robot.liftMotor.getPower());
                 }
-
+                else{robot.liftMotor.setPower(0);}
                 if(gamepad2.x){clamp = !clamp;sleepWithOpModeCheck(250);}
                 if(clamp){robot.clawServo.setPosition(.19);}
                 else{robot.clawServo.setPosition(0);}
@@ -138,6 +138,8 @@ public class twinteleopScrimmage extends LinearOpMode {
                     robot.liftMotor.setPower(0);
 
                 }
+                if(gamepad2.left_bumper){intakePartition = true;}
+
             }
             else if(intakePartition){
                 // ---- Second Servo Subroutine (Triggered by gamepad2.b) ----
@@ -152,6 +154,7 @@ public class twinteleopScrimmage extends LinearOpMode {
                 else if(gamepad1.x){intake = 1d;}
                 else if(gamepad1.y){intake = 0d;}
                 robot.intakeServo.setPower(intake);
+                if(gamepad2.y){intakePartition = false;}
             }
 
 
