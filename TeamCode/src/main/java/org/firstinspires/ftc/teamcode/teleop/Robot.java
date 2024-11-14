@@ -174,10 +174,10 @@ public class Robot {
 
     public void wristControl(Gamepad gamepad) {
         if (gamepad.dpad_up) {
-            wrist.setPosition(0.92);
+            wrist.setPosition(0.95);
         }
         else if (gamepad.dpad_down) {
-            wrist.setPosition(0.04);
+            wrist.setPosition(0.01);
         }
         else if (gamepad.dpad_right) {
             wrist.setPosition(0.5);
