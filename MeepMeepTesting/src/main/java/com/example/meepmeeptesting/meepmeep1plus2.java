@@ -6,7 +6,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class meepmeepjonathan {
+public class meepmeep1plus2 {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -17,24 +17,23 @@ public class meepmeepjonathan {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(14, -61, Math.toRadians(90)))
-                .waitSeconds(2)
-                //.afterTime(0, null)
-                .strafeTo(new Vector2d(10, -34))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-14, -61, Math.toRadians(90)))
+                .waitSeconds(0.5)
+
+                .strafeTo(new Vector2d(-10, -34))
                 //put arm up while strafing
                 //stop at (10, -34) and place the sample on the bar
+                .waitSeconds(0.5)
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(-34,-36))
+                .splineToLinearHeading(new Pose2d(new Vector2d(-36, -26), Math.toRadians(180)), Math.toRadians(0))
+                //pick sample
+                .waitSeconds(2.5)
                 .waitSeconds(2)
-                .setReversed(true)
-                //.afterTime(0, )
-
-                .splineTo(new Vector2d(30, -36), Math.toRadians(0))
-                //move arm down to gathering position while splining
-                .splineTo(new Vector2d(35, -5), Math.toRadians(90))
-                .setReversed(false)
-
-                .splineToConstantHeading(new Vector2d(46, -20), Math.toRadians(-90))
-
-                .splineToConstantHeading(new Vector2d(46, -50), Math.toRadians(-90))
+                .waitSeconds(2)
+                .waitSeconds(2)
+                .splineToLinearHeading(new Pose2d(new Vector2d(-47, -47), Math.toRadians(225)), Math.toRadians(-90))
+                .waitSeconds(2)
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)

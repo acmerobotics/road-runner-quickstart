@@ -112,6 +112,19 @@ public class Viper {
         return new Viper.AutonDown();
     }
 
+    public class AutonHB implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setTarget(3000);
+            return false;
+        }
+    }
+
+    public Action autonHB() {
+        return new AutonHB();
+    }
+
     public int getPosition() {
         return viper.getCurrentPosition();
     }

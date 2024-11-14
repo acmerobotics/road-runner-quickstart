@@ -106,7 +106,7 @@ public class Intake {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             intake.setPower(1);
-            return false;
+            return true;
         }
     }
 
@@ -119,7 +119,7 @@ public class Intake {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             intake.setPower(-1);
-            return false;
+            return true;
         }
     }
 
@@ -132,7 +132,7 @@ public class Intake {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             intake.setPower(0);
-            return false;
+            return true;
         }
     }
 

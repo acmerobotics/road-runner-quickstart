@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.ActionBarOverlayLayout;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -149,11 +150,11 @@ public class Elbow {
     public class AutonHC implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setElbow(700);
+            setElbow(575);
             return false;
         }
     }
-    public Action autonHC() {
+    public Action autonHB() {
         return new AutonHC();
     }
 
@@ -169,6 +170,18 @@ public class Elbow {
     public Action autonPick() {
         return new AutonPick();
     }
+
+    public class AutonZero implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setElbow(0);
+            return false;
+        }
+    }
+
+    public Action autonZero() {
+        return new AutonZero();}
 
 
     public void listen_complex() {
