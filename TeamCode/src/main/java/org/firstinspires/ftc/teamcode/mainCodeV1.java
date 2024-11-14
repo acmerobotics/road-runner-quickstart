@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
@@ -114,8 +113,14 @@ public class mainCodeV1 extends LinearOpMode {
 
     private void printThings() {
         telemetry.addData("Color: ", colorDetection());
-        telemetry.addData("Degree: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        telemetry.addData("difference", distance((float) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), 90f));
+        telemetry.addData("Heading: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         telemetry.update();
+    }
+    private static float distance(float alpha, float beta) {
+        float phi = (beta - alpha) % 360; // Raw difference in range [-359, 359]
+        float distance = phi > 180 ? phi - 360 : (phi < -180 ? phi + 360 : phi);
+        return distance;
     }
 
     private String colorDetection() {
@@ -142,34 +147,10 @@ public class mainCodeV1 extends LinearOpMode {
     private void rotateTo(double targetDegree) {
         double botHeading;
         botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        float direction = (float) 0.5; // 1 is clockwise, -1 is counterclock
-        if (Math.abs(botHeading - targetDegree) > 4) {
-            if ((botHeading >= 0 && targetDegree > 0) || (botHeading < 0 && targetDegree < 0)) {
-                if ((targetDegree - botHeading) >= 0) {
-                    direction *= (float) -1;
-                }
-                else {
-                    direction *= (float) 1;
-                }
-            }
-            else if (botHeading < 0 && targetDegree >= 0) {
-                if (botHeading - targetDegree > -360 - botHeading + targetDegree) {
-                    direction *= (float) -1;
-                }
-                else {
-                    direction *= (float) 1;
-                }
-            }
-            else if (botHeading >= 0 && targetDegree < 0) {
-                if (botHeading - targetDegree < 360 - botHeading + targetDegree) {
-                    direction *= (float) 1;
-                }
-                else {
-                    direction *= (float) -1;
-                }
-            }
-            chassisMovement(0,0,direction);
-        }
+        float direction = distance((float)botHeading, (float)targetDegree);
+        float power = Math.min(0.5f, (float) (0.001 * Math.pow(direction, 2))); // 1 is clockwise, -1 is counterclock
+        power = direction < 0 ? power * -1: power;
+        chassisMovement(0,0, power);
     }
     @Override
     public void runOpMode() {
