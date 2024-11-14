@@ -109,7 +109,7 @@ public class Viper {
         }
     }
     public Action autonDown() {
-        return new Viper.AutonDown();
+        return new AutonDown();
     }
 
     public class AutonHB implements Action {
@@ -124,6 +124,8 @@ public class Viper {
     public Action autonHB() {
         return new AutonHB();
     }
+
+
 
     public int getPosition() {
         return viper.getCurrentPosition();

@@ -101,12 +101,25 @@ public class Intake {
 
     }
 
+    public class AutonListen implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intake.setPower(power);
+            return true;
+        }
+    }
+
+    public Action autonListen() {
+        return new AutonListen();
+    }
+
     public class AutoIntake implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            intake.setPower(1);
-            return true;
+            power = 1;
+            return false;
         }
     }
 
@@ -118,8 +131,8 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            intake.setPower(-1);
-            return true;
+            power = -1;
+            return false;
         }
     }
 
@@ -131,8 +144,8 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            intake.setPower(0);
-            return true;
+            power = 0;
+            return false;
         }
     }
 

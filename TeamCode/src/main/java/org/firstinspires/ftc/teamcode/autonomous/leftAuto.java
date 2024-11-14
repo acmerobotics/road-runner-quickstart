@@ -63,18 +63,20 @@ public class leftAuto extends LinearOpMode {
                     .afterTime(0, shoulder.autonDown())
                     .strafeTo(new Vector2d(-34,-38))
                     .splineToLinearHeading(new Pose2d(new Vector2d(-36, -26), Math.toRadians(180)), Math.toRadians(0))
+                    .strafeTo(new Vector2d(-34, -26))
                     //pick sample
-                    .waitSeconds(2.5)
+                    .waitSeconds(0.5)
                     .afterTime(0, elbow.autonPick())
                     .waitSeconds(2)
                     .afterTime(0, intake.autoIntake())
                     .waitSeconds(2)
                     .afterTime(0, intake.autoStoptake())
                     .afterTime(0, elbow.autonZero())
+                    .strafeTo(new Vector2d(-36, -26))
                     .waitSeconds(2)
-                    .splineToLinearHeading(new Pose2d(new Vector2d(-47, -47), Math.toRadians(225)), Math.toRadians(-90))
+                    .splineToLinearHeading(new Pose2d(new Vector2d(-54, -54), Math.toRadians(225)), Math.toRadians(-90))
                     .waitSeconds(2)
-                    .afterTime(0, shoulder.autonHB())
+                    .afterTime(0, shoulder.autonUpHB())
                     .waitSeconds(2)
                     .afterTime(0, viper.autonHB())
                     .afterTime(0, elbow.autonHB())
@@ -105,6 +107,7 @@ public class leftAuto extends LinearOpMode {
                     shoulder.autonListen(),
                     viper.autonListen(),
                     elbow.autonListen(),
+                    intake.autonListen(),
                     build.build()
 
 
