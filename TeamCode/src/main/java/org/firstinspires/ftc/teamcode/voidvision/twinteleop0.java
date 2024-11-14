@@ -71,7 +71,7 @@ public class twinteleop0 extends LinearOpMode {
             }
             if (gamepad1.dpad_left) {
                 robot.rightfrontDrive.setPower(1);
-            }
+            }//
             if (gamepad1.dpad_down) {
                 robot.leftbackDrive.setPower(1);
             }

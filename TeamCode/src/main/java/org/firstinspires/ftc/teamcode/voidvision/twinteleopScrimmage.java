@@ -119,6 +119,7 @@ public class twinteleopScrimmage extends LinearOpMode {
 
                     moveMotorToPosition(robot.liftMotor, targetPositionUpperRung,.8);
                     robot.liftMotor.setPower(0);
+                    //hi
 
                 }
                 else if(gamepad2.dpad_left){

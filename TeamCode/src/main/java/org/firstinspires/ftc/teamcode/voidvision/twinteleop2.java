@@ -22,6 +22,7 @@ public class twinteleop2 extends LinearOpMode {
     static double slowamount;
     static double direction = -1;
     public boolean clamp= false;
+    //
 
     // Servo sequence control flags
     private boolean isRoutineRunning = false;

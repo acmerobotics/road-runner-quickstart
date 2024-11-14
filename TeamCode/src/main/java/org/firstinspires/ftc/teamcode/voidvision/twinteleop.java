@@ -23,6 +23,7 @@ public class twinteleop extends LinearOpMode {
     static double closed = .5;
     static double direction = -1;
 
+    //
     // Servo sequence control flags
     private boolean isRoutineRunning = false;
     private boolean retract = false;  // boolean for retract mode
