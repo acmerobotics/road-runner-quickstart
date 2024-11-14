@@ -82,8 +82,8 @@ public class twinteleop0 extends LinearOpMode {
             // ---- Servo Sequence Subroutine Triggered by Gamepad2 ----
             if (gamepad2.a && !isRoutineRunning) {
                 // Start the servo sequence in a separate thread
-                isRoutineRunning = true;
-                new Thread(() -> runServoSequence()).start();
+                //isRoutineRunning = true;
+                //new Thread(() -> runServoSequence()).start();
             }
 
             telemetry.update();
