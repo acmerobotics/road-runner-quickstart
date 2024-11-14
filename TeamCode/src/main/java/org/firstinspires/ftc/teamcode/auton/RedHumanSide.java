@@ -25,9 +25,8 @@ public class RedHumanSide extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Robot bot = new Robot(hardwareMap);
 
-
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(11,-48))
+                .strafeTo(new Vector2d(8,-45))
                 .waitSeconds(5)
                 //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(30,-48), Math.toRadians(75));
@@ -54,7 +53,17 @@ public class RedHumanSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0, bot.setPidVals(600,3600, 0.3))
+                .afterTime(0, bot.setPidVals(977,4000))
+//                .afterTime(0.05, bot.intake(-0.5))
+                .afterTime(0.1, telemetryPacket -> {
+                    bot.wrist.setPosition(0.01);
+                    return false;
+                })
+//                .afterTime(0.2, telemetryPacket -> {
+//                    bot.intakeRight.setPower(0.5);
+//                    bot.intakeLeft.setPower(-0.5);
+//                    return false;
+//                })
                 .build();
 
         bot.slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -65,8 +74,8 @@ public class RedHumanSide extends LinearOpMode {
 
         // Wait for the start of the op mode
         waitForStart();
-        bot.setPidValues(0,0,0.5);
         if (isStopRequested()) return;
+        bot.wrist.setPosition(0.5);
         Robot.stopPid = false;
 
         // Execute the defined trajectory

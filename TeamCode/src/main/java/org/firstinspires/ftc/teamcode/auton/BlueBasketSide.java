@@ -65,8 +65,8 @@ public class BlueBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0,bot.setPidVals(600,3600, 0.3))
-                .afterTime(5, bot.setPidVals(0,3600,0.3))
+                .afterTime(0,bot.setPidVals(600,3600))
+                .afterTime(5, bot.setPidVals(0,3600))
                 .build();
 
         bot.slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -77,7 +77,7 @@ public class BlueBasketSide extends LinearOpMode {
 
         // Wait for the start of the op mode
         waitForStart();
-        bot.setPidValues(0,0,0.5);
+        bot.setPidValues(0,0);
         if (isStopRequested()) return;
         Robot.stopPid = false;
 

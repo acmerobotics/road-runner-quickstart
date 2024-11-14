@@ -38,9 +38,8 @@ public class Robot {
     public int armTarget = 0, slideTarget = 0;
     public int armTargetAuto = 0, slideTargetAuto = 0;
     public static volatile boolean stopPid = false;
-    public double wristTargetAuto = 0;
+    public double wristTargetAuto = 0.0;
     Thread currentThread = null;
-
 
     public Robot(HardwareMap hardwareMap) {
         drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
@@ -336,8 +335,23 @@ public class Robot {
             return false;
         }
     }
-    public Action setPidVals(int arm, int slide, double wrist) {
-        return new ValAction(arm, slide, wrist);
+    public Action setPidVals(int arm, int slide) {
+        return new ValAction(arm, slide);
+    }
+    public Action wrist(double wrist) {
+        return new wristAction(wrist);
+    }
+    public class wristAction implements Action {
+        double wristPos;
+        public wristAction(double wrist) {
+            wristPos = wrist;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            wrist.setPosition(wristPos);
+            return false;
+        }
     }
     public Action getPIDAction() {
         return new pidfLoopAction();
@@ -362,8 +376,6 @@ public class Robot {
 
             slide.setPower(pid2);
 
-            wrist.setPosition(wristTargetAuto);
-
 //            try {
 //                Thread.sleep(10); // Adjust the sleep time as needed
 //            } catch (InterruptedException e) {
@@ -374,16 +386,14 @@ public class Robot {
     }
     public class ValAction implements Action {
         int armTarget, slidetarget;
-        double wristTarget;
-        public ValAction(int arm, int slide, double wrist) {
+        public ValAction(int arm, int slide) {
             armTarget = arm;
             slidetarget = slide;
-            wristTarget = wrist;
         }
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            setPidValues(armTarget, slidetarget, wristTarget);
+            setPidValues(armTarget, slidetarget);
             return false;
         }
     }
@@ -436,10 +446,9 @@ public class Robot {
             return false;
         }
     }
-    public void setPidValues(int arm, int slide, double wrist) {
+    public void setPidValues(int arm, int slide) {
         armTargetAuto = arm;
         slideTargetAuto = slide;
-        wristTargetAuto = wrist;
     }
 
     public static class armPIDValues {
