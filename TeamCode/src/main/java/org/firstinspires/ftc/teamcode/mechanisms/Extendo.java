@@ -21,7 +21,7 @@ public class Extendo {
     public static double KP = 0.05;
     public static double KI = 0;
     public static double KD = 0.01;
-
+    public boolean pid = true;
     private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(KP, KI, KD);
     public PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
 
@@ -88,6 +88,54 @@ public class Extendo {
     }
     public Action extend() {
         return new Extend();
+    }
+
+
+    public class ExtendBad implements Action {
+        private boolean init = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!init) {
+                pid = false;
+                target = -90;
+                extendoMotor.setPower(-0.3);
+                init = true;
+            }
+
+            if (Math.abs(-90 - getPos()) < 2) {
+                pid = true;
+                return false;
+            }
+            return true;
+        }
+    }
+    public Action extendBad() {
+        return new ExtendBad();
+    }
+
+
+    public class Mid implements Action {
+        private boolean init = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!init) {
+                target = -70;
+                extendoMotorPID.setTargetPosition(target);
+                init = true;
+            }
+
+            updateMotor();
+
+            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
+                return false;
+            }
+            return true;
+        }
+    }
+    public Action mid() {
+        return new Mid();
     }
 
 

@@ -64,6 +64,19 @@ public class Intaker {
         return new Flop();
     }
 
+    public class UpFlip implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intakeServoLeft.setPosition(0.9);
+            intakeServoRight.setPosition(0.1);
+            return false;
+        }
+    }
+    public Action upFlip() {
+        return new UpFlip();
+    }
+
     public class Intake implements Action {
 
         @Override
