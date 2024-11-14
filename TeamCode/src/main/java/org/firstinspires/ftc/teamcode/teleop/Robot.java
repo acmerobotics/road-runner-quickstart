@@ -41,7 +41,7 @@ public class Robot {
     public double wristTargetAuto = 0;
     Thread currentThread = null;
 
-    
+
     public Robot(HardwareMap hardwareMap) {
         drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
@@ -315,6 +315,25 @@ public class Robot {
             Thread thread = new Thread(new pidfLoopAuton());
             currentThread = thread;
             currentThread.start();
+        }
+    }
+    public void setIntakePower(double power) {
+        intakeLeft.setPower(power);
+        intakeRight.setPower(-power);
+    }
+    public Action intake(double power) {
+        return new intakeAction(power);
+    }
+    public class intakeAction implements Action {
+        double intakePower;
+
+        public intakeAction(double power) {
+            intakePower = power;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setIntakePower(intakePower);
+            return false;
         }
     }
     public Action setPidVals(int arm, int slide, double wrist) {
