@@ -168,7 +168,7 @@ public class mainCodeV1 extends LinearOpMode {
                     direction *= (float) -1;
                 }
             }
-            
+            chassisMovement(0,0,direction);
         }
     }
     @Override
@@ -177,9 +177,10 @@ public class mainCodeV1 extends LinearOpMode {
         waitForStart();
         postStartSetUp();
         while (opModeIsActive()) {
-            chassisMovement(gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
             if (gamepad1.a) {
                 rotateTo(90);
+            } else {
+                chassisMovement(gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
             }
             armMovement();
             printThings();
