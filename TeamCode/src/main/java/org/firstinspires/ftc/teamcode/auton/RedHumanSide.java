@@ -28,7 +28,7 @@ public class RedHumanSide extends LinearOpMode {
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(11,-48))
-                .waitSeconds(1.9)
+                .waitSeconds(5)
                 //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(30,-48), Math.toRadians(75));
 //                .strafeToLinearHeading(new Vector2d(38,-14), Math.toRadians(80))
@@ -55,7 +55,6 @@ public class RedHumanSide extends LinearOpMode {
 
         Action waitAndArm = drive.actionBuilder(initialPose)
                 .afterTime(0, bot.setPidVals(600,3600, 0.3))
-                .afterTime(2, bot.setPidVals(0,3600,0.3))
                 .build();
 
         bot.slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
