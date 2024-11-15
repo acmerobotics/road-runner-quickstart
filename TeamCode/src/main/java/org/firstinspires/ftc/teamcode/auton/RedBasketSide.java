@@ -30,11 +30,15 @@ public class RedBasketSide extends LinearOpMode {
                 .strafeTo(new Vector2d(-8,-45))
                 .waitSeconds(6)
                 //Arm to high speci and back down
-                .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(70))
-                .waitSeconds(3)
+                .strafeToLinearHeading(new Vector2d(-49,-43), Math.toRadians(90))
+                .waitSeconds(4)
+                .strafeToLinearHeading(new Vector2d(-50,-45), Math.toRadians(45))
+                .waitSeconds(6)
                 //intake
-                .turn(Math.toRadians(30))
-                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(-60,-45), Math.toRadians(90))
+                .waitSeconds(4)
+                .strafeToLinearHeading(new Vector2d(-50,-45), Math.toRadians(45))
+                .waitSeconds(6)
                 //Arm to high basket
                 //outtake
                 //Arm back down
@@ -64,9 +68,9 @@ public class RedBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0, bot.setPidVals(1100,4200))
+                .afterTime(0, bot.setPidVals(1117,4200))
 //                .afterTime(0.05, bot.intake(-0.5))
-                .afterTime(0.1, telemetryPacket -> {
+                .afterTime(1, telemetryPacket -> {
                     bot.wrist.setPosition(0.01);
                     return false;
                 })
@@ -88,10 +92,56 @@ public class RedBasketSide extends LinearOpMode {
                     return false;
                 })
                 .afterTime(8, bot.setPidVals(0,0))
-                .afterTime(10, bot.setPidVals(0, 3000))
-                .afterTime(10.5, telemetryPacket -> {
+                .afterTime(10, bot.setPidVals(0, 1800))
+                .afterTime(10.1, telemetryPacket -> {
                     bot.intakeLeft.setPower(-1);
                     bot.intakeRight.setPower(1);
+                    return false;
+                })
+                .afterTime(11.5, telemetryPacket -> {
+                    bot.intakeLeft.setPower(-0.3);
+                    bot.intakeRight.setPower(0.3);
+                    return false;
+                })
+                .afterTime(12.5, bot.setPidVals(0,0))
+                .afterTime(13.25,bot.setPidVals(2050,0))
+                .afterTime(13.75, bot.setPidVals(2050,6500))
+                .afterTime(16, telemetryPacket -> {
+                    bot.wrist.setPosition(0.5);
+                    return false;
+                })
+                .afterTime(17, telemetryPacket -> {
+                    bot.intakeLeft.setPower(0.4);
+                    bot.intakeRight.setPower(-0.4);
+                    return false;
+                })
+                .afterTime(17.5, telemetryPacket -> {
+                    bot.wrist.setPosition(0);
+                    return false;
+                })
+                .afterTime(18.5, bot.setPidVals(2050,0))
+                .afterTime(20, bot.setPidVals(0,0))
+                .afterTime(22, bot.setPidVals(0, 1800))
+                .afterTime(22.1, telemetryPacket -> {
+                    bot.intakeLeft.setPower(-1);
+                    bot.intakeRight.setPower(1);
+                    return false;
+                })
+                .afterTime(23.5, telemetryPacket -> {
+                    bot.intakeLeft.setPower(-0.3);
+                    bot.intakeRight.setPower(0.3);
+                    return false;
+                })
+                .afterTime(24.5, bot.setPidVals(0,0))
+                .afterTime(25.25,bot.setPidVals(2050,0))
+                .afterTime(25.75, bot.setPidVals(2050,6500))
+                .afterTime(28, telemetryPacket -> {
+                    bot.wrist.setPosition(0.5);
+                    return false;
+                })
+                .afterTime(28.75, telemetryPacket -> {
+                    bot.intakeLeft.setPower(0.4);
+                    bot.intakeRight.setPower(-0.4);
                     return false;
                 })
 

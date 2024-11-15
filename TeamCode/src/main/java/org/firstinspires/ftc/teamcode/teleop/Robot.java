@@ -243,7 +243,7 @@ public class Robot {
         else if (armTarget > 3000) armTarget = 3000;
 
         if (slideTarget < 0 && armTarget < 1500) slideTarget = 0;
-        else if (armTarget < 100 && slideTarget < 4000) slideTarget = 4000;
+        else if (armTarget < 100 && slideTarget > 4000) slideTarget = 4000;
         else if (slideTarget > 7500) slideTarget = 7500;
 
         flipPos = flip.getCurrentPosition();
