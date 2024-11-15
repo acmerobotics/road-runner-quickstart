@@ -90,11 +90,12 @@ public class twinteleopScrimmageTest extends LinearOpMode {
             //if(gamepad1.b){intakePartition = !intakePartition;sleepWithOpModeCheck(200);}
             if(!intakePartition){
                 robot.liftMotor.setPower(-1*gamepad2.left_stick_y);
-                if(robot.liftMotor.getCurrentPosition()>targetPositionUpperRung){
+                /*if(robot.liftMotor.getCurrentPosition()>targetPositionUpperRung){
                     if(gamepad2.left_stick_y>0){robot.liftMotor.setPower(-1*gamepad2.left_stick_y);}
-                    else{robot.liftMotor.setPower(0);}
-                }
-                else{robot.liftMotor.setPower(0);}
+                    else{robot.liftMotor.setPower(0);}else{robot.liftMotor.setPower(0);}
+                }*/
+
+
                 if(gamepad2.x){clamp = !clamp;sleepWithOpModeCheck(250);}
                 if(clamp){robot.clawServo.setPosition(.19);}
                 else{robot.clawServo.setPosition(0);}
@@ -107,7 +108,7 @@ public class twinteleopScrimmageTest extends LinearOpMode {
                     rotateClaw2();
                 }
 
-
+/*
                 if(gamepad2.dpad_right){
 
 
@@ -133,8 +134,8 @@ public class twinteleopScrimmageTest extends LinearOpMode {
                     moveMotorToPosition(robot.liftMotor, initialPosition,.8);
                     robot.liftMotor.setPower(0);
 
-                }
-
+                }*/
+/*
                 if(gamepad2.dpad_right && !upperRungRun && !lowerRungRun && !noRungRun){upperRungRun = true;
                     // // Adjust the power as needed
                     new Thread(() -> runUpperRung()).start();
@@ -156,14 +157,15 @@ public class twinteleopScrimmageTest extends LinearOpMode {
                     noRungRun = true;
                     // // Adjust the power as needed
                     new Thread(() -> runNoRung()).start();
-                }
-                if(gamepad2.dpad_up){
+                }*/
+
+                if(gamepad2.right_bumper){
                     intakePartition = true;
                     clamp = false;
                     robot.clawServo.setPosition(0);
                     rotateClaw2();
                     moveMotorToPosition(robot.liftMotor,initialPosition,.8);
-                    sleepWithOpModeCheck(20);
+                    sleepWithOpModeCheck(200);
                 }
             }
 
@@ -181,7 +183,7 @@ public class twinteleopScrimmageTest extends LinearOpMode {
                 else if(gamepad1.x){intake = 1d;}
                 else if(gamepad1.y){intake = 0d;}
                 robot.intakeServo.setPower(intake);
-                if(gamepad2.dpad_up){intakePartition = false;}
+                if(gamepad2.right_bumper){intakePartition = false;sleepWithOpModeCheck(250);}
             }
 
 
@@ -218,7 +220,7 @@ public class twinteleopScrimmageTest extends LinearOpMode {
          **/
 
         if (checkForCancel()) {isRoutineRunning = false;return;}
-        moveServosSimultaneously(robot.basketServo1, robot.FinalrangeBasket*.9, robot.basketServo2, robot.FinalrangeBasket- robot.FinalrangeBasket*.9, 1);
+        moveServosSimultaneously(robot.basketServo1, robot.FinalrangeBasket*.93, robot.basketServo2, robot.FinalrangeBasket- robot.FinalrangeBasket*.93, 1);
         if (checkForCancel()) {isRoutineRunning = false;return;}
 
         while (!gamepad2.left_bumper && opModeIsActive()) {
@@ -281,14 +283,14 @@ public class twinteleopScrimmageTest extends LinearOpMode {
      * @return true if canceled, false otherwise
      */
     private boolean checkForCancel() {
-        if (gamepad2.right_bumper) {  // Use gamepad2.b as the cancel button
+        //if (gamepad2.right_bumper) {  // Use gamepad2.b as the cancel button
             //telemetry.addData("Sequence", "Canceled by user");
             //telemetry.update();
             // Stop the intake servo immediately
-            robot.intakeServo.setPower(0);
-            isRoutineRunning = false;
-            return true;
-        }
+            //robot.intakeServo.setPower(0);
+            //isRoutineRunning = false;
+            //return true;
+        //}
         return false;
     }
     /**

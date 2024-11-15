@@ -72,7 +72,7 @@ public class teenagehwmap extends HardwareMapUtil {
         clawRotateServo = HardwareInitServo("terminator",FinalrangeClawRotate);
 
         // Initialize color sensor (commented out if not needed yet)
-        colorSensor = hwMap.get(ColorSensor.class, "color");
+        //colorSensor = hwMap.get(ColorSensor.class, "color");
 
         /** Set servo directions */
         // armServo.setDirection(DcMotorSimple.Direction.FORWARD);
