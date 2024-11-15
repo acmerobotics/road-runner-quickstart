@@ -27,10 +27,10 @@ public class RedBasketSide extends LinearOpMode {
 
         // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(-9,-40))
-                .waitSeconds(5)
+                .strafeTo(new Vector2d(-8,-45))
+                .waitSeconds(6)
                 //Arm to high speci and back down
-                .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(65))
+                .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(70))
                 .waitSeconds(3)
                 //intake
                 .turn(Math.toRadians(30))
@@ -64,8 +64,37 @@ public class RedBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0,bot.setPidVals(600,3600))
-                .afterTime(5, bot.setPidVals(0,3600))
+                .afterTime(0, bot.setPidVals(1100,4200))
+//                .afterTime(0.05, bot.intake(-0.5))
+                .afterTime(0.1, telemetryPacket -> {
+                    bot.wrist.setPosition(0.01);
+                    return false;
+                })
+                .afterTime(1, telemetryPacket -> {
+                    bot.intakeLeft.setPower(-0.5);
+                    bot.intakeRight.setPower(0.5);
+                    return false;
+                })
+                .afterTime(4, bot.setPidVals(700,4200))
+                .afterTime(4.75, telemetryPacket -> {
+                    bot.intakeLeft.setPower(0.5);
+                    bot.intakeRight.setPower(-0.5);
+                    return false;
+                })
+                .afterTime(5.5, bot.setPidVals(700,0))
+                .afterTime(7, telemetryPacket -> {
+                    bot.intakeLeft.setPower(0);
+                    bot.intakeRight.setPower(0);
+                    return false;
+                })
+                .afterTime(8, bot.setPidVals(0,0))
+                .afterTime(10, bot.setPidVals(0, 3000))
+                .afterTime(10.5, telemetryPacket -> {
+                    bot.intakeLeft.setPower(-1);
+                    bot.intakeRight.setPower(1);
+                    return false;
+                })
+
                 .build();
 
         bot.slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -73,22 +102,20 @@ public class RedBasketSide extends LinearOpMode {
 
         bot.slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bot.flip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        
+
         // Wait for the start of the op mode
         waitForStart();
-
-        bot.setPidValues(0,0);
         if (isStopRequested()) return;
+        bot.wrist.setPosition(0.5);
         Robot.stopPid = false;
 
         // Execute the defined trajectory
         Action trajectoryActionChosen = tab1.build();
-
         Actions.runBlocking(
                 new ParallelAction(
                         new SequentialAction(
-                            trajectoryActionChosen,
-                            trajectoryActionCloseOut),
+                                trajectoryActionChosen,
+                                trajectoryActionCloseOut),
                         waitAndArm,
                         bot.getPIDAction()
                 )
@@ -96,3 +123,4 @@ public class RedBasketSide extends LinearOpMode {
         bot.stopPidAction();
     }
 }
+

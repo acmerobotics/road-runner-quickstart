@@ -64,13 +64,18 @@ public class RedHumanSide extends LinearOpMode {
                     bot.intakeRight.setPower(0.5);
                     return false;
                 })
-                .afterTime(2, bot.setPidVals(700,4200))
-
-//                .afterTime(0.2, telemetryPacket -> {
-//                    bot.intakeRight.setPower(0.5);
-//                    bot.intakeLeft.setPower(-0.5);
-//                    return false;
-//                })
+                .afterTime(4, bot.setPidVals(700,4200))
+                .afterTime(4.75, telemetryPacket -> {
+                    bot.intakeLeft.setPower(0.5);
+                    bot.intakeRight.setPower(-0.5);
+                    return false;
+                })
+                .afterTime(5.5, bot.setPidVals(700,0))
+                .afterTime(7, telemetryPacket -> {
+                    bot.intakeLeft.setPower(0);
+                    bot.intakeRight.setPower(0);
+                    return false;
+                })
                 .build();
 
         bot.slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
