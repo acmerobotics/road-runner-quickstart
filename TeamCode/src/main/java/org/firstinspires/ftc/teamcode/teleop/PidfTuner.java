@@ -16,9 +16,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class PidfTuner extends OpMode {
     private PIDController armController, slideController;
 
-    public static double fP = 0.002, fI = 0, fD = 0;  //fD = 0.00001, fP = 0.002
-    public static double fF = 0.0001; //fF = 0.0022
-    public static double sP = 0.002, sI, sD;
+    public static double fP = 0.002, fI = 0.001, fD = 0.0002;  //fD = 0.00001, fP = 0.002
+    public static double fF = 0.018; //fF = 0.0022
+    public static double sP = 0.003, sI, sD;
     public static double sF;
 
 

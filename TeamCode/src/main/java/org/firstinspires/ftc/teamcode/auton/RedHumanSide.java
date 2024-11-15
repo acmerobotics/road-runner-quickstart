@@ -53,12 +53,19 @@ public class RedHumanSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0, bot.setPidVals(977,4000))
+                .afterTime(0, bot.setPidVals(1100,4200))
 //                .afterTime(0.05, bot.intake(-0.5))
                 .afterTime(0.1, telemetryPacket -> {
                     bot.wrist.setPosition(0.01);
                     return false;
                 })
+                .afterTime(1, telemetryPacket -> {
+                    bot.intakeLeft.setPower(-0.5);
+                    bot.intakeRight.setPower(0.5);
+                    return false;
+                })
+                .afterTime(2, bot.setPidVals(700,4200))
+
 //                .afterTime(0.2, telemetryPacket -> {
 //                    bot.intakeRight.setPower(0.5);
 //                    bot.intakeLeft.setPower(-0.5);

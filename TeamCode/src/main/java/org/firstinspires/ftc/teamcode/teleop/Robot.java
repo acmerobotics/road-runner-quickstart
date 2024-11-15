@@ -243,6 +243,7 @@ public class Robot {
         else if (armTarget > 3000) armTarget = 3000;
 
         if (slideTarget < 0 && armTarget < 1500) slideTarget = 0;
+        else if (armTarget < 100 && slideTarget < 4000) slideTarget = 4000;
         else if (slideTarget > 7500) slideTarget = 7500;
 
         flipPos = flip.getCurrentPosition();
@@ -452,9 +453,9 @@ public class Robot {
     }
 
     public static class armPIDValues {
-        public static double fP = 0.002, fI = 0, fD = 0;  //fD = 0.00001, fP = 0.002
-        public static double fF = 0.0001; //fF = 0.0022
-        public static double sP = 0.002, sI, sD;
+        public static double fP = 0.002, fI = 0.001, fD = 0.0002;  //fD = 0.00001, fP = 0.002
+        public static double fF = 0.018; //fF = 0.0022
+        public static double sP = 0.003, sI, sD;
 
         private static final double ticks_in_degree = 2048 / 90.0;
     }
