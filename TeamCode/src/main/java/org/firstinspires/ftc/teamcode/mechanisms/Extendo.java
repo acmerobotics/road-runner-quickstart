@@ -121,7 +121,7 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -70;
+                target = -50;
                 extendoMotorPID.setTargetPosition(target);
                 init = true;
             }

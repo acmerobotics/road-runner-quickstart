@@ -133,7 +133,7 @@ public class BlueTeleop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            extendo.setTarget(pos);
+            //extendo.setTarget(pos);
             TelemetryPacket packet = new TelemetryPacket();
 //
 //            colorSensor.setGain(50);

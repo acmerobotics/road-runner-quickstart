@@ -57,8 +57,8 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-32.81, -27.32), Math.toRadians(-90));
         //.waitSeconds(1);
         TrajectoryActionBuilder parking = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(-48, -30), Math.toRadians(-90))
-                .strafeToLinearHeading(new Vector2d(-48, 0), Math.toRadians(-90));
+                .strafeToLinearHeading(new Vector2d(-18, 58.8), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(9.2, 58.8), Math.toRadians(180));
 
 
         Action basketStart = basketStartTraj.build();
@@ -151,54 +151,17 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 claw.flop(),
                 new SleepAction(0.5),
                 slides.retract(),
-                new SleepAction(1)
-
-                /*
-
-                new SleepAction(1),
-                intake.off(),
-                toBasket,
-                slides.slideTopBasket(),
-                claw.flip(),
-                claw.flop(),
-                slides.retract(),
-                block2,
-                extendo.extend(),
-                intake.flip(),
-                intake.intake(),
-                intake.flop(),
-                intake.creep(),
-                extendo.retract(),
-                intake.extake(),
-                new SleepAction(1),
-                intake.off(),
-                toBasket,
-                slides.slideTopBasket(),
-                claw.flip(),
-                claw.flop(),
-                slides.retract(),
-                block3,
-                extendo.extend(),
-                intake.flip(),
-                intake.intake(),
-                intake.flop(),
-                intake.creep(),
-                extendo.retract(),
-                intake.extake(),
-                new SleepAction(1),
-                intake.off(),
-                toBasket,
-                slides.slideTopBasket(),
-                claw.flip(),
-                claw.flop(),
-                slides.retract(),
-                park
-
-                */
+                new ParallelAction(
+                        slides.slideHang(),
+                        park
+                )
 
         );
 
-        Actions.runBlocking(main);
+        Actions.runBlocking(new SequentialAction(
+                basketStart,
+                park
+        ));
 //        TelemetryPacket packet = new TelemetryPacket();
 //
 //        while (opModeIsActive()) {
