@@ -174,13 +174,16 @@ public class Robot {
 
     public void wristControl(Gamepad gamepad) {
         if (gamepad.dpad_up) {
-            wrist.setPosition(0.95);
+            wrist.setPosition(0.5);
         }
         else if (gamepad.dpad_down) {
-            wrist.setPosition(0.01);
+            wrist.setPosition(0.07);
         }
         else if (gamepad.dpad_right) {
-            wrist.setPosition(0.5);
+            wrist.setPosition(0.35);
+        }
+        else if (gamepad.dpad_left) {
+            wrist.setPosition(0.95);
         }
     }
 
@@ -242,7 +245,7 @@ public class Robot {
         if (armTarget < 0) armTarget = 0;
         else if (armTarget > 3000) armTarget = 3000;
 
-        if (slideTarget < 0 && armTarget < 1500) slideTarget = 0;
+        if (slideTarget < 0) slideTarget = 0;
         else if (armTarget < 100 && slideTarget > 4000) slideTarget = 4000;
         else if (slideTarget > 7500) slideTarget = 7500;
 
