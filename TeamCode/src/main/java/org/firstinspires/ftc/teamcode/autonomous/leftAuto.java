@@ -85,7 +85,7 @@ public class leftAuto extends LinearOpMode {
                     .waitSeconds(1.5)
                     .afterTime(0, viper.autonHB())
                     .afterTime(0, elbow.autonHB())
-                    .strafeTo(new Vector2d(-56, -56))
+                    .strafeTo(new Vector2d(-56.5, -56.5))
                     .waitSeconds(2)
                     .afterTime(0, intake.autoOuttake())
                     .waitSeconds(2)

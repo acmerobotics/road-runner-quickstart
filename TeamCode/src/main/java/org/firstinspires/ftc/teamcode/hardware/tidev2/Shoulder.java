@@ -115,7 +115,7 @@ public class Shoulder {
     public class AutonHC implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setTarget(640);
+            setTarget(660);
             return false;
         }
     }
@@ -125,7 +125,7 @@ public class Shoulder {
 
     public class AutonDown implements Action {
         @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
+        public boolean run(@NonNull TelemetryPacket pack9et) {
             setTarget(70);
             return false;
         }

@@ -69,25 +69,34 @@ public class rightAuto extends LinearOpMode {
                     .waitSeconds(1)
                     .setReversed(true)
                     .strafeTo(new Vector2d(10, -36))
-                    .splineTo(new Vector2d(30, -36), Math.toRadians(0))
+                    .splineTo(new Vector2d(28, -36), Math.toRadians(0))
                     //move arm down to gathering position while splining
                     .afterTime(0, shoulder.autonDown())
-                    .splineTo(new Vector2d(35, -5), Math.toRadians(90))
-                    .setReversed(false)
+//                    .splineTo(new Vector2d(33, -5), Math.toRadians(90)) //successfully hooked and moved away
 
-                    .splineToConstantHeading(new Vector2d(49, -20), Math.toRadians(-90))
-
-                    .splineToConstantHeading(new Vector2d(49, -50), Math.toRadians(-90))
-                    //shrey code starts here
-                    .setReversed(true)
-                    .splineToSplineHeading(new Pose2d(new Vector2d(49, -10), Math.toRadians(-90)), Math.toRadians(-90))
-
-                    .setReversed(true)
-                    //.splineToConstantHeading(new Vector2d(52,-45), Math.toRadians(90)
-                    .splineToConstantHeading(new Vector2d(56,-10), Math.toRadians(90))
-                    .splineToConstantHeading(new Vector2d(56,-53), Math.toRadians(90))
-                    .splineToLinearHeading(new Pose2d(60,-10, Math.toRadians(0)), Math.toRadians(0))
-                    .strafeToConstantHeading(new Vector2d(60,-53));
+//                    .setReversed(false)
+//
+//                    .splineToConstantHeading(new Vector2d(47, -20), Math.toRadians(-90))
+//
+//                    .splineToConstantHeading(new Vector2d(47, -50), Math.toRadians(-90))
+//                    //shrey code starts here
+//                    .setReversed(true)
+//                    .strafeTo(new Vector2d(47, -10))
+//
+//
+//                    //.splineToConstantHeading(new Vector2d(52,-45), Math.toRadians
+//                    .strafeTo(new Vector2d(56,-10))
+//
+//                    .strafeTo(new Vector2d(56,-53))
+//
+//                    .afterTime(0, viper.autonGolf())
+//                    .waitSeconds(0.3)
+//                    .setReversed(true)
+//                    .splineToLinearHeading(new Pose2d(60,-10, Math.toRadians(0)), Math.toRadians(0))
+                    .strafeToConstantHeading(new Vector2d(60,-56))
+                    //.waitSeconds(0.3)
+                    //.afterTime(0, viper.autonDown())
+            ;
 
 
             //run intake while strafing to point
