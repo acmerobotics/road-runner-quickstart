@@ -123,8 +123,8 @@ public class BlueTeleop extends LinearOpMode {
         runningActions.add(new SequentialAction(
                 intake.flop(),
                 claw.flop(),
-                claw.open()//,
-                //extendo.retract()
+                claw.open(),
+                extendo.retract()
 
         ));
 
@@ -198,13 +198,14 @@ public class BlueTeleop extends LinearOpMode {
 
                         if (currentGamepad2.dpad_left) {
                             intake.intakeMotor.setPower(0.55);
+                        } else if (currentGamepad2.dpad_right) {
+                            intake.intakeMotor.setPower(-0.7);
                         } else {
                             intake.intakeMotor.setPower(0);
                         }
 
-                        if (lefty2 != 0) {
-                            extendo.extendoMotor.setPower(lefty2/2);
-                        }
+
+
 
                     }
 
@@ -256,7 +257,9 @@ public class BlueTeleop extends LinearOpMode {
                     break;
                 case EXTENDORETRACT:
 
-                    extendo.extendoMotor.setPower(lefty2/2);
+                    if (lefty2 != 0) {
+                        extendo.extendoMotor.setPower(lefty2/2);
+                    }
 
                     if ((currentGamepad2.a && !previousGamepad2.a)) /*|| intakeColor.equals("none"))*/ {
                         runningActions.add(intake.extake());
