@@ -16,8 +16,10 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 // Non-RR imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Teleop.BlueTeleop;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
@@ -26,7 +28,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Slides;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous
+@Autonomous(preselectTeleOp = "BlueTeleop")
 public class BasketBlueNoSpeciFinal extends LinearOpMode {
     @Override
     public void runOpMode() {
@@ -94,6 +96,7 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 //1+1
                 new SleepAction(1),
                 extendo.mid2(),
+                new SleepAction(1),
                 intake.flip(),
                 new SleepAction(1),
                 intake.intake(),
@@ -111,8 +114,7 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 new SleepAction(0.25),
                 new ParallelAction(
                         slides.slideTopBasket(),
-                        basket1,
-                        claw.flop()
+                        basket1
                 ),
                 claw.flip(),
                 new SleepAction(0.5),
@@ -126,6 +128,7 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 ),
                 new SleepAction(1),
                 extendo.mid(),
+                new SleepAction(1),
                 intake.flip(),
                 new SleepAction(1),
                 intake.intake(),
@@ -143,8 +146,7 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 new SleepAction(0.25),
                 new ParallelAction(
                         slides.slideTopBasket(),
-                        basket2,
-                        claw.flop()
+                        basket2
                 ),
                 claw.flip(),
                 new SleepAction(0.5),
@@ -158,19 +160,9 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
 
         );
 
+
+        waitForStart();
         Actions.runBlocking(main);
-//        TelemetryPacket packet = new TelemetryPacket();
-//
-//        while (opModeIsActive()) {
-//            if (!main.run(packet)) {
-//                break;
-//            }
-//            if (extendo.pid) {
-//                extendo.updateMotor();
-//            }
-//            telemetry.addData("extendo target", extendo.extendoMotorPID.getTargetPosition());
-//            telemetry.update();
-//        }
     }
 }
 

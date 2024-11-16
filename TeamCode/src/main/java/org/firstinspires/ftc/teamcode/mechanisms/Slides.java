@@ -26,9 +26,15 @@ public class Slides {
 
         slidesLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//
-//        slidesLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        slidesRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        slidesLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slidesRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        slidesRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+    public Slides(HardwareMap HWMap, int i){
+        slidesLeftMotor = HWMap.get(DcMotor.class, "leftSlidesMotor");
+        slidesRightMotor = HWMap.get(DcMotor.class, "rightSlidesMotor");
 
         slidesLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slidesRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

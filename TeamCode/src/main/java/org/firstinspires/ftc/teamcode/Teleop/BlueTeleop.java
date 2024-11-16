@@ -113,9 +113,9 @@ public class BlueTeleop extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
         Gamepad previousGamepad2 = new Gamepad();
 
-        Extendo extendo = new Extendo(hardwareMap);
+        Extendo extendo = new Extendo(hardwareMap, 1);
         Intaker intake = new Intaker(hardwareMap);
-        Slides slides = new Slides(hardwareMap);
+        Slides slides = new Slides(hardwareMap, 1);
         Claw claw = new Claw(hardwareMap);
         Control control = new Control();
         Control control2 = new Control();
@@ -204,9 +204,9 @@ public class BlueTeleop extends LinearOpMode {
                             intake.intakeMotor.setPower(0);
                         }
 
-
-
-
+                        if (lefty2 != 0) {
+                            extendo.extendoMotor.setPower(lefty2/2);
+                        }
                     }
 
                     if (control.getFinished()) {
@@ -265,7 +265,10 @@ public class BlueTeleop extends LinearOpMode {
                         runningActions.add(intake.extake());
                     }
                     if (!currentGamepad2.a && previousGamepad2.a) {
-                        runningActions.add(intake.off());
+                        runningActions.add(new SequentialAction(
+                                intake.off(),
+                                claw.up()
+                        ));
                         extendoState = ExtendoState.EXTENDOSTART;
                     }
                     break;

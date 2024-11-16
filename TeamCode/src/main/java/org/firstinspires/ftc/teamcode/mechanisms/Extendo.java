@@ -30,11 +30,15 @@ public class Extendo {
     public Extendo(HardwareMap HWMap){
         extendoMotor = HWMap.get(DcMotor.class, "extendoMotor");
         extendoMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         extendoMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+    }
+
+    public Extendo(HardwareMap HWMap, int i) {
+        extendoMotor = HWMap.get(DcMotor.class, "extendoMotor");
+        extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        extendoMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public class Retract implements Action {
@@ -149,7 +153,7 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -57;
+                target = -65;
                 extendoMotorPID.setTargetPosition(target);
                 init = true;
             }
@@ -172,7 +176,7 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -50;
+                target = -65;
                 extendoMotorPID.setTargetPosition(target);
                 init = true;
             }
