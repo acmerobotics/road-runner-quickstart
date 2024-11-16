@@ -21,7 +21,7 @@ public class SpecimenTool extends LinearOpMode {
 
     public void sampleDrop() {
         gripper.sampleDrop();
-        sleep(500);
+        //sleep(500);
     }
 
 
@@ -44,7 +44,7 @@ public class SpecimenTool extends LinearOpMode {
 
     public void collect() {
         slides.collect();
-        sleep(1000);
+        sleep(500);
         gripper.collect();
         sleep(500);
         arm.collect();
@@ -52,12 +52,19 @@ public class SpecimenTool extends LinearOpMode {
     }
 
     public void specimenHang() {
+        arm.specimenHang();
+        sleep(1000);
         slides.specimenHang();
         sleep(1000);
         gripper.specimenHang();
         sleep(500);
-        arm.specimenHang();
-        sleep(1000);
+
+        arm.specimenDrop();
+        sleep(500);
+
+
+
+
     }
 
 

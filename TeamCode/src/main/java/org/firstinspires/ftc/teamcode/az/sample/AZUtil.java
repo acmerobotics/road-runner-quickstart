@@ -26,6 +26,15 @@ public class AZUtil {
         motor.setPower(power);
     }
 
+    public static void setBothMotorTargetPosition(DcMotor motor1, DcMotor motor2,  int pos, double power) {
+        motor1.setTargetPosition(pos);
+        motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor2.setTargetPosition(pos);
+        motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor1.setPower(power);
+        motor1.setPower(power);
+    }
+
     public static void waitUntilMotorAtPos(LinearOpMode opMode, DcMotor motor, int pos) {
         int tolerance = 3;
         long currentTimeMs = System.currentTimeMillis();
