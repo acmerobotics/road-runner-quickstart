@@ -64,6 +64,34 @@ public class Extendo {
         return new Retract();
     }
 
+    public class RetractS implements Action {
+        private boolean init = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!init) {
+                target = -10;
+//                extendoMotor.setTargetPosition(target);
+//                extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                extendoMotor.setPower(1);
+                extendoMotorPID.setTargetPosition(target);
+                init = true;
+            }
+
+            updateMotor();
+
+            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
+                extendoMotor.setPower(0);
+                return false;
+            }
+            return true;
+        }
+    }
+    public Action retractS() {
+        return new RetractS();
+    }
+
+
     public class Extend implements Action {
         private boolean init = false;
 
@@ -121,7 +149,7 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -50;
+                target = -57;
                 extendoMotorPID.setTargetPosition(target);
                 init = true;
             }
@@ -136,6 +164,29 @@ public class Extendo {
     }
     public Action mid() {
         return new Mid();
+    }
+
+    public class Mid2 implements Action {
+        private boolean init = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!init) {
+                target = -50;
+                extendoMotorPID.setTargetPosition(target);
+                init = true;
+            }
+
+            updateMotor();
+
+            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
+                return false;
+            }
+            return true;
+        }
+    }
+    public Action mid2() {
+        return new Mid2();
     }
 
 

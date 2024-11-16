@@ -193,6 +193,38 @@ public class Slides {
     }
 
 
+    public class SlideHangLevel implements Action {
+        private boolean init = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!init) {
+                //TODO: set values to the motor position of a bit above the bottom speciman bar
+                target = -670;
+                slidesLeftMotor.setTargetPosition(target);
+                slidesRightMotor.setTargetPosition(target);
+
+                slidesLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slidesRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                slidesLeftMotor.setPower(0.7);
+                slidesRightMotor.setPower(0.7);
+
+                init = true;
+            }
+
+
+
+            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) < 15) {
+                return true;
+            }
+            return false;
+        }
+    }
+    public Action slideHangLevel() {
+        return new SlideHangLevel();
+    }
+
     public class SlideHang implements Action {
         private boolean init = false;
 

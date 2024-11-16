@@ -42,13 +42,13 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-21.66, 9.5), Math.toRadians(45));
         // .waitSeconds(1);
         TrajectoryActionBuilder block1Traj = basketStartTraj.fresh()
-                .strafeToLinearHeading(new Vector2d(-13.75, 21), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-11.75, 22), Math.toRadians(95));
         //  .waitSeconds(1);
         TrajectoryActionBuilder basket1Traj = basketStartTraj.fresh()
                 .strafeToLinearHeading(new Vector2d(-21.66, 9.5), Math.toRadians(45));
         //    .waitSeconds(1);
         TrajectoryActionBuilder block2Traj = basket1Traj.fresh()
-                .strafeToLinearHeading(new Vector2d(-21.77, 21), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-21.9, 23), Math.toRadians(95));
         //    .waitSeconds(1);
         TrajectoryActionBuilder basket2Traj = basketStartTraj.fresh()
                 .strafeToLinearHeading(new Vector2d(-21.66, 9.5), Math.toRadians(45));
@@ -58,7 +58,7 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
         //.waitSeconds(1);
         TrajectoryActionBuilder parking = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(-18, 58.8), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(9.2, 58.8), Math.toRadians(180));
+                .strafeToLinearHeading(new Vector2d(15, 58.8), Math.toRadians(180));
 
 
         Action basketStart = basketStartTraj.build();
@@ -93,7 +93,7 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 ),
                 //1+1
                 new SleepAction(1),
-                extendo.mid(),
+                extendo.mid2(),
                 intake.flip(),
                 new SleepAction(1),
                 intake.intake(),
@@ -104,15 +104,15 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 extendo.retract(),
                 new SleepAction(0.5),
                 intake.extake(),
-                new SleepAction(1.5),
-                intake.off(),
-                new SleepAction(0.5),
+                new SleepAction(0.25),
                 claw.up(),
                 new SleepAction(0.25),
-                claw.flop(),
+                intake.off(),
+                new SleepAction(0.25),
                 new ParallelAction(
                         slides.slideTopBasket(),
-                        basket1
+                        basket1,
+                        claw.flop()
                 ),
                 claw.flip(),
                 new SleepAction(0.5),
@@ -136,15 +136,15 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 extendo.retract(),
                 new SleepAction(0.5),
                 intake.extake(),
-                new SleepAction(1.5),
-                intake.off(),
-                new SleepAction(0.5),
+                new SleepAction(0.25),
                 claw.up(),
                 new SleepAction(0.25),
-                claw.flop(),
+                intake.off(),
+                new SleepAction(0.25),
                 new ParallelAction(
                         slides.slideTopBasket(),
-                        basket2
+                        basket2,
+                        claw.flop()
                 ),
                 claw.flip(),
                 new SleepAction(0.5),
@@ -152,16 +152,13 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 new SleepAction(0.5),
                 slides.retract(),
                 new ParallelAction(
-                        slides.slideHang(),
+                        slides.slideHangLevel(),
                         park
                 )
 
         );
 
-        Actions.runBlocking(new SequentialAction(
-                basketStart,
-                park
-        ));
+        Actions.runBlocking(main);
 //        TelemetryPacket packet = new TelemetryPacket();
 //
 //        while (opModeIsActive()) {
