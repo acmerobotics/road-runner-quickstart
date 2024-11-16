@@ -39,6 +39,7 @@ public class Robot {
     public int armTargetAuto = 0, slideTargetAuto = 0;
     public static volatile boolean stopPid = false;
     public double wristTargetAuto = 0.0;
+    public double intakeMultiplier = 1;
     Thread currentThread = null;
 
     public Robot(HardwareMap hardwareMap) {
@@ -188,8 +189,8 @@ public class Robot {
     }
 
     public void intakeControl(Gamepad gamepad) {
-        intakeRight.setPower((-gamepad.left_trigger + gamepad.right_trigger));
-        intakeLeft.setPower(gamepad.left_trigger - gamepad.right_trigger);
+        intakeRight.setPower(intakeMultiplier*(-gamepad.left_trigger + gamepad.right_trigger));
+        intakeLeft.setPower(intakeMultiplier*(gamepad.left_trigger - gamepad.right_trigger));
     }
 
     public void hangControl(Gamepad gamepad) {
@@ -210,6 +211,7 @@ public class Robot {
         if (gamepad2.y) {
             armTarget = 2200;
             wrist.setPosition(0.5);
+            intakeMultiplier = 0.5;
             while (Math.abs(armTarget - flip.getCurrentPosition()) > 100) {
                 TeleopPID(gamepad2);
                 arcadeDrive(gamepad1);
@@ -218,6 +220,7 @@ public class Robot {
         }
         if (gamepad2.a) {
             slideTarget = 0;
+            intakeMultiplier = 1;
             while (Math.abs(slideTarget - slide.getCurrentPosition()) > 3000) {
                 TeleopPID(gamepad2);
                 arcadeDrive(gamepad1);
@@ -226,15 +229,17 @@ public class Robot {
         }
         if (gamepad2.x) {
             slideTarget = 2000;
+            intakeMultiplier = 1;
             while (Math.abs(slideTarget - slide.getCurrentPosition()) > 1500) {
                 TeleopPID(gamepad2);
                 arcadeDrive(gamepad1);
             }
-            wrist.setPosition(0);
+            wrist.setPosition(0.07);
         }
         else if (gamepad2.b) {
             slideTarget = 0;
-            wrist.setPosition(0.5);
+            intakeMultiplier = 1;
+            wrist.setPosition(0.35);
         }
     }
 
@@ -246,7 +251,7 @@ public class Robot {
         else if (armTarget > 3000) armTarget = 3000;
 
         if (slideTarget < 0) slideTarget = 0;
-        else if (armTarget < 100 && slideTarget > 4000) slideTarget = 4000;
+        else if (armTarget < 100 && slideTarget > 2300) slideTarget = 2300;
         else if (slideTarget > 7500) slideTarget = 7500;
 
         flipPos = flip.getCurrentPosition();
