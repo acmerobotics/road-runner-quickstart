@@ -82,13 +82,13 @@ public class BlueTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        //NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+        NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
 
         final float[] hsvValues = new float[3];
 
-//        if (colorSensor instanceof SwitchableLight) {
-//            ((SwitchableLight)colorSensor).enableLight(true);
-//        }
+        if (colorSensor instanceof SwitchableLight) {
+            ((SwitchableLight)colorSensor).enableLight(true);
+        }
 
         NormalizedRGBA colors;
 
@@ -135,22 +135,22 @@ public class BlueTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             //extendo.setTarget(pos);
             TelemetryPacket packet = new TelemetryPacket();
-//
-//            colorSensor.setGain(50);
-//
-//            colors = colorSensor.getNormalizedColors();
-//
-//            Color.colorToHSV(colors.toColor(), hsvValues);
-//
-//            if (colors.red > 0.5 && colors.green > 0.7 && colors.blue < 0.42) {
-//                intakeColor = "yellow";
-//            } else if (colors.red > 0.5 && colors.green < 0.4 && colors.blue < 0.3) {
-//                intakeColor = "red";
-//            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.35) {
-//                intakeColor = "blue";
-//            } else {
-//                intakeColor = "none";
-//            }
+
+            colorSensor.setGain(50);
+
+            colors = colorSensor.getNormalizedColors();
+
+            Color.colorToHSV(colors.toColor(), hsvValues);
+
+            if (colors.red > 0.5 && colors.green > 0.7 && colors.blue < 0.42) {
+                intakeColor = "yellow";
+            } else if (colors.red > 0.5 && colors.green < 0.4 && colors.blue < 0.3) {
+                intakeColor = "red";
+            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.35) {
+                intakeColor = "blue";
+            } else {
+                intakeColor = "none";
+            }
 
             previousGamepad1.copy(currentGamepad1);
             previousGamepad2.copy(currentGamepad2);
@@ -217,7 +217,7 @@ public class BlueTeleop extends LinearOpMode {
                     break;
                 case EXTENDOEXTEND:
                     if (!control.getBusy()) {
-                        if ((currentGamepad2.a && !previousGamepad2.a)/* || (intakeColor.equals("blue")) || (intakeColor.equals("yellow"))*/) {
+                        if ((currentGamepad2.a && !previousGamepad2.a) || (intakeColor.equals("blue")) || (intakeColor.equals("yellow"))) {
                             runningActions.add(new SequentialAction(
                                     control.start(),
                                     intake.creep(),
@@ -226,9 +226,9 @@ public class BlueTeleop extends LinearOpMode {
                                     control.done()
                             ));
                         }
-//                        if (intakeColor.equals("red")) {
-//                            runningActions.add(intake.extake());
-//                        }
+                        if (intakeColor.equals("red")) {
+                            runningActions.add(intake.extake());
+                        }
 
 
                         if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && currentGamepad2.left_trigger > 0.9) {
@@ -409,7 +409,7 @@ public class BlueTeleop extends LinearOpMode {
             telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
             telemetry.addData("extendo target", extendo.extendoMotorPID.getTargetPosition());
             telemetry.addData("extendo power", extendo.extendoMotor.getPower());
-    //            telemetry.addData("color", intakeColor);
+            telemetry.addData("color", intakeColor);
             telemetry.update();
 
         }
