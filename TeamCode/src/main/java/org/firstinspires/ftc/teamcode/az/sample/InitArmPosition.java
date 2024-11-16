@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.az.sample;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 
 @Autonomous
 public class InitArmPosition extends LinearOpMode{
@@ -22,7 +23,7 @@ public class InitArmPosition extends LinearOpMode{
         arm.setup();
         waitForStart();
 
-        arm.moveToPosition(1300);
+        arm.moveToPosition(885);
         sleep(6000);
 
     }

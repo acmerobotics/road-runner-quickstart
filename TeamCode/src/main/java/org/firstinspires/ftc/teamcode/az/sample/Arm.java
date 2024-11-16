@@ -28,14 +28,15 @@ public class Arm extends LinearOpMode {
     }
 
     public enum ArmPos {
-        DROP(180),
+        DROP(530),
         RESET(0),
-        COLLECT(-1200),
-        CARRY(0),
-        SPECIMEN_HANG(160),
+        COLLECT(-785),
+        SPECIMEN_HANG(850),
 
-        MOVE(-700),
-        BASKET_DROP(1000);
+        SPECIMEN_DROP(700),
+
+        MOVE(-450),
+        BASKET_DROP(1415);
 
 
 
@@ -91,6 +92,10 @@ public class Arm extends LinearOpMode {
         AZUtil.setMotorTargetPosition(arm, ArmPos.SPECIMEN_HANG.value, POWER);
     }
 
+    public void specimenDrop() {
+        AZUtil.setMotorTargetPosition(arm, ArmPos.SPECIMEN_DROP.value, POWER);
+    }
+
 
 
     public int getCurrentPos(){
@@ -118,10 +123,10 @@ public class Arm extends LinearOpMode {
         while(opModeIsActive()){
 
             if(gamepad1.dpad_up){
-                setArmPos(ArmPos.BASKET_DROP);
+                moveUp();
             }
             if(gamepad1.dpad_down){
-               setArmPos(ArmPos.RESET);
+               moveDown();
             }
 
 
@@ -134,7 +139,7 @@ public class Arm extends LinearOpMode {
     private void autoTest() {
         setArmPos(ArmPos.RESET);
         sleep(3000);
-        setArmPos(ArmPos.CARRY);
+        setArmPos(ArmPos.MOVE);
         sleep(3000);
 
         setArmPos(ArmPos.SPECIMEN_HANG);

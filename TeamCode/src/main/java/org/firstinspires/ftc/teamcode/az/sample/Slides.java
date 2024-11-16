@@ -33,6 +33,9 @@ public class Slides extends LinearOpMode {
     public void specimenHang() {
         AZUtil.setMotorTargetPosition(slideMotor1, SlidesPos.SPECIMEN_HANG.value, POWER);
     }
+    public void specimenDrop() {
+        AZUtil.setMotorTargetPosition(slideMotor1, SlidesPos.SPECIMEN_DROP.value, POWER);
+    }
 
     public enum SlidesPos {
 
@@ -41,9 +44,10 @@ public class Slides extends LinearOpMode {
         COLLECT(1000),
 
         MOVE(600),
-        SPECIMEN_HANG(1500),
+        SPECIMEN_HANG(2150),
+        SPECIMEN_DROP(1800),
         LOWER_BASKET_DROP(1500),
-        BASKET_DROP(3700),
+        BASKET_DROP(3800),
         HALFWAYRESET(700),
         RESET(0);
 

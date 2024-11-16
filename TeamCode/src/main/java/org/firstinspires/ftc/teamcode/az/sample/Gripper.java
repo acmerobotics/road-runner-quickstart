@@ -34,7 +34,7 @@ public class Gripper extends LinearOpMode {
 
         WRIST_MOVE(0.5),
 
-        WRISTCOLLECT(0.5),
+        WRISTCOLLECT(0.55),
 
         ROLLERDROP(1),
         ROLLERCOLLECT(-1);

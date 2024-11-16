@@ -52,12 +52,19 @@ public class SpecimenTool extends LinearOpMode {
     }
 
     public void specimenHang() {
+        arm.specimenHang();
+        sleep(1000);
         slides.specimenHang();
         sleep(1000);
         gripper.specimenHang();
         sleep(500);
-        arm.specimenHang();
-        sleep(1000);
+
+        arm.specimenDrop();
+        sleep(500);
+
+
+
+
     }
 
 
