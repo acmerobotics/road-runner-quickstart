@@ -147,23 +147,24 @@ public class Elbow {
     }
 
 
-    public class AutonHC implements Action {
+    public class AutonHB implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setElbow(575);
+            setElbow(600);
             return false;
         }
     }
     public Action autonHB() {
-        return new AutonHC();
+        return new AutonHB();
     }
 
     public class AutonPick implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            setElbow(300);
-            setElbow(550);
+            setElbow(200);
+            setElbow(400);
+            setElbow(575);
             return false;
         }
     }

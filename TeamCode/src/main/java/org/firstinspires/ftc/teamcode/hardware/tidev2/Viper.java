@@ -116,13 +116,26 @@ public class Viper {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            setTarget(3000);
+            setTarget(3500);
             return false;
         }
     }
 
     public Action autonHB() {
         return new AutonHB();
+    }
+
+    public class AutonGolf implements Action{
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setTarget(100);
+            return false;
+        }
+    }
+
+    public Action autonGolf() {
+        return new AutonGolf();
     }
 
 

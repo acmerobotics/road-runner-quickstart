@@ -47,7 +47,7 @@ public class BucketOperatorFSM {
     private final int THRESH_ELBOW = 15;
 
     private final int POS_VIPER_MIDDLE_BUCKET = 1000;
-    private final int POS_VIPER_HIGH_BUCKET = 3000;
+    private final int POS_VIPER_HIGH_BUCKET = 3500;
 
     private final int POS_ELBOW_EXTEND_HIGH_BUCKET = 575;
     private final int POS_ELBOW_EXTEND_LOW_BUCKET = 500;

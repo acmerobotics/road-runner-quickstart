@@ -134,9 +134,21 @@ public class Shoulder {
         return new AutonDown();
     }
 
+    public class AutonMidDown implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setTarget(200);
+            return false;
+        }
+    }
+    public Action autonMidDown() {
+        return new AutonDown();
+    }
+
     public class AutonDownHC implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            setTarget(550);
             setTarget(400);
             return false;
         }

@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -9,17 +12,20 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 // Non-RR imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder.*;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
 @Config
-@Autonomous(name = "Right Auto", group = "Auto Fragments")
+@Autonomous(name = "Right Auto", group = "Autonomous")
 public class rightAuto extends LinearOpMode {
     Pose2d startPose;
     MecanumDrive drive;
@@ -69,9 +75,19 @@ public class rightAuto extends LinearOpMode {
                     .splineTo(new Vector2d(35, -5), Math.toRadians(90))
                     .setReversed(false)
 
-                    .splineToConstantHeading(new Vector2d(48, -20), Math.toRadians(-90))
+                    .splineToConstantHeading(new Vector2d(49, -20), Math.toRadians(-90))
 
-                    .splineToConstantHeading(new Vector2d(48, -50), Math.toRadians(-90));
+                    .splineToConstantHeading(new Vector2d(49, -50), Math.toRadians(-90))
+                    //shrey code starts here
+                    .setReversed(true)
+                    .splineToSplineHeading(new Pose2d(new Vector2d(49, -10), Math.toRadians(-90)), Math.toRadians(-90))
+
+                    .setReversed(true)
+                    //.splineToConstantHeading(new Vector2d(52,-45), Math.toRadians(90)
+                    .splineToConstantHeading(new Vector2d(56,-10), Math.toRadians(90))
+                    .splineToConstantHeading(new Vector2d(56,-53), Math.toRadians(90))
+                    .splineToLinearHeading(new Pose2d(60,-10, Math.toRadians(0)), Math.toRadians(0))
+                    .strafeToConstantHeading(new Vector2d(60,-53));
 
 
             //run intake while strafing to point
@@ -98,4 +114,3 @@ public class rightAuto extends LinearOpMode {
 
     }
 }
-

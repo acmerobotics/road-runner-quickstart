@@ -20,19 +20,20 @@ public class meepmeep1plus2 {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-14, -61, Math.toRadians(90)))
                 .waitSeconds(0.5)
 
-                .strafeTo(new Vector2d(-10, -34))
+                .strafeTo(new Vector2d(-10, -33))
                 //put arm up while strafing
-                //stop at (10, -34) and place the sample on the bar
+                //stop at (10, -33) and place the sample on the bar
                 .waitSeconds(0.5)
+                .strafeTo(new Vector2d(-10,-40))
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(-34,-36))
-                .splineToLinearHeading(new Pose2d(new Vector2d(-36, -26), Math.toRadians(180)), Math.toRadians(0))
+                .strafeTo(new Vector2d(-30,-40))
+                .splineToLinearHeading(new Pose2d(new Vector2d(-36, -25), Math.toRadians(180)), Math.toRadians(0))
+                .strafeTo(new Vector2d(-34, -25))
                 //pick sample
-                .waitSeconds(2.5)
-                .waitSeconds(2)
-                .waitSeconds(2)
-                .waitSeconds(2)
-                .splineToLinearHeading(new Pose2d(new Vector2d(-47, -47), Math.toRadians(225)), Math.toRadians(-90))
+                .strafeTo(new Vector2d(-36, -25))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(-38, -34))
+                .splineToLinearHeading(new Pose2d(new Vector2d(-54.5, -54.5), Math.toRadians(225)), Math.toRadians(-90))
                 .waitSeconds(2)
                 .build());
 
