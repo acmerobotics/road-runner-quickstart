@@ -1,42 +1,51 @@
 package org.firstinspires.ftc.teamcode.Common;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Claw {
     SimpleServo Claw;
-    SimpleServo Claw2;
 
     public Claw(SimpleServo c, SimpleServo c2){
         Claw = c;
-        Claw2 = c2;
     }
 
     public Claw(HardwareMap hardwareMap){
-        Claw = new SimpleServo(hardwareMap, Constants.Claw1ConfigName, 0.0, 1.0);
-        Claw2 = new SimpleServo(hardwareMap, Constants.Claw2ConfigName, 0.0, 1.0);
+        Claw = new SimpleServo(hardwareMap, "CS", 0.0, 1.0);
     }
 
-    public double getClaw1Position() {
+    public double getClawPosition() {
         return Claw.getPosition();
     }
-    public double getClaw2Position() {
-        return Claw2.getPosition();
-    }
-    public void ClawOpen(){
-        Claw.setPosition(Constants.ClawOpen);
-        Claw2.setPosition(Constants.Claw2Open);
-    }
-    public void Claw1Open(){
-        Claw.setPosition(Constants.ClawOpen);
+    public void ClawOpenTele(){
+        Claw.setPosition(1);
     }
 
-    public void Claw2Open(){
-        Claw2.setPosition(Constants.Claw2Open);
+    public void ClawCloseTele(){
+        Claw.setPosition(0);
     }
 
-    public void ClawClosed(){
-        Claw.setPosition(Constants.ClawClosed);
-        Claw2.setPosition(Constants.Claw2Closed);
+    public Action ClawClose() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                Claw.setPosition(0);
+                return false;
+            }
+        };
+    }
+
+    public Action ClawOpen() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                Claw.setPosition(1);
+                return false;
+            }
+        };
     }
 }

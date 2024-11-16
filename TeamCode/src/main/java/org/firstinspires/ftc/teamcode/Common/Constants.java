@@ -38,5 +38,5 @@ public class Constants {
 
     public static final double ExtensionOut = 1;
     public static final double ExtensionIn = 0;
-
+    public static final double TICKS_TO_INCHES_SLIDES = 1.0;
 }

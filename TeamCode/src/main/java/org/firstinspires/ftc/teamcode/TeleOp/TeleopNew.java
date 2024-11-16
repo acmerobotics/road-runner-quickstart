@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Common.Extension;
-import org.firstinspires.ftc.teamcode.Common.SlideGroup;
+import org.firstinspires.ftc.teamcode.Common.Lift;
 import org.firstinspires.ftc.teamcode.TeleOp.RobotNew;
 
 @TeleOp(name = "Teleop-New")
@@ -20,7 +20,7 @@ public class TeleopNew extends LinearOpMode {
     static GamepadEx gamepad2Ex;
     static RobotNew robot;
     static Extension extension;
-    static SlideGroup slides;
+    static Lift slides;
 
     private  void HardwareStart(){
         robot = new RobotNew();
@@ -74,13 +74,23 @@ public class TeleopNew extends LinearOpMode {
                 robot.ExtensionRight.set(0);
             }
 
-            if(gamepad2Ex.getButton(GamepadKeys.Button.A)){
-                robot.SlideLeft.setRunMode(MotorEx.RunMode.PositionControl);
-                robot.SlideRight.setRunMode(MotorEx.RunMode.PositionControl);
-                robot.SlideLeft.stopAndResetEncoder();
-                robot.SlideRight.stopAndResetEncoder();
-                robot.SlideLeft.setTargetPosition(1000);
-                robot.SlideRight.setTargetPosition(1000);
+//            if(gamepad2Ex.getButton(GamepadKeys.Button.A)){
+//                robot.SlideLeft.setRunMode(MotorEx.RunMode.PositionControl);
+//                robot.SlideRight.setRunMode(MotorEx.RunMode.PositionControl);
+//                robot.SlideLeft.stopAndResetEncoder();
+//                robot.SlideRight.stopAndResetEncoder();
+//                robot.SlideLeft.setTargetPosition(1000);
+//                robot.SlideRight.setTargetPosition(1000);
+//            }
+
+            if (gamepad2Ex.getButton(GamepadKeys.Button.A)){
+                robot.FourBarLeft.setPosition(0.75);
+                robot.FourBarRight.setPosition(0.25);
+            }
+
+            if (gamepad2Ex.getButton(GamepadKeys.Button.B)){
+                robot.FourBarLeft.setPosition(0.25);
+                robot.FourBarRight.setPosition(0.75);
             }
         }
     }
