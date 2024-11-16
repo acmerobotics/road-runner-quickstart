@@ -65,8 +65,7 @@ public class RobotNew {
 
         FrontRight = new MotorEx(hwMap, "FR", Motor.GoBILDA.RPM_312);
 
-        BackLeft = new MotorEx(hwMap, "BL", Motor.GoBILDA.RPM_312);
-        FrontRight.setInverted(true);
+        BackLeft = new MotorEx(hwMap, "BL", Motor.GoBILDA.RPM_312); 
 
         BackRight = new MotorEx(hwMap, "BR", Motor.GoBILDA.RPM_312);
     }
