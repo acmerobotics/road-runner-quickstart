@@ -35,7 +35,7 @@ public class BlueBasketSide extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-50,-45), Math.toRadians(45))
                 .waitSeconds(5.25)
                 //intake
-                .strafeToLinearHeading(new Vector2d(-57,-45), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-58.5,-45), Math.toRadians(90))
                 .waitSeconds(3.25)
                 .strafeToLinearHeading(new Vector2d(-50,-43), Math.toRadians(45))
                 .waitSeconds(5.25)
