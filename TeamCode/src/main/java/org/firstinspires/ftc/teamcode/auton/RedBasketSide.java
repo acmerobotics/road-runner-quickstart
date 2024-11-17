@@ -75,14 +75,14 @@ public class RedBasketSide extends LinearOpMode {
                     return false;
                 })
                 .afterTime(1, telemetryPacket -> {
-                    bot.intakeLeft.setPower(-0.5);
-                    bot.intakeRight.setPower(0.5);
+                    bot.intakeLeft.setPower(0.5);
+                    bot.intakeRight.setPower(-0.5);
                     return false;
                 })
                 .afterTime(4, bot.setPidVals(700,4200))
                 .afterTime(4.75, telemetryPacket -> {
-                    bot.intakeLeft.setPower(0.5);
-                    bot.intakeRight.setPower(-0.5);
+                    bot.intakeLeft.setPower(-0.5);
+                    bot.intakeRight.setPower(0.5);
                     return false;
                 })
                 .afterTime(5.5, bot.setPidVals(700,0))
@@ -92,56 +92,60 @@ public class RedBasketSide extends LinearOpMode {
                     return false;
                 })
                 .afterTime(8, bot.setPidVals(0,0))
+                .afterTime(8.5, telemetryPacket -> {
+                    bot.wrist.setPosition(0.07);
+                    return false;
+                })
                 .afterTime(10, bot.setPidVals(0, 1800))
                 .afterTime(10.1, telemetryPacket -> {
-                    bot.intakeLeft.setPower(-1);
-                    bot.intakeRight.setPower(1);
+                    bot.intakeLeft.setPower(1);
+                    bot.intakeRight.setPower(-1);
                     return false;
                 })
                 .afterTime(11.5, telemetryPacket -> {
-                    bot.intakeLeft.setPower(-0.3);
-                    bot.intakeRight.setPower(0.3);
+                    bot.intakeLeft.setPower(0.3);
+                    bot.intakeRight.setPower(-0.3);
                     return false;
                 })
                 .afterTime(12.5, bot.setPidVals(0,0))
-                .afterTime(13.25,bot.setPidVals(2050,0))
-                .afterTime(13.75, bot.setPidVals(2050,6500))
+                .afterTime(13.25,bot.setPidVals(2220,0))
+                .afterTime(13.75, bot.setPidVals(2220,6500))
                 .afterTime(16, telemetryPacket -> {
                     bot.wrist.setPosition(0.5);
                     return false;
                 })
                 .afterTime(17, telemetryPacket -> {
-                    bot.intakeLeft.setPower(0.4);
-                    bot.intakeRight.setPower(-0.4);
+                    bot.intakeLeft.setPower(-0.4);
+                    bot.intakeRight.setPower(0.4);
                     return false;
                 })
                 .afterTime(17.5, telemetryPacket -> {
-                    bot.wrist.setPosition(0);
+                    bot.wrist.setPosition(0.07);
                     return false;
                 })
                 .afterTime(18.5, bot.setPidVals(2050,0))
                 .afterTime(20, bot.setPidVals(0,0))
                 .afterTime(22, bot.setPidVals(0, 1800))
                 .afterTime(22.1, telemetryPacket -> {
-                    bot.intakeLeft.setPower(-1);
-                    bot.intakeRight.setPower(1);
+                    bot.intakeLeft.setPower(1);
+                    bot.intakeRight.setPower(-1);
                     return false;
                 })
                 .afterTime(23.5, telemetryPacket -> {
-                    bot.intakeLeft.setPower(-0.3);
-                    bot.intakeRight.setPower(0.3);
+                    bot.intakeLeft.setPower(0.3);
+                    bot.intakeRight.setPower(-0.3);
                     return false;
                 })
                 .afterTime(24.5, bot.setPidVals(0,0))
-                .afterTime(25.25,bot.setPidVals(2050,0))
-                .afterTime(25.75, bot.setPidVals(2050,6500))
+                .afterTime(25.25,bot.setPidVals(2220,0))
+                .afterTime(25.75, bot.setPidVals(2220,6500))
                 .afterTime(28, telemetryPacket -> {
                     bot.wrist.setPosition(0.5);
                     return false;
                 })
                 .afterTime(28.75, telemetryPacket -> {
-                    bot.intakeLeft.setPower(0.4);
-                    bot.intakeRight.setPower(-0.4);
+                    bot.intakeLeft.setPower(-0.4);
+                    bot.intakeRight.setPower(0.4);
                     return false;
                 })
 
