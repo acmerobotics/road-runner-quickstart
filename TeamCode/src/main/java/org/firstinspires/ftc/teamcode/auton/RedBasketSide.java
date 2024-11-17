@@ -68,7 +68,7 @@ public class RedBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0, bot.setPidVals(1117,4200))
+                .afterTime(0, bot.setPidVals(1080,4100))
 //                .afterTime(0.05, bot.intake(-0.5))
                 .afterTime(1, telemetryPacket -> {
                     bot.wrist.setPosition(0.01);
@@ -108,12 +108,12 @@ public class RedBasketSide extends LinearOpMode {
                     return false;
                 })
                 .afterTime(12.5, bot.setPidVals(0,0))
-                .afterTime(13.25,bot.setPidVals(2220,0))
-                .afterTime(13.75, bot.setPidVals(2220,6500))
-                .afterTime(16, telemetryPacket -> {
+                .afterTime(12.7, telemetryPacket -> {
                     bot.wrist.setPosition(0.5);
                     return false;
                 })
+                .afterTime(13.25,bot.setPidVals(2220,0))
+                .afterTime(13.75, bot.setPidVals(2220,6500))
                 .afterTime(17, telemetryPacket -> {
                     bot.intakeLeft.setPower(-0.4);
                     bot.intakeRight.setPower(0.4);
@@ -137,12 +137,12 @@ public class RedBasketSide extends LinearOpMode {
                     return false;
                 })
                 .afterTime(24.5, bot.setPidVals(0,0))
-                .afterTime(25.25,bot.setPidVals(2220,0))
-                .afterTime(25.75, bot.setPidVals(2220,6500))
-                .afterTime(28, telemetryPacket -> {
+                .afterTime(24.7, telemetryPacket -> {
                     bot.wrist.setPosition(0.5);
                     return false;
                 })
+                .afterTime(25.25,bot.setPidVals(2220,0))
+                .afterTime(25.75, bot.setPidVals(2220,6500))
                 .afterTime(28.75, telemetryPacket -> {
                     bot.intakeLeft.setPower(-0.4);
                     bot.intakeRight.setPower(0.4);
