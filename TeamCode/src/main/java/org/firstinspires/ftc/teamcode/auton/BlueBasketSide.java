@@ -90,7 +90,7 @@ public class BlueBasketSide extends LinearOpMode {
                     return false;
                 })
                 .afterTime(5.5, bot.setPidVals(700,0))
-                .afterTime(7, telemetryPacket -> {
+                .afterTime(6.5, telemetryPacket -> {
                     bot.intakeLeft.setPower(0);
                     bot.intakeRight.setPower(0);
                     return false;
