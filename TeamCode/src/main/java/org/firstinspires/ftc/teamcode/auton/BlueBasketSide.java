@@ -28,17 +28,17 @@ public class BlueBasketSide extends LinearOpMode {
         // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(-8,-45))
-                .waitSeconds(5.5)
+                .waitSeconds(5)
                 //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(-49,-43), Math.toRadians(90))
-                .waitSeconds(3.75)
+                .waitSeconds(3.25)
                 .strafeToLinearHeading(new Vector2d(-50,-45), Math.toRadians(45))
-                .waitSeconds(5.75)
+                .waitSeconds(5.25)
                 //intake
-                .strafeToLinearHeading(new Vector2d(-58.5,-45), Math.toRadians(90))
-                .waitSeconds(3.75)
+                .strafeToLinearHeading(new Vector2d(-57,-45), Math.toRadians(90))
+                .waitSeconds(3.25)
                 .strafeToLinearHeading(new Vector2d(-50,-43), Math.toRadians(45))
-                .waitSeconds(5.75)
+                .waitSeconds(5.25)
                 //Arm to high basket
                 //outtake
                 //Arm back down
@@ -68,7 +68,7 @@ public class BlueBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0.01, bot.setPidVals(1065,4300))
+                .afterTime(0.01, bot.setPidVals(1065,4200))
 //                .afterTime(0.05, bot.intake(-0.5))
                 .afterTime(0.02, telemetryPacket -> {
                     bot.wrist.setPosition(0.01);
