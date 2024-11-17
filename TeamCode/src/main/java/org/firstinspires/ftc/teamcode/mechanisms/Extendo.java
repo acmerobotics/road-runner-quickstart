@@ -53,7 +53,7 @@ public class Extendo {
                 init = true;
             }
 
-            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 2) {
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 5) {
                 extendoMotor.setPower(0);
                 return false;
             }
@@ -106,7 +106,7 @@ public class Extendo {
             }
 
 
-            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 2) {
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 5) {
                 return false;
             }
             return true;
@@ -124,6 +124,7 @@ public class Extendo {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //pid = false;
+                extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 target = -90;
                 extendoMotor.setPower(-0.3);
                 init = true;
@@ -131,6 +132,7 @@ public class Extendo {
 
             if (Math.abs(-90 - getPos()) < 2) {
                 //pid = true;
+                extendoMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 return false;
             }
             return true;
@@ -180,9 +182,7 @@ public class Extendo {
                 init = true;
             }
 
-            updateMotor();
-
-            if (Math.abs(extendoMotorPID.getTargetPosition() - getPos()) < 2) {
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 2) {
                 return false;
             }
             return true;
@@ -196,24 +196,33 @@ public class Extendo {
     public double getPos() {
         return (extendoMotor.getCurrentPosition());
     }
-
-    public void updateMotor() {
-        extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
-    }
+//
+//    public void updateMotor() {
+//        extendoMotor.setPower(extendoMotorPID.update(extendoMotor.getCurrentPosition()));
+//    }
 
     public void changetarget(double change){
         target += change;
-        extendoMotorPID.setTargetPosition(target);
+        extendoMotor.setTargetPosition(target);
     }
 
-    public void setTarget(double pos) {
-        extendoMotorPID.setTargetPosition(pos);
+    public void setTarget(int pos) {
+        extendoMotor.setTargetPosition(pos);
     }
 
     public void setValues(double kP, double kI, double kD) {
         KP = kP;
         KI = kI;
         KD = kD;
+    }
+
+    public void setManual() {
+        extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void setAuto() {
+        extendoMotor.setTargetPosition(target);
+        extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
 }
