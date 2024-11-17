@@ -202,7 +202,9 @@ public class Robot {
             return new SequentialAction(
                     new InstantAction(() -> gamepad.rumbleBlips(2)),
                     path,
-                    new SleepAction(1.5),
+                    intakePreset(robotTargetPose.intakeExtension, true),
+                    commands.stopIntake(targetColor),
+                    commands.waitForExtension(20),
                     pathBack
             );
     }
