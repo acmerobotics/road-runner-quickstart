@@ -205,7 +205,10 @@ public class BlueTeleop extends LinearOpMode {
                         }
 
                         if (lefty2 != 0) {
+                            extendo.setManual();
                             extendo.extendoMotor.setPower(lefty2/2);
+                        } else {
+                            extendo.setAuto();
                         }
                     }
 
@@ -258,7 +261,10 @@ public class BlueTeleop extends LinearOpMode {
                 case EXTENDORETRACT:
 
                     if (lefty2 != 0) {
+                        extendo.setManual();
                         extendo.extendoMotor.setPower(lefty2/2);
+                    } else {
+                        extendo.setAuto();
                     }
 
                     if ((currentGamepad2.a && !previousGamepad2.a)) /*|| intakeColor.equals("none"))*/ {
@@ -267,6 +273,7 @@ public class BlueTeleop extends LinearOpMode {
                     if (!currentGamepad2.a && previousGamepad2.a) {
                         runningActions.add(new SequentialAction(
                                 intake.off(),
+                                new SleepAction(0.2),
                                 claw.up()
                         ));
                         extendoState = ExtendoState.EXTENDOSTART;
@@ -340,7 +347,7 @@ public class BlueTeleop extends LinearOpMode {
                     if (currentGamepad2.x && !previousGamepad2.x) {
                         runningActions.add(new SequentialAction(
                                 slides.slideBottomBar(),
-                                new SleepAction(1),
+                                new SleepAction(0.2),
                                 slides.retract()
                         ));
                         liftState = LiftState.LIFTSTART;
@@ -391,8 +398,6 @@ public class BlueTeleop extends LinearOpMode {
             } else if (currentGamepad2.dpad_down) {
                 slides.changeTarget(10);
             }
-
-            if (liftState.equals(LiftState.LIFTSTART) && lefty2 == 0) extendo.updateMotor();
 
 
             List<Action> newActions = new ArrayList<>();

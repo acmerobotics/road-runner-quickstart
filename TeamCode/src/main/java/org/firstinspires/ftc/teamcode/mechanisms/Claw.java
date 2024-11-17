@@ -72,7 +72,7 @@ public class Claw {
     public class Up implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(0.61);
+            bucketServo.setPosition(0.57);
 //            bucketRightServo.setPosition(0.5);
             return false;
         }
