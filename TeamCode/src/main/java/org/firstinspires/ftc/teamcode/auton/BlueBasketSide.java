@@ -28,17 +28,17 @@ public class BlueBasketSide extends LinearOpMode {
         // Define trajectory using Pose2d for simultaneous right and forward movement
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(-8,-45))
-                .waitSeconds(5.5)
+                .waitSeconds(5)
                 //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(-49,-43), Math.toRadians(90))
-                .waitSeconds(3.75)
+                .waitSeconds(3.25)
                 .strafeToLinearHeading(new Vector2d(-50,-45), Math.toRadians(45))
-                .waitSeconds(5.75)
+                .waitSeconds(5.25)
                 //intake
                 .strafeToLinearHeading(new Vector2d(-57,-45), Math.toRadians(90))
-                .waitSeconds(3.75)
+                .waitSeconds(3.25)
                 .strafeToLinearHeading(new Vector2d(-50,-43), Math.toRadians(45))
-                .waitSeconds(5.75)
+                .waitSeconds(5.25)
                 //Arm to high basket
                 //outtake
                 //Arm back down
