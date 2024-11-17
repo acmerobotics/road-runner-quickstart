@@ -32,10 +32,10 @@ public class BlueBasketSide extends LinearOpMode {
                 //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(-49,-43), Math.toRadians(90))
                 .waitSeconds(3.6)
-                .strafeToLinearHeading(new Vector2d(-50,-45), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-49,-45), Math.toRadians(45))
                 .waitSeconds(5.9)
                 //intake
-                .strafeToLinearHeading(new Vector2d(-58.5,-45), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-59,-45), Math.toRadians(90))
                 .waitSeconds(3.25)
                 .strafeToLinearHeading(new Vector2d(-50,-43), Math.toRadians(45))
                 .waitSeconds(5.25)
@@ -79,7 +79,7 @@ public class BlueBasketSide extends LinearOpMode {
                     bot.intakeRight.setPower(-0.5);
                     return false;
                 })
-                .afterTime(2.8, telemetryPacket -> {
+                .afterTime(2.5, telemetryPacket -> {
                     bot.wrist.setPosition(0.01);
                     return false;
                 })
