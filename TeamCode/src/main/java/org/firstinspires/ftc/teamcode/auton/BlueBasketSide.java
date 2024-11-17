@@ -84,6 +84,7 @@ public class BlueBasketSide extends LinearOpMode {
                     bot.intakeRight.setPower(0);
                     return false;
                 })
+                
                 .afterTime(6.4, bot.setPidVals(0,0))
                 .afterTime(6.9, telemetryPacket -> {
                     bot.wrist.setPosition(0.07);
