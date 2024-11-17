@@ -26,9 +26,9 @@ public class RobotNew {
 
     public SimpleServo HangingLowBar;
     public SimpleServo HangingHighBar;
-    public SimpleServo Claw;
     public SimpleServo FourBarLeft;
-    public SimpleServo FourBarRight;
+    public SimpleServo ClawGrip;
+    public SimpleServo ClawRotation;
 
     private static HardwareMap hwMapRobot;
 
@@ -58,7 +58,8 @@ public class RobotNew {
         Extension = new MotorGroup(ExtensionLeft, ExtensionRight);
 
         FourBarLeft = new SimpleServo(hwMap, "VFBL", 0.0, 1.0);
-        FourBarRight = new SimpleServo(hwMap, "VFBR", 0.0, 1.0);
+        ClawGrip = new SimpleServo(hwMap, "CL", 0.0, 1.0);
+        ClawRotation = new SimpleServo(hwMap, "CR", 0.0, 1.0);
 
 //        YServo = new SimpleServo(hwMapRobot, Constants.YServoConfigName, 0.0, 1.0);
 //        Claw = new SimpleServo(hwMapRobot, Constants.Claw1ConfigName, 0.0, 1.0);
