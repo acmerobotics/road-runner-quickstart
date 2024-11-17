@@ -68,9 +68,9 @@ public class RedBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0, bot.setPidVals(1080,4100))
+                .afterTime(0.1, bot.setPidVals(1080,4100))
 //                .afterTime(0.05, bot.intake(-0.5))
-                .afterTime(1, telemetryPacket -> {
+                .afterTime(0.2, telemetryPacket -> {
                     bot.wrist.setPosition(0.01);
                     return false;
                 })
@@ -79,7 +79,11 @@ public class RedBasketSide extends LinearOpMode {
                     bot.intakeRight.setPower(-0.5);
                     return false;
                 })
-                .afterTime(4, bot.setPidVals(700,4200))
+                .afterTime(3, telemetryPacket -> {
+                    bot.wrist.setPosition(0.01);
+                    return false;
+                })
+                .afterTime(4, bot.setPidVals(600,4200))
                 .afterTime(4.75, telemetryPacket -> {
                     bot.intakeLeft.setPower(-0.5);
                     bot.intakeRight.setPower(0.5);
@@ -112,8 +116,8 @@ public class RedBasketSide extends LinearOpMode {
                     bot.wrist.setPosition(0.5);
                     return false;
                 })
-                .afterTime(13.25,bot.setPidVals(2220,0))
-                .afterTime(13.75, bot.setPidVals(2220,6500))
+                .afterTime(13.25,bot.setPidVals(2100,0))
+                .afterTime(13.75, bot.setPidVals(2100,6000))
                 .afterTime(17, telemetryPacket -> {
                     bot.intakeLeft.setPower(-0.4);
                     bot.intakeRight.setPower(0.4);
@@ -123,7 +127,7 @@ public class RedBasketSide extends LinearOpMode {
                     bot.wrist.setPosition(0.07);
                     return false;
                 })
-                .afterTime(18.5, bot.setPidVals(2050,0))
+                .afterTime(18.5, bot.setPidVals(2100,0))
                 .afterTime(20, bot.setPidVals(0,0))
                 .afterTime(22, bot.setPidVals(0, 1800))
                 .afterTime(22.1, telemetryPacket -> {
@@ -141,8 +145,8 @@ public class RedBasketSide extends LinearOpMode {
                     bot.wrist.setPosition(0.5);
                     return false;
                 })
-                .afterTime(25.25,bot.setPidVals(2220,0))
-                .afterTime(25.75, bot.setPidVals(2220,6500))
+                .afterTime(25.25,bot.setPidVals(2100,0))
+                .afterTime(25.75, bot.setPidVals(2100,6000))
                 .afterTime(28.75, telemetryPacket -> {
                     bot.intakeLeft.setPower(-0.4);
                     bot.intakeRight.setPower(0.4);
