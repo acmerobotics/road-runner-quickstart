@@ -68,10 +68,10 @@ public class TeleopNew extends LinearOpMode {
                 slides.slidesToPosition(10);
             }*/
 
-            if (gamepad2Ex.getButton(GamepadKeys.Button.DPAD_RIGHT)) { // Extension In
+            if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) { // Extension In
                 robot.ExtensionLeft.set(1);
                 robot.ExtensionRight.set(-1);
-            } else if (gamepad2Ex.getButton(GamepadKeys.Button.DPAD_LEFT)) { // Extension Out
+            } else if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) { // Extension Out
                 robot.ExtensionLeft.set(-1);
                 robot.ExtensionRight.set(1);
             } else {
