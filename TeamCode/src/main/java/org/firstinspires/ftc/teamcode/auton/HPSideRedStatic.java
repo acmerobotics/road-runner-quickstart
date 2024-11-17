@@ -57,7 +57,7 @@ public class HPSideRedStatic extends LinearOpMode {
                 .waitSeconds(0.5)
 
                 .setTangent(9 * Math.PI/10)
-                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(- 90)), 9 * Math.PI/10)
+                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(-90)), 9 * Math.PI/10)
 
                 .build();
         telemetry.addData("is","starting");

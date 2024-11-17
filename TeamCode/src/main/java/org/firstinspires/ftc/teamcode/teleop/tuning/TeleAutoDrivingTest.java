@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.util.misc.FullPose2d;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name="cv tuner")
+@TeleOp(name="auto driving")
 @Config
 public class TeleAutoDrivingTest extends LinearOpMode {
     DrivingMode drivingMode = DrivingMode.MANUAL;
@@ -38,11 +38,15 @@ public class TeleAutoDrivingTest extends LinearOpMode {
     double oldTime = 0;
     Motor backLeft;
     Motor backRight;
+
+    boolean oldCross = false;
+    boolean oldCircle = false;
+
     Motor frontLeft;
     Motor frontRight;
 
-    Gamepad oldGamepad = new Gamepad();
     KalmanDrive drive;
+    Pose3D target = new Pose3D(new Position(DistanceUnit.INCH, -50, -50, 0, System.currentTimeMillis()), new YawPitchRollAngles(AngleUnit.RADIANS, 0,0,0,System.currentTimeMillis()));
 
 
     @Override
@@ -50,7 +54,6 @@ public class TeleAutoDrivingTest extends LinearOpMode {
         List<Action> actionsQueue = new ArrayList<>();
         cv = new CVMaster(hardwareMap.get(Limelight3A.class, "limelight"), hardwareMap.get(WebcamName.class, "Webcam 1"));
         drive = new KalmanDrive(hardwareMap, new Pose2d(0,0,0), cv.limelight);
-        Pose3D target = new Pose3D(new Position(DistanceUnit.INCH, -50, -50, 0, System.currentTimeMillis()), new YawPitchRollAngles(AngleUnit.RADIANS, 0,0,0,System.currentTimeMillis()));
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -74,9 +77,9 @@ public class TeleAutoDrivingTest extends LinearOpMode {
             drive.updatePoseEstimate();
 
             if (drivingMode == DrivingMode.MANUAL) {
-                if (gamepad1.cross && !oldGamepad.cross) {
+                if (gamepad1.a && !oldCross) {
                     FullPose2d robotTargetPose = cv.calculateRobotFullPose(target, drive.pose.position.x, drive.pose.position.y);
-                    if (robotTargetPose.intakeExtension > 12) {
+                    if (robotTargetPose.intakeExtension > 15) {
                         // WHEN JUST TURNING ISNT ENOUGH FOR THE BOT TO REACH THE SAMPLE
                         double normalHeading = normalizeRadians(drive.pose.heading.toDouble());
                         if (normalHeading > ((3 * Math.PI) / 4) && normalHeading < ((5 * Math.PI) / 4)) {
@@ -115,15 +118,28 @@ public class TeleAutoDrivingTest extends LinearOpMode {
                                     .build()
                             );
                         }));
-                    } else {
 
-                        Action path = drive.actionBuilder(drive.pose)
-                                .splineToLinearHeading(robotTargetPose.getRobotPose(), robotTargetPose.getRobotPose().heading)
-                                .build();
-                        Action pathBack = drive.actionBuilder(robotTargetPose.getRobotPose())
-                                .setReversed(true)
-                                .splineToLinearHeading(drive.pose, drive.pose.heading)
-                                .build();
+                    } else {
+                        Action path;
+                        Action pathBack;
+                        if (drive.pose.position.equals(robotTargetPose.getRobotPose().position)) {
+                            path = drive.actionBuilder(drive.pose)
+                                    .turnTo(robotTargetPose.getRobotPose().heading)
+                                    .build();
+                            pathBack = drive.actionBuilder(robotTargetPose.getRobotPose())
+                                    .setReversed(true)
+                                    .turnTo(drive.pose.heading)
+                                    .build();
+                        } else {
+                            path = drive.actionBuilder(drive.pose)
+                                    .splineToLinearHeading(robotTargetPose.getRobotPose(), drive.pose.heading)
+                                    .build();
+                            pathBack = drive.actionBuilder(robotTargetPose.getRobotPose())
+                                    .setReversed(true)
+                                    .splineToLinearHeading(drive.pose, drive.pose.heading)
+                                    .build();
+                        }
+
                         actionsQueue.add(new SequentialAction(
                                 new InstantAction(() -> drivingMode = DrivingMode.AUTOMATIC),
                                 new InstantAction(() -> gamepad1.rumbleBlips(2)),
@@ -135,7 +151,7 @@ public class TeleAutoDrivingTest extends LinearOpMode {
                     }
                 }
 
-                if (gamepad1.circle && !oldGamepad.circle) {
+                if (gamepad1.b && !oldCircle) {
                     target = new Pose3D(new Position(DistanceUnit.INCH, drive.pose.position.x, drive.pose.position.y, 0, System.currentTimeMillis()), new YawPitchRollAngles(AngleUnit.RADIANS, 0, 0, 0, System.currentTimeMillis()));
                 }
 
@@ -168,10 +184,18 @@ public class TeleAutoDrivingTest extends LinearOpMode {
             }
             actionsQueue = newActions;
 
+            FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
-            oldGamepad.copy(gamepad1);
             telemetry.addData("looptime: ", frequency);
+            telemetry.addData("MODE", drivingMode);
+            telemetry.addData("TARGET", target.getPosition().toString());
+            telemetry.addData("ACTIONS QUEUE", actionsQueue.size());
+            telemetry.addData("NEW CIRCLE", gamepad1.a);
+            telemetry.addData("OLD CIRCLE", oldCross);
             telemetry.update();
+
+            oldCircle = gamepad1.b;
+            oldCross = gamepad1.a;
         }
     }
 
