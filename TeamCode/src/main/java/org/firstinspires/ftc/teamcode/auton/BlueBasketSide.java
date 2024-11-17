@@ -35,9 +35,9 @@ public class BlueBasketSide extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-50,-45), Math.toRadians(45))
                 .waitSeconds(5.75)
                 //intake
-                .strafeToLinearHeading(new Vector2d(-60,-45), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-57,-45), Math.toRadians(90))
                 .waitSeconds(3.75)
-                .strafeToLinearHeading(new Vector2d(-50,-45), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-50,-43), Math.toRadians(45))
                 .waitSeconds(5.75)
                 //Arm to high basket
                 //outtake
@@ -68,7 +68,7 @@ public class BlueBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0.01, bot.setPidVals(1080,4100))
+                .afterTime(0.01, bot.setPidVals(1065,4200))
 //                .afterTime(0.05, bot.intake(-0.5))
                 .afterTime(0.02, telemetryPacket -> {
                     bot.wrist.setPosition(0.01);
@@ -131,8 +131,8 @@ public class BlueBasketSide extends LinearOpMode {
                     bot.wrist.setPosition(0.07);
                     return false;
                 })
-                .afterTime(18.5, bot.setPidVals(2100,0))
-                .afterTime(20, bot.setPidVals(0,0))
+                .afterTime(17.75, bot.setPidVals(2100,0))
+                .afterTime(18.5, bot.setPidVals(0,0))
                 .afterTime(22, bot.setPidVals(0, 1800))
                 .afterTime(22.1, telemetryPacket -> {
                     bot.intakeLeft.setPower(1);
