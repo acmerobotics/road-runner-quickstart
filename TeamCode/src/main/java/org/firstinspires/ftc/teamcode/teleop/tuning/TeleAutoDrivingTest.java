@@ -126,7 +126,7 @@ public class TeleAutoDrivingTest extends LinearOpMode {
                             path = drive.actionBuilder(drive.pose)
                                     .turnTo(robotTargetPose.getRobotPose().heading)
                                     .build();
-                            pathBack = drive.actionBuilder(robotTargetPose.getRobotPose())
+                            pathBack = drive.cancelableActionBuilder(robotTargetPose.getRobotPose())
                                     .setReversed(true)
                                     .turnTo(drive.pose.heading)
                                     .build();

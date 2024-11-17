@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 // IMPORT SUBSYSTEMS
 
+import static org.firstinspires.ftc.teamcode.Robot.normalizeRadians;
+
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.NullAction;
@@ -27,6 +29,7 @@ import org.firstinspires.ftc.teamcode.subsystems.extension.Extension;
 import org.firstinspires.ftc.teamcode.subsystems.lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
+import org.firstinspires.ftc.teamcode.teleop.tuning.TeleAutoDrivingTest;
 import org.firstinspires.ftc.teamcode.util.enums.AllianceColor;
 import org.firstinspires.ftc.teamcode.util.hardware.BrushlandColorSensor;
 import org.firstinspires.ftc.teamcode.util.hardware.Component;
@@ -135,19 +138,19 @@ public class Robot {
         cv.updatePotentialTargetList(targetPipeline, drive.pose);
         Pose3D targetPose = cv.findOptimalTarget(drive.pose);
         FullPose2d robotTargetPose = cv.calculateRobotFullPose(targetPose, drive.pose.position.x, drive.pose.position.y);
-        if (robotTargetPose.intakeExtension > extension.MAXIMUM_EXTENSION) {
+        if (robotTargetPose.intakeExtension > 15) {
             // WHEN JUST TURNING ISNT ENOUGH FOR THE BOT TO REACH THE SAMPLE
             double normalHeading = normalizeRadians(drive.pose.heading.toDouble());
-            if (normalHeading > ((3*Math.PI)/4) && normalHeading < ((5*Math.PI)/4)) {
+            if (normalHeading > ((3 * Math.PI) / 4) && normalHeading < ((5 * Math.PI) / 4)) {
                 // ZONE I (Facing Right)
                 robotTargetPose = cv.calculateRobotFullPose(targetPose, drive.pose.position.x, targetPose.getPosition().y);
-            } else if (normalHeading > ((7*Math.PI)/4) || normalHeading < (Math.PI/4)) {
+            } else if (normalHeading > ((7 * Math.PI) / 4) || normalHeading < (Math.PI / 4)) {
                 // ZONE II (Facing Left)
                 robotTargetPose = cv.calculateRobotFullPose(targetPose, drive.pose.position.x, targetPose.getPosition().y);
-            } else if (normalHeading > ((5*Math.PI)/4) && normalHeading < ((7*Math.PI)/4)) {
+            } else if (normalHeading > ((5 * Math.PI) / 4) && normalHeading < ((7 * Math.PI) / 4)) {
                 // ZONE III (Facing Down)
                 robotTargetPose = cv.calculateRobotFullPose(targetPose, targetPose.getPosition().x, drive.pose.position.y);
-            } else if (normalHeading > (Math.PI/4) && normalHeading < ((3*Math.PI)/4)) {
+            } else if (normalHeading > (Math.PI / 4) && normalHeading < ((3 * Math.PI) / 4)) {
                 // ZONE IV (Facing Up)
                 robotTargetPose = cv.calculateRobotFullPose(targetPose, targetPose.getPosition().x, drive.pose.position.y);
             }
@@ -155,25 +158,53 @@ public class Robot {
 
         if (Math.sqrt(Math.pow((drive.pose.position.x - robotTargetPose.getRobotPose().position.x), 2) + Math.pow((drive.pose.position.y - robotTargetPose.getRobotPose().position.y), 2)) > 30
                 || robotTargetPose.getRobotPose().position.x + 6 > 60 || robotTargetPose.getRobotPose().position.x - 6 < -60
-                || robotTargetPose.getRobotPose().position.y - 7 < -60 || robotTargetPose.getRobotPose().position.y + 7 > 60) {
+                || robotTargetPose.getRobotPose().position.y - 7 < -60 || robotTargetPose.getRobotPose().position.y + 7 > 60
+                || Math.abs(robotTargetPose.getRobotPose().heading.toDouble() - drive.pose.heading.toDouble()) > (Math.PI)) {
             // FAILSAFE TO STOP THE BOT FROM TRYING TO GO TO SOME CRAZY AHH LOCATION
-            return new InstantAction(() -> gamepad.rumbleBlips(3));
-        }
+            // CHECKS ARE: TRYING TO MOVE MORE THAN 30in; ROBOT PARTS WILL BE OUT OF BOUNDS; TRYING TO ROTATE MORE THAN 180deg
+            // TODO: ACCOUNT FOR HEADING IN OUT OF BOUNDS CALCS
+            return new InstantAction(() -> {
+                gamepad.rumbleBlips(5);
+                gamepad.runLedEffect(new Gamepad.LedEffect.Builder()
+                        .addStep(255,0,0, 150)
+                        .addStep(0,0,0,150)
+                        .addStep(255,0,0, 150)
+                        .addStep(0,0,0,150)
+                        .addStep(255,0,0, 150)
+                        .addStep(0,0,0,150)
+                        .addStep(255,0,0, 150)
+                        .addStep(0,0,0,150)
+                        .build()
+                );
+            });
 
-        Action path = drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(robotTargetPose.getRobotPose(), robotTargetPose.getRobotPose().heading)
-                .build();
-        Action pathBack = drive.actionBuilder(robotTargetPose.getRobotPose())
-                .setReversed(true)
-                .splineToLinearHeading(drive.pose, drive.pose.heading)
-                .build();
-        return new SequentialAction(
-                path,
-                intakePreset(robotTargetPose.intakeExtension, true),
-                commands.stopIntake(targetColor),
-                commands.waitForExtension(20),
-                pathBack
-        );
+        }
+            Action path;
+            Action pathBack;
+            if (drive.pose.position.equals(robotTargetPose.getRobotPose().position)) {
+                path = drive.actionBuilder(drive.pose)
+                        .turnTo(robotTargetPose.getRobotPose().heading)
+                        .build();
+                pathBack = drive.actionBuilder(robotTargetPose.getRobotPose())
+                        .setReversed(true)
+                        .turnTo(drive.pose.heading)
+                        .build();
+            } else {
+                path = drive.actionBuilder(drive.pose)
+                        .splineToLinearHeading(robotTargetPose.getRobotPose(), drive.pose.heading)
+                        .build();
+                pathBack = drive.actionBuilder(robotTargetPose.getRobotPose())
+                        .setReversed(true)
+                        .splineToLinearHeading(drive.pose, drive.pose.heading)
+                        .build();
+            }
+
+            return new SequentialAction(
+                    new InstantAction(() -> gamepad.rumbleBlips(2)),
+                    path,
+                    new SleepAction(1.5),
+                    pathBack
+            );
     }
 
     public void toggleGamepiece() {
