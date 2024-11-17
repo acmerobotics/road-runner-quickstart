@@ -26,4 +26,8 @@ public class CommandMaster {
     public Action waitL2WinchClimbCompletion(Gamepad gamepad) {
         return new L2WinchClimbPoll(robot, gamepad);
     }
+
+    public Action waitForExtension(float target) {
+        return new ExtensionPoll(robot, target);
+    }
 }

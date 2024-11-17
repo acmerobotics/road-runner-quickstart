@@ -32,4 +32,7 @@ public class Extension {
     public float getPosition() {
         return target;
     }
+    public float getPosition(boolean useEncoder) {
+        return servo1.getAngle(true);
+    }
 }

@@ -8,6 +8,7 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.util.hardware.BrushlandColorSensor;
 import org.firstinspires.ftc.teamcode.util.hardware.ContinuousServo;
 import org.firstinspires.ftc.teamcode.util.enums.SampleColors;
 
@@ -17,19 +18,16 @@ import java.util.concurrent.TimeUnit;
 public class Claw {
     ContinuousServo servo1;
     ContinuousServo servo2;
-    RevColorSensorV3 colorSensor;
+    BrushlandColorSensor colorSensor;
 
     ElapsedTime sensorTimeout;
 
-    public Claw(ContinuousServo s1, ContinuousServo s2, RevColorSensorV3 sensor) {
+    public Claw(ContinuousServo s1, ContinuousServo s2, BrushlandColorSensor sensor) {
         servo1 = s1;
         servo2 = s2;
         colorSensor = sensor;
 
         sensorTimeout = new ElapsedTime();
-
-        colorSensor.initialize();
-        colorSensor.enableLed(true);
     }
 
     public void setPower(float p) {
@@ -89,20 +87,30 @@ public class Claw {
     }
 
     public SampleColors detectSample() {
-        if (sensorTimeout.time(TimeUnit.SECONDS) < 1) {
+//        if (sensorTimeout.time(TimeUnit.SECONDS) < 1) {
+//            return null;
+//        }
+
+        if (colorSensor.onlyPin0()) {
+            return SampleColors.RED;
+        } else if (colorSensor.onlyPin1()) {
+            return SampleColors.BLUE;
+        } else if (colorSensor.getBoth()) {
+            return SampleColors.YELLOW;
+        } else {
             return null;
         }
+//        if (colorSensor.blue() > 0.5) {
+//            return SampleColors.BLUE;
+//        } else if (colorSensor.red() > 0.5) {
+//            return SampleColors.RED;
+//        } else if (colorSensor.getDistance(DistanceUnit.MM) > 3) {
+//            return SampleColors.YELLOW;
+//        }
 
-        if (colorSensor.blue() > 0.5) {
-            return SampleColors.BLUE;
-        } else if (colorSensor.red() > 0.5) {
-            return SampleColors.RED;
-        } else if (colorSensor.getDistance(DistanceUnit.MM) > 3) {
-            return SampleColors.YELLOW;
-        }
 
-        sensorTimeout.reset();
-
-        return null;
+//        sensorTimeout.reset();
+//
+//        return null;
     }
 }

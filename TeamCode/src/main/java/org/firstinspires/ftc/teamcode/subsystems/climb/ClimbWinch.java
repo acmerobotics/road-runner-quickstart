@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.climb;
 import org.firstinspires.ftc.teamcode.util.hardware.StepperServo;
 
 public class ClimbWinch {
-    StepperServo servo1;
+    public StepperServo servo1;
     StepperServo servo2;
 
     float target = 0;

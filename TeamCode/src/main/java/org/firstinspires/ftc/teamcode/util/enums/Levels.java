@@ -5,6 +5,7 @@ public enum Levels {
     INIT,
     INTAKE,
     INTERMEDIATE,
+    LOCATING_TARGETS,
     LOW_BASKET,
     HIGH_BASKET,
     LOW_RUNG,

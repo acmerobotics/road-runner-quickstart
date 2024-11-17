@@ -258,10 +258,19 @@ public class CVMaster {
 
 
     public Pose3D findOptimalTarget(Pose2d robotPose) {
+        targets.sort((t1, t2) -> {
+            Vector2d robot = robotPose.position;
+            double t1D = Math.sqrt((Math.pow((robot.x - t1.getPosition().x), 2) + Math.pow((robot.x - t1.getPosition().y), 2)));
+            double t2D = Math.sqrt((Math.pow((robot.x - t2.getPosition().x), 2) + Math.pow((robot.x - t2.getPosition().y), 2)));
+            if (t1D == t2D) return 0;
+            return t1D < t2D ? -1 : 1;
+        });
+        
         Pose3D t = targets.get(0);
         targets.remove(0);
         return t;
     }
+
 
     public FullPose2d calculateRobotFullPose(Pose3D target, double constX, double constY) {
         double a = Math.abs((target.getPosition().y - constY));

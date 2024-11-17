@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -27,6 +28,7 @@ import org.firstinspires.ftc.teamcode.subsystems.lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
 import org.firstinspires.ftc.teamcode.util.enums.AllianceColor;
+import org.firstinspires.ftc.teamcode.util.hardware.BrushlandColorSensor;
 import org.firstinspires.ftc.teamcode.util.hardware.Component;
 import org.firstinspires.ftc.teamcode.util.hardware.ContinuousServo;
 import org.firstinspires.ftc.teamcode.util.enums.Levels;
@@ -75,29 +77,30 @@ public class Robot {
 
 //        this.cv = new CVMaster(map);
         this.components = new Component[]{
-                new Motor(3, "leftBack", map, true),          //0 left odometer
-                new Motor(2, "rightBack", map, false),        //1 right odometer
-                new Motor(1, "leftFront", map, true),         //2 middle odometer
-                new Motor(0, "rightFront", map, false),       //3
+                new Motor(3, "leftBack", map, true),                //0 left odometer
+                new Motor(2, "rightBack", map, false),              //1 right odometer
+                new Motor(1, "leftFront", map, true),               //2 middle odometer
+                new Motor(0, "rightFront", map, false),             //3
 
-                new Motor(0, "lift1", map, false),            //4
-                new Motor(1, "lift2", map, false),            //5
+                new Motor(0, "lift1", map, false),                  //4
+                new Motor(1, "lift2", map, false),                  //5
 
-                new StepperServo(0, "ext1", map),                    //6
-                new StepperServo(1, "ext2", map),                    //7
+                new StepperServo(0, "ext1", map, "ext1Encoder"),    //6
+                new StepperServo(1, "ext2", map, "ext2Encoder"),    //7
 
-                new StepperServo(0, "arm", map),                     //8
+                new StepperServo(0, "arm", map, "armEncoder"),      //8
 
-                new StepperServo(0, "elbow", map),                   //9
-                new ContinuousServo(1, "intake1", map),              //10
-                new ContinuousServo(2, "intake2", map),              //11
+                new StepperServo(0, "elbow", map, "elbowEncoder"),  //9
+                new ContinuousServo(1, "intake1", map),                     //10
+                new ContinuousServo(2, "intake2", map),                     //11
 
-                new StepperServo(0, "climb1", map),                  //12
-                new StepperServo(0, "climb2", map)                   //13
+                new StepperServo(0, "climb1", map, "climb1Encoder"),//12
+                new StepperServo(0, "climb2", map, "climb2Encoder") //13
         };
 
         VoltageSensor voltageSensor = map.voltageSensor.iterator().next();
-        RevColorSensorV3 colorSensor = map.get(RevColorSensorV3.class, "colorSensor");
+//        RevColorSensorV3 colorSensor = map.get(RevColorSensorV3.class, "colorSensor");
+        BrushlandColorSensor colorSensor = new BrushlandColorSensor(0, "color", map);
 
         // INIT SUBSYSTEMS
 
@@ -134,13 +137,6 @@ public class Robot {
         FullPose2d robotTargetPose = cv.calculateRobotFullPose(targetPose, drive.pose.position.x, drive.pose.position.y);
         if (robotTargetPose.intakeExtension > extension.MAXIMUM_EXTENSION) {
             // WHEN JUST TURNING ISNT ENOUGH FOR THE BOT TO REACH THE SAMPLE
-
-            //        if (drive.pose.position.x > 12 && drive.pose.position.y > -24 && drive.pose.position.y < 24) {
-//            // ZONE I
-//        } else if (drive.pose.position.x < -12 && drive.pose.position.y > -24 && drive.pose.position.y < 24) {
-//            // ZONE II
-//        }
-
             double normalHeading = normalizeRadians(drive.pose.heading.toDouble());
             if (normalHeading > ((3*Math.PI)/4) && normalHeading < ((5*Math.PI)/4)) {
                 // ZONE I (Facing Right)
@@ -157,7 +153,9 @@ public class Robot {
             }
         }
 
-        if (Math.sqrt(Math.pow((drive.pose.position.x - robotTargetPose.getRobotPose().position.x), 2) + Math.pow((drive.pose.position.y - robotTargetPose.getRobotPose().position.y), 2)) > 30) {
+        if (Math.sqrt(Math.pow((drive.pose.position.x - robotTargetPose.getRobotPose().position.x), 2) + Math.pow((drive.pose.position.y - robotTargetPose.getRobotPose().position.y), 2)) > 30
+                || robotTargetPose.getRobotPose().position.x + 6 > 60 || robotTargetPose.getRobotPose().position.x - 6 < -60
+                || robotTargetPose.getRobotPose().position.y - 7 < -60 || robotTargetPose.getRobotPose().position.y + 7 > 60) {
             // FAILSAFE TO STOP THE BOT FROM TRYING TO GO TO SOME CRAZY AHH LOCATION
             return new InstantAction(() -> gamepad.rumbleBlips(3));
         }
@@ -173,7 +171,7 @@ public class Robot {
                 path,
                 intakePreset(robotTargetPose.intakeExtension, true),
                 commands.stopIntake(targetColor),
-                new SleepAction(0.5),
+                commands.waitForExtension(20),
                 pathBack
         );
     }
@@ -241,7 +239,7 @@ public class Robot {
                     //TODO: CONVERT FROM INCHES TO TICKS
                     extension.runToPosition((float) extTicks);
                 }),
-                new SleepAction(3),
+                commands.waitForExtension((float) (extTicks - 20)),
                 new InstantAction(() -> {
                     arm.runToPreset(Levels.INTAKE);
                     claw.startIntake();
@@ -262,6 +260,13 @@ public class Robot {
         extension.runToPreset(Levels.INTERMEDIATE);
         lift.runToPreset(Levels.INTERMEDIATE);
         state = Levels.INTERMEDIATE;
+    }
+
+    public void scanForTargetsPreset() {
+        arm.runToPreset(Levels.INTERMEDIATE);
+        extension.runToPreset(Levels.INTERMEDIATE);
+        lift.runToPreset(Levels.INTERMEDIATE);
+        state = Levels.LOCATING_TARGETS;
     }
 
     public void stopIntake() {

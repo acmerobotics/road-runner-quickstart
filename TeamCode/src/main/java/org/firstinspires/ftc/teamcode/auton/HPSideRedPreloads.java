@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.commands.LoopAction;
 import org.firstinspires.ftc.teamcode.roadrunner.KalmanDrive;
 import org.firstinspires.ftc.teamcode.subsystems.vision.CVMaster;
 import org.firstinspires.ftc.teamcode.util.enums.SampleColors;
@@ -66,25 +67,25 @@ public class HPSideRedPreloads extends LinearOpMode {
 
         Action driveToObservation2 = robot.drive.actionBuilder(new Pose2d(0, -36, Math.toRadians(90)))
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(17, -42, Math.toRadians(-65)), -Math.PI/10)
                 .build();
-        Action driveToChamber2 = robot.drive.actionBuilder(new Pose2d(37, -40, Math.toRadians(90)))
+        Action driveToChamber2 = robot.drive.actionBuilder(new Pose2d(17, -42, Math.toRadians(-65)))
                 .setTangent(9 * Math.PI/10)
                 .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(90)), 9 * Math.PI/10)
                 .build();
 
         Action driveToObservation3 = robot.drive.actionBuilder(new Pose2d(0, -36, Math.toRadians(90)))
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(17, -42, Math.toRadians(-65)), -Math.PI/10)
                 .build();
-        Action driveToChamber3 = robot.drive.actionBuilder(new Pose2d(37, -40, Math.toRadians(90)))
+        Action driveToChamber3 = robot.drive.actionBuilder(new Pose2d(17, -42, Math.toRadians(-65)))
                 .setTangent(9 * Math.PI/10)
                 .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(90)), 9 * Math.PI/10)
                 .build();
 
         Action park = robot.drive.actionBuilder(new Pose2d(0, -36, Math.toRadians(90)))
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(90)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(17, -42, Math.toRadians(-65)), -Math.PI/10)
                 .build();
 
         telemetry.addData("is","starting");
@@ -94,13 +95,14 @@ public class HPSideRedPreloads extends LinearOpMode {
         if (isStopRequested()) return;
 
         Actions.runBlocking(
+                new ParallelAction(
                 new SequentialAction(
                         // PRELOAD DEPOSIT
                         new ParallelAction(
                                 preloadDrive,
                                 new InstantAction(robot::preloadHighRung)
                         ),
-                        robot.outtakeSpecimen(true),
+                        robot.smartOuttake(true),
 
                         // SPIKE RIGHT
                         new ParallelAction(
@@ -152,7 +154,7 @@ public class HPSideRedPreloads extends LinearOpMode {
                                         new InstantAction(robot::highRung)
                                 )
                         ),
-                        robot.outtakeSpecimen(true),
+                        robot.smartOuttake(true),
 
                         // **CYCLE #2**
                         new ParallelAction(
@@ -170,7 +172,7 @@ public class HPSideRedPreloads extends LinearOpMode {
                                         new InstantAction(robot::highRung)
                                 )
                         ),
-                        robot.outtakeSpecimen(true),
+                        robot.smartOuttake(true),
 
                         // **CYCLE #3**
                         new ParallelAction(
@@ -188,7 +190,7 @@ public class HPSideRedPreloads extends LinearOpMode {
                                         new InstantAction(robot::highRung)
                                 )
                         ),
-                        robot.outtakeSpecimen(true),
+                        robot.smartOuttake(true),
 
                         // **PARK**
                         new ParallelAction(
@@ -197,6 +199,9 @@ public class HPSideRedPreloads extends LinearOpMode {
                                 new InstantAction(robot::autonObParkPreset)
                             )
                         )
-                ));
+                ),
+                new LoopAction(robot.lift::update)
+                )
+                );
     }
 }

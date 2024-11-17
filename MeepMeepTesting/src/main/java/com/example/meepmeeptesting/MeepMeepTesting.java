@@ -12,6 +12,7 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setDimensions(12.44, 18.15)
                 .setConstraints(80, 80, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
@@ -59,27 +60,33 @@ public class MeepMeepTesting {
 //                .splineToLinearHeading(new Pose2d(-28, -9, 0), Math.toRadians(20))
 //                Observation Side Auton
                 .setTangent(Math.toRadians(110))
-                .splineToLinearHeading(new Pose2d(0, -36, Math.toRadians(90)), Math.toRadians(110))
+                .splineToLinearHeading(new Pose2d(0, -40, Math.toRadians(90)), Math.toRadians(110))
 //                .waitSeconds(0.5)
 
                 .setTangent(-Math.PI/10)
-                .splineToLinearHeading(new Pose2d(58, -45, Math.toRadians(70)), -Math.PI/10)
+                .splineToLinearHeading(new Pose2d(33, -34, Math.toRadians(25)), Math.toRadians(20))
                 .waitSeconds(0.5)
 
+                .splineToLinearHeading(new Pose2d(34, -34, Math.toRadians(-35)), Math.toRadians(0))
+
+                .splineToLinearHeading(new Pose2d(41, -33, Math.toRadians(25)), Math.toRadians(0))
+
+                .splineToLinearHeading(new Pose2d(40, -33, Math.toRadians(-35)), Math.toRadians(0))
+
+                .splineToLinearHeading(new Pose2d(41, -33, Math.toRadians(25)), Math.toRadians(0))
+
+                .splineToLinearHeading(new Pose2d(40, -33, Math.toRadians(-35)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(40, -40, Math.toRadians(-90)), Math.toRadians(-90))
+//
 //                .lineToXLinearHeading(-45, Math.toRadians(70))
 //                .waitSeconds(0.15)
-                .lineToYLinearHeading(-51, Math.toRadians(90))
-//                .waitSeconds(0.25)
-                .lineToYLinearHeading(-47, Math.toRadians(90))
-//                .waitSeconds(0.25)
-                .lineToYLinearHeading(-51, Math.toRadians(90))
-//                .waitSeconds(0.25)
-                .lineToYLinearHeading(-45, Math.toRadians(110))
-//                .waitSeconds(0.15)
-                .lineToYLinearHeading(-51, Math.toRadians(90))
-//                .waitSeconds(0.15)
-
-                .lineToYLinearHeading(-43, Math.toRadians(-90))
+//                .lineToYLinearHeading(-51, Math.toRadians(90))
+//                .lineToYLinearHeading(-47, Math.toRadians(90))
+//                .lineToYLinearHeading(-51, Math.toRadians(90))
+//                .lineToYLinearHeading(-45, Math.toRadians(110))
+//                .lineToYLinearHeading(-51, Math.toRadians(90))
+//
+//                .lineToYLinearHeading(-43, Math.toRadians(-90))
 //                .waitSeconds(1)
 //                .turn(Math.toRadians(20))
 //                .waitSeconds(0.5)

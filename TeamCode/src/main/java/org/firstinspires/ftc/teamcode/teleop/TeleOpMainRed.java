@@ -44,8 +44,25 @@ public class TeleOpMainRed extends LinearOpMode {
             if (gamepad1.left_bumper && !oldGamepad.left_bumper) {
                 actionsQueue.add(new InstantAction(robot::teleDepositPreset));
             }
-            if (gamepad1.right_bumper && !oldGamepad.right_bumper) {
+            if (gamepad1.right_bumper && !oldGamepad.right_bumper && !manualExtension) {
                 actionsQueue.add(robot.generateTeleOpAutomatedIntake(gamepad1));
+            } else if (gamepad1.right_bumper && !oldGamepad.right_bumper && manualExtension) {
+                actionsQueue.add(
+                  robot.intakePreset(20, true)
+                );
+            }
+            if (gamepad1.right_trigger >= 0.1 && robot.state == Levels.INTAKE) {
+                actionsQueue.add(
+                        new InstantAction(() -> {
+                            robot.extension.runToPosition(robot.extension.getPosition(true) + gamepad1.right_trigger);
+                        })
+                );
+            } else if (gamepad1.left_trigger >= 0.1 && robot.state == Levels.INTAKE) {
+                actionsQueue.add(
+                        new InstantAction(() -> {
+                            robot.extension.runToPosition(robot.extension.getPosition(true) - gamepad1.left_trigger);
+                        })
+                );
             }
             if (gamepad1.triangle && !oldGamepad.triangle) {
                 actionsQueue.add(new InstantAction(robot::toggleGamepiece));
@@ -85,6 +102,15 @@ public class TeleOpMainRed extends LinearOpMode {
             }
             actionsQueue = newActions;
 
+            double x = -gamepad1.left_stick_x;
+            double y = -gamepad1.left_stick_y;
+            double rx = gamepad1.right_stick_x;
+            robot.setDrivePower(-x, y, rx);
+
+            robot.lift.update();
+
+            oldGamepad.copy(gamepad1);
+
             double newTime = getRuntime();
             double loopTime = newTime-oldTime;
             double frequency = 1/loopTime;
@@ -93,13 +119,6 @@ public class TeleOpMainRed extends LinearOpMode {
             telemetry.addData("LOOPTIME: ", frequency);
             telemetry.addData("STATE: ", robot.state);
             telemetry.update();
-
-            double x = -gamepad1.left_stick_x;
-            double y = -gamepad1.left_stick_y;
-            double rx = gamepad1.right_stick_x;
-            robot.setDrivePower(-x, y, rx);
-
-            oldGamepad.copy(gamepad1);
         }
     }
 
