@@ -60,7 +60,7 @@ public class TeleopNew extends LinearOpMode {
             } else { // Hold Slide Position
 //                robot.Slides.set(-0.009375);
                 robot.SlideLeft.set(0.15);
-                robot.SlideRight.set(-0.2);
+                robot.SlideRight.set(-0.15);
             }
 
             /*if (gamepad2Ex.getButton(GamepadKeys.Button.X)){
