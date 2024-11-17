@@ -68,7 +68,7 @@ public class BlueBasketSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0.01, bot.setPidVals(1065,4200))
+                .afterTime(0.01, bot.setPidVals(1000,3800))
 //                .afterTime(0.05, bot.intake(-0.5))
                 .afterTime(0.02, telemetryPacket -> {
                     bot.wrist.setPosition(0.01);
