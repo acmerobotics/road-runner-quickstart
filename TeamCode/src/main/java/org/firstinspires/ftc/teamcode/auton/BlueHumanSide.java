@@ -55,8 +55,29 @@ public class BlueHumanSide extends LinearOpMode {
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0,bot.setPidVals(600,3600))
-                .afterTime(5, bot.setPidVals(0,3600))
+                .afterTime(0, bot.setPidVals(1100,4200))
+//                .afterTime(0.05, bot.intake(-0.5))
+                .afterTime(0.1, telemetryPacket -> {
+                    bot.wrist.setPosition(0.01);
+                    return false;
+                })
+                .afterTime(1, telemetryPacket -> {
+                    bot.intakeLeft.setPower(-0.5);
+                    bot.intakeRight.setPower(0.5);
+                    return false;
+                })
+                .afterTime(4, bot.setPidVals(700,4200))
+                .afterTime(4.75, telemetryPacket -> {
+                    bot.intakeLeft.setPower(0.5);
+                    bot.intakeRight.setPower(-0.5);
+                    return false;
+                })
+                .afterTime(5.5, bot.setPidVals(700,0))
+                .afterTime(7, telemetryPacket -> {
+                    bot.intakeLeft.setPower(0);
+                    bot.intakeRight.setPower(0);
+                    return false;
+                })
                 .build();
 
         bot.slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -67,9 +88,10 @@ public class BlueHumanSide extends LinearOpMode {
 
         // Wait for the start of the op mode
         waitForStart();
-        bot.setPidValues(0,0);
         if (isStopRequested()) return;
+        bot.wrist.setPosition(0.5);
         Robot.stopPid = false;
+
         // Execute the defined trajectory
         Action trajectoryActionChosen = tab1.build();
         Actions.runBlocking(
