@@ -94,29 +94,29 @@ public class BlueBasketSide extends LinearOpMode {
                     return false;
                 })
                 .afterTime(5.2, bot.setPidVals(700,0))
-                .afterTime(6.5, telemetryPacket -> {
+                .afterTime(6, telemetryPacket -> {
                     bot.intakeLeft.setPower(0);
                     bot.intakeRight.setPower(0);
                     return false;
                 })
-                .afterTime(7.5, bot.setPidVals(0,0))
-                .afterTime(8, telemetryPacket -> {
+                .afterTime(7, bot.setPidVals(0,0))
+                .afterTime(7.5, telemetryPacket -> {
                     bot.wrist.setPosition(0.07);
                     return false;
                 })
-                .afterTime(10, bot.setPidVals(0, 1800))
-                .afterTime(10.1, telemetryPacket -> {
+                .afterTime(9.5, bot.setPidVals(0, 1800))
+                .afterTime(9.6, telemetryPacket -> {
                     bot.intakeLeft.setPower(1);
                     bot.intakeRight.setPower(-1);
                     return false;
                 })
-                .afterTime(11.5, telemetryPacket -> {
+                .afterTime(11.1, telemetryPacket -> {
                     bot.intakeLeft.setPower(0.3);
                     bot.intakeRight.setPower(-0.3);
                     return false;
                 })
-                .afterTime(12.5, bot.setPidVals(0,0))
-                .afterTime(12.7, telemetryPacket -> {
+                .afterTime(12, bot.setPidVals(0,0))
+                .afterTime(12.2, telemetryPacket -> {
                     bot.wrist.setPosition(0.5);
                     return false;
                 })
