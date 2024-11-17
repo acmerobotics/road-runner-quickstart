@@ -81,6 +81,7 @@ public class BasketRedNoSpeciFinal extends LinearOpMode {
                 foward
         ));*/
 
+
         Actions.runBlocking(new SequentialAction(
                 //1+0
                 claw.flop(),
@@ -192,7 +193,10 @@ public class BasketRedNoSpeciFinal extends LinearOpMode {
                 */
 
         ));
+
+
     }
+
 }
 
 

@@ -28,10 +28,14 @@ public class FindTicks extends LinearOpMode {
 
         while (opModeIsActive()) {
             tele.addData("extendo", extendo.getPos());
-            tele.addData("slides", slides.getPos());
+            tele.addData("slidesLeftMotor", slides.slidesLeftMotor.getCurrentPosition());
+            tele.addData("slidesRightMotor", slides.slidesRightMotor.getCurrentPosition());
             tele.update();
             telemetry.addData("extendo", extendo.getPos());
-            telemetry.addData("slides", slides.getPos());
+            telemetry.addData("slidesLeftMotor", slides.slidesLeftMotor.getCurrentPosition());
+            telemetry.addData("slidesRightMotor", slides.slidesRightMotor.getCurrentPosition());
+
+
             telemetry.update();
         }
     }

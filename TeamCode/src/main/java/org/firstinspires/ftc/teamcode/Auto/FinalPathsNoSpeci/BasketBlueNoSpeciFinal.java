@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Auto.FinalPathsNoSpeci;
 
 
 // RR-specific imports
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
@@ -18,6 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.BlueTeleop;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
@@ -44,7 +46,7 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-21.66, 9.5), Math.toRadians(45));
         // .waitSeconds(1);
         TrajectoryActionBuilder block1Traj = basketStartTraj.fresh()
-                .strafeToLinearHeading(new Vector2d(-11.75, 22), Math.toRadians(95));
+                .strafeToLinearHeading(new Vector2d(-11.75, 20), Math.toRadians(95));
         //  .waitSeconds(1);
         TrajectoryActionBuilder basket1Traj = basketStartTraj.fresh()
                 .strafeToLinearHeading(new Vector2d(-21.66, 9.5), Math.toRadians(45));
@@ -160,9 +162,17 @@ public class BasketBlueNoSpeciFinal extends LinearOpMode {
 
         );
 
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry tele = dashboard.getTelemetry();
 
         waitForStart();
         Actions.runBlocking(main);
+        while (opModeIsActive()) {
+            tele.addData("extendo", extendo.getPos());
+            tele.update();
+            telemetry.addData("extendo encoedr", extendo.getPos());
+            telemetry.update();
+        }
     }
 }
 
