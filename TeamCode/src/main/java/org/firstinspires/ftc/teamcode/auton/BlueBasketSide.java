@@ -31,44 +31,21 @@ public class BlueBasketSide extends LinearOpMode {
                 .waitSeconds(4.8)
                 //Arm to high speci and back down
                 .strafeToLinearHeading(new Vector2d(-49,-43), Math.toRadians(90))
-                .waitSeconds(3.3)
-                .strafeToLinearHeading(new Vector2d(-50,-45.5), Math.toRadians(45))
-                .waitSeconds(5.6)
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(-49,-45), Math.toRadians(45))
+                .waitSeconds(6.2)
                 //intake
-                .strafeToLinearHeading(new Vector2d(-59.5,-45), Math.toRadians(90))
-                .waitSeconds(3.75)
-                .strafeToLinearHeading(new Vector2d(-50,-45), Math.toRadians(45))
-                .waitSeconds(5.25)
-                //Arm to high basket
-                //outtake
-                //Arm back down
-                .turn(Math.toRadians(-30))
-                .waitSeconds(1.75)
-                //intake
-                .turn(Math.toRadians(55))
-                .waitSeconds(1)
-                //Arm to high basket
-                //outtake
-                //Arm back down
-                .turn(Math.toRadians(-55))
-                .waitSeconds(1.75)
-                //intake
-                .strafeToLinearHeading(new Vector2d(-33,-9), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-60,-45), Math.toRadians(90))
                 .waitSeconds(2.75)
-                //Arm to high basket
-                //outtake
-                //Arm back down
-                .strafeToLinearHeading(new Vector2d(-56,-48), Math.toRadians(65))
-                .waitSeconds(1.75)
-                .strafeToLinearHeading(new Vector2d(-33,-9), Math.toRadians(0))
-                .waitSeconds(1.2);
+                .strafeToLinearHeading(new Vector2d(-49,-43.5), Math.toRadians(45))
+                .waitSeconds(6);
 
 
         // Final action to close out the trajectory
         Action trajectoryActionCloseOut = tab1.fresh().build();
 
         Action waitAndArm = drive.actionBuilder(initialPose)
-                .afterTime(0.01, bot.setPidVals(1000,3800))
+                .afterTime(0.01, bot.setPidVals(1050,3800))
 //                .afterTime(0.05, bot.intake(-0.5))
                 .afterTime(0.02, telemetryPacket -> {
                     bot.wrist.setPosition(0.07);
@@ -89,6 +66,10 @@ public class BlueBasketSide extends LinearOpMode {
                 })
                 .afterTime(3, bot.setPidVals(700,3800))
                 .afterTime(3.2, telemetryPacket -> {
+                    bot.wrist.setPosition(0.07);
+                    return false;
+                })
+                .afterTime(3.7, telemetryPacket -> {
                     bot.wrist.setPosition(0.07);
                     return false;
                 })
@@ -137,8 +118,8 @@ public class BlueBasketSide extends LinearOpMode {
                 })
                 .afterTime(16.3, bot.setPidVals(2100,0))
                 .afterTime(17.1, bot.setPidVals(0,0))
-                .afterTime(19.3, bot.setPidVals(0, 1800))
-                .afterTime(20.4, telemetryPacket -> {
+                .afterTime(18.8, bot.setPidVals(0, 1800))
+                .afterTime(19.4, telemetryPacket -> {
                     bot.intakeLeft.setPower(1);
                     bot.intakeRight.setPower(-1);
                     return false;
