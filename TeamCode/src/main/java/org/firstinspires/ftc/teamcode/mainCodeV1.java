@@ -38,7 +38,7 @@ public class mainCodeV1 extends LinearOpMode {
     private void armSetup() {
         arm.setPower(1);
         ARMMIN = arm.getCurrentPosition() - 3;
-        ARMMAX = ARMMIN - 3200;
+        ARMMAX = ARMMIN - 3000;
         INCREMENT = 250;
     }
 
@@ -148,7 +148,7 @@ public class mainCodeV1 extends LinearOpMode {
         double botHeading;
         botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         float direction = distance((float)botHeading, (float)targetDegree);
-        float power = Math.max(Math.min(0.5f, (float) (0.001 * Math.pow(direction, 2))), 0.1f); // 1 is clockwise, -1 is counterclock minimum is 0.1 (might need to be lower) and max is 0.5
+        float power = Math.max(Math.min(0.5f, (float) (0.001 * Math.pow(direction, 2))), 0.225f); // 1 is clockwise, -1 is counterclock minimum is 0.1 (might need to be lower) and max is 0.5
         if (Math.abs(direction) < 1f) {     // if the angle is less than 1 then poweroff
             power = 0f;
         }
