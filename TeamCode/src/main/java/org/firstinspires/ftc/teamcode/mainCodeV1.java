@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name = "mainCodeV1")
@@ -23,6 +24,7 @@ public class mainCodeV1 extends LinearOpMode {
     private ColorSensor colorDetector;
     int ARMMIN;
     int ARMMAX;
+    int targetedAngle; //for block search
     int INCREMENT;
 
     private void hardwareMapping() {
@@ -95,12 +97,12 @@ public class mainCodeV1 extends LinearOpMode {
         backRight.setPower(0.75 * backRightPower);
     }
 
-    private void armMovement() {
+    private void armMovement(boolean down,boolean up, int increment) {
         int armPosition = arm.getCurrentPosition();
-        if (gamepad1.dpad_down) {       // if (DPAD-down) is being pressed and if not yet the min
-            armPosition += INCREMENT;   // Position in
-        } else if (gamepad1.dpad_up) {  // if (DPAD-up) is being pressed and if not yet max
-            armPosition -= INCREMENT;   // Position Out
+        if (down) {       // if (DPAD-down) is being pressed and if not yet the min
+            armPosition += increment;   // Position in
+        } else if (up) {  // if (DPAD-up) is being pressed and if not yet max
+            armPosition -= increment;   // Position Out
         }
         armPosition = Math.max(Math.min(armPosition, ARMMIN), ARMMAX);  //clamp the values to be between min and max
         arm.setTargetPosition(armPosition);
@@ -121,6 +123,34 @@ public class mainCodeV1 extends LinearOpMode {
         float phi = (beta - alpha) % 360; // Raw difference in range [-359, 359]
         float distance = phi > 180 ? phi - 360 : (phi < -180 ? phi + 360 : phi);
         return distance;
+    }
+
+    private void searchColor(double angle1,double angle2) {
+        if (colorDetection()=="YELLOW" || colorDetection()=="RED"){
+
+        } else {
+            double botHeading;
+            botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            float direction = distance((float)botHeading, (float)targetedAngle);
+
+            armMovement(false,true,1);
+            rotateTo(targetedAngle);
+            if (Math.abs(direction)<4){
+                if (targetedAngle==60){
+                    targetedAngle = 30;
+                } else {
+                    targetedAngle = 60;
+                }
+
+            }
+        }
+
+        // extend arm if not already extended
+        // extend to stage 1. Closest 2. Medium 3. Far
+        // rotate x degrees
+        // if target color is detected then finish
+        // activate claw and pick up
+
     }
 
     private String colorDetection() {
@@ -166,7 +196,7 @@ public class mainCodeV1 extends LinearOpMode {
             } else {
                 chassisMovement(gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
             }
-            armMovement();
+            armMovement(gamepad1.dpad_down,gamepad1.dpad_up,INCREMENT);
             printThings();
         }
     }
