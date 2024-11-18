@@ -34,9 +34,9 @@ public class TeleopNew extends LinearOpMode {
         gamepad2Ex = new GamepadEx(gamepad2);
 
         // Init Claw Closed, Four Bar Completely Up, and Rotation at straight
-        robot.ClawGrip.setPosition(1);
+        robot.ClawGrip.setPosition(0);
         robot.FourBarLeft.setPosition(1);
-        robot.ClawRotation.setPosition(0.6);
+        robot.ClawRotation.setPosition(0.5);
     }
 
     @Override
@@ -88,12 +88,14 @@ public class TeleopNew extends LinearOpMode {
 //                robot.SlideRight.setTargetPosition(1000);
 //            }
 
-            if (gamepad2Ex.getButton(GamepadKeys.Button.A)){
-                robot.FourBarLeft.setPosition(0.5);
-            }
+//            if (gamepad2Ex.getButton(GamepadKeys.Button.A)){
+//                robot.FourBarLeft.setPosition(0.5);
+//            }
 
             if (gamepad2Ex.getButton(GamepadKeys.Button.B)){
-                robot.FourBarLeft.setPosition(0.75);
+                robot.FourBarLeft.setPosition(0.85);
+            } else{
+                robot.FourBarLeft.setPosition(0.5);
             }
 
             if (gamepad2Ex.getButton(GamepadKeys.Button.X)){
@@ -102,12 +104,12 @@ public class TeleopNew extends LinearOpMode {
                 robot.ClawGrip.setPosition(0);
             }
 
-            if (gamepad2Ex.getButton(GamepadKeys.Button.Y)){
+            if (gamepad2Ex.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
                 robot.ClawRotation.setPosition(1);
             }
 
             if (gamepad2Ex.getButton(GamepadKeys.Button.LEFT_BUMPER)){
-                robot.ClawRotation.setPosition(0.6);
+                robot.ClawRotation.setPosition(0.5);
             }
         }
     }
