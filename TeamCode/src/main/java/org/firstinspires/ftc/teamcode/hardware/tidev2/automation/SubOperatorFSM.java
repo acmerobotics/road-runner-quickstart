@@ -234,6 +234,8 @@ public class SubOperatorFSM {
 
                 break;
 
+
+                //Jonathan Hanging Stance changes
             case BEGIN_HANG_SUBSTATE:
                 while (gamepad.y) {
                     ;
