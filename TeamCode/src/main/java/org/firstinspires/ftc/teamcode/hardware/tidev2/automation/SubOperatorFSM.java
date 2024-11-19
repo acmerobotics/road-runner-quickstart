@@ -63,7 +63,8 @@ public class SubOperatorFSM {
     public enum SubState {
         ZERO_SUBSTATE,
         SHOULDER_RAISE_SUBSTATE, HORIZ_ELBOW_SUBSTATE, VIPER_EXTEND_SUBSTATE, MAX_ELBOW_SUBSTATE,
-        RETRACT_VIPER_SUBSTATE, RETRACT_ELBOW_SUBSTATE_S1, RETRACT_ELBOW_SUBSTATE_S2, CLEARANCE_ELBOW_SUBSTATE
+        RETRACT_VIPER_SUBSTATE, RETRACT_ELBOW_SUBSTATE_S1, RETRACT_ELBOW_SUBSTATE_S2, CLEARANCE_ELBOW_SUBSTATE,
+        BEGIN_HANG_SUBSTATE, PROCEED_HANG_SUBSTATE
     }
     private ElapsedTime subStateTimer = new ElapsedTime();
     private SubState subState;
@@ -232,6 +233,35 @@ public class SubOperatorFSM {
                 }
 
                 break;
+
+            case BEGIN_HANG_SUBSTATE:
+                while (gamepad.y) {
+                    ;
+                }
+                shoulder.setTarget(900);
+                viper.setTarget(850);
+
+                if (gamepad.y) {
+                    subState = SubState.ZERO_SUBSTATE;
+                }
+                if (subStateTimer.seconds() > 0.3) {
+                    if (gamepad.a) {
+                        subStateTimer.reset();
+                        subState = SubState.PROCEED_HANG_SUBSTATE;
+                    }
+                }
+                break;
+
+            case PROCEED_HANG_SUBSTATE:
+                while (gamepad.a) {
+                    ;
+                }
+                viper.setTarget(0);
+                if (gamepad.y) {
+                    subState = SubState.ZERO_SUBSTATE;
+                }
+                break;
+
         }
     }
 }
