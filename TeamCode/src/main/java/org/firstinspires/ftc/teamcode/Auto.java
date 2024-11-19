@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode;
 
 
 import android.util.Size;
@@ -9,15 +9,13 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Drawing;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -25,13 +23,14 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 
-@TeleOp(name = "#Main")
+@Autonomous(name = "#Auto")
 
-public class main extends LinearOpMode {
+public class Auto extends LinearOpMode {
 
     private DcMotorEx lift, leftRotate, rightRotate;
     private Servo rotate, left, right;
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+
 
     /**
      * The variable to store our instance of the AprilTag processor.
@@ -42,13 +41,15 @@ public class main extends LinearOpMode {
      * The variable to store our instance of the vision portal.
      */
     private VisionPortal visionPortal;
+
+
     @Override
 
 
     public void runOpMode() throws InterruptedException {
-
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
 
         initAprilTag();
 
@@ -58,8 +59,12 @@ public class main extends LinearOpMode {
         double tagY = 0;
         double tagX = 0;
         double lastHeading = 0;
+        double startX = drive.pose.position.x;
+        double startY = drive.pose.position.y;
         waitForStart();
+        driveToPosition(100, 300, drive);
         if (opModeIsActive()) {
+
             while (opModeIsActive()) { //Main loop
                 /*drive.setDrivePowers(new PoseVelocity2d(
                         new Vector2d(
@@ -89,14 +94,10 @@ public class main extends LinearOpMode {
                 }
                 double absoluteY = (Math.cos((drive.pose.heading.toDouble() - 90) + tagBearing)*tagRange);
 
-                if (gamepad1.b) {
+                /*while (absoluteY > 100) {
 
-                    drive.setDrivePowers(new PoseVelocity2d(new Vector2d(gamepad1.left_stick_y, tagBearing), gamepad1.left_stick_x) );
-
-                }
-                else {
-                    drive.setDrivePowers(new PoseVelocity2d(new Vector2d(gamepad1.left_stick_y, -gamepad1.right_stick_x), gamepad1.left_stick_x));
-                }
+                }*/
+                
                 drive.updatePoseEstimate();
 
                 telemetry.addLine(String.format("x", drive.pose.position.x));
@@ -109,6 +110,22 @@ public class main extends LinearOpMode {
                 Drawing.drawRobot(packet.fieldOverlay(), drive.pose);
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
+        }
+    }
+
+    private void driveToPosition(double abX, double abY, MecanumDrive drive) {
+
+
+        while (drive.pose.position.x != abX || drive.pose.position.y != abY) {
+
+            drive.setDrivePowers(new PoseVelocity2d(new Vector2d((drive.pose.position.y - abY), 0), (drive.pose.position.x - abX)));
+            telemetry.addLine(String.format("%6.1f Y - abY", drive.pose.position.y - abY));
+            telemetry.addLine(String.format("%6.1f Y - abX", drive.pose.position.x - abX));
+            telemetry.addLine(String.format("%6.1f PosY", drive.pose.position.y));
+            telemetry.addLine(String.format("%6.1f PosX", drive.pose.position.x));
+            telemetry.addLine(String.format("%6.1f PosX", drive.pose.heading));
+            drive.updatePoseEstimate();
+            telemetry.update();
         }
     }
     private void initAprilTag() {
