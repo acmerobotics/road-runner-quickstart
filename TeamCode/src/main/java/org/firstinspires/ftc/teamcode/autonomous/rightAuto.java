@@ -25,8 +25,8 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
 @Config
-@Autonomous(name = "quarter circle forwards", group = "Autonomous")
-public class autostage1 extends LinearOpMode {
+@Autonomous(name = "Right Auto", group = "Autonomous")
+public class rightAuto extends LinearOpMode {
     Pose2d startPose;
     MecanumDrive drive;
 
@@ -55,7 +55,7 @@ public class autostage1 extends LinearOpMode {
             viper.init();
             claw.init();
 
-             build = drive.actionBuilder(startPose)
+            build = drive.actionBuilder(startPose)
                     //put arm up while strafing
                     .afterTime(0, viper.autonDown())
                     .afterTime(0, shoulder.autonHC())
@@ -68,16 +68,35 @@ public class autostage1 extends LinearOpMode {
                     .afterTime(0, shoulder.autonDownHC())
                     .waitSeconds(1)
                     .setReversed(true)
-                     .strafeTo(new Vector2d(10, -36))
-                    .splineTo(new Vector2d(30, -36), Math.toRadians(0))
+                    .strafeTo(new Vector2d(10, -36))
+                    .splineTo(new Vector2d(28, -36), Math.toRadians(0))
                     //move arm down to gathering position while splining
                     .afterTime(0, shoulder.autonDown())
-                    .splineTo(new Vector2d(35, -5), Math.toRadians(90))
-                    .setReversed(false)
+//                    .splineTo(new Vector2d(33, -5), Math.toRadians(90)) //successfully hooked and moved away
 
-                    .splineToConstantHeading(new Vector2d(48, -20), Math.toRadians(-90))
-
-                    .splineToConstantHeading(new Vector2d(48, -50), Math.toRadians(-90));
+//                    .setReversed(false)
+//
+//                    .splineToConstantHeading(new Vector2d(47, -20), Math.toRadians(-90))
+//
+//                    .splineToConstantHeading(new Vector2d(47, -50), Math.toRadians(-90))
+//                    //shrey code starts here
+//                    .setReversed(true)
+//                    .strafeTo(new Vector2d(47, -10))
+//
+//
+//                    //.splineToConstantHeading(new Vector2d(52,-45), Math.toRadians
+//                    .strafeTo(new Vector2d(56,-10))
+//
+//                    .strafeTo(new Vector2d(56,-53))
+//
+//                    .afterTime(0, viper.autonGolf())
+//                    .waitSeconds(0.3)
+//                    .setReversed(true)
+//                    .splineToLinearHeading(new Pose2d(60,-10, Math.toRadians(0)), Math.toRadians(0))
+                    .strafeToConstantHeading(new Vector2d(60,-56))
+                    //.waitSeconds(0.3)
+                    //.afterTime(0, viper.autonDown())
+            ;
 
 
             //run intake while strafing to point
@@ -104,4 +123,3 @@ public class autostage1 extends LinearOpMode {
 
     }
 }
-

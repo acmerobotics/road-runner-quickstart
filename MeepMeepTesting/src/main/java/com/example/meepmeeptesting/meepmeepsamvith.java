@@ -16,11 +16,8 @@ public class meepmeepsamvith {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-13, -35, Math.toRadians(180)))
-                        .splineToConstantHeading(new Vector2d(-34,-35), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-34,-35), Math.toRadians(180))
                 .splineToLinearHeading(new Pose2d(new Vector2d(-36, -26), Math.toRadians(180)), Math.toRadians(180))
-//                        .splineToConstantHeading(new Vector2d(54.6, 52.7), Math.toRadians(-45))
-
-
                 .splineToLinearHeading(new Pose2d(new Vector2d(-47, -47), Math.toRadians(225)), Math.toRadians(180))
                 .build());
 

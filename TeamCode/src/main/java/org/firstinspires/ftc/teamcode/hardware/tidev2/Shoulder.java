@@ -103,7 +103,7 @@ public class Shoulder {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-                autoListen();
+            autoListen();
             return true;
         }
     }
@@ -115,7 +115,7 @@ public class Shoulder {
     public class AutonHC implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setTarget(640);
+            setTarget(660);
             return false;
         }
     }
@@ -125,7 +125,7 @@ public class Shoulder {
 
     public class AutonDown implements Action {
         @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
+        public boolean run(@NonNull TelemetryPacket pack9et) {
             setTarget(70);
             return false;
         }
@@ -134,9 +134,21 @@ public class Shoulder {
         return new AutonDown();
     }
 
+    public class AutonMidDown implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setTarget(200);
+            return false;
+        }
+    }
+    public Action autonMidDown() {
+        return new AutonDown();
+    }
+
     public class AutonDownHC implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            setTarget(550);
             setTarget(400);
             return false;
         }
@@ -145,6 +157,18 @@ public class Shoulder {
         return new AutonDownHC();
     }
 
+    public class AutonUpHB implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setTarget(850);
+            return false;
+        }
+    }
+
+    public Action autonUpHB() {
+        return new AutonUpHB();
+    }
 
 
 
@@ -225,12 +249,12 @@ public class Shoulder {
             }
 
         }
-            armPos = shoulder_left.getCurrentPosition();
-            pidf = controller.calculate(armPos, target);
+        armPos = shoulder_left.getCurrentPosition();
+        pidf = controller.calculate(armPos, target);
 
-            if (armPos > 850) {
-                pidf = pidf - f;
-            }
+        if (armPos > 850) {
+            pidf = pidf - f;
+        }
 
 
         shoulder_right.setPower(normalize_power(pidf));

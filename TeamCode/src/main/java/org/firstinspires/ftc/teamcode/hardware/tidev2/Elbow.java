@@ -29,6 +29,11 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.ActionBarOverlayLayout;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -129,6 +134,58 @@ public class Elbow {
     public void listen() {
         listen_complex();
     }
+    public class AutonListen implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            autoListen();
+            return true;
+        }
+    }
+    public Action autonListen() {
+        return new AutonListen();
+    }
+
+
+    public class AutonHB implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setElbow(600);
+            return false;
+        }
+    }
+    public Action autonHB() {
+        return new AutonHB();
+    }
+
+    public class AutonPick implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setElbow(200);
+            setElbow(400);
+            setElbow(575);
+            return false;
+        }
+    }
+
+    public Action autonPick() {
+        return new AutonPick();
+    }
+
+    public class AutonZero implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setElbow(0);
+            return false;
+        }
+    }
+
+    public Action autonZero() {
+        return new AutonZero();}
+
+
     public void listen_complex() {
 
         // accommodate the override
