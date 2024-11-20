@@ -42,16 +42,19 @@ public class SubOperatorFSM {
 
     private final int POS_SHOULDER_SUB = 350;
     private final int POS_SHOULDER_LOWER = 350;
+    private final int POS_SHOULDER_HANG = 900;
     private final int THRESH_SHOULDER = 150;
     private final int THRESH_VIPER = 50;
     private final int THRESH_ELBOW = 50;
 
     private final int POS_VIPER_SUB = 1000;
+    private final int POS_VIPER_HANG = 3500;
 
     private final int POS_ELBOW_EXTEND_HORIZ_SUB = 400;
     private final int POS_ELBOW_EXTEND_ADJUST_SUB = 400;
     private final int POS_ELBOW_EXTEND_MAX_SUB = 650;
     private final int POS_ELBOW_REST = 200;
+
 
 
     private Viper viper;
@@ -110,17 +113,21 @@ public class SubOperatorFSM {
                     break;
                 case BEGIN_HANG_SUBSTATE:
                     if (gamepad.b) {
-                        elbow.setElbow(POS_ELBOW_REST);
+                        elbow.setElbow(0);
                         viper.setTarget(0);
                         subStateTimer.reset();
-                        subState = SubState.ZERO_SUBSTATE;
+                        subState = SubState.RETRACT_VIPER_SUBSTATE;
                     }
                     break;
                 case PROCEED_HANG_SUBSTATE:
                     if (gamepad.b) {
-                        subState = SubState.BEGIN_HANG_SUBSTATE;
+                        elbow.setElbow(0);
+                        subStateTimer.reset();
+                        viper.setTarget(0);
+                        subState = SubState.RETRACT_VIPER_SUBSTATE;
                     }
-                    break;
+
+                        break;
 
 
             }
@@ -137,6 +144,8 @@ public class SubOperatorFSM {
                 }
                 if (gamepad.y) {
                     subState = SubState.BEGIN_HANG_SUBSTATE;
+                    shoulder.setTarget(POS_SHOULDER_HANG);
+
                 }
 
                 break;
@@ -254,20 +263,31 @@ public class SubOperatorFSM {
 
                 //Jonathan Hanging Stance changes
             case BEGIN_HANG_SUBSTATE:
-                shoulder.setTarget(900);
-                viper.setTarget(850);
 
-                if (subStateTimer.seconds() > 0.3) {
+
+
+
+                if (subStateTimer.seconds() > 3.0) {
                     if (gamepad.a) {
+                        viper.setTarget(POS_VIPER_HANG);
+                        elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
                         subStateTimer.reset();
                         subState = SubState.PROCEED_HANG_SUBSTATE;
                     }
+
                 }
                 break;
 
             case PROCEED_HANG_SUBSTATE:
+                if (subStateTimer.seconds() > 1.0) {
+                    if (gamepad.y) {
+                        shoulder.setTarget(900);
+                        viper.setTarget(0);
+                        elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
+                    }
+                }
 
-                viper.setTarget(0);
+
 
                 break;
 
