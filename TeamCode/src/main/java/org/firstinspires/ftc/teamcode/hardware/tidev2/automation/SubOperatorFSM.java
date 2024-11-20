@@ -48,7 +48,7 @@ public class SubOperatorFSM {
     private final int THRESH_ELBOW = 50;
 
     private final int POS_VIPER_SUB = 1000;
-    private final int POS_VIPER_HANG = 3500;
+    private final int POS_VIPER_HANG = 4000;
 
     private final int POS_ELBOW_EXTEND_HORIZ_SUB = 400;
     private final int POS_ELBOW_EXTEND_ADJUST_SUB = 400;
