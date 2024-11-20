@@ -108,6 +108,20 @@ public class SubOperatorFSM {
                         subState = SubState.RETRACT_ELBOW_SUBSTATE_S1;
                     }
                     break;
+                case BEGIN_HANG_SUBSTATE:
+                    if (gamepad.b) {
+                        elbow.setElbow(POS_ELBOW_REST);
+                        viper.setTarget(0);
+                        subStateTimer.reset();
+                        subState = SubState.ZERO_SUBSTATE;
+                    }
+                    break;
+                case PROCEED_HANG_SUBSTATE:
+                    if (gamepad.b) {
+                        subState = SubState.BEGIN_HANG_SUBSTATE;
+                    }
+                    break;
+
 
             }
         }
@@ -120,6 +134,9 @@ public class SubOperatorFSM {
                     shoulder.setTarget(POS_SHOULDER_SUB);
                     subState = SubState.SHOULDER_RAISE_SUBSTATE;
                     subStateTimer.reset();
+                }
+                if (gamepad.y) {
+                    subState = SubState.BEGIN_HANG_SUBSTATE;
                 }
 
                 break;
@@ -237,15 +254,9 @@ public class SubOperatorFSM {
 
                 //Jonathan Hanging Stance changes
             case BEGIN_HANG_SUBSTATE:
-                while (gamepad.y) {
-                    ;
-                }
                 shoulder.setTarget(900);
                 viper.setTarget(850);
 
-                if (gamepad.y) {
-                    subState = SubState.ZERO_SUBSTATE;
-                }
                 if (subStateTimer.seconds() > 0.3) {
                     if (gamepad.a) {
                         subStateTimer.reset();
@@ -255,13 +266,9 @@ public class SubOperatorFSM {
                 break;
 
             case PROCEED_HANG_SUBSTATE:
-                while (gamepad.a) {
-                    ;
-                }
+
                 viper.setTarget(0);
-                if (gamepad.y) {
-                    subState = SubState.ZERO_SUBSTATE;
-                }
+
                 break;
 
         }
