@@ -4,14 +4,19 @@ import com.aimrobotics.aimlib.control.PIDController;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.Pose2D;
 import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
 import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
+import org.firstinspires.ftc.teamcode.util.InputModification;
+
+import java.util.Locale;
 
 public class Drivebase extends Mechanism {
 
@@ -28,8 +33,9 @@ public class Drivebase extends Mechanism {
     private GoBildaPinpointDriver odometryController;
 
     private Pose2D targetPose;
+    private Pose2D startingPose;
 
-    private enum DriveMode {
+    public enum DriveMode {
         MANUAL, TO_POSITION
     }
 
@@ -39,8 +45,12 @@ public class Drivebase extends Mechanism {
     PIDController lateralPID;
     PIDController turnPID;
 
-    private final static double XY_PROXIMITY_THRESHOLD = 5;
-    private final static double HEADING_PROXIMITY_THRESHOLD = 1;
+    private final static double XY_PROXIMITY_THRESHOLD = 1;
+    private final static double HEADING_PROXIMITY_THRESHOLD = 8;
+
+    public Drivebase(Pose2D startingPosition) {
+        startingPose = startingPosition;
+    }
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -48,25 +58,38 @@ public class Drivebase extends Mechanism {
         backLeft = hwMap.get(DcMotorEx.class, ConfigurationInfo.leftBack.getDeviceName());
         frontRight = hwMap.get(DcMotorEx.class, ConfigurationInfo.rightFront.getDeviceName());
         backRight = hwMap.get(DcMotorEx.class, ConfigurationInfo.rightBack.getDeviceName());
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         odometryController = hwMap.get(GoBildaPinpointDriver.class, "ODO");
+        odometryController.setOffsets(-44.45, 38.1);
+        odometryController.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odometryController.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        odometryController.resetPosAndIMU();
+        odometryController.setPosition(startingPose);
         targetPose = odometryController.getPosition();
 
-        double axialKP = 0;
-        double axialKI = 0;
-        double axialKD = 0;
+        double axial_ku = 0.13;
+        double axial_tu = 1.4;
+
+        double lateral_ku = 0.13;
+        double lateral_tu = 1.4;
+
+        double axialKP = axial_ku * 0.6;
+        double axialKI = (1.2 * axial_ku)/ axial_tu;
+        double axialKD = 0.075 * axial_ku * axial_tu;
         double axialDerivLowPass = 0;
         double axialIntMax = 0;
 
-        double lateralKP = 0;
-        double lateralKI = 0;
-        double lateralKD = 0;
+        double lateralKP = lateral_ku * 0.6;
+        double lateralKI = (1.2 * lateral_ku)/ lateral_tu;
+        double lateralKD = 0.075 * lateral_ku * lateral_tu;
         double lateralDerivLowPass = 0;
         double lateralIntMax = 0;
 
-        double turnKP = 0;
+        double turnKP = 0.008; // 0.005
         double turnKI = 0;
         double turnKD = 0;
         double turnDerivLowPass = 0;
@@ -101,6 +124,7 @@ public class Drivebase extends Mechanism {
                 updateAutoNavigation();
                 break;
         }
+        odometryController.bulkUpdate();
     }
 
     public void setActiveDriveMode(DriveMode driveMode) {
@@ -108,18 +132,18 @@ public class Drivebase extends Mechanism {
     }
 
     private void manualDrive(AIMPad gamepad) {
-        double y = poweredInput(deadzonedStickInput(-gamepad.getLeftStickY()));
-        double x = poweredInput(deadzonedStickInput(gamepad.getLeftStickX()));
-        double rx = poweredInput(deadzonedStickInput(gamepad.getRightStickX()));
+        double y = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickY()), GamepadSettings.EXPONENT_MODIFIER);
+        double x = InputModification.poweredInput(deadzonedStickInput(gamepad.getLeftStickX()), GamepadSettings.EXPONENT_MODIFIER);
+        double rx = InputModification.poweredInput(deadzonedStickInput(gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
         moveDrivebase(y, x, rx);
     }
 
     private void moveDrivebase(double y, double x, double rx) {
         double denominator = computeDenominator(y, x, rx);
-        frontLeftPower = (y - x + rx) / denominator;
-        backLeftPower = (y + x + rx) / denominator;
-        frontRightPower = (y + x - rx) / denominator;
-        backRightPower = (y - x - rx) / denominator;
+        backRightPower = (y + x + rx) / denominator;
+        frontRightPower = (y - x + rx) / denominator;
+        backLeftPower = (y - x - rx) / denominator;
+        frontLeftPower = (y + x - rx) / denominator;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
@@ -135,21 +159,19 @@ public class Drivebase extends Mechanism {
         }
     }
 
-    /**
-     * Returns the powered input
-     * @param base base input
-     * @return base to the EXPONENT_MODIFIER power
-     */
-    private double poweredInput(double base) {
-        if (GamepadSettings.EXPONENT_MODIFIER % 2 == 0) {
-            return Math.pow(base, GamepadSettings.EXPONENT_MODIFIER) * Math.signum(base);
-        } else {
-            return Math.pow(base, GamepadSettings.EXPONENT_MODIFIER);
-        }
-    }
-
     private double computeDenominator(double y, double x, double rx) {
         return Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+        Pose2D pos = odometryController.getPosition();
+        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("Position", data);
+    }
+
+    public void systemsCheck(AIMPad gamepad, Telemetry telemetry) {
+        loop(gamepad);
     }
 
     public void setTargetPose(Pose2D targetPose) {
@@ -157,10 +179,10 @@ public class Drivebase extends Mechanism {
     }
 
     public void updateAutoNavigation() {
-        double yPower = axialPID.calculate(targetPose.getY(DistanceUnit.INCH), odometryController.getPosY());
-        double xPower = lateralPID.calculate(targetPose.getX(DistanceUnit.INCH), odometryController.getPosX());
-        double rxPower = turnPID.calculate(targetPose.getHeading(AngleUnit.DEGREES), odometryController.getHeading());
-        moveDrivebase(yPower, xPower, rxPower);
+        double axialPower = axialPID.calculate(targetPose.getX(DistanceUnit.INCH), odometryController.getPosition().getX(DistanceUnit.INCH));
+        double lateralPower = lateralPID.calculate(targetPose.getY(DistanceUnit.INCH), odometryController.getPosition().getY(DistanceUnit.INCH));
+        double turnPower = turnPID.calculate(targetPose.getHeading(AngleUnit.DEGREES), odometryController.getPosition().getHeading(AngleUnit.DEGREES));
+        moveDrivebase(axialPower, lateralPower, -turnPower);
     }
 
     public boolean isAtTargetPosition() {
@@ -169,13 +191,5 @@ public class Drivebase extends Mechanism {
         boolean isAtHeading = Math.abs(odometryController.getPosition().getHeading(AngleUnit.DEGREES) - targetPose.getHeading(AngleUnit.DEGREES)) < HEADING_PROXIMITY_THRESHOLD;
 
         return isAtY && isAtX && isAtHeading;
-    }
-
-    public void moveToPosition(Pose2D targetPose) {
-        setActiveDriveMode(DriveMode.TO_POSITION);
-        setTargetPose(targetPose);
-        while (!isAtTargetPosition()) {
-            updateAutoNavigation();
-        }
     }
 }

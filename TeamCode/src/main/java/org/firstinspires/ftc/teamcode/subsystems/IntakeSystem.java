@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
+import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
 
 public class IntakeSystem extends Mechanism {
 
@@ -15,30 +19,30 @@ public class IntakeSystem extends Mechanism {
 
 
     private final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
-    private final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.FORWARD;
-    private static final double kP = 0.1;
-    private static final double kI = 0.0;
-    private static final double kD = 0.0;
-    private static final double derivativeLowPassGain = 0.0;
-    private static final double integralSumMax = 0.0;
-    private static final double kV = 0.0;
+    private final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.REVERSE;
+    private static final double kP = 0.006;
+    private static final double kI = 0.00001;
+    private static final double kD = 0.00002;
+    private static final double derivativeLowPassGain = 0.15;
+    private static final double integralSumMax = 2500;
+    private static final double kV = 0.01;
     private static final double kA = 0.0;
     private static final double kStatic = 0.0;
     private static final double kCos = 0.0;
     private static final double kG = 0.0;
-    private static final double lowPassGain = 0.0;
+    private static final double lowPassGain = 0.15;
 
     Servo leftSlidePivot;
     Servo rightSlidePivot;
 
     public static final double RESET_POS = 0;
-    public static final double SHORT_POS = 200;
-    public static final double MEDIUM_POS = 400;
-    public static final double LONG_POS = 800;
-    private double pivotTargetPosition = HINGE_UP_POSITION;
+    public static final double SHORT_POS = 500;
+    public static final double MEDIUM_POS = 1000;
+    public static final double LONG_POS = 1600;
+    private double pivotTargetPosition = PIVOT_UP_POSITION;
 
-    private final static double HINGE_DOWN_POSITION = -0.5;
-    private final static double HINGE_UP_POSITION = 0.5;
+    private final static double PIVOT_DOWN_POSITION = 0.05;
+    private final static double PIVOT_UP_POSITION = 0.43;
 
 
     public enum PivotState {
@@ -53,11 +57,12 @@ public class IntakeSystem extends Mechanism {
     }
     public AutoSlidesPosition activeAutoSlidesPosition = AutoSlidesPosition.RESET;
 
-    private enum SlidesControlState {
+    public enum SlidesControlState {
         AUTONOMOUS, MANUAL
     }
     private SlidesControlState activeControlState = SlidesControlState.AUTONOMOUS;
 
+    public double manualPower = 0;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -70,10 +75,13 @@ public class IntakeSystem extends Mechanism {
 
         leftSlidePivot = hwMap.get(Servo.class, ConfigurationInfo.leftIntakeSlidePivot.getDeviceName());
         rightSlidePivot = hwMap.get(Servo.class, ConfigurationInfo.rightIntakeSlidePivot.getDeviceName());
+        rightSlidePivot.setDirection(Servo.Direction.REVERSE);
     }
 
     @Override
     public void loop(AIMPad aimpad) {
+        pivotToPosition(pivotTargetPosition);
+        intake.loop(aimpad);
         switch (activeControlState){
             case AUTONOMOUS:
                 switch(activeAutoSlidesPosition) {
@@ -93,8 +101,8 @@ public class IntakeSystem extends Mechanism {
                 intakeSlides.update();
                 break;
             case MANUAL:
-                if (aimpad.isLeftStickMovementEngaged() && !intakeSlides.currentSpikeDetected()) {
-                    intakeSlides.setPower(aimpad.getLeftStickY());
+                if (Math.abs(manualPower) > GamepadSettings.GP1_STICK_DEADZONE && !intakeSlides.currentSpikeDetected()) {
+                    intakeSlides.setPower(manualPower);
                 } else {
                     intakeSlides.holdPosition();
                 }
@@ -111,9 +119,10 @@ public class IntakeSystem extends Mechanism {
             case PIVOT_CUSTOM:
                 break;
         }
+    }
 
-        pivotToPosition(pivotTargetPosition);
-        intake.loop(aimpad);
+    public void setManualPower(double power) {
+        manualPower = power;
     }
   
     /**
@@ -182,30 +191,35 @@ public class IntakeSystem extends Mechanism {
      * Set the slide pivots to the down position
      */
     public void pivotDownState() {
-        pivotTargetPosition = HINGE_DOWN_POSITION;
+        pivotTargetPosition = PIVOT_DOWN_POSITION;
     }
 
     /**
      * Set the slide pivots to the up position
      */
     public void pivotUpState() {
-        pivotTargetPosition = HINGE_UP_POSITION;
+        pivotTargetPosition = PIVOT_UP_POSITION;
     }
 
     /**
      * Set the slide pivots servos to a position clamped by the hinge limits
      */
     public void pivotToPosition(double pivotPosition) {
-        double clampedPivotPosition = Math.max(HINGE_DOWN_POSITION, Math.min(pivotPosition, HINGE_UP_POSITION));
+        double clampedPivotPosition = Math.max(PIVOT_DOWN_POSITION, Math.min(pivotPosition, PIVOT_UP_POSITION));
         leftSlidePivot.setPosition(clampedPivotPosition);
         rightSlidePivot.setPosition(clampedPivotPosition);
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+        intake.telemetry(telemetry);
     }
 
     /**
      * Method to individually check each hardware component of the intake system
      * @param aimpad the gamepad used to control the intake system
      */
-    public void systemsCheck(AIMPad aimpad) {
+    public void systemsCheck(AIMPad aimpad, Telemetry telemetry) {
         if (aimpad.isAPressed()) {
             setActivePivotState(PivotState.PIVOT_UP);
         } else if (aimpad.isBPressed()) {
@@ -220,10 +234,11 @@ public class IntakeSystem extends Mechanism {
             setAutoSlidesPosition(AutoSlidesPosition.MEDIUM);
         } else if (aimpad.isDPadUpPressed()) {
             setAutoSlidesPosition(AutoSlidesPosition.LONG);
-        } else if (aimpad.isLeftStickMovementEngaged()) {
+        } else if (aimpad.isYPressed()) {
             setActiveControlState(SlidesControlState.MANUAL);
         }
         loop(aimpad);
+        telemetry(telemetry);
     }
 
     private static final IntakeSystem.AutoSlidesPosition[] SLIDE_POSITIONS = {

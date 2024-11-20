@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.aimrobotics.aimlib.control.FeedforwardController;
 import com.aimrobotics.aimlib.control.LowPassFilter;
 import com.aimrobotics.aimlib.control.PIDController;
@@ -16,7 +18,7 @@ public class SlidesBase extends Mechanism {
     private DcMotorEx leftSlide;
     private DcMotorEx rightSlide;
 
-    private final DcMotorEx activeEncoderMotor;
+    private DcMotorEx activeEncoderMotor;
     private double lastActiveEncoderPosition;
 
     String leftSlideName;
@@ -32,8 +34,9 @@ public class SlidesBase extends Mechanism {
     LowPassFilter lowPassFilter;
     SimpleControlSystem controlSystem;
 
-    public static final double PROXIMITY_THRESHOLD = 10;
-    private static final double BOUNDS_CURRENT_THRESHOLD = 5000;
+    public static final double PROXIMITY_THRESHOLD = 30
+            ;
+    private static final double CURRENT_THRESHOLD = 5000;
 
     /**
      * Constructor for the slides base
@@ -62,8 +65,6 @@ public class SlidesBase extends Mechanism {
         feedforwardController = new FeedforwardController(kV, kA, kStatic, kCos, kG);
         lowPassFilter = new LowPassFilter(lowPassGain);
         controlSystem = new SimpleControlSystem(pidController, feedforwardController, lowPassFilter);
-        activeEncoderMotor = leftSlide;
-        updateLastPosition();
     }
 
     /**
@@ -80,13 +81,15 @@ public class SlidesBase extends Mechanism {
 
         leftSlide.setDirection(leftMotorDirection);
         rightSlide.setDirection(rightMotorDirection);
+        activeEncoderMotor = leftSlide;
+        lastActiveEncoderPosition = 0;
     }
 
     /**
      * Set the mode of the slides
      * @param mode the mode to set the slides to
      */
-    private void setMode(DcMotorEx.RunMode mode) {
+    public void setMode(DcMotorEx.RunMode mode) {
         leftSlide.setMode(mode);
         rightSlide.setMode(mode);
     }
@@ -188,7 +191,7 @@ public class SlidesBase extends Mechanism {
      * @return true if the slides are over the current threshold
      */
     public boolean currentSpikeDetected() {
-        return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > BOUNDS_CURRENT_THRESHOLD;
+        return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > CURRENT_THRESHOLD;
     }
 }
 
