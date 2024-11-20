@@ -1,2 +1,6 @@
-package org.firstinspires.ftc.teamcode.opModes.comp.auto;public class superqual_autoconstants {
+package org.firstinspires.ftc.teamcode.opModes.comp.auto;
+//did this worl?
+public class superqual_autoconstants {
+
+
 }
