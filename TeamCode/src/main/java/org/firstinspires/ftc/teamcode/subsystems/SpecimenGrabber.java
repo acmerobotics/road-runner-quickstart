@@ -6,9 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
-
-import java.util.Map;
+import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 
 public class SpecimenGrabber extends Mechanism {
 

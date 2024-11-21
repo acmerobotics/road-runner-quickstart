@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,8 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
-import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
+import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
+import org.firstinspires.ftc.teamcode.settings.GamepadSettings;
 
 public class IntakeSystem extends Mechanism {
 

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
+import org.firstinspires.ftc.teamcode.settings.GamepadSettings;
 import org.firstinspires.ftc.teamcode.util.InputModification;
 
 public class ScoringSystem extends Mechanism {

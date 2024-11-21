@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.Pose2D;
-import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
-import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
+import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
+import org.firstinspires.ftc.teamcode.settings.GamepadSettings;
 import org.firstinspires.ftc.teamcode.util.InputModification;
 
 import java.util.Locale;

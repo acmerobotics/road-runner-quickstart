@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.settings;
+package org.firstinspires.ftc.teamcode.settings;
 
 import com.aimrobotics.aimlib.util.HardwareInterface;
 
