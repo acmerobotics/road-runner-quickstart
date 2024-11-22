@@ -27,14 +27,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.hardware.tidev2;
+package org.firstinspires.ftc.teamcode.hardware.tidev2.deprecated;
 
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class ShoulderV0 {
 
@@ -56,6 +55,7 @@ public class ShoulderV0 {
 
     double pidf;
 
+    int armPos;
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
@@ -97,6 +97,9 @@ public class ShoulderV0 {
         myOpMode.telemetry.addData("Arm pos Left/Right", "%4d / %4d",
                 shoulder_left.getCurrentPosition(),
                 shoulder_right.getCurrentPosition());
+        myOpMode.telemetry.addData("Shoulder v0 pidf:", pidf);
+        myOpMode.telemetry.addData("Shoulder v0 pos:", armPos);
+        myOpMode.telemetry.addData("Shoulder v0 target:", target);
     }
 
     public int getTarget() {
@@ -105,7 +108,7 @@ public class ShoulderV0 {
 
 
     public void listen() {
-        int armPos = shoulder_left.getCurrentPosition();
+        armPos = shoulder_left.getCurrentPosition();
         boolean controlled = false;
 
 
@@ -160,7 +163,8 @@ public class ShoulderV0 {
 
 
 
-        if (myOpMode.gamepad2.dpad_right) {
+        if (myOpMode.gamepad2.start) {
+            target = 0;
             shoulder_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             shoulder_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }

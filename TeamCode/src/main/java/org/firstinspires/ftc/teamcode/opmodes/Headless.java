@@ -7,15 +7,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.automation.BucketOperatorFSM;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
-import org.firstinspires.ftc.teamcode.hardware.tidev2.ShoulderV0;
+import org.firstinspires.ftc.teamcode.hardware.tidev2.automation.SubOperatorFSM;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
-
-import java.util.GregorianCalendar;
 
 
 // I AM DOCTOR IVO ROBOTNIK!
@@ -25,21 +25,27 @@ public class Headless extends OpMode {
 
     // Insert whatever initialization your own code does
     Shoulder shoulder = new Shoulder(this);
-    ShoulderV0 shoulderV0 = new ShoulderV0(this);
 
     Elbow elbow = new Elbow(this);
     Intake intake = new Intake(this);
     Viper viper = new Viper(this);
     Claw claw = new Claw(this);
 
+    ElapsedTime resetTimer = new ElapsedTime();
+
 
     MecanumDrive drive;
+
+    boolean pressed_a = false;
 
 
     // Read pose
     Pose2d poseEstimate;
     Vector2d input;
     double headlessHeading;
+
+    BucketOperatorFSM bucketOperatorFSM;
+    SubOperatorFSM subOperatorFSM;
 
 
     private void gamepadToMovement() {
@@ -67,11 +73,17 @@ public class Headless extends OpMode {
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         headlessHeading = 0;
         shoulder.init();
-        shoulderV0.init();
         elbow.init();
         intake.init();
         viper.init();
         claw.init();
+
+        resetTimer.reset();
+
+        pressed_a = false;
+
+        bucketOperatorFSM = new BucketOperatorFSM(gamepad2, shoulder, viper, elbow, claw, intake);
+        subOperatorFSM = new SubOperatorFSM(gamepad2, shoulder, viper, elbow, claw, intake);
 
     }
 
@@ -105,46 +117,45 @@ public class Headless extends OpMode {
             } else if(gamepad1.dpad_up) {
                 drive.setDrivePowers(
                         new PoseVelocity2d(
-                                new Vector2d(0, 0.5), 0
+                                new Vector2d(0.5, 0), 0
                         )
                 );
             } else if(gamepad1.dpad_down) {
                 drive.setDrivePowers(
                         new PoseVelocity2d(
-                                new Vector2d(0, -0.5), 0
+                                new Vector2d(-0.5, 0), 0
                         )
                 );
             } else if(gamepad1.dpad_left) {
                 drive.setDrivePowers(
                         new PoseVelocity2d(
-                                new Vector2d(0.5, 0), 0
+                                new Vector2d(0, 0.5), 0
                         )
                 );
             } else if(gamepad1.dpad_right) {
                 drive.setDrivePowers(
                         new PoseVelocity2d(
-                                new Vector2d(-0.5, 0), 0
+                                new Vector2d(0, -0.5), 0
                         )
                 );
             }
 
         }
 
-        if (gamepad2.right_stick_y <= 0) {
-            shoulder.listen();
-        } else {
-            shoulderV0.listen();
-            shoulder.setTarget(shoulderV0.getTarget());
-        }
+        bucketOperatorFSM.listen();
+        subOperatorFSM.listen();
+        shoulder.listen();
+        shoulder.sendTelemetry();
+
         elbow.listen();
         intake.listen();
         viper.listen();
         claw.listen();
 
-
-        shoulderV0.sendTelemetry();
+        elbow.sendTelemetry();
         intake.sendTelemetry();
         claw.sendTelemetry();
+        viper.sendTelemetry();
 
 
 
