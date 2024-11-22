@@ -67,11 +67,12 @@ public class RobotNew {
 //        HangingLowBar = new SimpleServo(hwMap, Constants.HangingLowName, 0.0, 1.0);
 
         FrontLeft = new MotorEx(hwMap, "FL", Motor.GoBILDA.RPM_312);
-
+        FrontLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         FrontRight = new MotorEx(hwMap, "FR", Motor.GoBILDA.RPM_312);
-
-        BackLeft = new MotorEx(hwMap, "BL", Motor.GoBILDA.RPM_312); 
-
+        FrontRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        BackLeft = new MotorEx(hwMap, "BL", Motor.GoBILDA.RPM_312);
+        BackLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         BackRight = new MotorEx(hwMap, "BR", Motor.GoBILDA.RPM_312);
+        BackRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 }

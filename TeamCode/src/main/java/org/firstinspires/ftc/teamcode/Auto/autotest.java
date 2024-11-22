@@ -92,10 +92,13 @@ public class autotest extends LinearOpMode {
                 .splineTo(new Vector2d(-12, -49.41), Math.toRadians(90.00))
                 .splineTo(new Vector2d(-0, -29.18), Math.toRadians(90.00));
         TrajectoryActionBuilder tab2 = tab1.fresh()
-                .splineToLinearHeading(new Pose2d(-33.85, -38.45, Math.toRadians(135.00)), Math.toRadians(180.00))
-                .splineToLinearHeading(new Pose2d(-42.90, -26.57, Math.toRadians(180.00)), Math.toRadians(180.00));
+                .splineToLinearHeading(new Pose2d(-33.85, -38.45,
+                        Math.toRadians(135.00)), Math.toRadians(180.00))
+                .splineToLinearHeading(new Pose2d(-42.90, -26.57,
+                        Math.toRadians(180.00)), Math.toRadians(180.00));
         TrajectoryActionBuilder tab3 = tab2.fresh()
-                .splineToLinearHeading(new Pose2d(-58.81, -57.90, Math.toRadians(225)), Math.toRadians(225));
+                .splineToLinearHeading(new Pose2d(-58.81, -57.90,
+                        Math.toRadians(225)), Math.toRadians(225));
 
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(claw.ClawClose());
@@ -103,6 +106,14 @@ public class autotest extends LinearOpMode {
 
 //        while (!isStopRequested() && !opModeIsActive()) {
 //        }
+
+//        TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(-16.92, -60.42, Math.toRadians(91.47)))
+//                .splineTo(new Vector2d(-12, -49.41), Math.toRadians(90.00))
+//                .splineTo(new Vector2d(-0, -29.18), Math.toRadians(90.00))
+//                .splineToLinearHeading(new Pose2d(-33.85, -38.45, Math.toRadians(135.00)), Math.toRadians(180.00))
+//                .splineToLinearHeading(new Pose2d(-42.90, -26.57, Math.toRadians(180.00)), Math.toRadians(180.00))
+//                .splineToLinearHeading(new Pose2d(-58.81, -57.90, Math.toRadians(225)), Math.toRadians(225))
+//                .build();
 
         waitForStart();
 

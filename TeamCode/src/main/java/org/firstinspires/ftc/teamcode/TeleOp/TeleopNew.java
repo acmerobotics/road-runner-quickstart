@@ -51,54 +51,37 @@ public class TeleopNew extends LinearOpMode {
                     gamepad1Ex.getRightX(),
                     true
             );
-            if (gamepad2Ex.getButton(GamepadKeys.Button.DPAD_DOWN)) { // Slides Down
+
+            if (gamepad2Ex.getLeftY() > 0.1){ // Slides UP
+                robot.SlideLeft.set(0.9);
+                robot.SlideRight.set(-0.9);
+            } else if (gamepad2Ex.getLeftY() < -0.1) { // Slides Down
                 robot.SlideLeft.set(-0.4);
                 robot.SlideRight.set(0.4);
-            } else if (gamepad2Ex.getButton(GamepadKeys.Button.DPAD_UP)) { // Slides UP
-                robot.SlideLeft.set(0.6);
-                robot.SlideRight.set(-0.6);
             } else { // Hold Slide Position
 //                robot.Slides.set(-0.009375);
                 robot.SlideLeft.set(0.15);
                 robot.SlideRight.set(-0.15);
             }
 
-            /*if (gamepad2Ex.getButton(GamepadKeys.Button.X)){
-                slides.resetEncoder();
-                slides.slidesToPosition(10);
-            }*/
-
-            if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) { // Extension In
-                robot.ExtensionLeft.set(1);
-                robot.ExtensionRight.set(-1);
-            } else if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) { // Extension Out
+            if (gamepad2Ex.getRightY() > 0.1){ // Extension Out
                 robot.ExtensionLeft.set(-1);
                 robot.ExtensionRight.set(1);
+            } else if (gamepad2Ex.getRightY() < -0.1) { // Extension In
+                robot.ExtensionLeft.set(1);
+                robot.ExtensionRight.set(-1);
             } else {
                 robot.ExtensionLeft.set(0);
                 robot.ExtensionRight.set(0);
             }
 
-//            if(gamepad2Ex.getButton(GamepadKeys.Button.A)){
-//                robot.SlideLeft.setRunMode(MotorEx.RunMode.PositionControl);
-//                robot.SlideRight.setRunMode(MotorEx.RunMode.PositionControl);
-//                robot.SlideLeft.stopAndResetEncoder();
-//                robot.SlideRight.stopAndResetEncoder();
-//                robot.SlideLeft.setTargetPosition(1000);
-//                robot.SlideRight.setTargetPosition(1000);
-//            }
-
-//            if (gamepad2Ex.getButton(GamepadKeys.Button.A)){
-//                robot.FourBarLeft.setPosition(0.5);
-//            }
-
-            if (gamepad2Ex.getButton(GamepadKeys.Button.B)){
-                robot.FourBarLeft.setPosition(0.85);
-            } else{
+            if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1){
                 robot.FourBarLeft.setPosition(0.5);
+            } else{
+                robot.FourBarLeft.setPosition(0.9);
             }
 
-            if (gamepad2Ex.getButton(GamepadKeys.Button.X)){
+            if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1){
                 robot.ClawGrip.setPosition(1);
             } else{
                 robot.ClawGrip.setPosition(0);
