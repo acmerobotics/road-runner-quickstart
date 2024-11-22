@@ -29,6 +29,10 @@
 
 package org.firstinspires.ftc.teamcode.hardware.tidev2;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -37,64 +41,127 @@ public class Claw {
 
 
     // Define class members
-    double torqueClose = 0.25;
-    double torqueOpen = 1;
+    double pivotLow = 0;
+    double pivotNormal = 0.5;
+    double pivotHigh = 1;
 
-    double speedClose = 0;
-    double speedOpen = 0.67;
+    double clawOpen = 0.3;
+    double clawClose = 1;
 
     ElapsedTime toggle_time = new ElapsedTime();
+    ElapsedTime pivot_delay = new ElapsedTime();
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
     boolean pos = false;
-    Servo torque;
-    Servo speed;
+    byte pivotpos = 2;
+    Servo pivot;
+    Servo claw;
     public Claw(OpMode opmode) {
         myOpMode = opmode;
     }
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        torque = myOpMode.hardwareMap.get(Servo.class, "torque");
-        speed = myOpMode.hardwareMap.get(Servo.class, "speed");
+        // turn torque to pivot in preparation for claw update
+        pivot = myOpMode.hardwareMap.get(Servo.class, "pivot");
+        claw = myOpMode.hardwareMap.get(Servo.class, "claw");
+        pivotpos = 2;
     }
 
     public void speedOpen(boolean open) {
         if (open) {
-            speed.setPosition(speedOpen);
+            claw.setPosition(clawClose);
         } else {
-            speed.setPosition(speedClose);
+            claw.setPosition(clawOpen);
         }
     }
 
-    public void torqueState(boolean open) {
-        if (open) {
-            torque.setPosition(torqueOpen);
+    public void setPivot(float pos) {
+        pivot.setPosition(pos);
+    }
+    public class AutonListen implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            autoListen();
+            return true;
+        }
+    }
+    public Action autonListen() {
+        return new AutonListen();
+    }
+
+
+    public class AutonNormalPivot implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setPivot(0);
+            return false;
+        }
+    }
+    public Action autonNormalPivot() {
+        return new AutonNormalPivot();
+    }
+
+    public void autoListen() {
+        if (pos) {
+            claw.setPosition(clawOpen);
         } else {
-            torque.setPosition(torqueClose);
+            claw.setPosition(clawClose);
+        }
+        switch (pivotpos) {
+            case 0:
+                pivot.setPosition(pivotNormal);
+                break;
+            case 1:
+                pivot.setPosition(pivotHigh);
+                break;
+            case 2:
+                pivot.setPosition(pivotLow);
+                break;
+
         }
     }
 
 
     public void listen() {
 
-        torque.setPosition(torqueClose);
 
         if (myOpMode.gamepad2.x && toggle_time.seconds() > 0.5) {
             toggle_time.reset();
             pos = !pos;
         }
 
-        if(pos) {
-//            torque.setPosition(torqueClose);
-            speed.setPosition(speedClose);
+        if (myOpMode.gamepad2.back && pivot_delay.seconds() > 0.2) {
+            pivot_delay.reset();
+            if (pivotpos != 2) {
+                pivotpos++;
+            } else {
+                pivotpos = 0;
+            }
+        }
+
+        if (pos) {
+            claw.setPosition(clawOpen);
         } else {
-//            torque.setPosition(torqueOpen);
-            speed.setPosition(speedOpen);
+            claw.setPosition(clawClose);
+        }
+        switch (pivotpos) {
+            case 0:
+                pivot.setPosition(pivotNormal);
+                break;
+            case 1:
+                pivot.setPosition(pivotHigh);
+                break;
+            case 2:
+                pivot.setPosition(pivotLow);
+                break;
+
         }
     }
 
     public void sendTelemetry() {
-        myOpMode.telemetry.addData("Claw Position: ",pos);
+        myOpMode.telemetry.addData("Claw Pivot Position: ", pivotpos);
+        myOpMode.telemetry.addData("Claw Position: ", pos);
     }
 }

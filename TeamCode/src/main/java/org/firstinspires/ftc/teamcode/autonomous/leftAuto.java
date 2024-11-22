@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
 @Config
-@Autonomous(name = "Left Auto", group = "Auto Fragments")
+@Autonomous(name = "Left Auto", group = "Autonomous")
 public class leftAuto extends LinearOpMode {
     Pose2d startPose;
     MecanumDrive drive;
@@ -59,6 +59,7 @@ public class leftAuto extends LinearOpMode {
                     //stop at (10, -33) and place the sample on the bar
                     .waitSeconds(0.5)
                     .afterTime(0, shoulder.autonDownHC())
+                    .waitSeconds(1)
                     .strafeTo(new Vector2d(-10,-40))
                     .waitSeconds(1)
                     .afterTime(0, shoulder.autonMidDown())
@@ -120,6 +121,7 @@ public class leftAuto extends LinearOpMode {
                     viper.autonListen(),
                     elbow.autonListen(),
                     intake.autonListen(),
+                    claw.autonListen(),
                     build.build()
 
 

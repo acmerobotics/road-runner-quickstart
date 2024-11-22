@@ -20,7 +20,6 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
-import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder.*;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
@@ -67,7 +66,7 @@ public class rightAuto extends LinearOpMode {
                     .waitSeconds(0.5)
                     .afterTime(0, shoulder.autonDownHC())
                     .waitSeconds(1)
-                    .strafeTo(new Vector2d(0, 34))
+                    .strafeTo(new Vector2d(0, -34))
                     .waitSeconds(2)
                     .strafeToLinearHeading(new Vector2d(0,-55), Math.toRadians(-90))
                     .strafeTo(new Vector2d(35,-44))
@@ -102,6 +101,7 @@ public class rightAuto extends LinearOpMode {
             Actions.runBlocking(new ParallelAction(
                     shoulder.autonListen(),
                     viper.autonListen(),
+                    claw.autonListen(),
                     build.build()
 
 
