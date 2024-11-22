@@ -42,16 +42,19 @@ public class SubOperatorFSM {
 
     private final int POS_SHOULDER_SUB = 350;
     private final int POS_SHOULDER_LOWER = 350;
+    private final int POS_SHOULDER_HANG = 900;
     private final int THRESH_SHOULDER = 150;
     private final int THRESH_VIPER = 50;
     private final int THRESH_ELBOW = 50;
 
     private final int POS_VIPER_SUB = 1000;
+    private final int POS_VIPER_HANG = 4000;
 
     private final int POS_ELBOW_EXTEND_HORIZ_SUB = 400;
     private final int POS_ELBOW_EXTEND_ADJUST_SUB = 400;
     private final int POS_ELBOW_EXTEND_MAX_SUB = 650;
     private final int POS_ELBOW_REST = 200;
+
 
 
     private Viper viper;
@@ -63,7 +66,8 @@ public class SubOperatorFSM {
     public enum SubState {
         ZERO_SUBSTATE,
         SHOULDER_RAISE_SUBSTATE, HORIZ_ELBOW_SUBSTATE, VIPER_EXTEND_SUBSTATE, MAX_ELBOW_SUBSTATE,
-        RETRACT_VIPER_SUBSTATE, RETRACT_ELBOW_SUBSTATE_S1, RETRACT_ELBOW_SUBSTATE_S2, CLEARANCE_ELBOW_SUBSTATE
+        RETRACT_VIPER_SUBSTATE, RETRACT_ELBOW_SUBSTATE_S1, RETRACT_ELBOW_SUBSTATE_S2, CLEARANCE_ELBOW_SUBSTATE,
+        BEGIN_HANG_SUBSTATE, PROCEED_HANG_SUBSTATE
     }
     private ElapsedTime subStateTimer = new ElapsedTime();
     private SubState subState;
@@ -107,6 +111,24 @@ public class SubOperatorFSM {
                         subState = SubState.RETRACT_ELBOW_SUBSTATE_S1;
                     }
                     break;
+                case BEGIN_HANG_SUBSTATE:
+                    if (gamepad.b) {
+                        elbow.setElbow(0);
+                        viper.setTarget(0);
+                        subStateTimer.reset();
+                        subState = SubState.RETRACT_VIPER_SUBSTATE;
+                    }
+                    break;
+                case PROCEED_HANG_SUBSTATE:
+                    if (gamepad.b) {
+                        elbow.setElbow(0);
+                        subStateTimer.reset();
+                        viper.setTarget(0);
+                        subState = SubState.RETRACT_VIPER_SUBSTATE;
+                    }
+
+                        break;
+
 
             }
         }
@@ -119,6 +141,11 @@ public class SubOperatorFSM {
                     shoulder.setTarget(POS_SHOULDER_SUB);
                     subState = SubState.SHOULDER_RAISE_SUBSTATE;
                     subStateTimer.reset();
+                }
+                if (gamepad.y) {
+                    subState = SubState.BEGIN_HANG_SUBSTATE;
+                    shoulder.setTarget(POS_SHOULDER_HANG);
+
                 }
 
                 break;
@@ -232,6 +259,38 @@ public class SubOperatorFSM {
                 }
 
                 break;
+
+
+                //Jonathan Hanging Stance changes
+            case BEGIN_HANG_SUBSTATE:
+
+
+
+
+                if (subStateTimer.seconds() > 3.0) {
+                    if (gamepad.a) {
+                        viper.setTarget(POS_VIPER_HANG);
+                        elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
+                        subStateTimer.reset();
+                        subState = SubState.PROCEED_HANG_SUBSTATE;
+                    }
+
+                }
+                break;
+
+            case PROCEED_HANG_SUBSTATE:
+                if (subStateTimer.seconds() > 1.0) {
+                    if (gamepad.y) {
+                        shoulder.setTarget(900);
+                        viper.setTarget(0);
+                        elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
+                    }
+                }
+
+
+
+                break;
+
         }
     }
 }
