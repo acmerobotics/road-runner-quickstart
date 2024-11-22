@@ -25,6 +25,7 @@ public class mainCodeV1 extends LinearOpMode {
     int ARMMIN;
     int ARMMAX;
     int targetedAngle; //for block search
+    double searchOrigin; //for block search
     int INCREMENT;
 
     private void hardwareMapping() {
@@ -126,22 +127,29 @@ public class mainCodeV1 extends LinearOpMode {
     }
 
     private void searchColor(double angle1,double angle2) {
-        if (colorDetection()=="YELLOW" || colorDetection()=="RED"){
-
+        if (colorDetection() == "Yellow" || colorDetection() == "Red"){
+            //stuff
         } else {
             double botHeading;
             botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            float direction = distance((float)botHeading, (float)targetedAngle);
+            if (targetedAngle != 0) {
 
-            armMovement(false,true,1);
-            rotateTo(targetedAngle);
-            if (Math.abs(direction)<4){
-                if (targetedAngle==60){
-                    targetedAngle = 30;
-                } else {
-                    targetedAngle = 60;
+                float direction = distance((float) botHeading, (float) targetedAngle);
+
+                armMovement(false, true, 25);
+                rotateTo(30*targetedAngle+searchOrigin, 0.2f);
+                if (Math.abs(direction) < 4) {
+                    if (targetedAngle == 1) {
+                        targetedAngle = -1;
+                    } else {
+                        targetedAngle = 1;
+                    }
+
                 }
-
+            }
+            else {
+                searchOrigin = botHeading;
+                targetedAngle = 1;
             }
         }
 
@@ -174,11 +182,11 @@ public class mainCodeV1 extends LinearOpMode {
         return color;
     }
 
-    private void rotateTo(double targetDegree) {
+    private void rotateTo(double targetDegree, float maxRotationSpeed) {
         double botHeading;
         botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         float direction = distance((float)botHeading, (float)targetDegree);
-        float power = Math.max(Math.min(0.5f, (float) (0.001 * Math.pow(direction, 2))), 0.225f); // 1 is clockwise, -1 is counterclock minimum is 0.1 (might need to be lower) and max is 0.5
+        float power = Math.max(Math.min(maxRotationSpeed, (float) (0.001 * Math.pow(direction, 2))), 0.225f); // 1 is clockwise, -1 is counterclock minimum is 0.1 (might need to be lower) and max is 0.5
         if (Math.abs(direction) < 1f) {     // if the angle is less than 1 then poweroff
             power = 0f;
         }
@@ -192,7 +200,8 @@ public class mainCodeV1 extends LinearOpMode {
         postStartSetUp();
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                rotateTo(90);
+
+                searchColor(30, botheading , botheading);
             } else {
                 chassisMovement(gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
             }
