@@ -120,45 +120,42 @@ public class mainCodeV1 extends LinearOpMode {
         telemetry.addData("Heading: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         telemetry.update();
     }
+
+    //rotation which way you need to turn, and how much you need to turn to get to target angle
     private static float distance(float alpha, float beta) {
         float phi = (beta - alpha) % 360; // Raw difference in range [-359, 359]
         float distance = phi > 180 ? phi - 360 : (phi < -180 ? phi + 360 : phi);
         return distance;
     }
 
-    private void searchColor(double angle1,double angle2) {
-        if (colorDetection() == "Yellow" || colorDetection() == "Red"){
-            //stuff
-        } else {
-            double botHeading;
-            botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            if (targetedAngle != 0) {
-
-                float direction = distance((float) botHeading, (float) targetedAngle);
-
-                armMovement(false, true, 25);
-                rotateTo(30*targetedAngle+searchOrigin, 0.2f);
-                if (Math.abs(direction) < 4) {
-                    if (targetedAngle == 1) {
-                        targetedAngle = -1;
-                    } else {
-                        targetedAngle = 1;
-                    }
-
+    private boolean searchColor(boolean stillSearching) {
+        if (colorDetection().equals("Yellow") || colorDetection().equals("Red")) {
+            //pick up stuff
+            stillSearching = false;
+            return stillSearching;
+        } else if (stillSearching) { //this runs each time the function is called and stillSearching is true
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            float direction = distance((float)botHeading, (float)targetedAngle);
+            armMovement(false, true, 25);
+            rotateTo((30*targetedAngle) + searchOrigin, 0.2f);
+            if (Math.abs(direction) < 4) {
+                if (targetedAngle == 1) {
+                    targetedAngle = -1;
+                } else {
+                    targetedAngle = 1;
                 }
             }
-            else {
-                searchOrigin = botHeading;
-                targetedAngle = 1;
-            }
+            return stillSearching;
+        } else { //only runs first time function is called, sets searchOrigin to original position
+            searchOrigin = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            stillSearching = true;
+            return stillSearching;
         }
-
         // extend arm if not already extended
         // extend to stage 1. Closest 2. Medium 3. Far
         // rotate x degrees
         // if target color is detected then finish
         // activate claw and pick up
-
     }
 
     private String colorDetection() {
@@ -200,8 +197,11 @@ public class mainCodeV1 extends LinearOpMode {
         postStartSetUp();
         while (opModeIsActive()) {
             if (gamepad1.a) {
-
-                searchColor(30, botheading , botheading);
+                boolean stillSearching = true;
+                while (stillSearching) {
+                    stillSearching = false;
+                    stillSearching = searchColor(stillSearching);
+                }
             } else {
                 chassisMovement(gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
             }
