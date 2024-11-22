@@ -58,7 +58,7 @@ public final class HighNoPark extends LinearOpMode {
                                     },
                                     new SleepAction(2),
                                     (telemetryPacket) -> { // Raise Lifts
-                                        robot.scoringSystem.outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_HIGH);
+                                        robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.SPECIMEN_HIGH);
                                         return false;
                                     },
                                     new SleepAction(2.5),
@@ -70,7 +70,7 @@ public final class HighNoPark extends LinearOpMode {
                                     },
                                     new SleepAction(2),
                                     (telemetryPacket) -> { // Score Specimen
-                                        robot.scoringSystem.outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_HIGH_DROP);
+                                        robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.SPECIMEN_HIGH_DROP);
                                         return false;
                                     },
                                     new SleepAction(1),
@@ -83,7 +83,7 @@ public final class HighNoPark extends LinearOpMode {
                                         long startTime = System.currentTimeMillis();
                                         long timeout = 6000; // Timeout in milliseconds
                                         robot.drivebase.setTargetPose(AutoConstants.HIGH_SPECIMEN_DROP_PREP);
-                                        robot.scoringSystem.outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.RESET);
+                                        robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.RESET);
                                         return false;
                                     },
                                     new SleepAction(2),

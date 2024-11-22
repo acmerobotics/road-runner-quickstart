@@ -8,13 +8,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
-import org.firstinspires.ftc.teamcode.settings.GamepadSettings;
 
 public class IntakeSystem extends Mechanism {
 
     Intake intake;
     SlidesBase intakeSlides;
-
 
     private final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
     private final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.REVERSE;
@@ -50,17 +48,10 @@ public class IntakeSystem extends Mechanism {
     private PivotState activePivotState = PivotState.PIVOT_DOWN;
 
 
-    enum AutoSlidesPosition {
+    enum SlidesPosition {
         RESET, SHORT, MEDIUM, LONG
     }
-    public AutoSlidesPosition activeAutoSlidesPosition = AutoSlidesPosition.RESET;
-
-    public enum SlidesControlState {
-        AUTONOMOUS, MANUAL
-    }
-    private SlidesControlState activeControlState = SlidesControlState.AUTONOMOUS;
-
-    public double manualPower = 0;
+    public SlidesPosition activeSlidesPosition = SlidesPosition.RESET;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -77,36 +68,21 @@ public class IntakeSystem extends Mechanism {
     }
 
     @Override
-    public void loop(AIMPad aimpad) {
-        pivotToPosition(pivotTargetPosition);
-        intake.loop(aimpad);
-        switch (activeControlState){
-            case AUTONOMOUS:
-                switch(activeAutoSlidesPosition) {
-                    case RESET:
-                        resetState();
-                        break;
-                    case SHORT:
-                        shortState();
-                        break;
-                    case MEDIUM:
-                        mediumState();
-                        break;
-                    case LONG:
-                        longState();
-                        break;
-                }
-                intakeSlides.update();
+    public void loop(AIMPad aimpad, AIMPad aimpad2) {
+        switch(activeSlidesPosition) {
+            case RESET:
+                resetState();
                 break;
-            case MANUAL:
-                if (Math.abs(manualPower) > GamepadSettings.GP1_STICK_DEADZONE && !intakeSlides.currentSpikeDetected()) {
-                    intakeSlides.setPower(manualPower);
-                } else {
-                    intakeSlides.holdPosition();
-                }
+            case SHORT:
+                shortState();
+                break;
+            case MEDIUM:
+                mediumState();
+                break;
+            case LONG:
+                longState();
                 break;
         }
-
         switch (activePivotState) {
             case PIVOT_DOWN:
                 pivotDownState();
@@ -117,27 +93,14 @@ public class IntakeSystem extends Mechanism {
             case PIVOT_CUSTOM:
                 break;
         }
+        pivotToPosition(pivotTargetPosition);
+        intake.loop(aimpad);
+        intakeSlides.loop(aimpad, aimpad2);
     }
 
-    public void setManualPower(double power) {
-        manualPower = power;
-    }
-  
-    /**
-     * Set the control state of the slides
-     * @param activeControlState control state (AUTONOUMOUS or MANUAL)
-     */
-    public void setActiveControlState(SlidesControlState activeControlState) {
-        this.activeControlState = activeControlState;
-    }
-
-    /**
-     * Automatically set the slides to a target position
-     * @param activeAutoSlidesPosition slides target state (RESET, SHORT, MEDIUM, LONG)
-     */
-    public void setAutoSlidesPosition(AutoSlidesPosition activeAutoSlidesPosition) {
-        setActiveControlState(SlidesControlState.AUTONOMOUS);
-        this.activeAutoSlidesPosition = activeAutoSlidesPosition;
+    public void setSlidesPosition(IntakeSystem.SlidesPosition activeSlidesPosition) {
+        intakeSlides.setActiveControlState(SlidesBase.SlidesControlState.AUTONOMOUS);
+        this.activeSlidesPosition = activeSlidesPosition;
     }
 
     /**
@@ -225,39 +188,40 @@ public class IntakeSystem extends Mechanism {
         } else if (aimpad.isRightStickMovementEngaged()) {
             setPivotStateCustom(aimpad.getRightStickY());
         } else if (aimpad.isDPadDownPressed()) {
-            setAutoSlidesPosition(AutoSlidesPosition.RESET);
+            setSlidesPosition(SlidesPosition.RESET);
         } else if (aimpad.isDPadLeftPressed()) {
-            setAutoSlidesPosition(AutoSlidesPosition.SHORT);
+            setSlidesPosition(SlidesPosition.SHORT);
         } else if (aimpad.isDPadRightPressed()) {
-            setAutoSlidesPosition(AutoSlidesPosition.MEDIUM);
+            setSlidesPosition(SlidesPosition.MEDIUM);
         } else if (aimpad.isDPadUpPressed()) {
-            setAutoSlidesPosition(AutoSlidesPosition.LONG);
+            setSlidesPosition(SlidesPosition.LONG);
         } else if (aimpad.isYPressed()) {
-            setActiveControlState(SlidesControlState.MANUAL);
+            intakeSlides.setActiveControlState(SlidesBase.SlidesControlState.MANUAL);
         }
+        intakeSlides.updateManualPower(aimpad.getLeftStickY());
         loop(aimpad);
         telemetry(telemetry);
     }
 
-    private static final IntakeSystem.AutoSlidesPosition[] SLIDE_POSITIONS = {
-            IntakeSystem.AutoSlidesPosition.RESET,
-            IntakeSystem.AutoSlidesPosition.SHORT,
-            IntakeSystem.AutoSlidesPosition.MEDIUM,
-            IntakeSystem.AutoSlidesPosition.LONG
+    private static final SlidesPosition[] SLIDE_POSITIONS = {
+            SlidesPosition.RESET,
+            SlidesPosition.SHORT,
+            SlidesPosition.MEDIUM,
+            SlidesPosition.LONG
     };
 
-    public IntakeSystem.AutoSlidesPosition getNextSlidePosition(IntakeSystem.AutoSlidesPosition currentPosition) {
-        if (currentPosition == IntakeSystem.AutoSlidesPosition.LONG) {
-            return IntakeSystem.AutoSlidesPosition.LONG;
+    public SlidesPosition getNextSlidePosition(SlidesPosition currentPosition) {
+        if (currentPosition == SlidesPosition.LONG) {
+            return SlidesPosition.LONG;
         }
         int currentIndex = java.util.Arrays.asList(SLIDE_POSITIONS).indexOf(currentPosition);
         int nextIndex = (currentIndex + 1) % SLIDE_POSITIONS.length;
         return SLIDE_POSITIONS[nextIndex];
     }
 
-    public IntakeSystem.AutoSlidesPosition getPreviousSlidePosition(IntakeSystem.AutoSlidesPosition currentPosition) {
-        if (currentPosition == IntakeSystem.AutoSlidesPosition.RESET) {
-            return IntakeSystem.AutoSlidesPosition.RESET;
+    public SlidesPosition getPreviousSlidePosition(SlidesPosition currentPosition) {
+        if (currentPosition == SlidesPosition.RESET) {
+            return SlidesPosition.RESET;
         }
         int currentIndex = java.util.Arrays.asList(SLIDE_POSITIONS).indexOf(currentPosition);
         int previousIndex = (currentIndex - 1 + SLIDE_POSITIONS.length) % SLIDE_POSITIONS.length;

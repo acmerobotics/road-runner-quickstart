@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.aimrobotics.aimlib.control.FeedforwardController;
 import com.aimrobotics.aimlib.control.LowPassFilter;
 import com.aimrobotics.aimlib.control.PIDController;
+import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.aimrobotics.aimlib.control.SimpleControlSystem;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -28,15 +27,21 @@ public class SlidesBase extends Mechanism {
     DcMotorSimple.Direction rightMotorDirection;
 
     double activeTargetPosition = 0;
+    double manualPower = 0;
 
     PIDController pidController;
     FeedforwardController feedforwardController;
     LowPassFilter lowPassFilter;
     SimpleControlSystem controlSystem;
 
-    public static final double PROXIMITY_THRESHOLD = 30
-            ;
+    public static final double PROXIMITY_THRESHOLD = 30;
     private static final double CURRENT_THRESHOLD = 5000;
+    private static final double MINIMUM_POWER = 0.03;
+
+    public enum SlidesControlState {
+        AUTONOMOUS, MANUAL
+    }
+    private SlidesControlState activeControlState = SlidesControlState.AUTONOMOUS;
 
     /**
      * Constructor for the slides base
@@ -83,6 +88,35 @@ public class SlidesBase extends Mechanism {
         rightSlide.setDirection(rightMotorDirection);
         activeEncoderMotor = leftSlide;
         lastActiveEncoderPosition = 0;
+    }
+
+    @Override
+    public void loop(AIMPad aimpad, AIMPad aimpad2) {
+        switch (activeControlState){
+            case AUTONOMOUS:
+                update();
+                break;
+            case MANUAL:
+                manualMode();
+                break;
+        }
+    }
+
+    public void setActiveControlState(SlidesControlState activeControlState) {
+        this.activeControlState = activeControlState;
+    }
+
+
+    private void manualMode() {
+        if (Math.abs(manualPower) > MINIMUM_POWER) {
+            setPower(manualPower);
+        } else {
+            holdPosition();
+        }
+    }
+
+    public void updateManualPower(double power) {
+        manualPower = power;
     }
 
     /**
