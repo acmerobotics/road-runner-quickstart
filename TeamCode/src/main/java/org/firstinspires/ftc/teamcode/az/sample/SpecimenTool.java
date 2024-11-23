@@ -1,13 +1,20 @@
 package org.firstinspires.ftc.teamcode.az.sample;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+@Autonomous
 public class SpecimenTool extends LinearOpMode {
     private LinearOpMode opMode;
     Arm arm;
     Gripper gripper;
     Slides slides;
 
+    public SpecimenTool(){
+        super();
+    }
     public SpecimenTool(LinearOpMode opMode) {
         this.opMode = opMode;
         init(opMode);
@@ -19,19 +26,32 @@ public class SpecimenTool extends LinearOpMode {
         slides = new Slides(opMode);
     }
 
-    public void sampleDrop() {
+    public void eject() {
         gripper.sampleDrop();
         //sleep(500);
     }
 
+    public void dropHighBasket() {
+        arm.setArmPos(Arm.ArmPos.BASKET_DROP);
+        sleep(1200);
+        slides.moveToPosition(Slides.SlidesPos.BASKET_DROP);
+        gripper.dropPos();
+    }
 
-    public void securePos() {
-        //grab pixel
-        gripper.collect();
-        sleep(700);
-        gripper.sampleDrop();
-        sleep(100);
+    public void levelOneAscent() {
+        arm.setArmPos(Arm.ArmPos.LEVEL_ONE_ASCENT_PART_ONE);
+        sleep(1200);
+        slides.moveToPosition(Slides.SlidesPos.LEVEL_ONE_ASCENT);
 
+        sleep(1000);
+        arm.setArmPos(Arm.ArmPos.LEVEL_ONE_ASCENT);
+    }
+
+
+    public void printPos(Telemetry telemetry){
+        telemetry.addData("Slide Pos", slides.printCurrentPos());
+        telemetry.addData("Arm Pos:", arm.getCurrentPos());
+        telemetry.update();
     }
 
     public void gripper_drop() {
@@ -44,11 +64,30 @@ public class SpecimenTool extends LinearOpMode {
 
     public void collect() {
         slides.collect();
-        sleep(500);
+//        sleep(500);
         gripper.collect();
-        sleep(500);
+//        sleep(500);
         arm.collect();
-        sleep(1000);
+//        sleep(1000);
+    }
+
+    public void autoCollect()    {
+        slides.collect();
+//        sleep(500);
+        gripper.autoCollect();
+//        sleep(500);
+        arm.autoCollect();
+//        gripper.moveAround();
+
+//        sleep(1000);
+    }
+ public void collectVertical() {
+        slides.collect();
+//        sleep(500);
+        gripper.collectVertical();
+//        sleep(500);
+        arm.collect();
+//        sleep(1000);
     }
 
     public void specimenHang() {
@@ -61,10 +100,14 @@ public class SpecimenTool extends LinearOpMode {
 
         arm.specimenDrop();
         sleep(500);
-
-
-
-
+    }
+ public void specimenLowBasket() {
+        arm.specimenHang();
+        sleep(1000);
+        slides.specimenHang();
+        sleep(1000);
+        gripper.dropPos();
+        sleep(500);
     }
 
 
@@ -91,33 +134,27 @@ public class SpecimenTool extends LinearOpMode {
         slides.reset();
         sleep(1000);
         arm.reset();
-        sleep(500);
+        sleep(1000);
         gripper.reset();
         sleep(500);
     }
 
-    public void halfwayReset() {
-        slides.halfwayReset();
-        sleep(500);
-        gripper.reset();
-        sleep(500);
-        slides.reset();
+    public void resetAndWait() {
+        slides.resetAndWait();
         sleep(1000);
         arm.reset();
-        sleep(500);
+//        sleep(1000);
+        gripper.reset();
+//        sleep(500);
     }
 
     public void highReset () {
         slides.move();
         gripper.move();
-        sleep(500);
+        sleep(1000);
         arm.move();
         sleep(1000);
 
-    }
-
-    public void arm_drop() {
-       arm.drop();
     }
 
     //extend by a factor between 0 and 1
@@ -127,7 +164,27 @@ public class SpecimenTool extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        this.opMode = this;
+        init(opMode);
+        gripper.sampleDrop();
+        waitForStart();
 
+        while (opModeIsActive()){
+            slides.moveToPosition(Slides.SlidesPos.BASKET_DROP);
+            sleep(5000);
+            slides.moveToPosition(Slides.SlidesPos.COLLECT);
+            sleep(5000);
+        }
     }
 
+    public void level2Hang() {
+        arm.setArmPos(Arm.ArmPos.LEVEL_TWO_HANG);
+        sleep(500);
+        slides.moveToPositionLowPower(Slides.SlidesPos.LEVEL_2_HANG);
+        sleep(1500);
+        slides.moveToPosition(Slides.SlidesPos.RESET);
+        sleep(1000);
+        arm.setArmPos(Arm.ArmPos.RESET);
+        sleep(1000);
+    }
 }

@@ -5,9 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 @Autonomous
-public class InitArmPosition extends LinearOpMode{
+public class DropTest extends LinearOpMode{
 
-    Arm arm = null;
+    Slides slides = null;
+    Gripper gripper = null;
     LinearOpMode opMode;
 
 
@@ -18,13 +19,18 @@ public class InitArmPosition extends LinearOpMode{
         telemetry.addLine("Init");
         telemetry.update();
 
-        Arm arm = new Arm(this);
+        Slides slides = new Slides(this);
+        Gripper gripper = new Gripper(this);
 
-        arm.setup();
         waitForStart();
 
-        arm.moveToPosition(1160); //changed for 435 rpm motor to 312rpm
-        sleep(6000);
+        slides.moveToPosition(Slides.SlidesPos.BASKET_DROP);
+        gripper.reset();
+        sleep(10000);
+
+        slides.reset();
+        gripper.reset();
+        sleep(4000);
 
     }
 }

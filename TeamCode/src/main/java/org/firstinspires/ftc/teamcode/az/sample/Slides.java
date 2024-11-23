@@ -1,17 +1,20 @@
 package org.firstinspires.ftc.teamcode.az.sample;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@TeleOp
+//@TeleOp
+@Autonomous
 public class Slides extends LinearOpMode {
 
     DcMotorEx slideMotor1;
     DcMotorEx slideMotor2;
     LinearOpMode opMode;
     public static final double POWER = 1;
+    public static final double EXTEND_POWER = 0.3;
+
     public static final int INCREMENT = 20;
 
     public Slides() {
@@ -24,30 +27,36 @@ public class Slides extends LinearOpMode {
     }
 
     public void move() {
-        AZUtil.setMotorTargetPosition(slideMotor1, SlidesPos.MOVE.value, POWER);
+        setPos(SlidesPos.MOVE.value);
     }
     public void collect() {
-        AZUtil.setMotorTargetPosition(slideMotor1, SlidesPos.COLLECT.value, POWER);
+        setPos(SlidesPos.COLLECT.value);
+
     }
 
     public void specimenHang() {
-        AZUtil.setMotorTargetPosition(slideMotor1, SlidesPos.SPECIMEN_HANG.value, POWER);
+        setPos(SlidesPos.SPECIMEN_HANG.value);
     }
-    public void specimenDrop() {
-        AZUtil.setMotorTargetPosition(slideMotor1, SlidesPos.SPECIMEN_DROP.value, POWER);
+
+    public String printCurrentPos() {
+       return  new StringBuffer().append("Slide 1: ")
+                .append(slideMotor1.getCurrentPosition())
+                .append(",\n Slide 2:")
+                .append(slideMotor2.getCurrentPosition()).toString();
     }
+
 
     public enum SlidesPos {
 
         LEVEL_1_HANG(700),
-        LEVEL_2_HANG(200),
+        LEVEL_2_HANG(950),
         COLLECT(1000),
 
-        MOVE(600),
+        MOVE(1000),
         SPECIMEN_HANG(2150),
-        SPECIMEN_DROP(1800),
+        LEVEL_ONE_ASCENT(1800),
         LOWER_BASKET_DROP(1500),
-        BASKET_DROP(3800),
+        BASKET_DROP(3600),
         HALFWAYRESET(700),
         RESET(0);
 
@@ -68,10 +77,10 @@ public class Slides extends LinearOpMode {
         slideMotor2 = opMode.hardwareMap.get(DcMotorEx.class, "slides2");
         slideMotor1.setDirection(DcMotor.Direction.FORWARD);
         slideMotor2.setDirection(DcMotor.Direction.REVERSE);
-        setMode();
+        resetSlidePos();
     }
 
-    private void setMode() {
+    private void resetSlidePos() {
         slideMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
@@ -89,6 +98,16 @@ public class Slides extends LinearOpMode {
         AZUtil.setBothMotorTargetPosition(slideMotor1, slideMotor2, pos, POWER);
     }
 
+    private void setPosLowPower(int pos){
+        AZUtil.setBothMotorTargetPosition(slideMotor1, slideMotor2, pos, EXTEND_POWER);
+    }
+
+    private void setPosAndWait(int pos){
+        setPos(pos);
+        AZUtil.waitUntilMotorAtPos(this, slideMotor1, pos);
+        AZUtil.waitUntilMotorAtPos(this, slideMotor2, pos);
+    }
+
     public void extend(float factor) {
         int position = Math.round(SlidesPos.COLLECT.value + factor*1200);
         setPos(position);
@@ -96,6 +115,11 @@ public class Slides extends LinearOpMode {
 
     public void reset() {
         setPos(SlidesPos.RESET.value);
+        resetSlidePos();
+    }
+
+    public void resetAndWait() {
+        setPosAndWait(SlidesPos.RESET.value);
     }
 
     public void halfwayReset() {
@@ -105,6 +129,9 @@ public class Slides extends LinearOpMode {
 
     public void moveToPosition(SlidesPos slidesPos){
         setPos(slidesPos.value);
+    }
+    public void moveToPositionLowPower(SlidesPos slidesPos){
+        setPosLowPower(slidesPos.value);
     }
 
     public int getCurrentPos(){
@@ -130,7 +157,7 @@ public class Slides extends LinearOpMode {
             if (gamepad1.dpad_up){
                 moveUpSlider();
             }
-            else {
+            else if( gamepad1.dpad_down){
                 moveDownSlider();
             }
         }
@@ -138,11 +165,16 @@ public class Slides extends LinearOpMode {
 
 
     public void moveDownSlider() {
-        setPos(0);
+
+        if( getCurrentPos() > 800) {
+            setPos(getCurrentPos() - 300);
+        }
     }
 
     public void moveUpSlider() {
-        setPos(1000);
+        if( getCurrentPos() < 3800) {
+            setPos(getCurrentPos() + 300);
+        }
     }
 
 
@@ -150,19 +182,16 @@ public class Slides extends LinearOpMode {
 
         telemetry.addLine("Init");
         telemetry.update();
+        setup();
 
         waitForStart();
 
         while (opModeIsActive()) {
-
-            setup();
-            sleep(2000);
-
-            setPos(-40);
-            sleep(10000);
+            setPos(SlidesPos.BASKET_DROP.value);
+            sleep(5000);
 
             setPos(0);
-            sleep(10000);
+            sleep(5000);
         }
     }
 }
