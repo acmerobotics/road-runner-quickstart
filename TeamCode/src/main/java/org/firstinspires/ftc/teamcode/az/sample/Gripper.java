@@ -24,6 +24,21 @@ public class Gripper extends LinearOpMode {
 
 
 
+    public enum RollerPower {
+        COLLECT(-1),
+
+        DROP(1);
+        private double value;
+
+        RollerPower(double val) {
+            this.value = val;
+        }
+
+        public double getValue() {
+            return this.value;
+        }
+    }
+
     public enum GripperPos {
 
         WRIST_SAMPLE_DROP(0.5),
@@ -36,7 +51,9 @@ public class Gripper extends LinearOpMode {
 
         WRISTCOLLECT(0.55),
 
-        ROLLERDROP(1),
+        AUTO_WRISTCOLLECT(.75),
+
+        ROLLERDROP(0.55),
         ROLLERCOLLECT(-1);
 
 
@@ -67,19 +84,46 @@ public class Gripper extends LinearOpMode {
 
 
     public void sampleDrop() {
-        roller.setPower(GripperPos.ROLLERDROP.value);
+        roller.setPower(RollerPower.DROP.value);
         //sleep(200);
         //wrist.setPosition(GripperPos.WRIST_SAMPLE_DROP.value);
     }
 
+    public void moveAround() {
+        wrist.setPosition(GripperPos.WRISTCOLLECT.value );
+        sleep(1000);
+        wrist.setPosition(GripperPos.WRISTCOLLECT.value - 0.4);
+        sleep(500);
+        wrist.setPosition(GripperPos.WRISTCOLLECT.value + 0.4);
+        sleep(500);
+        wrist.setPosition(GripperPos.WRISTCOLLECT.value );
+        sleep(500);
+    }
+
+
+    public void dropPos(){
+        roller.setPower(0);
+        wrist.setPosition(GripperPos.ROLLERDROP.value);
+    }
     public void move() {
         roller.setPower(0);
         wrist.setPosition(GripperPos.WRIST_MOVE.value);
     }
 
     public void collect() {
-        roller.setPower(GripperPos.ROLLERCOLLECT.value);
+        roller.setPower(RollerPower.COLLECT.value);
         wrist.setPosition(GripperPos.WRISTCOLLECT.value);
+    }
+
+    public void autoCollect() {
+        roller.setPower(RollerPower.COLLECT.value);
+        wrist.setPosition(GripperPos.AUTO_WRISTCOLLECT.value);
+    }
+
+
+    public void collectVertical() {
+        roller.setPower(RollerPower.COLLECT.value);
+        wrist.setPosition(GripperPos.WRISTRESET.value);
     }
 
     public void reset() {
@@ -87,12 +131,8 @@ public class Gripper extends LinearOpMode {
         roller.setPower(0);
     }
 
-    public void halfwayReset() {
-        wrist.setPosition(GripperPos.WRISTHALFWAYRESET.value);
-        roller.setPower(0);
-    }
-
     public void specimenHang(){
+
         roller.setPower(0);
         wrist.setPosition(GripperPos.WRIST_SPECIMEN_HANG.value);
     }

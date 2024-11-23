@@ -17,8 +17,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Config
-@Autonomous
-public class BlueLeftAuto extends LinearOpMode {
+@Autonomous ( preselectTeleOp = "IntoTheDeepTeleOp")
+public class BasicRightAuto extends LinearOpMode {
     ElapsedTime runtime = new ElapsedTime();
 
     SpecimenTool specimenTool = null;
@@ -34,21 +34,15 @@ public class BlueLeftAuto extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
 
-            AZUtil.runInParallel(new Runnable() {
-                @Override
-                public void run() {
 
                     specimenTool.specimenHang();
-                    sleep(2000);
+                    sleep(1000);
 
 //                    specimenTool.sampleDrop();
 //                    sleep(200);
 
-                    specimenTool.reset();
-                    sleep(1000);
 
-                }
-            });
+
             return false;
         }
     }
@@ -82,14 +76,27 @@ public class BlueLeftAuto extends LinearOpMode {
 
         Action specimenDropPos = drive.actionBuilder(beginPose)
                 .splineToConstantHeading(new Vector2d(21, 8), Math.toRadians(0))
-//                .lineToYConstantHeading(8)
                 .build();
+
+        Action park = drive.actionBuilder(drive.pose)
+                .splineToConstantHeading(new Vector2d(7, -36), Math.toRadians(0))
+                .build();
+
 
 
         Actions.runBlocking(
                 new SequentialAction(
+                        specimenDropPos,
                         specimenHang(),
-                        specimenDropPos
+                        new Action() {
+                            @Override
+                            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                                specimenTool.resetAndWait();
+                                sleep(1000);
+                                return false;
+                            }
+                        },
+                        park
                 )
         );
 //

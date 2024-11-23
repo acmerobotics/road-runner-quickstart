@@ -27,16 +27,25 @@ public class Arm extends LinearOpMode {
         AZUtil.setMotorTargetPosition(arm, ArmPos.MOVE.value, POWER);
     }
 
+    public void autoCollect() {
+        AZUtil.setMotorTargetPosition(arm, ArmPos.AUTO_COLLECT.value, POWER);
+    }
+
     public enum ArmPos {
-        DROP(530),
+        //multiple 1.39 times when we replace 435 motor with 312 motor
+        DROP (836), //(530),
         RESET(0),
-        COLLECT(-785),
-        SPECIMEN_HANG(850),
+        COLLECT(-1100),  //(-785),
+        AUTO_COLLECT(-1070),
+        SPECIMEN_HANG(1073), //(700),
+        LEVEL_ONE_ASCENT_PART_ONE(823), //(520),
+        LEVEL_ONE_ASCENT(934), //(612), //(440),
+        SPECIMEN_DROP(934), //(600),
 
-        SPECIMEN_DROP(700),
+        LEVEL_TWO_HANG(2500),
 
-        MOVE(-450),
-        BASKET_DROP(1415);
+        MOVE(-600), //(-450),
+        BASKET_DROP(2000); //(1415);
 
 
 
