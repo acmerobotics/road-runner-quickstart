@@ -212,6 +212,13 @@ public class TeleOpModular extends LinearOpMode {
             else if (gamepad2.left_bumper){
                 liftPosition -= 2800 * cycletime;
             }
+            
+            if (gamepad2.a) {
+                wrist.foldOut();
+            } else if (gamepad2.b) {
+                wrist.foldIn();
+            }
+
             /*here we check to see if the lift is trying to go higher than the maximum extension.
              *if it is, we set the variable to the max.
              */

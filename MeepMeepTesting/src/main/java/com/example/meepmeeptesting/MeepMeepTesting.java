@@ -8,7 +8,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(1000);
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -24,10 +24,11 @@ public class MeepMeepTesting {
 //                .strafeToLinearHeading(new Vector2d(-26, -10), Math.toRadians(0))
 //                .build());
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-36,-60, Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(-36, -48), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(-53, -53), Math.toRadians(180+45))
-                .strafeToLinearHeading(new Vector2d(-36, -12), Math.toRadians(180))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38,-60, Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(-38, -56), Math.toRadians(180))
+              .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(180+45))
+                .strafeToLinearHeading(new Vector2d(-36, -24), Math.toRadians(180))
+
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)

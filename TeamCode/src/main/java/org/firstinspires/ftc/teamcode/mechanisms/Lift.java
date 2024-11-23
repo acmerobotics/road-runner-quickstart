@@ -46,6 +46,7 @@ public class Lift {
             }
             double pos = motor.getCurrentPosition();
             packet.put("LiftUpPos", pos);
+
             if (pos < (int)(LIFT_SCORING_IN_HIGH_BASKET*0.98)) {
                 motor.setTargetPosition((int) (LIFT_SCORING_IN_HIGH_BASKET));
                 motor.setVelocity(1300);

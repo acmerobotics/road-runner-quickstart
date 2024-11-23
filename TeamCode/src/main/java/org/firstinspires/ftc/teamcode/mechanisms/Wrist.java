@@ -9,7 +9,7 @@ public class Wrist {
     public Servo wrist       = null; //the wrist servo
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public static double WRIST_FOLDED_IN   = 0.5;
-    public static double WRIST_FOLDED_OUT  = 0.5;
+    public static double WRIST_FOLDED_OUT  = 1.0;
 
     public Wrist(HardwareMap hardwareMap) {
         wrist = hardwareMap.get(Servo.class, "wrist");

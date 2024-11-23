@@ -56,7 +56,7 @@ public class Intake {
             duration = Actions.now() - beginTs;
             packet.put("duration", duration);
             packet.put("power ", intake.getPower());
-            if (duration < 0.5){
+            if (duration <1){
                 intake.setPower(INTAKE_DEPOSIT);
                 return true;
             } else {
