@@ -36,7 +36,7 @@ public class TeleopNew extends LinearOpMode {
         // Init Claw Closed, Four Bar Completely Up, and Rotation at straight
         robot.ClawGrip.setPosition(0);
         robot.FourBarLeft.setPosition(1);
-        robot.ClawRotation.setPosition(0.5);
+        robot.ClawRotation.setPosition(1);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class TeleopNew extends LinearOpMode {
             );
 
             if (gamepad2Ex.getLeftY() > 0.1){ // Slides UP
-                robot.SlideLeft.set(0.9);
-                robot.SlideRight.set(-0.9);
+                robot.SlideLeft.set(1);
+                robot.SlideRight.set(-1);
             } else if (gamepad2Ex.getLeftY() < -0.1) { // Slides Down
                 robot.SlideLeft.set(-0.4);
                 robot.SlideRight.set(0.4);
@@ -65,14 +65,14 @@ public class TeleopNew extends LinearOpMode {
             }
 
             if (gamepad2Ex.getRightY() > 0.1){ // Extension Out
-                robot.ExtensionLeft.set(-1);
                 robot.ExtensionRight.set(1);
+                robot.ExtensionLeft.set(-1);
             } else if (gamepad2Ex.getRightY() < -0.1) { // Extension In
-                robot.ExtensionLeft.set(1);
                 robot.ExtensionRight.set(-1);
+                robot.ExtensionLeft.set(1);
             } else {
-                robot.ExtensionLeft.set(0);
                 robot.ExtensionRight.set(0);
+                robot.ExtensionLeft.set(0);
             }
 
             if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1){

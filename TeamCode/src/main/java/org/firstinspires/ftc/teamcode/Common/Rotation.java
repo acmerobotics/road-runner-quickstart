@@ -7,43 +7,41 @@ import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Claw {
-    SimpleServo Claw;
+public class Rotation {
+    SimpleServo rotation;
 
-    public Claw(SimpleServo c, SimpleServo c2){
-        Claw = c;
+    public Rotation(HardwareMap hardwareMap){
+
+        rotation = new SimpleServo(hardwareMap, "CR", 0.0, 1.0);
     }
 
-    public Claw(HardwareMap hardwareMap){
-        Claw = new SimpleServo(hardwareMap, "CL", 0.0, 1.0);
+    public double getFourBarPosition() {
+        return rotation.getPosition();
     }
 
-    public double getClawPosition() {
-        return Claw.getPosition();
-    }
-    public void ClawOpenTele(){
-        Claw.setPosition(1);
+    public void RotationHorizontalTele(){
+        rotation.setPosition(1);
     }
 
-    public void ClawCloseTele(){
-        Claw.setPosition(0);
+    public void RotationVerticalTele(){
+        rotation.setPosition(0.5);
     }
 
-    public Action ClawClose() {
+    public Action RotationHorizontal() {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                Claw.setPosition(0);
+                rotation.setPosition(1);
                 return false;
             }
         };
     }
 
-    public Action ClawOpen() {
+    public Action RotationVertical() {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                Claw.setPosition(1);
+                rotation.setPosition(0.5);
                 return false;
             }
         };

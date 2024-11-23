@@ -143,52 +143,15 @@ public class SensorColor extends LinearOpMode {
       ((SwitchableLight)colorSensor).enableLight(true);
     }
 
+    colorSensor.setGain(gain);
+
     // Wait for the start button to be pressed.
     waitForStart();
 
     // Loop until we are asked to stop
     while (opModeIsActive()) {
-      // Explain basic gain information via telemetry
-      telemetry.addLine("Hold the A button on gamepad 1 to increase gain, or B to decrease it.\n");
-      telemetry.addLine("Higher gain values mean that the sensor will report larger numbers for Red, Green, and Blue, and Value\n");
-
-      // Update the gain value if either of the A or B gamepad buttons is being held
-      if (gamepad1.a) {
-        // Only increase the gain by a small amount, since this loop will occur multiple times per second.
-        gain += 0.005;
-      } else if (gamepad1.b && gain > 1) { // A gain of less than 1 will make the values smaller, which is not helpful.
-        gain -= 0.005;
-      }
-
-      // Show the gain value via telemetry
-      telemetry.addData("Gain", gain);
-
-      // Tell the sensor our desired gain value (normally you would do this during initialization,
-      // not during the loop)
-      colorSensor.setGain(gain);
-
-      // Check the status of the X button on the gamepad
-      xButtonCurrentlyPressed = gamepad1.x;
-
-      // If the button state is different than what it was, then act
-      if (xButtonCurrentlyPressed != xButtonPreviouslyPressed) {
-        // If the button is (now) down, then toggle the light
-        if (xButtonCurrentlyPressed) {
-          if (colorSensor instanceof SwitchableLight) {
-            SwitchableLight light = (SwitchableLight)colorSensor;
-            light.enableLight(!light.isLightOn());
-          }
-        }
-      }
-      xButtonPreviouslyPressed = xButtonCurrentlyPressed;
-
       // Get the normalized colors from the sensor
       NormalizedRGBA colors = colorSensor.getNormalizedColors();
-
-      /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
-       * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
-       * HSV (hue, saturation and value) values. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
-       * for an explanation of HSV color. */
 
       // Update the hsvValues array by passing it to Color.colorToHSV()
       Color.colorToHSV(colors.toColor(), hsvValues);
@@ -202,6 +165,14 @@ public class SensorColor extends LinearOpMode {
               .addData("Saturation", "%.3f", hsvValues[1])
               .addData("Value", "%.3f", hsvValues[2]);
       telemetry.addData("Alpha", "%.3f", colors.alpha);
+
+      if (colors.red > 200 & colors.green < 50 & colors.blue < 50){
+        telemetry.addLine("Red Sample");
+      } else if (colors.blue > 200 & colors.green < 50 & colors.red < 50){
+        telemetry.addLine("Blue Sample");
+      } else {
+        telemetry.addLine("Yellow Sample");
+      }
 
       /* If this color sensor also has a distance sensor, display the measured distance.
        * Note that the reported distance is only useful at very close range, and is impacted by

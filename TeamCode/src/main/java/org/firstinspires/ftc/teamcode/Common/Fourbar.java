@@ -7,43 +7,41 @@ import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Claw {
-    SimpleServo Claw;
+public class Fourbar {
+    SimpleServo four_bar;
 
-    public Claw(SimpleServo c, SimpleServo c2){
-        Claw = c;
+    public Fourbar(HardwareMap hardwareMap){
+
+        four_bar = new SimpleServo(hardwareMap, "VFBL", 0.0, 1.0);
     }
 
-    public Claw(HardwareMap hardwareMap){
-        Claw = new SimpleServo(hardwareMap, "CL", 0.0, 1.0);
+    public double getFourBarPosition() {
+        return four_bar.getPosition();
     }
 
-    public double getClawPosition() {
-        return Claw.getPosition();
-    }
-    public void ClawOpenTele(){
-        Claw.setPosition(1);
+    public void FourBarUpTele(){
+        four_bar.setPosition(0.9);
     }
 
-    public void ClawCloseTele(){
-        Claw.setPosition(0);
+    public void FourBarDownTele(){
+        four_bar.setPosition(0.5);
     }
 
-    public Action ClawClose() {
+    public Action FourBarUp() {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                Claw.setPosition(0);
+                four_bar.setPosition(0.9);
                 return false;
             }
         };
     }
 
-    public Action ClawOpen() {
+    public Action FourBarDown() {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                Claw.setPosition(1);
+                four_bar.setPosition(0.5);
                 return false;
             }
         };
