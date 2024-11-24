@@ -50,7 +50,7 @@ public class LeftPark extends LinearOpMode {
                 new SequentialAction(
                         drop,
                         claw.ClawOpen(),
-                        new SleepAction(1),
+                        new SleepAction(10),
                         park
                 )
         );
