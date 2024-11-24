@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
+import com.noahbres.meepmeep.roadrunner.DriveShim;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTesting {
@@ -23,8 +24,8 @@ public class MeepMeepTesting {
 //                .strafeToLinearHeading(new Vector2d(-36, -10), Math.toRadians(90))
 //                .strafeToLinearHeading(new Vector2d(-26, -10), Math.toRadians(0))
 //                .build());
-
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38,-60, Math.toRadians(180)))
+        DriveShim drive = myBot.getDrive();
+        myBot.runAction(drive.actionBuilder(new Pose2d(-38,-60, Math.toRadians(180)))
                 .strafeToLinearHeading(new Vector2d(-38, -56), Math.toRadians(180))
                 .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(180+45))
                 .strafeToLinearHeading(new Vector2d(-36, -48), Math.toRadians(180))
