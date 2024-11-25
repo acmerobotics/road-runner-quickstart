@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -22,6 +24,14 @@ public class Wrist {
 
     public void foldOut() {
         wrist.setPosition(WRIST_FOLDED_OUT);
+    }
+
+    public Action wristFoldInAction() {
+        return new InstantAction(() -> wrist.setPosition(WRIST_FOLDED_IN));
+    }
+
+    public Action wristFoldOutAction() {
+        return new InstantAction(() -> wrist.setPosition(WRIST_FOLDED_OUT));
     }
 
 }

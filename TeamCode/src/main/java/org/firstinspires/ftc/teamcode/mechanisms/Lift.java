@@ -30,71 +30,37 @@ public class Lift {
         liftPosition = LIFT_COLLAPSED;
     }
 
-    public class LiftUp implements Action {
-        // checks if the lift motor has been powered on
-        private boolean initialized = false;
-
+    // auto
+    public class LiftAction implements Action {
+        private final int _targetPos;
+        // Constructor
+        public LiftAction(int targetPos){
+            _targetPos = targetPos;
+        }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            double duration;
-            if (!initialized){
-                double beginTs = Actions.now();
-                initialized = true;
-                motor.setTargetPosition((int) (LIFT_SCORING_IN_HIGH_BASKET));
-                motor.setVelocity(1300);
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            double pos = motor.getCurrentPosition();
-            packet.put("LiftUpPos", pos);
 
-            if (pos < (int)(LIFT_SCORING_IN_HIGH_BASKET*0.98)) {
-                motor.setTargetPosition((int) (LIFT_SCORING_IN_HIGH_BASKET));
-                motor.setVelocity(1300);
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                return true;
-            } else {
-                motor.setPower(0);
-                return false;
-            }
+            motor.setTargetPosition(_targetPos);
+            motor.setVelocity(1300);
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            int currentPosition = motor.getCurrentPosition();
+            int error = Math.abs(_targetPos - currentPosition);
+            packet.put("TargetPos", _targetPos);
+            packet.put("LiftPos", currentPosition);
+            packet.put("Error", error);
+            // keep running until we're close enough
+            return error > 5; // ticks
         }
     }
 
     public Action liftUpAction() {
-        return new LiftUp();
+        return new LiftAction((int) (LIFT_SCORING_IN_HIGH_BASKET));
     }
-
-    public class LiftDown implements Action {
-        // checks if the lift motor has been powered on
-        private boolean initialized = false;
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            double duration;
-            if (!initialized){
-                double beginTs = Actions.now();
-                initialized = true;
-                motor.setTargetPosition((int) (LIFT_COLLAPSED));
-                motor.setVelocity(1300);
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            double pos = motor.getCurrentPosition();
-            packet.put("LiftPos", pos);
-            if (pos > (int)(20)) {
-                motor.setTargetPosition((int) (LIFT_COLLAPSED));
-                motor.setVelocity(1300);
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                return true;
-            } else {
-                motor.setPower(0);
-                return false;
-            }
-
-        }
-    }
-
 
     public Action liftDownAction() {
-        return new LiftDown();
+        return new LiftAction((int) (LIFT_COLLAPSED));
     }
+
 
 }

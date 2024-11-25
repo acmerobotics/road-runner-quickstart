@@ -48,7 +48,7 @@ public class Arm {
     public static double ARM_CLEAR_BARRIER         = 219 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SPECIMEN        = 174 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SAMPLE_IN_LOW   = 174 * ARM_TICKS_PER_DEGREE;
-    public static double ARM_SCORE_SAMPLE_IN_HIGH   = 120 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_SCORE_SAMPLE_IN_HIGH   = 125 * ARM_TICKS_PER_DEGREE;
     public static double ARM_ATTACH_HANGING_HOOK   = 120 * ARM_TICKS_PER_DEGREE;
     public static double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
 

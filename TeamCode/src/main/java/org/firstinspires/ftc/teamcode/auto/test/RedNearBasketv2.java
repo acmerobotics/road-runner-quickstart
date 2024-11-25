@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Arm;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.Lift;
+import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 
 
 @Config
@@ -34,15 +36,22 @@ public class RedNearBasketv2 extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
         Arm arm = new Arm(hardwareMap);
         Lift lift = new Lift(hardwareMap);
+        Wrist wrist = new Wrist(hardwareMap);
+
         TrajectoryActionBuilder traj = drive.actionBuilder(RED_SCORE_START_POSE)
                 .strafeToLinearHeading(new Vector2d(-38, -56), Math.toRadians(180))
                 .strafeToLinearHeading(new Vector2d(-51, -51), Math.toRadians(180+45));
 
+        Action ta = traj.build();
+
 
         Action scoreHighAction = new ParallelAction(
+                wrist.wristFoldOutAction(),
                 arm.armScoreAction(),
                 lift.liftUpAction()
         );
+
+        Action taScore = new ParallelAction(ta, scoreHighAction);
 
         Action foldBackAction = new ParallelAction(
                 arm.armPositionAction(),
@@ -59,7 +68,8 @@ public class RedNearBasketv2 extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        scoreHighAction,
+                        taScore,
+                        new SleepAction(0.7), // sleep for 1 sec
                         intake.depositAction(),
                         foldBackAction
                 )

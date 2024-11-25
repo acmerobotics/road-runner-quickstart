@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanisms.Arm;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.Lift;
+import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 
 @Config
 @Autonomous(name = "ScoreTest", group = "Test")
@@ -23,15 +24,18 @@ public class ScoreTest extends LinearOpMode {
         Arm arm = new Arm(hardwareMap);
         Lift lift = new Lift(hardwareMap);
         Intake intake = new Intake(hardwareMap);
+        Wrist wrist = new Wrist(hardwareMap);
 
         Action scoreHighAction = new ParallelAction(
                 arm.armScoreAction(),
-                lift.liftUpAction()
+                lift.liftUpAction(),
+                wrist.wristFoldOutAction()
         );
 
         Action foldBackAction = new ParallelAction(
                 arm.armPositionAction(),
-                lift.liftDownAction()
+                lift.liftDownAction(),
+                wrist.wristFoldInAction()
         );
 
         while(!isStopRequested() && !opModeIsActive()) {
@@ -45,6 +49,7 @@ public class ScoreTest extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         scoreHighAction,
+                        new SleepAction(0.5),
                         intake.depositAction(),
                         foldBackAction
                 )

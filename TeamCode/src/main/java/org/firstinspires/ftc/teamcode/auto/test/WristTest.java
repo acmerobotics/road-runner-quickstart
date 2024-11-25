@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 
 
 @Config
-@Autonomous(name = "IntakeTest", group = "Test")
+@Autonomous(name = "WristTest", group = "Test")
 public class WristTest extends LinearOpMode {
 
 
@@ -31,11 +31,13 @@ public class WristTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-//        Actions.runBlocking(
-//                new SequentialAction(
-//                        wrist.foldIn(),
-//                        new SleepAction(1)) // sleep for 1 sec
-//                        wrist.foldOut());
+        Actions.runBlocking(
+                new SequentialAction(
+                        wrist.wristFoldOutAction(),
+                        new SleepAction(1), // sleep for 1 sec
+                        wrist.wristFoldInAction(),
+                        new SleepAction(1)// sleep for 1 sec
+                ));
 
     } // runOpMode
 
