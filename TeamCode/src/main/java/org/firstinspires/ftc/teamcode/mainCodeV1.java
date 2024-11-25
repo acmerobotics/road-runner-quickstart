@@ -24,7 +24,7 @@ public class mainCodeV1 extends LinearOpMode {
     private ColorSensor colorDetector;
     int ARMMIN;
     int ARMMAX;
-    int targetedAngle; //for block search
+    int targetedAngle = 1; //for block search
     double searchOrigin; //for block search
     int INCREMENT;
 
@@ -128,14 +128,13 @@ public class mainCodeV1 extends LinearOpMode {
         return distance;
     }
 
-    private boolean searchColor(double searchOrigin, boolean searching) {
+    private boolean searchColor(double searchOrigin) {
         if (colorDetection().equals("Yellow") || colorDetection().equals("Red")) {
             //pick up stuff
-            searching = false;
-            return searching;
+            return false;
         } else {
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            float directionBetweenAngles = distanceBetweenAngles((float)botHeading, (float)targetedAngle);
+            float directionBetweenAngles = distanceBetweenAngles((float)botHeading, (float)(30*targetedAngle + searchOrigin));
             armMovement(false, true, 25);
             rotateTo((30*targetedAngle) + searchOrigin, 0.2f);
             if (Math.abs(directionBetweenAngles) < 4) { //determines if the robot is facing a direction
@@ -145,8 +144,8 @@ public class mainCodeV1 extends LinearOpMode {
                     targetedAngle = 1;
                 }
             }
-            return searching;
         }
+        return (arm.getCurrentPosition() >= ARMMAX + 100);
         // extend arm if not already extended
         // extend to stage 1. Closest 2. Medium 3. Far
         // rotate x degrees
@@ -193,11 +192,8 @@ public class mainCodeV1 extends LinearOpMode {
         postStartSetUp();
         while (opModeIsActive()) {
             if (gamepad1.a && gamepad1.b) { //just press a and b together to start the search like it would in autonomous
-                boolean searching = true;
-                while (searching) {
-                    double searchOrigin = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-                    searching = searchColor(searchOrigin, searching);
-                    chassisMovement(gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+                double searchOrigin = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+                while (searchColor(searchOrigin)) {
                 }
             } else {
                 chassisMovement(gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
