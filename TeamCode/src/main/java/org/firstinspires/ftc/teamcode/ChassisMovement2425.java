@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import kotlin.math.UMathKt;
+
 @TeleOp(name = "ChassisMovement2425")
 public class ChassisMovement2425 extends LinearOpMode {
     private IMU imu;
@@ -16,7 +18,7 @@ public class ChassisMovement2425 extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor backLeft;
     private DcMotor frontLeft;
-
+    private Servo clawUpDown;
 
     private void setupMovement() {
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
@@ -41,6 +43,8 @@ public class ChassisMovement2425 extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
 
+        clawUpDown = hardwareMap.get(Servo.class, "servoUpDown");
+
         setupMovement();
         waitForStart();
         if (isStopRequested()) {
@@ -53,6 +57,9 @@ public class ChassisMovement2425 extends LinearOpMode {
         }
     }
 
+    public static double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
+    }
 
 
     private void manualMove() {
@@ -68,12 +75,27 @@ public class ChassisMovement2425 extends LinearOpMode {
         double frontRightPower;
         double backRightPower;
 
+        double clawYPos = 0.3;
+        double clawMax = 0.8; //adjust this
+        double clawMin = 0.2; //adjust this
+
         y = gamepad1.left_stick_y;
         x = -gamepad1.left_stick_x;
         t = -gamepad1.right_stick_x;
         if (gamepad1.start) {
             imu.resetYaw();
         }
+
+        if (gamepad1.dpad_left && !gamepad1.dpad_right) {
+            //claw down
+
+            clawYPos = clamp(clawYPos - 0.01, clawMin, clawMax);
+
+        }else if (gamepad1.dpad_right && !gamepad1.dpad_left){
+            //claw up
+            clawYPos = clamp(clawYPos + 0.01, clawMin, clawMax);
+        }
+
         botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         rotX = x * Math.cos(-botHeading / 180 * Math.PI) - y * Math.sin(-botHeading / 180 * Math.PI);
         rotY = x * Math.sin(-botHeading / 180 * Math.PI) + y * Math.cos(-botHeading / 180 * Math.PI);
@@ -87,6 +109,6 @@ public class ChassisMovement2425 extends LinearOpMode {
         backLeft.setPower(0.75 * backLeftPower);
         frontRight.setPower(0.75 * frontRightPower);
         backRight.setPower(0.75 * backRightPower);
-
+        clawUpDown.setPosition(clawYPos);
     }
 }
