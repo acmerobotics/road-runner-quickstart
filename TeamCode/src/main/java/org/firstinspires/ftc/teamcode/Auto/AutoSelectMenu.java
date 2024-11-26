@@ -20,8 +20,8 @@ import org.firstinspires.ftc.teamcode.Common.Rotation;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "AUTO Testing", group = "Autonomous")
-public class AutoTesting extends LinearOpMode {
+@Autonomous(name = "Auto Select Menu", group = "Autonomous")
+public class AutoSelectMenu extends LinearOpMode {
     public void runOpMode() {
         Pose2d initialPose = new Pose2d(-10, -63, Math.toRadians(90.00));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);

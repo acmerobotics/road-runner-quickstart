@@ -98,7 +98,7 @@ public class Lift {
 
                 double pos = SlideLeft.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < toTicks(26))  {
+                if (pos < toTicks(38))  {
                     return true;
                 } else {
                     SlideLeft.set(0.15);
