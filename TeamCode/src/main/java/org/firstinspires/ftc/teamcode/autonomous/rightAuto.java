@@ -58,17 +58,19 @@ public class rightAuto extends LinearOpMode {
                     //put arm up while strafing
                     .afterTime(0, viper.autonDown())
                     .afterTime(0, shoulder.autonHC())
+                    .afterTime(0, claw.autonCloseClaw())
                     .waitSeconds(0.5)
 
-                    .strafeTo(new Vector2d(10, -32))
+                    .strafeTo(new Vector2d(10, -33))
                     //put arm up while strafing
                     //stop at (10, -34) and place the sample on the bar
                     .waitSeconds(0.5)
                     .afterTime(0, shoulder.autonDownHC())
+                    .afterTime(0, claw.autonOpenClaw())
                     .waitSeconds(1)
-                    .strafeTo(new Vector2d(0, -34))
+                    .strafeTo(new Vector2d(10, -34))
                     .waitSeconds(2)
-                    .strafeToLinearHeading(new Vector2d(0,-55), Math.toRadians(-90))
+                    .strafeToLinearHeading(new Vector2d(20,-55), Math.toRadians(-90))
                     .strafeTo(new Vector2d(35,-44))
                     .strafeTo(new Vector2d(35,-5))
                     .strafeTo(new Vector2d(45,-5))
@@ -96,12 +98,12 @@ public class rightAuto extends LinearOpMode {
 
 
 
-        waitForStart();
         if (build != null) {
             Actions.runBlocking(new ParallelAction(
                     shoulder.autonListen(),
                     viper.autonListen(),
                     claw.autonListen(),
+                    viper.autonListen(),
                     build.build()
 
 

@@ -52,6 +52,7 @@ public class leftAuto extends LinearOpMode {
                     //put arm up while strafing
                     .afterTime(0, viper.autonDown())
                     .afterTime(0, shoulder.autonHC())
+                    .afterTime(0, claw.autonCloseClaw())
                     .waitSeconds(0.5)
 
                     .strafeTo(new Vector2d(-10, -33))
@@ -60,9 +61,12 @@ public class leftAuto extends LinearOpMode {
                     .waitSeconds(0.5)
                     .afterTime(0, shoulder.autonDownHC())
                     .waitSeconds(1)
+                    .afterTime(0, claw.autonOpenClaw())
+                    .waitSeconds(0.1)
                     .strafeTo(new Vector2d(-10,-40))
                     .waitSeconds(1)
                     .afterTime(0, shoulder.autonMidDown())
+                    .afterTime(0, claw.autonFlushPivot())
                     .waitSeconds(0.3)
                     .afterTime(0, shoulder.autonDown())
                     .strafeTo(new Vector2d(-30,-40))
@@ -114,7 +118,6 @@ public class leftAuto extends LinearOpMode {
 
 
 
-        waitForStart();
         if (build != null) {
             Actions.runBlocking(new ParallelAction(
                     shoulder.autonListen(),

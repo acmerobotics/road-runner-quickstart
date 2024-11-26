@@ -44,9 +44,10 @@ public class Claw {
     double pivotLow = 0;
     double pivotNormal = 0.5;
     double pivotHigh = 1;
+    double wildcard;
 
     double clawOpen = 0.3;
-    double clawClose = 1;
+    double clawClose = 0.68;
 
     ElapsedTime toggle_time = new ElapsedTime();
     ElapsedTime pivot_delay = new ElapsedTime();
@@ -79,6 +80,12 @@ public class Claw {
     public void setPivot(float pos) {
         pivot.setPosition(pos);
     }
+
+    public void customPivotPos(float pos) {
+        pivot.setPosition(3);
+        wildcard = pos;
+    }
+
     public class AutonListen implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
@@ -103,6 +110,42 @@ public class Claw {
         return new AutonNormalPivot();
     }
 
+    public class AutonFlushPivot implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setPivot(1);
+            return false;
+        }
+    }
+    public Action autonFlushPivot() {
+        return new AutonFlushPivot();
+    }
+
+    public class AutonOpenClaw implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            pos = true;
+            return false;
+        }
+    }
+    public Action autonOpenClaw() {
+        return new AutonOpenClaw();
+    }
+
+    public class AutonCloseClaw implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            pos = false;
+            return false;
+        }
+    }
+    public Action autonCloseClaw() {
+        return new AutonCloseClaw();
+    }
+
     public void autoListen() {
         if (pos) {
             claw.setPosition(clawOpen);
@@ -119,7 +162,9 @@ public class Claw {
             case 2:
                 pivot.setPosition(pivotLow);
                 break;
-
+            case 3:
+                pivot.setPosition(wildcard);
+                break;
         }
     }
 

@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Mouth;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
 
-//@Disabled
+@Disabled
 @TeleOp(name = "Test: Intake", group = "HardwareTest")
 public class TestIntake extends LinearOpMode {
 

@@ -79,9 +79,10 @@ public class Viper {
         viper = myOpMode.hardwareMap.get(DcMotorEx.class, "viper_slide");
 
         viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 //        viper.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
