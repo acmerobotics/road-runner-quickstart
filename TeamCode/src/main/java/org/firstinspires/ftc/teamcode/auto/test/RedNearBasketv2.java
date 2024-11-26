@@ -10,9 +10,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Arm;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
@@ -54,10 +52,27 @@ public class RedNearBasketv2 extends LinearOpMode {
         Action taScore = new ParallelAction(ta, scoreHighAction);
 
         Action foldBackAction = new ParallelAction(
-                arm.armPositionAction(),
+                arm.armfoldbackaction(),
                 lift.liftDownAction()
         );
+        Action armpose = new ParallelAction(
+                arm.armRobotTravelAction(),
+                lift.liftDownAction()
+                );
+        Action drivetosample1 = traj.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-30, -22), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-26, -22), Math.toRadians(180))
+                // .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(180+45))
+                .build();
 
+        Action travelto1 = new ParallelAction(
+                armpose,
+                drivetosample1
+        );
+        Action collectAction = new SequentialAction(
+                arm.armGroundCollectAction(),
+                intake.intakeAction()
+        );
         while(!isStopRequested() && !opModeIsActive()) {
             // Wait for the start signal
         }
@@ -69,8 +84,11 @@ public class RedNearBasketv2 extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         taScore,
-                        new SleepAction(0.7), // sleep for 1 sec
+                        new SleepAction(0.1), // sleep for 1 sec
                         intake.depositAction(),
+                        travelto1,
+                        collectAction,
+                        new SleepAction(5),
                         foldBackAction
                 )
         );

@@ -24,11 +24,11 @@ public class TeleOpModular extends LinearOpMode {
     double armPositionFudgeFactor = 0;
 
 
-    final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
+    static final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
 
     final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
     final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
-    final double LIFT_SCORING_IN_HIGH_BASKET = 480 * LIFT_TICKS_PER_MM * 1.3;
+    public static double LIFT_SCORING_IN_HIGH_BASKET = 510 * LIFT_TICKS_PER_MM * 1.3;
 
     double liftPosition = LIFT_COLLAPSED;
 

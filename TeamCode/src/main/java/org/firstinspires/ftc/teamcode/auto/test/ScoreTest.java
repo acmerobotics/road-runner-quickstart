@@ -33,7 +33,7 @@ public class ScoreTest extends LinearOpMode {
         );
 
         Action foldBackAction = new ParallelAction(
-                arm.armPositionAction(),
+                arm.armfoldbackaction(),
                 lift.liftDownAction(),
                 wrist.wristFoldInAction()
         );
