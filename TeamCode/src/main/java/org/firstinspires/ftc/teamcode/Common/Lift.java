@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Common;
 
-import static org.firstinspires.ftc.teamcode.Common.Constants.TICKS_TO_INCHES_SLIDES;
+import static org.firstinspires.ftc.teamcode.Common.Constants.TICKS_TO_INCHES_LIFT;
 
 import androidx.annotation.NonNull;
 
@@ -55,11 +55,11 @@ public class Lift {
     }
 
     private static double toTicks(double inches){
-        return inches * TICKS_TO_INCHES_SLIDES; // Calculate this
+        return inches / TICKS_TO_INCHES_LIFT; // Calculate this
     }
 
     private static double toInches(double ticks){
-        return ticks / TICKS_TO_INCHES_SLIDES; // Calculate this
+        return ticks * TICKS_TO_INCHES_LIFT; // Calculate this
     }
 
     public void slidesToPosition(double inchesUp){
@@ -98,11 +98,11 @@ public class Lift {
 
                 double pos = SlideLeft.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < toTicks(26)) {
+                if (pos < toTicks(26))  {
                     return true;
                 } else {
                     SlideLeft.set(0.15);
-                    SlideRight.set(-0.2);
+                    SlideRight.set(-0.15);
                     return false;
                 }
             }
@@ -123,11 +123,11 @@ public class Lift {
 
                 double pos = SlideLeft.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < toTicks(41)) {
+                if (pos < toTicks(47)) {
                     return true;
                 } else {
                     SlideLeft.set(0.15);
-                    SlideRight.set(-0.2);
+                    SlideRight.set(-0.15);
                     return false;
                 }
             }

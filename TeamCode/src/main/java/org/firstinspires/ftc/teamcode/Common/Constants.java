@@ -28,15 +28,17 @@ public class Constants {
     public static final double HangingDown = 0;
     public static final double HangingMiddle = 0.38;
     public static final double HangingUp = 1;
+    public static final int ExtensionTime = 800;
     public static final String HangingConfigName = "HANGING";
 
     public static final String SlideLeftName = "SL";
     public static final String SlideRightName = "SR";
-    public static final String ExtensionName = "ES";
+    public static final String ExtensionRightName = "ER";
+    public static final String ExtensionLeftName = "EL";
     public static final String HangingHighName = "HH";
     public static final String HangingLowName = "HL";
 
     public static final double ExtensionOut = 1;
     public static final double ExtensionIn = 0;
-    public static final double TICKS_TO_INCHES_SLIDES = 1.0;
+    public static final double TICKS_TO_INCHES_LIFT = (51.5 + 2.5625 - 8.5)/4400.0; // 4400 ticks = 46.5625 inches
 }

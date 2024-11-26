@@ -3,32 +3,26 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Common.Extension;
 import org.firstinspires.ftc.teamcode.Common.Lift;
-import org.firstinspires.ftc.teamcode.TeleOp.RobotNew;
 
-@TeleOp(name = "Teleop-New")
-public class TeleopNew extends LinearOpMode {
+@TeleOp(name = "Driver Teleop")
+public class Teleop extends LinearOpMode {
     static MecanumDrive drive;
     static GamepadEx gamepad1Ex;
     static GamepadEx gamepad2Ex;
     static RobotNew robot;
     static Extension extension;
     static Lift slides;
+    long startTime;
 
     private  void HardwareStart(){
         robot = new RobotNew();
         robot.init(hardwareMap);
         drive = new MecanumDrive(robot.FrontLeft, robot.FrontRight, robot.BackLeft, robot.BackRight);
-
-//        extension = new Extension(robot.Extension);
-//        slides = new SlideGroup(robot.Slides);
 
         gamepad1Ex = new GamepadEx(gamepad1);
         gamepad2Ex = new GamepadEx(gamepad2);
@@ -37,6 +31,7 @@ public class TeleopNew extends LinearOpMode {
         robot.ClawGrip.setPosition(0);
         robot.FourBarLeft.setPosition(1);
         robot.ClawRotation.setPosition(1);
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -45,6 +40,7 @@ public class TeleopNew extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
+            long curTime = System.currentTimeMillis();
             drive.driveRobotCentric(
                     gamepad1Ex.getLeftX(),
                     gamepad1Ex.getLeftY(),
@@ -59,10 +55,14 @@ public class TeleopNew extends LinearOpMode {
                 robot.SlideLeft.set(-0.4);
                 robot.SlideRight.set(0.4);
             } else { // Hold Slide Position
-//                robot.Slides.set(-0.009375);
                 robot.SlideLeft.set(0.15);
                 robot.SlideRight.set(-0.15);
             }
+
+            telemetry.addData("Slide Ticks Left", robot.SlideLeft.getCurrentPosition());
+            telemetry.addData("Slide Ticks Right", robot.SlideRight.getCurrentPosition());
+            telemetry.addData("Millis Since Start",  curTime - startTime);
+            telemetry.update();
 
             if (gamepad2Ex.getRightY() > 0.1){ // Extension Out
                 robot.ExtensionRight.set(1);
