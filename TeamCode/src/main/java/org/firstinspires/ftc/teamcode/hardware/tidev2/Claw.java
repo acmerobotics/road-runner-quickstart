@@ -39,11 +39,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Claw {
 
+    public enum PivotPosState {
+        NORMAL, HIGH, LOW, CUSTOM
+    }
 
     // Define class members
-    double pivotLow = 0.5;
-    double pivotNormal = 0.75;
-    double pivotHigh = 1;
+    public final double PIVOT_LOW = 0.68;
+    public final double PIVOT_NORMAL = 0.75;
+    public final double PIVOT_HIGH = 1.0;
     double wildcard;
 
     double clawOpen = 0.3;
@@ -54,7 +57,7 @@ public class Claw {
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
     boolean pos = false;
-    byte pivotpos = 2;
+    PivotPosState pivotpos = PivotPosState.LOW;
     Servo pivot;
     Servo claw;
     public Claw(OpMode opmode) {
@@ -66,7 +69,7 @@ public class Claw {
         // turn torque to pivot in preparation for claw update
         pivot = myOpMode.hardwareMap.get(Servo.class, "pivot");
         claw = myOpMode.hardwareMap.get(Servo.class, "claw");
-        pivotpos = 2;
+        pivotpos = PivotPosState.LOW;
     }
 
     public void speedOpen(boolean open) {
@@ -77,12 +80,12 @@ public class Claw {
         }
     }
 
-    public void setPivot(float pos) {
+    public void setPivot(double pos) {
         pivot.setPosition(pos);
     }
 
-    public void customPivotPos(float pos) {
-        pivot.setPosition(3);
+    public void customPivotPos(double pos) {
+        pivotpos = PivotPosState.CUSTOM;
         wildcard = pos;
     }
 
@@ -153,16 +156,16 @@ public class Claw {
             claw.setPosition(clawClose);
         }
         switch (pivotpos) {
-            case 0:
-                pivot.setPosition(pivotNormal);
+            case NORMAL:
+                pivot.setPosition(PIVOT_NORMAL);
                 break;
-            case 1:
-                pivot.setPosition(pivotHigh);
+            case HIGH:
+                pivot.setPosition(PIVOT_HIGH);
                 break;
-            case 2:
-                pivot.setPosition(pivotLow);
+            case LOW:
+                pivot.setPosition(PIVOT_LOW);
                 break;
-            case 3:
+            case CUSTOM:
                 pivot.setPosition(wildcard);
                 break;
         }
@@ -179,11 +182,22 @@ public class Claw {
 
         if (myOpMode.gamepad2.back && pivot_delay.seconds() > 0.2) {
             pivot_delay.reset();
-            if (pivotpos != 2) {
-                pivotpos++;
-            } else {
-                pivotpos = 0;
+            switch(pivotpos) {
+                case LOW:
+                    pivotpos = PivotPosState.HIGH;
+                    break;
+                case NORMAL:
+                    pivotpos = PivotPosState.LOW;
+                    break;
+                case HIGH:
+                    pivotpos = PivotPosState.NORMAL;
+                    break;
+                case CUSTOM:
+                    pivotpos = PivotPosState.LOW;
+                    break;
+
             }
+
         }
 
         if (pos) {
@@ -192,14 +206,17 @@ public class Claw {
             claw.setPosition(clawClose);
         }
         switch (pivotpos) {
-            case 0:
-                pivot.setPosition(pivotNormal);
+            case NORMAL:
+                pivot.setPosition(PIVOT_NORMAL);
                 break;
-            case 1:
-                pivot.setPosition(pivotHigh);
+            case HIGH:
+                pivot.setPosition(PIVOT_HIGH);
                 break;
-            case 2:
-                pivot.setPosition(pivotLow);
+            case LOW:
+                pivot.setPosition(PIVOT_LOW);
+                break;
+            case CUSTOM:
+                pivot.setPosition(wildcard);
                 break;
 
         }
