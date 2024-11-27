@@ -41,8 +41,8 @@ public class Claw {
 
 
     // Define class members
-    double pivotLow = 0;
-    double pivotNormal = 0.5;
+    double pivotLow = 0.5;
+    double pivotNormal = 0.75;
     double pivotHigh = 1;
     double wildcard;
 

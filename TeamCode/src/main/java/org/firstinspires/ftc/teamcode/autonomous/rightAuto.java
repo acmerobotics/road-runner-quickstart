@@ -59,31 +59,73 @@ public class rightAuto extends LinearOpMode {
                     .afterTime(0, viper.autonDown())
                     .afterTime(0, shoulder.autonHC())
                     .afterTime(0, claw.autonCloseClaw())
-                    .waitSeconds(0.5)
+                    .afterTime(0, claw.autonNormalPivot())
+                    .waitSeconds(0.1)
 
-                    .strafeTo(new Vector2d(10, -33))
+                    .strafeTo(new Vector2d(10, -34))
                     //put arm up while strafing
                     //stop at (10, -34) and place the sample on the bar
-                    .waitSeconds(0.5)
+                    .waitSeconds(0.1)
                     .afterTime(0, shoulder.autonDownHC())
+                    .waitSeconds(0.05)
                     .afterTime(0, claw.autonOpenClaw())
-                    .waitSeconds(1)
-                    .strafeTo(new Vector2d(10, -34))
-                    .waitSeconds(2)
-                    .strafeToLinearHeading(new Vector2d(20,-55), Math.toRadians(-90))
-                    .strafeTo(new Vector2d(35,-44))
-                    .strafeTo(new Vector2d(35,-5))
-                    .strafeTo(new Vector2d(45,-5))
+                    .waitSeconds(0.2)
+                    .afterTime(0, shoulder.autonDown())
+
+                    .strafeTo(new Vector2d(10, -45))
+                    .strafeToLinearHeading(new Vector2d(35,-40), Math.toRadians(-90))
+
+
+                    .strafeTo(new Vector2d(35, -13))
+
+
+                    .strafeTo(new Vector2d(45,-13))
                     .strafeTo(new Vector2d(45,-53))
-                    .strafeTo(new Vector2d(45,-5))
-                    .strafeTo(new Vector2d(55,-5))
+                    //one in observation zone
+                    .strafeTo(new Vector2d(45,-13))
+                    .strafeTo(new Vector2d(55,-13))
                     .strafeTo(new Vector2d(55,-53))
-                    .strafeTo(new Vector2d(55,-5))
-                    .strafeTo(new Vector2d(61,-5))
+                    //two in observation zone
+                    //prepare to grab
+
+                    .afterTime(0, claw.autonNormalPivot())
+                    .strafeTo(new Vector2d(47,-48))
+                    .strafeTo(new Vector2d(47,-53))
+
+                    //grab sample, routing towards chamber.
+                    .afterTime(0, claw.autonCloseClaw())
+                    .waitSeconds(0.1)
+                    //raise arm to clip
+                    .afterTime(0, shoulder.autonHC())
+                    .strafeToSplineHeading(new Vector2d(10,-34), Math.toRadians(90))
+                    //clip, routing to push final sample and grab specimen
+                    .afterTime(0, shoulder.autonDownHC())
+                    .waitSeconds(0.05)
+                    .afterTime(0, claw.autonOpenClaw())
+                    .waitSeconds(0.2)
+                    .afterTime(0, shoulder.autonDown())
+
+                    .strafeTo(new Vector2d(10, -45))
+                    .strafeToLinearHeading(new Vector2d(35,-40), Math.toRadians(-90))
+
+                    .splineToLinearHeading(new Pose2d(61,-13, Math.toRadians(-90)), Math.toRadians(-90))
                     .strafeTo(new Vector2d(61,-53))
+
+                    .strafeTo(new Vector2d(47,-48))
+                    .strafeTo(new Vector2d(47,-53))
+                    //grab sample, routing towards chamber.
+                    .afterTime(0, claw.autonCloseClaw())
+                    .waitSeconds(0.1)
+                    //raise arm to clip
+                    .afterTime(0, shoulder.autonHC())
+                    .strafeToSplineHeading(new Vector2d(10,-34), Math.toRadians(90))
+                    //clip, park
+                    .afterTime(0, shoulder.autonDownHC())
+                    .waitSeconds(0.05)
+                    .afterTime(0, claw.autonOpenClaw())
+                    .waitSeconds(0.2)
+
                     .strafeToConstantHeading(new Vector2d(60,-56))
-                    //.waitSeconds(0.3)
-                    //.afterTime(0, viper.autonDown())
             ;
 
 

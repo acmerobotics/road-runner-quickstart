@@ -23,37 +23,49 @@ public class meepmeepjonathan {
 //                .afterTime(0, shoulder.autonHC())
                 .waitSeconds(0.5)
 
-                .strafeTo(new Vector2d(10, -32))
+                .strafeTo(new Vector2d(10, -34))
                 //put arm up while strafing
                 //stop at (10, -34) and place the sample on the bar
                 .waitSeconds(0.5)
 //                .afterTime(0, shoulder.autonDownHC())
-                .waitSeconds(1)
-                .setReversed(true)
+
+                .strafeTo(new Vector2d(10, -45))
+                .strafeToLinearHeading(new Vector2d(35,-40), Math.toRadians(-90))
 
 
-//                    .setReversed(false)
-//
-//                    .splineToConstantHeading(new Vector2d(47, -20), Math.toRadians(-90))
-//
-//                    .splineToConstantHeading(new Vector2d(47, -50), Math.toRadians(-90))
-//                    //shrey code starts here
-//                    .setReversed(true)
-//                    .strafeTo(new Vector2d(47, -10))
-//
-//
-//                    //.splineToConstantHeading(new Vector2d(52,-45), Math.toRadians
-//                    .strafeTo(new Vector2d(56,-10))
-//
-//                    .strafeTo(new Vector2d(56,-53))
-//
-//                    .afterTime(0, viper.autonGolf())
-//                    .waitSeconds(0.3)
-//                    .setReversed(true)
-//                    .splineToLinearHeading(new Pose2d(60,-10, Math.toRadians(0)), Math.toRadians(0))
+                .strafeTo(new Vector2d(35, -13))
+
+
+                .strafeTo(new Vector2d(45,-13))
+                .strafeTo(new Vector2d(45,-53))
+                //one in observation zone
+                .strafeTo(new Vector2d(45,-13))
+                .strafeTo(new Vector2d(55,-13))
+                .strafeTo(new Vector2d(55,-53))
+                //two in observation zone
+                //prepare to grab
+                //.afterTime(0, claw.autonNormalPivot())
+                .strafeTo(new Vector2d(47,-48))
+                .strafeTo(new Vector2d(47,-53))
+                //grab sample, routing towards chamber.
+                //raise arm to clip
+                .strafeToSplineHeading(new Vector2d(10,-34), Math.toRadians(90))
+                //clip, routing to push final sample and grab specimen
+
+                .strafeTo(new Vector2d(10, -38))
+                .strafeToLinearHeading(new Vector2d(35,-40), Math.toRadians(-90))
+
+                .splineToLinearHeading(new Pose2d(61,-13, Math.toRadians(-90)), Math.toRadians(-90))
+                .strafeTo(new Vector2d(61,-53))
+
+                .strafeTo(new Vector2d(47,-48))
+                .strafeTo(new Vector2d(47,-53))
+                //grab sample, routing towards chamber.
+                //raise arm to clip
+                .strafeToSplineHeading(new Vector2d(10,-34), Math.toRadians(90))
+
                 .strafeToConstantHeading(new Vector2d(60,-56))
-                //.waitSeconds(0.3)
-                //.afterTime(0, viper.autonDown())
+
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
