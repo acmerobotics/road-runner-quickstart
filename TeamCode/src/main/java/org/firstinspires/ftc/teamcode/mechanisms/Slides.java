@@ -64,7 +64,7 @@ public class Slides {
 
 
 
-            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) <  2) {
+            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) <  10) {
                 return false;
             }
             return true;

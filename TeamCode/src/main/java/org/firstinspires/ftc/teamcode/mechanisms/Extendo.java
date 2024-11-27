@@ -22,6 +22,7 @@ public class Extendo {
     public static double KI = 0;
     public static double KD = 0.01;
     public boolean pid = true;
+
     private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(KP, KI, KD);
     public PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
 
@@ -123,6 +124,22 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
+                target = -100;
+                extendoMotor.setTargetPosition(target);
+                extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                extendoMotor.setPower(1);
+//                extendoMotorPID.setTargetPosition(target);
+                init = true;
+            }
+
+
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 5) {
+                return false;
+            }
+            return true;
+            /*
+
+            if (!init) {
                 //pid = false;
                 extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 target = -90;
@@ -136,8 +153,11 @@ public class Extendo {
                 return false;
             }
             return true;
+            */
+
         }
     }
+
     public Action extendBad() {
         return new ExtendBad();
     }
@@ -149,7 +169,7 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -45;
+                target = -39;
                 extendoMotor.setTargetPosition(target);
                 extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 extendoMotor.setPower(1);
@@ -158,7 +178,7 @@ public class Extendo {
             }
 
 
-            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 2) {
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 3) {
                 return false;
             }
             return true;
@@ -174,7 +194,7 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -45;
+                target = -39;
                 extendoMotor.setTargetPosition(target);
                 extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 extendoMotor.setPower(1);
@@ -182,7 +202,8 @@ public class Extendo {
                 init = true;
             }
 
-            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 2) {
+
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 3) {
                 return false;
             }
             return true;

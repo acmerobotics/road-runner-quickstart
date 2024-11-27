@@ -14,7 +14,7 @@ public class Intaker {
     public DcMotor intakeMotor;
 
     public Intaker(HardwareMap HWMap){
-        intakeServoLeft = HWMap.get(Servo.class, "intakeServoLeft");
+//        intakeServoLeft = HWMap.get(Servo.class, "intakeServoLeft");
         intakeServoRight = HWMap.get(Servo.class, "intakeServoRight");
         intakeMotor = HWMap.get(DcMotor.class, "intakeMotor");
 
@@ -26,7 +26,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeServoLeft.setPosition(0.95);
+//            intakeServoLeft.setPosition(0.95);
             intakeServoRight.setPosition(0.05);
 
             return false;
@@ -40,7 +40,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeServoLeft.setPosition(0.65);
+//            intakeServoLeft.setPosition(0.65);
             intakeServoRight.setPosition(0.35);
 
             return false;
@@ -55,7 +55,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeServoLeft.setPosition(0.17);
+//            intakeServoLeft.setPosition(0.17);
             intakeServoRight.setPosition(0.83);
             return false;
         }
@@ -93,7 +93,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeMotor.setPower(0.35);
+            intakeMotor.setPower(0.325);
             return false;
         }
     }
@@ -126,7 +126,7 @@ public class Intaker {
     }
 
     public void downExtake() {
-        intakeMotor.setPower(0.8);
+        intakeMotor.setPower(0.45);
     }
 
     public void downIntake() {

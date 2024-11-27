@@ -79,6 +79,29 @@ public class BlueTeleop extends LinearOpMode {
 
     private enum HangState {HANGSTART, HANGUP}
     private HangState hangState = HangState.HANGSTART;
+
+
+    public void updateDrive(DcMotor FL, DcMotor BL, DcMotor FR, DcMotor BR, double lefty1, double rightx1, double leftx1, Gamepad currentGamepad1) {
+
+
+        double denominator = Math.max(Math.abs(lefty1) + Math.abs(leftx1) + Math.abs(rightx1), 1);
+        double frontLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
+        double backLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
+        double frontRightPower = (lefty1 - leftx1 - rightx1) / denominator;
+        double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
+
+        if (currentGamepad1.left_trigger < 0.9) {
+            FL.setPower(frontLeftPower);
+            BL.setPower(backLeftPower);
+            FR.setPower(frontRightPower);
+            BR.setPower(backRightPower);
+        } else {
+            FL.setPower(frontLeftPower * 0.6);
+            BL.setPower(backLeftPower * 0.6);
+            FR.setPower(frontRightPower * 0.6);
+            BR.setPower(backRightPower * 0.6);
+        }
+    }
     @Override
     public void runOpMode() {
 
@@ -163,25 +186,7 @@ public class BlueTeleop extends LinearOpMode {
             double rightx1 = -currentGamepad1.right_stick_x;
             double lefty2 = currentGamepad2.left_stick_y;
 
-            double denominator = Math.max(Math.abs(lefty1) + Math.abs(leftx1) + Math.abs(rightx1), 1);
-            double frontLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
-            double backLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
-            double frontRightPower = (lefty1 - leftx1 - rightx1) / denominator;
-            double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
-
-            if (currentGamepad1.left_trigger < 0.9) {
-                FL.setPower(frontLeftPower);
-                BL.setPower(backLeftPower);
-                FR.setPower(frontRightPower);
-                BR.setPower(backRightPower);
-            } else {
-                FL.setPower(frontLeftPower * 0.6);
-                BL.setPower(backLeftPower * 0.6);
-                FR.setPower(frontRightPower * 0.6);
-                BR.setPower(backRightPower * 0.6);
-            }
-
-
+            updateDrive(FL, BL, FR, BR, lefty1, rightx1, leftx1, currentGamepad1);
 
             switch (extendoState) {
                 case EXTENDOSTART:
@@ -210,6 +215,10 @@ public class BlueTeleop extends LinearOpMode {
                         } else {
                             extendo.setAuto();
                         }
+
+                        if (currentGamepad1.x && !previousGamepad1.x) {
+                            runningActions.add(intake.flop());
+                        }
                     }
 
                     if (control.getFinished()) {
@@ -220,7 +229,7 @@ public class BlueTeleop extends LinearOpMode {
                     break;
                 case EXTENDOEXTEND:
                     if (!control.getBusy()) {
-                        if ((currentGamepad2.a && !previousGamepad2.a) || (intakeColor.equals("blue")) || (intakeColor.equals("yellow"))) {
+                        if ((currentGamepad2.a && !previousGamepad2.a)) {
                             runningActions.add(new SequentialAction(
                                     control.start(),
                                     intake.creep(),
@@ -229,9 +238,7 @@ public class BlueTeleop extends LinearOpMode {
                                     control.done()
                             ));
                         }
-                        if (intakeColor.equals("red")) {
-                            runningActions.add(intake.extake());
-                        }
+
 
 
                         if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && currentGamepad2.left_trigger > 0.9) {
