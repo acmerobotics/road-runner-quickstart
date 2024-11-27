@@ -38,7 +38,7 @@ public class RedNearBasketv2 extends LinearOpMode {
 
         TrajectoryActionBuilder traj = drive.actionBuilder(RED_SCORE_START_POSE)
                 .strafeToLinearHeading(new Vector2d(-38, -56), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(-51, -51), Math.toRadians(180+45));
+                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45));
 
         Action ta = traj.build();
 
@@ -59,20 +59,29 @@ public class RedNearBasketv2 extends LinearOpMode {
                 arm.armRobotTravelAction(),
                 lift.liftDownAction()
                 );
-        Action drivetosample1 = traj.endTrajectory().fresh()
+        TrajectoryActionBuilder drivetosample1 = traj.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-30, -22), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(-26, -22), Math.toRadians(180))
-                // .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(180+45))
-                .build();
+                .strafeToLinearHeading(new Vector2d(-26, -22), Math.toRadians(180));
+        Action drivetosample1action = drivetosample1.build();
 
         Action travelto1 = new ParallelAction(
                 armpose,
-                drivetosample1
+                drivetosample1action
         );
         Action collectAction = new SequentialAction(
                 arm.armGroundCollectAction(),
                 intake.intakeAction()
         );
+        Action drivetodepositsample = drivetosample1.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
+                .build();
+        Action scoresample1 = new SequentialAction(
+                scoreHighAction,
+                drivetodepositsample
+        );
+
+
+
         while(!isStopRequested() && !opModeIsActive()) {
             // Wait for the start signal
         }
@@ -88,8 +97,10 @@ public class RedNearBasketv2 extends LinearOpMode {
                         intake.depositAction(),
                         travelto1,
                         collectAction,
-                        new SleepAction(5),
-                        foldBackAction
+                        armpose
+//                        scoresample1
+//                        intake.depositAction(),
+//                        foldBackAction
                 )
         );
 
