@@ -46,16 +46,10 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Auto.Vision.Pipeline;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +57,7 @@ import java.util.List;
 
 @TeleOp
 @Config
-public class BlueTeleop extends LinearOpMode {
+public class Q1Teleop extends LinearOpMode {
     public static double pos = 0;
 
     private FtcDashboard dash = FtcDashboard.getInstance();
