@@ -58,8 +58,7 @@ import java.util.List;
 
 @TeleOp
 @Config
-public class Q1Teleop extends LinearOpMode {
-    public static double pos = 0;
+public class Teleop extends LinearOpMode {
 
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
@@ -76,27 +75,6 @@ public class Q1Teleop extends LinearOpMode {
     private HangState hangState = HangState.HANGSTART;
 
 
-    public void updateDrive(DcMotor FL, DcMotor BL, DcMotor FR, DcMotor BR, double lefty1, double rightx1, double leftx1, Gamepad currentGamepad1) {
-
-
-        double denominator = Math.max(Math.abs(lefty1) + Math.abs(leftx1) + Math.abs(rightx1), 1);
-        double frontLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
-        double backLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
-        double frontRightPower = (lefty1 - leftx1 - rightx1) / denominator;
-        double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
-
-        if (currentGamepad1.left_trigger < 0.9) {
-            FL.setPower(frontLeftPower);
-            BL.setPower(backLeftPower);
-            FR.setPower(frontRightPower);
-            BR.setPower(backRightPower);
-        } else {
-            FL.setPower(frontLeftPower * 0.6);
-            BL.setPower(backLeftPower * 0.6);
-            FR.setPower(frontRightPower * 0.6);
-            BR.setPower(backRightPower * 0.6);
-        }
-    }
     @Override
     public void runOpMode() {
 
@@ -151,7 +129,6 @@ public class Q1Teleop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            //extendo.setTarget(pos);
             TelemetryPacket packet = new TelemetryPacket();
 
             colorSensor.setGain(50);
@@ -181,7 +158,23 @@ public class Q1Teleop extends LinearOpMode {
             double rightx1 = -currentGamepad1.right_stick_x;
             double lefty2 = currentGamepad2.left_stick_y;
 
-            updateDrive(FL, BL, FR, BR, lefty1, rightx1, leftx1, currentGamepad1);
+            double denominator = Math.max(Math.abs(lefty1) + Math.abs(leftx1) + Math.abs(rightx1), 1);
+            double frontLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
+            double backLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
+            double frontRightPower = (lefty1 - leftx1 - rightx1) / denominator;
+            double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
+
+            if (currentGamepad1.left_trigger < 0.9) {
+                FL.setPower(frontLeftPower);
+                BL.setPower(backLeftPower);
+                FR.setPower(frontRightPower);
+                BR.setPower(backRightPower);
+            } else {
+                FL.setPower(frontLeftPower * 0.6);
+                BL.setPower(backLeftPower * 0.6);
+                FR.setPower(frontRightPower * 0.6);
+                BR.setPower(backRightPower * 0.6);
+            }
 
             switch (extendoState) {
                 case EXTENDOSTART:
