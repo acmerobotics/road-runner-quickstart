@@ -69,6 +69,8 @@ public class BucketOperatorFSM {
         MIDDLE_BUCKETSTATE, MIDDLE_EXTEND_VIPER, MIDDLE_EXTEND_ELBOW, MIDDLE_RETRACT_VIPER, MIDDLE_RETRACT_ELBOW_S1, MIDDLE_RETRACT_ELBOW_S2,
         HIGH_BUCKETSTATE, HIGH_EXTEND_VIPER, HIGH_EXTEND_ELBOW, HIGH_RETRACT_VIPER, HIGH_RETRACT_ELBOW_S1, HIGH_RETRACT_ELBOW_S2,
 
+        READY_GRAB_SAMPLE,
+
     };
     private ElapsedTime bucketStateTimer = new ElapsedTime();
     private BucketState bucketState;
@@ -140,6 +142,18 @@ public class BucketOperatorFSM {
                     shoulder.setTarget(POS_SHOULDER_MIDDLE_BUCKET);
                     bucketState = BucketState.MIDDLE_BUCKETSTATE;
                     bucketStateTimer.reset();
+                }
+
+                if (gamepad.dpad_right) {
+                    shoulder.setTarget(70);
+                    claw.customPivotPos(0.85);
+                    claw.speedOpen(true);
+                }
+                break;
+
+            case READY_GRAB_SAMPLE:
+                if (bucketStateTimer.seconds() > 0.3) {
+                    bucketState = BucketState.ZERO_BUCKETSTATE;
                 }
                 break;
 

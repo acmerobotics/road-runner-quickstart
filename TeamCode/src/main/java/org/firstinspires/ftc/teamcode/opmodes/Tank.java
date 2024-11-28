@@ -85,12 +85,6 @@ public class Tank extends OpMode {
         rightBack.setPower(Rx * max * speed);
 
 
-        if (gamepad2.dpad_right) {
-            shoulder.setTarget(70);
-            claw.customPivotPos(0.85);
-            claw.speedOpen(true);
-        }
-
         if (gamepad1.left_bumper && gamepad1.right_bumper) {
             ;
         } else if (gamepad1.left_bumper) {

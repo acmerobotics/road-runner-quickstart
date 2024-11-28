@@ -98,12 +98,6 @@ public class Headless extends OpMode {
         }
 
 
-        if (gamepad2.dpad_right) {
-            shoulder.setTarget(70);
-            claw.customPivotPos(0.85);
-            claw.speedOpen(true);
-        }
-
         gamepadToMovement();
         if (!gamepad1.left_bumper) {
             drive.setDrivePowers(

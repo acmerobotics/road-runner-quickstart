@@ -41,7 +41,7 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 public class SubOperatorFSM {
 
     private final int POS_SHOULDER_SUB = 150;
-    private final int POS_SHOULDER_LOWER = 350;
+    private final int POS_SHOULDER_LOWER = 375;
     private final int POS_SHOULDER_HANG = 900;
     private final int THRESH_SHOULDER = 150;
     private final int THRESH_VIPER = 50;
