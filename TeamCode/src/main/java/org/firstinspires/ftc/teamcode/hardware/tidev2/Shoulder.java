@@ -173,6 +173,10 @@ public class Shoulder {
 
 
 
+
+
+
+
     public void sendTelemetry() {
         myOpMode.telemetry.addData("Arm pos Left/Right", "%4d / %4d",
                 shoulder_left.getCurrentPosition(),

@@ -88,7 +88,8 @@ public class rightAuto extends LinearOpMode {
                     //two in observation zone
                     //prepare to grab
 
-                    .afterTime(0, claw.autonNormalPivot())
+
+                    .afterTime(0, shoulder.autonDown())
                     .strafeTo(new Vector2d(47,-48))
                     .strafeTo(new Vector2d(47,-53))
 
@@ -102,7 +103,7 @@ public class rightAuto extends LinearOpMode {
                     .afterTime(0, shoulder.autonDownHC())
                     .waitSeconds(0.05)
                     .afterTime(0, claw.autonOpenClaw())
-                    .waitSeconds(0.2)
+                    .waitSeconds(0.1)
                     .afterTime(0, shoulder.autonDown())
 
                     .strafeTo(new Vector2d(10, -45))
@@ -120,7 +121,7 @@ public class rightAuto extends LinearOpMode {
                     .afterTime(0, shoulder.autonHC())
                     .strafeToSplineHeading(new Vector2d(10,-34), Math.toRadians(90))
                     //clip, park
-                    .afterTime(0, shoulder.autonDownHC())
+                    .afterTime(0, shoulder.autonDown())
                     .waitSeconds(0.05)
                     .afterTime(0, claw.autonOpenClaw())
                     .waitSeconds(0.2)

@@ -45,7 +45,7 @@ public class Claw {
 
     // Define class members
     public final double PIVOT_LOW = 0.68;
-    public final double PIVOT_NORMAL = 0.75;
+    public final double PIVOT_NORMAL = 0.85;
     public final double PIVOT_HIGH = 1.0;
     double wildcard;
 
@@ -74,9 +74,11 @@ public class Claw {
 
     public void speedOpen(boolean open) {
         if (open) {
-            claw.setPosition(clawClose);
+
+            pos = true;
         } else {
-            claw.setPosition(clawOpen);
+
+            pos = false;
         }
     }
 
