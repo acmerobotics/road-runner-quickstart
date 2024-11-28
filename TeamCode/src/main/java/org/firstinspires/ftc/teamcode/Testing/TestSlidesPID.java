@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
 import org.firstinspires.ftc.teamcode.mechanisms.SlidesV2;
 
@@ -20,7 +21,7 @@ public class TestSlidesPID extends LinearOpMode {
 
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
-
+    private Telemetry tele = dash.getTelemetry();
     @Override
     public void runOpMode() {
 
@@ -41,6 +42,7 @@ public class TestSlidesPID extends LinearOpMode {
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
 
+            slides.updateMotors();
 
             previousGamepad1.copy(currentGamepad1);
             previousGamepad2.copy(currentGamepad2);
@@ -52,6 +54,13 @@ public class TestSlidesPID extends LinearOpMode {
                 runningActions.add(slides.retract());
             }
 
+            if (currentGamepad1.y && !previousGamepad1.y) {
+                runningActions.add(slides.slideTopBasket());
+            }
+
+            if (currentGamepad1.a && !previousGamepad1.a) {
+                runningActions.add(slides.slideWallLevel());
+            }
 
 
             List<Action> newActions = new ArrayList<>();
@@ -68,6 +77,13 @@ public class TestSlidesPID extends LinearOpMode {
             telemetry.addData("Slides Left", slides.slidesLeftMotor.getCurrentPosition());
             telemetry.addData("Slides Right", slides.slidesRightMotor.getCurrentPosition());
             telemetry.update();
+
+            tele.addData("PID", slides.getPID());
+            tele.addData("Slides Left", slides.slidesLeftMotor.getCurrentPosition());
+            tele.addData("Slides Right", slides.slidesRightMotor.getCurrentPosition());
+            tele.addData("Slides Left Power", slides.slidesLeftMotor.getPower());
+            tele.addData("Slides Right Power", slides.slidesRightMotor.getPower());
+            tele.update();
         }
 
     }
