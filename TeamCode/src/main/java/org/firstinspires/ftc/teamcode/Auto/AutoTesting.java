@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 @Autonomous(name = "AUTO Testing", group = "Autonomous")
 public class AutoTesting extends LinearOpMode {
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-10, -63, Math.toRadians(90.00));
+        Pose2d initialPose = new Pose2d(10, -63, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Claw claw = new Claw(hardwareMap);
         Fourbar fourbar = new Fourbar(hardwareMap);
@@ -32,7 +32,13 @@ public class AutoTesting extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .splineToConstantHeading(new Vector2d(0, -37), Math.toRadians(90));
+                .splineToConstantHeading(new Vector2d(0, -32), Math.toRadians(90));
+        TrajectoryActionBuilder tab2 = drive.actionBuilder(initialPose)
+                .lineToYConstantHeading(-5)
+                .splineToConstantHeading(new Vector2d(60,-20), Math.toRadians(180));
+
+
+
 
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(claw.ClawOpen());
@@ -46,15 +52,19 @@ public class AutoTesting extends LinearOpMode {
 
         Action toChambers = tab1.build();
 
+        Action toObs = tab2.build();
+
+
 
         Actions.runBlocking(
                 new SequentialAction(
-//                        toChambers,
-                        claw.ClawClose(),
-                        new SleepAction(10),
-                        fourbar.FourBarDown(),
-                        lift.SlidesToBar(),
-                        new SleepAction(30)
+                        toChambers,
+                        //claw.ClawClose(),
+                        new SleepAction(2),
+                        toObs
+                        //fourbar.FourBarDown(),
+                        //lift.SlidesToBar(),
+                        //new SleepAction(30)
                 )
         );
     }
