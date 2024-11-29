@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 
 
 @Config
-@Autonomous(name = "\uD83D\uDD34 - RedNearBasket", group = "RoadRunner 1.0")
+@Autonomous(name = "\uD83D\uDD34 - RedNearBasketV2", group = "RoadRunner 1.0")
 public class RedNearBasketv2 extends LinearOpMode {
 
 
