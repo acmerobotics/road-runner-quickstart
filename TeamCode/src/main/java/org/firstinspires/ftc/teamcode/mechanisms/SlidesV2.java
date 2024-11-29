@@ -17,9 +17,9 @@ public class SlidesV2 {
     public DcMotor slidesLeftMotor;
     public DcMotor slidesRightMotor;
 
-    public static double KP = 0.05;
+    public static double KP = 0.01;
     public static double KI = 0;
-    public static double KD = 0.01;
+    public static double KD = 0;
 
     public PIDFController.PIDCoefficients slidesCoeffs = new PIDFController.PIDCoefficients(KP, KI, KD);
     public PIDFController slidesPID = new PIDFController(slidesCoeffs);

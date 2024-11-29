@@ -49,15 +49,16 @@ import com.qualcomm.robotcore.hardware.SwitchableLight;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Control;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
+import org.firstinspires.ftc.teamcode.mechanisms.ExtendoV2;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
+import org.firstinspires.ftc.teamcode.mechanisms.SlidesV2;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 @TeleOp
-@Config
 public class Teleop extends LinearOpMode {
 
     private FtcDashboard dash = FtcDashboard.getInstance();
@@ -109,9 +110,9 @@ public class Teleop extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
         Gamepad previousGamepad2 = new Gamepad();
 
-        Extendo extendo = new Extendo(hardwareMap, 1);
+        ExtendoV2 extendo = new ExtendoV2(hardwareMap);
         Intaker intake = new Intaker(hardwareMap);
-        Slides slides = new Slides(hardwareMap, 1);
+        SlidesV2 slides = new SlidesV2(hardwareMap, false);
         Claw claw = new Claw(hardwareMap);
         Control control = new Control();
         Control control2 = new Control();
@@ -120,8 +121,8 @@ public class Teleop extends LinearOpMode {
                 intake.flop(),
                 claw.flop(),
                 claw.open(),
-                extendo.retract()
-
+                extendo.retract(),
+                slides.retract()
         ));
 
 
@@ -197,16 +198,6 @@ public class Teleop extends LinearOpMode {
                             intake.intakeMotor.setPower(0);
                         }
 
-                        if (lefty2 != 0) {
-                            extendo.setManual();
-                            extendo.extendoMotor.setPower(lefty2/2);
-                        } else {
-                            extendo.setAuto();
-                        }
-
-                        if (currentGamepad1.x && !previousGamepad1.x) {
-                            runningActions.add(intake.flop());
-                        }
                     }
 
                     if (control.getFinished()) {
@@ -238,29 +229,20 @@ public class Teleop extends LinearOpMode {
                                 intakeUp = false;
                             }
                         } else if (currentGamepad2.dpad_left) {
-                            intake.downExtake();
+                            runningActions.add(intake.extake());
                         } else {
-                            intake.downIntake();
+                            runningActions.add(intake.intake());
                         }
-
-                        extendo.changetarget(lefty2/2);
 
                     }
 
                     if (control.getFinished()) {
                         control.resetFinished();
-                        runningActions.add(claw.flop());
                         extendoState = ExtendoState.EXTENDORETRACT;
                     }
                     break;
                 case EXTENDORETRACT:
 
-                    if (lefty2 != 0) {
-                        extendo.setManual();
-                        extendo.extendoMotor.setPower(lefty2/2);
-                    } else {
-                        extendo.setAuto();
-                    }
 
                     if ((currentGamepad2.a && !previousGamepad2.a)) /*|| intakeColor.equals("none"))*/ {
                         runningActions.add(intake.extake());
@@ -369,7 +351,6 @@ public class Teleop extends LinearOpMode {
                 case HANGUP:
                     if (currentGamepad1.y && !previousGamepad1.y) {
                         runningActions.add(slides.retract());
-                        extendo.extendoMotor.setPower(1);
                         hangState = HangState.HANGSTART;
                     }
             }
@@ -388,11 +369,6 @@ public class Teleop extends LinearOpMode {
                 ));
             }
 
-            if (currentGamepad2.dpad_up) {
-                slides.changeTarget(-10);
-            } else if (currentGamepad2.dpad_down) {
-                slides.changeTarget(10);
-            }
 
 
             List<Action> newActions = new ArrayList<>();
@@ -407,11 +383,8 @@ public class Teleop extends LinearOpMode {
 
 
 
-            telemetry.addData("extendo", extendo.extendoMotor.getCurrentPosition());
             telemetry.addData("slides left", slides.slidesLeftMotor.getCurrentPosition());
             telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
-            telemetry.addData("extendo target", extendo.extendoMotorPID.getTargetPosition());
-            telemetry.addData("extendo power", extendo.extendoMotor.getPower());
             telemetry.addData("color", intakeColor);
             telemetry.update();
 

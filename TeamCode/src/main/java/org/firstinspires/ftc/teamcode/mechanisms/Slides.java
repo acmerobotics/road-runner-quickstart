@@ -306,5 +306,17 @@ public class Slides {
         slidesRightMotor.setTargetPosition(target);
     }
 
+    public void setManual() {
+        slidesLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slidesRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void setAuto() {
+        slidesLeftMotor.setTargetPosition(target);
+        slidesRightMotor.setTargetPosition(target);
+        slidesLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
 
 }
