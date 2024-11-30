@@ -32,9 +32,9 @@ public class AutoTesting extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .splineToConstantHeading(new Vector2d(0, -32), Math.toRadians(90));
-        TrajectoryActionBuilder tab2 = drive.actionBuilder(initialPose)
-                .lineToYConstantHeading(-5)
+                .splineToConstantHeading(new Vector2d(10, -32), Math.toRadians(90));
+        TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(10, -32, Math.toRadians(90)))
+                .lineToYConstantHeading(-37)
                 .splineToConstantHeading(new Vector2d(60,-20), Math.toRadians(180));
 
 
