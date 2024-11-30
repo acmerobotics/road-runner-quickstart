@@ -15,7 +15,7 @@ public class Lift {
 
     final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
     final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
-    final double LIFT_SCORING_IN_HIGH_BASKET = 480 * LIFT_TICKS_PER_MM * 1.3;
+    final double LIFT_SCORING_IN_HIGH_BASKET = 510 * LIFT_TICKS_PER_MM * 1.3;
 
 
     public DcMotorEx motor;
@@ -41,7 +41,7 @@ public class Lift {
         public boolean run(@NonNull TelemetryPacket packet) {
 
             motor.setTargetPosition(_targetPos);
-            motor.setVelocity(1300);
+            motor.setVelocity(3000);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             int currentPosition = motor.getCurrentPosition();
