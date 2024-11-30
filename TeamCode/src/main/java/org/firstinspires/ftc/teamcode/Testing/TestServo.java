@@ -19,13 +19,13 @@ public class TestServo extends LinearOpMode {
             if (gamepad1.a) {
 //                left.setPosition(0.83);
 //                right.setPosition(0.83);
-                bucket.setPosition(0.2);
+                bucket.setPosition(0.33);
             }
 
             if (gamepad1.x) {
 //                left.setPosition(0.5);
 //                right.setPosition(0.5);
-                bucket.setPosition(0.55);
+                bucket.setPosition(0.2);
             }
 
             if (gamepad1.b) {

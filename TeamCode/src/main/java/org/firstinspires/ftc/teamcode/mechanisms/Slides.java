@@ -238,7 +238,7 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set values to the motor position of a bit above the bottom speciman bar
-                target = -955;
+                target = -6500;
                 slidesLeftMotor.setTargetPosition(target);
                 slidesRightMotor.setTargetPosition(target);
 
@@ -253,7 +253,7 @@ public class Slides {
 
 
 
-            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) < 15) {
+            if (Math.abs(slidesLeftMotor.getTargetPosition() - getPos()) < 10) {
                 return true;
             }
             return false;
