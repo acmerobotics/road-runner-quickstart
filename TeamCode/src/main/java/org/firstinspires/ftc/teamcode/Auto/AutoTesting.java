@@ -35,7 +35,11 @@ public class AutoTesting extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(0, -32), Math.toRadians(90));
         TrajectoryActionBuilder tab2 = drive.actionBuilder(initialPose)
                 .lineToYConstantHeading(-5)
-                .splineToConstantHeading(new Vector2d(60,-20), Math.toRadians(180));
+                //.splineToLinearHeading(new Pose2d(60,-60,180), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(60,-40), Math.toRadians(180));
+
+
+                //.splineToConstantHeading(new Vector2d(60,-30), Math.toRadians(180));
 
 
 
