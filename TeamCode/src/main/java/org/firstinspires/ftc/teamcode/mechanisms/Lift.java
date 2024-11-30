@@ -46,9 +46,9 @@ public class Lift {
 
             int currentPosition = motor.getCurrentPosition();
             int error = Math.abs(_targetPos - currentPosition);
-            packet.put("TargetPos", _targetPos);
+            packet.put("LiftTargetPos", _targetPos);
             packet.put("LiftPos", currentPosition);
-            packet.put("Error", error);
+            packet.put("LiftError", error);
             // keep running until we're close enough
             return error > 5; // ticks
         }
