@@ -23,7 +23,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 public class RedNearBasketv2 extends LinearOpMode {
 
 
-    // Start position red near
     Pose2d RED_SCORE_START_POSE = new Pose2d(-38, -60, Math.toRadians(180));
 
 
