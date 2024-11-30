@@ -35,7 +35,7 @@ public class intakeatangle extends LinearOpMode {
         TrajectoryActionBuilder traj = drive.actionBuilder(RED_SCORE_START_POSE)
                 .strafeToLinearHeading(new Vector2d(-38, -56), Math.toRadians(180))
                 .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
-                .strafeToLinearHeading(new Vector2d(-42, -40), Math.toRadians(90+55));
+                .strafeToLinearHeading(new Vector2d(-29, -31), Math.toRadians(161));
         while(!isStopRequested() && !opModeIsActive()) {
 
         }
