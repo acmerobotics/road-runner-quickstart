@@ -4,7 +4,12 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,7 +18,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Vector;
 
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
 import dev.frozenmilk.dairy.cachinghardware.CachingServo;
@@ -23,11 +34,14 @@ public class MotorControl {
     private static PIDController liftController, extendoController;
     public final Servo  intakeRight, intakePivot,intakeClaw, intakeTurret, outTakeRight, outTakePivot, outTakeClaw;
 
+
+    public final Limelight limelight;
+
     public final ControlledServo intakeLeft;
     public final Lift lift;
     public final Extendo extendo;
 
-    public MotorControl(@NonNull HardwareMap hardwareMap) {
+    public MotorControl(@NonNull HardwareMap hardwareMap, Telemetry telemetry) {
         lift = new Lift(hardwareMap);
         extendo = new Extendo(hardwareMap);
         intakeLeft = new ControlledServo(hardwareMap, "armleft", "intake", 0.03, 0.115, 0.905);
@@ -39,6 +53,8 @@ public class MotorControl {
         outTakePivot  = hardwareMap.get(Servo.class, "outtakepivot");
         outTakeClaw = hardwareMap.get(Servo.class, "outtakeclaw");
 
+        limelight = new Limelight(hardwareMap, telemetry);
+
         intakeLeft.servo.setDirection(Servo.Direction.REVERSE);
     }
 
@@ -46,6 +62,7 @@ public class MotorControl {
     public void update() {
         lift.update();
         extendo.update();
+        limelight.telemetry.update();
     }
 
 
@@ -246,6 +263,106 @@ public class MotorControl {
         public double getTargetPosition() {
             return targetPosition;
         }
+    }
+
+
+    public static class Limelight {
+        private final Limelight3A limelight;
+        private final int maxSamples = 20;
+        private final List<Double> xSamples;
+        private final List<Double> ySamples;
+        private boolean isCollectingSamples;
+        private final Telemetry telemetry;
+
+        public Limelight(HardwareMap hardwareMap, Telemetry telemetry) {
+            limelight = hardwareMap.get(Limelight3A.class, "limelight");
+            xSamples = new ArrayList<>();
+            ySamples = new ArrayList<>();
+            isCollectingSamples = false;
+            this.telemetry = telemetry;
+
+            this.telemetry.addData("limelight", "Started");
+
+            limelight.start(); // Start polling data
+        }
+
+        public void stop() {
+            limelight.stop();
+        }
+
+        public void resetSamples() {
+            xSamples.clear();
+            ySamples.clear();
+            isCollectingSamples = false;
+        }
+
+        public boolean isCollectingSamples() {
+            return isCollectingSamples;
+        }
+
+        public void startCollectingSamples() {
+            resetSamples();
+            isCollectingSamples = true;
+        }
+
+        public boolean collectSamples() {
+            telemetry.addData("collecting samples", isCollectingSamples);
+            LLResult result = limelight.getLatestResult();
+            telemetry.addData("Result", result != null);
+            telemetry.addData("Result", result.getPythonOutput() != null);
+            if (!isCollectingSamples) {
+                return false;
+            }
+
+            if (result.getPythonOutput() != null && result.getPythonOutput()[0] != -1) {
+                // Get the X_world and Y_world from the Python output
+                double xWorld = result.getPythonOutput()[1]; // in cm
+                double yWorld = result.getPythonOutput()[2]; // in cm
+
+                // Collect the outputs
+                xSamples.add(xWorld);
+                ySamples.add(yWorld);
+
+                telemetry.addData("Limelight Detected", true);
+
+                // Keep only the most recent maxSamples
+                if (xSamples.size() > maxSamples) {
+                    xSamples.remove(0);
+                }
+                if (ySamples.size() > maxSamples) {
+                    ySamples.remove(0);
+                }
+
+                // Check if enough samples have been collected
+                return xSamples.size() == maxSamples && ySamples.size() == maxSamples;
+            }
+            telemetry.addData("Limelight Detected", false);
+            return false;
+        }
+
+
+        public Vector2d getAveragePoseInInches() {
+            // Compute the average X and Y
+            double sumX = 0;
+            double sumY = 0;
+            for (int i = 0; i < maxSamples; i++) {
+                sumX += xSamples.get(i);
+                sumY += ySamples.get(i);
+            }
+            double avgX = sumX / maxSamples; // in cm
+            double avgY = sumY / maxSamples; // in cm
+
+
+
+            // Convert cm to inches
+            double avgXInches = avgX * 393.701;
+            double avgYInches = avgY * 393.701;
+
+            // Create a Pose2d object with the averaged positions
+            return new Vector2d(avgXInches, avgYInches);
+        }
+
+        // Additional methods can be added here for more functionalities
     }
 
 }

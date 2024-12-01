@@ -5,10 +5,18 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.Trajectory;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.helpers.data.PositionsClass;
 import org.firstinspires.ftc.teamcode.helpers.hardware.MotorControl;
 
@@ -26,6 +34,21 @@ public class MotorActions {
     public final OuttakePivot outtakePivot;
     public final OutTakeClaw outTakeClaw;
     public final IntakeTurret intakeTurret;
+    public final MecanumDrive drive;
+
+    public MotorActions(MotorControl motorControl, MecanumDrive drive) {
+        this.drive = drive;
+        this.motorControl = motorControl;
+        this.extendo = new Extendo();
+        this.lift = new Lift();
+        this.intakeArm = new IntakeArm();
+        this.intakePivot = new IntakePivot();
+        this.outtakeArm = new OuttakeArm();
+        this.outtakePivot = new OuttakePivot();
+        this.intakeClaw = new IntakeClaw();
+        this.outTakeClaw = new OutTakeClaw();
+        this.intakeTurret = new IntakeTurret();
+    }
 
     public Action intakeExtend(double Position, int index) {
         return new SequentialAction(
@@ -34,7 +57,7 @@ public class MotorActions {
                     return false;
                 },
                 intakeTurret.setPositionByIndex(index),
-                intakeArm.Intake(),
+                intakeArm.Extended(),
                 intakePivot.Grab(),
                 extendo.setTargetPosition(Position),
                 extendo.waitUntilFinished(),
@@ -134,18 +157,7 @@ public class MotorActions {
 
 
 
-    public MotorActions(MotorControl motorControl) {
-        this.motorControl = motorControl;
-        this.extendo = new Extendo();
-        this.lift = new Lift();
-        this.intakeArm = new IntakeArm();
-        this.intakePivot = new IntakePivot();
-        this.outtakeArm = new OuttakeArm();
-        this.outtakePivot = new OuttakePivot();
-        this.intakeClaw = new IntakeClaw();
-        this.outTakeClaw = new OutTakeClaw();
-        this.intakeTurret = new IntakeTurret();
-    }
+
 
 
     public Action update() {
@@ -226,10 +238,9 @@ public class MotorActions {
 
 
     public class IntakeArm {
-        // todo: might need to reverse the servo
         private static final double GRAB_POSITION = 0;
         private static final double INTAKE_POSITION = 0.11;
-        private static final double EXTENDED_POSITION = 0.2;
+        private static final double EXTENDED_POSITION = 0.24;
         private static final double TRANSFER_POSITION = 0.3;
 
         public Action setTargetPosition(double position) {
@@ -441,8 +452,6 @@ public class MotorActions {
             return setTargetPosition(OPEN_POSITION);
         }
     }
-
-
 
 
 }

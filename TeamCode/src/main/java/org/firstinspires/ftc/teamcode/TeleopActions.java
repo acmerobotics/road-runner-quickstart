@@ -35,9 +35,6 @@ public class TeleopActions extends ActionOpMode {
 
     @Override
     public void runOpMode() {
-        motorControl = new MotorControl(hardwareMap);
-        motorActions = new MotorActions(motorControl);
-
         Pose2d startingPose = org.firstinspires.ftc.teamcode.helpers.data.PoseStorage.loadPose();
         if (startingPose == null) {
             startingPose = new Pose2d(0, 0, 0);
@@ -48,7 +45,12 @@ public class TeleopActions extends ActionOpMode {
             telemetry.update();
         }
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, startingPose);
+        PinpointDrive drive = new PinpointDrive(hardwareMap, startingPose);
+
+        motorControl = new MotorControl(hardwareMap, telemetry);
+        motorActions = new MotorActions(motorControl, drive);
+
+
 
         waitForStart();
 
