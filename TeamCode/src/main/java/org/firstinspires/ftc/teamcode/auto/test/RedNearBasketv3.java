@@ -26,12 +26,12 @@ public class RedNearBasketv3 extends LinearOpMode {
     // Start position red near
     Pose2d RED_SCORE_START_POSE = new Pose2d(-38, -60, Math.toRadians(180));
 
-    public static double RED_BASKET_X = -48;
-    public static double RED_BASKET_Y = -48;
+    public static double RED_BASKET_X = -47;
+    public static double RED_BASKET_Y = -47;
     public static double RED_BASKET_HEADING = 180+45;
 
-    public static double RED_SAMPLE1_X = -28;
-    public static double RED_SAMPLE2_X = -36;
+    public static double RED_SAMPLE1_X = -26;
+    public static double RED_SAMPLE2_X = -35;
     public static double RED_SAMPLE3_X = -42; // -46 would hit the boundary
 
     public static double RED_SAMPLE1_Y = -30;
@@ -56,8 +56,8 @@ public class RedNearBasketv3 extends LinearOpMode {
         // TODO: Move to a shared file
         Action scoreHighAction = new SequentialAction(
                 new ParallelAction(
-                wrist.wristFoldOutAction(),
-                arm.armScoreAction()),
+                    wrist.wristFoldOutAction(),
+                    arm.armScoreAction()),
                 lift.liftUpAction()
         );
 //        Action scoreHighAction2 = new ParallelAction(
@@ -93,16 +93,22 @@ public class RedNearBasketv3 extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_X, RED_BASKET_Y), Math.toRadians(RED_BASKET_HEADING));
 
         TrajectoryActionBuilder driveBasketToSample1Tab = startToBasketTab.endTrajectory().fresh()
-//                .strafeToLinearHeading(new Vector2d(-30, RED_SAMPLE1_Y), Math.toRadians(180))
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE1_X, RED_SAMPLE1_Y), Math.toRadians(RED_SAMPLE1_HEADING));
 
-        TrajectoryActionBuilder driveSample1ToBasketTab = driveBasketToSample1Tab.endTrajectory().fresh()
+        TrajectoryActionBuilder pickUpSample1Tab = driveBasketToSample1Tab.endTrajectory().fresh()
+                .setTangent(Math.toRadians(RED_SAMPLE1_HEADING))
+                .lineToX(RED_SAMPLE1_X - 4);
+
+        TrajectoryActionBuilder driveSample1ToBasketTab = pickUpSample1Tab.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_X, RED_BASKET_Y), Math.toRadians(RED_BASKET_HEADING));
 
         TrajectoryActionBuilder driveBasketToSample2Tab = driveSample1ToBasketTab.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE2_X, RED_SAMPLE2_Y), Math.toRadians(180));
 
-        TrajectoryActionBuilder driveSample2ToBasketTab = driveBasketToSample2Tab.endTrajectory().fresh()
+        TrajectoryActionBuilder pickUpSample2Tab = driveBasketToSample2Tab.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(RED_SAMPLE2_X - 4, RED_SAMPLE2_Y), Math.toRadians(180));
+
+        TrajectoryActionBuilder driveSample2ToBasketTab = pickUpSample2Tab.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_X, RED_BASKET_Y), Math.toRadians(RED_BASKET_HEADING));
 
         TrajectoryActionBuilder driveBasketToSample3Tab = driveSample2ToBasketTab.endTrajectory().fresh()
@@ -140,8 +146,6 @@ public class RedNearBasketv3 extends LinearOpMode {
                 driveBasketToSample2Tab.build()
         );
         Action cBasketToSample3Action = new ParallelAction(
-//                arm.armRobotTravelAction(),
-//                lift.liftDownAction(),
                 new SequentialAction(
                         arm.armVerticalAction()
                         ,lift.liftDownAction()
@@ -150,14 +154,16 @@ public class RedNearBasketv3 extends LinearOpMode {
                 driveBasketToSample3Tab.build()
         );
 
-        Action cSample1ToBasketAction = new ParallelAction(
-                driveSample1ToBasketTab.build(),
-                arm.armScoreAction(),
+        Action cSample1ToBasketAction = new SequentialAction(
+                new ParallelAction(
+                    driveSample1ToBasketTab.build(),
+                    arm.armScoreAction()),
                 lift.liftUpAction()
         );
-        Action cSample2ToBasketAction = new ParallelAction(
-                driveSample2ToBasketTab.build(),
-                arm.armScoreAction(),
+        Action cSample2ToBasketAction = new SequentialAction(
+                new ParallelAction(
+                        driveSample2ToBasketTab.build(),
+                        arm.armScoreAction()),
                 lift.liftUpAction()
         );
         Action cSample3ToBasketAction = new ParallelAction(
@@ -165,6 +171,20 @@ public class RedNearBasketv3 extends LinearOpMode {
                 arm.armScoreAction(),
                 lift.liftUpAction()
         );
+
+        Action cPickUpSample1Action = new ParallelAction(
+                pickUpSample1Tab.build(),
+                arm.armGroundCollectAction(),
+                intake.intakeAction()
+        );
+
+        Action cPickUpSample2Action = new ParallelAction(
+                pickUpSample2Tab.build(),
+                arm.armGroundCollectAction(),
+                intake.intakeAction()
+        );
+
+
         // ==== End of composite actions ====
 
 
@@ -183,15 +203,14 @@ public class RedNearBasketv3 extends LinearOpMode {
                         intake.depositAction(),
                         //
                         cBasketToSample1Action,
-                        collectAction,
+                        cPickUpSample1Action,
                         arm.armVerticalAction(),
                         cSample1ToBasketAction,
                         new SleepAction(0.1),
                         intake.depositAction(),
                         //
                         cBasketToSample2Action,
-                        arm.armGroundCollectAction(),
-                        new SleepAction(0.5),
+                        cPickUpSample2Action,
                         arm.armVerticalAction(),
                         cSample2ToBasketAction,
                         new SleepAction(0.1),
