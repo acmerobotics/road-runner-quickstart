@@ -41,7 +41,7 @@ public class Arm {
     If you'd like it to move further, increase that number. If you'd like it to not move
     as far from the starting position, decrease it. */
 
-    public static double ARM_COLLECT_DEG = 230;
+    public static double ARM_COLLECT_DEG = 232;
     public static double ARM_COLLAPSED_INTO_ROBOT  = 0 * ARM_TICKS_PER_DEGREE;
     public static double ARM_COLLECT               = ARM_COLLECT_DEG * ARM_TICKS_PER_DEGREE;
     public static double ARM_CLEAR_BARRIER         = 219 * ARM_TICKS_PER_DEGREE;

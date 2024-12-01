@@ -88,7 +88,7 @@ public class Intake {
             duration = Actions.now() - beginTs;
             packet.put("duration", duration);
             packet.put("power ", intake.getPower());
-            if (duration < 1.0){
+            if (duration < 2.0){
                 intake.setPower(INTAKE_COLLECT);
                 return true;
             } else {

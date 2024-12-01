@@ -54,9 +54,10 @@ public class RedNearBasketv3 extends LinearOpMode {
 
         //==== Start of Non-trajectory related actions ====
         // TODO: Move to a shared file
-        Action scoreHighAction = new ParallelAction(
+        Action scoreHighAction = new SequentialAction(
+                new ParallelAction(
                 wrist.wristFoldOutAction(),
-                arm.armScoreAction(),
+                arm.armScoreAction()),
                 lift.liftUpAction()
         );
 //        Action scoreHighAction2 = new ParallelAction(
@@ -196,13 +197,13 @@ public class RedNearBasketv3 extends LinearOpMode {
                         new SleepAction(0.1),
                         intake.depositAction(),
                         //
-                        cBasketToSample3Action,
-                        arm.armGroundCollectAction(),
-                        new SleepAction(0.5),
-                        arm.armVerticalAction(),
-                        cSample3ToBasketAction,
-                        new SleepAction(0.1),
-                        intake.depositAction(),
+//                        cBasketToSample3Action,
+//                        arm.armGroundCollectAction(),
+//                        new SleepAction(0.5),
+//                        arm.armVerticalAction(),
+//                        cSample3ToBasketAction,
+//                        new SleepAction(0.1),
+//                        intake.depositAction(),
                         //
                         foldBackAction
                 )
