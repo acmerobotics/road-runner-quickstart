@@ -25,7 +25,7 @@ import java.util.List;
 
 @Autonomous(name = "#Auto")
 
-public class Auto extends LinearOpMode {
+public class Auto2 extends LinearOpMode {
 
     private DcMotorEx lift, leftRotate, rightRotate;
     private Servo rotate, left, right;
@@ -42,12 +42,16 @@ public class Auto extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
+    double linearVelX = 0;
+    double linearVelY = 0;
+    double angularVel = 0;
 
     @Override
 
 
     public void runOpMode() throws InterruptedException {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        TwoDeadWheelLocalizer twoDeadWheelLocalizer = new TwoDeadWheelLocalizer(hardwareMap, drive.lazyImu.get(), 1870);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 
@@ -61,21 +65,19 @@ public class Auto extends LinearOpMode {
         double lastHeading = 0;
         double startX = drive.pose.position.x;
         double startY = drive.pose.position.y;
+        double targetX;
+        double targetY;
         waitForStart();
-        driveToPosition(30, 0, drive);
+        resetRuntime();
         if (opModeIsActive()) {
 
             while (opModeIsActive()) { //Main loop
-                /*drive.setDrivePowers(new PoseVelocity2d(
-                        new Vector2d(
-                                -gamepad1.left_stick_y,
-                                -gamepad1.left_stick_x
-                        ),
-                        -gamepad1.right_stick_x
-                ));*/
+
                 telemetryAprilTag();
 
-
+                if (getRuntime() <5) {
+                    driveToPosition(100, 0, drive, twoDeadWheelLocalizer);
+                }
 
                 //Lift
                 List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -92,50 +94,49 @@ public class Auto extends LinearOpMode {
                     tagBearing = 0;
                     tagRange = 0;
                 }
-                double absoluteY = (Math.cos((drive.pose.heading.toDouble() - 90) + tagBearing)*tagRange);
+                //double absoluteY = (Math.cos((drive.pose.heading.toDouble() - 90) + tagBearing)*tagRange);
 
-                /*while (absoluteY > 100) {
-
-                }*/
-                
-                drive.updatePoseEstimate();
-
-                telemetry.addLine(String.format("x", drive.pose.position.x));
-                telemetry.addLine(String.format("y", drive.pose.position.y));
-                telemetry.addLine(String.format("%6.1f heading (deg)", Math.toDegrees(drive.pose.heading.toDouble())));
-                telemetry.update();
-
-                TelemetryPacket packet = new TelemetryPacket();
-                packet.fieldOverlay().setStroke("#3F51B5");
-                Drawing.drawRobot(packet.fieldOverlay(), drive.pose);
-                FtcDashboard.getInstance().sendTelemetryPacket(packet);
+                if (getRuntime() <= 3.00) {
+                    linearVelX = 1;
+                }
+                drive.setDrivePowers(new PoseVelocity2d(new Vector2d(linearVelX, linearVelY), angularVel)); //Final Drive Inputs
             }
         }
     }
 
-    private void driveToPosition(double abX, double abY, MecanumDrive drive) {
+    private void driveToPosition(double abX, double abY, MecanumDrive drive, TwoDeadWheelLocalizer twoDeadWheelLocalizer) {
+        double positionX = twoDeadWheelLocalizer.par.getPositionAndVelocity().position;
+        double positionY = twoDeadWheelLocalizer.perp.getPositionAndVelocity().position;
 
-
-        while (drive.pose.position.x != abX || drive.pose.position.y != abY) {
-
-            drive.setDrivePowers(new PoseVelocity2d(new Vector2d(1/(drive.pose.position.y - abY), 0), (1/(drive.pose.position.x - abX))));
-            telemetry.addLine(String.format("%6.1f Y - abY", drive.pose.position.y - abY));
-            telemetry.addLine(String.format("%6.1f Y - abX", drive.pose.position.x - abX));
-            telemetry.addLine(String.format("%6.1f PosY", drive.pose.position.y));
-            telemetry.addLine(String.format("%6.1f PosX", drive.pose.position.x));
-            telemetry.addLine(String.format("%6.1f PosX", drive.pose.heading));
-            telemetry.update();
-
-            TelemetryPacket packet = new TelemetryPacket();
-            packet.fieldOverlay().setStroke("#3F51B5");
-            Drawing.drawRobot(packet.fieldOverlay(), drive.pose);
-            FtcDashboard.getInstance().sendTelemetryPacket(packet);
-
-            drive.updatePoseEstimate();
-
-
+        while (positionX != abX || positionY != abY) {
+            positionX = twoDeadWheelLocalizer.par.getPositionAndVelocity().position;
+            positionY = twoDeadWheelLocalizer.perp.getPositionAndVelocity().position;
+            double powerX = ((abX - positionX)*-1)/1000;
+            double powerY = ((abY - positionY)*-1)/1000;
+            linearVelX = powerX;
+            linearVelY = powerY;
+            runTelemetry(drive);
+            /*if (drive.pose.position.x < abX) {
+                drive.setDrivePowers(new PoseVelocity2d(new Vector2d(1, 0), 0));
+                runTelemetry(drive);
+            }*/
 
         }
+
+    }
+    private void runTelemetry(MecanumDrive drive){
+        telemetry.addLine(String.format("%6.1f time", getRuntime()));
+        telemetry.addLine(String.format("%6.1f Diffx", ((100 - drive.pose.position.x)*-1)/1000));
+        //telemetry.addLine(String.format("%6.1f Pose X", drive.pose.position.x));
+        telemetry.addLine(String.format("%6.1f Pose X", drive.pose.position.x));
+        telemetry.addLine(String.format("%6.1f Pose Y", drive.pose.position.y));
+        telemetry.addLine(String.format("%6.1f heading (deg)", Math.toDegrees(drive.pose.heading.toDouble())));
+        telemetryAprilTag();
+        telemetry.update();
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.fieldOverlay().setStroke("#3F51B5");
+        Drawing.drawRobot(packet.fieldOverlay(), drive.pose);
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
     }
     private void initAprilTag() {
 
