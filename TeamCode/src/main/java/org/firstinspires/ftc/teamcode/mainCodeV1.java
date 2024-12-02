@@ -135,8 +135,13 @@ public class mainCodeV1 extends LinearOpMode {
         } else {
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
             float directionBetweenAngles = distanceBetweenAngles((float)botHeading, (float)(30*targetedAngle + searchOrigin));
-            armMovement(false, true, 25);
-            rotateTo((30*targetedAngle) + searchOrigin, 0.2f);
+            float VELOCITYTANGENTIAL = 900; //unsure what the units are for this
+            float rotationSpeed = (VELOCITYTANGENTIAL/(-(arm.getCurrentPosition()))); //rotationSpeed (omega) = Vt/r where R is ARMMAX ~ 3000
+            int velocityArm = (int)(15 * ((215 * rotationSpeed)/(60f)));
+            telemetry.addData("rotationSpeed = ", rotationSpeed);
+            telemetry.addData("armVelocitiy = ", velocityArm);
+            armMovement(false, true, velocityArm);
+            rotateTo((30*targetedAngle) + searchOrigin, rotationSpeed);
             if (Math.abs(directionBetweenAngles) < 4) { //determines if the robot is facing a direction
                 if (targetedAngle == 1) { //if it was turning one way, switch it
                     targetedAngle = -1;
@@ -178,7 +183,7 @@ public class mainCodeV1 extends LinearOpMode {
         double botHeading;
         botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         float direction = distanceBetweenAngles((float)botHeading, (float)targetDegree);
-        float power = Math.max(Math.min(maxRotationSpeed, (float) (0.001 * Math.pow(direction, 2))), 0.225f); // 1 is clockwise, -1 is counterclock minimum is 0.1 (might need to be lower) and max is 0.5
+        float power = Math.max(Math.min(maxRotationSpeed, (float)(0.001 * Math.pow(direction, 2))), 0.225f); // 1 is clockwise, -1 is counterclock minimum is 0.1 (might need to be lower) and max is 0.5
         if (Math.abs(direction) < 1f) {     // if the angle is less than 1 then poweroff
             power = 0f;
         }
