@@ -32,9 +32,9 @@ public class AutoTesting extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .splineToConstantHeading(new Vector2d(0, -32), Math.toRadians(90));
+                .splineToConstantHeading(new Vector2d(0, -38), Math.toRadians(90));
         Action park = tab1.endTrajectory().fresh()
-                .lineToYConstantHeading(-37)
+                //.lineToYConstantHeading(-38)
                 .splineToConstantHeading(new Vector2d(60,-60), Math.toRadians(180))
                 .build();
 
@@ -62,7 +62,7 @@ public class AutoTesting extends LinearOpMode {
                 new SequentialAction(
                         toChambers,
                         //claw.ClawClose(),
-                        new SleepAction(2),
+                        new SleepAction(4),
                         park
                         //fourbar.FourBarDown(),
                         //lift.SlidesToBar(),
@@ -71,3 +71,20 @@ public class AutoTesting extends LinearOpMode {
         );
     }
 }
+/*
+spline 1(to chambers)
+
+linear slides up
+
+four bar set position 90 degrees
+
+coaxial set position 90 degrees
+
+linear slides down (not fully)
+
+claw open
+
+linear slides down fully
+
+spline 2 (park)
+ */
