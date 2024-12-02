@@ -32,9 +32,9 @@ public class ArmTest extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.armScoreAction(),
-                        new SleepAction(1), // sleep for 1 sec
-                        arm.armfoldbackaction()));
+                        arm.armVerticalAction(),
+                        new SleepAction(4), // sleep
+                        arm.armParkAction()));
 
     } // runOpMode
 

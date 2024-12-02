@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.security.PublicKey;
+
 @Config
 public class Arm {
     public DcMotorEx motor;
@@ -50,6 +52,8 @@ public class Arm {
     public static double ARM_SCORE_SAMPLE_IN_HIGH   = 128 * ARM_TICKS_PER_DEGREE;
     public static double ARM_ATTACH_HANGING_HOOK   = 120 * ARM_TICKS_PER_DEGREE;
     public static double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
+
+    public static double ARM_PARK_POS = 60 * ARM_TICKS_PER_DEGREE;
 
     public static double ARM_VERTICAL = 120 * ARM_TICKS_PER_DEGREE;
     public static double ARM_ROBOT_TRAVEL = 219 * ARM_TICKS_PER_DEGREE;
@@ -106,5 +110,9 @@ public class Arm {
     }
     public Action armVerticalAction(){
         return new ArmScoreAuto((int)ARM_VERTICAL);
+    }
+
+    public Action armParkAction(){return  new ArmScoreAuto((int)ARM_PARK_POS);
+
     }
 }
