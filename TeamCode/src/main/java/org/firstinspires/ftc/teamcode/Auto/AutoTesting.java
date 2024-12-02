@@ -33,10 +33,10 @@ public class AutoTesting extends LinearOpMode {
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .splineToConstantHeading(new Vector2d(0, -32), Math.toRadians(90));
-        TrajectoryActionBuilder tab2 = drive.actionBuilder(initialPose)
-                .lineToYConstantHeading(-5)
-                //.splineToLinearHeading(new Pose2d(60,-60,180), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(60,-40), Math.toRadians(180));
+        Action park = tab1.endTrajectory().fresh()
+                .lineToYConstantHeading(-37)
+                .splineToConstantHeading(new Vector2d(60,-60), Math.toRadians(180))
+                .build();
 
 
                 //.splineToConstantHeading(new Vector2d(60,-30), Math.toRadians(180));
@@ -56,8 +56,6 @@ public class AutoTesting extends LinearOpMode {
 
         Action toChambers = tab1.build();
 
-        Action toObs = tab2.build();
-
 
 
         Actions.runBlocking(
@@ -65,7 +63,7 @@ public class AutoTesting extends LinearOpMode {
                         toChambers,
                         //claw.ClawClose(),
                         new SleepAction(2),
-                        toObs
+                        park
                         //fourbar.FourBarDown(),
                         //lift.SlidesToBar(),
                         //new SleepAction(30)
