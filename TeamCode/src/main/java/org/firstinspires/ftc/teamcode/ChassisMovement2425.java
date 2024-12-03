@@ -20,6 +20,15 @@ public class ChassisMovement2425 extends LinearOpMode {
     private DcMotor frontLeft;
     private Servo clawUpDown;
 
+    //all servo positioning stuff is from 0 - 1 (decimals included) and not in radians / degrees for some reason, 0 is 0 degrees, 1 is 320 (or whatever the servo max is) degrees
+    //all our servos have 320 degrees of movement so i limited it so it wont collide with the arm too much
+    double clawMax = 0.7; //maximum angle the claw servo is allowed to move
+    double clawMin = 0.3; //minimum angle the claw servo is allowed to move
+
+    double clawYPos = (clawMax + clawMin) / 2; //uses this value to set the initial claw position in the middle of the max and min
+    //i am using a variable because .getPosition() only returns the last position the servo was told to move, not its actual location
+
+
     private void setupMovement() {
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
         imu.resetYaw();
@@ -33,6 +42,9 @@ public class ChassisMovement2425 extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        clawUpDown.setPosition(clawYPos); //im setting the position of the servo here because we can't read the servos actual angle
+
     }
 
     @Override
@@ -43,10 +55,11 @@ public class ChassisMovement2425 extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
 
-        clawUpDown = hardwareMap.get(Servo.class, "servoUpDown");
+        clawUpDown = hardwareMap.get(Servo.class, "servoUpDown"); //add a servo onto the robot just to make sure this works (idk if this will error without one)
 
         setupMovement();
         waitForStart();
+
         if (isStopRequested()) {
             // return???
         }
@@ -75,25 +88,29 @@ public class ChassisMovement2425 extends LinearOpMode {
         double frontRightPower;
         double backRightPower;
 
-        double clawYPos = 0.3;
-        double clawMax = 0.8; //adjust this
-        double clawMin = 0.2; //adjust this
+
+        double clawIncrement = 0.05; //how much the claw angle increases / decreases every time the buttons are down
 
         y = gamepad1.left_stick_y;
         x = -gamepad1.left_stick_x;
         t = -gamepad1.right_stick_x;
+
         if (gamepad1.start) {
             imu.resetYaw();
         }
 
         if (gamepad1.dpad_left && !gamepad1.dpad_right) {
             //claw down
+            clawYPos = clamp(clawYPos - clawIncrement, clawMin, clawMax);
 
-            clawYPos = clamp(clawYPos - 0.01, clawMin, clawMax);
+            telemetry.addData("claw angle: ", clawUpDown.getPosition());
 
         }else if (gamepad1.dpad_right && !gamepad1.dpad_left){
             //claw up
-            clawYPos = clamp(clawYPos + 0.01, clawMin, clawMax);
+            clawYPos = clamp(clawYPos + clawIncrement, clawMin, clawMax);
+
+            telemetry.addData("claw angle: ", clawUpDown.getPosition());
+
         }
 
         botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
@@ -109,6 +126,6 @@ public class ChassisMovement2425 extends LinearOpMode {
         backLeft.setPower(0.75 * backLeftPower);
         frontRight.setPower(0.75 * frontRightPower);
         backRight.setPower(0.75 * backRightPower);
-        clawUpDown.setPosition(clawYPos);
+        clawUpDown.setPosition(clawYPos); //set servo position
     }
 }
