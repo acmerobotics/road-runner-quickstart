@@ -240,7 +240,7 @@ public class MotorActions {
     public class IntakeArm {
         private static final double GRAB_POSITION = 0;
         private static final double INTAKE_POSITION = 0.11;
-        private static final double EXTENDED_POSITION = 0.24;
+        private static final double EXTENDED_POSITION = 0.25;
         private static final double TRANSFER_POSITION = 0.3;
 
         public Action setTargetPosition(double position) {

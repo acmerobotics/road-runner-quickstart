@@ -266,7 +266,7 @@ public class MotorControl {
     }
 
 
-    public static class Limelight {
+    public class Limelight {
         private final Limelight3A limelight;
         private final int maxSamples = 20;
         private final List<Double> xSamples;
@@ -281,8 +281,7 @@ public class MotorControl {
             isCollectingSamples = false;
             this.telemetry = telemetry;
 
-            this.telemetry.addData("limelight", "Started");
-
+            this.telemetry.addData("limelight", "Initialized");
             limelight.start(); // Start polling data
         }
 
@@ -305,64 +304,70 @@ public class MotorControl {
             isCollectingSamples = true;
         }
 
+        /**
+         * Collects samples from the Limelight.
+         *
+         * @return true if the required number of samples have been collected, false otherwise.
+         */
         public boolean collectSamples() {
-            telemetry.addData("collecting samples", isCollectingSamples);
+            telemetry.addData("Collecting Samples", isCollectingSamples);
             LLResult result = limelight.getLatestResult();
-            telemetry.addData("Result", result != null);
-            telemetry.addData("Result", result.getPythonOutput() != null);
+            telemetry.addData("Result Exists", result != null);
+            telemetry.addData("Python Output Exists", result != null && result.getPythonOutput() != null);
+
             if (!isCollectingSamples) {
                 return false;
             }
 
-            if (result.getPythonOutput() != null && result.getPythonOutput()[0] != -1) {
-                // Get the X_world and Y_world from the Python output
-                double xWorld = result.getPythonOutput()[1]; // in cm
-                double yWorld = result.getPythonOutput()[2]; // in cm
+            if (result != null && result.getPythonOutput() != null && result.getPythonOutput().length >= 2) {
+                double groundDistance = result.getPythonOutput()[0]; // Ground distance (in inches)
+                double horizontalOffset = result.getPythonOutput()[1]; // Horizontal offset (in inches)
+                double check = result.getPythonOutput()[3];
 
-                // Collect the outputs
-                xSamples.add(xWorld);
-                ySamples.add(yWorld);
+                if (check == 1) { // Validate the output
+                    xSamples.add(horizontalOffset);
+                    ySamples.add(groundDistance);
 
-                telemetry.addData("Limelight Detected", true);
+                    // Maintain the size of the sample lists
+                    if (xSamples.size() > maxSamples) {
+                        xSamples.remove(0);
+                    }
+                    if (ySamples.size() > maxSamples) {
+                        ySamples.remove(0);
+                    }
 
-                // Keep only the most recent maxSamples
-                if (xSamples.size() > maxSamples) {
-                    xSamples.remove(0);
+                    // Check if enough samples have been collected
+                    boolean enoughSamples = xSamples.size() == maxSamples && ySamples.size() == maxSamples;
+                    telemetry.addData("Enough Samples", enoughSamples);
+                    return enoughSamples;
                 }
-                if (ySamples.size() > maxSamples) {
-                    ySamples.remove(0);
-                }
-
-                // Check if enough samples have been collected
-                return xSamples.size() == maxSamples && ySamples.size() == maxSamples;
             }
-            telemetry.addData("Limelight Detected", false);
             return false;
         }
 
-
+        /**
+         * Computes the average of the collected samples.
+         *
+         * @return a Vector3d object containing the average x, y, and z in inches.
+         */
         public Vector2d getAveragePoseInInches() {
-            // Compute the average X and Y
-            double sumX = 0;
-            double sumY = 0;
-            for (int i = 0; i < maxSamples; i++) {
-                sumX += xSamples.get(i);
-                sumY += ySamples.get(i);
+            if (xSamples.isEmpty() || ySamples.isEmpty()) {
+                telemetry.addData("Average Pose", "No samples collected.");
+                telemetry.update();
+                return new Vector2d(0, 0); // Handle the case with no samples
             }
-            double avgX = sumX / maxSamples; // in cm
-            double avgY = sumY / maxSamples; // in cm
 
+            // Compute averages for X and Y
+            double avgX = xSamples.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+            double avgY = ySamples.stream().mapToDouble(Double::doubleValue).average().orElse(0);
 
+            telemetry.addData("Average X", avgX);
+            telemetry.addData("Average Y", avgY);
+            telemetry.update();
 
-            // Convert cm to inches
-            double avgXInches = avgX * 393.701;
-            double avgYInches = avgY * 393.701;
-
-            // Create a Pose2d object with the averaged positions
-            return new Vector2d(avgXInches, avgYInches);
+            return new Vector2d(avgX, avgY);
         }
-
-        // Additional methods can be added here for more functionalities
     }
+
 
 }

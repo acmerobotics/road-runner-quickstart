@@ -40,8 +40,8 @@ public final class Align extends LinearOpMode {
 
         // Initial trajectory action
         Action trajectoryAction = drive.actionBuilder(beginPose)
-                .lineToY(2)
-                .afterDisp(1, motorActions.intakeExtend(400, 2))
+                .lineToY(1)
+                .afterDisp(1, motorActions.intakeExtend(600, 2))
                 .build();
 
         // Wrap it in a CancelableTrajectoryAction
