@@ -118,6 +118,8 @@ public class mainCodeV1 extends LinearOpMode {
         telemetry.addData("Color: ", colorDetection());
         telemetry.addData("difference", distanceBetweenAngles((float) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), 90f));
         telemetry.addData("Heading: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        telemetry.addData("armPosition", arm.getCurrentPosition());
+        telemetry.addData("armMax", ARMMAX);
         telemetry.update();
     }
 
@@ -129,17 +131,31 @@ public class mainCodeV1 extends LinearOpMode {
     }
 
     private boolean searchColor(double searchOrigin) {
+        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        float directionBetweenAngles;
         if (colorDetection().equals("Yellow") || colorDetection().equals("Red")) {
-            //pick up stuff
+            double foundPosition = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            directionBetweenAngles = distanceBetweenAngles((float)botHeading, (float)(-4*targetedAngle + foundPosition));
+            while (directionBetweenAngles < 4) { //rotates robot backwards until 5 degrees to pick up blocks it scanned too fast
+                rotateTo((-4*targetedAngle) + foundPosition, 1.2f);
+                double botHeadingTemp = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES); //temporary botheading to find current position of robot as it spins back to the block
+                directionBetweenAngles = distanceBetweenAngles((float)botHeadingTemp, (float)(-4*targetedAngle + foundPosition));
+                telemetry.addData("directionBetweenAngles", directionBetweenAngles);
+            }
             return false;
         } else {
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            float directionBetweenAngles = distanceBetweenAngles((float)botHeading, (float)(30*targetedAngle + searchOrigin));
-            float VELOCITYTANGENTIAL = 900; //unsure what the units are for this
-            float rotationSpeed = (VELOCITYTANGENTIAL/(-(arm.getCurrentPosition()))); //rotationSpeed (omega) = Vt/r where R is ARMMAX ~ 3000
-            int velocityArm = (int)(15 * ((215 * rotationSpeed)/(60f)));
-            telemetry.addData("rotationSpeed = ", rotationSpeed);
-            telemetry.addData("armVelocitiy = ", velocityArm);
+            directionBetweenAngles = distanceBetweenAngles((float)botHeading, (float)(30*targetedAngle + searchOrigin));
+            float VELOCITYTANGENTIAL = 1000; //unsure what the units are for this
+            float rotationSpeed;
+            if (arm.getCurrentPosition() > -1000) {
+                rotationSpeed = 0.9f; //no easing in the beginning
+            } else {
+                rotationSpeed = (VELOCITYTANGENTIAL/(-(arm.getCurrentPosition() + 200))); //rotationSpeed (omega) = Vt/r where R is ARMMAX ~ 3000
+            }
+            int velocityArm = (int)(10 * ((215 * rotationSpeed)/(60f)));
+            while (arm.getCurrentPosition() > -500) {
+                armMovement(false, true, INCREMENT);
+            }
             armMovement(false, true, velocityArm);
             rotateTo((30*targetedAngle) + searchOrigin, rotationSpeed);
             if (Math.abs(directionBetweenAngles) < 4) { //determines if the robot is facing a direction
