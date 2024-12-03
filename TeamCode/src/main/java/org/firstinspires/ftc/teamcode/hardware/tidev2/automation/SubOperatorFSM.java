@@ -274,8 +274,6 @@ public class SubOperatorFSM {
 
                 if (subStateTimer.seconds() > 3.0) {
                     if (gamepad.a) {
-                        claw.customPivotPos(0.0);
-                        viper.setTarget(POS_VIPER_HANG);
                         elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
                         subStateTimer.reset();
                         subState = SubState.PROCEED_HANG_SUBSTATE;
@@ -288,8 +286,11 @@ public class SubOperatorFSM {
                 if (subStateTimer.seconds() > 1.0) {
                     if (gamepad.y) {
                         shoulder.setTarget(900);
+                        viper.setTarget(4269);
+
+                    }
+                    if (gamepad.x) {
                         viper.setTarget(0);
-                        elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
                     }
                 }
 

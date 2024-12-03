@@ -69,7 +69,7 @@ public class BucketOperatorFSM {
         MIDDLE_BUCKETSTATE, MIDDLE_EXTEND_VIPER, MIDDLE_EXTEND_ELBOW, MIDDLE_RETRACT_VIPER, MIDDLE_RETRACT_ELBOW_S1, MIDDLE_RETRACT_ELBOW_S2,
         HIGH_BUCKETSTATE, HIGH_EXTEND_VIPER, HIGH_EXTEND_ELBOW, HIGH_RETRACT_VIPER, HIGH_RETRACT_ELBOW_S1, HIGH_RETRACT_ELBOW_S2,
 
-        READY_GRAB_SAMPLE,
+        READY_TO_CLIP, CLIPPING, UNCLIPPING, CLIPPED, RETRACT_CLIPPED,
 
     };
     private ElapsedTime bucketStateTimer = new ElapsedTime();
@@ -131,6 +131,10 @@ public class BucketOperatorFSM {
                         bucketState = BucketState.MIDDLE_RETRACT_ELBOW_S1;
                     }
                     break;
+                case READY_TO_CLIP:
+                case CLIPPING:
+                    bucketState = BucketState.ZERO_BUCKETSTATE;
+                    break;
             }
         }
 
@@ -145,17 +149,39 @@ public class BucketOperatorFSM {
                 }
 
                 if (gamepad.dpad_right) {
-                    shoulder.setTarget(70);
-                    claw.customPivotPos(0.85);
-                    claw.speedOpen(true);
+                    bucketStateTimer.reset();
+                    shoulder.setTarget(520);
+                    bucketState = BucketState.READY_TO_CLIP;
                 }
                 break;
 
-            case READY_GRAB_SAMPLE:
-                if (bucketStateTimer.seconds() > 0.3) {
-                    bucketState = BucketState.ZERO_BUCKETSTATE;
+            case READY_TO_CLIP:
+                if (gamepad.a) {
+                    bucketStateTimer.reset();
+                    viper.setTarget(1700);
+
+                    bucketState = BucketState.CLIPPING;
                 }
                 break;
+
+
+
+            case CLIPPING:
+                    //clipping code goes here
+                    //make sure to press x here to unclip
+                if (bucketStateTimer.seconds() > 0.3) {
+                    if (gamepad.a) {
+                        viper.setTarget(0);
+
+                        bucketStateTimer.reset();
+                        bucketState = BucketState.ZERO_BUCKETSTATE;
+                    }
+                }
+
+                break;
+
+
+
 
             case HIGH_BUCKETSTATE:
                 pos_shoulder = shoulder.getCurrentPosition();
