@@ -89,6 +89,8 @@ public class AllAttachments extends LinearOpMode {
             shoulder.sendTelemetry();
             intake.sendTelemetry();
             claw.sendTelemetry();
+            viper.sendTelemetry();
+            elbow.sendTelemetry();
 
             updateTelemetry(telemetry);
             // Pace this loop so hands move at a reasonable speed.
