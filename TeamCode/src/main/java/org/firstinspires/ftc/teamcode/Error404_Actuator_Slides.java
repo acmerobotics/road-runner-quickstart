@@ -52,8 +52,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Each motion axis is controlled by one Joystick axis.
  *
  * 1) Axial:    Driving forward and backward               Left-joystick Forward/Backward
- * 2) Lateral:  Strafing right and left                     Left-joystick Right and Left
- * 3) Yaw:      Rotating Clockwise and counter clockwise    Right-joystick Right and Left
  *
  * This code is written assuming that the right-side motors need to be reversed for the robot to drive forward.
  * When you first test your robot, if it moves backward when you push the left stick forward, then you must flip
@@ -67,22 +65,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  @Disabled
  public class Error404_Actuator_Slides extends LinearOpMode {
 
-     // Declare OpMode members for each of the 4 motors.
+     // Declare OpMode members for each of the 3 motors.
      private ElapsedTime runtime = new ElapsedTime();
-     private DcMotor leftFrontDrive = null;
-     private DcMotor leftBackDrive = null;
-     private DcMotor rightFrontDrive = null;
-     private DcMotor rightBackDrive = null;
+     private DcMotor SlideBig = null;
+     private DcMotor SlideLittle = null;
+     private DcMotor Actuator = null;
 
      @Override
      public void runOpMode() {
 
          // Initialize the hardware variables. Note that the strings used here must correspond
          // to the names assigned during the robot configuration step on the DS or RC devices.
-         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
-         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+         SlideBig  = hardwareMap.get(DcMotor.class, "slide_big_move");
+         SlideLittle  = hardwareMap.get(DcMotor.class, "slide_little_move");
+         Actuator = hardwareMap.get(DcMotor.class, "actuator_move");
 
          // ########################################################################################
          // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -94,10 +90,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
          // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
          // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
          // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+         SlideBig.setDirection(DcMotor.Direction.FORWARD);
+         SlideLittle.setDirection(DcMotor.Direction.FORWARD);
+         Actuator.setDirection(DcMotor.Direction.FORWARD);
 
          // Wait for the game to start (driver presses PLAY)
          telemetry.addData("Status", "Initialized");
@@ -108,33 +103,30 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
          // run until the end of the match (driver presses STOP)
          while (opModeIsActive()) {
-             double max;
+             double max = 0;
 
              // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
              double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-             double lateral =  gamepad1.left_stick_x;
-             double yaw     =  gamepad1.right_stick_x;
 
              // Combine the joystick requests for each axis-motion to determine each wheel's power.
              // Set up a variable for each drive wheel to save the power level for telemetry.
-             double leftFrontPower  = axial + lateral + yaw;
-             double rightFrontPower = axial - lateral - yaw;
-             double leftBackPower   = axial - lateral + yaw;
-             double rightBackPower  = axial + lateral - yaw;
+             double SlideBigpower = axial;
+             double SlideLittlepower = axial;
+             double Actuatorpower = axial;
 
              // Normalize the values so no wheel power exceeds 100%
              // This ensures that the robot maintains the desired motion.
-             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-             max = Math.max(max, Math.abs(leftBackPower));
-             max = Math.max(max, Math.abs(rightBackPower));
+             max = Math.max(max, Math.abs(SlideBigpower));
+             max = Math.max(max, Math.abs(SlideLittlepower));
+             max = Math.max(max, Math.abs(Actuatorpower));
 
              if (max > 1.0) {
-                 leftFrontPower  /= max;
-                 rightFrontPower /= max;
-                 leftBackPower   /= max;
-                 rightBackPower  /= max;
+                 SlideBigpower  /= max;
+                 SlideLittlepower /= max;
+                 Actuatorpower   /= max;
              }
 
+             /*
              // This is test code:
              //
              // Uncomment the following code to test your motor directions.
@@ -144,24 +136,21 @@ import com.qualcomm.robotcore.util.ElapsedTime;
              //   2) Then make sure they run in the correct direction by modifying the
              //      the setDirection() calls above.
              // Once the correct motors move in the correct direction re-comment this code.
-
-             /*
-             leftFrontPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
-             leftBackPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad
-             rightFrontPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
-             rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
              */
 
-             // Send calculated power to wheels
-             leftFrontDrive.setPower(leftFrontPower);
-             rightFrontDrive.setPower(rightFrontPower);
-             leftBackDrive.setPower(leftBackPower);
-             rightBackDrive.setPower(rightBackPower);
+             SlideBigpower  = gamepad1.x ? 1.0 : 0.0;
+             SlideLittlepower  = gamepad1.b ? 1.0 : 0.0;
+             Actuatorpower = gamepad1.y ? 1.0 : 0.0;
+
+             SlideBig.setPower(SlideBigpower);
+             SlideLittle.setPower(SlideLittlepower);
+             Actuator.setPower(Actuatorpower);
 
              // Show the elapsed game time and wheel power.
              telemetry.addData("Status", "Run Time: " + runtime.toString());
-             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+             telemetry.addData("SlideBig", "%4.2f, %4.2f", SlideBigpower);
+             telemetry.addData("SlideLittle", "%4.2f, %4.2f", SlideLittlepower);
+             telemetry.addData("Actuator", "%4.2f, %4.2f", Actuatorpower);
              telemetry.update();
          }
      }}
