@@ -35,9 +35,12 @@ public class ArmActions {
 /*
         leftSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+ */
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-*/
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
     }
 
@@ -95,7 +98,7 @@ public class ArmActions {
 
                 double pos = leftSlide.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < 2500) {
+                if (pos < 2000) {
                     return true;
                 } else {
                     leftSlide.setPower(0);
@@ -201,7 +204,7 @@ public class ArmActions {
 
                 double pos = leftSlide.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos > 700) {
+                if (pos > 200) {
                     return true;
                 } else {
                     leftSlide.setPower(0);
@@ -226,7 +229,7 @@ public class ArmActions {
 
                 double pos = leftSlide.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos > 2300) {
+                if (pos > 1700) {
                     return true;
                 } else {
                     leftSlide.setPower(0);

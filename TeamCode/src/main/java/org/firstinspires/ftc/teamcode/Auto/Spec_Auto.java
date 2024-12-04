@@ -41,7 +41,7 @@ public class Spec_Auto extends LinearOpMode {
                 .strafeTo(new Vector2d(subPoseMid.position.x-10, subPoseMid.position.y-3));
 
         TrajectoryActionBuilder traj_2 = drive.actionBuilder(new Pose2d(-10, 32, Math.toRadians(90)))
-                .waitSeconds(1)
+                .waitSeconds(0.5)
                 //.strafeTo(new Vector2d(startPose.position.x, startPose.position.y-3));
                 .strafeTo(new Vector2d(-10, 40))
                 .strafeTo(new Vector2d(-35, 38));
@@ -54,10 +54,11 @@ public class Spec_Auto extends LinearOpMode {
             .strafeTo(new Vector2d(-60, 15))
             .strafeTo(new Vector2d(-60, 50))
             .strafeTo(new Vector2d (-40, 48))
-            .strafeTo(new Vector2d(-38, 53))
+            .strafeTo(new Vector2d(-38, 56))
             .stopAndAdd(armActions.closeClaw())
             .stopAndAdd(armActions.raiseArm())
-            .strafeToLinearHeading(new Vector2d(subPoseMid.position.x - 10, subPoseMid.position.y-10), Math.toRadians(90));
+            .strafeToLinearHeading(new Vector2d(-10, 50), Math.toRadians(90))
+            .waitSeconds(1);
 
         TrajectoryActionBuilder traj_4 = drive.actionBuilder(new Pose2d(-38, 55, Math.toRadians(90)))
                 .strafeTo(new Vector2d(-38,45))
