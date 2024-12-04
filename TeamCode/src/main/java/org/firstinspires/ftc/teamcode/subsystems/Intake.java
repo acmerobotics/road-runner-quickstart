@@ -144,13 +144,13 @@ public class Intake extends Mechanism {
     @Override
     public void telemetry(Telemetry telemetry) {
         telemetry.addData("Block Color", getBlockColor());
-        telemetry.addData("Left Sensor Red", leftCS.red());
-        telemetry.addData("Left Sensor Green", leftCS.green());
-        telemetry.addData("Left Sensor Blue", leftCS.blue());
+        telemetry.addData("Left Sensor Red", currentLeftCS[0]);
+        telemetry.addData("Left Sensor Green", currentLeftCS[1]);
+        telemetry.addData("Left Sensor Blue", currentLeftCS[2]);
 
-        telemetry.addData("Right Sensor Red", rightCS.red());
-        telemetry.addData("Right Sensor Green", rightCS.green());
-        telemetry.addData("Right Sensor Blue", rightCS.blue());
+        telemetry.addData("Right Sensor Red", currentRightCS[0]);
+        telemetry.addData("Right Sensor Green", currentRightCS[1]);
+        telemetry.addData("Right Sensor Blue", currentRightCS[2]);
     }
 
     public void systemsCheck(AIMPad aimpad, Telemetry telemetry) {
@@ -165,14 +165,7 @@ public class Intake extends Mechanism {
         }
         bristlesAtPower(aimpad.getRightStickY());
         loop(aimpad);
-        telemetry.addData("Block Color", getBlockColor());
-        telemetry.addData("Left Sensor Red", leftCS.red());
-        telemetry.addData("Left Sensor Green", leftCS.green());
-        telemetry.addData("Left Sensor Blue", leftCS.blue());
-
-        telemetry.addData("Right Sensor Red", rightCS.red());
-        telemetry.addData("Right Sensor Green", rightCS.green());
-        telemetry.addData("Right Sensor Blue", rightCS.blue());
+        telemetry(telemetry);
     }
 
 }

@@ -16,6 +16,8 @@ public class Robot extends Mechanism {
     boolean isRed;
     Pose2D startingPosition;
 
+    double oldTime = 0;
+
     public Robot(boolean isRed, Pose2D startingPosition) {
         this.isRed = isRed;
         this.startingPosition = startingPosition;

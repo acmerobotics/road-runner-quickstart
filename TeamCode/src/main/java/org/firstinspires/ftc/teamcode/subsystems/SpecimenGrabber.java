@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 public class SpecimenGrabber extends Mechanism {
 
     Servo specimenGrabber;
-
+    //states of specimen grabber
     public enum GrabberState {
         GRAB, RELEASE, CUSTOM
     }
@@ -19,14 +19,26 @@ public class SpecimenGrabber extends Mechanism {
     GrabberState activeGrabberState = GrabberState.RELEASE;
 
     double targetGrabberPosition;
+
+    // setting grab position
     private final static double GRAB_POSITION = 0.0;
+
+    // setting release position
     private final static double RELEASE_POSITION =  0.21;
 
+    /**
+     * initializing hardware
+     * @param hwMap references the robot's hardware map
+     */
     @Override
     public void init(HardwareMap hwMap) {
         specimenGrabber = hwMap.get(Servo.class, ConfigurationInfo.specimenGrabber.getDeviceName());
     }
 
+    /**
+     * loop to be called each systems cycle
+     * @param aimPad references AIMPad in slot one
+     */
     @Override
     public void loop(AIMPad aimPad) {
         switch(activeGrabberState) {
@@ -42,18 +54,32 @@ public class SpecimenGrabber extends Mechanism {
         specimenGrabber.setPosition(targetGrabberPosition);
     }
 
+    /**
+     * set target position to grab
+     */
     public void grab() {
         targetGrabberPosition = GRAB_POSITION;
     }
 
+    /**
+     * set target position to release
+     */
     public void release() {
         targetGrabberPosition = RELEASE_POSITION;
     }
 
+    /**
+     * set grabber state to input state
+     * @param state
+     */
     public void setGrabberState(GrabberState state) {
         activeGrabberState = state;
     }
 
+    /**
+     * sets grabber to target input position
+     * @param position
+     */
     public void setGrabberStateCustom(double position) {
         activeGrabberState = GrabberState.CUSTOM;
         targetGrabberPosition = position;

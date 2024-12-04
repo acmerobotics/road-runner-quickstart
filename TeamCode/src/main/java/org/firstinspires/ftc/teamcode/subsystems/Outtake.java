@@ -20,20 +20,24 @@ public class Outtake extends Mechanism {
     final double BUCKET_HINGE_IN_POSITION = 0.1; //bucket hinges to intake position
     final double BUCKET_HINGE_OUT_POSITION = 1; //bucket hinges to outake position
 
+    // declares possible arm states
     public enum ArmState {
         ARMIN, ARMOUT, CUSTOM
     }
-    ArmState activeArmState = ArmState.ARMIN;
+    ArmState activeArmState = ArmState.ARMIN; // set initial active arm state to in
     double armTargetPosition = ARM_HINGE_IN_POSITION;
 
-
+    // declaring possible bucket states
     public enum BucketState {
         BUCKETIN, BUCKETOUT, CUSTOM
     }
-    BucketState activeBucketState = BucketState.BUCKETIN;
+    BucketState activeBucketState = BucketState.BUCKETIN; // sets initial bucket state to bucket in
     double bucketTargetPosition = BUCKET_HINGE_IN_POSITION;
 
-
+    /**
+     * initializes hardware
+     * @param hwMap references the robot's hardware map
+     */
     @Override
     public void init(HardwareMap hwMap) {
         leftArmHinge = hwMap.get(Servo.class, ConfigurationInfo.leftArmHinge.getDeviceName());
@@ -45,6 +49,10 @@ public class Outtake extends Mechanism {
 
     }
 
+    /**
+     * creates loop of arm states and bucket states to be called
+     * @param aimpad references AIMPad in slot one
+     */
     @Override
     public void loop(AIMPad aimpad) {
         switch(activeArmState) {
@@ -57,7 +65,6 @@ public class Outtake extends Mechanism {
             case CUSTOM:
                 break;
         }
-        armToPosition(armTargetPosition);
         switch(activeBucketState) {
             case BUCKETIN:
                 bucketHingeIn();
@@ -68,22 +75,39 @@ public class Outtake extends Mechanism {
             case CUSTOM:
                 break;
         }
+        armToPosition(armTargetPosition);
         bucketToPosition(bucketTargetPosition);
     }
 
+    /**
+     * setting arm state to arm state fed in
+     * @param activeArmState
+     */
     public void setActiveArmState(ArmState activeArmState) {
         this.activeArmState = activeArmState;
     }
 
+    /**
+     * sets arm target position to the position being fed in
+     * @param armPosition
+     */
     public void setArmStateCustom(double armPosition) {
         setActiveArmState(ArmState.CUSTOM);
         armTargetPosition = armPosition;
     }
 
-
+    /**
+     *sets bucket state to the state being fed in
+     * @param activeBucketState
+     */
     public void setActiveBucketState(BucketState activeBucketState) {
         this.activeBucketState = activeBucketState;
     }
+
+    /**
+     * sets bucket position to bucket state fed in
+     * @param bucketPosition
+     */
     public void setBucketStateCustom(double bucketPosition) {
         setActiveBucketState(BucketState.CUSTOM);
         bucketTargetPosition = bucketPosition;
