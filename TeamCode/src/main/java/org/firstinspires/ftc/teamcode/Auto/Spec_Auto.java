@@ -59,6 +59,7 @@ public class Spec_Auto extends LinearOpMode {
             .stopAndAdd(armActions.raiseArm())
             .strafeToLinearHeading(new Vector2d(-10, 50), Math.toRadians(90))
             .waitSeconds(1);
+        //hello
 
         TrajectoryActionBuilder traj_4 = drive.actionBuilder(new Pose2d(-38, 55, Math.toRadians(90)))
                 .strafeTo(new Vector2d(-38,45))
