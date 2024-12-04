@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -8,7 +9,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.actions.ArmActions;
+import org.firstinspires.ftc.teamcode.Auto.Actions.ArmActions;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
@@ -37,25 +38,30 @@ public class Spec_Auto extends LinearOpMode {
 
 
         TrajectoryActionBuilder traj_1 = drive.actionBuilder(startPose)
-                .strafeTo(new Vector2d(subPoseMid.position.x-10, subPoseMid.position.y));
+                .strafeTo(new Vector2d(subPoseMid.position.x-10, subPoseMid.position.y-3));
 
-        TrajectoryActionBuilder traj_2 = drive.actionBuilder(new Pose2d(-10, 35, Math.toRadians(90)))
+        TrajectoryActionBuilder traj_2 = drive.actionBuilder(new Pose2d(-10, 32, Math.toRadians(90)))
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y-3));
+                //.strafeTo(new Vector2d(startPose.position.x, startPose.position.y-3));
+                .strafeTo(new Vector2d(-10, 40))
+                .strafeTo(new Vector2d(-35, 38));
 
-        TrajectoryActionBuilder traj_3 = drive.actionBuilder(new Pose2d(startPose.position.x, startPose.position.y, Math.toRadians(90)))
-            .strafeTo(new Vector2d(-35, 38))
-            .strafeTo(new Vector2d(-35, 10))
-            .strafeToLinearHeading(new Vector2d(-45, 10), Math.toRadians(270))
-            .strafeTo(new Vector2d(-45,53))
-            .strafeTo(new Vector2d(-45, 10))
-            .strafeTo(new Vector2d(-55, 10))
-            .strafeTo(new Vector2d(-55, 53))
-            .strafeTo(new Vector2d(-35, 62))
-            .strafeToLinearHeading(new Vector2d(subPoseMid.position.x - 10, subPoseMid.position.y), Math.toRadians(90));
+        TrajectoryActionBuilder traj_3 = drive.actionBuilder(new Pose2d(-35, 38, Math.toRadians(90)))
+            .strafeTo(new Vector2d(-35, 15))
+            .strafeToLinearHeading(new Vector2d(-50, 15), Math.toRadians(270))
+            .strafeTo(new Vector2d(-50,50))
+            .strafeTo(new Vector2d(-50, 15))
+            .strafeTo(new Vector2d(-60, 15))
+            .strafeTo(new Vector2d(-60, 50))
+            .strafeTo(new Vector2d (-40, 48))
+            .strafeTo(new Vector2d(-38, 53))
+            .stopAndAdd(armActions.closeClaw())
+            .stopAndAdd(armActions.raiseArm())
+            .strafeToLinearHeading(new Vector2d(subPoseMid.position.x - 10, subPoseMid.position.y-10), Math.toRadians(90));
 
-        TrajectoryActionBuilder traj_4 = drive.actionBuilder(new Pose2d(-10, 60, Math.toRadians(90)))
-                .strafeTo(new Vector2d(startPose.position.x-30, startPose.position.y));
+        TrajectoryActionBuilder traj_4 = drive.actionBuilder(new Pose2d(-38, 55, Math.toRadians(90)))
+                .strafeTo(new Vector2d(-38,45))
+                .strafeToLinearHeading(new Vector2d(subPoseMid.position.x - 10, subPoseMid.position.y), Math.toRadians(90));
 
 
 
@@ -74,10 +80,12 @@ public class Spec_Auto extends LinearOpMode {
         Action trajectory_1;
         Action trajectory_2;
         Action trajectory_3;
+        Action trajectory_4;
 
         trajectory_1 = traj_1.build();
         trajectory_2 = traj_2.build();
         trajectory_3 = traj_3.build();
+        trajectory_4 = traj_4.build();
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -85,9 +93,13 @@ public class Spec_Auto extends LinearOpMode {
                         trajectory_1,
                         armActions.halfLowerArm(),
                         armActions.openClaw(),
-                        trajectory_2,
-                        armActions.lowerArm(),
+                        new ParallelAction(
+                                trajectory_2,
+                                armActions.lowerArm()
+                        ),
                         trajectory_3
+                        //armActions.closeClaw(),
+                        //armActions.raiseArm()
 
                 )
         );

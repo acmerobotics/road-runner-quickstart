@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.actions;
+package org.firstinspires.ftc.teamcode.Auto.Actions;
 
 import androidx.annotation.NonNull;
 
@@ -88,14 +88,14 @@ public class ArmActions {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    rightSlide.setPower(0.8);
-                    leftSlide.setPower(0.8);
+                    rightSlide.setPower(1);
+                    leftSlide.setPower(1);
                     initialized = true;
                 }
 
                 double pos = leftSlide.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < 2000) {
+                if (pos < 2500) {
                     return true;
                 } else {
                     leftSlide.setPower(0);
@@ -135,8 +135,9 @@ public class ArmActions {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-
-                claw.setPosition(0);
+                if (!initialized) {
+                    claw.setPosition(0);
+                }
 
                 return initialized;
             }
@@ -193,14 +194,14 @@ public class ArmActions {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    rightSlide.setPower(-0.4);
-                    leftSlide.setPower(-0.4);
+                    rightSlide.setPower(-0.6);
+                    leftSlide.setPower(-0.6);
                     initialized = true;
                 }
 
                 double pos = leftSlide.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos > 20) {
+                if (pos > 700) {
                     return true;
                 } else {
                     leftSlide.setPower(0);
@@ -218,14 +219,14 @@ public class ArmActions {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    rightSlide.setPower(-0.2);
-                    leftSlide.setPower(-0.2);
+                    rightSlide.setPower(-0.4);
+                    leftSlide.setPower(-0.4);
                     initialized = true;
                 }
 
                 double pos = leftSlide.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos > 1500) {
+                if (pos > 2300) {
                     return true;
                 } else {
                     leftSlide.setPower(0);
