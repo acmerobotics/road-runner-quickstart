@@ -56,12 +56,13 @@ public class rightAuto extends LinearOpMode {
 
             build = drive.actionBuilder(startPose)
                     .afterTime(0, shoulder.autonHC())
-                    .strafeTo(new Vector2d(9, -33))
+                    .strafeTo(new Vector2d(5, -33))
 
                     //put arm up while strafing
                     //stop at (9, -33) and place the sample on the bar
                     .afterTime(0, viper.autonHangSpecimen())
-                    .waitSeconds(1.3)
+                    .waitSeconds(1.0)
+                    .strafeTo(new Vector2d(5, -31))
                     .afterTime(0, claw.autonOpenClaw())
                     .afterTime(0, viper.autonDown())
                     .waitSeconds(0.5)
@@ -82,20 +83,23 @@ public class rightAuto extends LinearOpMode {
                     //two in observation zone
                     //prepare to grab
                     //.afterTime(0, claw.autonNormalPivot())
-                    .strafeTo(new Vector2d(47,-48))
+                    .strafeTo(new Vector2d(47,-53))
 
                     .strafeTo(new Vector2d(47,-58))
+
                     .waitSeconds(0.1)
+                    .strafeTo(new Vector2d(47,-58))
 
                     .afterTime(0, claw.autonCloseClaw())
                     .waitSeconds(0.5)
                     .afterTime(0, shoulder.autonHC())
                     //grab sample, routing towards chamber.
                     //raise arm to clip
-                    .strafeToSplineHeading(new Vector2d(9,-33), Math.toRadians(90))
+                    .strafeToSplineHeading(new Vector2d(5, -33), Math.toRadians(90))
                     //clip, routing to push final sample and grab specimen
                     .afterTime(0, viper.autonHangSpecimen())
-                    .waitSeconds(1.3)
+                    .waitSeconds(1.0)
+                    .strafeTo(new Vector2d(5, -31))
                     .afterTime(0, claw.autonOpenClaw())
                     .afterTime(0, viper.autonDown())
                     .waitSeconds(0.5)
@@ -107,22 +111,24 @@ public class rightAuto extends LinearOpMode {
                     .afterTime(0, shoulder.autonDown())
 
 
-                    .splineToSplineHeading(new Pose2d(new Vector2d(61,-13), Math.toRadians(-90)), Math.toRadians(-90))
+                    .splineToSplineHeading(new Pose2d(new Vector2d(60,-13), Math.toRadians(-90)), Math.toRadians(-90))
 
                     //.splineToLinearHeading(new Pose2d(61,-13, Math.toRadians(-90)), Math.toRadians(-90))
-                    .strafeTo(new Vector2d(61,-53))
+                    .strafeTo(new Vector2d(60,-53))
 
-                    .strafeTo(new Vector2d(47,-48))
+                    .strafeTo(new Vector2d(47,-53))
                     .strafeTo(new Vector2d(47,-58))
                     .waitSeconds(0.1)
+                    .strafeTo(new Vector2d(47,-58))
                     .afterTime(0, claw.autonCloseClaw())
                     .waitSeconds(0.5)
                     .afterTime(0, shoulder.autonHC())
                     //grab sample, routing towards chamber.
                     //raise arm to clip
-                    .strafeToSplineHeading(new Vector2d(9,-33), Math.toRadians(90))
+                    .strafeToSplineHeading(new Vector2d(5, -33), Math.toRadians(90))
                     .afterTime(0, viper.autonHangSpecimen())
-                    .waitSeconds(1)
+                    .waitSeconds(1.0)
+                    .strafeTo(new Vector2d(5, -31))
                     .afterTime(0, claw.autonOpenClaw())
                     .afterTime(0, viper.autonDown())
                     .waitSeconds(0.5)
