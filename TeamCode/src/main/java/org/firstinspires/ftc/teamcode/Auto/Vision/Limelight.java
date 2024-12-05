@@ -21,19 +21,6 @@ public class Limelight extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
-        DcMotor FL = hardwareMap.get(DcMotor.class, "FL");
-        DcMotor BL = hardwareMap.get(DcMotor.class, "BL");
-        DcMotor FR = hardwareMap.get(DcMotor.class, "FR");
-        DcMotor BR = hardwareMap.get(DcMotor.class, "BR");
-
-        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        FR.setDirection(DcMotorSimple.Direction.REVERSE);
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
-
         telemetry.setMsTransmissionInterval(11);
 
         limelight.pipelineSwitch(0);
@@ -52,6 +39,8 @@ public class Limelight extends LinearOpMode {
                 double height = 1; //height of camera off ground, change value
                 double tx = height * Math.sin(yrad) * Math.cos(xrad);//convert xrad and yrad into 2D coordinates
                 double ty = height * Math.sin(yrad) * Math.sin(xrad);
+                telemetry.addData(className, tx + "tx" + ty + "ty");
+                telemetry.update();
 
             }
 
