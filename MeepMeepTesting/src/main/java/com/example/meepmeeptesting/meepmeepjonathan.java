@@ -21,22 +21,16 @@ public class meepmeepjonathan {
                 //put arm up while strafing
 //                .afterTime(0, viper.autonDown())
 //                .afterTime(0, shoulder.autonHC())
-                .waitSeconds(0.5)
 
                 .strafeTo(new Vector2d(10, -34))
                 //put arm up while strafing
                 //stop at (10, -34) and place the sample on the bar
                 .waitSeconds(0.5)
 //                .afterTime(0, shoulder.autonDownHC())
+                        .setReversed(true)
+                .splineToSplineHeading(new Pose2d(new Vector2d(26,-43), Math.toRadians(-90)), 0)
+                .splineTo(new Vector2d(45, -13), 0)
 
-                .strafeTo(new Vector2d(10, -45))
-                .strafeToLinearHeading(new Vector2d(35,-40), Math.toRadians(-90))
-
-
-                .strafeTo(new Vector2d(35, -13))
-
-
-                .strafeTo(new Vector2d(45,-13))
                 .strafeTo(new Vector2d(45,-53))
                 //one in observation zone
                 .strafeTo(new Vector2d(45,-13))
@@ -52,10 +46,11 @@ public class meepmeepjonathan {
                 .strafeToSplineHeading(new Vector2d(10,-34), Math.toRadians(90))
                 //clip, routing to push final sample and grab specimen
 
-                .strafeTo(new Vector2d(10, -38))
-                .strafeToLinearHeading(new Vector2d(35,-40), Math.toRadians(-90))
+                        .setReversed(true)
+                .splineTo(new Vector2d(25, -38), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(new Vector2d(61,-13), Math.toRadians(-90)), Math.toRadians(-90))
 
-                .splineToLinearHeading(new Pose2d(61,-13, Math.toRadians(-90)), Math.toRadians(-90))
+                //.splineToLinearHeading(new Pose2d(61,-13, Math.toRadians(-90)), Math.toRadians(-90))
                 .strafeTo(new Vector2d(61,-53))
 
                 .strafeTo(new Vector2d(47,-48))

@@ -139,7 +139,18 @@ public class Viper {
         return new AutonGolf();
     }
 
+    public class AutonHangSpecimen implements Action {
 
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setTarget(1800);
+            return false;
+        }
+    }
+
+    public Action autonHangSpecimen() {
+        return new AutonHangSpecimen();
+    }
 
     public int getPosition() {
         return viper.getCurrentPosition();

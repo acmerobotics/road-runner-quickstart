@@ -274,7 +274,7 @@ public class SubOperatorFSM {
 
                 if (subStateTimer.seconds() > 3.0) {
                     if (gamepad.a) {
-                        elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
+                        elbow.setElbow(375);
                         subStateTimer.reset();
                         subState = SubState.PROCEED_HANG_SUBSTATE;
                     }
