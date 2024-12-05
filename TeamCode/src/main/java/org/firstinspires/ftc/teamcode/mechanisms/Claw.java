@@ -9,13 +9,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Claw {
     private Servo bucketServo;;
-    private Servo clawLeftServo;
-    private Servo clawRightServo;
+    private Servo clawServo;
 
     public Claw(HardwareMap HWMap) {
         bucketServo = HWMap.get(Servo.class, "bucketServo");
-        clawLeftServo = HWMap.get(Servo.class, "clawLeftServo");
-        clawRightServo = HWMap.get(Servo.class, "clawRightServo");
+        clawServo = HWMap.get(Servo.class, "clawServo");
     }
 
 
@@ -46,8 +44,7 @@ public class Claw {
     public class Close implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawLeftServo.setPosition(0.55);
-            clawRightServo.setPosition(0.45);
+            clawServo.setPosition(0.15);
             return false;
         }
     }
@@ -59,8 +56,7 @@ public class Claw {
     public class Open implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawLeftServo.setPosition(0.2);
-            clawRightServo.setPosition(0.8);
+            clawServo.setPosition(0);
             return false;
         }
     }

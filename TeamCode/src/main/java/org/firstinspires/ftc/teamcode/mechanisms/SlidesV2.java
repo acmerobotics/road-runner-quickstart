@@ -54,7 +54,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -2790;
+                target = -6500;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -125,7 +125,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -1625;
+                target = -3200;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -243,8 +243,7 @@ public class SlidesV2 {
 
     public void changeTarget(int change) {
         target += change;
-        slidesLeftMotor.setTargetPosition(target);
-        slidesRightMotor.setTargetPosition(target);
+        slidesPID.setTargetPosition(target);
     }
 
     public void updateMotors() {
@@ -256,7 +255,9 @@ public class SlidesV2 {
         return slidesPID.update(getPos());
     }
 
-
+    public int getTarget() {
+        return target;
+    }
 
 
 }

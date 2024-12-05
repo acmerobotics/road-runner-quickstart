@@ -381,7 +381,11 @@ public class Teleop extends LinearOpMode {
             runningActions = newActions;
             dash.sendTelemetryPacket(packet);
 
-
+            if (currentGamepad2.dpad_up) {
+                slides.changeTarget(-20);
+            } else if (currentGamepad2.dpad_down) {
+                slides.changeTarget(20);
+            }
 
             telemetry.addData("slides left", slides.slidesLeftMotor.getCurrentPosition());
             telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
