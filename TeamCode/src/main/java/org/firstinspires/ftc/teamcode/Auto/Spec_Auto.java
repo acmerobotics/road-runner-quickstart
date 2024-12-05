@@ -47,23 +47,31 @@ public class Spec_Auto extends LinearOpMode {
                 .strafeTo(new Vector2d(-35, 38));
 
         TrajectoryActionBuilder traj_3 = drive.actionBuilder(new Pose2d(-35, 38, Math.toRadians(90)))
-            .strafeTo(new Vector2d(-35, 15))
-            .strafeToLinearHeading(new Vector2d(-50, 15), Math.toRadians(270))
-            .strafeTo(new Vector2d(-50,50))
-            .strafeTo(new Vector2d(-50, 15))
-            .strafeTo(new Vector2d(-60, 15))
-            .strafeTo(new Vector2d(-60, 50))
-            .strafeTo(new Vector2d (-40, 48))
-            .strafeTo(new Vector2d(-38, 56))
-            .stopAndAdd(armActions.closeClaw())
-            .stopAndAdd(armActions.raiseArm())
-            .strafeToLinearHeading(new Vector2d(-10, 50), Math.toRadians(90))
-            .waitSeconds(1);
-        //hello
+                .strafeTo(new Vector2d(-35, 15))
+                .strafeToLinearHeading(new Vector2d(-50, 15), Math.toRadians(269.5))
+                .strafeTo(new Vector2d(-50,50))
+                .strafeTo(new Vector2d(-50, 15))
+                .strafeTo(new Vector2d(-60, 15))
+                .strafeTo(new Vector2d(-60, 50))
+                .strafeTo(new Vector2d (-40, 48))
+                .strafeTo(new Vector2d(-41, 54))
+                .stopAndAdd(armActions.closeClaw())
+                .stopAndAdd(armActions.raiseArm())
+                .strafeToLinearHeading(new Vector2d(-12, 42), Math.toRadians(90))
+                .strafeTo(new Vector2d(-12, 35))
+                .stopAndAdd(armActions.halfLowerArm())
+                .stopAndAdd(armActions.openClaw())
+                .stopAndAdd(armActions.lowerArm())
+                .strafeTo(new Vector2d(-50, 50));
 
-        TrajectoryActionBuilder traj_4 = drive.actionBuilder(new Pose2d(-38, 55, Math.toRadians(90)))
-                .strafeTo(new Vector2d(-38,45))
-                .strafeToLinearHeading(new Vector2d(subPoseMid.position.x - 10, subPoseMid.position.y), Math.toRadians(90));
+        TrajectoryActionBuilder traj_wait = drive.actionBuilder(new Pose2d(-41, 58, Math.toRadians(180)))
+                .strafeTo(new Vector2d(-41, 50))
+                .waitSeconds(1);
+
+        TrajectoryActionBuilder traj_4 = drive.actionBuilder(new Pose2d(-41, 50, Math.toRadians(90)))
+                .strafeTo(new Vector2d(-41,54))
+                .strafeToLinearHeading(new Vector2d(-15, 38), Math.toRadians(90));
+
 
 
 
@@ -83,11 +91,13 @@ public class Spec_Auto extends LinearOpMode {
         Action trajectory_2;
         Action trajectory_3;
         Action trajectory_4;
+        Action trajectory_wait;
 
         trajectory_1 = traj_1.build();
         trajectory_2 = traj_2.build();
         trajectory_3 = traj_3.build();
         trajectory_4 = traj_4.build();
+        trajectory_wait = traj_wait.build();
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -101,7 +111,9 @@ public class Spec_Auto extends LinearOpMode {
                         ),
                         trajectory_3
                         //armActions.closeClaw(),
+                        //trajectory_wait,
                         //armActions.raiseArm()
+                        //trajectory_4
 
                 )
         );
