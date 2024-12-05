@@ -38,6 +38,10 @@ public class SlidesBase extends Mechanism {
     private static final double CURRENT_THRESHOLD = 5000;
     private static final double MINIMUM_POWER = 0.03;
 
+    private static final double HEIGHT_INCREMENT = 0.5; //in inches
+
+    private static final double TICK_TO_INCH_RATIO = 0.00877812906;
+
     public enum SlidesControlState {
         AUTONOMOUS, MANUAL
     }
@@ -172,6 +176,13 @@ public class SlidesBase extends Mechanism {
         update();
     }
 
+    public void aLittleUp(){
+        setTargetPosition(getCurrentPosition() + inchesToTicks(HEIGHT_INCREMENT));
+    }
+
+    public void aLittleDown(){
+        setTargetPosition(getCurrentPosition() - inchesToTicks(HEIGHT_INCREMENT));
+    }
     /**
      * Set the target position for the slides
      * @param targetPosition the target position for the slides
@@ -226,6 +237,14 @@ public class SlidesBase extends Mechanism {
      */
     public boolean currentSpikeDetected() {
         return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > CURRENT_THRESHOLD;
+    }
+
+    public double ticksToInches(double ticks){
+        return ticks * TICK_TO_INCH_RATIO;
+    }
+
+    public double inchesToTicks(double inches) {
+        return inches / TICK_TO_INCH_RATIO;
     }
 }
 
