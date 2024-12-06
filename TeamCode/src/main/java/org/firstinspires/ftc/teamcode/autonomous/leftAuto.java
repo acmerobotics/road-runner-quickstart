@@ -41,28 +41,21 @@ public class leftAuto extends LinearOpMode {
         startPose = new Pose2d(-14, -61, Math.toRadians(90));
         drive = new MecanumDrive(hardwareMap, startPose);
         TrajectoryActionBuilder build = drive.actionBuilder(startPose)
-                //put arm up while strafing
-                .afterTime(0, viper.autonDown())
                 .afterTime(0, shoulder.autonHC())
-                .afterTime(0, claw.autonCloseClaw())
+                .strafeTo(new Vector2d(-5, -33))
+
+                //put arm up while strafing
+                //stop at (9, -33) and place the sample on the bar
+                .afterTime(0, viper.autonHangSpecimen())
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(-5, -31))
+                .afterTime(0, claw.autonOpenClaw())
+                .afterTime(0, viper.autonDown())
                 .waitSeconds(0.5)
 
-                .strafeTo(new Vector2d(-10, -33))
-                //put arm up while strafing
-                //stop at (10, -33) and place the sample on the bar
-                .waitSeconds(0.5)
-                .afterTime(0, shoulder.autonDownHC())
-                .waitSeconds(1)
-                .afterTime(0, viper.autonHangSpecimen())
-                .waitSeconds(2)
-                .afterTime(0, claw.autonOpenClaw())
-                .waitSeconds(0.1)
-                .afterTime(0, viper.autonDown())
-                .waitSeconds(1)
                 .strafeTo(new Vector2d(-10,-40))
                 .waitSeconds(1)
                 .afterTime(0, shoulder.autonMidDown())
-                .afterTime(0, claw.autonFlushPivot())
                 .waitSeconds(0.3)
                 .afterTime(0, shoulder.autonDown())
                 .strafeTo(new Vector2d(-30,-40))
@@ -74,8 +67,8 @@ public class leftAuto extends LinearOpMode {
                 .waitSeconds(2)
                 .afterTime(0, intake.autoIntake())
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(-38, -28))
-                .waitSeconds(1)
+                .strafeTo(new Vector2d(-42, -28))
+                .waitSeconds(2)
                 .afterTime(0, intake.autoStoptake())
                 .afterTime(0, elbow.autonZero())
                 .waitSeconds(1)

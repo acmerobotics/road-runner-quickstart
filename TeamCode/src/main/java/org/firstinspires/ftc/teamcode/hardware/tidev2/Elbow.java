@@ -164,7 +164,7 @@ public class Elbow {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             setElbow(200);
             setElbow(400);
-            setElbow(575);
+            setElbow(550);
             return false;
         }
     }
