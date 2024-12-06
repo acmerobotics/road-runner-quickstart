@@ -78,8 +78,8 @@ public class rightAuto extends LinearOpMode {
                 .strafeTo(new Vector2d(45,-58))
 
                 .waitSeconds(0.1)
-                .strafeTo(new Vector2d(45,-58))
-
+                .strafeTo(new Vector2d(45,-59.5))
+                .waitSeconds(0.1)
                 .afterTime(0, claw.autonCloseClaw())
                 .waitSeconds(0.5)
                 .afterTime(0, shoulder.autonHC())
@@ -109,7 +109,8 @@ public class rightAuto extends LinearOpMode {
                 .strafeTo(new Vector2d(45,-53))
                 .strafeTo(new Vector2d(45,-58))
                 .waitSeconds(0.1)
-                .strafeTo(new Vector2d(45,-58))
+                .strafeTo(new Vector2d(45,-59.5))
+                .waitSeconds(0.1)
                 .afterTime(0, claw.autonCloseClaw())
                 .waitSeconds(0.5)
                 .afterTime(0, shoulder.autonHC())
