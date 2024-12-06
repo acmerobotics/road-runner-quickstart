@@ -79,8 +79,8 @@ public class Left_Auto_Prototype extends LinearOpMode {
                                 trajectory_2,
                                 armActions.lowerArm()
                         ),
-                        trajectory_3.
-                        .
+                        trajectory_3
+
 
 
                 )
