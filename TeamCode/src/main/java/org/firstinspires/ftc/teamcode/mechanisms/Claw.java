@@ -20,7 +20,7 @@ public class Claw {
     public class Flip implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(0.55);
+            bucketServo.setPosition(0.3);
             return false;
         }
     }

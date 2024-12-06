@@ -49,7 +49,7 @@ public class Slides {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
                 //TODO: set value to the motor position of top basket
-                target = -2790;
+                target = -7350;
                 slidesLeftMotor.setTargetPosition(target);
                 slidesRightMotor.setTargetPosition(target);
 

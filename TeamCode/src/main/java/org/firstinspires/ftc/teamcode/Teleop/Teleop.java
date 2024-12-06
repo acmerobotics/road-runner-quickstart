@@ -110,9 +110,10 @@ public class Teleop extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
         Gamepad previousGamepad2 = new Gamepad();
 
-        ExtendoV2 extendo = new ExtendoV2(hardwareMap);
+        //ExtendoV2 extendo = new ExtendoV2(hardwareMap);
+        Extendo extendo = new Extendo(hardwareMap);
         Intaker intake = new Intaker(hardwareMap);
-        SlidesV2 slides = new SlidesV2(hardwareMap, false);
+        SlidesV2 slides = new SlidesV2(hardwareMap, true);
         Claw claw = new Claw(hardwareMap);
         Control control = new Control();
         Control control2 = new Control();
