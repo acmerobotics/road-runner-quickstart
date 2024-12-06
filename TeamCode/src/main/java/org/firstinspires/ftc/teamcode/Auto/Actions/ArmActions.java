@@ -168,7 +168,7 @@ public class ArmActions {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                clawPivot.setPosition(.07);
+                clawPivot.setPosition(.62);
 
                 return initialized;
             }
@@ -239,5 +239,32 @@ public class ArmActions {
             }
         };
 
+    }
+
+    public Action smallRaiseArm() {
+        return new Action() {
+            private boolean initialized = false;
+
+
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    rightSlide.setPower(0.5);
+                    leftSlide.setPower(0.5);
+                    initialized = true;
+                }
+
+                double pos = leftSlide.getCurrentPosition();
+                packet.put("liftPos", pos);
+                if (pos < 150) {
+                    return true;
+                } else {
+                    leftSlide.setPower(0);
+                    rightSlide.setPower(0);
+                    return false;
+                }
+            }
+        };
     }
 }
