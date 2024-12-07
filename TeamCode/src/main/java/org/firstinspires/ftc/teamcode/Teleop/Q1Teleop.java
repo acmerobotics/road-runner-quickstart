@@ -51,6 +51,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Control;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
+import org.firstinspires.ftc.teamcode.mechanisms.SlidesV2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,9 +132,9 @@ public class Q1Teleop extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
         Gamepad previousGamepad2 = new Gamepad();
 
-        Extendo extendo = new Extendo(hardwareMap, 1);
+        Extendo extendo = new Extendo(hardwareMap);
         Intaker intake = new Intaker(hardwareMap);
-        Slides slides = new Slides(hardwareMap, 1);
+        SlidesV2 slides = new SlidesV2(hardwareMap, true);
         Claw claw = new Claw(hardwareMap);
         Control control = new Control();
         Control control2 = new Control();
@@ -401,6 +402,7 @@ public class Q1Teleop extends LinearOpMode {
                 slides.changeTarget(10);
             }
 
+            slides.updateMotors();
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {

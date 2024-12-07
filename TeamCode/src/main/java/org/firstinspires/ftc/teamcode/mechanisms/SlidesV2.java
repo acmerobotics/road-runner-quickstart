@@ -54,14 +54,14 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -7350;
+                target = -2840;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
 
 
 
-            if (Math.abs(slidesPID.getTargetPosition() - getPos()) <  10) {
+            if (Math.abs(slidesPID.getTargetPosition() - getPos()) <  20) {
                 return false;
             }
             return true;
