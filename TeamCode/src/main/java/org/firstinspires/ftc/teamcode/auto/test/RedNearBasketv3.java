@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 
 
 @Config
-@Autonomous(name = "\uD83D\uDD34 - RedNearBasketV3", group = "RoadRunner 1.0")
+@Autonomous(name = "\uD83D\uDD34 - RedNearBasketV3", group = "Meet2", preselectTeleOp = "TeleOpModular")
 public class RedNearBasketv3 extends LinearOpMode {
 
 
@@ -49,6 +49,7 @@ public class RedNearBasketv3 extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, RED_SCORE_START_POSE);
         Intake intake = new Intake(hardwareMap);
         Arm arm = new Arm(hardwareMap);
+        arm.reset();
         Lift lift = new Lift(hardwareMap);
         Wrist wrist = new Wrist(hardwareMap);
 
