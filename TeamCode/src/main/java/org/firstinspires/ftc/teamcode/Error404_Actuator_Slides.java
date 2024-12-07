@@ -64,16 +64,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
      // Declare OpMode members for each of the 3 motors.
      private ElapsedTime runtime = new ElapsedTime();
-     private DcMotor SlideBig = null;
-     private DcMotor SlideLittle = null;
+     private DcMotor SlideBig;
+     private DcMotor SlideLittle;
 
      @Override
      public void runOpMode() {
 
          // Initialize the hardware variables. Note that the strings used here must correspond
          // to the names assigned during the robot configuration step on the DS or RC devices.
-         SlideBig  = hardwareMap.get(DcMotor.class, "slide_big_move");
-         SlideLittle  = hardwareMap.get(DcMotor.class, "slide_little_move");
+         SlideBig = hardwareMap.get(DcMotor.class, "slide_big_move");
+         SlideLittle = hardwareMap.get(DcMotor.class, "slide_little_move");
 
          // ########################################################################################
          // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -85,8 +85,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
          // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
          // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
          // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-         SlideBig.setDirection(DcMotor.Direction.FORWARD);
-         SlideLittle.setDirection(DcMotor.Direction.FORWARD);
+         SlideBig.setTargetPosition(0);
+         SlideLittle.setTargetPosition(0);
+         SlideLittle.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         SlideBig.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         SlideBig.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+         SlideLittle.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+         int SlideLittle = 0;
+         int SlideBig = 0;
          // Wait for the game to start (driver presses PLAY)
          telemetry.addData("Status", "Initialized");
          telemetry.update();
@@ -96,45 +103,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
          // run until the end of the match (driver presses STOP)
          while (opModeIsActive()) {
-             double max = 0;
-
-             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-             double axial   = -gamepad1.right_stick_y;  // Note: pushing stick forward gives negative value
-             // Combine the joystick requests for each axis-motion to determine each wheel's power.
-             // Set up a variable for each drive wheel to save the power level for telemetry.
-             double SlideBigpower = axial;
-             double SlideLittlepower = axial;
-
-             // Normalize the values so no wheel power exceeds 100%
-             // This ensures that the robot maintains the desired motion.
-
-             if (max > 1.0) {
-                 SlideBigpower  /= max;
-                 SlideLittlepower /= max;
+             if (gamepad1.a) {
+                 SlideLittle = 537; //Slide goes to full length
              }
-
-             /*
-             // This is test code:
-             //
-             // Uncomment the following code to test your motor directions.
-             // Each button should make the corresponding motor run FORWARD.
-             //   1) First get all the motors to take to correct positions on the robot
-             //      by adjusting your Robot Configuration if necessary.
-             //   2) Then make sure they run in the correct direction by modifying the
-             //      the setDirection() calls above.
-             // Once the correct motors move in the correct direction re-comment this code.
-             */
-
-             SlideBigpower  = gamepad1.a ? 1.0 : 0.0;
-             SlideLittlepower  = gamepad1.b ? 1.0 : 0.0;
-
-             SlideBig.setPower(SlideBigpower);
-             SlideLittle.setPower(SlideLittlepower);
-
-             // Show the elapsed game time and wheel power.
-             telemetry.addData("Status", "Run Time: " + runtime.toString());
-             telemetry.addData("SlideBig", "%4.2f, %4.2f", SlideBigpower);
-             telemetry.addData("SlideLittle", "%4.2f, %4.2f", SlideLittlepower);
-             telemetry.update();
+             else if (gamepad1.b) {
+                 SlideLittle = 0;
+             }
+             if (gamepad1.x) {
+                 SlideBig = 537;
+             }
+             else if (gamepad1.y) {
+                 SlideBig = 0;
+                 }
+             }
          }
-     }}
+     }

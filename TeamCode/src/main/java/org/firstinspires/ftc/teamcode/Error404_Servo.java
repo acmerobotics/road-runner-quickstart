@@ -37,10 +37,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class Error404_Servo extends OpMode {
     //    public CRServo servo;
-    public Servo servo2;
+    public Servo Claw;
     @Override
     public void init() {
-        servo2 = hardwareMap.get(Servo.class, "servo");
+        Claw = hardwareMap.get(Servo.class, "servo");
 //        servo = hardwareMap.get(CRServo.class, "servo");
     }
 
@@ -48,11 +48,11 @@ public class Error404_Servo extends OpMode {
     public void loop() {
 
         if(gamepad1.a){;
-            servo2.setPosition(0);
+            Claw.setPosition(0);
 //            servo.setPower(1);
         }
         if(gamepad1.b){
-            servo2.setPosition(1);
+            Claw.setPosition(1);
 //            servo.setPower(-1);
         }
 
