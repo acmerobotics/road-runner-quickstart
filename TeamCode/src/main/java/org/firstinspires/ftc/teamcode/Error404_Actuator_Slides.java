@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When a selection is made from the menu, the corresponding OpMode is executed.
  *
- * This particular OpMode illustrates driving a 4-motor Omni-Directional (or Holonomic) robot.
+ * This particular OpMode illustrates driving a 2-motor Omni-Directional (or Holonomic) robot.
  * This code will work with either a Mecanum-Drive or an X-Drive train.
  * Both of these drives are illustrated at https://gm0.org/en/latest/docs/robot-design/drivetrains/holonomic.html
  * Note that a Mecanum drive must display an X roller-pattern when viewed from above.
@@ -51,25 +51,21 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Holonomic drives provide the ability for the robot to move in three axes (directions) simultaneously.
  * Each motion axis is controlled by one Joystick axis.
  *
- * 1) Axial:    Driving forward and backward               Left-joystick Forward/Backward
+ * 1) Axial:    Driving forward and backward               A button and B button: Forward/Backward
  *
- * This code is written assuming that the right-side motors need to be reversed for the robot to drive forward.
- * When you first test your robot, if it moves backward when you push the left stick forward, then you must flip
- * the direction of all 4 motors (see code below).
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
  @TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
- @Disabled
+ //@Disabled
  public class Error404_Actuator_Slides extends LinearOpMode {
 
      // Declare OpMode members for each of the 3 motors.
      private ElapsedTime runtime = new ElapsedTime();
      private DcMotor SlideBig = null;
      private DcMotor SlideLittle = null;
-     private DcMotor Actuator = null;
 
      @Override
      public void runOpMode() {
@@ -78,7 +74,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
          // to the names assigned during the robot configuration step on the DS or RC devices.
          SlideBig  = hardwareMap.get(DcMotor.class, "slide_big_move");
          SlideLittle  = hardwareMap.get(DcMotor.class, "slide_little_move");
-         Actuator = hardwareMap.get(DcMotor.class, "actuator_move");
 
          // ########################################################################################
          // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -92,8 +87,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
          // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
          SlideBig.setDirection(DcMotor.Direction.FORWARD);
          SlideLittle.setDirection(DcMotor.Direction.FORWARD);
-         Actuator.setDirection(DcMotor.Direction.FORWARD);
-
          // Wait for the game to start (driver presses PLAY)
          telemetry.addData("Status", "Initialized");
          telemetry.update();
@@ -106,24 +99,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
              double max = 0;
 
              // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-
+             boolean axial   = gamepad1.a;  // Note: pushing stick forward gives negative value
              // Combine the joystick requests for each axis-motion to determine each wheel's power.
              // Set up a variable for each drive wheel to save the power level for telemetry.
-             double SlideBigpower = axial;
-             double SlideLittlepower = axial;
-             double Actuatorpower = axial;
+             boolean SlideBigpower = axial;
+             boolean SlideLittlepower = axial;
 
              // Normalize the values so no wheel power exceeds 100%
              // This ensures that the robot maintains the desired motion.
-             max = Math.max(max, Math.abs(SlideBigpower));
-             max = Math.max(max, Math.abs(SlideLittlepower));
-             max = Math.max(max, Math.abs(Actuatorpower));
 
              if (max > 1.0) {
                  SlideBigpower  /= max;
-                 SlideLittlepower /= max;
-                 Actuatorpower   /= max;
+                 SlideLittlepower = axial;
              }
 
              /*
@@ -138,19 +125,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
              // Once the correct motors move in the correct direction re-comment this code.
              */
 
-             SlideBigpower  = gamepad1.x ? 1.0 : 0.0;
+             SlideBigpower  = gamepad1.a ? 1.0 : 0.0;
              SlideLittlepower  = gamepad1.b ? 1.0 : 0.0;
-             Actuatorpower = gamepad1.y ? 1.0 : 0.0;
 
              SlideBig.setPower(SlideBigpower);
              SlideLittle.setPower(SlideLittlepower);
-             Actuator.setPower(Actuatorpower);
 
              // Show the elapsed game time and wheel power.
              telemetry.addData("Status", "Run Time: " + runtime.toString());
              telemetry.addData("SlideBig", "%4.2f, %4.2f", SlideBigpower);
              telemetry.addData("SlideLittle", "%4.2f, %4.2f", SlideLittlepower);
-             telemetry.addData("Actuator", "%4.2f, %4.2f", Actuatorpower);
              telemetry.update();
          }
      }}
