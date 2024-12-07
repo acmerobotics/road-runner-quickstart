@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Arm;
@@ -59,12 +58,17 @@ public class TeleOpModular extends LinearOpMode {
         while (opModeIsActive()) {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  -gamepad1.left_stick_x;
-            double yaw     =  -gamepad1.right_stick_x;
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
 
-            drive.moveRobot(axial, lateral, yaw);
+            drive.moveRobotFieldCentric(y, x, rx);
 
+            y = squaredInputWithSign(y);
+//          x = squaredInputWithSign(x)
+            if (gamepad1.options) {
+                drive.resetYaw();
+            }
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,
             If the user presses A, it sets the intake power to the final variable that
@@ -266,5 +270,13 @@ public class TeleOpModular extends LinearOpMode {
 
         }
 
+    }
+
+    private double squaredInputWithSign(double input) {
+        double output = input * input;
+        if (input<0){
+            output = -output;
+        }
+        return output;
     }
 }
