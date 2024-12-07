@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.security.PublicKey;
+
 @Config
 public class Arm {
     public DcMotorEx motor;
@@ -51,6 +53,8 @@ public class Arm {
     public static double ARM_ATTACH_HANGING_HOOK   = 120 * ARM_TICKS_PER_DEGREE;
     public static double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
 
+    public static double ARM_PARK_POS = 60 * ARM_TICKS_PER_DEGREE;
+
     public static double ARM_VERTICAL = 120 * ARM_TICKS_PER_DEGREE;
     public static double ARM_ROBOT_TRAVEL = 219 * ARM_TICKS_PER_DEGREE;
 
@@ -64,8 +68,13 @@ public class Arm {
         /* Before starting the armMotor. We'll make sure the TargetPosition is set to 0.
         Then we'll set the RunMode to RUN_TO_POSITION. And we'll ask it to stop and reset encoder.
         If you do not have the encoder plugged into this motor, it will not run in this code. */
-        motor.setTargetPosition(0);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    // call reset() only from autonomous code and not from the teleop.
+    // This way, the arm encoder position is not reset between autonomous and teleop.
+    public void reset(){
+        motor.setTargetPosition(0);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
@@ -106,5 +115,9 @@ public class Arm {
     }
     public Action armVerticalAction(){
         return new ArmScoreAuto((int)ARM_VERTICAL);
+    }
+
+    public Action armParkAction(){return  new ArmScoreAuto((int)ARM_PARK_POS);
+
     }
 }
