@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class servo extends OpMode {
+public class Error404_Servo extends OpMode {
     //    public CRServo servo;
     public Servo servo2;
     @Override

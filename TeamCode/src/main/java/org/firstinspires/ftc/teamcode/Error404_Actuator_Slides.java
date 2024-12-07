@@ -99,18 +99,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
              double max = 0;
 
              // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-             boolean axial   = gamepad1.a;  // Note: pushing stick forward gives negative value
+             double axial   = -gamepad1.right_stick_y;  // Note: pushing stick forward gives negative value
              // Combine the joystick requests for each axis-motion to determine each wheel's power.
              // Set up a variable for each drive wheel to save the power level for telemetry.
-             boolean SlideBigpower = axial;
-             boolean SlideLittlepower = axial;
+             double SlideBigpower = axial;
+             double SlideLittlepower = axial;
 
              // Normalize the values so no wheel power exceeds 100%
              // This ensures that the robot maintains the desired motion.
 
              if (max > 1.0) {
                  SlideBigpower  /= max;
-                 SlideLittlepower = axial;
+                 SlideLittlepower /= max;
              }
 
              /*
