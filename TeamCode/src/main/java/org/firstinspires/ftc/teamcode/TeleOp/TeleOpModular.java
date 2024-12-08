@@ -138,7 +138,7 @@ public class TeleOpModular extends LinearOpMode {
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
                 armPosition = Arm.ARM_ATTACH_HANGING_HOOK;
                 intake.stop();
-                wrist.foldIn();
+                wrist.foldOut();
             }
 
             else if (gamepad1.dpad_down){

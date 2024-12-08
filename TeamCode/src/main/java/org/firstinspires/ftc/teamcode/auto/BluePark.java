@@ -32,6 +32,7 @@ public class BluePark extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, RED_PARK_START_POSE);
         TrajectoryActionBuilder traj = drive.actionBuilder(RED_PARK_START_POSE)
+                .strafeToLinearHeading(new Vector2d(-12, 36), -Math.toRadians(90))
                 .strafeToLinearHeading(new Vector2d(-60, 60), -Math.toRadians(90));
 
         while(!isStopRequested() && !opModeIsActive()) {
