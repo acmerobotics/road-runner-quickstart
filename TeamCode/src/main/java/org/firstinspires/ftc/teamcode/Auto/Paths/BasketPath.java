@@ -30,13 +30,13 @@ public class BasketPath extends LinearOpMode {
                 .waitSeconds(1.5)
                 .strafeToLinearHeading(new Vector2d(-15.75, 6.99), Math.toRadians(45))
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-14.92, 10.38), Math.toRadians(105))
+                .strafeToLinearHeading(new Vector2d(-14.92, 10.38), Math.toRadians(125))
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-15.75, 6.99), Math.toRadians(45));
-//                .waitSeconds(1.5)
-//                .strafeToLinearHeading(new Vector2d(-16.31, 52.08), Math.toRadians(-180))
-//                .waitSeconds(1.5)
-//                .strafeToLinearHeading(new Vector2d(12.99, 55.52), Math.toRadians(-180));
+                .strafeToLinearHeading(new Vector2d(-15.75, 6.99), Math.toRadians(45))
+                .waitSeconds(1.5)
+                .strafeToLinearHeading(new Vector2d(-16.31, 52.08), Math.toRadians(-180))
+                .waitSeconds(1.5)
+                .strafeToLinearHeading(new Vector2d(12.99, 55.52), Math.toRadians(-180));
 
         Action pathh = path.build();
         waitForStart();

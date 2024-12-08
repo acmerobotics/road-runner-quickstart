@@ -251,7 +251,12 @@ public class Q1Teleop extends LinearOpMode {
                             intake.downIntake();
                         }
 
-                        extendo.changetarget(lefty2/2);
+                        if (lefty2 != 0) {
+                            extendo.setManual();
+                            extendo.extendoMotor.setPower(lefty2/2);
+                        } else {
+                            extendo.setAuto();
+                        }
 
                     }
 
@@ -419,7 +424,7 @@ public class Q1Teleop extends LinearOpMode {
             telemetry.addData("extendo", extendo.extendoMotor.getCurrentPosition());
             telemetry.addData("slides left", slides.slidesLeftMotor.getCurrentPosition());
             telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
-            telemetry.addData("extendo target", extendo.extendoMotorPID.getTargetPosition());
+            telemetry.addData("extendo target", extendo.extendoMotor.getTargetPosition());
             telemetry.addData("extendo power", extendo.extendoMotor.getPower());
             telemetry.addData("color", intakeColor);
             telemetry.update();

@@ -54,7 +54,7 @@ public class Extendo {
                 init = true;
             }
 
-            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 15) {
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 5) {
                 extendoMotor.setPower(0);
                 return false;
             }
@@ -107,7 +107,7 @@ public class Extendo {
             }
 
 
-            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 10) {
+            if (Math.abs(extendoMotor.getTargetPosition() - getPos()) < 5) {
                 return false;
             }
             return true;

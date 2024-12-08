@@ -1,26 +1,39 @@
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.teamcode.Testing;
 
 import android.graphics.Color;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+@Config
 @TeleOp
-public class ColorSensorCode extends LinearOpMode {
-
-
+public class TestColorSensor extends LinearOpMode {
+    public static double yellowRedb = 0.2;
+    public static double yellowGreenb = 0.28;
+    public static double yellowBluet = 0.42;
+    public static double redRedb = 0.15;
+    public static double redGreent = 0.4;
+    public static double redBluet = 0.3;
+    public static double blueRedt = 0.3;
+    public static double blueGreent = 0.4;
+    public static double blueBlueb = 0.15;
+    public static float gain = 50;
     @Override
     public void runOpMode() {
 
         NormalizedColorSensor colorSensor;
 
 
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry tele = dashboard.getTelemetry();
 
-        float gain = 100;
 
         final float[] hsvValues = new float[3];
 
@@ -48,7 +61,6 @@ public class ColorSensorCode extends LinearOpMode {
                 gain -= 0.005;
             }
 
-            telemetry.addData("Gain", gain);
             colorSensor.setGain(gain);
 
             xButtonCurrentlyPressed = gamepad1.x;
@@ -67,27 +79,28 @@ public class ColorSensorCode extends LinearOpMode {
 
             Color.colorToHSV(colors.toColor(), hsvValues);
 
-            telemetry.addLine()
-                    .addData("Red", "%.3f", colors.red)
-                    .addData("Green", "%.3f", colors.green)
-                    .addData("Blue", "%.3f", colors.blue);
-            telemetry.addLine()
-                    .addData("Hue", "%.3f", hsvValues[0])
-                    .addData("Saturation", "%.3f", hsvValues[1])
-                    .addData("Value", "%.3f", hsvValues[2]);
-            telemetry.addData("Alpha", "%.3f", colors.alpha);
-
-            if (colors.red > 0.4 && colors.green > 0.6 && colors.blue < 0.26) {
-                telemetry.addData("Block Color", "yellow");
-            } else if (colors.red > 0.3 && colors.green < 0.45 && colors.blue < 0.21) {
-                telemetry.addData("Block Color", "red");
-            } else if (colors.red < 0.15 && colors.green < 0.25 && colors.blue > 0.32) {
-                telemetry.addData("Block Color", "blue");
+            if (colors.red > redRedb && colors.green < redGreent && colors.blue < redBluet) {
+                telemetry.addData("color","red");
+                tele.addData("color","red");
+            } else if (colors.red > yellowRedb && colors.green > yellowGreenb && colors.blue < yellowBluet) {
+                telemetry.addData("color","yellow");
+                tele.addData("color","yellow");
+            } else if (colors.red < blueRedt && colors.green < blueGreent && colors.blue > blueBlueb) {
+                telemetry.addData("color","blue");
+                tele.addData("color","blue");
             } else {
-                telemetry.addData("Block Color", "none");
+                telemetry.addData("color","none");
+                tele.addData("color","none");
             }
 
             //timer.reset();
+            telemetry.addData("redv", colors.red);
+            telemetry.addData("bluev", colors.blue);
+            telemetry.addData("greenv", colors.green);
+            tele.addData("redv", colors.red);
+            tele.addData("bluev", colors.blue);
+            tele.addData("greenv", colors.green);
+            tele.update();
             telemetry.update();
 
         }
