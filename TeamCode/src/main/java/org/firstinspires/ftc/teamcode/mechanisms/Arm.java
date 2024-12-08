@@ -5,11 +5,12 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Actions;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import java.security.PublicKey;
 
 @Config
 public class Arm {
@@ -26,7 +27,7 @@ public class Arm {
     counts per rotation of the arm. We divide that by 360 to get the counts per degree. */
     public static double ARM_TICKS_PER_DEGREE =
             28 // number of encoder ticks per rotation of the bare motor
-                    * 72.1 // Gear ratio for the for the motor used in V1 robot
+                    * 71.2 // Gear ratio for the for the motor used in V1 robot
                     * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
                     * 1/360.0; // we want ticks per degree, not per rotation
 
@@ -42,17 +43,24 @@ public class Arm {
     If you'd like it to move further, increase that number. If you'd like it to not move
     as far from the starting position, decrease it. */
 
-    public static double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    public static double ARM_COLLECT               = 225 * ARM_TICKS_PER_DEGREE; //6500; ?
+    public static double ARM_COLLECT_DEG = 232;
+    public static double ARM_COLLAPSED_INTO_ROBOT  = 0 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_COLLECT               = ARM_COLLECT_DEG * ARM_TICKS_PER_DEGREE;
     public static double ARM_CLEAR_BARRIER         = 219 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SPECIMEN        = 174 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SAMPLE_IN_LOW   = 174 * ARM_TICKS_PER_DEGREE;
-    public static double ARM_SCORE_SAMPLE_IN_HIGH   = 135 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_SCORE_SAMPLE_IN_HIGH   = 128 * ARM_TICKS_PER_DEGREE;
     public static double ARM_ATTACH_HANGING_HOOK   = 120 * ARM_TICKS_PER_DEGREE;
     public static double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
 
+    public static double ARM_PARK_POS = 60 * ARM_TICKS_PER_DEGREE;
+
+    public static double ARM_VERTICAL = 120 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_ROBOT_TRAVEL = 219 * ARM_TICKS_PER_DEGREE;
+
     /* A number in degrees that the triggers can adjust the arm position by */
     public static double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
+
 
     public Arm(HardwareMap hardwareMap) {
         motor = hardwareMap.get(DcMotorEx.class, "arm");
@@ -61,42 +69,56 @@ public class Arm {
         /* Before starting the armMotor. We'll make sure the TargetPosition is set to 0.
         Then we'll set the RunMode to RUN_TO_POSITION. And we'll ask it to stop and reset encoder.
         If you do not have the encoder plugged into this motor, it will not run in this code. */
+//        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    // call reset() only from autonomous code and not from the teleop.
+    // This way, the arm encoder position is not reset between autonomous and teleop.
+    public void reset(){
         motor.setTargetPosition(0);
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     // auto
     public class ArmScoreAuto implements Action {
-        private boolean initialized = false;
-        private double beginTs = -1;
+        private final int _targetPos;
+        // Constructor
+        public ArmScoreAuto(int targetPos){
+            _targetPos = targetPos;
+        }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            double duration;
-            if (!initialized){
-                beginTs = Actions.now();
-                initialized = true;
-                motor.setTargetPosition((int) (ARM_SCORE_SAMPLE_IN_HIGH));
-                motor.setVelocity(2500);
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            double pos = motor.getCurrentPosition();
-            packet.put("ArmPos", pos);
-            if (pos < (int)(ARM_SCORE_SAMPLE_IN_HIGH*0.98)) {
-                motor.setTargetPosition((int) (ARM_SCORE_SAMPLE_IN_HIGH));
-                motor.setVelocity(2500);
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                return true;
-            } else {
-                motor.setPower(0);
-                return false;
-            }
+
+            motor.setTargetPosition(_targetPos);
+            motor.setVelocity(2000);
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            int currentPosition = motor.getCurrentPosition();
+            int error = Math.abs(_targetPos - currentPosition);
+            packet.put("ArmTarget", _targetPos);
+            packet.put("ArmPos", currentPosition);
+            packet.put("ArmError", error);
+            // keep running until we're close enough
+            return error > 5; // ticks
         }
     }
-
     public Action armScoreAction() {
-        return new ArmScoreAuto();
+        return new ArmScoreAuto((int)ARM_SCORE_SAMPLE_IN_HIGH);
+    }
+    public Action armfoldbackaction() {
+        return new ArmScoreAuto((int)ARM_COLLAPSED_INTO_ROBOT);
+    }
+    public Action armGroundCollectAction(){
+        return new ArmScoreAuto((int)ARM_COLLECT);
+    }
+    public Action armRobotTravelAction(){
+        return new ArmScoreAuto((int)ARM_ROBOT_TRAVEL);
+    }
+    public Action armVerticalAction(){
+        return new ArmScoreAuto((int)ARM_VERTICAL);
     }
 
+    public Action armParkAction(){return  new ArmScoreAuto((int)ARM_PARK_POS);
 
+    }
 }

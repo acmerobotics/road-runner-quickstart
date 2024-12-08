@@ -40,6 +40,11 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
@@ -53,6 +58,11 @@ import java.util.List;
 
 @Config
 public final class MecanumDrive {
+
+    public void resetYaw() {
+        imu.resetYaw();
+    }
+
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -60,7 +70,7 @@ public final class MecanumDrive {
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.UP;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
         // drive model parameters
         public double inPerTick = 0.0029502876530462;
@@ -111,6 +121,7 @@ public final class MecanumDrive {
     public final VoltageSensor voltageSensor;
 
     public final LazyImu lazyImu;
+    public final IMU imu;
 
     public final Localizer localizer;
     public Pose2d pose;
@@ -236,11 +247,76 @@ public final class MecanumDrive {
         lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
 
+        imu = lazyImu.get();
+
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
+//
+//        imu = new IMU(hardwareMap, "imu", new RevHubOrientationOnRobot(
+//                PARAMS.logoFacingDirection, PARAMS.usbFacingDirection)) {
+//            @Override
+//            public boolean initialize(Parameters parameters) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void resetYaw() {
+//
+//            }
+//
+//            @Override
+//            public YawPitchRollAngles getRobotYawPitchRollAngles() {
+//                return null;
+//            }
+//
+//            @Override
+//            public Orientation getRobotOrientation(AxesReference reference, AxesOrder order, AngleUnit angleUnit) {
+//                return null;
+//            }
+//
+//            @Override
+//            public Quaternion getRobotOrientationAsQuaternion() {
+//                return null;
+//            }
+//
+//            @Override
+//            public AngularVelocity getRobotAngularVelocity(AngleUnit angleUnit) {
+//                return null;
+//            }
+//
+//            @Override
+//            public Manufacturer getManufacturer() {
+//                return null;
+//            }
+//
+//            @Override
+//            public String getDeviceName() {
+//                return "";
+//            }
+//
+//            @Override
+//            public String getConnectionInfo() {
+//                return "";
+//            }
+//
+//            @Override
+//            public int getVersion() {
+//                return 0;
+//            }
+//
+//            @Override
+//            public void resetDeviceConfigurationForOpMode() {
+//
+//            }
+//
+//            @Override
+//            public void close() {
+//
+//            }
+//        };
     }
 
     public void setDrivePowers(PoseVelocity2d powers) {
@@ -497,6 +573,49 @@ public final class MecanumDrive {
      * <p>
      * Positive Yaw is counter-clockwise
      */
+    public void moveRobotFieldCentric(double y, double x, double rx) {
+        // Calculate wheel powers. The formula is correct for X forward, +lateral => left, +yaw => counter-clockwise.
+        // Note: This is different from usual basic omni opmode.
+        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+        // Rotate the movement direction counter to the bot's rotation
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+        rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+        // Denominator is the largest motor power (absolute value) or 1
+        // This ensures all the powers maintain the same ratio,
+        // but only if at least one is out of the range [-1, 1]
+        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+        double frontLeftPower = (rotY + rotX + rx) / denominator;
+        double backLeftPower = (rotY - rotX + rx) / denominator;
+        double frontRightPower = (rotY - rotX - rx) / denominator;
+        double backRightPower = (rotY + rotX - rx) / denominator;
+
+        leftFront.setPower(frontLeftPower);
+        leftBack.setPower(backLeftPower);
+        rightFront.setPower(frontRightPower);
+        rightBack.setPower(backRightPower);
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+        max = Math.max(max, Math.abs(backLeftPower));
+        max = Math.max(max, Math.abs(backRightPower));
+
+        if (max > 1.0) {
+            frontLeftPower /= max;
+            frontRightPower /= max;
+            backLeftPower /= max;
+            backRightPower /= max;
+        }
+
+        // Send powers to the wheels.
+        leftFront.setPower(frontLeftPower);
+        rightFront.setPower(frontRightPower);
+        leftBack.setPower(backLeftPower);
+        rightBack.setPower(backRightPower);
+    }
     public void moveRobot(double axial, double lateral, double yaw) {
         // Calculate wheel powers. The formula is correct for X forward, +lateral => left, +yaw => counter-clockwise.
         // Note: This is different from usual basic omni opmode.
@@ -518,10 +637,10 @@ public final class MecanumDrive {
         }
 
         // Send powers to the wheels.
-        leftFront.setPower(leftFrontPower);
-        rightFront.setPower(rightFrontPower);
-        leftBack.setPower(leftBackPower);
-        rightBack.setPower(rightBackPower);
+        leftFront.setPower(leftFrontPower*leftFrontPower);
+        rightFront.setPower(rightFrontPower*rightFrontPower);
+        leftBack.setPower(leftBackPower*leftBackPower);
+        rightBack.setPower(rightBackPower*rightBackPower);
     }
 
 }

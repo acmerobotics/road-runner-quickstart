@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -13,10 +12,9 @@ import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 
-@TeleOp(name="Teleop Modular", group="Robot")
-//@Disabled
+@TeleOp(name="Teleop Modular V2", group="Robot")
 @Config
-public class TeleOpModular extends LinearOpMode {
+public class TeleOpModular_V2 extends LinearOpMode {
 
     /* Variables that are used to set the arm to a specific position */
     double armPosition = (int)Arm.ARM_COLLAPSED_INTO_ROBOT;
@@ -34,8 +32,14 @@ public class TeleOpModular extends LinearOpMode {
     double cycletime = 0;
     double looptime = 0;
     double oldtime = 0;
-
+    double armposition = 0;
     double armLiftComp = 0;
+
+    public static double AXIAL_SCALE = 1.0;
+    public static double LATERAL_SCALE = 1.0;
+    public static double TURN_SCALE = 1.0;
+
+    boolean fieldCentric = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -62,13 +66,32 @@ public class TeleOpModular extends LinearOpMode {
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
 
-            drive.moveRobotFieldCentric(y, x, rx);
-
-            y = squaredInputWithSign(y);
-//          x = squaredInputWithSign(x)
             if (gamepad1.options) {
+                fieldCentric = true;
                 drive.resetYaw();
             }
+
+            if (fieldCentric) {
+                y = squaredInputWithSign(y) * AXIAL_SCALE;
+                x = squaredInputWithSign(x) * LATERAL_SCALE;
+                rx = squaredInputWithSign(rx) * TURN_SCALE;
+
+                armposition = arm.motor.getCurrentPosition();
+
+                if ((armposition > Arm.ARM_COLLECT - 50) || liftPosition > LIFT_SCORING_IN_HIGH_BASKET - 50){
+                    x *= 0.5;
+                    y *= 0.5;
+                    rx *= 0.5;
+                }
+                drive.moveRobotFieldCentric(y, x, rx);
+
+            } else {
+                double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+                double lateral =  -gamepad1.left_stick_x;
+                double yaw     =  -gamepad1.right_stick_x;
+                drive.moveRobot(axial, lateral, yaw);
+            }
+
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,
             If the user presses A, it sets the intake power to the final variable that
@@ -263,9 +286,10 @@ public class TeleOpModular extends LinearOpMode {
             /* send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("wrist servo", wrist.wrist.getPosition());
             telemetry.addData("armTarget: ", arm.motor.getTargetPosition());
-            telemetry.addData("arm Encoder: ", arm.motor.getCurrentPosition());
+            telemetry.addData("arm Encoder: ", armposition);
             telemetry.addData("lift target" , lift.motor.getTargetPosition());
             telemetry.addData("lift position", lift.motor.getCurrentPosition());
+            telemetry.addData("FieldCentric?", fieldCentric);
             telemetry.update();
 
         }
