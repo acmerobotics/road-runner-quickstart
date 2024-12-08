@@ -32,33 +32,8 @@ public class AutoTesting extends LinearOpMode {
         Extension extension = new Extension(hardwareMap);
         Lift lift = new Lift(hardwareMap);
 
-       /* TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .splineToConstantHeading(new Vector2d(0, -38), Math.toRadians(90));
-        Action park = tab1.endTrajectory().fresh()
-                //.lineToYConstantHeading(-38)
-                .splineToConstantHeading(new Vector2d(60,-60), Math.toRadians(180))
-                .build();*/
-
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .splineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(226)), Math.toRadians(180))
-                .waitSeconds(3)
-                .splineToLinearHeading(new Pose2d(-47, -40, Math.toRadians(90)), Math.toRadians(100))
-                .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(226)), Math.toRadians(180))
-                .waitSeconds(3)
-                .splineToLinearHeading(new Pose2d(-58, -40, Math.toRadians(90)), Math.toRadians(200))
-                .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(226)), Math.toRadians(180))
-                .waitSeconds(3)
-                .splineToLinearHeading(new Pose2d(-34, -35, Math.toRadians(180)), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(-30, 10), Math.toRadians(100));
-
-
-        Action back = tab1.endTrajectory().fresh()
-
-                .build();
-
-
+                .splineToConstantHeading(new Vector2d(0, -38), Math.toRadians(90));
         Action park = tab1.endTrajectory().fresh()
                 //.lineToYConstantHeading(-38)
                 .splineToConstantHeading(new Vector2d(60,-60), Math.toRadians(180))
@@ -89,7 +64,7 @@ public class AutoTesting extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         toBasket,
-                        back
+                        park
                         //claw.ClawClose(),
                         //fourbar.FourBarDown(),
                         //lift.SlidesToBar(),
