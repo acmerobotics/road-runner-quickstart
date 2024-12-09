@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.Auto.Vision.Limelight;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
@@ -31,7 +32,7 @@ public class BasketBlueFINAL extends LinearOpMode {
     Claw claw = new Claw(hardwareMap);
     Intaker intake = new Intaker(hardwareMap);
     Extendo extendo = new Extendo(hardwareMap);
-
+    Limelight limelight = new Limelight(hardwareMap);
     @Override
     public void runOpMode() {
 
@@ -155,6 +156,21 @@ public class BasketBlueFINAL extends LinearOpMode {
 
 
     }
+//
+//    public void AlignBot( , double ty){
+//        while (tx > 0 && ty > 0) {
+//            //move bot
+//        }
+//        while (tx < 0 && ty > 0){
+//            //move bot
+//        }
+//        while (tx > 0 && ty < 0){
+//            //move bot
+//        }
+//        while (tx < 0 && ty < 0){
+//            //move bot
+//        }
+//    }
 }
 
 
