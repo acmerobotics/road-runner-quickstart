@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -20,10 +19,11 @@ import org.firstinspires.ftc.teamcode.Common.Rotation;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "AUTO Testing", group = "Autonomous")
-public class AutoTesting extends LinearOpMode {
+@Autonomous(name = "Left Samples", group = "Autonomous")
+public class LeftSamples extends LinearOpMode {
     public void runOpMode() {
         Pose2d initialPose = new Pose2d(-8, -61, Math.toRadians(90));
+        //Pose2d initialPose = new Pose2d(-56, -49, Math.toRadians(227));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Claw claw = new Claw(hardwareMap);
@@ -40,20 +40,21 @@ public class AutoTesting extends LinearOpMode {
                 .build();*/
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .splineToLinearHeading(new Pose2d(-56, -54, Math.toRadians(226)), Math.toRadians(180))
-                .waitSeconds(3)
-                .splineToConstantHeading(new Vector2d(-50, -45), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-47, -40, Math.toRadians(90)), Math.toRadians(100))
+                .splineToLinearHeading(new Pose2d(-56, -51, Math.toRadians(229)), Math.toRadians(180))
+                .waitSeconds(4)
+                .splineToLinearHeading(new Pose2d(-48, -47, Math.toRadians(90)), Math.toRadians(0))
                 .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(-56, -54, Math.toRadians(226)), Math.toRadians(180))
-                .waitSeconds(3)
-                .splineToConstantHeading(new Vector2d(-50, -45), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-58, -40, Math.toRadians(90)), Math.toRadians(200))
-                .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(-56, -54, Math.toRadians(226)), Math.toRadians(180))
-                .waitSeconds(3)
-                .splineToConstantHeading(new Vector2d(-50, -50), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-30, 10, Math.toRadians(180)), Math.toRadians(80));
+                .splineToLinearHeading(new Pose2d(-42, -38, Math.toRadians(90)), Math.toRadians(90))
+                .waitSeconds(2)
+                .splineToLinearHeading(new Pose2d(-56, -51, Math.toRadians(229)), Math.toRadians(180))
+                .waitSeconds(4)
+                .splineToLinearHeading(new Pose2d(-48, -47, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-58, -38, Math.toRadians(90)), Math.toRadians(200))
+                .waitSeconds(2)
+                .splineToLinearHeading(new Pose2d(-56, -51, Math.toRadians(229)), Math.toRadians(180))
+                .waitSeconds(4)
+                .splineToConstantHeading(new Vector2d(-48, -48), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-30, 12, Math.toRadians(0)), Math.toRadians(70));
 
 
         Action back = tab1.endTrajectory().fresh()
@@ -68,7 +69,7 @@ public class AutoTesting extends LinearOpMode {
 
 
 
-                //.splineToConstantHeading(new Vector2d(60,-30), Math.toRadians(180));
+        //.splineToConstantHeading(new Vector2d(60,-30), Math.toRadians(180));
 
 
 
