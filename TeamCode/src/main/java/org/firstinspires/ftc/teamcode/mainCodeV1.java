@@ -134,13 +134,9 @@ public class mainCodeV1 extends LinearOpMode {
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         float directionBetweenAngles;
         if (colorDetection().equals("Yellow") || colorDetection().equals("Red")) {
-            double foundPosition = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            directionBetweenAngles = distanceBetweenAngles((float)botHeading, (float)(-4*targetedAngle + foundPosition));
-            while (directionBetweenAngles < 4) { //rotates robot backwards until 5 degrees to pick up blocks it scanned too fast
-                rotateTo((-4*targetedAngle) + foundPosition, 1.2f);
-                double botHeadingTemp = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES); //temporary botheading to find current position of robot as it spins back to the block
-                directionBetweenAngles = distanceBetweenAngles((float)botHeadingTemp, (float)(-4*targetedAngle + foundPosition));
-                telemetry.addData("directionBetweenAngles", directionBetweenAngles);
+            float power = -0.7f*targetedAngle;
+            while (!(colorDetection().equals("Yellow") || colorDetection().equals("Red"))) {
+                chassisMovement(0,0, power);
             }
             return false;
         } else {
