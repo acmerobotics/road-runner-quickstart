@@ -20,29 +20,29 @@ public class SpeciPath extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
         TrajectoryActionBuilder path = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0)) //1+0
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-21.85, 18.47), Math.toRadians(125))
+                .strafeToLinearHeading(new Vector2d(-21.85, 18.47), Math.toRadians(125)) //block 1
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-21.06, 21.53), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-21.06, 21.53), Math.toRadians(45)) //deposit
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-22.65, 27.62), Math.toRadians(125))
+                .strafeToLinearHeading(new Vector2d(-22.65, 27.62), Math.toRadians(125)) //block 2
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-20.38, 27.18), Math.toRadians(42))
+                .strafeToLinearHeading(new Vector2d(-20.38, 27.18), Math.toRadians(42)) //deposit
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-3, 27), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-8, 30), Math.toRadians(180)) //pick up 1
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-28.42, -4.61), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0)) //2+0
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-3, 27), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-8, 30), Math.toRadians(180)) //pick up 2
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-28.42, -3.61), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0)) //3+0
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-3, 27), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-8, 30), Math.toRadians(180)) //pick up 3
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-28.42, -2.61), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0)) //4+0
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-3, 27), Math.toRadians(180));
+                .strafeToLinearHeading(new Vector2d(-6, 32), Math.toRadians(180)); //park?
 
         Action pathh = path.build();
         waitForStart();
