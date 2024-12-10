@@ -129,7 +129,6 @@ public class ChassisMovement2425 extends LinearOpMode {
         clawUpDown.setPosition(clawYPos); //set servo position
 
         telemetry.addData("claw angle: ", clawUpDown.getPosition());
-        tel
 
     }
 }
