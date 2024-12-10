@@ -98,8 +98,6 @@ public class Headless extends OpMode {
         }
 
 
-
-
         gamepadToMovement();
         if (!gamepad1.left_bumper) {
             drive.setDrivePowers(

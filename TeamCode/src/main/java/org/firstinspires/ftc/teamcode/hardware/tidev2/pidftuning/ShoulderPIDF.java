@@ -4,18 +4,20 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+@Disabled
 @Config
 @TeleOp
 public class ShoulderPIDF extends OpMode {
     private PIDFController controller;
 
-    public static double p = 0.003, i = 0.003, d = 0.0001;
+    public static double p = 0.003, i = 0.1, d = 0.0002;
     public static double f = 0.00003;
 
     public static int target = 0;
@@ -31,6 +33,7 @@ public class ShoulderPIDF extends OpMode {
     public void init() {
         controller = new PIDFController(p, i, d, f);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        controller.setTolerance(50, 100);
 
         shoulder_right = hardwareMap.get(DcMotorEx.class, "left_tower");
         shoulder_left = hardwareMap.get(DcMotorEx.class, "right_tower");

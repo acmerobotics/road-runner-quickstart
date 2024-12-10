@@ -49,7 +49,7 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-//@Disabled
+@Disabled
 @TeleOp(name = "Test: Elbow", group = "HardwareTest")
 public class TestElbow extends LinearOpMode {
 

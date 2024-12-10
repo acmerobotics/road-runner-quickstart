@@ -51,7 +51,7 @@ public class Shoulder {
 
     private PIDFController controller;
 
-    public static final double p = 0.003, i = 0.013, d = 0.0002;
+    public static final double p = 0.003, i = 0.1, d = 0.0002;
     public static final double f = 0.00003;
 
     public static int target = 100;
@@ -76,7 +76,7 @@ public class Shoulder {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
 
         controller = new PIDFController(p, i, d, f);
-        controller.setTolerance(5, 10);
+        controller.setTolerance(50, 100);
 
         shoulder_right = myOpMode.hardwareMap.get(DcMotorEx.class, "left_tower");
         shoulder_left = myOpMode.hardwareMap.get(DcMotorEx.class, "right_tower");
@@ -95,6 +95,7 @@ public class Shoulder {
 
         pidf = 0;
         target = 0;
+
     }
 
 
@@ -115,7 +116,7 @@ public class Shoulder {
     public class AutonHC implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setTarget(660);
+            setTarget(540);
             return false;
         }
     }
@@ -125,7 +126,7 @@ public class Shoulder {
 
     public class AutonDown implements Action {
         @Override
-        public boolean run(@NonNull TelemetryPacket pack9et) {
+        public boolean run(@NonNull TelemetryPacket packet) {
             setTarget(70);
             return false;
         }
@@ -142,13 +143,12 @@ public class Shoulder {
         }
     }
     public Action autonMidDown() {
-        return new AutonDown();
+        return new AutonMidDown();
     }
 
     public class AutonDownHC implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setTarget(550);
             setTarget(400);
             return false;
         }
@@ -169,6 +169,10 @@ public class Shoulder {
     public Action autonUpHB() {
         return new AutonUpHB();
     }
+
+
+
+
 
 
 

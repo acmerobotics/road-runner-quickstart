@@ -79,9 +79,10 @@ public class Viper {
         viper = myOpMode.hardwareMap.get(DcMotorEx.class, "viper_slide");
 
         viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 //        viper.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
@@ -125,20 +126,31 @@ public class Viper {
         return new AutonHB();
     }
 
-    public class AutonGolf implements Action{
+    public class AutonSlightOut implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            setTarget(100);
+            setTarget(40);
             return false;
         }
     }
 
-    public Action autonGolf() {
-        return new AutonGolf();
+    public Action autonSlightOut() {
+        return new AutonSlightOut();
     }
 
+    public class AutonHangSpecimen implements Action {
 
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setTarget(2000);
+            return false;
+        }
+    }
+
+    public Action autonHangSpecimen() {
+        return new AutonHangSpecimen();
+    }
 
     public int getPosition() {
         return viper.getCurrentPosition();

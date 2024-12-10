@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -20,7 +21,6 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Elbow;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Intake;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder;
-import org.firstinspires.ftc.teamcode.hardware.tidev2.Shoulder.*;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 
@@ -44,53 +44,106 @@ public class rightAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         startPose = new Pose2d(14, -61, Math.toRadians(90));
         drive = new MecanumDrive(hardwareMap, startPose);
-        TrajectoryActionBuilder build = null;
+        TrajectoryActionBuilder build = drive.actionBuilder(startPose)
+                .afterTime(0, shoulder.autonHC())
+                .strafeTo(new Vector2d(7, -33))
+
+                //put arm up while strafing
+                //stop at (9, -33) and place the sample on the bar
+                .afterTime(0, viper.autonHangSpecimen())
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(7, -31))
+                .afterTime(0, claw.autonOpenClaw())
+                .afterTime(0, viper.autonDown())
+                .waitSeconds(0.5)
+
+
+//                .afterTime(0, shoulder.autonDownHC())
+                .setReversed(true)
+                .splineToSplineHeading(new Pose2d(new Vector2d(26,-43), Math.toRadians(-90)), 0)
+                .afterTime(0, shoulder.autonDown())
+
+                .splineTo(new Vector2d(45, -13), 0)
+
+                .strafeTo(new Vector2d(45,-53))
+                //one in observation zone
+                .strafeTo(new Vector2d(45,-13))
+                .strafeTo(new Vector2d(55,-13))
+                .strafeTo(new Vector2d(55,-53))
+                //two in observation zone
+                //prepare to grab
+                //.afterTime(0, claw.autonNormalPivot())
+                .strafeTo(new Vector2d(45,-53))
+
+                .strafeTo(new Vector2d(45,-58))
+
+                .waitSeconds(0.1)
+                .strafeTo(new Vector2d(45,-59.5))
+                .afterTime(0, viper.autonSlightOut())
+                .waitSeconds(0.1)
+                .afterTime(0, claw.autonCloseClaw())
+                .waitSeconds(0.5)
+                .afterTime(0, shoulder.autonHC())
+                //grab sample, routing towards chamber.
+                //raise arm to clip
+                .strafeToSplineHeading(new Vector2d(9, -33), Math.toRadians(90))
+                //clip, routing to push final sample and grab specimen
+                .afterTime(0, viper.autonHangSpecimen())
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(9, -31))
+                .afterTime(0, claw.autonOpenClaw())
+                .afterTime(0, viper.autonDown())
+                .waitSeconds(0.5)
+
+
+
+                .setReversed(true)
+                .splineTo(new Vector2d(25, -38), Math.toRadians(0))
+                .afterTime(0, shoulder.autonDown())
+
+
+                .splineToSplineHeading(new Pose2d(new Vector2d(60,-13), Math.toRadians(-90)), Math.toRadians(-90))
+
+                //.splineToLinearHeading(new Pose2d(61,-13, Math.toRadians(-90)), Math.toRadians(-90))
+                .strafeTo(new Vector2d(60,-53))
+
+                .strafeTo(new Vector2d(45,-53))
+                .strafeTo(new Vector2d(45,-58))
+                .waitSeconds(0.1)
+                .strafeTo(new Vector2d(45,-59.5))
+                .waitSeconds(0.1)
+                .afterTime(0, claw.autonCloseClaw())
+                .waitSeconds(0.5)
+                .afterTime(0, shoulder.autonHC())
+                //grab sample, routing towards chamber.
+                //raise arm to clip
+                .strafeToSplineHeading(new Vector2d(11, -33), Math.toRadians(90))
+                .afterTime(0, viper.autonHangSpecimen())
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(11, -31))
+                .afterTime(0, claw.autonOpenClaw())
+                .afterTime(0, viper.autonDown())
+                .waitSeconds(0.5)
+
+                .strafeToConstantHeading(new Vector2d(60,-56))
+                .afterTime(0, shoulder.autonDown())
+
+                ;
+
+        shoulder.init();
+        elbow.init();
+        intake.init();
+        viper.init();
+        claw.init();
 
         while (!isStopRequested() && !opModeIsActive()) {
-
-
-            shoulder.init();
-            elbow.init();
-            intake.init();
-            viper.init();
-            claw.init();
-
-            build = drive.actionBuilder(startPose)
-                    //put arm up while strafing
-                    .afterTime(0, viper.autonDown())
-                    .afterTime(0, shoulder.autonHC())
-                    .waitSeconds(0.5)
-
-                    .strafeTo(new Vector2d(10, -32))
-                    //put arm up while strafing
-                    //stop at (10, -34) and place the sample on the bar
-                    .waitSeconds(0.5)
-                    .afterTime(0, shoulder.autonDownHC())
-                    .waitSeconds(1)
-                    .strafeTo(new Vector2d(0, 34))
-                    .waitSeconds(2)
-                    .strafeToLinearHeading(new Vector2d(0,-55), Math.toRadians(-90))
-                    .strafeTo(new Vector2d(35,-44))
-                    .strafeTo(new Vector2d(35,-5))
-                    .strafeTo(new Vector2d(45,-5))
-                    .strafeTo(new Vector2d(45,-53))
-                    .strafeTo(new Vector2d(45,-5))
-                    .strafeTo(new Vector2d(55,-5))
-                    .strafeTo(new Vector2d(55,-53))
-                    .strafeTo(new Vector2d(55,-5))
-                    .strafeTo(new Vector2d(61,-5))
-                    .strafeTo(new Vector2d(61,-53))
-                    .strafeToConstantHeading(new Vector2d(60,-56))
-                    //.waitSeconds(0.3)
-                    //.afterTime(0, viper.autonDown())
-            ;
-
-
-            //run intake while strafing to point
-            //end intake after meeting the point
-
-
-
+            Actions.runBlocking(new SequentialAction(
+                    new InstantAction(() -> shoulder.autonListen()),
+                    new InstantAction(() -> viper.autonListen()),
+                    new InstantAction(() -> elbow.autonListen()),
+                    new InstantAction(() -> intake.autonListen()),
+                    new InstantAction(() -> claw.autonListen())
+            ));
         }
 
 
@@ -98,15 +151,15 @@ public class rightAuto extends LinearOpMode {
 
 
         waitForStart();
-        if (build != null) {
-            Actions.runBlocking(new ParallelAction(
-                    shoulder.autonListen(),
-                    viper.autonListen(),
-                    build.build()
 
-
-            ));
-        }
-
+        Actions.runBlocking(new ParallelAction(
+                shoulder.autonListen(),
+                viper.autonListen(),
+                elbow.autonListen(),
+                intake.autonListen(),
+                claw.autonListen(),
+                build.build()
+        ));
     }
+
 }

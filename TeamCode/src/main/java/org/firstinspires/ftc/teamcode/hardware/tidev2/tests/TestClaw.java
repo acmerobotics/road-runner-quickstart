@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.tidev1_DO_NOT_USE.Wrist;
 import org.firstinspires.ftc.teamcode.hardware.tidev2.Claw;
 
-//@Disabled
+@Disabled
 @TeleOp(name = "Test: Claw", group = "HardwareTest")
 public class TestClaw extends LinearOpMode {
 

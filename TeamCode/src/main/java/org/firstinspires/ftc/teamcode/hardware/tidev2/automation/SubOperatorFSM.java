@@ -40,18 +40,18 @@ import org.firstinspires.ftc.teamcode.hardware.tidev2.Viper;
 
 public class SubOperatorFSM {
 
-    private final int POS_SHOULDER_SUB = 350;
-    private final int POS_SHOULDER_LOWER = 350;
+    private final int POS_SHOULDER_SUB = 250;
+    private final int POS_SHOULDER_LOWER = 375;
     private final int POS_SHOULDER_HANG = 900;
     private final int THRESH_SHOULDER = 150;
     private final int THRESH_VIPER = 50;
     private final int THRESH_ELBOW = 50;
 
     private final int POS_VIPER_SUB = 1000;
-    private final int POS_VIPER_HANG = 4000;
+    private final int POS_VIPER_HANG = 4269;
 
-    private final int POS_ELBOW_EXTEND_HORIZ_SUB = 400;
-    private final int POS_ELBOW_EXTEND_ADJUST_SUB = 400;
+    private final int POS_ELBOW_EXTEND_HORIZ_SUB = 450;
+    private final int POS_ELBOW_EXTEND_ADJUST_SUB = 450;
     private final int POS_ELBOW_EXTEND_MAX_SUB = 650;
     private final int POS_ELBOW_REST = 200;
 
@@ -60,6 +60,7 @@ public class SubOperatorFSM {
     private Viper viper;
     private Elbow elbow;
     private Shoulder shoulder;
+    private Claw claw;
 
     private Gamepad gamepad;
 
@@ -77,6 +78,7 @@ public class SubOperatorFSM {
         this.shoulder = shoulder;
         this.viper = viper;
         this.elbow = elbow;
+        this.claw = claw;
 
         subState = SubState.ZERO_SUBSTATE;
         subStateTimer = new ElapsedTime();
@@ -114,6 +116,7 @@ public class SubOperatorFSM {
                 case BEGIN_HANG_SUBSTATE:
                     if (gamepad.b) {
                         elbow.setElbow(0);
+                        claw.customPivotPos(claw.PIVOT_NORMAL);
                         viper.setTarget(0);
                         subStateTimer.reset();
                         subState = SubState.RETRACT_VIPER_SUBSTATE;
@@ -122,6 +125,7 @@ public class SubOperatorFSM {
                 case PROCEED_HANG_SUBSTATE:
                     if (gamepad.b) {
                         elbow.setElbow(0);
+                        claw.customPivotPos(claw.PIVOT_NORMAL);
                         subStateTimer.reset();
                         viper.setTarget(0);
                         subState = SubState.RETRACT_VIPER_SUBSTATE;
@@ -138,6 +142,7 @@ public class SubOperatorFSM {
             case ZERO_SUBSTATE:
                 if (gamepad.dpad_down) {
                     // go to the shoulder sub pos
+                    claw.customPivotPos(claw.PIVOT_HIGH);
                     shoulder.setTarget(POS_SHOULDER_SUB);
                     subState = SubState.SHOULDER_RAISE_SUBSTATE;
                     subStateTimer.reset();
@@ -269,8 +274,7 @@ public class SubOperatorFSM {
 
                 if (subStateTimer.seconds() > 3.0) {
                     if (gamepad.a) {
-                        viper.setTarget(POS_VIPER_HANG);
-                        elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
+                        elbow.setElbow(375);
                         subStateTimer.reset();
                         subState = SubState.PROCEED_HANG_SUBSTATE;
                     }
@@ -282,8 +286,11 @@ public class SubOperatorFSM {
                 if (subStateTimer.seconds() > 1.0) {
                     if (gamepad.y) {
                         shoulder.setTarget(900);
+                        viper.setTarget(4269);
+
+                    }
+                    if (gamepad.x) {
                         viper.setTarget(0);
-                        elbow.setElbow(POS_ELBOW_EXTEND_MAX_SUB);
                     }
                 }
 

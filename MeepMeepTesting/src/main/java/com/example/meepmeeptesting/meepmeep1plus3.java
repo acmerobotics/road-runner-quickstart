@@ -16,39 +16,28 @@ public class meepmeep1plus3 {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(14, -61, Math.toRadians(90)))
-                //put arm up while strafing
-//                .afterTime(0, viper.autonDown())
-//                .afterTime(0, shoulder.autonHC())
                 .waitSeconds(0.5)
 
-                .strafeTo(new Vector2d(10, -32))
+                .strafeTo(new Vector2d(10, -33))
                 //put arm up while strafing
                 //stop at (10, -34) and place the sample on the bar
                 .waitSeconds(0.5)
 //                .afterTime(0, shoulder.autonDownHC())
+//                .afterTime(0, claw.autonOpenClaw())
                 .waitSeconds(1)
-                .setReversed(true)
-                .strafeTo(new Vector2d(10, -36))
-                .splineTo(new Vector2d(28, -36), Math.toRadians(0))
-                //move arm down to gathering position while splining
-//                .afterTime(0, shoulder.autonDown())
-                .splineTo(new Vector2d(33, -5), Math.toRadians(90))
-                .setReversed(false)
-
-                .splineToConstantHeading(new Vector2d(47, -20), Math.toRadians(-90))
-
-                .splineToConstantHeading(new Vector2d(47, -50), Math.toRadians(-90))
-                //shrey code starts here
-                .setReversed(true)
-                .strafeTo(new Vector2d(47, -10))
-
-
-                //.splineToConstantHeading(new Vector2d(52,-45), Math.toRadians
-                .strafeTo(new Vector2d(56,-10))
-
-                .strafeTo(new Vector2d(56,-53))
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(60,-10, Math.toRadians(0)), Math.toRadians(0))
+                .strafeTo(new Vector2d(10, -34))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(20,-55), Math.toRadians(-90))
+                .strafeTo(new Vector2d(35,-44))
+                .strafeTo(new Vector2d(35,-5))
+                .strafeTo(new Vector2d(45,-5))
+                .strafeTo(new Vector2d(45,-53))
+                .strafeTo(new Vector2d(45,-5))
+                .strafeTo(new Vector2d(55,-5))
+                .strafeTo(new Vector2d(55,-53))
+                .strafeTo(new Vector2d(55,-5))
+                .strafeTo(new Vector2d(61,-5))
+                .strafeTo(new Vector2d(61,-53))
                 .strafeToConstantHeading(new Vector2d(60,-56))
                 .build());
 

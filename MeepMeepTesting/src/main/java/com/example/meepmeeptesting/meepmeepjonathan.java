@@ -18,42 +18,89 @@ public class meepmeepjonathan {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(14, -61, Math.toRadians(90)))
-                //put arm up while strafing
-//                .afterTime(0, viper.autonDown())
 //                .afterTime(0, shoulder.autonHC())
-                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(7, -33))
 
-                .strafeTo(new Vector2d(10, -32))
                 //put arm up while strafing
-                //stop at (10, -34) and place the sample on the bar
+                //stop at (9, -33) and place the sample on the bar
+//                .afterTime(0, viper.autonHangSpecimen())
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(7, -31))
+//                .afterTime(0, claw.autonOpenClaw())
+//                .afterTime(0, viper.autonDown())
                 .waitSeconds(0.5)
+
+
 //                .afterTime(0, shoulder.autonDownHC())
-                .waitSeconds(1)
                 .setReversed(true)
+                .splineToSplineHeading(new Pose2d(new Vector2d(26,-43), Math.toRadians(-90)), 0)
+//                .afterTime(0, shoulder.autonDown())
+
+                .splineTo(new Vector2d(45, -13), 0)
+
+                .strafeTo(new Vector2d(45,-53))
+                //one in observation zone
+                .strafeTo(new Vector2d(45,-13))
+                .strafeTo(new Vector2d(55,-13))
+                .strafeTo(new Vector2d(55,-53))
+                //two in observation zone
+                //prepare to grab
+                //.afterTime(0, claw.autonNormalPivot())
+                .strafeTo(new Vector2d(45,-53))
+
+                .strafeTo(new Vector2d(45,-58))
+
+                .waitSeconds(0.1)
+                .strafeTo(new Vector2d(45,-59.5))
+//                .afterTime(0, viper.autonSlightOut())
+                .waitSeconds(0.1)
+//                .afterTime(0, claw.autonCloseClaw())
+                .waitSeconds(0.5)
+//                .afterTime(0, shoulder.autonHC())
+                //grab sample, routing towards chamber.
+                //raise arm to clip
+                .strafeToSplineHeading(new Vector2d(9, -33), Math.toRadians(90))
+                //clip, routing to push final sample and grab specimen
+//                .afterTime(0, viper.autonHangSpecimen())
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(9, -31))
+//                .afterTime(0, claw.autonOpenClaw())
+//                .afterTime(0, viper.autonDown())
+                .waitSeconds(0.5)
 
 
-//                    .setReversed(false)
-//
-//                    .splineToConstantHeading(new Vector2d(47, -20), Math.toRadians(-90))
-//
-//                    .splineToConstantHeading(new Vector2d(47, -50), Math.toRadians(-90))
-//                    //shrey code starts here
-//                    .setReversed(true)
-//                    .strafeTo(new Vector2d(47, -10))
-//
-//
-//                    //.splineToConstantHeading(new Vector2d(52,-45), Math.toRadians
-//                    .strafeTo(new Vector2d(56,-10))
-//
-//                    .strafeTo(new Vector2d(56,-53))
-//
-//                    .afterTime(0, viper.autonGolf())
-//                    .waitSeconds(0.3)
-//                    .setReversed(true)
-//                    .splineToLinearHeading(new Pose2d(60,-10, Math.toRadians(0)), Math.toRadians(0))
+
+                .setReversed(true)
+                .splineTo(new Vector2d(25, -38), Math.toRadians(0))
+//                .afterTime(0, shoulder.autonDown())
+
+
+                .splineToSplineHeading(new Pose2d(new Vector2d(60,-13), Math.toRadians(-90)), Math.toRadians(-90))
+
+                //.splineToLinearHeading(new Pose2d(61,-13, Math.toRadians(-90)), Math.toRadians(-90))
+                .strafeTo(new Vector2d(60,-53))
+
+                .strafeTo(new Vector2d(45,-53))
+                .strafeTo(new Vector2d(45,-58))
+                .waitSeconds(0.1)
+                .strafeTo(new Vector2d(45,-59.5))
+                .waitSeconds(0.1)
+//                .afterTime(0, claw.autonCloseClaw())
+                .waitSeconds(0.5)
+//                .afterTime(0, shoulder.autonHC())
+                //grab sample, routing towards chamber.
+                //raise arm to clip
+                .strafeToSplineHeading(new Vector2d(11, -33), Math.toRadians(90))
+//                .afterTime(0, viper.autonHangSpecimen())
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(11, -31))
+//                .afterTime(0, claw.autonOpenClaw())
+//                .afterTime(0, viper.autonDown())
+                .waitSeconds(0.5)
+
                 .strafeToConstantHeading(new Vector2d(60,-56))
-                //.waitSeconds(0.3)
-                //.afterTime(0, viper.autonDown())
+//                .afterTime(0, shoulder.autonDown())
+
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
