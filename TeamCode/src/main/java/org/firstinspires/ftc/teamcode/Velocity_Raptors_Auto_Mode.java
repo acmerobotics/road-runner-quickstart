@@ -57,17 +57,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Robot: Auto Drive By Time", group="Robot")
 //@Disabled
-public class Error404AutoMode extends LinearOpMode {
+class Error404AutoMode extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private DcMotor         FrontLeft   = null;
-    private DcMotor         FrontRight  = null;
-    private DcMotor         BackRight  = null;
-    private DcMotor         BackLeft  = null;
-    private DcMotor         SlideIntake = null;
-    private Servo           IntakeServo = null;
-    private ElapsedTime     runtime = new ElapsedTime();
+    private DcMotor FrontLeft   = null;
+    private DcMotor FrontRight  = null;
+    private DcMotor BackRight  = null;
+    private DcMotor BackLeft  = null;
+    private DcMotor Slide = null;
+    private DcMotor Slidee = null;
+    private Servo Servo = null;
+    private Servo Servoo = null;
+    private ElapsedTime runtime = new ElapsedTime();
 
+    //Declare motor speeds
     static final double     FORWARD_SPEED = 1;
     static final double     TURN_SPEED    = 0.5;
     static final double     INTAKE_SPEED  = 0.5;
@@ -77,10 +80,13 @@ public class Error404AutoMode extends LinearOpMode {
 
         // Initialize the drive system variables.
         FrontLeft  = hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
+        FrontRight  = hardwareMap.get(DcMotor.class, "FrontRight");
         BackRight  = hardwareMap.get(DcMotor.class, "BackRight");
         BackLeft  = hardwareMap.get(DcMotor.class, "BackLeft");
-        SlideIntake = hardwareMap.get(DcMotor.class, "SlideIntake");
+        Slide = hardwareMap.get(DcMotor.class, "Slide");
+        Slidee = hardwareMap.get(DcMotor.class, "Slidee");
+        Servo = hardwareMap.get(Servo.class, "Servo");
+        Servoo = hardwareMap.get(Servo.class, "Servoo");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -99,13 +105,13 @@ public class Error404AutoMode extends LinearOpMode {
 
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
-        // Step 1:  Drive forward for 1.5 seconds
+        // Step 1:  Drive forward for 2 seconds
         FrontLeft.setPower(FORWARD_SPEED);
         FrontRight.setPower(FORWARD_SPEED);
         BackRight.setPower(FORWARD_SPEED);
         BackLeft.setPower(FORWARD_SPEED);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.5)) {
+        while (opModeIsActive() && (runtime.seconds() < 2)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -121,15 +127,21 @@ public class Error404AutoMode extends LinearOpMode {
             telemetry.update();
         }
 
-        //Step 3:  Lengthen the intake (1 second)
-        SlideIntake.setPower(INTAKE_SPEED);
+        //Step 3:  Move slides to proper position (1 second)
+        Slide.setPower(INTAKE_SPEED);
+        Slidee.setPower(INTAKE_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1)) {
             telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
 
-        //Step 4:  Move intake to touch low rung
-
+        //Step 4:  Servos should position to touch high rung (1 seconds)
+        Servo.setPosition(1);
+        Servoo.setPosition(1);
+        while (opModeIsActive() && (runtime.seconds() < 1)) {
+            telemetry.addData("Path", "Leg 4: %4" + ".1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
     }
 }

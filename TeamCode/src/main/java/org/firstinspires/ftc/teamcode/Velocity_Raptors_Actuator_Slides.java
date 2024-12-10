@@ -60,7 +60,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
  @TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
  //@Disabled
- public class Error404_Actuator_Slides extends LinearOpMode {
+ class Error404_Actuator_Slides extends LinearOpMode {
 
      // Declare OpMode members for each of the 3 motors.
      private ElapsedTime runtime = new ElapsedTime();
@@ -110,7 +110,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                  SlideLittle = 0;
              }
              if (gamepad1.x) {
-                 SlideBig = 537;
+                 SlideBig = 537;  //Ticks per revolution
              }
              else if (gamepad1.y) {
                  SlideBig = 0;
