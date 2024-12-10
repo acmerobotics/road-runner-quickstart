@@ -487,4 +487,7 @@ public final class MecanumDrive {
                 defaultVelConstraint, defaultAccelConstraint
         );
     }
+    public double getRoboticOrientation(){
+        return lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+    }
 }

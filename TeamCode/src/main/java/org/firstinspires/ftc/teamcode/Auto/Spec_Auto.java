@@ -26,6 +26,7 @@ public class Spec_Auto extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
+
         if (hardwareMap == null) {
             telemetry.addData("Error", "hardwareMap is not initialized");
             telemetry.update();

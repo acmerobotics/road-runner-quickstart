@@ -29,7 +29,7 @@ public class MeepMeepApp {
                 .strafeTo(new Vector2d(-55, 10))
                 .strafeTo(new Vector2d(-55, 53))
                 .strafeTo(new Vector2d(-35, 62))
-                .strafeToLinearHeading(new Vector2d(subPoseMid.position.x - 10, subPoseMid.position.y), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(subPoseMid.position.x - 10, subPoseMid.position.y - 8), Math.toRadians(90))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
