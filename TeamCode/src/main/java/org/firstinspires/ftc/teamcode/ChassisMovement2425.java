@@ -22,10 +22,10 @@ public class ChassisMovement2425 extends LinearOpMode {
 
     //all servo positioning stuff is from 0 - 1 (decimals included) and not in radians / degrees for some reason, 0 is 0 degrees, 1 is 320 (or whatever the servo max is) degrees
     //all our servos have 320 degrees of movement so i limited it so it wont collide with the arm too much
-    double clawMax = 0.7; //maximum angle the claw servo is allowed to move
-    double clawMin = 0.3; //minimum angle the claw servo is allowed to move
+    private double clawMax = 0.7; //maximum angle the claw servo is allowed to move
+    private double clawMin = 0.3; //minimum angle the claw servo is allowed to move
 
-    double clawYPos = (clawMax + clawMin) / 2; //uses this value to set the initial claw position in the middle of the max and min
+    private double clawYPos = (clawMax + clawMin) / 2; //uses this value to set the initial claw position in the middle of the max and min
     //i am using a variable because .getPosition() only returns the last position the servo was told to move, not its actual location
 
 
@@ -103,13 +103,13 @@ public class ChassisMovement2425 extends LinearOpMode {
             //claw down
             clawYPos = clamp(clawYPos - clawIncrement, clawMin, clawMax);
 
-            telemetry.addData("claw angle: ", clawUpDown.getPosition());
+
 
         }else if (gamepad1.dpad_right && !gamepad1.dpad_left){
             //claw up
             clawYPos = clamp(clawYPos + clawIncrement, clawMin, clawMax);
 
-            telemetry.addData("claw angle: ", clawUpDown.getPosition());
+
 
         }
 
@@ -127,5 +127,9 @@ public class ChassisMovement2425 extends LinearOpMode {
         frontRight.setPower(0.75 * frontRightPower);
         backRight.setPower(0.75 * backRightPower);
         clawUpDown.setPosition(clawYPos); //set servo position
+
+        telemetry.addData("claw angle: ", clawUpDown.getPosition());
+        tel
+
     }
 }
