@@ -41,6 +41,7 @@ public class leftAuto extends LinearOpMode {
         startPose = new Pose2d(-14, -61, Math.toRadians(90));
         drive = new MecanumDrive(hardwareMap, startPose);
         TrajectoryActionBuilder build = drive.actionBuilder(startPose)
+                
                 .afterTime(0, shoulder.autonHC())
                 .strafeTo(new Vector2d(-5, -33))
 

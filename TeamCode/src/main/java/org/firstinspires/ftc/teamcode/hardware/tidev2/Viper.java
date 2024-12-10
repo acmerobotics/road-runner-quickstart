@@ -126,17 +126,17 @@ public class Viper {
         return new AutonHB();
     }
 
-    public class AutonGolf implements Action{
+    public class AutonSlightOut implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            setTarget(100);
+            setTarget(40);
             return false;
         }
     }
 
-    public Action autonGolf() {
-        return new AutonGolf();
+    public Action autonSlightOut() {
+        return new AutonSlightOut();
     }
 
     public class AutonHangSpecimen implements Action {

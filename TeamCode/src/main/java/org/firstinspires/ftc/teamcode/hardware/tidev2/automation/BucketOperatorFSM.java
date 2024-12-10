@@ -150,7 +150,7 @@ public class BucketOperatorFSM {
 
                 if (gamepad.dpad_right) {
                     bucketStateTimer.reset();
-                    shoulder.setTarget(520);
+                    shoulder.setTarget(540);
                     bucketState = BucketState.READY_TO_CLIP;
                 }
                 break;
