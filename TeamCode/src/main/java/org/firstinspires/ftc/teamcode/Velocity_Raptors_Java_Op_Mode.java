@@ -168,13 +168,18 @@ class Error404JavaOpMode extends LinearOpMode {
             telemetry.update();
 
             // Slide code for teleop
+
             double SLIDE_SPEED = 0.5;
+
             if (gamepad1.dpad_up) {
                 Slide.setPower(SLIDE_SPEED);
                 Slidee.setPower(SLIDE_SPEED);
             } else if (gamepad1.dpad_down) {
                 Slide.setPower(-SLIDE_SPEED);
                 Slidee.setPower(-SLIDE_SPEED);
+            } else {
+                Slide.setPower(0);
+                Slidee.setPower(0);
             }
         }
     }
