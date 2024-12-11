@@ -28,7 +28,7 @@ public class SpeciPath extends LinearOpMode {
                 .waitSeconds(1.5)
                 .strafeToLinearHeading(new Vector2d(-22.65, 27.62), Math.toRadians(125)) //block 2
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-20.38, 27.18), Math.toRadians(42)) //deposit
+                .strafeToLinearHeading(new Vector2d(-21.07, 27.18), Math.toRadians(42)) //deposit2
                 .waitSeconds(1.5)
                 .strafeToLinearHeading(new Vector2d(-8, 30), Math.toRadians(180)) //pick up 1
                 .waitSeconds(1.5)
