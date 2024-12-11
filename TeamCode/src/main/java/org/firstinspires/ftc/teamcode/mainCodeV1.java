@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-
+import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -22,11 +22,19 @@ public class mainCodeV1 extends LinearOpMode {
     private DcMotor frontLeft;
     private DcMotor arm;
     private ColorSensor colorDetector;
+    private Servo clawUpDown;
     int ARMMIN;
     int ARMMAX;
     int targetedAngle = 1; //for block search
     double searchOrigin; //for block search
     int INCREMENT;
+    //all servo positioning stuff is from 0 - 1 (decimals included) and not in radians / degrees for some reason, 0 is 0 degrees, 1 is 320 (or whatever the servo max is) degrees
+    //all our servos have 320 degrees of movement so i limited it so it wont collide with the arm too much
+    private double clawMax = 0.7; //maximum angle the claw servo is allowed to move
+    private double clawMin = 0.3; //minimum angle the claw servo is allowed to move
+    private double clawIncrement = 0.05; //how much the claw angle increases / decreases every time the buttons are down
+    private double clawYPos = (clawMax + clawMin) / 2; //uses this value to set the initial claw position in the middle of the max and min
+    //i am using a variable because .getPosition() only returns the last position the servo was told to move, not its actual location
 
     private void hardwareMapping() {
         imu = hardwareMap.get(IMU.class, "imu");
@@ -36,6 +44,7 @@ public class mainCodeV1 extends LinearOpMode {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         arm = hardwareMap.get(DcMotor.class, "arm");
         colorDetector = hardwareMap.get(ColorSensor.class, "colorDetector");
+        clawUpDown = hardwareMap.get(Servo.class, "servoUpDown"); //add a servo onto the robot just to make sure this works (idk if this will error without one)
     }
 
     private void armSetup() {
@@ -63,12 +72,18 @@ public class mainCodeV1 extends LinearOpMode {
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        clawUpDown.setPosition(clawYPos);
     }
 
     private void initializeAndSetUp() {
         hardwareMapping();
         setupChassis();
         armSetup();
+    }
+
+    public static double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     private void chassisMovement(float y, float x, float t) {
@@ -92,10 +107,20 @@ public class mainCodeV1 extends LinearOpMode {
         backLeftPower = (rotY - (rotX - t)) / denominator;
         frontRightPower = (rotY - (rotX + t)) / denominator;
         backRightPower = (rotY + (rotX - t)) / denominator;
+
+        if (gamepad1.dpad_left && !gamepad1.dpad_right) {
+            //claw down
+            clawYPos = clamp(clawYPos - clawIncrement, clawMin, clawMax);
+        }else if (gamepad1.dpad_right && !gamepad1.dpad_left){
+            //claw up
+            clawYPos = clamp(clawYPos + clawIncrement, clawMin, clawMax);
+        }
+
         frontLeft.setPower(0.75 * frontLeftPower);
         backLeft.setPower(0.75 * backLeftPower);
         frontRight.setPower(0.75 * frontRightPower);
         backRight.setPower(0.75 * backRightPower);
+        clawUpDown.setPosition(clawYPos); //set servo position
     }
 
     private void armMovement(boolean down,boolean up, int increment) {
@@ -120,6 +145,7 @@ public class mainCodeV1 extends LinearOpMode {
         telemetry.addData("Heading: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         telemetry.addData("armPosition", arm.getCurrentPosition());
         telemetry.addData("armMax", ARMMAX);
+        telemetry.addData("claw angle: ", clawUpDown.getPosition());
         telemetry.update();
     }
 
