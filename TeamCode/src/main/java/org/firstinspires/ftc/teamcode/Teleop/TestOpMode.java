@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -75,7 +76,10 @@ public class TestOpMode extends OpMode {
         if (gamepad1.a) {
             runningActions.add(new SequentialAction(
                     new SleepAction(0.5),
-                    armActions.raiseArm()
+                    new ParallelAction(
+                    new InstantAction(() -> armActions.rightSlide.setPower(1)),
+                    new InstantAction(() ->  armActions.leftSlide.setPower(1))
+                    )
             ));
             packet.put("runningactions", runningActions);
         }

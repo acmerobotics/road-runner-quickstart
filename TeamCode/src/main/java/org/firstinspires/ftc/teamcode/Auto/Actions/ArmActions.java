@@ -11,13 +11,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 public class ArmActions {
-    private DcMotor leftSlide;
-    private DcMotor rightSlide;
-    private CRServo intake;
-    private Servo intakePivot;
-    private Servo bucketPivot;
-    private Servo clawPivot;
-    private Servo claw;
+    public DcMotor leftSlide;
+    public DcMotor rightSlide;
+    public CRServo intake;
+    public Servo intakePivot;
+    public Servo bucketPivot;
+    public Servo clawPivot;
+    public Servo claw;
 
 
     public ArmActions(HardwareMap hardwareMap) {
