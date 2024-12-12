@@ -42,7 +42,7 @@ public class Limelight {
         else {
             return new double[2];
         }
-       //to see if it works during testing
+      
         return new double[] {tx,ty};
     }
 
