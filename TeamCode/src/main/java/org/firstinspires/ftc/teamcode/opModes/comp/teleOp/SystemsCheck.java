@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.SpecimenGrabber;
 @TeleOp(name="SystemsCheck", group="AAA_COMPETITION")
 public class SystemsCheck extends OpMode {
 
-    Drivebase drivebase = new Drivebase(AutoConstants.STARTING_POSITION);
+    Drivebase drivebase = new Drivebase();
     Intake intake = new Intake();
     IntakeSystem intakeSystem = new IntakeSystem();
     Outtake outtake = new Outtake();

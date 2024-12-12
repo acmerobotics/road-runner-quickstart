@@ -25,7 +25,7 @@ public class Robot extends Mechanism {
 
     @Override
     public void init(HardwareMap hwMap) {
-        drivebase = new Drivebase(startingPosition);
+        drivebase = new Drivebase();
         hubs = new Hubs();
         scoringSystem = new ScoringSystem(isRed);
 
