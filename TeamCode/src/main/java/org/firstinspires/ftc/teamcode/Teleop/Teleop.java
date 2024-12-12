@@ -42,6 +42,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
@@ -71,6 +72,7 @@ public class Teleop extends LinearOpMode {
     private ExtendoState extendoState = ExtendoState.EXTENDOSTART;
 
     private boolean intakeUp = false;
+    private boolean turning = false;
 
     private enum HangState {HANGSTART, HANGUP}
     private HangState hangState = HangState.HANGSTART;
@@ -104,19 +106,23 @@ public class Teleop extends LinearOpMode {
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        IMU imu = hardwareMap.get(IMU.class, "imu");
+
+
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
 
         Gamepad previousGamepad1 = new Gamepad();
         Gamepad previousGamepad2 = new Gamepad();
 
-        //ExtendoV2 extendo = new ExtendoV2(hardwareMap);
+        // ExtendoV2 extendo = new ExtendoV2(hardwareMap);
         Extendo extendo = new Extendo(hardwareMap);
         Intaker intake = new Intaker(hardwareMap);
         SlidesV2 slides = new SlidesV2(hardwareMap, true);
         Claw claw = new Claw(hardwareMap);
         Control control = new Control();
         Control control2 = new Control();
+
 
         runningActions.add(new SequentialAction(
                 intake.flop(),
@@ -159,12 +165,29 @@ public class Teleop extends LinearOpMode {
             double leftx1 = -currentGamepad1.left_stick_x;
             double rightx1 = -currentGamepad1.right_stick_x;
             double lefty2 = currentGamepad2.left_stick_y;
+            double heading = imu.getRobotYawPitchRollAngles().getYaw();
 
             double denominator = Math.max(Math.abs(lefty1) + Math.abs(leftx1) + Math.abs(rightx1), 1);
             double frontLeftPower = (lefty1 + leftx1 + rightx1) / denominator;
             double backLeftPower = (lefty1 - leftx1 + rightx1) / denominator;
             double frontRightPower = (lefty1 - leftx1 - rightx1) / denominator;
             double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
+
+
+            if (currentGamepad1.a && !previousGamepad1.a) {
+                imu.resetYaw();
+                turning = true;
+            }
+
+            if (turning) {
+                frontLeftPower += (180 - imu.getRobotYawPitchRollAngles().getYaw()) / 180;
+                backLeftPower += (180 - imu.getRobotYawPitchRollAngles().getYaw()) / 180;
+                frontRightPower -= (180 - imu.getRobotYawPitchRollAngles().getYaw()) / 180;
+                backRightPower -= (180 - imu.getRobotYawPitchRollAngles().getYaw()) / 180;
+                if (Math.abs(180 - imu.getRobotYawPitchRollAngles().getYaw()) < 5) {
+                    turning = false;
+                }
+            }
 
             if (currentGamepad1.left_trigger < 0.9) {
                 FL.setPower(frontLeftPower);
@@ -369,6 +392,9 @@ public class Teleop extends LinearOpMode {
                         claw.open()
                 ));
             }
+
+
+
 
 
 
