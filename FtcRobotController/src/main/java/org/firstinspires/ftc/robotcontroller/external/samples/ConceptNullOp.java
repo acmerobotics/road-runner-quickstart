@@ -53,7 +53,7 @@ public class ConceptNullOp extends OpMode {
 
   /**
    * This method will be called repeatedly during the period between when
-   * the INIT button is pressed and when the START button is pressed (or the
+   * the init button is pressed and when the play button is pressed (or the
    * OpMode is stopped).
    */
   @Override
@@ -61,7 +61,7 @@ public class ConceptNullOp extends OpMode {
   }
 
   /**
-   * This method will be called once, when the START button is pressed.
+   * This method will be called once, when the play button is pressed.
    */
   @Override
   public void start() {
@@ -70,7 +70,7 @@ public class ConceptNullOp extends OpMode {
 
   /**
    * This method will be called repeatedly during the period between when
-   * the START button is pressed and when the OpMode is stopped.
+   * the play button is pressed and when the OpMode is stopped.
    */
   @Override
   public void loop() {

@@ -110,7 +110,7 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
                           rightDrive.getCurrentPosition());
         telemetry.update();
 
-        // Wait for the game to start (driver presses START)
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // Step through each leg of the path,

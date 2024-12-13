@@ -94,25 +94,25 @@ public class RobotTeleopTank_Iterative extends OpMode{
         rightClaw.setPosition(MID_SERVO);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData(">", "Robot Ready.  Press START.");    //
+        telemetry.addData(">", "Robot Ready.  Press Play.");    //
     }
 
     /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit START
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
     @Override
     public void init_loop() {
     }
 
     /*
-     * Code to run ONCE when the driver hits START
+     * Code to run ONCE when the driver hits PLAY
      */
     @Override
     public void start() {
     }
 
     /*
-     * Code to run REPEATEDLY after the driver hits START but before they hit STOP
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
     public void loop() {

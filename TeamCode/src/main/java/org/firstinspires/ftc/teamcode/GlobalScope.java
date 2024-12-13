@@ -11,6 +11,14 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ git status (vezi daca e rosu)
+ git add . (adaugi toate fiesiere schimbate)
+ git status (veifici daca e verde)
+ (cand e verde) git commit -m Mesaj(sau scrii tu un mesaj)
+ Apesi pe butonul de sus de push (sa ai net)
+ */
+
 public abstract class GlobalScope extends LinearOpMode
 {
     public DcMotorEx MotorFS = null; /// Fata stanga
@@ -221,7 +229,7 @@ public abstract class GlobalScope extends LinearOpMode
         }
     }*/
 
-    /**void Cleste()
+    void Cleste()
     {
         GhearaIntake.readValue();
         GhearaOutake.readValue();
@@ -234,7 +242,7 @@ public abstract class GlobalScope extends LinearOpMode
             ServoGhearaOutake.setPosition(0.022);
         else if(GhearaOutake.wasJustPressed() && ServoGhearaOutake.getPosition() != 0)
             ServoGhearaOutake.setPosition(0);
-    }*/
+    }
 
     /**void Intake()
     {
@@ -312,21 +320,18 @@ public abstract class GlobalScope extends LinearOpMode
 
         if(IntakeSus.wasJustPressed() && pozitieIntake < 3){
             pozitieIntake++;
-            if(pozitieIntake > 1){
+            if(pozitieIntake == 1){
                 OutakeStanga.setPosition(0.3405);
                 OutakeDreapta.setPosition(0.37);
             }
-            else ServoGhearaIntake.setPosition(0);
         }
         if(IntakeJos.wasJustPressed() && pozitieIntake > 0){
             pozitieIntake--;
-            if(pozitieIntake == 0){
+            if(pozitieIntake == 1){
                 OutakeStanga.setPosition(0.3405);
                 OutakeDreapta.setPosition(0.37);
                 ServoGhearaIntake.setPosition(0.022);
             }
-            else if(pozitieIntake == 2 || pozitieIntake == 1) ServoGhearaIntake.setPosition(0.022);
-            else ServoGhearaIntake.setPosition(0);
         }
 
         IntakeStanga.setPosition(PozIntakeSt[pozitieIntake]);
@@ -336,7 +341,7 @@ public abstract class GlobalScope extends LinearOpMode
 
     void Outake(){
 
-     //Cleste();
+     Cleste();
      OutakeSus.readValue();
      OutakeJos.readValue();
 

@@ -106,7 +106,7 @@ public class RobotAutoDriveToLine_Linear extends LinearOpMode {
         // A gain of 15 causes a Rev Color Sensor V2 to produce an Alpha value of 1.0 at about 1.5" above the floor.
         colorSensor.setGain(15);
 
-        // Wait for driver to press START)
+        // Wait for driver to press PLAY)
         // Abort this loop is started or stopped.
         while (opModeInInit()) {
 
