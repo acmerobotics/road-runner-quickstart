@@ -48,17 +48,13 @@ public class rightAuto extends LinearOpMode {
         drive = new MecanumDrive(hardwareMap, startPose);
         TrajectoryActionBuilder build = drive.actionBuilder(startPose)
                 .afterTime(0, shoulder.autonHC())
-                .strafeToSplineHeading(new Vector2d(9, -35), Math.toRadians(90))
-                .strafeTo(new Vector2d(7, -30))
+                .afterTime(0.6, viper.autonHangSpecimen())
+                .strafeTo(new Vector2d(5, -30))
 
                 //put arm up while strafing
                 //stop at (9, -30) and place the sample on the bar
-                .afterTime(0, viper.autonHangSpecimen())
-                .waitSeconds(1.0)
-                .strafeTo(new Vector2d(7, -28))
                 .afterTime(0, claw.autonOpenClaw())
                 .afterTime(0, viper.autonDown())
-                .waitSeconds(0.5)
 
 
 
@@ -77,9 +73,9 @@ public class rightAuto extends LinearOpMode {
                 //prepare to grab
                 .strafeTo(new Vector2d(45,-53))
 
-                .strafeTo(new Vector2d(45,-58))
+                .strafeTo(new Vector2d(43,-58))
                 .waitSeconds(0.1)
-                .strafeTo(new Vector2d(45,-59.5))
+                .strafeTo(new Vector2d(45,-60))
 
                 .afterTime(0, viper.autonSlightOut())
                 .waitSeconds(0.1)
@@ -88,20 +84,21 @@ public class rightAuto extends LinearOpMode {
                 .afterTime(0, shoulder.autonHC())
                 //grab sample, routing towards chamber.
                 //raise arm to clip
-                .strafeToSplineHeading(new Vector2d(9, -35), Math.toRadians(90))
-                .strafeToSplineHeading(new Vector2d(9, -30), Math.toRadians(90))
+                .afterTime(1.4, viper.autonHangSpecimen())
+                .setReversed(true)
+                .splineToSplineHeading(new Pose2d(new Vector2d(7, -30), Math.toRadians(90)), Math.toRadians(90))
+
+
                 //clip, routing to push final sample and grab specimen
-                .afterTime(0, viper.autonHangSpecimen())
-                .waitSeconds(1.0)
-                .strafeTo(new Vector2d(9, -28))
+
                 .afterTime(0, claw.autonOpenClaw())
-                .afterTime(0, viper.autonDown())
-                .waitSeconds(0.5)
+                .afterTime(0.1, viper.autonDown())
+
 
 
                 .afterTime(1, shoulder.autonDown())
                 .setReversed(true)
-                .splineToSplineHeading(new Pose2d(new Vector2d(45, -58), Math.toRadians(-90)), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(new Vector2d(40, -58), Math.toRadians(-90)), Math.toRadians(0))
 
 
 
@@ -113,23 +110,23 @@ public class rightAuto extends LinearOpMode {
 //                .strafeTo(new Vector2d(45,-53))
 //                .strafeTo(new Vector2d(45,-58))
 //                .waitSeconds(0.1)
-                .strafeTo(new Vector2d(45,-59.5))
-                .waitSeconds(0.1)
-                .afterTime(0, claw.autonCloseClaw())
+                .strafeTo(new Vector2d(45,-60))
+
+                .afterTime(0.1, claw.autonCloseClaw())
                 .waitSeconds(0.5)
                 .afterTime(0, shoulder.autonHC())
                 //grab sample, routing towards chamber.
                 //raise arm to clip
-                .strafeToSplineHeading(new Vector2d(9, -35), Math.toRadians(90))
-                .strafeToSplineHeading(new Vector2d(11, -30), Math.toRadians(90))
-                .afterTime(0, viper.autonHangSpecimen())
-                .waitSeconds(1.0)
-                .strafeTo(new Vector2d(11, -28))
+                .afterTime(1.5, viper.autonHangSpecimen())
+                .setReversed(true)
+                .splineToSplineHeading(new Pose2d(new Vector2d(9, -30), Math.toRadians(90)), Math.toRadians(90))
+
                 .afterTime(0, claw.autonOpenClaw())
                 .afterTime(0, viper.autonDown())
                 .waitSeconds(0.5)
 
-                .strafeToConstantHeading(new Vector2d(60,-56))
+                .setReversed(true)
+                .splineTo(new Vector2d(50,-60), Math.toRadians(-90))
                 .afterTime(0, shoulder.autonDown())
 
                 ;
