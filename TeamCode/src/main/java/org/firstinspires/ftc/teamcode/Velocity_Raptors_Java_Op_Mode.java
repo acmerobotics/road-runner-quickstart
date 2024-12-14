@@ -190,6 +190,9 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
             if (gamepad1.b) {
                 Servo.setPosition(1);
                 Servoo.setPosition(1);
+            } else {
+                Servo.setPosition(0);
+                Servoo.setPosition(0);
             }
             }
         }
