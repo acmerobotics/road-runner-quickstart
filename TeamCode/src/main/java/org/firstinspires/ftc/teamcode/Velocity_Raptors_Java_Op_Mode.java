@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -62,8 +63,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
-class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
+@TeleOp
+public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -73,6 +74,8 @@ class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
     private DcMotor BackRight = null;
     private DcMotor Slide = null;
     private DcMotor Slidee = null;
+    private Servo Servo = null;
+    private Servo Servoo = null;
 
     @Override
     public void runOpMode() {
@@ -85,6 +88,8 @@ class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         BackRight = hardwareMap.get(DcMotor.class, "BackRight");
         Slide = hardwareMap.get(DcMotor.class, "Slide");
         Slidee = hardwareMap.get(DcMotor.class, "Slidee");
+        Servo = hardwareMap.get(Servo.class, "Servo");
+        Servoo = hardwareMap.get(Servo.class, "Servoo");
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -168,17 +173,24 @@ class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
 
             // Slide code for teleop
 
-            double SLIDE_SPEED = 0.5;
+            double SLIDE_SPEED = 1;
 
             if (gamepad1.dpad_up) {
-                Slide.setPower(SLIDE_SPEED);
-                Slidee.setPower(SLIDE_SPEED);
-            } else if (gamepad1.dpad_down) {
                 Slide.setPower(-SLIDE_SPEED);
                 Slidee.setPower(-SLIDE_SPEED);
+            } else if (gamepad1.dpad_down) {
+                Slide.setPower(SLIDE_SPEED);
+                Slidee.setPower(SLIDE_SPEED);
             } else {
                 Slide.setPower(0);
                 Slidee.setPower(0);
+
+            // Servo Code for TeleOp
+
+            if (gamepad1.b) {
+                Servo.setPosition(1);
+                Servoo.setPosition(1);
+            }
             }
         }
     }

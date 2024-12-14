@@ -54,8 +54,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Robot: Auto Drive By Time", group="Robot")
-@Disabled
+@Autonomous
 public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -95,26 +94,27 @@ public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
 
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
-        // Step 1:  Drive forward for 3 seconds
-        FrontLeft.setPower(FORWARD_SPEED);
-        FrontRight.setPower(FORWARD_SPEED);
-        BackRight.setPower(FORWARD_SPEED);
-        BackLeft.setPower(FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
+
 
         // Step 2:  Spin right for 1.3 seconds
-        FrontLeft.setPower(TURN_SPEED);
-        FrontRight.setPower(-TURN_SPEED);
-        BackRight.setPower(-TURN_SPEED);
-        BackLeft.setPower(TURN_SPEED);
+        FrontLeft.setPower(-TURN_SPEED);
+        FrontRight.setPower(TURN_SPEED);
+        BackRight.setPower(TURN_SPEED);
+        BackLeft.setPower(-TURN_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.3)) {
             telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
+
+            FrontLeft.setPower(FORWARD_SPEED);
+            FrontRight.setPower(FORWARD_SPEED);
+            BackRight.setPower(FORWARD_SPEED);
+            BackLeft.setPower(FORWARD_SPEED);
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+                telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
         }
     }
 }
