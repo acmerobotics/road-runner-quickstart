@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import java.util.concurrent.TimeUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
@@ -156,11 +157,12 @@ public class mainCodeV1 extends LinearOpMode {
         return distance;
     }
 
-    private boolean searchColor(double searchOrigin) {
+    private boolean searchColor(double searchOrigin) throws InterruptedException {
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         float directionBetweenAngles;
         if (colorDetection().equals("Yellow") || colorDetection().equals("Red")) {
-            float power = -0.7f*targetedAngle;
+            float power = -0.3f*targetedAngle;
+            TimeUnit.SECONDS.sleep(1);
             while (!(colorDetection().equals("Yellow") || colorDetection().equals("Red"))) {
                 chassisMovement(0,0, power);
             }
@@ -229,7 +231,7 @@ public class mainCodeV1 extends LinearOpMode {
         chassisMovement(0,0, power);
     }
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         initializeAndSetUp();
         waitForStart();
         postStartSetUp();
