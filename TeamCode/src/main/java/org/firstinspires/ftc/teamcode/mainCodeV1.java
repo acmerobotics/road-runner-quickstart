@@ -31,8 +31,8 @@ public class mainCodeV1 extends LinearOpMode {
     int INCREMENT;
     //all servo positioning stuff is from 0 - 1 (decimals included) and not in radians / degrees for some reason, 0 is 0 degrees, 1 is 320 (or whatever the servo max is) degrees
     //all our servos have 320 degrees of movement so i limited it so it wont collide with the arm too much
-    private double clawMax = 0.7; //maximum angle the claw servo is allowed to move
-    private double clawMin = 0.3; //minimum angle the claw servo is allowed to move
+    private double clawMax = 1; //maximum angle the claw servo is allowed to move
+    private double clawMin = 0; //minimum angle the claw servo is allowed to move
     private double clawIncrement = 0.05; //how much the claw angle increases / decreases every time the buttons are down
     private double clawYPos = (clawMax + clawMin) / 2; //uses this value to set the initial claw position in the middle of the max and min
     //i am using a variable because .getPosition() only returns the last position the servo was told to move, not its actual location
