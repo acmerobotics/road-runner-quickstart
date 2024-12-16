@@ -1,6 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.localization;
 
 import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.TankKinematics;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
@@ -13,6 +15,7 @@ import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.TankDrive;
 import org.firstinspires.ftc.teamcode.messages.TankLocalizerInputsMessage;
 
 import java.util.ArrayList;
@@ -51,7 +54,16 @@ public class TankDriveLocalizer implements Localizer {
     }
 
     @Override
-    public Twist2dDual<Time> update() {
+    public Pose2d updatePositionEstimate(Pose2d pose) {
+        return pose.plus(calculatePoseDelta().value());
+    }
+
+    @Override
+    public PoseVelocity2d updateVelocityEstimate() {
+        return calculatePoseDelta().velocity().value();
+    }
+
+    public Twist2dDual<Time> calculatePoseDelta() {
         List<PositionVelocityPair> leftReadings = new ArrayList<>(), rightReadings = new ArrayList<>();
         double meanLeftPos = 0.0, meanLeftVel = 0.0;
         for (Encoder e : leftEncs) {

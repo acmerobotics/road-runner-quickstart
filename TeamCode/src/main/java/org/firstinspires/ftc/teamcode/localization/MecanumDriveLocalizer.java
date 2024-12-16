@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.localization;
 
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.MecanumKinematics;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
@@ -16,6 +18,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
 
 public class MecanumDriveLocalizer implements Localizer {
@@ -41,7 +44,16 @@ public class MecanumDriveLocalizer implements Localizer {
     }
 
     @Override
-    public Twist2dDual<Time> update() {
+    public Pose2d updatePositionEstimate(Pose2d pose) {
+        return pose.plus(calculatePoseDelta().value());
+    }
+
+    @Override
+    public PoseVelocity2d updateVelocityEstimate() {
+        return calculatePoseDelta().velocity().value();
+    }
+
+    public Twist2dDual<Time> calculatePoseDelta() {
         PositionVelocityPair leftFrontPosVel = leftFront.getPositionAndVelocity();
         PositionVelocityPair leftBackPosVel = leftBack.getPositionAndVelocity();
         PositionVelocityPair rightBackPosVel = rightBack.getPositionAndVelocity();
