@@ -21,8 +21,6 @@ public class SpeciPath extends LinearOpMode {
         Pose2d StartPose1 = new Pose2d(0,0, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        Telemetry tele = dashboard.getTelemetry();
 
         TrajectoryActionBuilder path = drive.actionBuilder(StartPose1)
                 .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0)) //1+0
