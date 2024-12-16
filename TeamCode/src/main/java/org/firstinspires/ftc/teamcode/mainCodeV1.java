@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.util.concurrent.TimeUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name = "mainCodeV1")
@@ -22,13 +21,18 @@ public class mainCodeV1 extends LinearOpMode {
     private DcMotor backLeft;
     private DcMotor frontLeft;
     private DcMotor arm;
+    private DcMotor verticalExtender;
     private ColorSensor colorDetector;
     private Servo clawUpDown;
+    boolean verticalExtensionDirection = true;
+    boolean xPressed = false;
+    private Servo bucketServo;
     int ARMMIN;
     int ARMMAX;
     int targetedAngle = 1; //for block search
     double searchOrigin; //for block search
     int INCREMENT;
+    int SERVOINCREMENT;
     //all servo positioning stuff is from 0 - 1 (decimals included) and not in radians / degrees for some reason, 0 is 0 degrees, 1 is 320 (or whatever the servo max is) degrees
     //all our servos have 320 degrees of movement so i limited it so it wont collide with the arm too much
     private double clawMax = 1; //maximum angle the claw servo is allowed to move
@@ -46,6 +50,8 @@ public class mainCodeV1 extends LinearOpMode {
         arm = hardwareMap.get(DcMotor.class, "arm");
         colorDetector = hardwareMap.get(ColorSensor.class, "colorDetector");
         clawUpDown = hardwareMap.get(Servo.class, "servoUpDown"); //add a servo onto the robot just to make sure this works (idk if this will error without one)
+        verticalExtender = hardwareMap.get(DcMotor.class, "verticalExtender");
+        bucketServo = hardwareMap.get(Servo.class, "bucketServo");
     }
 
     private void armSetup() {
@@ -53,6 +59,14 @@ public class mainCodeV1 extends LinearOpMode {
         ARMMIN = arm.getCurrentPosition() - 3;
         ARMMAX = ARMMIN - 3000;
         INCREMENT = 250;
+    }
+
+    private void extenderSetup() {
+        verticalExtender.setPower(1);
+    }
+    private void setupServos() {
+        bucketServo.setPosition(0.5);
+        clawUpDown.setPosition(0.5);
     }
 
     private void setupChassis() {
@@ -81,6 +95,15 @@ public class mainCodeV1 extends LinearOpMode {
         hardwareMapping();
         setupChassis();
         armSetup();
+        extenderSetup();
+    }
+
+    private void postStartSetUp() {
+        arm.setTargetPosition(arm.getCurrentPosition());
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        verticalExtender.setTargetPosition(verticalExtender.getCurrentPosition());
+        verticalExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public static double clamp(double value, double min, double max) {
@@ -124,7 +147,7 @@ public class mainCodeV1 extends LinearOpMode {
         clawUpDown.setPosition(clawYPos); //set servo position
     }
 
-    private void armMovement(boolean down,boolean up, int increment) {
+    private void armMovement(boolean down, boolean up, int increment) {
         int armPosition = arm.getCurrentPosition();
         if (down) {       // if (DPAD-down) is being pressed and if not yet the min
             armPosition += increment;   // Position in
@@ -135,9 +158,33 @@ public class mainCodeV1 extends LinearOpMode {
         arm.setTargetPosition(armPosition);
     }
 
-    private void postStartSetUp() {
-        arm.setTargetPosition(arm.getCurrentPosition());
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    private void verticalExtension(){
+        if (gamepad1.x) {
+            if (!xPressed) {
+                xPressed = true;
+                verticalExtensionDirection = !verticalExtensionDirection;
+            }
+        } else {
+            xPressed = false;
+        }
+        if (verticalExtensionDirection) {
+            verticalExtender.setTargetPosition(100);
+        } else {
+            verticalExtender.setTargetPosition(0);
+        }
+    }
+
+    private void bucketMovement(boolean down,boolean up, int increment) {
+        int max = 1;
+        int min = 0;
+        double bucketPosition = bucketServo.getPosition();
+        if (down) {
+            bucketPosition -= increment;
+        } else if (up) {
+            bucketPosition += increment;
+        }
+        bucketPosition = clamp(bucketPosition, min, max);  //clamp the values to be between min and max
+        bucketServo.setPosition(bucketPosition);
     }
 
     private void printThings() {
@@ -243,7 +290,10 @@ public class mainCodeV1 extends LinearOpMode {
             } else {
                 chassisMovement(gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
             }
+
             armMovement(gamepad1.dpad_down,gamepad1.dpad_up,INCREMENT);
+            //bucketMovement();
+            verticalExtension();
             printThings();
         }
     }
