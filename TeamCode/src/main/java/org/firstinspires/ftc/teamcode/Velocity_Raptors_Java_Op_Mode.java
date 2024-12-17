@@ -76,6 +76,8 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
     private DcMotor Slidee = null;
     private Servo Servo = null;
     private Servo Servoo = null;
+    private Servo Servooo = null;
+    private Servo Servoooo = null;
 
     @Override
     public void runOpMode() {
@@ -90,6 +92,8 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         Slidee = hardwareMap.get(DcMotor.class, "Slidee");
         Servo = hardwareMap.get(Servo.class, "Servo");
         Servoo = hardwareMap.get(Servo.class, "Servoo");
+        Servooo = hardwareMap.get(Servo.class, "Servooo");
+        Servoooo = hardwareMap.get(Servo.class, "Servoooo");
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -193,6 +197,16 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
             } else {
                 Servo.setPosition(0);
                 Servoo.setPosition(0);
+            }
+            if (gamepad1.x) {
+                Servooo.setPosition(1);
+            } else {
+                Servooo.setPosition(0);
+            }
+            if (gamepad1.a) {
+                Servoooo.setPosition(1);
+            } else {
+                Servoooo.setPosition(0);
             }
             }
         }
