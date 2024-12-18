@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -107,7 +108,7 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
         FrontLeft.setDirection(DcMotor.Direction.REVERSE);
         FrontRight.setDirection(DcMotor.Direction.REVERSE);
-        BackLeft.setDirection(DcMotor.Direction.FORWARD);
+        BackLeft.setDirection(DcMotor.Direction.REVERSE);
         BackRight.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
@@ -198,16 +199,15 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
                 Servo.setPosition(0);
                 Servoo.setPosition(0);
             }
-            if (gamepad1.x) {
+            if (gamepad1.a) {
                 Servooo.setPosition(1);
             } else {
                 Servooo.setPosition(0);
             }
-            if (gamepad1.a) {
-                Servoooo.setPosition(1);
-            } else {
-                Servoooo.setPosition(0);
+            if (gamepad1.right_bumper) {
+              Servoooo.setPosition(1);
             }
+
             }
         }
     }
