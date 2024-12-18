@@ -48,15 +48,36 @@ public class Drivebase extends Mechanism {
 
     @Override
     public void loop(AIMPad gamepad1) {
-        manualDrive(gamepad1);
+        manualDrive(gamepad1, false);
     }
 
-    private void manualDrive(AIMPad gamepad) {
+    private void manualDrive(AIMPad gamepad, boolean isFieldCentric) {
         double y = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickY()), GamepadSettings.EXPONENT_MODIFIER);
         double x = InputModification.poweredInput(deadzonedStickInput(gamepad.getLeftStickX()), GamepadSettings.EXPONENT_MODIFIER);
         double rx = InputModification.poweredInput(deadzonedStickInput(gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
-        PoseVelocity2d stickInputs = new PoseVelocity2d(new Vector2d(x, y), rx);
-        drive.setDrivePowers(stickInputs);
+
+        // Create left stick vector
+        Vector2d leftStick = new Vector2d(x, y);
+
+        // Rotate left stick vector by -heading if in fieldcentric mode
+        if (isFieldCentric) {
+            leftStick = rotateVector(-drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS), leftStick);
+        }
+
+        // Set drive powers
+        drive.setDrivePowers(new PoseVelocity2d(leftStick, rx));
+    }
+
+    /**
+     * Rotates a vector by a given angle
+     * @param angle angle by which to rotate the vector (RADIANS)
+     * @param inputVector vector to rotate
+     * @return rotated vector
+     */
+    public Vector2d rotateVector(double angle, Vector2d inputVector) {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        return new Vector2d(cos * inputVector.x - sin * inputVector.y, sin * inputVector.x + cos * inputVector.y);
     }
 
     private double deadzonedStickInput(double input) {
