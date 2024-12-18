@@ -39,6 +39,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -88,6 +89,20 @@ public class Teleop extends LinearOpMode {
         Pose2d StartPose1 = new Pose2d(0,0, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
+        Action basketSub1 = drive.actionBuilder(drive.pose)
+                .turnTo(Math.toRadians(15))
+                .strafeToLinearHeading(new Vector2d(40, -10), Math.toRadians(15))
+                .turnTo(Math.toRadians(-45))
+                .build();
+        Action basketSub2 = drive.actionBuilder(drive.pose)
+                .turnTo(Math.toRadians(-15))
+                .strafeToLinearHeading(new Vector2d(30, -20), Math.toRadians(15))
+                .turnTo(Math.toRadians(45))
+                .build();
+        Action observationSub1 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(30, -20), Math.toRadians(-135))
+                .turnTo(Math.toRadians(45))
+                .build();
         NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
 
         final float[] hsvValues = new float[3];
@@ -181,7 +196,7 @@ public class Teleop extends LinearOpMode {
             double backRightPower = (lefty1 + leftx1 - rightx1) / denominator;
 
 
-            if (currentGamepad1.a && !previousGamepad1.a) {
+            if (currentGamepad1.right_trigger > 0.9) {
                 imu.resetYaw();
                 turning = true;
             }
@@ -212,9 +227,16 @@ public class Teleop extends LinearOpMode {
                 drive.pose = new Pose2d(0, 0, 0);
             }
 
-            if (currentGamepad1.left_trigger > 0.9) {
-                
+            if (currentGamepad1.x && !previousGamepad1.x) {
+                runningActions.add(basketSub1);
             }
+            if (currentGamepad1.a && !previousGamepad1.a) {
+                runningActions.add(basketSub2);
+            }
+            if (currentGamepad1.b && !previousGamepad1.b) {
+                runningActions.add(observationSub1);
+            }
+
             switch (extendoState) {
                 case EXTENDOSTART:
                     if (!control.getBusy()) {
@@ -407,9 +429,12 @@ public class Teleop extends LinearOpMode {
                 ));
             }
 
-
-
-
+            
+            if (currentGamepad2.dpad_up) {
+                slides.changeTarget(-20);
+            } else if (currentGamepad2.dpad_down) {
+                slides.changeTarget(20);
+            }
 
 
             List<Action> newActions = new ArrayList<>();
@@ -422,11 +447,7 @@ public class Teleop extends LinearOpMode {
             runningActions = newActions;
             dash.sendTelemetryPacket(packet);
 
-            if (currentGamepad2.dpad_up) {
-                slides.changeTarget(-20);
-            } else if (currentGamepad2.dpad_down) {
-                slides.changeTarget(20);
-            }
+
 
             telemetry.addData("slides left", slides.slidesLeftMotor.getCurrentPosition());
             telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
