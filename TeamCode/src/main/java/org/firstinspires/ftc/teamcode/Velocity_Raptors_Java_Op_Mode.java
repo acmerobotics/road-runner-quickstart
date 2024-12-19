@@ -106,9 +106,9 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        FrontLeft.setDirection(DcMotor.Direction.FORWARD);
-        FrontRight.setDirection(DcMotor.Direction.FORWARD);
-        BackLeft.setDirection(DcMotor.Direction.REVERSE);
+        FrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        FrontRight.setDirection(DcMotor.Direction.REVERSE);
+        BackLeft.setDirection(DcMotor.Direction.FORWARD);
         BackRight.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
@@ -124,8 +124,8 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double lateral =  gamepad1.right_stick_x;
+            double yaw     =  gamepad1.left_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -166,8 +166,8 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
 
             // Send calculated power to wheels
             FrontLeft.setPower(leftFrontPower);
-            BackLeft.setPower(rightFrontPower);
-            FrontRight.setPower(leftBackPower);
+            BackLeft.setPower(leftBackPower);
+            FrontRight.setPower(rightFrontPower);
             BackRight.setPower(rightBackPower);
 
             // Show the elapsed game time and wheel power.
