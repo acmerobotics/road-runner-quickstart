@@ -75,8 +75,8 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
     private DcMotor BackRight = null;
     private DcMotor Slide = null;
     private DcMotor Slidee = null;
-    private Servo Servo = null;
-    private Servo Servoo = null;
+    private Servo Intake1 = null;
+    private Servo Intake2 = null;
     private Servo Servooo = null;
     private Servo Servoooo = null;
 
@@ -193,11 +193,11 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
             // Servo Code for TeleOp
 
             if (gamepad1.b) {
-                Servo.setPosition(1);
-                Servoo.setPosition(1);
+                Intake1.setPosition(1);
+                Intake2.setPosition(1);
             } else {
-                Servo.setPosition(0);
-                Servoo.setPosition(0);
+                Intake1.setPosition(0);
+                Intake2.setPosition(0);
             }
             if (gamepad1.a) {
                 Servooo.setPosition(1);
