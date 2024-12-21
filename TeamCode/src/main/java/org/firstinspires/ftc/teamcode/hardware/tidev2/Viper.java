@@ -51,8 +51,6 @@ public class Viper {
 
     private OpMode myOpMode;   // gain access to methods in the calling OpMode.
 
-    private double deg = 0.0;
-
     private PIDFController controller;
 
     public static double p = 0.001, i = 0, d = 0;
@@ -66,8 +64,11 @@ public class Viper {
         myOpMode = opmode;
     }
 
+    public static int max;
 
     public static double pidf = 0;
+
+    public static double shoulderDeg;
 
 
 
@@ -152,6 +153,18 @@ public class Viper {
         return new AutonHangSpecimen();
     }
 
+    public double toInches(int pos) {
+        return pos / 300.0;
+    }
+
+    public int fromInches(double in) {
+        return (int) (in * 300.0);
+    }
+
+    public void passShoulderDeg(double passed) {
+        shoulderDeg = passed;
+    }
+
     public int getPosition() {
         return viper.getCurrentPosition();
     }
@@ -173,6 +186,7 @@ public class Viper {
         myOpMode.telemetry.addData("Viper Position:", vipPos);
         myOpMode.telemetry.addData("Power:", pidf);
         myOpMode.telemetry.addData("Target Position:", target);
+        myOpMode.telemetry.addData("Viper Max: ", max);
     }
 
     public void listen_simple() {
@@ -190,14 +204,19 @@ public class Viper {
         }
 
         // move viper according to the left stick y
+        if (Math.toRadians(shoulderDeg) == 90 || fromInches(Math.abs(14 / (Math.cos(Math.toRadians(shoulderDeg))))) > 5800) {
+            max = 5800;
+        } else {
+            max = fromInches(Math.abs(14 / (Math.cos(Math.toRadians(shoulderDeg)))));
+        }
 
 
-        if (target >=  0 && target <= 4100) {
+        if (target >= 0 && target <= max) {
             target += (int) (-myOpMode.gamepad2.left_stick_y) * 100;
         } else if (target < 0) {
             target = 0;
         } else {
-            target = 4100;
+            target = max;
         }
 
         vipPos = viper.getCurrentPosition();

@@ -92,6 +92,8 @@ public class AllAttachments extends LinearOpMode {
             viper.sendTelemetry();
             elbow.sendTelemetry();
 
+            viper.passShoulderDeg(shoulder.toDegrees(shoulder.getCurrentPosition()));
+
             updateTelemetry(telemetry);
             // Pace this loop so hands move at a reasonable speed.
             sleep(50);

@@ -122,6 +122,8 @@ public class Tank extends OpMode {
         claw.sendTelemetry();
         viper.sendTelemetry();
 
+        viper.passShoulderDeg(shoulder.toDegrees(shoulder.getCurrentPosition()));
+
         updateTelemetry(telemetry);
 
     }

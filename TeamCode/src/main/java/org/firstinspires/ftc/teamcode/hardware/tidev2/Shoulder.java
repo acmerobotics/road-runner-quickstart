@@ -38,7 +38,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Shoulder {
     public final double MAX_POWER = 2.0;
@@ -174,8 +173,13 @@ public class Shoulder {
 
 
 
+    public double toDegrees(int pos) {
+        return (pos * (3.0 / 23.0)) - 42;
+    }
 
-
+    public int fromDegrees(double deg) {
+        return (int) (deg / (3.0 / 23.0));
+    }
 
 
     public void sendTelemetry() {
