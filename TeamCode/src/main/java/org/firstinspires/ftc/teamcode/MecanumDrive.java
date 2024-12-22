@@ -34,7 +34,6 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -509,6 +508,15 @@ public final class MecanumDrive {
      * @return whether the trajectory has been completed
      */
     public boolean followTrajectory(TimeTrajectory trajectory, double t) {
+        if (t >= trajectory.duration) {
+            leftFront.setPower(0);
+            leftBack.setPower(0);
+            rightBack.setPower(0);
+            rightFront.setPower(0);
+
+            return true;
+        }
+
         Pose2dDual<Time> txWorldTarget = trajectory.get(t);
         targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
 
@@ -539,7 +547,7 @@ public final class MecanumDrive {
         rightBack.setPower(rightBackPower);
         rightFront.setPower(rightFrontPower);
 
-        return t >= trajectory.duration;
+        return false;
     }
 
     /**

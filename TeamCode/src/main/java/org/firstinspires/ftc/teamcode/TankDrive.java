@@ -520,6 +520,13 @@ public final class TankDrive {
      * @return whether the trajectory has been completed
      */
     public boolean followTrajectory(TimeTrajectory trajectory, double t) {
+        if (t >= trajectory.duration) {
+            leftMotors.forEach(m -> m.setPower(0));
+            rightMotors.forEach(m -> m.setPower(0));
+
+            return true;
+        }
+
         DualNum<Time> x = trajectory.profile.get(t);
 
         Pose2dDual<Arclength> txWorldTarget = trajectory.path.get(x.value(), 3);
@@ -546,7 +553,7 @@ public final class TankDrive {
             m.setPower(rightPower);
         }
 
-        return t >= trajectory.duration;
+        return false;
     }
 
     /**
