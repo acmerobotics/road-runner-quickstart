@@ -24,7 +24,9 @@ import com.acmerobotics.roadrunner.TankKinematics;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.TimeTrajectory;
 import com.acmerobotics.roadrunner.TimeTurn;
+import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.TrajectoryBuilderParams;
 import com.acmerobotics.roadrunner.TurnConstraints;
 import com.acmerobotics.roadrunner.Twist2dDual;
@@ -43,7 +45,6 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -494,5 +495,106 @@ public final class TankDrive {
                 defaultTurnConstraints,
                 defaultVelConstraint, defaultAccelConstraint
         );
+    }
+
+
+    public TrajectoryBuilder trajectoryBuilder(Pose2d beginPose) {
+        return new TrajectoryBuilder(
+                new TrajectoryBuilderParams(
+                        1e-6,
+                        new ProfileParams(
+                                0.25, 0.1, 1e-2
+                        )
+                ),
+                beginPose,
+                0.0,
+                defaultVelConstraint,
+                defaultAccelConstraint
+        );
+    }
+
+    /**
+     * Follow a trajectory.
+     * @param trajectory trajectory to follow
+     * @param t time to follow in seconds
+     * @return whether the trajectory has been completed
+     */
+    public boolean followTrajectory(TimeTrajectory trajectory, double t) {
+        DualNum<Time> x = trajectory.profile.get(t);
+
+        Pose2dDual<Arclength> txWorldTarget = trajectory.path.get(x.value(), 3);
+        targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
+
+        updatePoseEstimate();
+
+        PoseVelocity2dDual<Time> command = new RamseteController(kinematics.trackWidth, PARAMS.ramseteZeta, PARAMS.ramseteBBar)
+                .compute(x, txWorldTarget, pose);
+        driveCommandWriter.write(new DriveCommandMessage(command));
+
+        TankKinematics.WheelVelocities<Time> wheelVels = kinematics.inverse(command);
+        double voltage = voltageSensor.getVoltage();
+        final MotorFeedforward feedforward = new MotorFeedforward(PARAMS.kS,
+                PARAMS.kV / PARAMS.inPerTick, PARAMS.kA / PARAMS.inPerTick);
+        double leftPower = feedforward.compute(wheelVels.left) / voltage;
+        double rightPower = feedforward.compute(wheelVels.right) / voltage;
+        tankCommandWriter.write(new TankCommandMessage(voltage, leftPower, rightPower));
+
+        for (DcMotorEx m : leftMotors) {
+            m.setPower(leftPower);
+        }
+        for (DcMotorEx m : rightMotors) {
+            m.setPower(rightPower);
+        }
+
+        return t >= trajectory.duration;
+    }
+
+    /**
+     * Follow a trajectory.
+     * @param trajectory trajectory to follow
+     * @param t time to follow in seconds
+     * @return whether the trajectory has been completed
+     **/
+    public boolean followTrajectory(Trajectory trajectory, double t) {
+        return followTrajectory(new TimeTrajectory(trajectory), t);
+    }
+
+    /**
+     * Follow a trajectory in a blocking manner.
+     * This will run until the trajectory is completed,
+     * but nothing else can occur during this process.
+     * @param trajectory trajectory to follow
+     */
+    public void followTrajectoryBlocking(TimeTrajectory trajectory) {
+        double t = 0;
+        double beginTs = System.nanoTime() * 1e-9;
+
+        while (!followTrajectory(trajectory, t)) {
+            t = (System.nanoTime() * 1e-9) - beginTs;
+        }
+
+        leftMotors.forEach(m -> m.setPower(0));
+        rightMotors.forEach(m -> m.setPower(0));
+    }
+
+    /**
+     * Follow a trajectory in a blocking manner.
+     * This will run until the trajectory is completed,
+     * but nothing else can occur during this process.
+     * @param trajectory trajectory to follow
+     **/
+    public void followTrajectoryBlocking(Trajectory trajectory) {
+        followTrajectoryBlocking(new TimeTrajectory(trajectory));
+    }
+
+    /**
+     * Follow a list of trajectories in a blocking manner.
+     * This can be used directly with TrajectoryBuilder.build().
+     * @param trajectories trajectories to follow
+     */
+    public void followTrajectoriesBlocking(List<Trajectory> trajectories) {
+        for (Trajectory trajectory : trajectories) {
+            followTrajectoryBlocking(trajectory);
+        }
     }
 }
