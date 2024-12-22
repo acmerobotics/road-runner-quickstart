@@ -23,9 +23,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.localization.MecanumDriveLocalizer;
 import org.firstinspires.ftc.teamcode.TankDrive;
-import org.firstinspires.ftc.teamcode.localization.TankDriveLocalizer;
 import org.firstinspires.ftc.teamcode.localization.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.localization.TwoDeadWheelLocalizer;
 
@@ -61,8 +59,8 @@ public final class TuningOpModes {
 
                 List<Encoder> leftEncs = new ArrayList<>(), rightEncs = new ArrayList<>();
                 List<Encoder> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();
-                if (md.localizer instanceof MecanumDriveLocalizer) {
-                    MecanumDriveLocalizer dl = (MecanumDriveLocalizer) md.localizer;
+                if (md.localizer instanceof MecanumDrive.MecanumDriveLocalizer) {
+                    MecanumDrive.MecanumDriveLocalizer dl = (MecanumDrive.MecanumDriveLocalizer) md.localizer;
                     leftEncs.add(dl.leftFront);
                     leftEncs.add(dl.leftBack);
                     rightEncs.add(dl.rightFront);
@@ -112,8 +110,8 @@ public final class TuningOpModes {
 
                 List<Encoder> leftEncs = new ArrayList<>(), rightEncs = new ArrayList<>();
                 List<Encoder> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();
-                if (td.localizer instanceof TankDriveLocalizer) {
-                    TankDriveLocalizer dl = (TankDriveLocalizer) td.localizer;
+                if (td.localizer instanceof TankDrive.TankDriveLocalizer) {
+                    TankDrive.TankDriveLocalizer dl = (TankDrive.TankDriveLocalizer) td.localizer;
                     leftEncs.addAll(dl.leftEncs);
                     rightEncs.addAll(dl.rightEncs);
                 } else if (td.localizer instanceof ThreeDeadWheelLocalizer) {

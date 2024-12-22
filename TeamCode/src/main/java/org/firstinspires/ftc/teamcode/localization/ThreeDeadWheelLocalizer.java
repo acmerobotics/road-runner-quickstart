@@ -34,8 +34,9 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
 
     private int lastPar0Pos, lastPar1Pos, lastPerpPos;
     private boolean initialized;
+    private Pose2d pose;
 
-    public ThreeDeadWheelLocalizer(HardwareMap hardwareMap, double inPerTick) {
+    public ThreeDeadWheelLocalizer(HardwareMap hardwareMap, double inPerTick, Pose2d pose) {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -49,16 +50,25 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         this.inPerTick = inPerTick;
 
         FlightRecorder.write("THREE_DEAD_WHEEL_PARAMS", PARAMS);
+
+        this.pose = pose;
     }
 
     @Override
-    public Pose2d updatePositionEstimate(Pose2d pose) {
-        return pose.plus(calculatePoseDelta().value());
+    public void setPose(Pose2d pose) {
+        this.pose = pose;
     }
 
     @Override
-    public PoseVelocity2d updateVelocityEstimate() {
-        return calculatePoseDelta().velocity().value();
+    public Pose2d getPose() {
+        return pose;
+    }
+
+    @Override
+    public PoseVelocity2d update() {
+        Twist2dDual<Time> delta = calculatePoseDelta();
+        pose = pose.plus(delta.value());
+        return delta.velocity().value();
     }
 
     public Twist2dDual<Time> calculatePoseDelta() {

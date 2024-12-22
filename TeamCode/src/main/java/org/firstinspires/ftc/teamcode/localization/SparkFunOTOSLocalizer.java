@@ -7,10 +7,11 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 
 public class SparkFunOTOSLocalizer implements Localizer {
     SparkFunOTOS otos;
-    Pose2d lastPose;
+    Pose2d pose;
 
-    public SparkFunOTOSLocalizer(SparkFunOTOS otos) {
+    public SparkFunOTOSLocalizer(SparkFunOTOS otos, Pose2d pose) {
         this.otos = otos;
+        this.pose = pose;
     }
 
     public SparkFunOTOS.Pose2D[] getPoseVelAcc() {
@@ -25,22 +26,25 @@ public class SparkFunOTOSLocalizer implements Localizer {
     }
 
     @Override
-    public Pose2d updatePositionEstimate(Pose2d pose) {
-        //weird cursed behavior
-        if (pose != lastPose) {
-            otos.setPosition(rrPoseToOtos(pose));
-        }
-
-        SparkFunOTOS.Pose2D otosPose = getPoseVelAcc()[0];
-
-        lastPose = otosPoseToRR(otosPose);
-        return lastPose;
+    public void setPose(Pose2d pose) {
+        this.pose = pose;
     }
 
     @Override
-    public PoseVelocity2d updateVelocityEstimate() {
-        SparkFunOTOS.Pose2D otosPose = getPoseVelAcc()[0];
-        return new PoseVelocity2d(new Vector2d(otosPose.x, otosPose.y), otosPose.h);
+    public Pose2d getPose() {
+        return pose;
+    }
+
+    @Override
+    public PoseVelocity2d update() {
+        SparkFunOTOS.Pose2D[] otosResults = getPoseVelAcc();
+
+        SparkFunOTOS.Pose2D otosPose = otosResults[0];
+        SparkFunOTOS.Pose2D otosVel = otosResults[1];
+
+        pose = otosPoseToRR(otosPose);
+
+        return new PoseVelocity2d(new Vector2d(otosVel.x, otosVel.y), otosVel.h);
     }
 
     public static SparkFunOTOS.Pose2D rrPoseToOtos(Pose2d pose)  {
