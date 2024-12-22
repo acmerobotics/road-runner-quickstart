@@ -27,6 +27,7 @@ import com.acmerobotics.roadrunner.TimeTurn;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TrajectoryBuilderParams;
 import com.acmerobotics.roadrunner.TurnConstraints;
+import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Vector2dDual;
 import com.acmerobotics.roadrunner.VelConstraint;
@@ -41,8 +42,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.teamcode.localization.Localizer;
-import org.firstinspires.ftc.teamcode.localization.TankDriveLocalizer;
 import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.messages.TankCommandMessage;
@@ -357,8 +356,9 @@ public final class TankDrive {
         }
     }
 
-    public Pose2d getPose() {
-        pose = localizer.updatePositionEstimate(pose);
+    public PoseVelocity2d updatePoseEstimate() {
+        Twist2dDual<Time> twist = localizer.update();
+        pose = pose.plus(twist.value());
 
         poseHistory.add(pose);
         while (poseHistory.size() > 100) {
@@ -367,16 +367,7 @@ public final class TankDrive {
 
         estimatedPoseWriter.write(new PoseMessage(pose));
 
-        return pose;
-    }
-
-    public PoseVelocity2d getVelocity() {
-        return localizer.updateVelocityEstimate();
-    }
-
-    public PoseVelocity2d updatePoseEstimate() {
-        pose = getPose();
-        return getVelocity();
+        return twist.velocity().value();
     }
 
     private void drawPoseHistory(Canvas c) {
