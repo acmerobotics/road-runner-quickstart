@@ -402,4 +402,110 @@ public final class MecanumDrive {
                 defaultVelConstraint, defaultAccelConstraint
         );
     }
+
+    public TrajectoryBuilder trajectoryBuilder(Pose2d beginPose) {
+        return new TrajectoryBuilder(
+                new TrajectoryBuilderParams(
+                        1e-6,
+                        new ProfileParams(
+                                0.25, 0.1, 1e-2
+                        )
+                ),
+                beginPose,
+                0.0,
+                defaultVelConstraint,
+                defaultAccelConstraint
+        );
+    }
+
+    /**
+     * Follow a trajectory.
+     * @param trajectory trajectory to follow
+     * @param t time to follow in seconds
+     * @return whether the trajectory has been completed
+     */
+    public boolean followTrajectory(TimeTrajectory trajectory, double t) {
+        Pose2dDual<Time> txWorldTarget = trajectory.get(t);
+        targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
+
+        PoseVelocity2d robotVelRobot = updatePoseEstimate();
+
+        PoseVelocity2dDual<Time> command = new HolonomicController(
+                PARAMS.axialGain, PARAMS.lateralGain, PARAMS.headingGain,
+                PARAMS.axialVelGain, PARAMS.lateralVelGain, PARAMS.headingVelGain
+        )
+                .compute(txWorldTarget, pose, robotVelRobot);
+        driveCommandWriter.write(new DriveCommandMessage(command));
+
+        MecanumKinematics.WheelVelocities<Time> wheelVels = kinematics.inverse(command);
+        double voltage = voltageSensor.getVoltage();
+
+        final MotorFeedforward feedforward = new MotorFeedforward(PARAMS.kS,
+                PARAMS.kV / PARAMS.inPerTick, PARAMS.kA / PARAMS.inPerTick);
+        double leftFrontPower = feedforward.compute(wheelVels.leftFront) / voltage;
+        double leftBackPower = feedforward.compute(wheelVels.leftBack) / voltage;
+        double rightBackPower = feedforward.compute(wheelVels.rightBack) / voltage;
+        double rightFrontPower = feedforward.compute(wheelVels.rightFront) / voltage;
+        mecanumCommandWriter.write(new MecanumCommandMessage(
+                voltage, leftFrontPower, leftBackPower, rightBackPower, rightFrontPower
+        ));
+
+        leftFront.setPower(leftFrontPower);
+        leftBack.setPower(leftBackPower);
+        rightBack.setPower(rightBackPower);
+        rightFront.setPower(rightFrontPower);
+
+        return t >= trajectory.duration;
+    }
+
+    /**
+     * Follow a trajectory.
+     * @param trajectory trajectory to follow
+     * @param t time to follow in seconds
+     * @return whether the trajectory has been completed
+     **/
+    public boolean followTrajectory(Trajectory trajectory, double t) {
+        return followTrajectory(new TimeTrajectory(trajectory), t);
+    }
+
+    /**
+     * Follow a trajectory in a blocking manner.
+     * This will run until the trajectory is completed,
+     * but nothing else can occur during this process.
+     * @param trajectory trajectory to follow
+     */
+    public void followTrajectoryBlocking(TimeTrajectory trajectory) {
+        double t = 0;
+        double beginTs = System.nanoTime() * 1e-9;
+
+        while (!followTrajectory(trajectory, t)) {
+            t = (System.nanoTime() * 1e-9) - beginTs;
+        }
+
+        leftFront.setPower(0);
+        leftBack.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+    }
+
+    /**
+     * Follow a trajectory in a blocking manner.
+     * This will run until the trajectory is completed,
+     * but nothing else can occur during this process.
+     * @param trajectory trajectory to follow
+     **/
+    public void followTrajectoryBlocking(Trajectory trajectory) {
+        followTrajectoryBlocking(new TimeTrajectory(trajectory));
+    }
+
+    /**
+     * Follow a list of trajectories in a blocking manner.
+     * This can be used directly with TrajectoryBuilder.build().
+     * @param trajectories trajectories to follow
+     */
+    public void followTrajectoriesBlocking(List<Trajectory> trajectories) {
+        for (Trajectory trajectory : trajectories) {
+            followTrajectoryBlocking(trajectory);
+        }
+    }
 }
