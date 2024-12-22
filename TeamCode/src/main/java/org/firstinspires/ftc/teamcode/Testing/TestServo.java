@@ -12,6 +12,7 @@ public class TestServo extends LinearOpMode {
 //        Servo left = hardwareMap.get(Servo.class, "intakeServoLeft");
 //        Servo right = hardwareMap.get(Servo.class, "intakeServoRight");
           Servo bucket = hardwareMap.get(Servo.class, "bucketServo");
+          Servo servoExtendo = hardwareMap.get(Servo.class, "servoExtendo");
 
         waitForStart();
 
@@ -19,19 +20,19 @@ public class TestServo extends LinearOpMode {
             if (gamepad1.a) {
 //                left.setPosition(0.83);
 //                right.setPosition(0.83);
-                bucket.setPosition(0.33);
+                servoExtendo.setPosition(0);
             }
 
             if (gamepad1.x) {
 //                left.setPosition(0.5);
 //                right.setPosition(0.5);
-                bucket.setPosition(0.2);
+                servoExtendo.setPosition(0.75);
             }
 
             if (gamepad1.b) {
 //                left.setPosition(0.05);
 //                right.setPosition(0.05);b
-                bucket.setPosition(0);
+                servoExtendo.setPosition(1);
             }
 
 

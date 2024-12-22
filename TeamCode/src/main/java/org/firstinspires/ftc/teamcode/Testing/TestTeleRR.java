@@ -64,7 +64,7 @@ public class TestTeleRR extends LinearOpMode {
                 drive.setDrivePowers(new PoseVelocity2d(new Vector2d(leftx, lefty), rightx));
             } else {
                 drive.leftFront.setPower(frontLeftPower);
-                drive.rightFront.setPower(backLeftPower);
+                drive.leftBack.setPower(backLeftPower);
                 drive.rightFront.setPower(frontRightPower);
                 drive.rightBack.setPower(backRightPower);
             }
@@ -96,6 +96,10 @@ public class TestTeleRR extends LinearOpMode {
             telemetry.addData("leftx", leftx);
             telemetry.addData("lefty", lefty);
             telemetry.addData("rightx", rightx);
+
+            telemetry.addData("pose x", drive.pose.position.x);
+            telemetry.addData("pose y", drive.pose.position.y);
+            telemetry.addData("pose heading", drive.pose.heading.real);
             telemetry.update();
         }
 

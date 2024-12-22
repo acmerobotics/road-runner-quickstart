@@ -20,7 +20,11 @@ public class SlidesV2 {
     public static double KP = 0.01;
     public static double KI = 0;
     public static double KD = 0;
-
+    public static int topBasketTarget = 2840;
+    public static int bottomBasketTarget = 1000;
+    public static int topBarTarget = 850;
+    public static int bottomBarTarget = 0;
+    public static int retractTarget = 5;
     public PIDFController.PIDCoefficients slidesCoeffs = new PIDFController.PIDCoefficients(KP, KI, KD);
     public PIDFController slidesPID = new PIDFController(slidesCoeffs);
 
@@ -54,7 +58,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -2840;
+                target = 2840;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -102,7 +106,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -324;
+                target = 0;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -125,7 +129,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -3200;
+                target = 1050;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -148,7 +152,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -710;
+                target = 850;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
