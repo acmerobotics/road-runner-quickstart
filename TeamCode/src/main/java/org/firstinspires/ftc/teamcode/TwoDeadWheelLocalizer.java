@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode.localization;
+package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
@@ -15,6 +13,7 @@ import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -61,17 +60,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         FlightRecorder.write("TWO_DEAD_WHEEL_PARAMS", PARAMS);
     }
 
-    @Override
-    public Pose2d updatePositionEstimate(Pose2d pose) {
-        return pose.plus(calculatePoseDelta().value());
-    }
-
-    @Override
-    public PoseVelocity2d updateVelocityEstimate() {
-        return calculatePoseDelta().velocity().value();
-    }
-
-    public Twist2dDual<Time> calculatePoseDelta() {
+    public Twist2dDual<Time> update() {
         PositionVelocityPair parPosVel = par.getPositionAndVelocity();
         PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
 
