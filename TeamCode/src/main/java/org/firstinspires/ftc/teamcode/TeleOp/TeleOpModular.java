@@ -31,6 +31,8 @@ public class TeleOpModular extends LinearOpMode {
 
     double liftPosition = LIFT_COLLAPSED;
 
+    double liftPresetPositon = 0;
+
     double cycletime = 0;
     double looptime = 0;
     double oldtime = 0;
@@ -104,6 +106,7 @@ public class TeleOpModular extends LinearOpMode {
                 /* This is the intaking/collecting arm position */
                 armPosition = Arm.ARM_COLLECT;
                 wrist.foldOut();
+                liftPresetPositon = Lift.LIFT_COLLECT;
                 intake.collect();
             }
 
@@ -113,6 +116,9 @@ public class TeleOpModular extends LinearOpMode {
                     select this "mode", this means that the intake and wrist will continue what
                     they were doing before we clicked left bumper. */
                 armPosition = Arm.ARM_CLEAR_BARRIER;
+                intake.stop();
+                liftPresetPositon = Lift.LIFT_SLIGHTLY_OUT;
+                wrist.foldOut();
             }
 
             else if (gamepad2.y){
@@ -234,7 +240,7 @@ public class TeleOpModular extends LinearOpMode {
                 liftPosition = 0;
             }
 
-            lift.motor.setTargetPosition((int) (liftPosition));
+            lift.motor.setTargetPosition((int) (liftPosition+liftPresetPositon));
 
             lift.motor.setVelocity(1300);
             lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
