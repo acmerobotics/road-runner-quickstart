@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.Common.Rotation;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "Right4specimens", group = "Autonomous")
-public class Right4specimens extends LinearOpMode {
+@Autonomous(name = "Rightindpushspec", group = "Autonomous")
+public class Rightindpushspec extends LinearOpMode {
     public void runOpMode() {
         Pose2d initialPose = new Pose2d(8, -61, Math.toRadians(90));
 
@@ -42,34 +42,38 @@ public class Right4specimens extends LinearOpMode {
                 .waitSeconds(3)
                 .setTangent(Math.toRadians(0))
                 .splineToLinearHeading(new Pose2d(38, -34, Math.toRadians(90)), Math.toRadians(0))
-                .setTangent(Math.toRadians(100))
-                .splineToLinearHeading(new Pose2d(54, 0, Math.toRadians(90)), Math.toRadians(0))
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(42, 0, Math.toRadians(90)), Math.toRadians(45))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)) , Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(42, -58, Math.toRadians(90)) , Math.toRadians(270))
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(52, 0, Math.toRadians(90)), Math.toRadians(0))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(52, -58, Math.toRadians(90)) , Math.toRadians(270))
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(61, 0, Math.toRadians(90)), Math.toRadians(0))
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(61, -58, Math.toRadians(90)), Math.toRadians(270))
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(42, -58, Math.toRadians(90)), Math.toRadians(180))
                 .waitSeconds(1)
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(new Pose2d(0, -34, Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(2)
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(42, -58, Math.toRadians(90)), Math.toRadians(0))
                 .waitSeconds(1)
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(new Pose2d(2, -34, Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(2)
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(42, -58, Math.toRadians(90)), Math.toRadians(0))
                 .waitSeconds(1)
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(new Pose2d(4, -34, Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(2)
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)), Math.toRadians(0));
+                .splineToLinearHeading(new Pose2d(42, -58, Math.toRadians(90)), Math.toRadians(0));
 
 
         Action back = tab1.endTrajectory().fresh()
@@ -83,7 +87,7 @@ public class Right4specimens extends LinearOpMode {
 
 
 
-                //.splineToConstantHeading(new Vector2d(60,-30), Math.toRadians(180));
+        //.splineToConstantHeading(new Vector2d(60,-30), Math.toRadians(180));
 
 
 
