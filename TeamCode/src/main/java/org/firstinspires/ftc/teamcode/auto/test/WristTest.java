@@ -33,9 +33,17 @@ public class WristTest extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        wrist.wristFoldOutAction(),
+                        wrist.wristLowScaleAction(),
                         new SleepAction(1), // sleep for 1 sec
-                        wrist.wristFoldInAction(),
+                        wrist.wristHighScaleAction(),
+                        new SleepAction(1),// sleep for 1 sec
+                        wrist.wristLowScaleAction(),
+                        new SleepAction(1), // sleep for 1 sec
+                        wrist.wristHighScaleAction(),
+                        new SleepAction(1),// sleep for 1 sec
+                        wrist.wristLowScaleAction(),
+                        new SleepAction(1), // sleep for 1 sec
+                        wrist.wristHighScaleAction(),
                         new SleepAction(1)// sleep for 1 sec
                 ));
 
