@@ -150,7 +150,7 @@ public final class MecanumDrive {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         this.pose = pose;
-        localizer = new MecanumDriveLocalizer(pose);
+        localizer = new DriveLocalizer(pose);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
@@ -403,7 +403,7 @@ public final class MecanumDrive {
         );
     }
 
-    public class MecanumDriveLocalizer implements Localizer {
+    public class DriveLocalizer implements Localizer {
         public final Encoder leftFront, leftBack, rightBack, rightFront;
         public final IMU imu;
 
@@ -412,7 +412,7 @@ public final class MecanumDrive {
         private boolean initialized;
         private Pose2d pose;
 
-        public MecanumDriveLocalizer(Pose2d pose) {
+        public DriveLocalizer(Pose2d pose) {
             leftFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftFront));
             leftBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftBack));
             rightBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));

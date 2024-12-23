@@ -157,7 +157,7 @@ public final class TankDrive {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         this.pose = pose;
-        localizer = new TankDriveLocalizer(pose);
+        localizer = new DriveLocalizer(pose);
 
         FlightRecorder.write("TANK_PARAMS", PARAMS);
     }
@@ -412,14 +412,14 @@ public final class TankDrive {
         );
     }
 
-    public class TankDriveLocalizer implements Localizer {
+    public class DriveLocalizer implements Localizer {
         public final List<Encoder> leftEncs, rightEncs;
         private Pose2d pose;
 
         private double lastLeftPos, lastRightPos;
         private boolean initialized;
 
-        public TankDriveLocalizer(Pose2d pose) {
+        public DriveLocalizer(Pose2d pose) {
             {
                 List<Encoder> leftEncs = new ArrayList<>();
                 for (DcMotorEx m : TankDrive.this.leftMotors) {
