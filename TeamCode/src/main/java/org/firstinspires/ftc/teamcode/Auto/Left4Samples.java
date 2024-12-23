@@ -25,7 +25,7 @@ public class Left4Samples extends LinearOpMode {
         Rotation rotation = new Rotation(hardwareMap);
         Extension extension = new Extension(hardwareMap);
         Lift lift = new Lift(hardwareMap);
-
+// auto fix
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .splineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(226)), Math.toRadians(200));
         TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))

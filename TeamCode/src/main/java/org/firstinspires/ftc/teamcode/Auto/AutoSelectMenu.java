@@ -39,7 +39,7 @@ public class AutoSelectMenu extends LinearOpMode {
         Actions.runBlocking(fourbar.FourBarUp());
         Actions.runBlocking(rotation.RotationHorizontal());
 
-
+//auto fix
         waitForStart();
 
         if (isStopRequested()) return;
