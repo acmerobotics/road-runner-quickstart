@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.opModes.comp.auto.AutoConstants;
-import org.firstinspires.ftc.teamcode.subsystems.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.v1.Robot;
 
 @TeleOp(name="BlueTeleOp", group="AAA_COMP")
 public class BlueTeleOp extends OpMode {

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.generic;
 
 import com.aimrobotics.aimlib.control.FeedforwardController;
 import com.aimrobotics.aimlib.control.LowPassFilter;

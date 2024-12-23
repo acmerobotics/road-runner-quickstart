@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.v1;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
+import org.firstinspires.ftc.teamcode.subsystems.generic.SlidesBase;
 
 public class IntakeSystem extends Mechanism {
 
@@ -16,8 +17,6 @@ public class IntakeSystem extends Mechanism {
 
     private final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
     private final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.REVERSE;
-    private static final double kP = 0.006;
-    private static final double kI = 0.00001;
     private static final double kD = 0.00002;
     private static final double derivativeLowPassGain = 0.15;
     private static final double integralSumMax = 2500;

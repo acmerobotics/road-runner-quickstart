@@ -4,15 +4,12 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.internal.ui.GamepadUser;
-import org.firstinspires.ftc.teamcode.opModes.comp.auto.AutoConstants;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.IntakeSystem;
-import org.firstinspires.ftc.teamcode.subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.subsystems.OuttakeSystem;
-import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
-import org.firstinspires.ftc.teamcode.subsystems.Robot;
-import org.firstinspires.ftc.teamcode.subsystems.SpecimenGrabber;
+import org.firstinspires.ftc.teamcode.subsystems.v1.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.v1.IntakeSystem;
+import org.firstinspires.ftc.teamcode.subsystems.v1.Outtake;
+import org.firstinspires.ftc.teamcode.subsystems.v1.OuttakeSystem;
+import org.firstinspires.ftc.teamcode.subsystems.v1.Drivebase;
+import org.firstinspires.ftc.teamcode.subsystems.v1.SpecimenGrabber;
 
 @TeleOp(name="SystemsCheck", group="AAA_COMPETITION")
 public class SystemsCheck extends OpMode {

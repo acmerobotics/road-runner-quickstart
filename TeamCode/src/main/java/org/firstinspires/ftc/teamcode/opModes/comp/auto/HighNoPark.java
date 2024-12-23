@@ -8,11 +8,11 @@
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //
-//import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
-//import org.firstinspires.ftc.teamcode.subsystems.OuttakeSystem;
-//import org.firstinspires.ftc.teamcode.subsystems.Robot;
-//import org.firstinspires.ftc.teamcode.subsystems.ScoringSystem;
-//import org.firstinspires.ftc.teamcode.subsystems.SpecimenGrabber;
+//import org.firstinspires.ftc.teamcode.subsystems.v1.Drivebase;
+//import org.firstinspires.ftc.teamcode.subsystems.v1.OuttakeSystem;
+//import org.firstinspires.ftc.teamcode.subsystems.v1.Robot;
+//import org.firstinspires.ftc.teamcode.subsystems.v1.ScoringSystem;
+//import org.firstinspires.ftc.teamcode.subsystems.v1.SpecimenGrabber;
 //
 //import java.util.concurrent.atomic.AtomicBoolean;
 //

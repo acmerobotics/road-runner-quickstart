@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.v1;
 
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -47,8 +47,8 @@ public class Drivebase extends Mechanism {
     }
 
     @Override
-    public void loop(AIMPad gamepad1) {
-        manualDrive(gamepad1, false);
+    public void loop(AIMPad aimpad) {
+        manualDrive(aimpad, false);
     }
 
     private void manualDrive(AIMPad gamepad, boolean isFieldCentric) {
