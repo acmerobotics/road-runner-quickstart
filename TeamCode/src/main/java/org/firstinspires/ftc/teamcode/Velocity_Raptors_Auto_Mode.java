@@ -63,9 +63,9 @@ public class Velocity_Raptors_Auto_Mode extends LinearOpMode {
     private DcMotor BackRight  = null;
     private DcMotor BackLeft  = null;
     private DcMotor Slide = null;
-    private DcMotor Slidee = null;
-    private Servo Servo = null;
-    private Servo Servoo = null;
+    private DcMotor Slide2 = null;
+    private Servo clawSlideServo = null;
+    private Servo ClawServo = null;
     private ElapsedTime runtime = new ElapsedTime();
 
     //Declare motor speeds
@@ -82,9 +82,9 @@ public class Velocity_Raptors_Auto_Mode extends LinearOpMode {
         BackRight  = hardwareMap.get(DcMotor.class, "BackRight");
         BackLeft  = hardwareMap.get(DcMotor.class, "BackLeft");
         Slide = hardwareMap.get(DcMotor.class, "Slide");
-        Slidee = hardwareMap.get(DcMotor.class, "Slidee");
-        Servo = hardwareMap.get(Servo.class, "Servo");
-        Servoo = hardwareMap.get(Servo.class, "Servoo");
+        Slide2 = hardwareMap.get(DcMotor.class, "Slide2");
+        clawSlideServo = hardwareMap.get(Servo.class, "clawSlideServo");
+        ClawServo = hardwareMap.get(Servo.class, "ClawServo");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -125,18 +125,18 @@ public class Velocity_Raptors_Auto_Mode extends LinearOpMode {
             telemetry.update();
         }
 
-        //Step 3:  Move slides to proper position (1 second)
+        //Step 3:  Move slides to proper position (2.4 second)
         Slide.setPower(INTAKE_SPEED);
-        Slidee.setPower(INTAKE_SPEED);
+        Slide2.setPower(INTAKE_SPEED);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1)) {
+        while (opModeIsActive() && (runtime.seconds() < 2.4)) {
             telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
 
-        //Step 4:  Servos should position to touch high rung (1 seconds)
-        Servo.setPosition(1);
-        Servoo.setPosition(1);
+        //Step 4:  Servos should position to touch low rung (1 seconds)
+        clawSlideServo.setPosition(1);
+        ClawServo.setPosition(1);
         while (opModeIsActive() && (runtime.seconds() < 1)) {
             telemetry.addData("Path", "Leg 4: %4" + ".1f S Elapsed", runtime.seconds());
             telemetry.update();

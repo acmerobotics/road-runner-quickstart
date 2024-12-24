@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -52,6 +51,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
+ * Lateral moving: Strafing left and right
  */
 
 @Autonomous
@@ -65,8 +65,8 @@ public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //Declare motor speeds
-    static final double     FORWARD_SPEED = 1;
-    static final double     TURN_SPEED    = 0.5;
+    static final double FORWARD_SPEED = 1;
+    static final double TURN_SPEED = 0.5;
 
     @Override
     public void runOpMode() {
@@ -94,27 +94,26 @@ public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
 
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
+        // Step 1:  Spin right for 1.3 seconds
+            FrontLeft.setPower(-TURN_SPEED);
+            FrontRight.setPower(TURN_SPEED);
+            BackRight.setPower(-TURN_SPEED);
+            BackLeft.setPower(TURN_SPEED);
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 1.3)) {
+                telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
 
-
-        // Step 2:  Spin right for 1.3 seconds
-        FrontLeft.setPower(-TURN_SPEED);
-        FrontRight.setPower(TURN_SPEED);
-        BackRight.setPower(TURN_SPEED);
-        BackLeft.setPower(-TURN_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.3)) {
-            telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-
-            FrontLeft.setPower(FORWARD_SPEED);
-            FrontRight.setPower(FORWARD_SPEED);
-            BackRight.setPower(FORWARD_SPEED);
-            BackLeft.setPower(FORWARD_SPEED);
+            // Step 2: Move forward for 3 seconds
+            FrontLeft.setPower(TURN_SPEED);
+            FrontRight.setPower(TURN_SPEED);
+            BackRight.setPower(TURN_SPEED);
+            BackLeft.setPower(TURN_SPEED);
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 3.0)) {
                 telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
-        }
     }
 }

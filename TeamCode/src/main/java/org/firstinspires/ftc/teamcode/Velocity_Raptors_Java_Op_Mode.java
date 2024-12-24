@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -74,11 +73,13 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
     private DcMotor BackLeft = null;
     private DcMotor BackRight = null;
     private DcMotor Slide = null;
-    private DcMotor Slidee = null;
-    private Servo Intake1 = null;
-    private Servo Intake2 = null;
-    private Servo Servooo = null;
-    private Servo Servoooo = null;
+    private DcMotor Slide2 = null;
+    private Servo IntakeLeft = null;
+    private Servo IntakeRight = null;
+    private Servo clawSlideServo = null;
+    private Servo ClawServo = null;
+    private Servo IntakeSlideServoLeft = null;
+    private Servo IntakeSlideServoRight = null;
 
     @Override
     public void runOpMode() {
@@ -90,11 +91,13 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
         BackRight = hardwareMap.get(DcMotor.class, "BackRight");
         Slide = hardwareMap.get(DcMotor.class, "Slide");
-        Slidee = hardwareMap.get(DcMotor.class, "Slidee");
-        Intake1 = hardwareMap.get(Servo.class, "Servo");
-        Intake2 = hardwareMap.get(Servo.class, "Servoo");
-        Servooo = hardwareMap.get(Servo.class, "Servooo");
-        Servoooo = hardwareMap.get(Servo.class, "Servoooo");
+        Slide2 = hardwareMap.get(DcMotor.class, "Slide2");
+        IntakeLeft = hardwareMap.get(Servo.class, "Servo");
+        IntakeRight = hardwareMap.get(Servo.class, "Servoo");
+        clawSlideServo = hardwareMap.get(Servo.class, "clawSlideServo");
+        ClawServo = hardwareMap.get(Servo.class, "ClawServo");
+        IntakeSlideServoLeft = hardwareMap.get(Servo.class, "IntakeSlideServoLeft");
+        IntakeSlideServoRight = hardwareMap.get(Servo.class, "IntakeSlideServoLeft");
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -125,12 +128,6 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
         max = Math.max(max, Math.abs(rightBackPower));
-
-            // Normalize the values so no wheel power exceeds 100%
-            // This ensures that the robot maintains the desired motion.
-            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-            max = Math.max(max, Math.abs(leftBackPower));
-            max = Math.max(max, Math.abs(rightBackPower));
 
             if (max > 1.0) {
                 leftFrontPower  /= max;
@@ -174,32 +171,46 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
 
             if (gamepad1.dpad_up) {
                 Slide.setPower(-SLIDE_SPEED);
-                Slidee.setPower(-SLIDE_SPEED);
+                Slide2.setPower(-SLIDE_SPEED);
             } else if (gamepad1.dpad_down) {
                 Slide.setPower(SLIDE_SPEED);
-                Slidee.setPower(SLIDE_SPEED);
+                Slide2.setPower(SLIDE_SPEED);
             } else {
                 Slide.setPower(0);
-                Slidee.setPower(0);
+                Slide2.setPower(0);
 
             // Servo Code for TeleOp
 
             if (gamepad1.b) {
-                Intake1.setPosition(1);
-                Intake2.setPosition(1);
+                IntakeLeft.setPosition(1);
+                IntakeRight.setPosition(1);
             } else {
-                Intake1.setPosition(0);
-                Intake2.setPosition(0);
-            }
-            if (gamepad1.a) {
-                Servooo.setPosition(1);
-            } else {
-                Servooo.setPosition(0);
-            }
-            if (gamepad1.right_bumper) {
-              Servoooo.setPosition(1);
+                IntakeLeft.setPosition(0);
+                IntakeRight.setPosition(0);
             }
 
+            if (gamepad1.dpad_right) {
+                IntakeSlideServoLeft.setPosition(1);
+                IntakeSlideServoRight.setPosition(1);
+            } else if (gamepad1.dpad_left) {
+                IntakeSlideServoLeft.setPosition(0.5);
+                IntakeSlideServoRight.setPosition(0.5);
+            } else {
+                IntakeSlideServoRight.setPosition(0);
+                IntakeSlideServoLeft.setPosition(0);
+            }
+
+            if (gamepad1.a) {
+                clawSlideServo.setPosition(-1);
+            } else {
+                clawSlideServo.setPosition(0);
+            }
+
+            if (gamepad1.right_bumper) {
+              ClawServo.setPosition(1);
+            } else {
+                ClawServo.setPosition(0);
+            }
             }
         }
-}
+    }
