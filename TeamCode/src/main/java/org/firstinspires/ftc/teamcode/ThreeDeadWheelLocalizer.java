@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.localization;
+package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
@@ -66,12 +66,8 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
 
     @Override
     public PoseVelocity2d update() {
-        Twist2dDual<Time> delta = calculatePoseDelta();
-        pose = pose.plus(delta.value());
-        return delta.velocity().value();
-    }
+        Twist2dDual<Time> delta;
 
-    public Twist2dDual<Time> calculatePoseDelta() {
         PositionVelocityPair par0PosVel = par0.getPositionAndVelocity();
         PositionVelocityPair par1PosVel = par1.getPositionAndVelocity();
         PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
@@ -85,10 +81,13 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
             lastPar1Pos = par1PosVel.position;
             lastPerpPos = perpPosVel.position;
 
-            return new Twist2dDual<>(
+            delta = new Twist2dDual<>(
                     Vector2dDual.constant(new Vector2d(0.0, 0.0), 2),
                     DualNum.constant(0.0, 2)
             );
+
+            pose = pose.plus(delta.value());
+            return delta.velocity().value();
         }
 
         int par0PosDelta = par0PosVel.position - lastPar0Pos;
@@ -116,6 +115,9 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         lastPar1Pos = par1PosVel.position;
         lastPerpPos = perpPosVel.position;
 
-        return twist;
+        delta = twist;
+
+        pose = pose.plus(delta.value());
+        return delta.velocity().value();
     }
 }

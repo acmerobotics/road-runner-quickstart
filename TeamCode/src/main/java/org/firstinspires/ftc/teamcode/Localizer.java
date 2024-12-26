@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.localization;
+package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
@@ -18,7 +18,7 @@ public interface Localizer {
     Pose2d getPose();
 
     /**
-     * Updates the Localizer's position estimate.
+     * Updates the Localizer's pose estimate.
      * @return the Localizer's current velocity estimate
      */
     PoseVelocity2d update();
