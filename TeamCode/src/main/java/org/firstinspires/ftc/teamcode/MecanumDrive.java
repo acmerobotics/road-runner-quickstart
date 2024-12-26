@@ -32,7 +32,6 @@ import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -112,7 +111,6 @@ public final class MecanumDrive {
     public final LazyImu lazyImu;
 
     public final Localizer localizer;
-    public Pose2d pose;
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
     private final DownsampledWriter estimatedPoseWriter = new DownsampledWriter("ESTIMATED_POSE", 50_000_000);
@@ -255,7 +253,6 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        this.pose = pose;
         localizer = new DriveLocalizer(pose);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
@@ -325,7 +322,7 @@ public final class MecanumDrive {
                     PARAMS.axialGain, PARAMS.lateralGain, PARAMS.headingGain,
                     PARAMS.axialVelGain, PARAMS.lateralVelGain, PARAMS.headingVelGain
             )
-                    .compute(txWorldTarget, getPose(), robotVelRobot);
+                    .compute(txWorldTarget, getLocalizerPose(), robotVelRobot);
             driveCommandWriter.write(new DriveCommandMessage(command));
 
             MecanumKinematics.WheelVelocities<Time> wheelVels = kinematics.inverse(command);
@@ -346,11 +343,11 @@ public final class MecanumDrive {
             rightBack.setPower(rightBackPower);
             rightFront.setPower(rightFrontPower);
 
-            p.put("x", getPose().position.x);
-            p.put("y", getPose().position.y);
-            p.put("heading (deg)", Math.toDegrees(getPose().heading.toDouble()));
+            p.put("x", getLocalizerPose().position.x);
+            p.put("y", getLocalizerPose().position.y);
+            p.put("heading (deg)", Math.toDegrees(getLocalizerPose().heading.toDouble()));
 
-            Pose2d error = txWorldTarget.value().minusExp(getPose());
+            Pose2d error = txWorldTarget.value().minusExp(getLocalizerPose());
             p.put("xError", error.position.x);
             p.put("yError", error.position.y);
             p.put("headingError (deg)", Math.toDegrees(error.heading.toDouble()));
@@ -363,7 +360,7 @@ public final class MecanumDrive {
             Drawing.drawRobot(c, txWorldTarget.value());
 
             c.setStroke("#3F51B5");
-            Drawing.drawRobot(c, getPose());
+            Drawing.drawRobot(c, getLocalizerPose());
 
             c.setStroke("#4CAF50FF");
             c.setStrokeWidth(1);
@@ -417,7 +414,7 @@ public final class MecanumDrive {
                     PARAMS.axialGain, PARAMS.lateralGain, PARAMS.headingGain,
                     PARAMS.axialVelGain, PARAMS.lateralVelGain, PARAMS.headingVelGain
             )
-                    .compute(txWorldTarget, getPose(), robotVelRobot);
+                    .compute(txWorldTarget, getLocalizerPose(), robotVelRobot);
             driveCommandWriter.write(new DriveCommandMessage(command));
 
             MecanumKinematics.WheelVelocities<Time> wheelVels = kinematics.inverse(command);
@@ -444,7 +441,7 @@ public final class MecanumDrive {
             Drawing.drawRobot(c, txWorldTarget.value());
 
             c.setStroke("#3F51B5");
-            Drawing.drawRobot(c, getPose());
+            Drawing.drawRobot(c, getLocalizerPose());
 
             c.setStroke("#7C4DFFFF");
             c.fillCircle(turn.beginPose.position.x, turn.beginPose.position.y, 2);
@@ -459,24 +456,13 @@ public final class MecanumDrive {
         }
     }
 
-    public void setPose(Pose2d pose) {
-        this.pose = pose;
-        localizer.setPose(pose);
-    }
-
-    public Pose2d getPose() {
-        pose = localizer.getPose();
-        return pose;
+    public Pose2d getLocalizerPose() {
+        return localizer.getPose();
     }
 
     public PoseVelocity2d updatePoseEstimate() {
-        if (!pose.equals(localizer.getPose())) {
-            setPose(localizer.getPose());
-        }
-
         PoseVelocity2d vel = localizer.update();
-        pose = localizer.getPose();
-        poseHistory.add(pose);
+        poseHistory.add(localizer.getPose());
         return vel;
     }
 

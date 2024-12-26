@@ -116,7 +116,6 @@ public final class TankDrive {
     public final VoltageSensor voltageSensor;
 
     public final Localizer localizer;
-    public Pose2d pose;
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
     private final DownsampledWriter estimatedPoseWriter = new DownsampledWriter("ESTIMATED_POSE", 50_000_000);
@@ -261,7 +260,6 @@ public final class TankDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        this.pose = pose;
         localizer = new DriveLocalizer(pose);
 
         FlightRecorder.write("TANK_PARAMS", PARAMS);
@@ -334,7 +332,7 @@ public final class TankDrive {
             updatePoseEstimate();
 
             PoseVelocity2dDual<Time> command = new RamseteController(kinematics.trackWidth, PARAMS.ramseteZeta, PARAMS.ramseteBBar)
-                    .compute(x, txWorldTarget, getPose());
+                    .compute(x, txWorldTarget, getLocalizerPose());
             driveCommandWriter.write(new DriveCommandMessage(command));
 
             TankKinematics.WheelVelocities<Time> wheelVels = kinematics.inverse(command);
@@ -352,11 +350,11 @@ public final class TankDrive {
                 m.setPower(rightPower);
             }
 
-            p.put("x", getPose().position.x);
-            p.put("y", getPose().position.y);
-            p.put("heading (deg)", Math.toDegrees(getPose().heading.toDouble()));
+            p.put("x", getLocalizerPose().position.x);
+            p.put("y", getLocalizerPose().position.y);
+            p.put("heading (deg)", Math.toDegrees(getLocalizerPose().heading.toDouble()));
 
-            Pose2d error = txWorldTarget.value().minusExp(getPose());
+            Pose2d error = txWorldTarget.value().minusExp(getLocalizerPose());
             p.put("xError", error.position.x);
             p.put("yError", error.position.y);
             p.put("headingError (deg)", Math.toDegrees(error.heading.toDouble()));
@@ -369,7 +367,7 @@ public final class TankDrive {
             Drawing.drawRobot(c, txWorldTarget.value());
 
             c.setStroke("#3F51B5");
-            Drawing.drawRobot(c, getPose());
+            Drawing.drawRobot(c, getLocalizerPose());
 
             c.setStroke("#4CAF50FF");
             c.setStrokeWidth(1);
@@ -424,7 +422,7 @@ public final class TankDrive {
             PoseVelocity2dDual<Time> command = new PoseVelocity2dDual<>(
                     Vector2dDual.constant(new Vector2d(0, 0), 3),
                     txWorldTarget.heading.velocity().plus(
-                            PARAMS.turnGain * getPose().heading.minus(txWorldTarget.heading.value()) +
+                            PARAMS.turnGain * getLocalizerPose().heading.minus(txWorldTarget.heading.value()) +
                             PARAMS.turnVelGain * (robotVelRobot.angVel - txWorldTarget.heading.velocity().value())
                     )
             );
@@ -452,7 +450,7 @@ public final class TankDrive {
             Drawing.drawRobot(c, txWorldTarget.value());
 
             c.setStroke("#3F51B5");
-            Drawing.drawRobot(c, getPose());
+            Drawing.drawRobot(c, getLocalizerPose());
 
             c.setStroke("#7C4DFFFF");
             c.fillCircle(turn.beginPose.position.x, turn.beginPose.position.y, 2);
@@ -467,24 +465,13 @@ public final class TankDrive {
         }
     }
 
-    public void setPose(Pose2d pose) {
-        this.pose = pose;
-        localizer.setPose(pose);
-    }
-
-    public Pose2d getPose() {
-        pose = localizer.getPose();
-        return pose;
+    public Pose2d getLocalizerPose() {
+        return localizer.getPose();
     }
 
     public PoseVelocity2d updatePoseEstimate() {
-        if (!pose.equals(localizer.getPose())) {
-            setPose(localizer.getPose());
-        }
-
         PoseVelocity2d vel = localizer.update();
-        pose = localizer.getPose();
-        poseHistory.add(pose);
+        poseHistory.add(localizer.getPose());
         return vel;
     }
 
