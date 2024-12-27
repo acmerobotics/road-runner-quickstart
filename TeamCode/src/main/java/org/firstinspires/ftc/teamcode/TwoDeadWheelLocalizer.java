@@ -76,8 +76,6 @@ public final class TwoDeadWheelLocalizer implements Localizer {
 
     @Override
     public PoseVelocity2d update() {
-        Twist2dDual<Time> delta;
-
         PositionVelocityPair parPosVel = par.getPositionAndVelocity();
         PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
 
@@ -111,13 +109,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
             lastPerpPos = perpPosVel.position;
             lastHeading = heading;
 
-            delta = new Twist2dDual<>(
-                    Vector2dDual.constant(new Vector2d(0.0, 0.0), 2),
-                    DualNum.constant(0.0, 2)
-            );
-
-            pose = pose.plus(delta.value());
-            return delta.velocity().value();
+            return new PoseVelocity2d(new Vector2d(0.0, 0.0), 0.0);
         }
 
         int parPosDelta = parPosVel.position - lastParPos;
@@ -145,9 +137,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         lastPerpPos = perpPosVel.position;
         lastHeading = heading;
 
-        delta = twist;
-
-        pose = pose.plus(delta.value());
-        return delta.velocity().value();
+        pose = pose.plus(twist.value());
+        return twist.velocity().value();
     }
 }
