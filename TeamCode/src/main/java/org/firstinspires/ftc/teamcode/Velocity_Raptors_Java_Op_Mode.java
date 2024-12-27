@@ -165,16 +165,6 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
         telemetry.update();
 
-        // Servo Code for TeleOp
-
-        if (gamepad1.b) {
-            IntakeLeft.setPosition(1);
-            IntakeRight.setPosition(1);
-        } else {
-            IntakeLeft.setPosition(0);
-            IntakeRight.setPosition(0);
-        }
-
         if (gamepad1.dpad_right) {
             IntakeSlideServoLeft.setPosition(1);
             IntakeSlideServoRight.setPosition(1);
@@ -186,25 +176,45 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
             IntakeSlideServoLeft.setPosition(0);
         }
 
-        if (gamepad1.a) {
+        // Servo Code for TeleOp
+
+        double SLIDE_SPEED;
+        double SLIDE2_SPEED;
+        SLIDE_SPEED = gamepad2.left_trigger;
+        SLIDE2_SPEED = gamepad2.right_trigger;
+        Slide.setPower(-SLIDE_SPEED);
+        Slide2.setPower(-SLIDE2_SPEED);
+        if (gamepad2.dpad_down) {
+            Slide.setPower(SLIDE_SPEED);
+        } else {
+            Slide.setPower(0);
+        }
+        if (gamepad2.dpad_down) {
+            Slide2.setPower(SLIDE2_SPEED);
+        } else {
+            Slide2.setPower(0);
+        }
+
+        if (gamepad2.b) {
+            IntakeLeft.setPosition(1);
+            IntakeRight.setPosition(1);
+        } else {
+            IntakeLeft.setPosition(0);
+            IntakeRight.setPosition(0);
+        }
+
+        if (gamepad2.left_bumper) {
             clawSlideServo.setPosition(-1);
         } else {
             clawSlideServo.setPosition(0);
         }
 
-        if (gamepad1.right_bumper) {
+        if (gamepad2.right_bumper) {
             ClawServo.setPosition(1);
         } else {
             ClawServo.setPosition(0);
 
             // Slide code for teleop
-
-            double SLIDE_SPEED;
-
-            SLIDE_SPEED = -(gamepad2.right_stick_y + gamepad2.left_stick_y) / 2;
-
-            Slide.setPower(-SLIDE_SPEED);
-            Slide2.setPower(-SLIDE_SPEED);
 
         }
 
