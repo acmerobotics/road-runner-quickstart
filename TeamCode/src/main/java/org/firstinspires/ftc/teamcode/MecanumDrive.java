@@ -254,69 +254,6 @@ public final class MecanumDrive {
         localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
-//
-//        imu = new IMU(hardwareMap, "imu", new RevHubOrientationOnRobot(
-//                PARAMS.logoFacingDirection, PARAMS.usbFacingDirection)) {
-//            @Override
-//            public boolean initialize(Parameters parameters) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void resetYaw() {
-//
-//            }
-//
-//            @Override
-//            public YawPitchRollAngles getRobotYawPitchRollAngles() {
-//                return null;
-//            }
-//
-//            @Override
-//            public Orientation getRobotOrientation(AxesReference reference, AxesOrder order, AngleUnit angleUnit) {
-//                return null;
-//            }
-//
-//            @Override
-//            public Quaternion getRobotOrientationAsQuaternion() {
-//                return null;
-//            }
-//
-//            @Override
-//            public AngularVelocity getRobotAngularVelocity(AngleUnit angleUnit) {
-//                return null;
-//            }
-//
-//            @Override
-//            public Manufacturer getManufacturer() {
-//                return null;
-//            }
-//
-//            @Override
-//            public String getDeviceName() {
-//                return "";
-//            }
-//
-//            @Override
-//            public String getConnectionInfo() {
-//                return "";
-//            }
-//
-//            @Override
-//            public int getVersion() {
-//                return 0;
-//            }
-//
-//            @Override
-//            public void resetDeviceConfigurationForOpMode() {
-//
-//            }
-//
-//            @Override
-//            public void close() {
-//
-//            }
-//        };
     }
 
     public void setDrivePowers(PoseVelocity2d powers) {
@@ -637,10 +574,10 @@ public final class MecanumDrive {
         }
 
         // Send powers to the wheels.
-        leftFront.setPower(leftFrontPower*leftFrontPower);
-        rightFront.setPower(rightFrontPower*rightFrontPower);
-        leftBack.setPower(leftBackPower*leftBackPower);
-        rightBack.setPower(rightBackPower*rightBackPower);
+        leftFront.setPower(leftFrontPower);
+        rightFront.setPower(rightFrontPower);
+        leftBack.setPower(leftBackPower);
+        rightBack.setPower(rightBackPower);
     }
 
 }
