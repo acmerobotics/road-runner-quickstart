@@ -43,12 +43,12 @@ public class Arm {
     If you'd like it to move further, increase that number. If you'd like it to not move
     as far from the starting position, decrease it. */
 
-    public static double ARM_COLLECT_DEG = 232;
+    public static double ARM_COLLECT_DEG = 4;
     public static double ARM_COLLAPSED_INTO_ROBOT  = 0 * ARM_TICKS_PER_DEGREE;
     public static double ARM_COLLECT               = ARM_COLLECT_DEG * ARM_TICKS_PER_DEGREE;
-    public static double ARM_CLEAR_BARRIER         = 219 * ARM_TICKS_PER_DEGREE;
-    public static double ARM_SCORE_SPECIMEN        = 174 * ARM_TICKS_PER_DEGREE;
-    public static double ARM_SCORE_SAMPLE_IN_LOW   = 174 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_CLEAR_BARRIER         = 19 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_SCORE_SPECIMEN        = 138 * ARM_TICKS_PER_DEGREE;
+    public static double ARM_SCORE_SAMPLE_IN_LOW   = 138 * ARM_TICKS_PER_DEGREE;
     public static double ARM_SCORE_SAMPLE_IN_HIGH   = 128 * ARM_TICKS_PER_DEGREE;
     public static double ARM_ATTACH_HANGING_HOOK   = 120 * ARM_TICKS_PER_DEGREE;
     public static double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
