@@ -7,7 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
+import org.firstinspires.ftc.teamcode.mechanisms.SlidesV2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +17,16 @@ import java.util.List;
 @TeleOp
 public class TestHang extends LinearOpMode {
 
-    private Slides slides;
+    private SlidesV2 slides;
 
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
-
+    private Telemetry tele = dash.getTelemetry();
     @Override
     public void runOpMode() {
 
 
-        slides = new Slides(hardwareMap);
+        slides = new SlidesV2(hardwareMap, true);
 
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
@@ -51,7 +53,7 @@ public class TestHang extends LinearOpMode {
             }
 
             if (currentGamepad1.x && !previousGamepad1.x) {
-                runningActions.add(slides.slideTopBasket());
+                runningActions.add(slides.retract());
             }
 
             if (currentGamepad1.a && !previousGamepad1.a) {
@@ -73,6 +75,13 @@ public class TestHang extends LinearOpMode {
             }
             runningActions = newActions;
             dash.sendTelemetryPacket(packet);
+
+            slides.updateMotors();
+
+            tele.addData("slidesLeftMotor", slides.slidesLeftMotor.getCurrentPosition());
+            tele.addData("slidesRightMotor", slides.slidesRightMotor.getCurrentPosition());
+            tele.addData("avg", slides.getPos());
+            tele.update();
         }
 
     }
