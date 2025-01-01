@@ -73,7 +73,6 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
     private DcMotor BackLeft = null;
     private DcMotor BackRight = null;
     private DcMotor Slide = null;
-    private DcMotor Slide2 = null;
     private Servo IntakeLeft = null;
     private Servo IntakeRight = null;
     private Servo clawSlideServo = null;
@@ -93,7 +92,6 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
         BackRight = hardwareMap.get(DcMotor.class, "BackRight");
         Slide = hardwareMap.get(DcMotor.class, "Slide");
-        Slide2 = hardwareMap.get(DcMotor.class, "Slide2");
         IntakeLeft = hardwareMap.get(Servo.class, "Servo");
         IntakeRight = hardwareMap.get(Servo.class, "Servoo");
         clawSlideServo = hardwareMap.get(Servo.class, "clawSlideServo");
@@ -187,16 +185,10 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         SLIDE_SPEED = gamepad2.left_trigger;
         SLIDE2_SPEED = gamepad2.right_trigger;
         Slide.setPower(-SLIDE_SPEED);
-        Slide2.setPower(-SLIDE2_SPEED);
         if (gamepad2.dpad_down) {
             Slide.setPower(SLIDE_SPEED);
         } else {
             Slide.setPower(0);
-        }
-        if (gamepad2.dpad_down) {
-            Slide2.setPower(SLIDE2_SPEED);
-        } else {
-            Slide2.setPower(0);
         }
 
         if (gamepad2.b) {
@@ -217,9 +209,6 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
             ClawServo.setPosition(1);
         } else {
             ClawServo.setPosition(0);
-
-            // Slide code for teleop
-
         }
 
         if (gamepad2.dpad_left) {
@@ -227,7 +216,10 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
             IntakeFlipServo2.setPosition(1);
         } else if (gamepad2.dpad_right) {
             IntakeFlipServo.setPosition(0);
-            IntakeFlipServo2.setPosition(1);
+            IntakeFlipServo2.setPosition(0);
+        } else {
+            IntakeFlipServo.setPosition(0);
+            IntakeFlipServo2.setPosition(0);
         }
     }
 }

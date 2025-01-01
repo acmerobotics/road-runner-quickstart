@@ -105,13 +105,13 @@ public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
                 telemetry.update();
             }
 
-            // Step 2: Move forward for 3 seconds
-            FrontLeft.setPower(TURN_SPEED);
-            FrontRight.setPower(TURN_SPEED);
-            BackRight.setPower(TURN_SPEED);
-            BackLeft.setPower(TURN_SPEED);
+            // Step 2: Move forward for 2 seconds
+            FrontLeft.setPower(FORWARD_SPEED);
+            FrontRight.setPower(FORWARD_SPEED);
+            BackRight.setPower(FORWARD_SPEED);
+            BackLeft.setPower(FORWARD_SPEED);
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+            while (opModeIsActive() && (runtime.seconds() < 2.0)) {
                 telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
