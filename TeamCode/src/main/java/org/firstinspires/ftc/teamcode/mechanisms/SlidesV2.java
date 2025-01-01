@@ -152,7 +152,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = 850;
+                target = 750;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }

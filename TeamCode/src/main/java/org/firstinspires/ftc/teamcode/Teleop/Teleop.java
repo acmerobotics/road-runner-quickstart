@@ -379,6 +379,7 @@ public class Teleop extends LinearOpMode {
                     if (currentGamepad2.x && !previousGamepad2.x) {
                         runningActions.add(new SequentialAction(
                                 slides.slideBottomBar(),
+                                new SleepAction(0.25),
                                 claw.open(),
                                 new SleepAction(0.2),
                                 slides.retract()
