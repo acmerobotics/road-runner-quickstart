@@ -92,8 +92,8 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
         BackRight = hardwareMap.get(DcMotor.class, "BackRight");
         Slide = hardwareMap.get(DcMotor.class, "Slide");
-        IntakeLeft = hardwareMap.get(Servo.class, "Servo");
-        IntakeRight = hardwareMap.get(Servo.class, "Servoo");
+        IntakeLeft = hardwareMap.get(Servo.class, "IntakeLeft");
+        IntakeRight = hardwareMap.get(Servo.class, "IntakeRight");
         clawSlideServo = hardwareMap.get(Servo.class, "clawSlideServo");
         ClawServo = hardwareMap.get(Servo.class, "ClawServo");
         IntakeSlideServoLeft = hardwareMap.get(Servo.class, "IntakeSlideServoLeft");
@@ -166,6 +166,7 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
         telemetry.update();
+        waitForStart();
 
         if (gamepad1.dpad_right) {
             IntakeSlideServoLeft.setPosition(1);
