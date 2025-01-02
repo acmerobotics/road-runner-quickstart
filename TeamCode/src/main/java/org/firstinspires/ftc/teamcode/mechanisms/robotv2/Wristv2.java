@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.mechanisms;
+package org.firstinspires.ftc.teamcode.mechanisms.robotv2;
+
+
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -7,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-public class Wrist {
+public class Wristv2 {
     public Servo wrist = null; //the wrist servo
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public static double WRIST_FOLDED_IN = 1;
@@ -17,7 +19,7 @@ public class Wrist {
 
     public static double WRIST_SCALE_MAX = 0.7;
 
-    public Wrist(HardwareMap hardwareMap) {
+    public Wristv2(HardwareMap hardwareMap) {
         wrist = hardwareMap.get(Servo.class, "wrist");
         wrist.scaleRange(WRIST_SCALE_MIN, WRIST_SCALE_MAX);
         wrist.setPosition(WRIST_FOLDED_IN);
