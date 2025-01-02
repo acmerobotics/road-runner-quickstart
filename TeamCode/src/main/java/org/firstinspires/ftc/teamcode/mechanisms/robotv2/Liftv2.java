@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.mechanisms.robotv2;
 
 
 
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -19,6 +18,7 @@ public class Liftv2 {
     final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
     final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
     final double LIFT_SCORING_IN_HIGH_BASKET = 510 * LIFT_TICKS_PER_MM * 1.3;
+
 
     public DcMotorEx motor;
     double liftPosition;
@@ -43,7 +43,7 @@ public class Liftv2 {
         public boolean run(@NonNull TelemetryPacket packet) {
 
             motor.setTargetPosition(_targetPos);
-            motor.setVelocity(5000);
+            motor.setVelocity(3000);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             int currentPosition = motor.getCurrentPosition();
@@ -56,8 +56,6 @@ public class Liftv2 {
         }
     }
 
-
-
     public Action liftUpAction() {
         return new LiftAction((int) (LIFT_SCORING_IN_HIGH_BASKET));
     }
@@ -65,8 +63,6 @@ public class Liftv2 {
     public Action liftDownAction() {
         return new LiftAction((int) (LIFT_COLLAPSED));
     }
-
-
 
 
 }
