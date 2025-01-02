@@ -44,7 +44,7 @@ public class Claw {
     public class Close implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawServo.setPosition(0.25);
+            clawServo.setPosition(0.28);
             return false;
         }
     }
