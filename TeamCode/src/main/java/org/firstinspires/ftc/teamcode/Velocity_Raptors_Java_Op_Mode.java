@@ -181,9 +181,7 @@ public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
         // Servo Code for TeleOp
 
         double SLIDE_SPEED;
-        double SLIDE2_SPEED;
         SLIDE_SPEED = gamepad2.left_trigger;
-        SLIDE2_SPEED = gamepad2.right_trigger;
         Slide.setPower(-SLIDE_SPEED);
         if (gamepad2.dpad_down) {
             Slide.setPower(SLIDE_SPEED);
