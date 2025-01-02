@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Arm;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 //import org.firstinspires.ftc.teamcode.mechanisms.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
 
 
 @TeleOp(name="Teledrive V2", group="demo")
@@ -52,14 +53,15 @@ public class Teledrive_V2 extends LinearOpMode {
         //Intake intake = new Intake(hardwareMap);
         Wrist wrist = new Wrist(hardwareMap);
         //Lift lift = new Lift(hardwareMap);
+        RightActuator rightActuator = new RightActuator(hardwareMap);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
         telemetry.update();
 
-
         /* Wait for the game driver to press play */
         waitForStart();
+
 
         while (opModeIsActive()) {
 
@@ -94,6 +96,13 @@ public class Teledrive_V2 extends LinearOpMode {
                 drive.moveRobot(axial, lateral, yaw);
             }
 
+            if (gamepad1.x){
+                rightActuator.rightactuatorhorizontal();
+            }
+
+            else if (gamepad1.y){
+                rightActuator.rightactuatorvertical();
+            }
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,
             If the user presses A, it sets the intake power to the final variable that
