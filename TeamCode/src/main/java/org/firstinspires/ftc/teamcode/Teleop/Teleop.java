@@ -108,7 +108,7 @@ public class Teleop extends LinearOpMode {
 
 
         String intakeColor;
-//
+
 //        DcMotor FL = hardwareMap.get(DcMotor.class, "FL");
 //        DcMotor BL = hardwareMap.get(DcMotor.class, "BL");
 //        DcMotor FR = hardwareMap.get(DcMotor.class, "FR");
@@ -138,6 +138,7 @@ public class Teleop extends LinearOpMode {
         Claw claw = new Claw(hardwareMap);
         Control extendocontrol = new Control();
         Control slidescontrol = new Control();
+        Control pathcontrol = new Control();
 
 
         runningActions.add(new SequentialAction(
@@ -161,15 +162,15 @@ public class Teleop extends LinearOpMode {
 
             Color.colorToHSV(colors.toColor(), hsvValues);
 
-//            if (colors.red > 0.2 && colors.green > 0.28 && colors.blue < 0.42) {
-//                intakeColor = "yellow";
-//            } else if (colors.red > 0.15 && colors.green < 0.4 && colors.blue < 0.3) {
-//                intakeColor = "red";
-//            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.15) {
-//                intakeColor = "blue";
-//            } else {
-//                intakeColor = "none";
-//            }
+            if (colors.red > 0.2 && colors.green > 0.28 && colors.blue < 0.42) {
+                intakeColor = "yellow";
+            } else if (colors.red > 0.15 && colors.green < 0.4 && colors.blue < 0.3) {
+                intakeColor = "red";
+            } else if (colors.red < 0.3 && colors.green < 0.4 && colors.blue > 0.15) {
+                intakeColor = "blue";
+            } else {
+                intakeColor = "none";
+            }
 
             previousGamepad1.copy(currentGamepad1);
             previousGamepad2.copy(currentGamepad2);
@@ -196,25 +197,26 @@ public class Teleop extends LinearOpMode {
 
             if (turning) {
                 double heading = imu.getRobotYawPitchRollAngles().getYaw();
-                frontLeftPower += (180 - heading) / 180;
-                backLeftPower += (180 - heading) / 180;
-                frontRightPower -= (180 - heading) / 180;
-                backRightPower -= (180 - heading) / 180;
+                frontLeftPower += (180 - heading) / 100;
+                backLeftPower += (180 - heading) / 100;
+                frontRightPower -= (180 - heading) / 100;
+                backRightPower -= (180 - heading) / 100;
                 if (Math.abs(180 - heading) < 2) {
                     turning = false;
                 }
             }
-
-            if (currentGamepad1.left_trigger < 0.9) {
-                drive.leftFront.setPower(frontLeftPower);
-                drive.leftBack.setPower(backLeftPower);
-                drive.rightFront.setPower(frontRightPower);
-                drive.rightBack.setPower(backRightPower);
-            } else {
-                drive.leftFront.setPower(frontLeftPower * 0.6);
-                drive.leftBack.setPower(backLeftPower * 0.6);
-                drive.rightFront.setPower(frontRightPower * 0.6);
-                drive.rightBack.setPower(backRightPower * 0.6);
+            if (!pathcontrol.getBusy()) {
+                if (currentGamepad1.left_trigger < 0.9) {
+                    drive.leftFront.setPower(frontLeftPower);
+                    drive.leftBack.setPower(backLeftPower);
+                    drive.rightFront.setPower(frontRightPower);
+                    drive.rightBack.setPower(backRightPower);
+                } else {
+                    drive.leftFront.setPower(frontLeftPower * 0.6);
+                    drive.leftBack.setPower(backLeftPower * 0.6);
+                    drive.rightFront.setPower(frontRightPower * 0.6);
+                    drive.rightBack.setPower(backRightPower * 0.6);
+                }
             }
 
             if (currentGamepad1.options && !previousGamepad1.options) {
@@ -222,13 +224,25 @@ public class Teleop extends LinearOpMode {
             }
 
             if (currentGamepad1.x && !previousGamepad1.x) {
-                runningActions.add(basketSub1);
+                runningActions.add(new SequentialAction(
+                        pathcontrol.start(),
+                        basketSub1,
+                        pathcontrol.done()
+                ));
             }
             if (currentGamepad1.a && !previousGamepad1.a) {
-                runningActions.add(basketSub2);
+                runningActions.add(new SequentialAction(
+                        pathcontrol.start(),
+                        basketSub2,
+                        pathcontrol.done()
+                ));
             }
             if (currentGamepad1.b && !previousGamepad1.b) {
-                runningActions.add(observationSub1);
+                runningActions.add(new SequentialAction(
+                        pathcontrol.start(),
+                        observationSub1,
+                        pathcontrol.done()
+                ));
             }
 
             switch (extendoState) {
@@ -262,7 +276,7 @@ public class Teleop extends LinearOpMode {
                     break;
                 case EXTENDOEXTEND:
                     if (!extendocontrol.getBusy()) {
-                        if ((currentGamepad2.a && !previousGamepad2.a)/* || intakeColor.equals("blue") || intakeColor.equals("yellow")*/) {
+                        if ((currentGamepad2.a && !previousGamepad2.a) || intakeColor.equals("blue") || intakeColor.equals("yellow")) {
                             runningActions.add(new SequentialAction(
                                     extendocontrol.start(),
                                     intake.creep(),
@@ -282,8 +296,13 @@ public class Teleop extends LinearOpMode {
                                 runningActions.add(intake.flip());
                                 intakeUp = false;
                             }
-                        } else if (currentGamepad2.dpad_left/* || intakeColor.equals("red")*/) {
+                        } else if (currentGamepad2.dpad_left) {
                             runningActions.add(intake.extake());
+                        } else if (intakeColor.equals("red")) {
+                            runningActions.add(new SequentialAction(
+                                    intake.extake(),
+                                    new SleepAction(1)
+                            ));
                         } else {
                             runningActions.add(intake.intake());
                         }
@@ -450,7 +469,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("greenv", colors.green);
             telemetry.addData("slides left", slides.slidesLeftMotor.getCurrentPosition());
             telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
-//            telemetry.addData("color", intakeColor);
+            telemetry.addData("color", intakeColor);
             telemetry.update();
 
         }

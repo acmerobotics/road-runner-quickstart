@@ -22,15 +22,16 @@ public class SlidesV2 {
     public static double KD = 0;
     public static int topBasketTarget = 2840;
     public static int bottomBasketTarget = 1000;
-    public static int topBarTarget = 850;
-    public static int bottomBarTarget = 0;
+    public static int wallTarget = 10;
+    public static int topBarTarget = 1050;
+    public static int bottomBarTarget = 850;
+    public static int hangTarget = 3370;
     public static int retractTarget = 5;
     public PIDFController.PIDCoefficients slidesCoeffs = new PIDFController.PIDCoefficients(KP, KI, KD);
     public PIDFController slidesPID = new PIDFController(slidesCoeffs);
 
-    //DO NOT REMOVE
     //happy facePIDFController (slides DcMotor, REVERSE)  "rightSlidesMotor" (kP: 0.1, kt:, 0.5) devicename: sealed
-    //DO NOT REMOVE
+
 
     private int target = 0;
 
@@ -58,7 +59,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = 2840;
+                target = topBasketTarget;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -81,7 +82,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -1660;
+                target = bottomBasketTarget;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -106,7 +107,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = 0;
+                target = wallTarget;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -129,7 +130,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = 1050;
+                target = topBarTarget;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -152,7 +153,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = 850;
+                target = bottomBarTarget;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -170,36 +171,13 @@ public class SlidesV2 {
     }
 
 
-    public class SlideHangLevel implements Action {
-        private boolean init = false;
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!init) {
-                target = -670;
-                slidesPID.setTargetPosition(target);
-                init = true;
-            }
-
-
-
-            if (Math.abs(slidesPID.getTargetPosition() - getPos()) <  2) {
-                return false;
-            }
-            return true;
-        }
-    }
-    public Action slideHangLevel() {
-        return new SlideHangLevel();
-    }
-
     public class SlideHang implements Action {
         private boolean init = false;
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = 3370;
+                target = hangTarget;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
@@ -222,8 +200,7 @@ public class SlidesV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                //TODO: set values to the motor position of retracted position
-                target = 5;
+                target = retractTarget;
                 slidesPID.setTargetPosition(target);
                 init = true;
             }
