@@ -2,16 +2,24 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Config
 public class Intaker {
     private Servo intakeServoLeft;
     private Servo intakeServoRight;
     public DcMotor intakeMotor;
+
+    public static double flipTarget = 0.93;
+    public static double flopTarget = 0.18;
+    public static double middleTarget = 0.75;
+    public static double intakePower = 0.9;
+    public static double extakePower = 0.5;
 
     public Intaker(HardwareMap HWMap){
         intakeServoLeft = HWMap.get(Servo.class, "intakeServoLeft");
@@ -26,8 +34,8 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeServoLeft.setPosition(0.93);
-            intakeServoRight.setPosition(0.07);
+            intakeServoLeft.setPosition(flipTarget);
+            intakeServoRight.setPosition(1 - flipTarget);
 
             return false;
         }
@@ -40,8 +48,8 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeServoLeft.setPosition(0.75);
-            intakeServoRight.setPosition(0.25);
+            intakeServoLeft.setPosition(middleTarget);
+            intakeServoRight.setPosition(1 - middleTarget);
 
             return false;
         }
@@ -55,8 +63,8 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeServoLeft.setPosition(0.18);
-            intakeServoRight.setPosition(0.82);
+            intakeServoLeft.setPosition(flopTarget);
+            intakeServoRight.setPosition(1 - flopTarget);
             return false;
         }
     }
@@ -81,7 +89,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeMotor.setPower(-0.9);
+            intakeMotor.setPower(-intakePower);
             return false;
         }
     }
@@ -93,7 +101,7 @@ public class Intaker {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intakeMotor.setPower(0.5);
+            intakeMotor.setPower(extakePower);
             return false;
         }
     }
@@ -126,10 +134,10 @@ public class Intaker {
     }
 
     public void downExtake() {
-        intakeMotor.setPower(0.45);
+        intakeMotor.setPower(extakePower);
     }
 
     public void downIntake() {
-        intakeMotor.setPower(-0.9);
+        intakeMotor.setPower(-intakePower);
     }
 }

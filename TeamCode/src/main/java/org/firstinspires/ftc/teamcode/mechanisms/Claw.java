@@ -2,14 +2,22 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Config
 public class Claw {
     private Servo bucketServo;;
     private Servo clawServo;
+
+    public static double flipTarget = 0.3;
+    public static double flopTarget = 0.1;
+    public static double upTarget = 0.07;
+    public static double closeTarget = 0.28;
+    public static double openTarget = 0;
 
     public Claw(HardwareMap HWMap) {
         bucketServo = HWMap.get(Servo.class, "bucketServo");
@@ -20,7 +28,7 @@ public class Claw {
     public class Flip implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(0.3);
+            bucketServo.setPosition(flipTarget);
             return false;
         }
     }
@@ -32,7 +40,7 @@ public class Claw {
     public class Flop implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(0.1);
+            bucketServo.setPosition(flopTarget);
             return false;
         }
     }
@@ -44,7 +52,7 @@ public class Claw {
     public class Close implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawServo.setPosition(0.28);
+            clawServo.setPosition(closeTarget);
             return false;
         }
     }
@@ -56,7 +64,7 @@ public class Claw {
     public class Open implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawServo.setPosition(0);
+            clawServo.setPosition(openTarget);
             return false;
         }
     }
@@ -68,8 +76,7 @@ public class Claw {
     public class Up implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            bucketServo.setPosition(0.07);
-//            bucketRightServo.setPosition(0.5);
+            bucketServo.setPosition(upTarget);
             return false;
         }
     }
