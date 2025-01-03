@@ -206,10 +206,10 @@ public final class MecanumDrive {
 
             lastHeading = heading;
 
-            pose = pose.plus(new Twist2dDual<>(
-                    twist.line,
-                    DualNum.cons(headingDelta, twist.angle.drop(1))
-            ).value());
+            pose = pose.plus(new Twist2d(
+                    twist.line.value(),
+                    headingDelta
+            ));
 
             return twist.velocity().value();
         }
