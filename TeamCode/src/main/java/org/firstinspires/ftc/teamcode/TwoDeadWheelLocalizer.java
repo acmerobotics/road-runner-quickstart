@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
@@ -13,7 +15,6 @@ import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -42,8 +43,9 @@ public final class TwoDeadWheelLocalizer implements Localizer {
 
     private double lastRawHeadingVel, headingVelOffset;
     private boolean initialized;
+    private Pose2d pose;
 
-    public TwoDeadWheelLocalizer(HardwareMap hardwareMap, IMU imu, double inPerTick) {
+    public TwoDeadWheelLocalizer(HardwareMap hardwareMap, IMU imu, double inPerTick, Pose2d pose) {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -58,9 +60,22 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         this.inPerTick = inPerTick;
 
         FlightRecorder.write("TWO_DEAD_WHEEL_PARAMS", PARAMS);
+
+        this.pose = pose;
     }
 
-    public Twist2dDual<Time> update() {
+    @Override
+    public void setPose(Pose2d pose) {
+        this.pose = pose;
+    }
+
+    @Override
+    public Pose2d getPose() {
+        return pose;
+    }
+
+    @Override
+    public PoseVelocity2d update() {
         PositionVelocityPair parPosVel = par.getPositionAndVelocity();
         PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
 
@@ -94,10 +109,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
             lastPerpPos = perpPosVel.position;
             lastHeading = heading;
 
-            return new Twist2dDual<>(
-                    Vector2dDual.constant(new Vector2d(0.0, 0.0), 2),
-                    DualNum.constant(0.0, 2)
-            );
+            return new PoseVelocity2d(new Vector2d(0.0, 0.0), 0.0);
         }
 
         int parPosDelta = parPosVel.position - lastParPos;
@@ -125,6 +137,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         lastPerpPos = perpPosVel.position;
         lastHeading = heading;
 
-        return twist;
+        pose = pose.plus(twist.value());
+        return twist.velocity().value();
     }
 }
