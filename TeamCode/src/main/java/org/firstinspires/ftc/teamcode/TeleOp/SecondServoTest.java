@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -47,13 +48,14 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
+@Config
 @TeleOp(name = "SecondServoTest", group = "Concept")
 public class SecondServoTest extends LinearOpMode {
 
-    static final double INCREMENT   = 0.001;     // amount to slew servo each CYCLE_MS cycle
-    static final int    CYCLE_MS    =   200;     // period of each cycle
-    static final double MAX_POS     =  0.65;     // Maximum rotational position
-    static final double MIN_POS     =  0.26;     // Minimum rotational position
+    public static  double INCREMENT   = 0.001;     // amount to slew servo each CYCLE_MS cycle
+    public static  int    CYCLE_MS    =   200;     // period of each cycle
+    public static double MAX_POS     =  0.9;     // Maximum rotational position
+    public static double MIN_POS     =  0;     // Minimum rotational position
 
     // Define class members
     Servo   servo;
@@ -66,7 +68,7 @@ public class SecondServoTest extends LinearOpMode {
 
         // Connect to servo (Assume Robot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
-        servo = hardwareMap.get(Servo.class, "secondservo");
+        servo = hardwareMap.get(Servo.class, "wrist");
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo." );
@@ -77,23 +79,23 @@ public class SecondServoTest extends LinearOpMode {
         // Scan servo till stop pressed.
         while(opModeIsActive()){
 
-//            // slew the servo, according to the rampUp (direction) variable.
-//            if (rampUp) {
-//                // Keep stepping up until we hit the max value.
-//                position += INCREMENT ;
-//                if (position >= MAX_POS ) {
-//                    position = MAX_POS;
-//                    rampUp = !rampUp;   // Switch ramp direction
-//                }
-//            }
-//            else {
-//                // Keep stepping down until we hit the min value.
-//                position -= INCREMENT ;
-//                if (position <= MIN_POS ) {
-//                    position = MIN_POS;
-//                    rampUp = !rampUp;  // Switch ramp direction
-//                }
-//            }
+            // slew the servo, according to the rampUp (direction) variable.
+            if (rampUp) {
+                // Keep stepping up until we hit the max value.
+                position += INCREMENT ;
+                if (position >= MAX_POS ) {
+                    position = MAX_POS;
+                    rampUp = !rampUp;   // Switch ramp direction
+                }
+            }
+            else {
+                // Keep stepping down until we hit the min value.
+                position -= INCREMENT ;
+                if (position <= MIN_POS ) {
+                    position = MIN_POS;
+                    rampUp = !rampUp;  // Switch ramp direction
+                }
+            }
 
             // Display the current value
             telemetry.addData("Servo Position", "%5.2f", position);
@@ -109,11 +111,9 @@ public class SecondServoTest extends LinearOpMode {
 
 
             // Set the servo to the new position and pause;
-//            servo.setPosition(MIN_POS);
-//            sleep(CYCLE_MS);
-//            servo.setPosition(MAX_POS);
-//            sleep(CYCLE_MS);
-//            idle();
+            servo.setPosition(position);
+            sleep(CYCLE_MS);
+            idle();
         }
 
         // Signal done;

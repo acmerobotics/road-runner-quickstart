@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-public class RightActuator {
+public class RightActuatorServo {
     public Servo rightActuator       = null;
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public static double RIGHT_ACTUATOR_HORIZONTAL   = 0;
@@ -18,7 +18,7 @@ public class RightActuator {
 
     public static double RIGHT_ACTUATOR_SCALE_MAX = 0.65;
 
-    public RightActuator(HardwareMap hardwareMap) {
+    public RightActuatorServo(HardwareMap hardwareMap) {
         rightActuator = hardwareMap.get(Servo.class, "rightActuatorServo");
         rightActuator.scaleRange(RIGHT_ACTUATOR_SCALE_MIN, RIGHT_ACTUATOR_SCALE_MAX);
         rightActuator.setPosition(RIGHT_ACTUATOR_HORIZONTAL);

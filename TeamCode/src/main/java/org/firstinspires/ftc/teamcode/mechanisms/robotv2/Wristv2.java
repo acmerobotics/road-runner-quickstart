@@ -12,33 +12,39 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Wristv2 {
     public Servo wrist = null; //the wrist servo
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    public static double WRIST_FOLDED_IN = 1;
-    public static double WRIST_FOLDED_OUT = 0;
+    public static double WRIST_UP = 1;
+    public static double WRIST_DOWN = 0;
 
-    public static double WRIST_SCALE_MIN = 0.42;
+    public static double WRIST_VERTICAL = 0.71;
 
-    public static double WRIST_SCALE_MAX = 0.7;
+    public static double WRIST_SCALE_MIN = 0.0;
+
+    public static double WRIST_SCALE_MAX = 0.9;
 
     public Wristv2(HardwareMap hardwareMap) {
         wrist = hardwareMap.get(Servo.class, "wrist");
         wrist.scaleRange(WRIST_SCALE_MIN, WRIST_SCALE_MAX);
-        wrist.setPosition(WRIST_FOLDED_IN);
+        wrist.setPosition(WRIST_UP);
     }
 
-    public void foldIn() {
-        wrist.setPosition(WRIST_FOLDED_IN);
+    public void WristUp() {
+        wrist.setPosition(WRIST_UP);
     }
 
-    public void foldOut() {
-        wrist.setPosition(WRIST_FOLDED_OUT);
+    public void WristDown() {
+        wrist.setPosition(WRIST_DOWN);
+    }
+    public void WristVertical() {
+        wrist.setPosition(WRIST_VERTICAL);
     }
 
     public Action wristFoldInAction() {
-        return new InstantAction(() -> wrist.setPosition(WRIST_FOLDED_IN));
+        return new InstantAction(() -> wrist.setPosition(WRIST_UP));
     }
 
     public Action wristFoldOutAction() {
-        return new InstantAction(() -> wrist.setPosition(WRIST_FOLDED_OUT));
+        return new InstantAction(() -> wrist.setPosition(WRIST_DOWN));
     }
+
 }
 

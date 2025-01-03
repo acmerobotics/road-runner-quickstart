@@ -92,7 +92,7 @@ public class Armv2 {
         public boolean run(@NonNull TelemetryPacket packet) {
 
             motor.setTargetPosition(_targetPos);
-            motor.setVelocity(2000);
+            motor.setVelocity(500);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             int currentPosition = motor.getCurrentPosition();
