@@ -68,6 +68,8 @@ public class Teleop extends LinearOpMode {
 
     private enum ExtendoState {EXTENDOSTART, EXTENDOEXTEND, EXTENDORETRACT}
     private ExtendoState extendoState = ExtendoState.EXTENDOSTART;
+    private String extendoTelem = "Start";
+    private boolean hasColor = false;
 
     private boolean intakeUp = false;
     private boolean turning = false;
@@ -131,7 +133,7 @@ public class Teleop extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
         Gamepad previousGamepad2 = new Gamepad();
 
-        // ExtendoV2 extendo = new ExtendoV2(hardwareMap);
+        //ExtendoV2 extendo = new ExtendoV2(hardwareMap);
         Extendo extendo = new Extendo(hardwareMap);
         Intaker intake = new Intaker(hardwareMap);
         SlidesV2 slides = new SlidesV2(hardwareMap, true);
@@ -247,6 +249,7 @@ public class Teleop extends LinearOpMode {
 
             switch (extendoState) {
                 case EXTENDOSTART:
+                    extendoTelem = "Start";
                     if (!extendocontrol.getBusy()) {
                         if (currentGamepad2.a && !previousGamepad2.a) {
                             runningActions.add(new SequentialAction(
@@ -275,8 +278,12 @@ public class Teleop extends LinearOpMode {
                     }
                     break;
                 case EXTENDOEXTEND:
+                    extendoTelem = "Extend";
                     if (!extendocontrol.getBusy()) {
                         if ((currentGamepad2.a && !previousGamepad2.a) || intakeColor.equals("blue") || intakeColor.equals("yellow")) {
+                            if (intakeColor.equals("blue") || intakeColor.equals("yellow")) {
+                                hasColor = true;
+                            }
                             runningActions.add(new SequentialAction(
                                     extendocontrol.start(),
                                     intake.creep(),
@@ -311,21 +318,23 @@ public class Teleop extends LinearOpMode {
 
                     if (extendocontrol.getFinished()) {
                         extendocontrol.resetFinished();
+                        runningActions.add(new SequentialAction(
+                                new SleepAction(0.5),
+                                intake.extake()
+                        ));
                         extendoState = ExtendoState.EXTENDORETRACT;
                     }
                     break;
                 case EXTENDORETRACT:
-
-
-                    if ((currentGamepad2.a && !previousGamepad2.a)) {
-                        runningActions.add(intake.extake());
-                    }
-                    if (!currentGamepad2.a && previousGamepad2.a/* || intakeColor.equals("none")*/) {
+                    extendoTelem = "Retract";
+                    if ((!currentGamepad2.a && previousGamepad2.a) || (intakeColor.equals("none") && hasColor)) {
                         runningActions.add(new SequentialAction(
                                 intake.off(),
                                 new SleepAction(0.2),
                                 claw.up()
                         ));
+                        hasColor = false;
+                        extendocontrol.resetFinished();
                         extendoState = ExtendoState.EXTENDOSTART;
                     }
                     break;
@@ -468,9 +477,16 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("redv", colors.red);
             telemetry.addData("bluev", colors.blue);
             telemetry.addData("greenv", colors.green);
+            telemetry.addData("color", intakeColor);
             telemetry.addData("slides left", slides.slidesLeftMotor.getCurrentPosition());
             telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
-            telemetry.addData("color", intakeColor);
+            telemetry.addData("extendoState", extendoTelem);
+            telemetry.addData("extendoFinished", extendocontrol.getFinished());
+            telemetry.addData("extendoBusy", extendocontrol.getBusy());
+            telemetry.addData("hasColor", hasColor);
+            telemetry.addData("robotx", drive.pose.position.x);
+            telemetry.addData("roboty", drive.pose.position.y);
+            telemetry.addData("robotHeading", drive.pose.heading.toDouble());
             telemetry.update();
 
         }

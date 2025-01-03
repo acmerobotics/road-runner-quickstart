@@ -14,17 +14,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.PIDFController;
 
-@Config
 public class Extendo {
     public DcMotor extendoMotor;
-
-    public static double KP = 0.05;
-    public static double KI = 0;
-    public static double KD = 0.01;
-    public boolean pid = true;
-
-    private PIDFController.PIDCoefficients extendoMotorCoeffs = new PIDFController.PIDCoefficients(KP, KI, KD);
-    public PIDFController extendoMotorPID = new PIDFController(extendoMotorCoeffs);
 
     private int target = 0;
 
@@ -98,7 +89,7 @@ public class Extendo {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!init) {
-                target = -90;
+                target = -80;
                 extendoMotor.setTargetPosition(target);
                 extendoMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 extendoMotor.setPower(1);
@@ -231,11 +222,6 @@ public class Extendo {
         extendoMotor.setTargetPosition(pos);
     }
 
-    public void setValues(double kP, double kI, double kD) {
-        KP = kP;
-        KI = kI;
-        KD = kD;
-    }
 
     public void setManual() {
         extendoMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

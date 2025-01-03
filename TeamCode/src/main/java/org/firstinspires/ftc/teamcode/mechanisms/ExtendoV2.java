@@ -26,8 +26,6 @@ public class ExtendoV2 {
     public ExtendoV2(HardwareMap HWMap) {
         extendoLeftServo = HWMap.get(Servo.class, "extendoLeftServo");
         extendoRightServo = HWMap.get(Servo.class, "extendoRightServo");
-
-
     }
 
     public class Retract implements Action {
