@@ -205,7 +205,7 @@ public final class TankDrive {
 
             }
 
-            TankKinematics.WheelIncrements<Time> twist = new TankKinematics.WheelIncrements<>(
+            Twist2dDual<Time> twist = kinematics.forward(new TankKinematics.WheelIncrements<>(
                     new DualNum<Time>(new double[]{
                             meanLeftPos - lastLeftPos,
                             meanLeftVel
@@ -214,14 +214,14 @@ public final class TankDrive {
                             meanRightPos - lastRightPos,
                             meanRightVel,
                     }).times(PARAMS.inPerTick)
-            );
+            ));
 
             lastLeftPos = meanLeftPos;
             lastRightPos = meanRightPos;
 
-            pose = pose.plus(kinematics.forward(twist).value());
+            pose = pose.plus(twist.value());
 
-            return kinematics.forward(twist).velocity().value();
+            return twist.velocity().value();
         }
     }
 
