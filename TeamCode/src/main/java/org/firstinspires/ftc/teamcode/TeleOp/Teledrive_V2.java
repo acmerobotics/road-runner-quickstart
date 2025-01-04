@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Arm;
-import org.firstinspires.ftc.teamcode.mechanisms.Intake;
+import org.firstinspires.ftc.teamcode.mechanisms.Hang;
 //import org.firstinspires.ftc.teamcode.mechanisms.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
@@ -32,6 +32,8 @@ public class Teledrive_V2 extends LinearOpMode {
 
     double liftPosition = LIFT_COLLAPSED;
 
+    double hangLeftPosition = 3000;
+
     double cycletime = 0;
     double looptime = 0;
     double oldtime = 0;
@@ -53,7 +55,9 @@ public class Teledrive_V2 extends LinearOpMode {
         //Intake intake = new Intake(hardwareMap);
         Wrist wrist = new Wrist(hardwareMap);
         //Lift lift = new Lift(hardwareMap);
+
         RightActuator rightActuator = new RightActuator(hardwareMap);
+        //Hang hang = new Hang(hardwareMap);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -103,6 +107,42 @@ public class Teledrive_V2 extends LinearOpMode {
             else if (gamepad1.y){
                 rightActuator.rightactuatorvertical();
             }
+
+            /*
+            if (gamepad1.a) {
+               telemetry.addData("A pressed", "hello");
+                hang.HangUpAction();
+                hang.leftmotor.setTargetPosition((int) (hangLeftPosition));
+
+                hang.leftmotor.setVelocity(800);
+                hang.leftmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            else if (gamepad1.b) {
+                telemetry.addData("B pressed", "hello");
+                hang.HangDownAction();
+                hang.rightmotor.setTargetPosition((int) (hangLeftPosition));
+
+                hang.rightmotor.setVelocity(800);
+                hang.rightmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            else if (gamepad1.y) {
+                hang.HangDownAction();
+                hang.rightmotor.setTargetPosition((int) (-3000));
+
+                hang.rightmotor.setVelocity(800);
+                hang.rightmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            }
+
+            else if (gamepad1.x) {
+                hang.HangDownAction();
+                hang.leftmotor.setTargetPosition((int) (-3000));
+
+                hang.leftmotor.setVelocity(800);
+            }
+            */
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,
             If the user presses A, it sets the intake power to the final variable that
