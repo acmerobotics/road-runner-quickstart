@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Testing;
+package org.firstinspires.ftc.teamcode.TestArchive;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -8,14 +8,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.Slides;
 import org.firstinspires.ftc.teamcode.mechanisms.SlidesV2;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @TeleOp
-public class TestHang extends LinearOpMode {
+public class TestSlidesPID extends LinearOpMode {
 
     private SlidesV2 slides;
 
@@ -34,6 +33,7 @@ public class TestHang extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
         Gamepad previousGamepad2 = new Gamepad();
 
+        runningActions.add(slides.slideWallLevel());
 
         waitForStart();
 
@@ -41,6 +41,7 @@ public class TestHang extends LinearOpMode {
         while (opModeIsActive()) {
             TelemetryPacket packet = new TelemetryPacket();
 
+            slides.updateMotors();
 
             previousGamepad1.copy(currentGamepad1);
             previousGamepad2.copy(currentGamepad2);
@@ -48,24 +49,18 @@ public class TestHang extends LinearOpMode {
             currentGamepad1.copy(gamepad1);
             currentGamepad2.copy(gamepad2);
 
-            if (currentGamepad1.y && !previousGamepad1.y) {
-                runningActions.add(slides.slideHang());
-            }
-
-            if (currentGamepad1.x && !previousGamepad1.x) {
+            if (currentGamepad1.b && !previousGamepad1.b) {
                 runningActions.add(slides.retract());
             }
 
-            if (currentGamepad1.a && !previousGamepad1.a) {
+            if (currentGamepad1.y && !previousGamepad1.y) {
                 runningActions.add(slides.slideTopBasket());
             }
 
-            if (currentGamepad1.b && !previousGamepad1.b) {
-                slides.slidesLeftMotor.setPower(0);
-                slides.slidesRightMotor.setPower(0);
+            if (currentGamepad1.a && !previousGamepad1.a) {
+                runningActions.add(slides.slideWallLevel());
             }
 
-            slides.changeTarget((int) (currentGamepad1.left_stick_y * 30));
 
             List<Action> newActions = new ArrayList<>();
             for (Action action : runningActions) {
@@ -77,11 +72,16 @@ public class TestHang extends LinearOpMode {
             runningActions = newActions;
             dash.sendTelemetryPacket(packet);
 
-            slides.updateMotors();
+            telemetry.addData("PID", slides.getPID());
+            telemetry.addData("Slides Left", slides.slidesLeftMotor.getCurrentPosition());
+            telemetry.addData("Slides Right", slides.slidesRightMotor.getCurrentPosition());
+            telemetry.update();
 
-            tele.addData("slidesLeftMotor", slides.slidesLeftMotor.getCurrentPosition());
-            tele.addData("slidesRightMotor", slides.slidesRightMotor.getCurrentPosition());
-            tele.addData("avg", slides.getPos());
+            tele.addData("PID", slides.getPID());
+            tele.addData("Slides Left", slides.slidesLeftMotor.getCurrentPosition());
+            tele.addData("Slides Right", slides.slidesRightMotor.getCurrentPosition());
+            tele.addData("Slides Left Power", slides.slidesLeftMotor.getPower());
+            tele.addData("Slides Right Power", slides.slidesRightMotor.getPower());
             tele.update();
         }
 

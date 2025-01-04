@@ -19,9 +19,9 @@ public class ExtendoV2 {
 
     public double pos;
 
-    public static double extendTarget = 0.2;
-    public static double retractTarget = 0;
-    public static double balanceTarget = 0.1;
+    public static double extendTarget = 0.5;
+    public static double retractTarget = 0.1;
+    public static double balanceTarget = 0.3;
 
     public ExtendoV2(HardwareMap HWMap) {
         extendoLeftServo = HWMap.get(Servo.class, "extendoLeftServo");
@@ -32,7 +32,7 @@ public class ExtendoV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             pos = retractTarget;
-            extendoLeftServo.setPosition(pos);
+            extendoLeftServo.setPosition(1 - pos);
             extendoRightServo.setPosition(pos);
             return false;
         }
@@ -46,7 +46,7 @@ public class ExtendoV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             pos = extendTarget;
-            extendoLeftServo.setPosition(pos);
+            extendoLeftServo.setPosition(1 - pos);
             extendoRightServo.setPosition(pos);
             return false;
         }
@@ -60,7 +60,7 @@ public class ExtendoV2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             pos = balanceTarget;
-            extendoLeftServo.setPosition(pos);
+            extendoLeftServo.setPosition(1 - pos);
             extendoRightServo.setPosition(pos);
             return false;
         }
@@ -72,7 +72,7 @@ public class ExtendoV2 {
 
     public void move(double d) {
         pos += d;
-        extendoLeftServo.setPosition(pos);
+        extendoLeftServo.setPosition(1 - pos);
         extendoRightServo.setPosition(pos);
     }
 }

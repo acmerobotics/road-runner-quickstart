@@ -20,11 +20,12 @@ public class SlidesV2 {
     public static double KP = 0.01;
     public static double KI = 0;
     public static double KD = 0;
-    public static int topBasketTarget = 2840;
+    public static int topBasketTarget = 5160;
     public static int bottomBasketTarget = 1000;
     public static int wallTarget = 10;
-    public static int topBarTarget = 1050;
-    public static int bottomBarTarget = 850;
+    public static int topBarTarget = 1460;
+    public static int topBarClipTarget = 880;
+    public static int bottomBarTarget = 700;
     public static int hangTarget = 3370;
     public static int retractTarget = 5;
     public PIDFController.PIDCoefficients slidesCoeffs = new PIDFController.PIDCoefficients(KP, KI, KD);
@@ -145,6 +146,30 @@ public class SlidesV2 {
     }
     public Action slideTopBar() {
         return new SlideTopBar();
+    }
+
+
+    public class SlideTopBarClip implements Action {
+        private boolean init = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!init) {
+                target = topBarClipTarget;
+                slidesPID.setTargetPosition(target);
+                init = true;
+            }
+
+
+
+            if (Math.abs(slidesPID.getTargetPosition() - getPos()) <  2) {
+                return false;
+            }
+            return true;
+        }
+    }
+    public Action slideTopBarClip() {
+        return new SlideTopBarClip();
     }
 
     public class SlideBottomBar implements Action {
