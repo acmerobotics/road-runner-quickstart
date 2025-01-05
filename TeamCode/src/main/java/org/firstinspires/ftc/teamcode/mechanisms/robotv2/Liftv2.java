@@ -56,6 +56,8 @@ public class Liftv2 {
         }
     }
 
+
+
     public Action liftUpAction() {
         return new LiftAction((int) (LIFT_SCORING_IN_HIGH_BASKET));
     }
@@ -63,6 +65,8 @@ public class Liftv2 {
     public Action liftDownAction() {
         return new LiftAction((int) (LIFT_COLLAPSED));
     }
+
+
 
 
 }
