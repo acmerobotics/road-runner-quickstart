@@ -77,8 +77,8 @@ public class Armv2 {
     // call reset() only from autonomous code and not from the teleop.
     // This way, the arm encoder position is not reset between autonomous and teleop.
     public void reset(){
-        motor.setTargetPosition(0);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setTargetPosition(0);
     }
 
     // auto

@@ -12,7 +12,10 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Claw;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.LeftActuator;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftparantap;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 
 
@@ -28,6 +31,15 @@ public class TeleOpModular_V3 extends LinearOpMode {
     public static double ARM_SPECIMEN_SCORE_POSITION = 200;
     public static double LIFT_SCORE_POSITION = 650;
 
+    public static int RETURN_SLIDES_POSTION = 1000;
+
+
+    public static int RETURN_ACTUATOR_POSTION = 0;
+
+    public static int LIFT_HANG_POSITION = -1150;
+
+    public  static int LIFT_HANG_SLIDES_POSITION = -3200;
+
 
     static final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
 
@@ -36,6 +48,7 @@ public class TeleOpModular_V3 extends LinearOpMode {
     public static double LIFT_SCORING_IN_HIGH_BASKET = 510 * LIFT_TICKS_PER_MM * 1.3;
 
     double liftPosition = LIFT_COLLAPSED;
+
 
     double cycletime = 0;
     double looptime = 0;
@@ -50,8 +63,10 @@ public class TeleOpModular_V3 extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Armv2 arm = new Armv2(hardwareMap);
         Wristv2 wrist = new Wristv2(hardwareMap);
-        Liftv2 lift = new Liftv2(hardwareMap);
+        Liftparantap liftparantap = new Liftparantap(hardwareMap);
         Claw claw = new Claw(hardwareMap);
+        LeftActuator leftActuator = new LeftActuator(hardwareMap);
+        RightActuator rightActuator = new RightActuator(hardwareMap);
 
         claw.clawClose();
         wrist.WristVertical();
@@ -84,32 +99,70 @@ public class TeleOpModular_V3 extends LinearOpMode {
                 drive.resetYaw();
             }
 
-            if (gamepad1.dpad_up){
-                claw.clawClose();
-                wrist.WristVertical();
-                armPosition = ARM_SPECIMEN_SCORE_POSITION;
-                liftPosition = LIFT_SCORE_POSITION;
-            } else if (gamepad1.dpad_down) {
-                claw.clawOpen();
-                armPosition = ARM_SPECIMEN_SCORE_POSITION;
-                liftPosition = LIFT_COLLAPSED;
-                wrist.WristDown();
+            if(gamepad1.dpad_left){
+                //leftActuator.motor.setTargetPosition(LeftActuator.ACTUATOR_UP);
+                telemetry.addData("button pressed", "yes");
+
+                //leftActuator.motor.setTargetPosition(0);
+                //leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //leftActuator.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                leftActuator.motor.setTargetPosition(LIFT_HANG_POSITION);
+                leftActuator.motor.setVelocity(2000);
+                leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                rightActuator.motor.setTargetPosition(LIFT_HANG_POSITION);
+                rightActuator.motor.setVelocity(2000);
+                rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //liftPosition = 1000;
+
+                liftparantap.motor.setTargetPosition(LIFT_HANG_SLIDES_POSITION);
+                liftparantap.motor.setVelocity(2000);
+                liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            } else if (gamepad1.dpad_right){
+                leftActuator.motor.setTargetPosition(RETURN_ACTUATOR_POSTION);
+                leftActuator.motor.setVelocity(2000);
+                leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                rightActuator.motor.setTargetPosition(RETURN_ACTUATOR_POSTION);
+                rightActuator.motor.setVelocity(2000);
+                rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                liftparantap.motor.setTargetPosition(RETURN_SLIDES_POSTION);
+                liftparantap.motor.setVelocity(2000);
+                liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
-            if (gamepad1.a) {
-                claw.clawClose();
-            }
+            if (gamepad1.y) {
 
-            else if (gamepad1.b) {
-                claw.clawOpen();
             }
-
-            if(gamepad1.x){
-                wrist.WristUp();
-
-            } else if (gamepad1.y) {
-                wrist.WristDown();
-            }
+//            if (gamepad1.dpad_up){
+//                claw.clawClose();
+//                wrist.WristVertical();
+//                armPosition = ARM_SPECIMEN_SCORE_POSITION;
+//                liftPosition = LIFT_SCORE_POSITION;
+//            } else if (gamepad1.dpad_down) {
+//                claw.clawOpen();
+//                armPosition = ARM_SPECIMEN_SCORE_POSITION;
+//                liftPosition = LIFT_COLLAPSED;
+//                wrist.WristDown();
+//            }
+//
+//            if (gamepad1.a) {
+//                claw.clawClose();
+//            }
+//
+//            else if (gamepad1.b) {
+//                claw.clawOpen();
+//            }
+//
+//            if(gamepad1.x){
+//                wrist.WristUp();
+//
+//            } else if (gamepad1.y) {
+//                wrist.WristDown();
+//            }
 
 
             /* Here we implement a set of if else statements to set our arm to different scoring positions.
@@ -250,10 +303,10 @@ public class TeleOpModular_V3 extends LinearOpMode {
                 liftPosition = 0;
             }
 
-            lift.motor.setTargetPosition((int) (liftPosition));
+           // liftparantap.motor.setTargetPosition((int) (liftPosition));
 
-            lift.motor.setVelocity(5000);
-            lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //liftparantap.motor.setVelocity(5000);
+           // liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
             /* Check to see if our arm is over the current limit, and report via telemetry. */
@@ -280,8 +333,8 @@ public class TeleOpModular_V3 extends LinearOpMode {
             telemetry.addData("wrist servo", wrist.wrist.getPosition());
             telemetry.addData("armTarget: ", arm.motor.getTargetPosition());
             telemetry.addData("arm Encoder: ", arm.motor.getCurrentPosition());
-            telemetry.addData("lift target" , lift.motor.getTargetPosition());
-            telemetry.addData("lift position", lift.motor.getCurrentPosition());
+            telemetry.addData("lift target" , liftparantap.motor.getTargetPosition());
+            telemetry.addData("lift position", liftparantap.motor.getCurrentPosition());
             telemetry.update();
 
         }
