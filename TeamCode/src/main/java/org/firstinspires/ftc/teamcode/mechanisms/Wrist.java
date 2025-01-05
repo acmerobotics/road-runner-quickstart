@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class Wrist {
-    public Servo wrist       = null; //the wrist servo
+    public Servo wrist = null; //the wrist servo
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    public static double WRIST_FOLDED_IN   = 0.2;
-    public static double WRIST_FOLDED_OUT  = 0.8;
+    public static double WRIST_FOLDED_IN = 1;
+    public static double WRIST_FOLDED_OUT = 0;
 
     public static double WRIST_SCALE_MIN = 0.42;
 
@@ -37,12 +37,6 @@ public class Wrist {
 
     public Action wristFoldOutAction() {
         return new InstantAction(() -> wrist.setPosition(WRIST_FOLDED_OUT));
-    }
-    public Action wristLowScaleAction(){
-        return new InstantAction(() -> wrist.setPosition(WRIST_SCALE_MIN));
-    }
-    public Action wristHighScaleAction(){
-        return new InstantAction(() -> wrist.setPosition(WRIST_SCALE_MAX));
     }
 }
 

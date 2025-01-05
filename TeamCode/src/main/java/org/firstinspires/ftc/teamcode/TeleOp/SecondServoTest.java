@@ -27,9 +27,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -48,14 +48,14 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "lerbron james", group = "Concept")
-@Disabled
-public class ConceptScanServo extends LinearOpMode {
+@Config
+@TeleOp(name = "SecondServoTest", group = "Concept")
+public class SecondServoTest extends LinearOpMode {
 
-    static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
-    static final int    CYCLE_MS    =   50;     // period of each cycle
-    static final double MAX_POS     =  1.0;     // Maximum rotational position
-    static final double MIN_POS     =  0.0;     // Minimum rotational position
+    public static  double INCREMENT   = 0.001;     // amount to slew servo each CYCLE_MS cycle
+    public static  int    CYCLE_MS    =   200;     // period of each cycle
+    public static double MAX_POS     =  0.9;     // Maximum rotational position
+    public static double MIN_POS     =  0;     // Minimum rotational position
 
     // Define class members
     Servo   servo;
@@ -68,7 +68,7 @@ public class ConceptScanServo extends LinearOpMode {
 
         // Connect to servo (Assume Robot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
-        servo = hardwareMap.get(Servo.class, "rightActuatorServo");
+        servo = hardwareMap.get(Servo.class, "wrist");
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo." );
@@ -101,6 +101,14 @@ public class ConceptScanServo extends LinearOpMode {
             telemetry.addData("Servo Position", "%5.2f", position);
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
+
+            if(gamepad1.a){
+                servo.setPosition(MIN_POS);
+
+            } else if (gamepad1.b) {
+                servo.setPosition(MAX_POS);
+            }
+
 
             // Set the servo to the new position and pause;
             servo.setPosition(position);

@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.mechanisms;
+package org.firstinspires.ftc.teamcode.mechanisms.robotv2;
+
+
 
 import androidx.annotation.NonNull;
 
@@ -13,7 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.security.PublicKey;
 
 @Config
-public class Arm {
+public class Armv2 {
     public DcMotorEx motor;
 
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
@@ -62,7 +64,7 @@ public class Arm {
     public static double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
 
 
-    public Arm(HardwareMap hardwareMap) {
+    public Armv2(HardwareMap hardwareMap) {
         motor = hardwareMap.get(DcMotorEx.class, "arm");
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -75,8 +77,8 @@ public class Arm {
     // call reset() only from autonomous code and not from the teleop.
     // This way, the arm encoder position is not reset between autonomous and teleop.
     public void reset(){
-        motor.setTargetPosition(0);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setTargetPosition(0);
     }
 
     // auto
@@ -90,7 +92,7 @@ public class Arm {
         public boolean run(@NonNull TelemetryPacket packet) {
 
             motor.setTargetPosition(_targetPos);
-            motor.setVelocity(2000);
+            motor.setVelocity(500);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             int currentPosition = motor.getCurrentPosition();
