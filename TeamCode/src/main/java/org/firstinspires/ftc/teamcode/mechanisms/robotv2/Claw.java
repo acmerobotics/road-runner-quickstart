@@ -32,11 +32,11 @@ public class Claw {
         claw.setPosition(CLAW_OPEN);
     }
 
-    public Action clawFoldInAction() {
+    public Action clawCloseAction() {
         return new InstantAction(() -> claw.setPosition(CLAW_CLOSED));
     }
 
-    public Action clawFoldOutAction() {
+    public Action clawOpenAction() {
         return new InstantAction(() -> claw.setPosition(CLAW_OPEN));
     }
 }

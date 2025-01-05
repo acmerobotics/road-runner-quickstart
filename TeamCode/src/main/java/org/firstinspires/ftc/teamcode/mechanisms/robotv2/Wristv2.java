@@ -17,6 +17,7 @@ public class Wristv2 {
 
     public static double WRIST_VERTICAL = 0.71;
 
+    public static double WRIST_PICKUP_GROUND_SAMPLE = 0.0;
     public static double WRIST_SCALE_MIN = 0.0;
 
     public static double WRIST_SCALE_MAX = 0.9;
@@ -24,7 +25,7 @@ public class Wristv2 {
     public Wristv2(HardwareMap hardwareMap) {
         wrist = hardwareMap.get(Servo.class, "wrist");
         wrist.scaleRange(WRIST_SCALE_MIN, WRIST_SCALE_MAX);
-        wrist.setPosition(WRIST_UP);
+        wrist.setPosition(WRIST_DOWN);
     }
 
     public void WristUp() {
@@ -44,6 +45,9 @@ public class Wristv2 {
 
     public Action wristFoldOutAction() {
         return new InstantAction(() -> wrist.setPosition(WRIST_DOWN));
+    }
+    public Action wristPickUpGroundSampleAction() {
+        return new InstantAction(() -> wrist.setPosition(WRIST_PICKUP_GROUND_SAMPLE));
     }
 
 }
