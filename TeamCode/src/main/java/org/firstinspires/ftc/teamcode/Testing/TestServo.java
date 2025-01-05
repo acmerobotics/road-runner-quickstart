@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
+import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,7 @@ public class TestServo extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-//        Servo left = hardwareMap.get(Servo.class, "intakeServoLeft");
-//        Servo right = hardwareMap.get(Servo.class, "intakeServoRight");
-          //Servo bucket = hardwareMap.get(Servo.class, "bucketServo");
-          //Servo servoExtendo = hardwareMap.get(Servo.class, "servoExtendo");
-        Claw claw = new Claw(hardwareMap);
+        Intaker intake = new Intaker(hardwareMap);
 
         waitForStart();
 
@@ -33,21 +30,15 @@ public class TestServo extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
 
             if (gamepad1.a) {
-//                left.setPosition(0.83);
-//                right.setPosition(0.83);
-                runningActions.add(claw.open());
+                runningActions.add(intake.flip());
             }
 
             if (gamepad1.x) {
-//                left.setPosition(0.5);
-//                right.setPosition(0.5);
-                runningActions.add(claw.close());
+
             }
 
             if (gamepad1.b) {
-//                left.setPosition(0.05);
-//                right.setPosition(0.05);b
-
+                runningActions.add(intake.flop());
             }
 
             List<Action> newActions = new ArrayList<>();

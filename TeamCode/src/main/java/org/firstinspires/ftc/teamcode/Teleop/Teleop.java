@@ -50,6 +50,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Control;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
+import org.firstinspires.ftc.teamcode.mechanisms.ExtendoV2;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.SlidesV2;
 
@@ -133,8 +134,8 @@ public class Teleop extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
         Gamepad previousGamepad2 = new Gamepad();
 
-        //ExtendoV2 extendo = new ExtendoV2(hardwareMap);
-        Extendo extendo = new Extendo(hardwareMap);
+        ExtendoV2 extendo = new ExtendoV2(hardwareMap);
+        //Extendo extendo = new Extendo(hardwareMap);
         Intaker intake = new Intaker(hardwareMap);
         SlidesV2 slides = new SlidesV2(hardwareMap, true);
         Claw claw = new Claw(hardwareMap);
