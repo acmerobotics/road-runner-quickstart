@@ -19,8 +19,8 @@ public class ExtendoV2 {
 
     public double pos;
 
-    public static double extendTarget = 0.5;
-    public static double retractTarget = 0.1;
+    public static double extendTarget = 0.4;
+    public static double retractTarget = 0.25;
     public static double balanceTarget = 0.3;
 
     public ExtendoV2(HardwareMap HWMap) {

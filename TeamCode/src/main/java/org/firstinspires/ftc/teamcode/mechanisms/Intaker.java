@@ -15,8 +15,8 @@ public class Intaker {
     private Servo intakeServoRight;
     public DcMotor intakeMotor;
 
-    public static double flipTarget = 0.93;
-    public static double flopTarget = 0.18;
+    public static double flipTarget = 0.913;
+    public static double flopTarget = 0.26;
     public static double middleTarget = 0.75;
     public static double intakePower = 0.9;
     public static double extakePower = 0.5;

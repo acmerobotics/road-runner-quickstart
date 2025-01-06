@@ -283,7 +283,7 @@ public class Teleop extends LinearOpMode {
                     if (!extendocontrol.getBusy()) {
                         if ((currentGamepad2.a && !previousGamepad2.a) || intakeColor.equals("blue") || intakeColor.equals("yellow")) {
                             if (intakeColor.equals("blue") || intakeColor.equals("yellow")) {
-                                hasColor = true;
+                                //hasColor = true;
                             }
                             runningActions.add(new SequentialAction(
                                     extendocontrol.start(),
@@ -320,7 +320,7 @@ public class Teleop extends LinearOpMode {
                     if (extendocontrol.getFinished()) {
                         extendocontrol.resetFinished();
                         runningActions.add(new SequentialAction(
-                                new SleepAction(0.5),
+                                new SleepAction(1.2),
                                 intake.extake()
                         ));
                         extendoState = ExtendoState.EXTENDORETRACT;
@@ -328,7 +328,7 @@ public class Teleop extends LinearOpMode {
                     break;
                 case EXTENDORETRACT:
                     extendoTelem = "Retract";
-                    if ((!currentGamepad2.a && previousGamepad2.a) || (intakeColor.equals("none") && hasColor)) {
+                    if ((currentGamepad2.a && !previousGamepad2.a)) {// || (intakeColor.equals("none") && hasColor)) {
                         runningActions.add(new SequentialAction(
                                 intake.off(),
                                 new SleepAction(0.2),
