@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.mechanisms.robotv2.MecanumDriveV2;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.LeftActuator;
@@ -58,7 +58,7 @@ public class TeleOpModular_V3 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         Pose2d initialPose = new Pose2d(11.8, 61.7, Math.toRadians(90));
-        MecanumDriveV2 drive = new MecanumDriveV2(hardwareMap, initialPose);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Armv2 arm = new Armv2(hardwareMap);
         Wristv2 wrist = new Wristv2(hardwareMap);
         Liftparantap liftparantap = new Liftparantap(hardwareMap);
