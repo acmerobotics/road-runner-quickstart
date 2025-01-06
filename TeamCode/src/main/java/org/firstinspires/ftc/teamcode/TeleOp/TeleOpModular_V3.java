@@ -8,12 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.auto.test.v2.MecanumDriveV2;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.MecanumDriveV2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.LeftActuator;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftparantap;
-import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 

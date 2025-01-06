@@ -1,29 +1,28 @@
-package org.firstinspires.ftc.teamcode.auto.test;
+package org.firstinspires.ftc.teamcode.auto.test.v1;
 
-
-import static org.firstinspires.ftc.teamcode.mechanisms.Lift.*;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.mechanisms.Intake;
-import org.firstinspires.ftc.teamcode.mechanisms.Lift;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Arm;
 
 
 @Config
-@Autonomous(name = "LiftTest", group = "Test")
-public class LiftTest extends LinearOpMode {
+@Autonomous(name = "ArmTest", group = "Test")
+@Disabled
+public class ArmTest extends LinearOpMode {
 
 
 
     @Override
     public void runOpMode() {
 
-        Lift lift = new Lift(hardwareMap);
+        Arm arm = new Arm(hardwareMap);
 
         while(!isStopRequested() && !opModeIsActive()) {
 
@@ -35,11 +34,13 @@ public class LiftTest extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        lift.liftUpAction(),
-                        new SleepAction(1),
-                        lift.liftDownAction()));
-    }
+                        arm.armVerticalAction(),
+                        new SleepAction(4), // sleep
+                        arm.armParkAction()));
+
+    } // runOpMode
 
 
 
 }
+

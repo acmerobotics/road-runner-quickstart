@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.test;
+package org.firstinspires.ftc.teamcode.auto.test.v1;
 
 
 import com.acmerobotics.dashboard.config.Config;
@@ -6,14 +6,15 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.mechanisms.Intake;
-import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
 
 
 @Config
 @Autonomous(name = "WristTest", group = "Test")
+@Disabled
 public class WristTest extends LinearOpMode {
 
 
