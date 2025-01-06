@@ -1,23 +1,15 @@
-package org.firstinspires.ftc.teamcode.auto.test;
+package org.firstinspires.ftc.teamcode.auto.test.v1;
 
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-
-
-import java.util.List;
 
 @Config
 @Autonomous(name = "intakeatangle-driveonly", group = "RoadRunner 1.0")
