@@ -20,7 +20,7 @@ public class DriveTest extends LinearOpMode {
 
 
     // Start position red near
-    Pose2d RED_SCORE_START_POSE = new Pose2d(-36, -60, Math.toRadians(180));
+    Pose2d RED_SCORE_START_POSE = new Pose2d(-36, -60, Math.toRadians(0));
 
 
     @Override
@@ -31,8 +31,8 @@ public class DriveTest extends LinearOpMode {
 //        Arm arm = new Arm(hardwareMap);
 //        Lift lift = new Lift(hardwareMap);
         TrajectoryActionBuilder traj = drive.actionBuilder(RED_SCORE_START_POSE)
-                .strafeToLinearHeading(new Vector2d(-36, -56), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(180+45));
+                .strafeToLinearHeading(new Vector2d(-36, -56), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45));
 
 
 //        Action trajectoryActionCloseOut = traj.fresh()
