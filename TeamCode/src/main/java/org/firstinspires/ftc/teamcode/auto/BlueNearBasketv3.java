@@ -14,10 +14,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.mechanisms.Arm;
-import org.firstinspires.ftc.teamcode.mechanisms.Intake;
-import org.firstinspires.ftc.teamcode.mechanisms.Lift;
-import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Arm;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Intake;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
 
 
 @Config
