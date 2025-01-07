@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.Paths;
+package org.firstinspires.ftc.teamcode.AutoArchive.FinalPathsNoSpeci;
 
 
 
@@ -15,6 +15,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 
 // Non-RR imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -23,7 +24,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
-
+@Disabled
 @Autonomous(preselectTeleOp = "BlueTeleop")
 public class SPECI extends LinearOpMode {
     @Override

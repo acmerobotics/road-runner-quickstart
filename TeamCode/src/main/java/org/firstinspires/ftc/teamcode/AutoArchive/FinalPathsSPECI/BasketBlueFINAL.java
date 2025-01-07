@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.FinalPathsSPECI;
+package org.firstinspires.ftc.teamcode.AutoArchive.FinalPathsSPECI;
 
 
 
@@ -16,6 +16,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 
 // Non-RR imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
@@ -25,7 +26,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
-
+@Disabled
 @Autonomous
 public class BasketBlueFINAL extends LinearOpMode {
     Slides slides = new Slides(hardwareMap);

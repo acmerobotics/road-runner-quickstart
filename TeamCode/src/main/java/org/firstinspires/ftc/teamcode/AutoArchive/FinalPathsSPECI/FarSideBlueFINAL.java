@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.FinalPathsSPECI;
+package org.firstinspires.ftc.teamcode.AutoArchive.FinalPathsSPECI;
 
 
 
@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 
 // Non-RR imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
-
+@Disabled
 @Autonomous
 public class FarSideBlueFINAL extends LinearOpMode {
 

@@ -290,6 +290,8 @@ public class Teleop extends LinearOpMode {
                                     intake.creep(),
                                     intake.flop(),
                                     extendo.retract(),
+                                    new SleepAction(1.2),
+                                    intake.extake(),
                                     extendocontrol.done()
                             ));
                         }
@@ -319,16 +321,12 @@ public class Teleop extends LinearOpMode {
 
                     if (extendocontrol.getFinished()) {
                         extendocontrol.resetFinished();
-                        runningActions.add(new SequentialAction(
-                                new SleepAction(1.2),
-                                intake.extake()
-                        ));
                         extendoState = ExtendoState.EXTENDORETRACT;
                     }
                     break;
                 case EXTENDORETRACT:
                     extendoTelem = "Retract";
-                    if ((currentGamepad2.a && !previousGamepad2.a)) {// || (intakeColor.equals("none") && hasColor)) {
+                    if ((currentGamepad2.a && !previousGamepad2.a) || (intakeColor.equals("none") && hasColor)) {
                         runningActions.add(new SequentialAction(
                                 intake.off(),
                                 new SleepAction(0.2),
