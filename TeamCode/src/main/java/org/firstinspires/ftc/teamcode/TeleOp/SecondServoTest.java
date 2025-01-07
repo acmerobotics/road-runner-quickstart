@@ -49,17 +49,17 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @Config
-@TeleOp(name = "SecondServoTest", group = "Concept")
+@TeleOp(name = "lebronjamesjr", group = "Concept")
 public class SecondServoTest extends LinearOpMode {
 
-    public static  double INCREMENT   = 0.001;     // amount to slew servo each CYCLE_MS cycle
+    public static  double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     public static  int    CYCLE_MS    =   200;     // period of each cycle
-    public static double MAX_POS     =  0.9;     // Maximum rotational position
-    public static double MIN_POS     =  0;     // Minimum rotational position
+    public static double MAX_POS     =  0.65;     // Maximum rotational position
+    public static double MIN_POS     =  0.55;     // Minimum rotational position
 
     // Define class members
     Servo   servo;
-    double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+    double  position = (MAX_POS + MIN_POS) / 2; // Start at halfway position
     boolean rampUp = true;
 
 
@@ -68,7 +68,7 @@ public class SecondServoTest extends LinearOpMode {
 
         // Connect to servo (Assume Robot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
-        servo = hardwareMap.get(Servo.class, "claw");
+        servo = hardwareMap.get(Servo.class, "wrist");
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo." );

@@ -35,7 +35,10 @@ public class ArmV2Test extends LinearOpMode {
                 new SequentialAction(
                         arm.armPickupGroundSampleAction(),
                         new SleepAction(4), // sleep
-                        arm.armResetAction()));
+                        arm.armVerticalAction(),
+                        new SleepAction(4),
+                        arm.armResetAction()
+                        ));
 
     } // runOpMode
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auto.test.v2;
 
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Claw;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 
 
@@ -24,6 +26,7 @@ public class SamplePickTest extends LinearOpMode {
 
         Wristv2 wrist = new Wristv2(hardwareMap);
         Armv2 arm = new Armv2(hardwareMap);
+        Liftv2 lift = new Liftv2(hardwareMap);
         Claw claw = new Claw(hardwareMap);
         arm.reset();
 
@@ -37,15 +40,28 @@ public class SamplePickTest extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        claw.clawOpenAction(),
-                        wrist.wristPickUpGroundSampleAction(),
-                        arm.armPickupGroundSampleAction(),
-                        new SleepAction(4), // sleep
+                        new ParallelAction(
+                            claw.clawOpenAction(),
+                            wrist.wristPickUpGroundSampleAction(),
+                            arm.armPickupGroundSampleAction()),
+                        new SleepAction(2), // sleep
                         claw.clawCloseAction(),
-                        new SleepAction(1),
+                        new SleepAction(.5),
+                        new ParallelAction(
+                          arm.armVerticalAction(),
+                          lift.liftUpAction()
+                        ),
                         wrist.wristFoldOutAction(),
+                        new SleepAction(2),
+                        claw.clawOpenAction(),
+                        new SleepAction(0.5),
+                        wrist.wristFoldInAction(),
+                        new SleepAction(1),
+                        new ParallelAction(
+                                lift.liftDownAction(),
+                                arm.armVerticalAction()),
                         arm.armResetAction(),
-                        new SleepAction(4)
+                        new SleepAction(1)
                 ));
 
     } // runOpMode

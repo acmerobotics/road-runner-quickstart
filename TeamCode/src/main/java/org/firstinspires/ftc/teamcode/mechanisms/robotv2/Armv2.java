@@ -19,7 +19,7 @@ public class Armv2 {
     public DcMotorEx motor;
 
     public static int ARM_REST_POSITION = 0;
-    public static int ARM_VERTICAL = 200;
+    public static int ARM_VERTICAL = 300;
     public static int ARM_PICKUP_GROUND_SAMPLE = 1400;
 
     /* A number in degrees that the triggers can adjust the arm position by */
@@ -43,6 +43,10 @@ public class Armv2 {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void pickupGroundSample(){
+        motor.setTargetPosition(ARM_PICKUP_GROUND_SAMPLE);
+    }
+
     // auto
     public class ArmScoreAuto implements Action {
         private final int _targetPos;
@@ -54,7 +58,7 @@ public class Armv2 {
         public boolean run(@NonNull TelemetryPacket packet) {
 
             motor.setTargetPosition(_targetPos);
-            motor.setVelocity(500);
+            motor.setVelocity(1500);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             int currentPosition = motor.getCurrentPosition();

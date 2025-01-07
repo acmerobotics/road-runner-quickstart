@@ -8,19 +8,18 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
-
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
 
 @Config
-@Autonomous(name = "WristV2 Test", group = "Test")
-public class WristV2Test extends LinearOpMode {
+@Autonomous(name = "LiftV2 Test", group = "Test")
+public class LiftV2Test extends LinearOpMode {
 
 
 
     @Override
     public void runOpMode() {
 
-        Wristv2 wrist = new Wristv2(hardwareMap);
+        Liftv2 lift = new Liftv2(hardwareMap);
 
         while(!isStopRequested() && !opModeIsActive()) {
 
@@ -32,15 +31,11 @@ public class WristV2Test extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        wrist.wristFoldOutAction(),
-                        new SleepAction(1), // sleep
-                        wrist.wristFoldInAction(),
-                        new SleepAction(1) // sleep
-                ));
-
-    } // runOpMode
+                        lift.liftUpAction(),
+                        new SleepAction(1),
+                        lift.liftDownAction()));
+    }
 
 
 
 }
-
