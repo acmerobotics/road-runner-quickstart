@@ -49,10 +49,11 @@ public class SamplePickTest extends LinearOpMode {
                         new SleepAction(.5),
                         new ParallelAction(
                           arm.armVerticalAction(),
-                          lift.liftUpAction()
+                          lift.liftUpAction(),
+                          wrist.wristFoldOutAction()
                         ),
-                        wrist.wristFoldOutAction(),
                         new SleepAction(2),
+                        arm.armScoreAction(),
                         claw.clawOpenAction(),
                         new SleepAction(0.5),
                         wrist.wristFoldInAction(),
