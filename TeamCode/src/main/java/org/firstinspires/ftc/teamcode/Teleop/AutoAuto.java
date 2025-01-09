@@ -30,6 +30,7 @@ public class AutoAuto extends LinearOpMode {
 
         double mapping_x = 0.00; // Place holder for last X pos
         double mapping_y = 0.00; // Place holder for last Y pos
+        double mapping_heading = 0.00;
 
         int count = 0; // Count variable for dict keys, temporary solution? Hopefully better in the future
 
@@ -44,6 +45,7 @@ public class AutoAuto extends LinearOpMode {
             if (currentGamepad1.a && !mappingState){
                 mapping_x = x;
                 mapping_y = y;
+                mapping_heading = heading;
 
                 String x_key = String.format("x_pos_%s", count);
                 String y_key = String.format("y_pos_%s", count);
@@ -69,6 +71,7 @@ public class AutoAuto extends LinearOpMode {
             telemetry.addData("Heading", heading);
             telemetry.addData("Last X", mapping_x);
             telemetry.addData("Last Y", mapping_y);
+            telemetry.addData("Last Heading", mapping_heading);
             telemetry.addData("Test", mappingTable); // Displays complete dict for running mapping values
             telemetry.update();
         }
