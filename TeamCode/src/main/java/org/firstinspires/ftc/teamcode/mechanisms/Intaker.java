@@ -18,6 +18,7 @@ public class Intaker {
     public static double flipTarget = 0.913;
     public static double flopTarget = 0.26;
     public static double middleTarget = 0.75;
+    public static double perfectMid = 0.5;
     public static double intakePower = 0.9;
     public static double extakePower = 0.5;
 
@@ -70,6 +71,19 @@ public class Intaker {
     }
     public Action flop() {
         return new Flop();
+    }
+
+    public class Flat implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intakeServoLeft.setPosition(perfectMid);
+            intakeServoRight.setPosition(1 - perfectMid);
+            return false;
+        }
+    }
+    public Action flat() {
+        return new Flat();
     }
 
     public class UpFlip implements Action {
