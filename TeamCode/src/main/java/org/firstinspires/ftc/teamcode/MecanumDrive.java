@@ -70,21 +70,21 @@ public final class MecanumDrive {
         // feedforward parameters (in tick units)
         public double kS = 0.7858908336878709;
         public double kV =  0.0005110240202960002;
-        public double kA = 0.00009;
+        public double kA = 0.000095;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 200;
-        public double minProfileAccel = -30;
-        public double maxProfileAccel = 200;
+        public double maxWheelVel = 80;
+        public double minProfileAccel = -45;
+        public double maxProfileAccel = 80;
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI; // shared with path
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 6;
-        public double lateralGain = 7;
-        public double headingGain = 9.5; // shared with turn
+        public double axialGain = 7;
+        public double lateralGain = 5;
+        public double headingGain = 8; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -229,8 +229,8 @@ public final class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // TODO: reverse motor directions if needed
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -240,7 +240,7 @@ public final class MecanumDrive {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
 
-        localizer = new TwoDeadWheelLocalizer(hardwareMap, lazyImu.get(), PARAMS.inPerTick);
+        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
@@ -298,9 +298,13 @@ public final class MecanumDrive {
 
             Pose2d error = txWorldTarget.value().minusExp(pose);
 
-            if (((t >= timeTrajectory.duration - 2 && error.position.norm() < 2
+            /*
+            ((t >= timeTrajectory.duration - 2 && error.position.norm() < 2
                     && robotVelRobot.linearVel.norm() < 1.5 && error.heading.vec().norm() < 5)
-                    || t >= timeTrajectory.duration + 1)) {
+                    || t >= timeTrajectory.duration + 1)
+             */
+
+            if (t >= timeTrajectory.duration) {
                 leftFront.setPower(0);
                 leftBack.setPower(0);
                 rightBack.setPower(0);
