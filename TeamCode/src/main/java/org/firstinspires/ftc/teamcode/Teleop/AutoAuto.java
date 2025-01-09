@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -38,17 +39,21 @@ public class AutoAuto extends LinearOpMode {
 
             double x = drive.pose.position.x; // drive pos x
             double y = drive.pose.position.y; // drive pos y
+            double heading = drive.pose.heading.toDouble();
 
             if (currentGamepad1.a && !mappingState){
                 mapping_x = x;
                 mapping_y = y;
+
                 String x_key = String.format("x_pos_%s", count);
                 String y_key = String.format("y_pos_%s", count);
+                String heading_key = String.format("heading_%s", count);
 
                 // Implement heading after testing x and y pos
 
-                mappingTable.put(x_key, mapping_x); // Insert values into a dict with x_pos_{count} and y_pos_{count}
-                mappingTable.put(y_key, mapping_y);
+                mappingTable.put(x_key, x); // Insert values into a dict with x_pos_{count} and y_pos_{count}
+                mappingTable.put(y_key, y);
+                mappingTable.put(heading_key, heading); // Insert heading into a dict with heading_{count}
 
                 count += 1;
 
@@ -61,6 +66,7 @@ public class AutoAuto extends LinearOpMode {
 
             telemetry.addData("X Coord", x);
             telemetry.addData("Y Coord", y);
+            telemetry.addData("Heading", heading);
             telemetry.addData("Last X", mapping_x);
             telemetry.addData("Last Y", mapping_y);
             telemetry.addData("Test", mappingTable); // Displays complete dict for running mapping values
