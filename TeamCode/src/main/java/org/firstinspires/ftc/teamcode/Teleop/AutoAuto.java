@@ -63,7 +63,7 @@ public class AutoAuto extends LinearOpMode {
             telemetry.addData("Y Coord", y);
             telemetry.addData("Last X", mapping_x);
             telemetry.addData("Last Y", mapping_y);
-            telemetry.addData("Test", mappingTable);
+            telemetry.addData("Test", mappingTable); // Displays complete dict for running mapping values
             telemetry.update();
         }
     }
