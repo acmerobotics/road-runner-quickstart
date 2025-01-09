@@ -55,7 +55,7 @@ public class AutoAuto extends LinearOpMode {
 
                 mappingTable.put(x_key, x); // Insert values into a dict with x_pos_{count} and y_pos_{count}
                 mappingTable.put(y_key, y);
-                mappingTable.put(heading_key, heading); // Insert heading into a dict with heading_{count}
+                //mappingTable.put(heading_key, heading); // Insert heading into a dict with heading_{count}
 
                 count += 1;
 
@@ -68,7 +68,7 @@ public class AutoAuto extends LinearOpMode {
 
             telemetry.addData("X Coord", x);
             telemetry.addData("Y Coord", y);
-            telemetry.addData("Heading", heading);
+            //telemetry.addData("Heading", heading);
             telemetry.addData("Last X", mapping_x);
             telemetry.addData("Last Y", mapping_y);
             telemetry.addData("Last Heading", mapping_heading);
