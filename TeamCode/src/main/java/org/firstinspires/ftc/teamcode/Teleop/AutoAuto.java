@@ -42,7 +42,6 @@ public class AutoAuto extends LinearOpMode {
             double heading = drive.pose.heading.toDouble();
 
             if (currentGamepad1.a && !mappingState){
-
                 mapping_x = x;
                 mapping_y = y;
 
