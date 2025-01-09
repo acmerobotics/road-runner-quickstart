@@ -17,10 +17,10 @@ public class AutoAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pose2d StartPose = new Pose2d(0,0, Math.toRadians(0));
+        Pose2d StartPose = new Pose2d(0,0, 0); // Replaced with 0 radians instead of Math.toRadians(0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose);
 
-        Gamepad currentGamepad1 = gamepad1;
+        Gamepad currentGamepad1 = gamepad1; // Changed from new Gamepad() to gamepad1, same thing with gamepad 2
         Gamepad currentGamepad2 = gamepad2;
 
         boolean mappingState = false; // Switch to make sure no infinite execution, need to test, might need previous state check with controller
@@ -40,7 +40,7 @@ public class AutoAuto extends LinearOpMode {
 
             double x = drive.pose.position.x; // drive pos x
             double y = drive.pose.position.y; // drive pos y
-            double heading = drive.pose.heading.toDouble();
+            double heading = drive.pose.heading.toDouble(); // heading in degrees
 
             if (currentGamepad1.a && !mappingState){
                 mapping_x = x;
@@ -64,6 +64,7 @@ public class AutoAuto extends LinearOpMode {
             drive.updatePoseEstimate();
 
             // Current telemetry meant for debug values
+            // If current changes don't work, directly set to telemetry.addData("X coord", drive.pose.position.x); and so on for the other ones as well
 
             telemetry.addData("X Coord", x);
             telemetry.addData("Y Coord", y);
