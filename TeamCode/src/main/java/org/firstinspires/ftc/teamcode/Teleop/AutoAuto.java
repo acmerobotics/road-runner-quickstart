@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 @TeleOp
 public class AutoAuto extends LinearOpMode {
@@ -25,7 +25,7 @@ public class AutoAuto extends LinearOpMode {
 
         boolean mappingState = false; // Switch to make sure no infinite execution
 
-        Dictionary<String, Double> mappingTable = new Hashtable<>();
+        Map<String, Double> mappingTable = new HashMap<>();
 
 
         double mapping_x = 0.00; // Place holder for last X pos
@@ -40,12 +40,12 @@ public class AutoAuto extends LinearOpMode {
 
             double x = drive.pose.position.x; // drive pos x
             double y = drive.pose.position.y; // drive pos y
-            double heading = drive.pose.heading.toDouble();
+            //double heading = drive.pose.heading.toDouble();
 
             if (currentGamepad1.a && !mappingState){
                 mapping_x = x;
                 mapping_y = y;
-                mapping_heading = heading;
+                //mapping_heading = heading;
 
                 String x_key = String.format("x_pos_%s", count);
                 String y_key = String.format("y_pos_%s", count);
@@ -55,7 +55,7 @@ public class AutoAuto extends LinearOpMode {
 
                 mappingTable.put(x_key, x); // Insert values into a dict with x_pos_{count} and y_pos_{count}
                 mappingTable.put(y_key, y);
-                mappingTable.put(heading_key, heading); // Insert heading into a dict with heading_{count}
+                //mappingTable.put(heading_key, heading); // Insert heading into a dict with heading_{count}
 
                 count += 1;
 
@@ -68,7 +68,7 @@ public class AutoAuto extends LinearOpMode {
 
             telemetry.addData("X Coord", x);
             telemetry.addData("Y Coord", y);
-            telemetry.addData("Heading", heading);
+            //telemetry.addData("Heading", heading);
             telemetry.addData("Last X", mapping_x);
             telemetry.addData("Last Y", mapping_y);
             telemetry.addData("Last Heading", mapping_heading);
