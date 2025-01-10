@@ -19,9 +19,10 @@ public class TeleopWithActions extends OpMode {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
-    Robotv2 robot = new Robotv2(hardwareMap, new Pose2d(0,0, Math.toRadians(0)));
+    Robotv2 robot = null;
     @Override
     public void init() {
+        robot = new Robotv2(hardwareMap, new Pose2d(0,0, Math.toRadians(0)));
     }
 
     @Override
