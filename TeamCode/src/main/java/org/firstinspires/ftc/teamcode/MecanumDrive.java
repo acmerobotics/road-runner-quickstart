@@ -299,9 +299,7 @@ public final class MecanumDrive {
             Pose2d error = txWorldTarget.value().minusExp(pose);
 
             /*
-            ((t >= timeTrajectory.duration - 2 && error.position.norm() < 2
-                    && robotVelRobot.linearVel.norm() < 1.5 && error.heading.vec().norm() < 5)
-                    || t >= timeTrajectory.duration + 1)
+
              */
 
             if (t >= timeTrajectory.duration) {

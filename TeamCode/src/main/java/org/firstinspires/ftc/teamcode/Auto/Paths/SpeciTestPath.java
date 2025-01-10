@@ -26,15 +26,17 @@ public class SpeciTestPath extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-8, 30), Math.toRadians(180)) //pick up 1
                 .waitSeconds(1.5)
                 .splineToLinearHeading(new Pose2d(-13.17, 8.59, Math.toRadians(90)), Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-28.42, -6.61, Math.toRadians(0)), Math.toRadians(180))//2+0
+                .splineToSplineHeading(new Pose2d(-28.42, -6.61, Math.toRadians(0)), Math.toRadians(180))//2+0
                 .waitSeconds(1.5)
                 .strafeToLinearHeading(new Vector2d(-8, 30), Math.toRadians(180)) //pick up 2
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0)) //3+0
+                .splineToLinearHeading(new Pose2d(-13.17, 8.59, Math.toRadians(90)), Math.toRadians(270))
+                .splineTo(new Vector2d(-28.42, -6.61), Math.toRadians(180)) //3+0
                 .waitSeconds(1.5)
                 .strafeToLinearHeading(new Vector2d(-8, 30), Math.toRadians(180)) //pick up 3
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0)) //4+0
+                .splineTo(new Vector2d(-13.17, 8.59), Math.toRadians(270))
+                .splineTo(new Vector2d(-28.42, -6.61), Math.toRadians(180)) //4+0
                 .waitSeconds(1.5)
                 .strafeToLinearHeading(new Vector2d(-6, 32), Math.toRadians(180)); //park?
 
