@@ -14,7 +14,7 @@ public class Wristv2 {
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public static double WRIST_FOLD_OUT = 0.6;
     public static double WRIST_FOLD_IN = 0.36;
-    public static double WRIST_VERTICAL = 0.45;
+    public static double WRIST_VERTICAL = 0.55;
 
     public static double WRIST_PICKUP_GROUND_SAMPLE = WRIST_FOLD_IN;
     public static double WRIST_SCALE_MIN = 0.0;
@@ -44,6 +44,9 @@ public class Wristv2 {
 
     public Action wristFoldOutAction() {
         return new InstantAction(() -> wrist.setPosition(WRIST_FOLD_OUT));
+    }
+    public Action wristVerticalAction() {
+        return new InstantAction(() -> wrist.setPosition(WRIST_VERTICAL));
     }
     public Action wristPickUpGroundSampleAction() {
         return new InstantAction(() -> wrist.setPosition(WRIST_PICKUP_GROUND_SAMPLE));
