@@ -22,9 +22,9 @@ public class SlidesV2 {
     public static double KD = 0;
     public static int topBasketTarget = 5160;
     public static int bottomBasketTarget = 1000;
-    public static int wallTarget = 10;
+    public static int wallTarget = 0;
     public static int topBarTarget = 1460;
-    public static int topBarClipTarget = 880;
+    public static int topBarClipTarget = 1080;
     public static int bottomBarTarget = 700;
     public static int hangTarget = 3370;
     public static int retractTarget = 5;

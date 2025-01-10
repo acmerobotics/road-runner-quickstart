@@ -13,29 +13,21 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous
-public class SpeciPath extends LinearOpMode {
+public class SpeciTest2 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
 
         Pose2d StartPose1 = new Pose2d(0,0, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
 
         TrajectoryActionBuilder path = drive.actionBuilder(StartPose1)
-                .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0)) //1+0
-                .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-21.85, 18.47), Math.toRadians(125)) //block 1
-                .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-21.06, 21.53), Math.toRadians(45)) //deposit
-                .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-22.65, 27.62), Math.toRadians(125)) //block 2
-                .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-21.07, 27.18), Math.toRadians(42)) //deposit2
-                .waitSeconds(1.5)
                 .strafeToLinearHeading(new Vector2d(-8, 30), Math.toRadians(180)) //pick up 1
                 .waitSeconds(1.5)
-                .strafeToLinearHeading(new Vector2d(-28.42, -6.61), Math.toRadians(0)) //2+0
+                .splineToLinearHeading(new Pose2d(-13.17, 8.59, Math.toRadians(90)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(-28.42, -6.61, Math.toRadians(0)), Math.toRadians(180))//2+0
                 .waitSeconds(1.5)
                 .strafeToLinearHeading(new Vector2d(-8, 30), Math.toRadians(180)) //pick up 2
                 .waitSeconds(1.5)
@@ -54,4 +46,5 @@ public class SpeciPath extends LinearOpMode {
 
 
     }
+
 }
