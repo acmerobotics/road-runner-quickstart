@@ -96,11 +96,11 @@ public class Teledrive_V2 extends LinearOpMode {
             }
 
             if (gamepad1.x){
-                rightActuator.rightactuatorhorizontal();
+                rightActuator.setHorizontal();
             }
 
             else if (gamepad1.y){
-                rightActuator.rightactuatorvertical();
+                rightActuator.setVertical();
             }
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,
