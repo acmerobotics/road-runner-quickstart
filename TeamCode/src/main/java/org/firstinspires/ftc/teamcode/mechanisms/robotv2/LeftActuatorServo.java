@@ -11,12 +11,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class LeftActuatorServo {
     public Servo servo = null;
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    public static double LEFT_ACTUATOR_HORIZONTAL   = 0;
-    public static double LEFT_ACTUATOR_VERTICAL  = .95;
+    public static double LEFT_ACTUATOR_HORIZONTAL   = 0.5;
+    public static double LEFT_ACTUATOR_VERTICAL  = .75;
+    public static double LEFT_ACTUATOR_HANG  = .55;
 
-    public static double LEFT_ACTUATOR_SCALE_MIN = 0.35;
+    public static double LEFT_ACTUATOR_SCALE_MIN = 0.0;
 
-    public static double LEFT_ACTUATOR_SCALE_MAX = 0.65;
+    public static double LEFT_ACTUATOR_SCALE_MAX = 1.0;
 
     public LeftActuatorServo(HardwareMap hardwareMap) {
         servo = hardwareMap.get(Servo.class, "leftActuatorServo");
@@ -32,6 +33,9 @@ public class LeftActuatorServo {
         servo.setPosition(LEFT_ACTUATOR_VERTICAL);
     }
 
+    public void setHanging(){
+        servo.setPosition(LEFT_ACTUATOR_HANG);
+    }
 }
 
 

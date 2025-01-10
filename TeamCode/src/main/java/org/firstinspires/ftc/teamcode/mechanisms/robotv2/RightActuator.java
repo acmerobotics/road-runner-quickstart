@@ -19,7 +19,7 @@ public class RightActuator {
     public DcMotorEx motor;
 
     public static int ACTUATOR_COLLAPSED = 0;
-    public static int ACTUATOR_UP = 1150;
+    public static int ACTUATOR_UP = 6800;
     public RightActuator(HardwareMap hardwareMap) {
         motor = hardwareMap.get(DcMotorEx.class, "rightactuator");
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

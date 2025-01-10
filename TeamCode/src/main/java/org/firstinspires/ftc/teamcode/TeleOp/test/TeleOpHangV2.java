@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.LeftActuator;
@@ -16,6 +17,9 @@ import org.firstinspires.ftc.teamcode.mechanisms.v1.Arm;
 @TeleOp(name="Hang Test V2", group="test")
 @Config
 public class TeleOpHangV2 extends LinearOpMode {
+
+    int leftActuatorPosition = LeftActuator.ACTUATOR_COLLAPSED;
+    int rightActuatorPosition = RightActuator.ACTUATOR_COLLAPSED;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -43,26 +47,41 @@ public class TeleOpHangV2 extends LinearOpMode {
             if (gamepad1.x){
                 rightArmServo.setHorizontal();
             }
-
             else if (gamepad1.y){
                 rightArmServo.setVertical();
+            }
+
+            if (gamepad1.a){
+                leftArmServo.setHorizontal();
+            }
+            else if (gamepad1.b){
+                leftArmServo.setVertical();
             }
 
             if (gamepad1.dpad_right){
                 leftArmServo.setVertical();
                 rightArmServo.setVertical();
             } else if (gamepad1.dpad_left){
-                leftArmServo.setHorizontal();
-                leftArmServo.setHorizontal();
+                leftArmServo.setHanging();
+                rightArmServo.setHanging();
             }
 
             if (gamepad1.dpad_up){
-                leftActuator.up();
-                rightActuator.up();
+                leftActuatorPosition = LeftActuator.ACTUATOR_UP;
+                rightActuatorPosition = RightActuator.ACTUATOR_UP;
             } else if (gamepad1.dpad_down){
-                leftActuator.down();
-                rightActuator.down();
+                leftActuatorPosition = LeftActuator.ACTUATOR_COLLAPSED;
+                rightActuatorPosition = RightActuator.ACTUATOR_COLLAPSED;
+
             }
+
+            leftActuator.motor.setTargetPosition(leftActuatorPosition);
+            leftActuator.motor.setVelocity(1000);
+            leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            rightActuator.motor.setTargetPosition(rightActuatorPosition);
+            rightActuator.motor.setVelocity(1000);
+            rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             /* send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("left Actuator Target", leftActuator.motor.getTargetPosition());
