@@ -114,6 +114,30 @@ public class Lift {
             }
         };
     }
+    public Action SlidesToBar_new() {
+        return new Action() {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    SlideLeft.set(0.8);
+                    SlideRight.set(-0.8);
+                    initialized = true;
+                }
+
+                double pos = SlideLeft.getCurrentPosition();
+                packet.put("liftPos", pos);
+                if (pos >= toTicks(14)) {
+                    SlideLeft.set(0.15);
+                    SlideRight.set(-0.15);
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
+
 
 
 

@@ -139,7 +139,7 @@ public class Rightindpushspec extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         //toChambers,
-                        lift.FirstBar()
+                        lift.SlidesToBar_new()
                         //fourbar.FourBarDown(),
                         //lift.SlidesDown(),
                         //claw.ClawOpen(),
