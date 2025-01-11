@@ -62,6 +62,7 @@ public class Lift {
         return ticks * TICKS_TO_INCHES_LIFT; // Calculate this
     }
 
+
     public void slidesToPosition(double inchesUp){
         double startPos = this.getSlidePositionInches();
         long startTime = System.currentTimeMillis();
@@ -84,6 +85,7 @@ public class Lift {
         Slides.resetEncoder();
     }
 
+
     public Action SlidesToBar() {
         return new Action() {
             private boolean initialized = false;
@@ -91,6 +93,7 @@ public class Lift {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
+
                     SlideLeft.set(0.8);
                     SlideRight.set(-0.8);
                     initialized = true;
@@ -98,16 +101,41 @@ public class Lift {
 
                 double pos = SlideLeft.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < toTicks(38))  {
+                if (pos == toTicks(13))  {
+                    SlideLeft.set(0.1);
+
+                    SlideRight.set(-0.1);
                     return true;
                 } else {
-                    SlideLeft.set(0.15);
-                    SlideRight.set(-0.15);
+                    SlideLeft.set(0.8);
+                    SlideRight.set(-0.8);
                     return false;
                 }
             }
         };
     }
+
+
+
+    public Action FirstBar() {
+        return new Action() {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                SlideLeft.set(0.8);
+                SlideRight.set(-0.8);
+                double pos = SlideLeft.getCurrentPosition();
+               if (pos>=toInches(8)) {
+                   SlideLeft.set(0);
+                   SlideRight.set(0);
+                }
+                return false;
+            }
+        };
+    }
+
+
 
     public Action SlidesToNet() {
         return new Action() {

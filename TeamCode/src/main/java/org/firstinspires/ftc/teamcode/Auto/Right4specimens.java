@@ -29,6 +29,11 @@ public class Right4specimens extends LinearOpMode {
         Extension extension = new Extension(hardwareMap);
         Lift lift = new Lift(hardwareMap);
 
+
+
+
+
+
        /* TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .splineToConstantHeading(new Vector2d(0, -38), Math.toRadians(90));
         Action park = tab1.endTrajectory().fresh()
@@ -36,7 +41,10 @@ public class Right4specimens extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(60,-60), Math.toRadians(180))
                 .build();*/
 
+
+
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
+
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(8, -34, Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(3)
@@ -45,31 +53,31 @@ public class Right4specimens extends LinearOpMode {
                 .setTangent(Math.toRadians(100))
                 .splineToLinearHeading(new Pose2d(54, 0, Math.toRadians(90)), Math.toRadians(0))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)) , Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(54, -56, Math.toRadians(90)) , Math.toRadians(270))
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(61, 0, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(60, 0, Math.toRadians(90)), Math.toRadians(0))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(61, -58, Math.toRadians(90)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(60, -56, Math.toRadians(90)), Math.toRadians(270))
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(54, -56, Math.toRadians(90)), Math.toRadians(180))
                 .waitSeconds(1)
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(new Pose2d(0, -34, Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(2)
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(54, -56, Math.toRadians(90)), Math.toRadians(0))
                 .waitSeconds(1)
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(new Pose2d(2, -34, Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(2)
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(54, -56, Math.toRadians(90)), Math.toRadians(0))
                 .waitSeconds(1)
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(new Pose2d(4, -34, Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(2)
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(54, -58, Math.toRadians(90)), Math.toRadians(0));
+                .splineToLinearHeading(new Pose2d(54, -56, Math.toRadians(90)), Math.toRadians(0));
 
 
         Action back = tab1.endTrajectory().fresh()

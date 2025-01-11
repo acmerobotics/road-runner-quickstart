@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Common.Constants;
@@ -29,6 +28,8 @@ public class RobotNew {
     public SimpleServo FourBarLeft;
     public SimpleServo ClawGrip;
     public SimpleServo ClawRotation;
+
+    public SimpleServo CoAxial;
 
     private static HardwareMap hwMapRobot;
 

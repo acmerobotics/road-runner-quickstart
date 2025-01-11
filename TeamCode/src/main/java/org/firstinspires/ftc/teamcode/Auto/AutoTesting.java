@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -16,7 +15,6 @@ import org.firstinspires.ftc.teamcode.Common.Extension;
 import org.firstinspires.ftc.teamcode.Common.Fourbar;
 import org.firstinspires.ftc.teamcode.Common.Lift;
 import org.firstinspires.ftc.teamcode.Common.Rotation;
-
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
@@ -40,20 +38,46 @@ public class AutoTesting extends LinearOpMode {
                 .build();*/
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .splineToLinearHeading(new Pose2d(-56, -54, Math.toRadians(226)), Math.toRadians(180))
-                .waitSeconds(3)
-                .splineToConstantHeading(new Vector2d(-50, -45), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-47, -40, Math.toRadians(90)), Math.toRadians(100))
-                .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(-56, -54, Math.toRadians(226)), Math.toRadians(180))
-                .waitSeconds(3)
-                .splineToConstantHeading(new Vector2d(-50, -45), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-58, -40, Math.toRadians(90)), Math.toRadians(200))
-                .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(-56, -54, Math.toRadians(226)), Math.toRadians(180))
-                .waitSeconds(3)
-                .splineToConstantHeading(new Vector2d(-50, -50), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-30, 10, Math.toRadians(180)), Math.toRadians(80));
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(8, -36, Math.toRadians(90)), Math.toRadians(90));
+
+        Action Score1 = tab1.endTrajectory().fresh()
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(36, -36, Math.toRadians(90)), Math.toRadians(0))
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(36, -12, Math.toRadians(90)), Math.toRadians(90))
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(44,  -12, Math.toRadians(90)), Math.toRadians(0))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(44, -53, Math.toRadians(90)), Math.toRadians(270))
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(52, -12, Math.toRadians(90)), Math.toRadians(0))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(52, -53, Math.toRadians(90)) , Math.toRadians(270))
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(90)), Math.toRadians(180))
+                .build();
+        TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(42, -53, Math.toRadians(90)))
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(0, -34, Math.toRadians(90)), Math.toRadians(90));
+        Action Score3 = tab2.endTrajectory().fresh()
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(90)), Math.toRadians(0))
+                .build();
+        TrajectoryActionBuilder tab3 = drive.actionBuilder(new Pose2d(42, -53, Math.toRadians(90)))
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(2, -34, Math.toRadians(90)), Math.toRadians(90));
+        Action Score5 = tab3.endTrajectory().fresh()
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(90)), Math.toRadians(0))
+                .build();
+        TrajectoryActionBuilder tab4 = drive.actionBuilder(new Pose2d(42, -53, Math.toRadians(90)))
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(4, -34, Math.toRadians(90)), Math.toRadians(90));
+        Action Score7 = tab4.endTrajectory().fresh()
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(90)), Math.toRadians(0))
+                .build();
 
 
         Action back = tab1.endTrajectory().fresh()
