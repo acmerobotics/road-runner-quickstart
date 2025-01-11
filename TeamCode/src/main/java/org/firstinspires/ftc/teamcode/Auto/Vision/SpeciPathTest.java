@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.Paths;
+package org.firstinspires.ftc.teamcode.Auto.Vision;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -6,11 +6,9 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Auto.Vision.Limelight;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous
@@ -63,7 +61,7 @@ public class SpeciPathTest extends LinearOpMode {
         Actions.runBlocking(
             new SequentialAction(
                     pathh,
-                limelight.align(drive.pose.position.x,drive.pose.position.y),
+                limelight.align(drive),
                     pathh1
             ))
         ;

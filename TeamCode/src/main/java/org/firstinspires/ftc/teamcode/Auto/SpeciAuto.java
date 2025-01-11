@@ -1,19 +1,16 @@
 
-package org.firstinspires.ftc.teamcode.Auto.Paths;
+package org.firstinspires.ftc.teamcode.Auto;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.ExtendoV2;
@@ -101,9 +98,9 @@ public class SpeciAuto extends LinearOpMode {
                 block2,
                 deposit2,
                 new ParallelAction(
-                 extendo.retract(),
-                 intake.flop(),
-                 pickUp1
+                    extendo.retract(),
+                    intake.flop(),
+                    pickUp1
                 ),
                 claw.close(),
                 new ParallelAction(

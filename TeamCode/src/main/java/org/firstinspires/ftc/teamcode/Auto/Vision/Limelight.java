@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.Auto.Vision;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -19,6 +18,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Teleop;
 
 import java.nio.file.Paths;
@@ -39,27 +39,39 @@ public class Limelight {
 
 //need limeight to move until degree = 0
     public class Align implements Action {
-        private double x;
-        private double y;
+        private MecanumDrive drive;
 
-        public Align(double x, double y) {
-            this.x = x;
-            this.y = y;
+        public Align(MecanumDrive drive) {
+            this.drive = drive;
 
         }
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            double tx = getTx();
+            if (tx > 160) {
+                drive.setDrivePowers(new PoseVelocity2d(
+                        new Vector2d(0, 1),
+                        0));
+            } else if (tx < 200) {
+                drive.setDrivePowers(new PoseVelocity2d(
+                        new Vector2d(0, -1),
+                        0
+                ));
+            } else {
+                return false;
+            }
+
             return true;
         }
     }
 
-    public Action align(double x, double y) {
-        return new Align(x, y);
+    public Action align(MecanumDrive drive) {
+        return new Align(drive);
 
     }
 
-    public double update(double x, double y) {
+    public double getTx() {
         LLResult result = limelight.getLatestResult();
         double tx;
         double ty;
@@ -75,7 +87,9 @@ public class Limelight {
         return tx;
     }
 
-    public double StrafeAmount ()
+    public double StrafeAmount() {
+        return 0;
+    }
 
     //move along wall = y pos changes
     //take in position
