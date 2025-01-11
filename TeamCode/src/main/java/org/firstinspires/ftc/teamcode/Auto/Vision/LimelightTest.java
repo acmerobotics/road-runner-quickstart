@@ -26,19 +26,7 @@ public class LimelightTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
-            telemetry.addData("tx", limelight.update()[0]);
-            telemetry.addData("ty", limelight.update()[1]);
-            telemetry.update();
-            double tx = limelight.update()[0]);
 
-            while (tx != 0){
-                if (tx > 0){
-
-                }
-
-                if (tx < 0){
-
-                }
             }
 
 
@@ -51,4 +39,4 @@ public class LimelightTest extends LinearOpMode {
     }
 
 
-}
+

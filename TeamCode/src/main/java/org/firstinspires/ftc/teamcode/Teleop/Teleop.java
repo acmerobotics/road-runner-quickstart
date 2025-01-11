@@ -181,9 +181,9 @@ public class Teleop extends LinearOpMode {
             currentGamepad1.copy(gamepad1);
             currentGamepad2.copy(gamepad2);
 
-            double lefty1 = currentGamepad1.left_stick_y;
-            double leftx1 = -currentGamepad1.left_stick_x;
-            double rightx1 = -currentGamepad1.right_stick_x;
+            double lefty1 = -currentGamepad1.left_stick_y;
+            double leftx1 = currentGamepad1.left_stick_x;
+            double rightx1 = currentGamepad1.right_stick_x;
             double lefty2 = currentGamepad2.left_stick_y;
 
             double denominator = Math.max(Math.abs(lefty1) + Math.abs(leftx1) + Math.abs(rightx1), 1);
@@ -289,9 +289,8 @@ public class Teleop extends LinearOpMode {
                                     extendocontrol.start(),
                                     intake.creep(),
                                     intake.flop(),
+                                    claw.flop(),
                                     extendo.retract(),
-                                    new SleepAction(1.2),
-                                    intake.extake(),
                                     extendocontrol.done()
                             ));
                         }
@@ -321,6 +320,10 @@ public class Teleop extends LinearOpMode {
 
                     if (extendocontrol.getFinished()) {
                         extendocontrol.resetFinished();
+                        runningActions.add(new SequentialAction(
+                                new SleepAction(1.2),
+                                intake.extake()
+                        ));
                         extendoState = ExtendoState.EXTENDORETRACT;
                     }
                     break;
