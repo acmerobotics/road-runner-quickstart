@@ -119,6 +119,11 @@ public class SlidesBase extends Mechanism {
         }
     }
 
+    private void manualMode(double power) {
+        updateManualPower(power);
+        manualMode();
+    }
+
     public void updateManualPower(double power) {
         manualPower = power;
     }
