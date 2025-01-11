@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Common.Claw;
@@ -15,9 +16,10 @@ import org.firstinspires.ftc.teamcode.Common.Lift;
 import org.firstinspires.ftc.teamcode.Common.Rotation;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
+@Autonomous(name = "Left 4 Samples", group = "Autonomous")
 public class Left4Samples extends LinearOpMode {
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-10, -61, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(-8, -61, Math.toRadians(90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Claw claw = new Claw(hardwareMap);
