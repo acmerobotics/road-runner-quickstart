@@ -53,6 +53,8 @@ public class ArmDriveTestv2 extends LinearOpMode {
         Claw claw = new Claw(hardwareMap);
         Wristv2 wrist = new Wristv2(hardwareMap);
 
+        arm.reset();
+
 //        Action scoreHighAction2 = new ParallelAction(
 //                arm.armVerticalAction(),
 //                wrist.wristFoldOutAction()
@@ -80,7 +82,7 @@ public class ArmDriveTestv2 extends LinearOpMode {
 
         TrajectoryActionBuilder drivetobasket = drive.actionBuilder(RED_SCORE_START_POSE)
                 .strafeToLinearHeading(new Vector2d(-36, -56), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45));
         TrajectoryActionBuilder drivetosample1 = drive.actionBuilder(RED_NEAR_BASKET_POSE)
                 .strafeToLinearHeading(new Vector2d(-44.5, -36), Math.toRadians(90));
         TrajectoryActionBuilder drivetosample2 = drive.actionBuilder(RED_NEAR_BASKET_POSE)
@@ -89,11 +91,11 @@ public class ArmDriveTestv2 extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-60, -24), Math.toRadians(180));
 
         TrajectoryActionBuilder sample1tobasket = drive.actionBuilder(RED_SAMPLE1_POSE)
-                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45));
         TrajectoryActionBuilder sample2tobasket = drive.actionBuilder(RED_SAMPLE2_POSE)
-                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45));
         TrajectoryActionBuilder sample3tobasket = drive.actionBuilder(RED_SAMPLE3_POSE)
-                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45));
 
         // test only come back at the end
         TrajectoryActionBuilder goBackToStart = drivetobasket.endTrajectory().fresh()
@@ -136,6 +138,18 @@ public class ArmDriveTestv2 extends LinearOpMode {
                 lift.liftDownAction()
         );
 
+        Action cStartToBasketAction = new SequentialAction(
+                new ParallelAction(
+                        drivetobasket.build(),
+                        arm.armScoreAction(),
+                        wrist.wristVerticalAction()),
+                lift.liftUpAction(),
+                wrist.wristFoldOutAction(),
+                new SleepAction(0.5),
+                claw.clawOpenAction(),
+                new SleepAction(0.2)
+        );
+
         Action cSample1ToBasketAction = new SequentialAction(
                 new ParallelAction(
                         sample1tobasket.build(),
@@ -150,11 +164,12 @@ public class ArmDriveTestv2 extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         // start to basket and score
-                        cStartToBasketScoreAction3,
-                        wrist.wristFoldOutAction(),
-                        new SleepAction(2),
-                        claw.clawOpenAction(),
-                        new SleepAction(.2),
+                        cStartToBasketAction,
+//                        cStartToBasketScoreAction3,
+//                        wrist.wristFoldOutAction(),
+//                        new SleepAction(0.5),
+//                        claw.clawOpenAction(),
+//                        new SleepAction(.2),
                         comedownAction,
                         cBasketToSample1Action,
                         claw.clawCloseAction(),
