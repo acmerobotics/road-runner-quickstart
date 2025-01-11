@@ -15,6 +15,11 @@ public class Robotv2 {
     public Wristv2 wrist;
     public Liftv2 lift;
     public Claw claw;
+    public RightActuatorServo rightArmServo;
+    public LeftActuatorServo leftArmServo;
+
+    public LeftActuator leftActuator;
+    public RightActuator rightActuator;
 
     public Robotv2(HardwareMap hardwareMap, Pose2d startPose){
         drive = new MecanumDrive(hardwareMap, startPose);
@@ -22,6 +27,12 @@ public class Robotv2 {
         wrist = new Wristv2(hardwareMap);
         lift = new Liftv2(hardwareMap);
         claw = new Claw(hardwareMap);
+
+        // hang mechanism
+        rightArmServo = new RightActuatorServo(hardwareMap);
+        leftArmServo = new LeftActuatorServo(hardwareMap);
+        leftActuator = new LeftActuator(hardwareMap);
+        rightActuator = new RightActuator(hardwareMap);
     }
 
     public Action scoreSampleAction(){

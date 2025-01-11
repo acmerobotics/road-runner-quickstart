@@ -7,8 +7,15 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.LeftActuator;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,24 +26,187 @@ public class TeleopWithActions extends OpMode {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
+    private ElapsedTime runtime = new ElapsedTime();
     Robotv2 robot = null;
+    boolean fieldCentric = false;
+
+    public static double AXIAL_SCALE = 1.0;
+    public static double LATERAL_SCALE = 1.0;
+    public static double TURN_SCALE = 1.0;
+
+    int leftActuatorPosition = LeftActuator.ACTUATOR_COLLAPSED;
+    int rightActuatorPosition = RightActuator.ACTUATOR_COLLAPSED;
+
+    double armPosition = Armv2.ARM_REST_POSITION;
+    double armPositionFudgeFactor = 0;
+
+    double liftPosition = Liftv2.LIFT_COLLAPSED;
+
+    double cycletime = 0;
+    double looptime = 0;
+    double oldtime = 0;
+
+    boolean manualLift = true;
+    boolean manualArm = true;
+
     @Override
     public void init() {
         robot = new Robotv2(hardwareMap, new Pose2d(0,0, Math.toRadians(0)));
+        robot.claw.clawOpen();
+        robot.wrist.WristFoldIn();
+        armPosition = Armv2.ARM_REST_POSITION;
+        liftPosition = Liftv2.LIFT_COLLAPSED;
+        telemetry.addData("Status", "Initialized");
+    }
+
+    /*
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit START
+     */
+    @Override
+    public void init_loop() {
+    }
+
+    /*
+     * Code to run ONCE when the driver hits START
+     */
+    @Override
+    public void start() {
+        runtime.reset();
     }
 
     @Override
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
-        // updated based on gamepads
+
+        // ===== Begin Drive Code
+        if (gamepad1.options) {
+            fieldCentric = true;
+            robot.drive.resetYaw();
+        }
+
+        double y = -gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x;
+        double rx = gamepad1.right_stick_x;
+
+        y = squaredInputWithSign(y) * AXIAL_SCALE;
+        x = squaredInputWithSign(x) * LATERAL_SCALE;
+        rx = squaredInputWithSign(rx) * TURN_SCALE;
+
+        if (fieldCentric) {
+            robot.drive.moveRobotFieldCentric(y, x, rx);
+        } else {
+            robot.drive.moveRobot(y, x, rx);
+        }
+        // ===== End Drive code
+
+        // Claw
         if (gamepad1.a) {
-            runningActions.add(robot.scoreSampleAction());
+            robot.claw.clawOpen();
         } else if (gamepad1.b) {
+            robot.claw.clawClose();
+        }
+
+        // Wrist
+        if (gamepad1.x) {
+            robot.wrist.WristFoldOut();
+        } else if (gamepad1.y) {
+            robot.wrist.WristFoldIn();
+        }
+
+        // ===== Begin Lift code
+        double liftPower = (gamepad2.right_trigger - gamepad2.left_trigger);
+        if (Math.abs(liftPower) > 0.05) {
+          manualLift = true;
+        }
+        liftPosition += liftPower * 300;
+
+        if (gamepad2.right_bumper){
+            liftPosition += 2800 * cycletime;
+        }
+        else if (gamepad2.left_bumper){
+            liftPosition -= 2800 * cycletime;
+        }
+
+        /*here we check to see if the lift is trying to go higher than the maximum extension.
+         *if it is, we set the variable to the max.
+         */
+        if (liftPosition > Liftv2.LIFT_SCORING_IN_HIGH_BASKET){
+            liftPosition = Liftv2.LIFT_SCORING_IN_HIGH_BASKET;
+        }
+        //same as above, we see if the lift is trying to go below 0, and if it is, we set it to 0.
+        if (liftPosition < Liftv2.LIFT_COLLAPSED){
+            liftPosition = Liftv2.LIFT_COLLAPSED;
+        }
+
+        if(manualLift){
+            robot.lift.motor.setTargetPosition((int) (liftPosition));
+            robot.lift.motor.setVelocity(3000);
+            robot.lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        // ===== End lift code
+
+        // ===== Begin Arm code
+        // "manual" part of Arm code
+        double armFudgeFactorInput = gamepad1.right_trigger - gamepad1.left_trigger;
+        if (Math.abs(armFudgeFactorInput) > 0.05) {
+            manualArm = true;
+        }
+        armPositionFudgeFactor = Armv2.FUDGE_FACTOR * armFudgeFactorInput;
+
+
+        if(manualArm){
+            /* Here we set the target position of our arm to match the variable that was selected by the driver.
+            We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
+            robot.arm.motor.setTargetPosition((int) (armPosition + armPositionFudgeFactor));
+            robot.arm.motor.setVelocity(500);
+            robot.arm.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        // ===== End Arm code
+
+
+        // ===== Begin Hang Code
+        {
+            if (gamepad2.dpad_right) {
+                robot.leftArmServo.setVertical();
+                robot.rightArmServo.setVertical();
+            } else if (gamepad2.dpad_left) {
+                robot.leftArmServo.setHanging();
+                robot.rightArmServo.setHanging();
+            }
+
+            if (gamepad2.dpad_up) {
+                leftActuatorPosition = LeftActuator.ACTUATOR_UP;
+                rightActuatorPosition = RightActuator.ACTUATOR_UP;
+            } else if (gamepad2.dpad_down) {
+                leftActuatorPosition = LeftActuator.ACTUATOR_COLLAPSED;
+                rightActuatorPosition = RightActuator.ACTUATOR_COLLAPSED;
+
+            }
+
+            robot.leftActuator.motor.setTargetPosition(leftActuatorPosition);
+            robot.leftActuator.motor.setVelocity(1000);
+            robot.leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            robot.rightActuator.motor.setTargetPosition(rightActuatorPosition);
+            robot.rightActuator.motor.setVelocity(1000);
+            robot.rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        // ===== End Hang code
+
+        // ==== "auto" =====
+        if (gamepad1.dpad_up) {
+            manualArm = false;
+            manualLift = false;
+            runningActions.add(robot.scoreSampleAction());
+        } else if (gamepad1.dpad_down) {
+            manualArm = false;
+            manualLift = false;
             runningActions.add(robot.comeDownAction());
         }
 
-        // update running actions
+        // ====== Automatic tasks:  update running actions
         List<Action> newActions = new ArrayList<>();
         for (Action action : runningActions) {
             action.preview(packet.fieldOverlay());
@@ -46,6 +216,22 @@ public class TeleopWithActions extends OpMode {
         }
         runningActions = newActions;
 
+        looptime = getRuntime();
+        cycletime = looptime-oldtime;
+        oldtime = looptime;
+
+        // ===== Send telemetry to driver station
         dash.sendTelemetryPacket(packet);
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+
+    }
+
+
+    private double squaredInputWithSign(double input) {
+        double output = input * input;
+        if (input<0){
+            output = -output;
+        }
+        return output;
     }
 }

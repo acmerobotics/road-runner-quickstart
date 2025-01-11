@@ -14,11 +14,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Liftv2 {
-    final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
+    public static  double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
 
-    final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
-    final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
-    final double LIFT_SCORING_IN_HIGH_BASKET = 1050 * LIFT_TICKS_PER_MM;
+    public static double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
+    public static  double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
+    public static  double LIFT_SCORING_IN_HIGH_BASKET = 1050 * LIFT_TICKS_PER_MM;
 
 
 
