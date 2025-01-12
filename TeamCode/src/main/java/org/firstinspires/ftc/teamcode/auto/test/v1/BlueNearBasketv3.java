@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
 
 
-@Config
+
 @Autonomous(name = "\uD83D\uDD35 - RedNearBasketV3", group = "RoadRunner 1.0")
 @Disabled
 public class BlueNearBasketv3 extends LinearOpMode {

@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@Config
+
 @Autonomous(name = "\uD83D\uDD34 - RedPark", group = "RoadRunner 1.0")
 @Disabled
 public class RedPark extends LinearOpMode {

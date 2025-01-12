@@ -46,7 +46,7 @@ public class SamplePickTest extends LinearOpMode {
                             arm.armPickupGroundSampleAction()),
                         new SleepAction(2), // sleep to place the sample at right locatoin
                         claw.clawCloseAction(),
-                        new SleepAction(.5),
+                        new SleepAction(1),
                         new ParallelAction(
                           arm.armVerticalAction(),
                           lift.liftUpAction(),

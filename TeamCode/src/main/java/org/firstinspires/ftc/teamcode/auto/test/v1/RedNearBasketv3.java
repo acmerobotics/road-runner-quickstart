@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
 
 
-@Config
+
 @Autonomous(name = "\uD83D\uDD34 - Red+BlueNearBasketV3", group = "Meet2", preselectTeleOp = "TeleOpModular")
 @Disabled
 public class RedNearBasketv3 extends LinearOpMode {

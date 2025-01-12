@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name="Teleop with Actions", group="test")
+@TeleOp(name="Teleop Comp 3", group="test")
 @Config
 public class TeleopWithActions extends OpMode {
     private FtcDashboard dash = FtcDashboard.getInstance();
@@ -38,7 +38,10 @@ public class TeleopWithActions extends OpMode {
     int rightActuatorPosition = RightActuator.ACTUATOR_COLLAPSED;
 
     double armPosition = Armv2.ARM_REST_POSITION;
-    double armPositionFudgeFactor = 0;
+
+    public static double ARM_LIFT_COMP = 0.001;
+    double armLiftComp;
+    double armPositionFudgeFactor = 15;
 
     double liftPosition = Liftv2.LIFT_COLLAPSED;
 
@@ -155,10 +158,23 @@ public class TeleopWithActions extends OpMode {
         armPositionFudgeFactor = Armv2.FUDGE_FACTOR * armFudgeFactorInput;
 
 
+        if (armPosition > 1000){
+            armLiftComp = (ARM_LIFT_COMP * liftPosition);
+        }
+        else{
+            armLiftComp = 0;
+        }
+
+           /* Here we set the target position of our arm to match the variable that was selected
+            by the driver. We add the armPosition Variable to our armPositionFudgeFactor, before adding
+            our armLiftComp, which adjusts the arm height for different lift extensions.
+            We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
+
+
         if(manualArm){
             /* Here we set the target position of our arm to match the variable that was selected by the driver.
             We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
-            robot.arm.motor.setTargetPosition((int) (armPosition + armPositionFudgeFactor));
+            robot.arm.motor.setTargetPosition((int) (armPosition + armPositionFudgeFactor + armLiftComp));
             robot.arm.motor.setVelocity(500);
             robot.arm.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -166,11 +182,15 @@ public class TeleopWithActions extends OpMode {
         // ===== End Arm code
 
 
+
+
         // ===== Begin Hang Code
         {
             if (gamepad2.dpad_right) {
                 robot.leftArmServo.setVertical();
                 robot.rightArmServo.setVertical();
+                robot.wrist.WristFoldIn();
+                robot.claw.clawClose();
             } else if (gamepad2.dpad_left) {
                 robot.leftArmServo.setHanging();
                 robot.rightArmServo.setHanging();
@@ -224,6 +244,12 @@ public class TeleopWithActions extends OpMode {
         dash.sendTelemetryPacket(packet);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
+        /* send telemetry to the driver of the arm's current position and target position */
+        telemetry.addData("wrist servo", robot.wrist.wrist.getPosition());
+        telemetry.addData("armTarget: ", robot.arm.motor.getTargetPosition());
+        telemetry.addData("arm Encoder: ", robot.arm.motor.getCurrentPosition());
+        telemetry.addData("lift target" , robot.lift.motor.getTargetPosition());
+        telemetry.addData("lift position", robot.lift.motor.getCurrentPosition());
     }
 
 

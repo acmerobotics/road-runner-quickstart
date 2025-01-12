@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@Config
+
 @Autonomous(name = "intakeatangle-driveonly", group = "RoadRunner 1.0")
 @Disabled
 public class intakeatangle extends LinearOpMode {

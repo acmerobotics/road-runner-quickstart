@@ -14,12 +14,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Claw {
     public Servo claw = null; //the wrist servo
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    public static double CLAW_CLOSED = 0;
+    public static double CLAW_CLOSED = .3  ;
     public static double CLAW_OPEN = 1;
 
     public static double CLAW_SCALE_MIN = 0.35;
 
-    public static double CLAW_SCALE_MAX = 0.7;
+    public static double CLAW_SCALE_MAX = 0.8;
 
 
 

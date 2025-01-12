@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 
-@Config
+
 @Autonomous(name = "\uD83D\uDD34 - drive test", group = "RoadRunner 1.0")
 @Disabled
 public class DriveTest extends LinearOpMode {

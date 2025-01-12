@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
 
 @Config
 @Autonomous(name = "LiftV2 Test", group = "Test")
-public class LiftV2Test extends LinearOpMode {
+public class  LiftV2Test extends LinearOpMode {
 
 
 
