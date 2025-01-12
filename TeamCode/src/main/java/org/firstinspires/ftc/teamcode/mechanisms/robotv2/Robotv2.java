@@ -41,10 +41,10 @@ public class Robotv2 {
                         arm.armScoreAction(),
                         lift.liftUpAction(),
                         wrist.wristVerticalAction()),
-                wrist.wristFoldOutAction(),
-                new SleepAction(2),
-                claw.clawOpenAction(),
-                new SleepAction(.2)
+                wrist.wristFoldOutAction()
+//                new SleepAction(2),
+//                claw.clawOpenAction(),
+//                new SleepAction(.2)
         );
     }
 
@@ -58,6 +58,10 @@ public class Robotv2 {
                         arm.armPickupGroundSampleAction()
                 )
         );
+    }
+
+    public Action ClearBarAction(){
+        return arm.armClearBarAction();
     }
 
 }

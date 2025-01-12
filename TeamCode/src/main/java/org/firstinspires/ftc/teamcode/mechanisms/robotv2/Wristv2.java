@@ -16,6 +16,8 @@ public class Wristv2 {
     public static double WRIST_FOLD_IN = 0.36;
     public static double WRIST_VERTICAL = 0.55;
 
+    public static double WRIST_SAMPLE_3 = 0.4;
+
     public static double WRIST_PICKUP_GROUND_SAMPLE = WRIST_FOLD_IN;
     public static double WRIST_SCALE_MIN = 0.0;
 
@@ -50,6 +52,10 @@ public class Wristv2 {
     }
     public Action wristPickUpGroundSampleAction() {
         return new InstantAction(() -> wrist.setPosition(WRIST_PICKUP_GROUND_SAMPLE));
+    }
+
+    public Action wristPickUpSample3Action(){
+        return new InstantAction(() -> wrist.setPosition(WRIST_SAMPLE_3));
     }
 
 }

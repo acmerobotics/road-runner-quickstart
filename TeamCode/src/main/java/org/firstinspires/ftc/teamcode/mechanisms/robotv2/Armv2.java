@@ -23,11 +23,15 @@ public class Armv2 {
 
     public static int ARM_COME_DOWN = 450;
 
+    public static int ARM_CLEAR_BAR = 1200;
+
     public static int ARM_SCORE_POS = 250;
     public static int ARM_PICKUP_GROUND_SAMPLE = 1400;
 
+    public static int ARM_HANG_SLIDES_POSITION = 290;
+
     /* A number in degrees that the triggers can adjust the arm position by */
-    public static double FUDGE_FACTOR = 1500;
+    public static double FUDGE_FACTOR = 300;
 
 
     public Armv2(HardwareMap hardwareMap) {
@@ -88,6 +92,10 @@ public class Armv2 {
     }
     public Action armPickupGroundSampleAction() {
         return new ArmScoreAuto(ARM_PICKUP_GROUND_SAMPLE);
+    }
+
+    public Action armClearBarAction() {
+        return new ArmScoreAuto(ARM_CLEAR_BAR);
     }
     public Action armComeDownAction()
     {

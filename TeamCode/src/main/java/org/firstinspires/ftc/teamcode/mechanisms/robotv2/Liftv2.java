@@ -20,8 +20,11 @@ public class Liftv2 {
 
     public static double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
     public static  double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
-    public static  double LIFT_SCORING_IN_HIGH_BASKET = 3650;
+    public static  double LIFT_SCORING_IN_HIGH_BASKET = 3550;
 
+    public  static int LIFT_HANG_SLIDES_POSITION = 3200;
+
+    public static int LIFT_HANG_SLIDES_POSITION_END = 2000;
 
     public DcMotorEx motor;
     double liftPosition;
@@ -46,7 +49,7 @@ public class Liftv2 {
         public boolean run(@NonNull TelemetryPacket packet) {
 
             motor.setTargetPosition(_targetPos);
-            motor.setVelocity(3000);
+            motor.setVelocity(10000);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             int currentPosition = motor.getCurrentPosition();
@@ -55,10 +58,9 @@ public class Liftv2 {
             packet.put("LiftPos", currentPosition);
             packet.put("LiftError", error);
             // keep running until we're close enough
-            return error > 5; // ticks
+            return error > 10; // ticks
         }
     }
-
 
 
     public Action liftUpAction() {

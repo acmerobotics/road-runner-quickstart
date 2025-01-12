@@ -39,9 +39,9 @@ public class TeleopWithActions extends OpMode {
 
     double armPosition = Armv2.ARM_REST_POSITION;
 
-    public static double ARM_LIFT_COMP = 0.001;
-    double armLiftComp;
-    double armPositionFudgeFactor = 15;
+    public static double ARM_LIFT_COMP = 0.1;
+    double armLiftComp = 0;
+    double armPositionFudgeFactor = 0;
 
     double liftPosition = Liftv2.LIFT_COLLAPSED;
 
@@ -99,7 +99,7 @@ public class TeleopWithActions extends OpMode {
         if (fieldCentric) {
             robot.drive.moveRobotFieldCentric(y, x, rx);
         } else {
-            robot.drive.moveRobot(y, x, rx);
+            robot.drive.moveRobot(y, -x, -rx);
         }
         // ===== End Drive code
 
@@ -151,15 +151,25 @@ public class TeleopWithActions extends OpMode {
 
         // ===== Begin Arm code
         // "manual" part of Arm code
-        double armFudgeFactorInput = gamepad1.right_trigger - gamepad1.left_trigger;
+        double armFudgeFactorInput = (gamepad1.right_trigger + (-gamepad1.left_trigger));
+
+        armPositionFudgeFactor = Armv2.FUDGE_FACTOR * armFudgeFactorInput;
         if (Math.abs(armFudgeFactorInput) > 0.05) {
+            armPosition = robot.arm.motor.getCurrentPosition();
             manualArm = true;
         }
-        armPositionFudgeFactor = Armv2.FUDGE_FACTOR * armFudgeFactorInput;
 
+        if (gamepad1.right_bumper){
+            armPosition += 2800 * cycletime;
+        }
+        else if (gamepad1.left_bumper){
+            armPosition -= 2800 * cycletime;
+        }
 
-        if (armPosition > 1000){
+        if (armPosition > 1000 && liftPosition > 30){
             armLiftComp = (ARM_LIFT_COMP * liftPosition);
+            manualArm = true;
+            manualLift = true;
         }
         else{
             armLiftComp = 0;
@@ -172,9 +182,10 @@ public class TeleopWithActions extends OpMode {
 
 
         if(manualArm){
+            int armTargetPosition = (int) (armPosition + armPositionFudgeFactor + armLiftComp);
             /* Here we set the target position of our arm to match the variable that was selected by the driver.
             We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
-            robot.arm.motor.setTargetPosition((int) (armPosition + armPositionFudgeFactor + armLiftComp));
+            robot.arm.motor.setTargetPosition(armTargetPosition);
             robot.arm.motor.setVelocity(500);
             robot.arm.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -189,8 +200,10 @@ public class TeleopWithActions extends OpMode {
             if (gamepad2.dpad_right) {
                 robot.leftArmServo.setVertical();
                 robot.rightArmServo.setVertical();
-                robot.wrist.WristFoldIn();
-                robot.claw.clawClose();
+                robot.wrist.WristFoldOut();
+                robot.claw.clawOpen();
+                liftPosition = Liftv2.LIFT_HANG_SLIDES_POSITION;
+                armPosition = Armv2.ARM_HANG_SLIDES_POSITION;
             } else if (gamepad2.dpad_left) {
                 robot.leftArmServo.setHanging();
                 robot.rightArmServo.setHanging();
@@ -202,15 +215,15 @@ public class TeleopWithActions extends OpMode {
             } else if (gamepad2.dpad_down) {
                 leftActuatorPosition = LeftActuator.ACTUATOR_COLLAPSED;
                 rightActuatorPosition = RightActuator.ACTUATOR_COLLAPSED;
-
+                liftPosition = Liftv2.LIFT_HANG_SLIDES_POSITION_END;
             }
 
             robot.leftActuator.motor.setTargetPosition(leftActuatorPosition);
-            robot.leftActuator.motor.setVelocity(1000);
+            robot.leftActuator.motor.setVelocity(3000);
             robot.leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             robot.rightActuator.motor.setTargetPosition(rightActuatorPosition);
-            robot.rightActuator.motor.setVelocity(1000);
+            robot.rightActuator.motor.setVelocity(3000);
             robot.rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         // ===== End Hang code
@@ -224,6 +237,10 @@ public class TeleopWithActions extends OpMode {
             manualArm = false;
             manualLift = false;
             runningActions.add(robot.comeDownAction());
+        } else if (gamepad1.dpad_left){
+            runningActions.add(robot.ClearBarAction());
+            manualArm = false;
+            manualLift = false;
         }
 
         // ====== Automatic tasks:  update running actions
@@ -250,6 +267,10 @@ public class TeleopWithActions extends OpMode {
         telemetry.addData("arm Encoder: ", robot.arm.motor.getCurrentPosition());
         telemetry.addData("lift target" , robot.lift.motor.getTargetPosition());
         telemetry.addData("lift position", robot.lift.motor.getCurrentPosition());
+        telemetry.addData("FieldCentric? ", fieldCentric);
+        telemetry.addData("ArmPosition", armPosition);
+        telemetry.addData("ArmLiftComp", armLiftComp);
+        telemetry.addData("ArmFudgeFactor", armPositionFudgeFactor);
     }
 
 
