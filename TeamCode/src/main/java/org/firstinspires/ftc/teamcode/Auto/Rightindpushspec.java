@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -40,7 +41,7 @@ public class Rightindpushspec extends LinearOpMode {
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(8, -36, Math.toRadians(90)), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(8, -34, Math.toRadians(90)), Math.toRadians(90));
 
 
 
@@ -138,24 +139,23 @@ public class Rightindpushspec extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        //toChambers,
-                        lift.SlidesToBar_new()
-                        //fourbar.FourBarDown(),
-                        //lift.SlidesDown(),
-                        //claw.ClawOpen(),
-                        //fourbar.FourBarUp()
-                        //claw.ClawClose(),
-                        /*Score1,
+                        toChambers,
+                        lift.SlidesToBar_new(),
+                        new SleepAction(2),
+                        fourbar.FourBarDown(),
+                        new SleepAction(1),
+                        claw.ClawOpen(),
+                        fourbar.FourBarUp(),
+                        new SleepAction(1),
+                        lift.SlidesDown_new(),
+                        Score1,
                         Score2,
                         Score3,
                         Score4,
                         Score5,
                         Score6,
-                        Score7*/
-                        //claw.ClawClose(),
-                        //fourbar.FourBarDown(),
-                        //lift.SlidesToBar(),
-                        //new SleepAction(30)
+                        Score7
+
                 )
         );
     }

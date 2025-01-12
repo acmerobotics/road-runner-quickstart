@@ -121,16 +121,39 @@ public class Lift {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    SlideLeft.set(0.8);
-                    SlideRight.set(-0.8);
+                    SlideLeft.set(0.9);
+                    SlideRight.set(-0.9);
                     initialized = true;
                 }
 
                 double pos = SlideLeft.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos >= toTicks(14)) {
+                if (pos >= toTicks(24)) {
                     SlideLeft.set(0.15);
                     SlideRight.set(-0.15);
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
+    public Action SlidesDown_new() {
+        return new Action() {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    SlideLeft.set(-0.5);
+                    SlideRight.set(0.5);
+                    initialized = true;
+                }
+
+                double pos = SlideLeft.getCurrentPosition();
+                packet.put("liftPos", pos);
+                if (pos <= toTicks(0)) {
+                    SlideLeft.set(0);
+                    SlideRight.set(0);
                     return false;
                 }
                 return true;
