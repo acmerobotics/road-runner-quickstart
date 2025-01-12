@@ -22,20 +22,24 @@ public class Liftv2 {
     public static  double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
     public static  double LIFT_SCORING_IN_HIGH_BASKET = 3550;
 
+    public static double LIFT_PARK_POSITION = 800;
     public  static int LIFT_HANG_SLIDES_POSITION = 3200;
 
     public static int LIFT_HANG_SLIDES_POSITION_END = 2000;
 
     public DcMotorEx motor;
-    double liftPosition;
+
     public Liftv2(HardwareMap hardwareMap) {
         motor = hardwareMap.get(DcMotorEx.class, "lift");
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    public void reset(){
         motor.setTargetPosition(0);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftPosition = LIFT_COLLAPSED;
+
     }
 
     // auto
@@ -69,6 +73,10 @@ public class Liftv2 {
 
     public Action liftDownAction() {
         return new LiftAction((int) (LIFT_COLLAPSED));
+    }
+
+    public Action liftDownForParkAction() {
+        return new LiftAction((int) (LIFT_PARK_POSITION));
     }
 
 

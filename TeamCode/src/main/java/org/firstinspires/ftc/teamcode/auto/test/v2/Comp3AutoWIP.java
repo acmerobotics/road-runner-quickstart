@@ -65,6 +65,7 @@ public class Comp3AutoWIP extends LinearOpMode {
         Wristv2 wrist = new Wristv2(hardwareMap);
 
         arm.reset();
+        lift.reset();
 
 
         Action scoreHighAction3 = new ParallelAction(
@@ -117,8 +118,8 @@ public class Comp3AutoWIP extends LinearOpMode {
         TrajectoryActionBuilder driveToSample3 = drive.actionBuilder(RED_NEAR_BASKET_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE3_POS_X, RED_SAMPLE3_POS_Y), RED_SAMPLE3_ANGLE);
         TrajectoryActionBuilder driveBasketToPark =  drive.actionBuilder(RED_NEAR_BASKET_POSE)
-                .strafeToLinearHeading(new Vector2d(-33,-9),Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(-22,-9),Math.toRadians(180));
+                .strafeToLinearHeading(new Vector2d(-33,-8),Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-16,-8),Math.toRadians(180));
 
         TrajectoryActionBuilder driveSample1ToBasket = drive.actionBuilder(RED_SAMPLE1_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
@@ -266,7 +267,7 @@ public class Comp3AutoWIP extends LinearOpMode {
                 arm.armComeDownAction(),
                 new ParallelAction(
                     wrist.wristVerticalAction(),
-                    lift.liftDownAction()),
+                    lift.liftDownForParkAction()),
                 arm.armResetAction()
         );
 
