@@ -24,9 +24,11 @@ public class Armv2 {
     public static int ARM_COME_DOWN = 450;
 
     public static int ARM_CLEAR_BAR = 1200;
+    public static int ARM_CLEAR_BAR_LIFT_OUT = 1300;
 
     public static int ARM_SCORE_POS = 250;
     public static int ARM_PICKUP_GROUND_SAMPLE = 1400;
+    public static int ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT = 1500;
 
     public static int ARM_HANG_SLIDES_POSITION = 290;
 
