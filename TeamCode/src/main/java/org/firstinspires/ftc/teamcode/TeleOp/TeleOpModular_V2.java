@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
 
 @TeleOp(name="Teleop Modular V2", group="Robot")
-@Config
+// @Config
 public class TeleOpModular_V2 extends LinearOpMode {
 
     /* Variables that are used to set the arm to a specific position */
