@@ -19,7 +19,7 @@ public class ExtendoV2 {
 
     public double pos;
 
-    public static double extendTarget = 0.4;
+    public static double extendTarget = 0.55;
     public static double retractTarget = 0.25;
     public static double balanceTarget = 0.3;
 
