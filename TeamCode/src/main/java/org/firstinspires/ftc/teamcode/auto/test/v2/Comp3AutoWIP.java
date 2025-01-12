@@ -116,6 +116,9 @@ public class Comp3AutoWIP extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE2_POS_X, RED_SAMPLE2_POS_Y), RED_SAMPLE2_ANGLE);
         TrajectoryActionBuilder driveToSample3 = drive.actionBuilder(RED_NEAR_BASKET_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE3_POS_X, RED_SAMPLE3_POS_Y), RED_SAMPLE3_ANGLE);
+        TrajectoryActionBuilder driveBasketToPark =  drive.actionBuilder(RED_NEAR_BASKET_POSE)
+                .strafeToLinearHeading(new Vector2d(-33,-9),Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-22,-9),Math.toRadians(180));
 
         TrajectoryActionBuilder driveSample1ToBasket = drive.actionBuilder(RED_SAMPLE1_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
@@ -259,6 +262,19 @@ public class Comp3AutoWIP extends LinearOpMode {
 
 //        Action cBasketToParkAction = basketToPark.build();
 
+        Action comeDownActionForPark = new SequentialAction(
+                arm.armComeDownAction(),
+                new ParallelAction(
+                    wrist.wristVerticalAction(),
+                    lift.liftDownAction()),
+                arm.armResetAction()
+        );
+
+        Action cBasketToParkAction = new ParallelAction(
+                comeDownActionForPark,
+                driveBasketToPark.build()
+        );
+
         while (!isStopRequested() && !opModeIsActive()) {
 
         }
@@ -286,19 +302,18 @@ public class Comp3AutoWIP extends LinearOpMode {
                         ,new SleepAction(.1)
                         ,claw.clawCloseAction()
                         ,new SleepAction(0.5)
-
-//                        // sample 2 to basket
+                        // sample 2 to basket
                         ,cSample2ToBasketAction
                         ,comeDownAction4
 //                        // basket to sample 3
-                        ,cBasketToSample3Action
-                        ,new SleepAction(4)
-                        ,claw.clawCloseAction()
-                        ,new SleepAction(4)
+//                        ,cBasketToSample3Action
+//                        ,new SleepAction(4)
+//                        ,claw.clawCloseAction()
+//                        ,new SleepAction(4)
 //                        // sample 3 to basket
 //                        ,cSample3ToBasketAction
-//                        // park
-//                        ,cBasketToParkAction
+                        // park (including come down)
+                        ,cBasketToParkAction
                 )
         );
     } // runOpMode
