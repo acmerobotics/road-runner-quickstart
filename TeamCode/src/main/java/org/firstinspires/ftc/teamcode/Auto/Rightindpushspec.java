@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -44,7 +41,7 @@ public class Rightindpushspec extends LinearOpMode {
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(8, -34, Math.toRadians(90)), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(8, -38, Math.toRadians(90)), Math.toRadians(90));
 
 
 
@@ -114,9 +111,7 @@ public class Rightindpushspec extends LinearOpMode {
 
 
         // actions that need to happen on init; for instance, a claw tightening.
-        Actions.runBlocking(claw.ClawOpen());
         Actions.runBlocking(fourbar.FourBarUp());
-        Actions.runBlocking(rotation.RotationHorizontal());
 
         // claw open
         //specimen in
@@ -143,6 +138,8 @@ public class Rightindpushspec extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
+                        claw.ClawClose(),
+                        new SleepAction(2),
                         toChambers,
                         lift.SlidesToBar_new(),
                         new SleepAction(2),
@@ -154,37 +151,10 @@ public class Rightindpushspec extends LinearOpMode {
                         lift.SlidesDown_new(),
                         Score1,
                         Score2,
-                        toChambers,
-                        lift.SlidesToBar_new(),
-                        new SleepAction(2),
-                        fourbar.FourBarDown(),
-                        new SleepAction(1),
-                        claw.ClawOpen(),
-                        fourbar.FourBarUp(),
-                        new SleepAction(1),
-                        lift.SlidesDown_new(),
                         Score3,
                         Score4,
-                        toChambers,
-                        lift.SlidesToBar_new(),
-                        new SleepAction(2),
-                        fourbar.FourBarDown(),
-                        new SleepAction(1),
-                        claw.ClawOpen(),
-                        fourbar.FourBarUp(),
-                        new SleepAction(1),
-                        lift.SlidesDown_new(),
                         Score5,
                         Score6,
-                        toChambers,
-                        lift.SlidesToBar_new(),
-                        new SleepAction(2),
-                        fourbar.FourBarDown(),
-                        new SleepAction(1),
-                        claw.ClawOpen(),
-                        fourbar.FourBarUp(),
-                        new SleepAction(1),
-                        lift.SlidesDown_new(),
                         Score7
 
                 )
