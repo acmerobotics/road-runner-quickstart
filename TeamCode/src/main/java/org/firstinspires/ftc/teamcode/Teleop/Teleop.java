@@ -362,7 +362,8 @@ public class Teleop extends LinearOpMode {
                     if (currentGamepad2.x && !previousGamepad2.x) {
                         runningActions.add(new SequentialAction(
                                 slides.slideWallLevel(),
-                                claw.open()
+                                claw.open(),
+                                claw.wallClose()
                         ));
                         liftState = LiftState.LIFTWALL;
                     }
@@ -392,7 +393,7 @@ public class Teleop extends LinearOpMode {
                         if (currentGamepad2.left_trigger < 0.9) {
                             runningActions.add(new SequentialAction(
                                     claw.close(),
-                                    new SleepAction(2),
+                                    new SleepAction(1),
                                     slides.slideTopBar()
                             ));
                             liftState = LiftState.LIFTTOPBAR;
@@ -408,10 +409,8 @@ public class Teleop extends LinearOpMode {
                 case LIFTTOPBAR:
                     if (currentGamepad2.x && !previousGamepad2.x) {
                         runningActions.add(new SequentialAction(
-                                slides.slideBottomBar(),
-                                new SleepAction(0.25),
+                                slides.slideTopBarClip(),
                                 claw.open(),
-                                new SleepAction(0.2),
                                 slides.retract()
                         ));
                         liftState = LiftState.LIFTSTART;

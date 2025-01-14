@@ -17,10 +17,10 @@ public class Claw {
     public static double flipTarget = 0.6;
     public static double flopTarget = 0.3;
     public static double upTarget = 0.4;
-    public static double closeTarget = 0.6;
-    public static double openTarget = 0.35;
+    public static double closeTarget = 0.8;
+    public static double openTarget = 0.4;
     public static double wallopenTarget = 0.57;
-    public static double wallcloseTarget = 0.41;
+    public static double wallcloseTarget = 0.25;
 
     public Claw(HardwareMap HWMap) {
         bucketServo = HWMap.get(Servo.class, "bucketServo");
@@ -65,6 +65,20 @@ public class Claw {
     public Action close() {
         return new Close();
     }
+
+    public class WallClose implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            wallServo.setPosition(wallcloseTarget);
+            return false;
+        }
+    }
+
+    public Action wallClose() {
+        return new WallClose();
+    }
+
+
 
     public class Open implements Action {
         @Override
