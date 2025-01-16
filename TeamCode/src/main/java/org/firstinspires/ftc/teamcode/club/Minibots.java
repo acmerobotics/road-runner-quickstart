@@ -21,8 +21,8 @@ public class Minibots extends OpMode {
         rightMotor = hardwareMap.dcMotor.get("right");  // Replace "right_motor" with the actual name in your robot configuration
 
         // Set motor directions
-        leftMotor.setDirection(DcMotor.Direction.FORWARD);
-        rightMotor.setDirection(DcMotor.Direction.REVERSE); //TODO SWITCH TO REVERSE FOR THE 4 WHEEL
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD); //TODO SWITCH TO REVERSE FOR THE 4 WHEEL
 
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -39,8 +39,8 @@ public class Minibots extends OpMode {
             y = (gamepad1.right_trigger + -gamepad1.left_trigger) * 0.8;
         }
         // Tank drive control
-        double leftPower = y + turn;  // Adjust if needed
-        double rightPower = y - turn;  // Adjust if needed
+        double leftPower = y - turn;  // Adjust if needed
+        double rightPower = y + turn;  // Adjust if needed
 
         // Set motor powers
         leftMotor.setPower(leftPower);

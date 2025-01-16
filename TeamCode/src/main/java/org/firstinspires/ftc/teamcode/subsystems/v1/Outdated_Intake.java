@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 
-public class Intake extends Mechanism {
+public class Outdated_Intake extends Mechanism {
 
     CRServo bristles;
     Servo leftHinge;

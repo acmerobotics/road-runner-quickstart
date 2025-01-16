@@ -4,7 +4,7 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.v1.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.v1.Outdated_Intake;
 import org.firstinspires.ftc.teamcode.subsystems.v1.IntakeSystem;
 import org.firstinspires.ftc.teamcode.subsystems.v1.Outtake;
 import org.firstinspires.ftc.teamcode.subsystems.v1.OuttakeSystem;
@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.subsystems.v1.SpecimenGrabber;
 public class SystemsCheck extends OpMode {
 
     Drivebase drivebase = new Drivebase();
-    Intake intake = new Intake();
     IntakeSystem intakeSystem = new IntakeSystem();
     Outtake outtake = new Outtake();
     OuttakeSystem outtakeSystem = new OuttakeSystem();
@@ -26,7 +25,7 @@ public class SystemsCheck extends OpMode {
 
 
     enum TestingState {
-        DRIVEBASE, INTAKE, INTAKE_SYSTEM, OUTTAKE, OUTTAKE_SYSTEM, SPECIMEN_GRABBER
+        DRIVEBASE, INTAKE_SYSTEM, OUTTAKE, OUTTAKE_SYSTEM, SPECIMEN_GRABBER
     }
 
     TestingState activeTestingState = TestingState.DRIVEBASE;
@@ -34,7 +33,6 @@ public class SystemsCheck extends OpMode {
     @Override
     public void init() {
         drivebase.init(hardwareMap);
-        intake.init(hardwareMap);
         intakeSystem.init(hardwareMap);
         outtake.init(hardwareMap);
         outtakeSystem.init(hardwareMap);
@@ -55,9 +53,6 @@ public class SystemsCheck extends OpMode {
                 break;
             case INTAKE_SYSTEM:
                 intakeSystemTest();
-                break;
-            case INTAKE:
-                intakeTest();
                 break;
             case OUTTAKE:
                 outtakeTest();
@@ -81,19 +76,12 @@ public class SystemsCheck extends OpMode {
     public void drivebaseTest() {
         drivebase.systemsCheck(aimPad1, telemetry);
         if (aimPad1.isStartPressed()) {
-            activeTestingState = TestingState.INTAKE;
-        }
-    }
-
-    public void intakeTest() {
-        intake.systemsCheck(aimPad1, telemetry);
-        if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.INTAKE_SYSTEM;
         }
     }
 
     public void intakeSystemTest() {
-        intakeSystem.systemsCheck(aimPad1, telemetry);
+        intakeSystem.systemsCheck(aimPad1, aimPad2, telemetry);
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.OUTTAKE;
         }
@@ -107,7 +95,7 @@ public class SystemsCheck extends OpMode {
     }
 
     public void outtakeSystemTest() {
-        outtakeSystem.systemsCheck(aimPad1, telemetry);
+        outtakeSystem.systemsCheck(aimPad1, aimPad2, telemetry);
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.SPECIMEN_GRABBER;
         }

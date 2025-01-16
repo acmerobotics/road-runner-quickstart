@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -13,6 +14,8 @@ public class StateDrivenServo extends Mechanism {
     Servo servo;
 
     String name;
+
+    Servo.Direction direction;
 
     ServoState activeTargetState;
     ServoState[] states;
@@ -30,11 +33,23 @@ public class StateDrivenServo extends Mechanism {
         targetPosition = activeTargetState.getPosition();
 
         this.name = name;
+        this.direction = Servo.Direction.FORWARD;
+    }
+
+    public StateDrivenServo(ServoState[] states, ServoState initState, String name, Servo.Direction direction) {
+        this.states = states;
+
+        activeTargetState = initState;
+        targetPosition = activeTargetState.getPosition();
+
+        this.name = name;
+        this.direction = direction;
     }
 
     @Override
     public void init(HardwareMap hwMap) {
         servo = hwMap.get(Servo.class, name);
+        servo.setDirection(direction);
     }
 
     @Override
@@ -46,8 +61,8 @@ public class StateDrivenServo extends Mechanism {
                     states) {
                 if (state == activeTargetState) {
                     targetPosition = state.getPosition();
+                    break;
                 }
-                break;
             }
         }
         servo.setPosition(targetPosition);
@@ -55,6 +70,7 @@ public class StateDrivenServo extends Mechanism {
 
     @Override
     public void telemetry(Telemetry telemetry) {
+        telemetry.addData("States:", states);
         telemetry.addData("State: ", activeTargetState);
         telemetry.addData("Target Position", targetPosition);
         telemetry.addData("Active Position", servo.getPosition());

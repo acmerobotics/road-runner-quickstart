@@ -54,9 +54,8 @@ public class ConfigurationInfo {
     public static HardwareInterface leftArmHinge = new HardwareInterface("LOAH", true, 0);
     public static HardwareInterface rightArmHinge = new HardwareInterface("ROAH", true, 0);
 
-    // OUTAKE BUCKET HINGES
-    public static HardwareInterface leftBucketHinge = new HardwareInterface("BH", false, 0);
-//    public static HardwareInterface rightBucketHinge = new HardwareInterface("ORBH", false, 0);
+    // OUTAKE BUCKET HINGE
+    public static HardwareInterface bucketHinge = new HardwareInterface("BH", false, 0);
 
     // DRIVEBASE
     public static HardwareInterface leftFront = new HardwareInterface("FLD", true, 1);

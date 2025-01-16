@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.subsystems.v2;
+package org.firstinspires.ftc.teamcode.subsystems.multiaxisarm;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
@@ -15,13 +14,13 @@ public class Wrist extends Mechanism {
     public StateDrivenServo rotator;
     public StateDrivenServo flexor;
 
-    ServoState FLX_UP = new ServoState(0);
+    ServoState FLX_UP = new ServoState(.15);
     ServoState FLX_NEUTRAL = new ServoState(.5);
-    ServoState FLX_DOWN = new ServoState(1);
+    ServoState FLX_DOWN = new ServoState(.93);
 
-    ServoState ROT_LEFT = new ServoState(0);
-    ServoState ROT_CENTER = new ServoState(.5);
-    ServoState ROT_RIGHT = new ServoState(1);
+    ServoState ROT_LEFT = new ServoState(0.12);
+    ServoState ROT_CENTER = new ServoState(.47);
+    ServoState ROT_RIGHT = new ServoState(.82);
 
 
     @Override
@@ -42,5 +41,37 @@ public class Wrist extends Mechanism {
     public void telemetry(Telemetry telemetry) {
         flexor.telemetry(telemetry);
         rotator.telemetry(telemetry);
+    }
+
+    public void flexUp() {
+        flexor.setActiveTargetState(FLX_UP);
+    }
+
+    public void flexNeutral() {
+        flexor.setActiveTargetState(FLX_NEUTRAL);
+    }
+
+    public void flexDown() {
+        flexor.setActiveTargetState(FLX_DOWN);
+    }
+
+    public void flexCustom(double position) {
+        flexor.setActiveStateCustom(position);
+    }
+
+    public void rotateLeft() {
+        rotator.setActiveTargetState(ROT_LEFT);
+    }
+
+    public void rotateCenter() {
+        rotator.setActiveTargetState(ROT_CENTER);
+    }
+
+    public void rotateRight() {
+        rotator.setActiveTargetState(ROT_RIGHT);
+    }
+
+    public void rotateCustom(double position) {
+        rotator.setActiveStateCustom(position);
     }
 }

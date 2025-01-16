@@ -9,14 +9,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 import org.firstinspires.ftc.teamcode.subsystems.generic.SlidesBase;
+import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.Elbow;
+import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.Hand;
+import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.MultiAxisArm;
+import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.Wrist;
+import org.firstinspires.ftc.teamcode.util.ServoState;
+import org.firstinspires.ftc.teamcode.util.StateDrivenServo;
 
 public class IntakeSystem extends Mechanism {
 
-    Intake intake;
-    SlidesBase intakeSlides;
+    public MultiAxisArm multiAxisArm;
+    public SlidesBase intakeSlides;
 
-    private final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
-    private final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.REVERSE;
+    private final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.REVERSE;
+    private final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.FORWARD;
     private static final double kP = 0.006;
     private static final double kI = 0.00001;
     private static final double kD = 0.00002;
@@ -29,25 +35,16 @@ public class IntakeSystem extends Mechanism {
     private static final double kG = 0.0;
     private static final double lowPassGain = 0.15;
 
-    Servo leftSlidePivot;
-    Servo rightSlidePivot;
+    StateDrivenServo leftSlidePivot;
+    StateDrivenServo rightSlidePivot;
+
+    ServoState PIVOT_UP = new ServoState(0);
+    ServoState PIVOT_DOWN = new ServoState(1);
 
     public static final double RESET_POS = 0;
     public static final double SHORT_POS = 500;
     public static final double MEDIUM_POS = 1000;
     public static final double LONG_POS = 1600;
-    private double pivotTargetPosition = PIVOT_UP_POSITION;
-
-    private final static double PIVOT_DOWN_POSITION = 0.05;
-    private final static double PIVOT_UP_POSITION = 0.43;
-
-
-    public enum PivotState {
-        PIVOT_DOWN, PIVOT_UP, PIVOT_CUSTOM
-    }
-
-    private PivotState activePivotState = PivotState.PIVOT_DOWN;
-
 
     enum SlidesPosition {
         RESET, SHORT, MEDIUM, LONG
@@ -56,16 +53,17 @@ public class IntakeSystem extends Mechanism {
 
     @Override
     public void init(HardwareMap hwMap) {
-        intake = new Intake();
-        intake.init(hwMap);
+        multiAxisArm = new MultiAxisArm();
+        multiAxisArm.init(hwMap);
 
         intakeSlides = new SlidesBase(ConfigurationInfo.leftIntakeSlide.getDeviceName(), ConfigurationInfo.rightIntakeSlide.getDeviceName(),
                 leftMotorDirection, rightMotorDirection, kP, kI, kD, derivativeLowPassGain, integralSumMax, kV, kA, kStatic, kCos, kG, lowPassGain);
         intakeSlides.init(hwMap);
 
-        leftSlidePivot = hwMap.get(Servo.class, ConfigurationInfo.leftIntakeSlidePivot.getDeviceName());
-        rightSlidePivot = hwMap.get(Servo.class, ConfigurationInfo.rightIntakeSlidePivot.getDeviceName());
-        rightSlidePivot.setDirection(Servo.Direction.REVERSE);
+        leftSlidePivot = new StateDrivenServo(new ServoState[]{PIVOT_UP, PIVOT_DOWN}, PIVOT_UP, ConfigurationInfo.leftIntakeSlidePivot.getDeviceName());
+        rightSlidePivot = new StateDrivenServo(new ServoState[]{PIVOT_UP, PIVOT_DOWN}, PIVOT_UP, ConfigurationInfo.rightIntakeSlidePivot.getDeviceName());
+        leftSlidePivot.init(hwMap);
+        rightSlidePivot.init(hwMap);
     }
 
     @Override
@@ -84,18 +82,9 @@ public class IntakeSystem extends Mechanism {
                 longState();
                 break;
         }
-        switch (activePivotState) {
-            case PIVOT_DOWN:
-                pivotDownState();
-                break;
-            case PIVOT_UP:
-                pivotUpState();
-                break;
-            case PIVOT_CUSTOM:
-                break;
-        }
-        pivotToPosition(pivotTargetPosition);
-        intake.loop(aimpad);
+        multiAxisArm.loop(aimpad);
+        leftSlidePivot.loop(aimpad);
+        rightSlidePivot.loop(aimpad);
         intakeSlides.loop(aimpad, aimpad2);
     }
 
@@ -132,63 +121,31 @@ public class IntakeSystem extends Mechanism {
         intakeSlides.setTargetPosition(LONG_POS);
     }
 
-    /**
-     * Set the state of the slide pivots
-     * @param activePivotState the state of the slide pivots (PIVOT_DOWN, PIVOT_UP)
-     */
-    public void setActivePivotState(PivotState activePivotState) {
-        this.activePivotState = activePivotState;
+    public void pivotUp() {
+        leftSlidePivot.setActiveTargetState(PIVOT_UP);
+        rightSlidePivot.setActiveTargetState(PIVOT_UP);
     }
 
-    /**
-     * Set the custom position of the slide pivots
-     * @param position the custom position of the slide pivots
-     */
-    public void setPivotStateCustom(double position) {
-        activePivotState = PivotState.PIVOT_CUSTOM;
-        pivotTargetPosition = position;
+    public void pivotDown() {
+        leftSlidePivot.setActiveTargetState(PIVOT_DOWN);
+        rightSlidePivot.setActiveTargetState(PIVOT_DOWN);
     }
 
-    /**
-     * Set the slide pivots to the down position
-     */
-    public void pivotDownState() {
-        pivotTargetPosition = PIVOT_DOWN_POSITION;
-    }
-
-    /**
-     * Set the slide pivots to the up position
-     */
-    public void pivotUpState() {
-        pivotTargetPosition = PIVOT_UP_POSITION;
-    }
-
-    /**
-     * Set the slide pivots servos to a position clamped by the hinge limits
-     */
-    public void pivotToPosition(double pivotPosition) {
-        double clampedPivotPosition = Math.max(PIVOT_DOWN_POSITION, Math.min(pivotPosition, PIVOT_UP_POSITION));
-        leftSlidePivot.setPosition(clampedPivotPosition);
-        rightSlidePivot.setPosition(clampedPivotPosition);
+    public void pivotCustom(double position) {
+        leftSlidePivot.setActiveStateCustom(position);
+        rightSlidePivot.setActiveStateCustom(position);
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
-        intake.telemetry(telemetry);
     }
 
     /**
      * Method to individually check each hardware component of the intake system
      * @param aimpad the gamepad used to control the intake system
      */
-    public void systemsCheck(AIMPad aimpad, Telemetry telemetry) {
-        if (aimpad.isAPressed()) {
-            setActivePivotState(PivotState.PIVOT_UP);
-        } else if (aimpad.isBPressed()) {
-            setActivePivotState(PivotState.PIVOT_DOWN);
-        } else if (aimpad.isRightStickMovementEngaged()) {
-            setPivotStateCustom(aimpad.getRightStickY());
-        } else if (aimpad.isDPadDownPressed()) {
+    public void systemsCheck(AIMPad aimpad, AIMPad aimpad2, Telemetry telemetry) {
+        if (aimpad.isDPadDownPressed()) {
             setSlidesPosition(SlidesPosition.RESET);
         } else if (aimpad.isDPadLeftPressed()) {
             setSlidesPosition(SlidesPosition.SHORT);
@@ -200,7 +157,7 @@ public class IntakeSystem extends Mechanism {
             intakeSlides.setActiveControlState(SlidesBase.SlidesControlState.MANUAL);
         }
         intakeSlides.updateManualPower(aimpad.getLeftStickY());
-        loop(aimpad);
+        loop(aimpad, aimpad2);
         telemetry(telemetry);
     }
 

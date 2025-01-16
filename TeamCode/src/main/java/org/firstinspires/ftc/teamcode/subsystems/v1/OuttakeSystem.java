@@ -13,8 +13,8 @@ public class OuttakeSystem extends Mechanism {
     Outtake outtake;
     SlidesBase outtakeSlides;
 
-    private static final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
-    private static final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.REVERSE;
+    private static final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.REVERSE;
+    private static final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.FORWARD;
 
     private static final double kP = 0.006;
     private static final double kI = 0.00001;
@@ -138,7 +138,7 @@ public class OuttakeSystem extends Mechanism {
         telemetry.addData("Slides Position", outtakeSlides.getCurrentPosition());
     }
 
-    public void systemsCheck(AIMPad aimpad, Telemetry telemetry) {
+    public void systemsCheck(AIMPad aimpad, AIMPad aimpad2, Telemetry telemetry) {
         if (aimpad.isDPadDownPressed()) {
             setSlidesPosition(SlidesPosition.RESET);
         } else if (aimpad.isDPadLeftPressed()) {
@@ -149,7 +149,7 @@ public class OuttakeSystem extends Mechanism {
             outtakeSlides.setActiveControlState(SlidesBase.SlidesControlState.MANUAL);
         }
         outtakeSlides.updateManualPower(aimpad.getLeftStickY());
-        loop(aimpad);
+        loop(aimpad, aimpad2);
         telemetry(telemetry);
     }
 

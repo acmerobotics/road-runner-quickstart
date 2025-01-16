@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.v1;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.aimrobotics.aimlib.control.PIDController;
@@ -28,6 +29,7 @@ public class Drivebase extends Mechanism {
 
     @Override
     public void init(HardwareMap hwMap) {
+        drive = new MecanumDrive(hwMap, new Pose2d(new Vector2d(0, 0), 0));
         setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
@@ -52,12 +54,12 @@ public class Drivebase extends Mechanism {
     }
 
     private void manualDrive(AIMPad gamepad, boolean isFieldCentric) {
-        double y = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickY()), GamepadSettings.EXPONENT_MODIFIER);
+        double y = InputModification.poweredInput(deadzonedStickInput(gamepad.getLeftStickY()), GamepadSettings.EXPONENT_MODIFIER);
         double x = InputModification.poweredInput(deadzonedStickInput(gamepad.getLeftStickX()), GamepadSettings.EXPONENT_MODIFIER);
         double rx = InputModification.poweredInput(deadzonedStickInput(gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
 
         // Create left stick vector
-        Vector2d leftStick = new Vector2d(x, y);
+        Vector2d leftStick = new Vector2d(y, x);
 
         // Rotate left stick vector by -heading if in fieldcentric mode
         if (isFieldCentric) {
