@@ -66,6 +66,7 @@ public class Teleop extends LinearOpMode {
 
     private enum LiftState {LIFTSTART, LIFTDEPOSIT, LIFTWALL, LIFTTOPBAR, LIFTBOTTOMBAR}
     private LiftState liftState = LiftState.LIFTSTART;
+    private String clawTelem = "Start";
 
     private enum ExtendoState {EXTENDOSTART, EXTENDOEXTEND, EXTENDORETRACT}
     private ExtendoState extendoState = ExtendoState.EXTENDOSTART;
@@ -350,6 +351,7 @@ public class Teleop extends LinearOpMode {
 
             switch (liftState) {
                 case LIFTSTART:
+                    clawTelem = "Start";
                     if (currentGamepad2.y && !previousGamepad2.y) {
                         if (currentGamepad2.left_trigger < 0.9) {
                             runningActions.add(slides.slideTopBasket());
@@ -361,9 +363,10 @@ public class Teleop extends LinearOpMode {
 
                     if (currentGamepad2.x && !previousGamepad2.x) {
                         runningActions.add(new SequentialAction(
-                                slides.slideWallLevel(),
+                                slides.retract(),
                                 claw.open(),
-                                claw.wallClose()
+                                claw.wallClose(),
+                                slidescontrol.done()
                         ));
                         liftState = LiftState.LIFTWALL;
                     }
@@ -389,12 +392,14 @@ public class Teleop extends LinearOpMode {
 
                     break;
                 case LIFTWALL:
+                    clawTelem = "Wall";
                     if (currentGamepad2.x && !previousGamepad2.x) {
                         if (currentGamepad2.left_trigger < 0.9) {
                             runningActions.add(new SequentialAction(
                                     claw.close(),
-                                    new SleepAction(1),
-                                    slides.slideTopBar()
+                                    new SleepAction(0.3),
+                                    slides.slideTopBar(),
+                                    slidescontrol.done()
                             ));
                             liftState = LiftState.LIFTTOPBAR;
                         } else {
@@ -407,11 +412,13 @@ public class Teleop extends LinearOpMode {
                     }
                     break;
                 case LIFTTOPBAR:
+                    clawTelem = "TopBar";
                     if (currentGamepad2.x && !previousGamepad2.x) {
                         runningActions.add(new SequentialAction(
                                 slides.slideTopBarClip(),
                                 claw.open(),
-                                slides.retract()
+                                slides.retract(),
+                                slidescontrol.done()
                         ));
                         liftState = LiftState.LIFTSTART;
                     }
@@ -479,15 +486,19 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("bluev", colors.blue);
             telemetry.addData("greenv", colors.green);
             telemetry.addData("color", intakeColor);
-            telemetry.addData("slides left", slides.slidesLeftMotor.getCurrentPosition());
-            telemetry.addData("slides right", slides.slidesRightMotor.getCurrentPosition());
-            telemetry.addData("extendoState", extendoTelem);
+            telemetry.addData("slides left pos", slides.slidesLeftMotor.getCurrentPosition());
+            telemetry.addData("slides right pos", slides.slidesRightMotor.getCurrentPosition());
+            telemetry.addData("slides left power", slides.slidesLeftMotor.getPower());
+            telemetry.addData("slides right power", slides.slidesRightMotor.getPower());
+            telemetry.addData("slides PID", slides.getPID());
+            telemetry.addData("extendo state", extendoTelem);
             telemetry.addData("extendoFinished", extendocontrol.getFinished());
             telemetry.addData("extendoBusy", extendocontrol.getBusy());
+            telemetry.addData("claw state", clawTelem);
             telemetry.addData("hasColor", hasColor);
-            telemetry.addData("robotx", drive.pose.position.x);
-            telemetry.addData("roboty", drive.pose.position.y);
-            telemetry.addData("robotHeading", drive.pose.heading.toDouble());
+            telemetry.addData("robot x", drive.pose.position.x);
+            telemetry.addData("robot y", drive.pose.position.y);
+            telemetry.addData("robot heading", drive.pose.heading.toDouble());
             telemetry.update();
 
         }

@@ -57,7 +57,7 @@ public class Claw {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             clawServo.setPosition(closeTarget);
-            wallServo.setPosition(wallcloseTarget);
+            //wallServo.setPosition(wallcloseTarget);
             return false;
         }
     }

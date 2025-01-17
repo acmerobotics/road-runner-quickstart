@@ -20,17 +20,20 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 import org.firstinspires.ftc.teamcode.mechanisms.Extendo;
+import org.firstinspires.ftc.teamcode.mechanisms.ExtendoV2;
 import org.firstinspires.ftc.teamcode.mechanisms.Intaker;
 import org.firstinspires.ftc.teamcode.mechanisms.Slides;
-@Disabled
+import org.firstinspires.ftc.teamcode.mechanisms.SlidesV2;
+
+
 @Autonomous
 public class BasketRedNoSpeciFinal extends LinearOpMode {
     @Override
     public void runOpMode() {
         Intaker intake = new Intaker(hardwareMap);
         Claw claw = new Claw(hardwareMap);
-        Slides slides = new Slides(hardwareMap);
-        Extendo extendo = new Extendo(hardwareMap);
+        SlidesV2 slides = new SlidesV2(hardwareMap, true);
+        ExtendoV2 extendo = new ExtendoV2(hardwareMap);
         Pose2d StartPose1 = new Pose2d(0,0, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, StartPose1);
 
@@ -83,7 +86,8 @@ public class BasketRedNoSpeciFinal extends LinearOpMode {
         ));*/
 
 
-        Actions.runBlocking(new SequentialAction(
+        Actions.runBlocking(new ParallelAction(
+                new SequentialAction(
                 //1+0
                 claw.flop(),
                 intake.flop(),
@@ -193,7 +197,7 @@ public class BasketRedNoSpeciFinal extends LinearOpMode {
 
                 */
 
-        ));
+        ), slides.update()));
 
 
     }
