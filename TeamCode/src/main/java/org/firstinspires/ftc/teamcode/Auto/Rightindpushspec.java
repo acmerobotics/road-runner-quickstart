@@ -42,11 +42,16 @@ public class Rightindpushspec extends LinearOpMode {
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(8, -38, Math.toRadians(90)), Math.toRadians(90));
+        TrajectoryActionBuilder tabZ = tab1.endTrajectory().fresh()
+                .splineToLinearHeading(new Pose2d(8, -44, Math.toRadians(90)), Math.toRadians(90));
 
 
 
 
-        Action Score1 = tab1.endTrajectory().fresh()
+
+
+        Action Score1 = tabZ.endTrajectory().fresh()
+
                 .setTangent(Math.toRadians(0))
                 .splineToLinearHeading(new Pose2d(36, -36, Math.toRadians(90)), Math.toRadians(0))
                 .setTangent(Math.toRadians(90))
@@ -129,6 +134,7 @@ public class Rightindpushspec extends LinearOpMode {
         Action Score2 = tab2.build();
         Action Score4 = tab3.build();
         Action Score6 = tab4.build();
+        Action E = tabZ.build();
 
 
 
@@ -145,6 +151,7 @@ public class Rightindpushspec extends LinearOpMode {
                         new SleepAction(2),
                         fourbar.FourBarDown(),
                         new SleepAction(1),
+                        E,
                         claw.ClawOpen(),
                         fourbar.FourBarUp(),
                         new SleepAction(1),
