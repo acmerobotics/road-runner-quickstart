@@ -22,7 +22,7 @@ public class Claw {
         return Claw.getPosition();
     }
     public void ClawOpenTele(){
-        Claw.setPosition(1);
+        Claw.setPosition(0.8);
     }
 
     public void ClawCloseTele(){
@@ -43,7 +43,7 @@ public class Claw {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                Claw.setPosition(1);
+                Claw.setPosition(0.8);
                 return false;
             }
         };

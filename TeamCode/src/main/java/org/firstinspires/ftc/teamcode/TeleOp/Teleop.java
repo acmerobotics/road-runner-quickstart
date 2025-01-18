@@ -82,7 +82,8 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1){
-                robot.ClawGrip.setPosition(0.5);
+                robot.ClawGrip.setPosition(0.8);
+
             } else{
                 robot.ClawGrip.setPosition(0);
             }

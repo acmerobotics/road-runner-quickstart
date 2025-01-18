@@ -26,6 +26,7 @@ public class Robot {
     private static HardwareMap hwMapRobot;
 
 
+
     public static void init(HardwareMap hwMap, boolean drive) {
 
         hwMapRobot = hwMap;
@@ -59,6 +60,7 @@ public class Robot {
 
         BottomRight = new MotorEx(hwMapRobot, "BR", Motor.GoBILDA.RPM_435);
         BottomRight.setInverted(true);
+
     }
 
 }

@@ -34,6 +34,7 @@ public class RobotNew {
     private static HardwareMap hwMapRobot;
 
 
+
     public void init(HardwareMap hwMap) {
 
         hwMapRobot = hwMap;
@@ -75,5 +76,6 @@ public class RobotNew {
         BackLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         BackRight = new MotorEx(hwMap, "BR", Motor.GoBILDA.RPM_312);
         BackRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
     }
 }
