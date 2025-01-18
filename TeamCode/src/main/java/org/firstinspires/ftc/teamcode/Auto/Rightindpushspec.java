@@ -43,7 +43,7 @@ public class Rightindpushspec extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(8, -38, Math.toRadians(90)), Math.toRadians(90));
         TrajectoryActionBuilder tabZ = tab1.endTrajectory().fresh()
-                .splineToLinearHeading(new Pose2d(8, -44, Math.toRadians(90)), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(8, -45, Math.toRadians(90)), Math.toRadians(90));
 
 
 
@@ -66,7 +66,6 @@ public class Rightindpushspec extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(52, -53, Math.toRadians(90)) , Math.toRadians(270))
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(90)), Math.toRadians(180))
-
                 .build();
         TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(42, -53, Math.toRadians(90)))
                 .setTangent(Math.toRadians(180))
@@ -91,7 +90,6 @@ public class Rightindpushspec extends LinearOpMode {
         Action Score7 = tab4.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(90)), Math.toRadians(0))
-
                 .build();
 
 
@@ -99,14 +97,10 @@ public class Rightindpushspec extends LinearOpMode {
 
 
 
-        Action back = tab1.endTrajectory().fresh()
-
-                .build();
 
 
-        Action park = tab1.endTrajectory().fresh()
-                .splineToLinearHeading(new Pose2d(28, 10, Math.toRadians(90)), Math.toRadians(100))
-                .build();
+
+
 
 
 
@@ -117,6 +111,7 @@ public class Rightindpushspec extends LinearOpMode {
 
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(fourbar.FourBarUp());
+        Actions.runBlocking(claw.ClawClose());
 
         // claw open
         //specimen in
@@ -144,13 +139,11 @@ public class Rightindpushspec extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        claw.ClawClose(),
-                        new SleepAction(2),
                         toChambers,
                         lift.SlidesToBar_new(),
-                        new SleepAction(2),
-                        fourbar.FourBarDown(),
                         new SleepAction(1),
+                        fourbar.FourBarDown(),
+                        new SleepAction(2),
                         E,
                         claw.ClawOpen(),
                         fourbar.FourBarUp(),
