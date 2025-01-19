@@ -46,7 +46,7 @@ public class IntakeSystem extends Mechanism {
     public static final double MEDIUM_POS = 1000;
     public static final double LONG_POS = 1600;
 
-    enum SlidesPosition {
+    public enum SlidesPosition {
         RESET, SHORT, MEDIUM, LONG
     }
     public SlidesPosition activeSlidesPosition = SlidesPosition.RESET;

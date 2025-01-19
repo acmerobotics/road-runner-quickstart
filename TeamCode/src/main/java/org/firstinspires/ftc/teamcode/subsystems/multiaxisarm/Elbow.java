@@ -11,41 +11,51 @@ import org.firstinspires.ftc.teamcode.util.ServoState;
 import org.firstinspires.ftc.teamcode.util.StateDrivenServo;
 
 public class Elbow extends Mechanism {
-    public StateDrivenServo elbow;
+    public StateDrivenServo leftElbow;
+    public StateDrivenServo rightElbow;
 
     ServoState UP = new ServoState(.7);
     ServoState AVOID = new ServoState(.5);
-    ServoState DOWN = new ServoState(.1);
+    ServoState DOWN = new ServoState(.2);
 
     @Override
     public void init(HardwareMap hwMap) {
-        elbow = new StateDrivenServo(new ServoState[]{UP, DOWN, AVOID}, DOWN, ConfigurationInfo.elbow.getDeviceName(), Servo.Direction.REVERSE);
-        elbow.init(hwMap);
+        leftElbow = new StateDrivenServo(new ServoState[]{UP, DOWN, AVOID}, DOWN, ConfigurationInfo.leftElbow.getDeviceName());
+        rightElbow = new StateDrivenServo(new ServoState[]{UP, DOWN, AVOID}, DOWN, ConfigurationInfo.rightElbow.getDeviceName(), Servo.Direction.REVERSE);
+
+        leftElbow.init(hwMap);
+        rightElbow.init(hwMap);
     }
 
     @Override
     public void loop(AIMPad aimpad) {
-        elbow.loop(aimpad);
+        leftElbow.loop(aimpad);
+        rightElbow.loop(aimpad);
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
-        elbow.telemetry(telemetry);
+        leftElbow.telemetry(telemetry);
+        rightElbow.telemetry(telemetry);
     }
 
     public void up() {
-        elbow.setActiveTargetState(UP);
+        leftElbow.setActiveTargetState(UP);
+        rightElbow.setActiveTargetState(UP);
     }
 
     public void down() {
-        elbow.setActiveTargetState(DOWN);
+        leftElbow.setActiveTargetState(DOWN);
+        rightElbow.setActiveTargetState(DOWN);
     }
 
     public void avoid() {
-        elbow.setActiveTargetState(AVOID);
+        leftElbow.setActiveTargetState(AVOID);
+        rightElbow.setActiveTargetState(AVOID);
     }
 
     public void custom(double position) {
-        elbow.setActiveStateCustom(position);
+        leftElbow.setActiveStateCustom(position);
+        rightElbow.setActiveStateCustom(position);
     }
 }

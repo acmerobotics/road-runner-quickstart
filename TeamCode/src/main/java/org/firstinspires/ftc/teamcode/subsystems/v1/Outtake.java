@@ -16,11 +16,11 @@ public class Outtake extends Mechanism {
     StateDrivenServo rightArmHinge;
     StateDrivenServo bucketHinge;
 
-    ServoState ARM_IN = new ServoState(0.05);
+    ServoState ARM_IN = new ServoState(0.11);
     ServoState ARM_OUT = new ServoState(1);
 
     ServoState BUCKET_IN = new ServoState(1);
-    ServoState BUCKET_OUT = new ServoState(0);
+    ServoState BUCKET_OUT = new ServoState(0.3);
 
     /**
      * initializes hardware

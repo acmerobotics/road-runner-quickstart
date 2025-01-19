@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 import org.firstinspires.ftc.teamcode.subsystems.generic.SlidesBase;
 
 public class OuttakeSystem extends Mechanism {
-    Outtake outtake;
-    SlidesBase outtakeSlides;
+    public Outtake outtake;
+    public SlidesBase outtakeSlides;
 
     private static final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.REVERSE;
     private static final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.FORWARD;
@@ -30,7 +30,7 @@ public class OuttakeSystem extends Mechanism {
 
     public static final double RESET_POS = 0;
     public static final double SHORT_POS = 1500;
-    public static final double TALL_POS = 3100;
+    public static final double TALL_POS = 3200;
     public static final double SPECIMEN_LOW_POS = 650;
     public static final double SPECIMEN_LOW_DROP_POS = 350;
     public static final double SPECIMEN_HIGH_POS = 1850;
@@ -84,52 +84,58 @@ public class OuttakeSystem extends Mechanism {
         this.activeSlidesPosition = activeSlidesPosition;
     }
 
+    public void reset() {
+        setSlidesPosition(SlidesPosition.RESET);
+        outtake.armIn();
+        outtake.bucketIn();
+    }
+
     /**
      * Set the slides to the reset position
      */
-    public void resetState() {
+    private void resetState() {
         outtakeSlides.setTargetPosition(RESET_POS);
     }
 
     /**
      * Set the slides to the short position
      */
-    public void shortState() {
+    private void shortState() {
         outtakeSlides.setTargetPosition(SHORT_POS);
     }
 
     /**
      * Set the slides to the tall position
      */
-    public void tallState() {
+    private void tallState() {
         outtakeSlides.setTargetPosition(TALL_POS);
     }
 
     /**
      * Set the slides to the specimen low position
      */
-    public void specimenLowState() {
+    private void specimenLowState() {
         outtakeSlides.setTargetPosition(SPECIMEN_LOW_POS);
     }
 
     /**
      * Set the slides to the specimen high position
      */
-    public void specimenHighState() {
+    private void specimenHighState() {
         outtakeSlides.setTargetPosition(SPECIMEN_HIGH_POS);
     }
 
     /**
      * Set the slides to the specimen low drop position
      */
-    public void specimenLowDropState() {
+    private void specimenLowDropState() {
         outtakeSlides.setTargetPosition(SPECIMEN_LOW_DROP_POS);
     }
 
     /**
      * Set the slides to the specimen high drop position
      */
-    public void specimenHighDropState() {
+    private void specimenHighDropState() {
         outtakeSlides.setTargetPosition(SPECIMEN_HIGH_DROP_POS);
     }
 

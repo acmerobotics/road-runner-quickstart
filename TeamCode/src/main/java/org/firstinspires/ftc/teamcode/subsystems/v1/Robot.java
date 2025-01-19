@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.v1;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,9 +16,9 @@ public class Robot extends Mechanism {
     public ScoringSystem scoringSystem;
 
     boolean isRed;
-    Pose2D startingPosition;
+    Pose2d startingPosition;
 
-    public Robot(boolean isRed, Pose2D startingPosition) {
+    public Robot(boolean isRed, Pose2d startingPosition) {
         this.isRed = isRed;
         this.startingPosition = startingPosition;
     }

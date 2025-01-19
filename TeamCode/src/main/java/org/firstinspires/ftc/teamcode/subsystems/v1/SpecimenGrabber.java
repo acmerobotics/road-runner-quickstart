@@ -16,7 +16,7 @@ public class SpecimenGrabber extends Mechanism {
         GRAB, RELEASE, CUSTOM
     }
 
-    GrabberState activeGrabberState = GrabberState.RELEASE;
+    GrabberState activeGrabberState = GrabberState.GRAB;
 
     double targetGrabberPosition;
 

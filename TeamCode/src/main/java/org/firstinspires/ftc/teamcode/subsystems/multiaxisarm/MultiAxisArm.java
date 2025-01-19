@@ -49,8 +49,22 @@ public class MultiAxisArm extends Mechanism {
         elbow.avoid();
     }
 
+    public void resetAvoidNeutral() {
+        hand.open();
+        wrist.flexNeutral();
+        wrist.rotateCenter();
+        elbow.avoid();
+    }
+
     public void searchingNeutral() {
         hand.open();
+        wrist.flexNeutral();
+        wrist.rotateCenter();
+        elbow.down();
+    }
+
+    public void searchingNeutralClosed() {
+        hand.close();
         wrist.flexNeutral();
         wrist.rotateCenter();
         elbow.down();

@@ -19,7 +19,7 @@ public class ScoringSystem extends Mechanism {
         RESETTING, SEARCHING, TRANSITIONING1, TRANSITIONING2, SLIDES_POSITIONING, SPECIMEN_POSITIONING, SPECIMEN_SCORE, OUTTAKE_REZEROING, INTAKE_REZEROING
     }
 
-    ScoringState activeScoringState = ScoringState.RESETTING;
+    ScoringState activeScoringState = ScoringState.SPECIMEN_POSITIONING;
 
     ScoringState outtakeRezeroingGoBackState = ScoringState.SEARCHING;
 
@@ -71,24 +71,31 @@ public class ScoringSystem extends Mechanism {
         this.activeScoringState = activeScoringState;
     }
 
-    public void resettingState() {
+    public void resetMechs() {
         intakeSystem.multiAxisArm.resetClosed();
 
         intakeSystem.pivotDown();
 
-        outtakeSystem.outtake.armIn();
-        outtakeSystem.outtake.bucketIn();
+        intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.RESET);
+        outtakeSystem.reset();
 
         specimenGrabber.setGrabberState(SpecimenGrabber.GrabberState.RELEASE);
+    }
 
-        intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.RESET);
-        outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.RESET);
+    public void resettingState() {
+        resetMechs();
         if (intakeSystem.intakeSlides.isAtTargetPosition() && outtakeSystem.outtakeSlides.isAtTargetPosition()){
             intakeSystem.multiAxisArm.searchingNeutral();
             setActiveScoringState(ScoringState.SEARCHING);
         }
     }
+
     public void searchingState(AIMPad aimpad, AIMPad aimpad2) {
+
+        if (aimpad.getRightTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
+            intakeSystem.multiAxisArm.resetClosed();
+        }
+
         specimenGrabber.setGrabberState(SpecimenGrabber.GrabberState.RELEASE);
 
 
@@ -100,12 +107,16 @@ public class ScoringSystem extends Mechanism {
         }
 
         if (aimpad2.isAPressed()) {
-            intakeSystem.multiAxisArm.searchingDownOpen();
+            intakeSystem.multiAxisArm.hand.open();
         } else if (aimpad2.isBPressed()) {
-            intakeSystem.multiAxisArm.searchingNeutral();
+            intakeSystem.multiAxisArm.wrist.flexNeutral();
         } else if (aimpad2.isYPressed()) {
-            intakeSystem.multiAxisArm.searchingDownClosed();
+            intakeSystem.multiAxisArm.hand.close();
+        } else if (aimpad2.isXPressed()) {
+            intakeSystem.multiAxisArm.wrist.flexDown();
         }
+
+        intakeSystem.multiAxisArm.wrist.rotateCustom(.47 + (aimpad2.getLeftStickX()/2));
 
         if (aimpad2.isDPadUpPressed()) {
             setActiveScoringState(ScoringState.TRANSITIONING1);
@@ -162,7 +173,7 @@ public class ScoringSystem extends Mechanism {
             outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.SHORT);
         }
 
-        if (aimpad2.isLeftBumperPressed() && aimpad2.isRightBumperPressed()) {
+        if (aimpad2.isLeftBumperHeld() && aimpad2.isRightBumperHeld()) {
             outtakeSystem.outtake.bucketOut();
         }
 
@@ -173,7 +184,7 @@ public class ScoringSystem extends Mechanism {
 
     public void specimenPositioningState(AIMPad aimpad, AIMPad aimpad2) {
         intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.RESET);
-        intakeSystem.multiAxisArm.resetAvoid();
+        intakeSystem.multiAxisArm.resetAvoidNeutral();
 
 
         if (aimpad.isDPadUpPressed()) {
@@ -181,7 +192,7 @@ public class ScoringSystem extends Mechanism {
             setActiveScoringState(ScoringState.OUTTAKE_REZEROING);
         }
 
-        if (aimpad2.isBPressed()) {
+        if (aimpad2.isAPressed()) {
             setActiveScoringState(ScoringState.SEARCHING);
         }
 

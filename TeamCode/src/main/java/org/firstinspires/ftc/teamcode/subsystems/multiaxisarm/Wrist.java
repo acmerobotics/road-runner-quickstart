@@ -14,13 +14,13 @@ public class Wrist extends Mechanism {
     public StateDrivenServo rotator;
     public StateDrivenServo flexor;
 
-    ServoState FLX_UP = new ServoState(.15);
+    ServoState FLX_UP = new ServoState(.05);
     ServoState FLX_NEUTRAL = new ServoState(.5);
-    ServoState FLX_DOWN = new ServoState(.93);
+    ServoState FLX_DOWN = new ServoState(1);
 
-    ServoState ROT_LEFT = new ServoState(0.12);
+    ServoState ROT_LEFT = new ServoState(0.05);
     ServoState ROT_CENTER = new ServoState(.47);
-    ServoState ROT_RIGHT = new ServoState(.82);
+    ServoState ROT_RIGHT = new ServoState(.89);
 
 
     @Override

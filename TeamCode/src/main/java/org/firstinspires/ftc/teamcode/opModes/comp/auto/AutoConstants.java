@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.v1.Robot;
 
 public class AutoConstants {
 
-    Robot robot = new Robot(true, AutoConstants.STARTING_POSITION);
+//    Robot robot = new Robot(true, AutoConstants.STARTING_POSITION);
 
     public static final Pose2D HIGH_SPECIMEN_DROP = new Pose2D(DistanceUnit.INCH, 32, 0, AngleUnit.DEGREES, 0);
     public static final Pose2D HIGH_SPECIMEN_DROP_PREP = new Pose2D(DistanceUnit.INCH, 26, 0, AngleUnit.DEGREES, 0);

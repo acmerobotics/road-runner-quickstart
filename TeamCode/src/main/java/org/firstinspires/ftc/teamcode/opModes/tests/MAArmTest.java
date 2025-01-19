@@ -80,7 +80,7 @@ public class MAArmTest extends OpMode {
     }
 
     public void elbowTest() {
-        arm.elbow.elbow.systemsCheck(aimPad1, telemetry);
+        arm.elbow.leftElbow.systemsCheck(aimPad1, telemetry);
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.FULL;
         }
