@@ -81,7 +81,7 @@ public class Lift {
         }
     }
 
-    public void resetEncoder(){
+    public void resetEncoder_Tele(){
         Slides.resetEncoder();
     }
 
@@ -128,7 +128,7 @@ public class Lift {
 
                 double pos = SlideLeft.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos >= toTicks(21)) {
+                if (pos >= toTicks(29)) {
                     SlideLeft.set(0.15);
                     SlideRight.set(-0.15);
                     return false;
@@ -151,7 +151,7 @@ public class Lift {
 
                 double pos = SlideLeft.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos <= toTicks(0)) {
+                if (pos <= toTicks(0.5)) {
                     SlideLeft.set(0);
                     SlideRight.set(0);
                     return false;
@@ -230,6 +230,16 @@ public class Lift {
                     SlideRight.set(-0.2);
                     return false;
                 }
+            }
+        };
+    }
+
+    public Action resetEncoder(){
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                SlideLeft.resetEncoder();
+                return false;
             }
         };
     }

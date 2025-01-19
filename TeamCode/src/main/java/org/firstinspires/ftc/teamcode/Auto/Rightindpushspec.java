@@ -41,17 +41,11 @@ public class Rightindpushspec extends LinearOpMode {
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(8, -38, Math.toRadians(90)), Math.toRadians(90));
-        TrajectoryActionBuilder tabZ = tab1.endTrajectory().fresh()
-                .splineToLinearHeading(new Pose2d(8, -45, Math.toRadians(90)), Math.toRadians(90));
-
-
-
-
-
-
-        Action Score1 = tabZ.endTrajectory().fresh()
-
+                .splineToLinearHeading(new Pose2d(8, -40, Math.toRadians(90)), Math.toRadians(90));
+        TrajectoryActionBuilder Back1 = tab1.endTrajectory().fresh()
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(8, -46, Math.toRadians(90)), Math.toRadians(90));
+        Action Score1 = Back1.endTrajectory().fresh()
                 .setTangent(Math.toRadians(0))
                 .splineToLinearHeading(new Pose2d(36, -36, Math.toRadians(90)), Math.toRadians(0))
                 .setTangent(Math.toRadians(90))
@@ -61,31 +55,32 @@ public class Rightindpushspec extends LinearOpMode {
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(44, -53, Math.toRadians(90)), Math.toRadians(270))
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(52, -12, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(45, -35, Math.toRadians(271)) , Math.toRadians(90))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(52, -53, Math.toRadians(90)) , Math.toRadians(270))
-                .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(90)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(44, -46, Math.toRadians(270)), Math.toRadians(270))
                 .build();
-        TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(42, -53, Math.toRadians(90)))
+        TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(44, -50, Math.toRadians(270)))
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(0, -34, Math.toRadians(90)), Math.toRadians(90));
-        Action Score3 = tab2.endTrajectory().fresh()
+                .splineToLinearHeading(new Pose2d(-4, -34, Math.toRadians(80)), Math.toRadians(90));
+        TrajectoryActionBuilder Back2 = drive.actionBuilder(new Pose2d( 0, -38, Math.toRadians(90)))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-4, -46, Math.toRadians(90)), Math.toRadians(90));
+
+        Action Score3 = Back2.endTrajectory().fresh()
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(270)), Math.toRadians(0))
                 .build();
+
         TrajectoryActionBuilder tab3 = drive.actionBuilder(new Pose2d(42, -53, Math.toRadians(90)))
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(2, -34, Math.toRadians(90)), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(2, -38, Math.toRadians(90)), Math.toRadians(90));
         Action Score5 = tab3.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(42, -53, Math.toRadians(270)), Math.toRadians(0))
                 .build();
         TrajectoryActionBuilder tab4 = drive.actionBuilder(new Pose2d(42, -53, Math.toRadians(90)))
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(4, -34, Math.toRadians(90)), Math.toRadians(90));
-
-
+                .splineToLinearHeading(new Pose2d(4, -38, Math.toRadians(90)), Math.toRadians(90));
 
         Action Score7 = tab4.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
@@ -112,6 +107,7 @@ public class Rightindpushspec extends LinearOpMode {
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(fourbar.FourBarUp());
         Actions.runBlocking(claw.ClawClose());
+        Actions.runBlocking(lift.resetEncoder());
 
         // claw open
         //specimen in
@@ -129,7 +125,8 @@ public class Rightindpushspec extends LinearOpMode {
         Action Score2 = tab2.build();
         Action Score4 = tab3.build();
         Action Score6 = tab4.build();
-        Action E = tabZ.build();
+        Action Back = Back1.build();
+        Action Backtwo= Back2.build();
 
 
 
@@ -141,21 +138,35 @@ public class Rightindpushspec extends LinearOpMode {
                 new SequentialAction(
                         toChambers,
                         lift.SlidesToBar_new(),
-                        new SleepAction(1),
                         fourbar.FourBarDown(),
-                        new SleepAction(2),
-                        E,
+                        new SleepAction(0.5),
+                        Back,
                         claw.ClawOpen(),
                         fourbar.FourBarUp(),
-                        new SleepAction(1),
+                        new SleepAction(0.5),
                         lift.SlidesDown_new(),
                         Score1,
+                        new SleepAction(1),
+                        fourbar.FourBarDown(),
+                        new SleepAction(0.5),
+                        claw.ClawClose(),
+                        new SleepAction(1.5),
+                        fourbar.FourBarUp(),
                         Score2,
+                        lift.SlidesToBar_new(),
+                        fourbar.FourBarDown(),
+                        new SleepAction(0.5),
+                        Backtwo,
+                        new SleepAction(1),
+                        claw.ClawOpen(),
+                        fourbar.FourBarUp(),
+                        new SleepAction(0.5),
+                        lift.SlidesDown_new(),
+                        Score7,
                         Score3,
                         Score4,
                         Score5,
-                        Score6,
-                        Score7
+                        Score6
 
                 )
         );
