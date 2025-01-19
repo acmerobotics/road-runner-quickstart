@@ -1,28 +1,42 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.acmerobotics.dashboard.config.Config;
+
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.mechanisms.v1.Arm;
-import org.firstinspires.ftc.teamcode.mechanisms.v1.Intake;
-import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
-import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.MecanumDriveV2;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Claw;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.LeftActuator;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftparantap;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 
 
-
-
-
-@TeleOp(name="Teledrive", group="demo")
+@TeleOp(name="Teleop Modular V3", group="Robot")
+//@Disabled
 @Config
-public class Teledrive extends LinearOpMode {
+public class TeleOpModular_V3 extends LinearOpMode {
 
     /* Variables that are used to set the arm to a specific position */
-    double armPosition = (int) Arm.ARM_COLLAPSED_INTO_ROBOT;
+    double armPosition = (int)Armv2.ARM_REST_POSITION;
     double armPositionFudgeFactor = 0;
+
+    public static double ARM_SPECIMEN_SCORE_POSITION = 200;
+    public static double LIFT_SCORE_POSITION = 650;
+
+    public static int RETURN_SLIDES_POSTION = 1000;
+
+
+    public static int RETURN_ACTUATOR_POSTION = 0;
+
+    public static int LIFT_HANG_POSITION = -1150;
+
+    public  static int LIFT_HANG_SLIDES_POSITION = -3200;
 
 
     static final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
@@ -33,27 +47,30 @@ public class Teledrive extends LinearOpMode {
 
     double liftPosition = LIFT_COLLAPSED;
 
+
     double cycletime = 0;
     double looptime = 0;
     double oldtime = 0;
-    double armposition = 0;
+
     double armLiftComp = 0;
-
-    public static double AXIAL_SCALE = 0.5;
-    public static double LATERAL_SCALE = 0.5;
-    public static double TURN_SCALE = 0.5;
-
-    boolean fieldCentric = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         Pose2d initialPose = new Pose2d(11.8, 61.7, Math.toRadians(90));
-        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        Arm arm = new Arm(hardwareMap);
-        Intake intake = new Intake(hardwareMap);
-        Wrist wrist = new Wrist(hardwareMap);
-        Lift lift = new Lift(hardwareMap);
+        MecanumDriveV2 drive = new MecanumDriveV2(hardwareMap, initialPose);
+        Armv2 arm = new Armv2(hardwareMap);
+        Wristv2 wrist = new Wristv2(hardwareMap);
+        Liftparantap liftparantap = new Liftparantap(hardwareMap);
+        Claw claw = new Claw(hardwareMap);
+        LeftActuator leftActuator = new LeftActuator(hardwareMap);
+        RightActuator rightActuator = new RightActuator(hardwareMap);
+
+        claw.clawClose();
+        wrist.WristFoldIn();
+        // temporary reset to run teleop only.
+        arm.reset();
+        armPosition = ARM_SPECIMEN_SCORE_POSITION;
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -70,55 +87,83 @@ public class Teledrive extends LinearOpMode {
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
 
+            y = squaredInputWithSign(y);
+            x = squaredInputWithSign(x);
+            rx = squaredInputWithSign(rx);
+
+            drive.moveRobotFieldCentric(y, x, rx);
+
             if (gamepad1.options) {
-                fieldCentric = true;
                 drive.resetYaw();
             }
 
-            if (fieldCentric) {
-                y = squaredInputWithSign(y) * AXIAL_SCALE;
-                x = squaredInputWithSign(x) * LATERAL_SCALE;
-                rx = squaredInputWithSign(rx) * TURN_SCALE;
+//            if(gamepad1.dpad_left){
+//                //leftActuator.motor.setTargetPosition(LeftActuator.ACTUATOR_UP);
+//                telemetry.addData("button pressed", "yes");
+//
+//                //leftActuator.motor.setTargetPosition(0);
+//                //leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                //leftActuator.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//                leftActuator.motor.setTargetPosition(LIFT_HANG_POSITION);
+//                leftActuator.motor.setVelocity(2000);
+//                leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//                rightActuator.motor.setTargetPosition(LIFT_HANG_POSITION);
+//                rightActuator.motor.setVelocity(2000);
+//                rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                //liftPosition = 1000;
+//
+//                liftparantap.motor.setTargetPosition(LIFT_HANG_SLIDES_POSITION);
+//                liftparantap.motor.setVelocity(2000);
+//                liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//
+//            } else if (gamepad1.dpad_right){
+//                leftActuator.motor.setTargetPosition(RETURN_ACTUATOR_POSTION);
+//                leftActuator.motor.setVelocity(2000);
+//                leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//                rightActuator.motor.setTargetPosition(RETURN_ACTUATOR_POSTION);
+//                rightActuator.motor.setVelocity(2000);
+//                rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//                liftparantap.motor.setTargetPosition(RETURN_SLIDES_POSTION);
+//                liftparantap.motor.setVelocity(2000);
+//                liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            }
 
-                armposition = arm.motor.getCurrentPosition();
 
-                if ((armposition > Arm.ARM_COLLECT - 50) || liftPosition > LIFT_SCORING_IN_HIGH_BASKET - 50){
-                    x *= 0.5;
-                    y *= 0.5;
-                    rx *= 0.5;
-                }
-                drive.moveRobotFieldCentric(y, x, rx);
-
-            } else {
-                double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-                double lateral =  -gamepad1.left_stick_x;
-                double yaw     =  -gamepad1.right_stick_x;
-                drive.moveRobot(axial, lateral, yaw);
-            }
-
-            /* Here we handle the three buttons that have direct control of the intake speed.
-            These control the continuous rotation servo that pulls elements into the robot,
-            If the user presses A, it sets the intake power to the final variable that
-            holds the speed we want to collect at.
-            If the user presses X, it sets the servo to Off.
-            And if the user presses B it reveres the servo to spit out the element.*/
-
-            /* TECH TIP: If Else statements:
-            We're using an else if statement on "gamepad1.x" and "gamepad1.b" just in case
-            multiple buttons are pressed at the same time. If the driver presses both "a" and "x"
-            at the same time. "a" will win over and the intake will turn on. If we just had
-            three if statements, then it will set the intake servo's power to multiple speeds in
-            one cycle. Which can cause strange behavior. */
-
+//            if (gamepad1.dpad_up){
+//                claw.clawClose();
+//                wrist.WristVertical();
+//                armPosition = ARM_SPECIMEN_SCORE_POSITION;
+//                liftPosition = LIFT_SCORE_POSITION;
+//            } else if (gamepad1.dpad_down) {
+//                claw.clawOpen();
+//                armPosition = ARM_SPECIMEN_SCORE_POSITION;
+//                liftPosition = LIFT_COLLAPSED;
+//                wrist.WristDown();
+//            }
+//
             if (gamepad1.a) {
-                intake.collect();
+                claw.clawClose();
             }
-            else if (gamepad1.x) {
-                intake.stop();
-            }
+
             else if (gamepad1.b) {
-                intake.deposit();
+                claw.clawOpen();
             }
+
+            if(gamepad1.x){
+                wrist.WristFoldOut();
+
+            } else if (gamepad1.y) {
+                wrist.WristFoldIn();
+            }
+
+            if (gamepad1.dpad_down){
+                armPosition = Armv2.ARM_PICKUP_GROUND_SAMPLE;
+            }
+
 
             /* Here we implement a set of if else statements to set our arm to different scoring positions.
             We check to see if a specific button is pressed, and then move the arm (and sometimes
@@ -126,53 +171,55 @@ public class Teledrive extends LinearOpMode {
             to start collecting. So it moves the armPosition to the ARM_COLLECT position,
             it folds out the wrist to make sure it is in the correct orientation to intake, and it
             turns the intake on to the COLLECT mode.*/
-
-//            if(gamepad1.right_bumper){
+//
+//            if(gamepad2.right_bumper){
 //                /* This is the intaking/collecting arm position */
-//                armPosition = Arm.ARM_COLLECT;
-//                wrist.foldOut();
-//                intake.collect();
+//                armPosition = Armv2.ARM_COLLECT;
+//                liftPosition = 800;
+//
+//
 //            }
 //
-//            else if (gamepad1.left_bumper){
+//            else if (gamepad2.left_bumper) {
 //                    /* This is about 20° up from the collecting position to clear the barrier
 //                    Note here that we don't set the wrist position or the intake power when we
 //                    select this "mode", this means that the intake and wrist will continue what
 //                    they were doing before we clicked left bumper. */
-//                armPosition = Arm.ARM_CLEAR_BARRIER;
+//                armPosition = Armv2.ARM_CLEAR_BARRIER;
+//                liftPosition = 800;
+//
 //            }
 //
-//            else if (gamepad1.y){
+//            else if (gamepad2.y){
 //                /* This is the correct height to score the sample in the LOW BASKET */
-//                armPosition = Arm.ARM_SCORE_SAMPLE_IN_LOW;
+//                armPosition = Armv2.ARM_SCORE_SAMPLE_IN_LOW;
 //            }
 //
-//            else if (gamepad1.dpad_left) {
+//            else if (gamepad2.dpad_left) {
 //                    /* This turns off the intake, folds in the wrist, and moves the arm
 //                    back to folded inside the robot. This is also the starting configuration */
-//                armPosition = Arm.ARM_COLLAPSED_INTO_ROBOT;
-//                intake.stop();
-//                wrist.foldIn();
+//                armPosition = Armv2.ARM_COLLAPSED_INTO_ROBOT;
+//                liftPosition = 0;
+//
 //            }
 //
-//            else if (gamepad1.dpad_right){
-//                /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
-//                armPosition = Arm.ARM_SCORE_SPECIMEN;
-//                wrist.foldIn();
+//            else if (gamepad2.dpad_right){
+//                // score sample in high basket
+//                armPosition = Armv2.ARM_SCORE_SAMPLE_IN_HIGH;
+//                liftPosition = 2800;
+//
 //            }
 //
-//            else if (gamepad1.dpad_up){
+//            else if (gamepad2.dpad_up){
 //                /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
-//                armPosition = Arm.ARM_ATTACH_HANGING_HOOK;
-//                intake.stop();
-//                wrist.foldOut();
+//                armPosition = Armv2.ARM_ATTACH_HANGING_HOOK;
+//
 //            }
 //
-//            else if (gamepad1.dpad_down){
+//            else if (gamepad2.dpad_down){
 //                /* this moves the arm down to lift the robot up once it has been hooked */
-//                armPosition = Arm.ARM_WINCH_ROBOT;
-//                intake.stop();
-//                wrist.foldIn();
+//                armPosition = Armv2.ARM_WINCH_ROBOT;
+//
 //            }
 
             /* Here we create a "fudge factor" for the arm position.
@@ -183,14 +230,14 @@ public class Teledrive extends LinearOpMode {
             than the other, it "wins out". This variable is then multiplied by our FUDGE_FACTOR.
             The FUDGE_FACTOR is the number of degrees that we can adjust the arm by with this function. */
 
-//            armPositionFudgeFactor = Arm.FUDGE_FACTOR * (gamepad1.right_trigger + (-gamepad1.left_trigger));
+            armPositionFudgeFactor = Armv2.FUDGE_FACTOR * (gamepad1.right_trigger + (-gamepad1.left_trigger));
 
 
             /* Here we set the target position of our arm to match the variable that was selected
             by the driver.
             We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
             arm.motor.setTargetPosition((int) (armPosition + armPositionFudgeFactor));
-            arm.motor.setVelocity(2500);
+            arm.motor.setVelocity(500);
             arm.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             /* TECH TIP: Encoders, integers, and doubles
@@ -234,21 +281,16 @@ public class Teledrive extends LinearOpMode {
             we are only incrementing it a small amount each cycle.
              */
 
-//            double liftPower = (gamepad2.right_trigger - gamepad2.left_trigger);
-//            liftPosition += liftPower;
-//
-//            if (gamepad2.right_bumper){
-//                liftPosition += 2800 * cycletime;
-//            }
-//            else if (gamepad2.left_bumper){
-//                liftPosition -= 2800 * cycletime;
-//            }
-//
-//            if (gamepad2.a) {
-//                wrist.foldOut();
-//            } else if (gamepad2.b) {
-//                wrist.foldIn();
-//            }
+            double liftPower = (gamepad2.right_trigger - gamepad2.left_trigger);
+            liftPosition += liftPower * 300;
+
+            if (gamepad2.right_bumper){
+                liftPosition += 2800 * cycletime;
+            }
+            else if (gamepad2.left_bumper){
+                liftPosition -= 2800 * cycletime;
+            }
+
 
             /*here we check to see if the lift is trying to go higher than the maximum extension.
              *if it is, we set the variable to the max.
@@ -261,10 +303,10 @@ public class Teledrive extends LinearOpMode {
                 liftPosition = 0;
             }
 
-            lift.motor.setTargetPosition((int) (liftPosition));
+           // liftparantap.motor.setTargetPosition((int) (liftPosition));
 
-            lift.motor.setVelocity(1300);
-            lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //liftparantap.motor.setVelocity(5000);
+           // liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
             /* Check to see if our arm is over the current limit, and report via telemetry. */
@@ -290,10 +332,9 @@ public class Teledrive extends LinearOpMode {
             /* send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("wrist servo", wrist.wrist.getPosition());
             telemetry.addData("armTarget: ", arm.motor.getTargetPosition());
-            telemetry.addData("arm Encoder: ", armposition);
-            telemetry.addData("lift target" , lift.motor.getTargetPosition());
-            telemetry.addData("lift position", lift.motor.getCurrentPosition());
-            telemetry.addData("FieldCentric?", fieldCentric);
+            telemetry.addData("arm Encoder: ", arm.motor.getCurrentPosition());
+            telemetry.addData("lift target" , liftparantap.motor.getTargetPosition());
+            telemetry.addData("lift position", liftparantap.motor.getCurrentPosition());
             telemetry.update();
 
         }

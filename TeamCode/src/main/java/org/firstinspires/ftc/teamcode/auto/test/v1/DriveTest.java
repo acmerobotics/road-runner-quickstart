@@ -1,0 +1,60 @@
+package org.firstinspires.ftc.teamcode.auto.test.v1;
+
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.MecanumDrive;
+
+
+
+@Autonomous(name = "\uD83D\uDD34 - drive test", group = "RoadRunner 1.0")
+@Disabled
+public class DriveTest extends LinearOpMode {
+
+
+    // Start position red near
+    Pose2d RED_SCORE_START_POSE = new Pose2d(-36, -60, Math.toRadians(0));
+
+
+    @Override
+    public void runOpMode() {
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_SCORE_START_POSE);
+//       Intake intake = new Intake(hardwareMap);
+//        Arm arm = new Arm(hardwareMap);
+//        Lift lift = new Lift(hardwareMap);
+        TrajectoryActionBuilder traj = drive.actionBuilder(RED_SCORE_START_POSE)
+                .strafeToLinearHeading(new Vector2d(-36, -56), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45));
+
+
+//        Action trajectoryActionCloseOut = traj.fresh()
+//                .strafeToLinearHeading(new Vector2d(-36, -12), Math.toRadians(180))
+//                .build();
+
+        while(!isStopRequested() && !opModeIsActive()) {
+
+        }
+
+        waitForStart();
+
+        if (isStopRequested()) return;
+
+        Actions.runBlocking(traj.build());
+
+
+        ;
+    } // runOpMode
+
+
+
+}
+
+

@@ -16,39 +16,33 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-//        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(11, -61, Math.toRadians(90)))
-//                        .strafeToLinearHeading(new Vector2d(60, -61), Math.toRadians(90))
-//                                .build());
 
-//        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-36,-61, Math.toRadians(90)))
-//                .strafeToLinearHeading(new Vector2d(-36, -10), Math.toRadians(90))
-//                .strafeToLinearHeading(new Vector2d(-26, -10), Math.toRadians(0))
-//                .build());
         DriveShim drive = myBot.getDrive();
+        //near basket
         myBot.runAction(drive.actionBuilder(new Pose2d(-38,-60, Math.toRadians(180)))
                 .strafeToLinearHeading(new Vector2d(-38, -56), Math.toRadians(180))
                 .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
-                .strafeToLinearHeading(new Vector2d(-28, -30), Math.toRadians(161))
+                .strafeToLinearHeading(new Vector2d(-48, -43), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
+                .strafeToLinearHeading(new Vector2d(-60, -40), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
+                .strafeToLinearHeading(new Vector2d(-60, -24), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
 
-//                .strafeToLinearHeading(new Vector2d(-36, -24), Math.toRadians(180))
-//                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(180+45))
-//
+                // near observation zone
+//        myBot.runAction(drive.actionBuilder(new Pose2d(9,-60, Math.toRadians(90)))
+//                .strafeToLinearHeading(new Vector2d(9, -34), Math.toRadians(90))
 
-//                .strafeToLinearHeading(new Vector2d(-44, -24), Math.toRadians(180))
-//                .strafeToLinearHeading(new Vector2d(-46, -24), Math.toRadians(180))
-//                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(180+45))
-//
-//
-//                .strafeToLinearHeading(new Vector2d(-54, -24), Math.toRadians(180))
-//                .strafeToLinearHeading(new Vector2d(-56, -24), Math.toRadians(180))
-//                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(180+45))
-//
 
-//-33, -9
+
+
+
+
+
 
                 .build());
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)

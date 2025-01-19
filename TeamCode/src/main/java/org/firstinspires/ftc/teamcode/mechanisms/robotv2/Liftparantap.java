@@ -2,26 +2,21 @@ package org.firstinspires.ftc.teamcode.mechanisms.robotv2;
 
 
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import java.security.PublicKey;
-
 @Config
-public class RightActuator {
+public class Liftparantap {
     public DcMotorEx motor;
 
     public static int ACTUATOR_COLLAPSED = 0;
-    public static int ACTUATOR_UP = 6800;
-    public RightActuator(HardwareMap hardwareMap) {
-        motor = hardwareMap.get(DcMotorEx.class, "rightactuator");
+    public static int ACTUATOR_UP = 100;
+    public Liftparantap(HardwareMap hardwareMap) {
+        motor = hardwareMap.get(DcMotorEx.class, "lift");
+        motor.setDirection(DcMotorSimple.Direction.FORWARD);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         /* Before starting the armMotor. We'll make sure the TargetPosition is set to 0.
         Then we'll set the RunMode to RUN_TO_POSITION. And we'll ask it to stop and reset encoder.
@@ -29,6 +24,7 @@ public class RightActuator {
         motor.setTargetPosition(0);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setTargetPosition(500);
     }
 
     // call reset() only from autonomous code and not from the teleop.
@@ -38,11 +34,5 @@ public class RightActuator {
         motor.setTargetPosition(0);
     }
 
-    public void up() {
-        motor.setTargetPosition(ACTUATOR_UP);
-    }
-    public void down() {
-        motor.setTargetPosition(ACTUATOR_COLLAPSED);
-    }
 }
 

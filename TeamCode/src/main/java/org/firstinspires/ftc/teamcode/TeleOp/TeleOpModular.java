@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,14 +9,14 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.mechanisms.Arm;
-import org.firstinspires.ftc.teamcode.mechanisms.Intake;
-import org.firstinspires.ftc.teamcode.mechanisms.Lift;
-import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Arm;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Intake;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
+
 
 @TeleOp(name="Teleop Modular", group="Robot")
-//@Disabled
-@Config
+@Disabled
 public class TeleOpModular extends LinearOpMode {
 
     /* Variables that are used to set the arm to a specific position */
@@ -103,6 +104,7 @@ public class TeleOpModular extends LinearOpMode {
             if(gamepad2.right_bumper){
                 /* This is the intaking/collecting arm position */
                 armPosition = Arm.ARM_COLLECT;
+                liftPosition = 800;
                 wrist.foldOut();
                 intake.collect();
             }
@@ -113,6 +115,9 @@ public class TeleOpModular extends LinearOpMode {
                     select this "mode", this means that the intake and wrist will continue what
                     they were doing before we clicked left bumper. */
                 armPosition = Arm.ARM_CLEAR_BARRIER;
+                liftPosition = 800;
+                wrist.foldOut();
+                intake.stop();
             }
 
             else if (gamepad2.y){
@@ -124,14 +129,16 @@ public class TeleOpModular extends LinearOpMode {
                     /* This turns off the intake, folds in the wrist, and moves the arm
                     back to folded inside the robot. This is also the starting configuration */
                 armPosition = Arm.ARM_COLLAPSED_INTO_ROBOT;
+                liftPosition = 0;
                 intake.stop();
                 wrist.foldIn();
             }
 
             else if (gamepad2.dpad_right){
-                /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
-                armPosition = Arm.ARM_SCORE_SPECIMEN;
-                wrist.foldIn();
+                // score sample in high basket
+                armPosition = Arm.ARM_SCORE_SAMPLE_IN_HIGH;
+                liftPosition = 2800;
+                wrist.foldOut();
             }
 
             else if (gamepad2.dpad_up){
@@ -208,7 +215,7 @@ public class TeleOpModular extends LinearOpMode {
              */
 
             double liftPower = (gamepad2.right_trigger - gamepad2.left_trigger);
-            liftPosition += liftPower;
+            liftPosition += liftPower * 300;
 
             if (gamepad2.right_bumper){
                 liftPosition += 2800 * cycletime;
@@ -236,7 +243,7 @@ public class TeleOpModular extends LinearOpMode {
 
             lift.motor.setTargetPosition((int) (liftPosition));
 
-            lift.motor.setVelocity(1300);
+            lift.motor.setVelocity(5000);
             lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 

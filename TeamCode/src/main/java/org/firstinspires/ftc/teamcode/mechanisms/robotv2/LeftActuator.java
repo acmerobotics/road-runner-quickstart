@@ -15,13 +15,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.security.PublicKey;
 
 @Config
-public class RightActuator {
+public class LeftActuator {
     public DcMotorEx motor;
 
     public static int ACTUATOR_COLLAPSED = 0;
     public static int ACTUATOR_UP = 6800;
-    public RightActuator(HardwareMap hardwareMap) {
-        motor = hardwareMap.get(DcMotorEx.class, "rightactuator");
+
+    public LeftActuator(HardwareMap hardwareMap) {
+        motor = hardwareMap.get(DcMotorEx.class, "leftactuator");
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         /* Before starting the armMotor. We'll make sure the TargetPosition is set to 0.
         Then we'll set the RunMode to RUN_TO_POSITION. And we'll ask it to stop and reset encoder.
