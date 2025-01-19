@@ -146,11 +146,11 @@ public class Rightindpushspec extends LinearOpMode {
                         new SleepAction(0.5),
                         lift.SlidesDown_new(),
                         Score1,
-                        new SleepAction(1),
+                        new SleepAction(0.5),
                         fourbar.FourBarDown(),
                         new SleepAction(0.5),
                         claw.ClawClose(),
-                        new SleepAction(1.5),
+                        new SleepAction(1),
                         fourbar.FourBarUp(),
                         Score2,
                         lift.SlidesToBar_new(),
@@ -162,11 +162,11 @@ public class Rightindpushspec extends LinearOpMode {
                         fourbar.FourBarUp(),
                         new SleepAction(0.5),
                         lift.SlidesDown_new(),
-                        Score7,
-                        Score3,
-                        Score4,
-                        Score5,
-                        Score6
+                        Score7
+                       // Score3,
+                       // Score4,
+                      //  Score5,
+                       // Score6
 
                 )
         );
