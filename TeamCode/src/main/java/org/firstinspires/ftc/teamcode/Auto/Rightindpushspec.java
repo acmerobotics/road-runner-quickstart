@@ -41,7 +41,7 @@ public class Rightindpushspec extends LinearOpMode {
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(8, -40, Math.toRadians(90)), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(8, -38, Math.toRadians(90)), Math.toRadians(90));
         TrajectoryActionBuilder Back1 = tab1.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(8, -46, Math.toRadians(90)), Math.toRadians(90));

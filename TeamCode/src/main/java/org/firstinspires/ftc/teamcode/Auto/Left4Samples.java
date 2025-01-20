@@ -29,27 +29,29 @@ public class Left4Samples extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
 // auto fix
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .splineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(226)), Math.toRadians(200));
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(200));
+
         TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-47, -40, Math.toRadians(90)), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(-48, -38, Math.toRadians(80)), Math.toRadians(80));
         TrajectoryActionBuilder tab3 = drive.actionBuilder(new Pose2d(-47, -40, Math.toRadians(90)))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(226)), Math.toRadians(226));
+                .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(226));
         TrajectoryActionBuilder tab4 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))
                 .setTangent(Math.toRadians(120))
                 .splineToLinearHeading(new Pose2d(-58, -40, Math.toRadians(90)), Math.toRadians(90));
         TrajectoryActionBuilder tab5 = drive.actionBuilder(new Pose2d(-58, -40, Math.toRadians(90)))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(226)), Math.toRadians(226));
+                .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(226));
         TrajectoryActionBuilder tab6 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))
                 .setTangent(Math.toRadians(45))
                 .splineToLinearHeading(new Pose2d(-30, 10, Math.toRadians(180)), Math.toRadians(0));
 
         // actions that need to happen on init; for instance, a claw tightening.
-        Actions.runBlocking(claw.ClawOpen());
         Actions.runBlocking(fourbar.FourBarUp());
-        Actions.runBlocking(rotation.RotationHorizontal());
+        Actions.runBlocking(claw.ClawClose());
+        Actions.runBlocking(lift.resetEncoder());
 
 
         waitForStart();
@@ -69,15 +71,36 @@ public class Left4Samples extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         toBasket,
-                        new SleepAction(2),
+                        lift.SlidesToNet(),
+                        new SleepAction(0.5),
+                        fourbar.FourBarDown(),
+                        new SleepAction(1),
+                        claw.ClawOpen(),
+                        new SleepAction(0.5),
+                        fourbar.FourBarUp(),
+                        new SleepAction(1),
+                        lift.SlidesDown_new(),
                         pickSample1,
-                        new SleepAction(2),
+                        fourbar.FourBarDown(),
+                        new SleepAction(1),
+                        claw.ClawClose(),
+                        new SleepAction(0.5),
+                        fourbar.FourBarUp(),
                         dropSample1,
-                        new SleepAction(2),
+                        lift.SlidesToNet(),
+                        new SleepAction(0.5),
+                        fourbar.FourBarDown(),
+                        new SleepAction(0.5),
+                        claw.ClawOpen(),
+                        new SleepAction(0.5),
+                        fourbar.FourBarUp(),
+                        new SleepAction(1),
+                        lift.SlidesDown_new(),
+                        new SleepAction(1),
                         pickSample2,
-                        new SleepAction(2),
+                        new SleepAction(0.5),
                         dropSample2,
-                        new SleepAction(2),
+                        new SleepAction(0.5),
                         park
                 )
         );

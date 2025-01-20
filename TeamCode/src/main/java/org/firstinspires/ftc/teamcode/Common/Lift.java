@@ -191,23 +191,23 @@ public class Lift {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    SlideLeft.set(0.8);
-                    SlideRight.set(-0.8);
+                    SlideLeft.set(0.9);
+                    SlideRight.set(-0.9);
                     initialized = true;
                 }
 
                 double pos = SlideLeft.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < toTicks(47)) {
-                    return true;
-                } else {
+                if (pos >= toTicks(45.8)) {
                     SlideLeft.set(0.15);
                     SlideRight.set(-0.15);
                     return false;
                 }
+                return true;
             }
         };
     }
+
 
     public Action SlidesDown() {
         return new Action() {
