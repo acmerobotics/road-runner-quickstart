@@ -34,13 +34,13 @@ public class Left4Samples extends LinearOpMode {
 
         TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-48, -38, Math.toRadians(80)), Math.toRadians(80));
+                .splineToLinearHeading(new Pose2d(-48, -36, Math.toRadians(80)), Math.toRadians(80));
         TrajectoryActionBuilder tab3 = drive.actionBuilder(new Pose2d(-47, -40, Math.toRadians(90)))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(226));
+                .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(270));
         TrajectoryActionBuilder tab4 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))
                 .setTangent(Math.toRadians(120))
-                .splineToLinearHeading(new Pose2d(-58, -40, Math.toRadians(90)), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(-60, -40, Math.toRadians(90)), Math.toRadians(90));
         TrajectoryActionBuilder tab5 = drive.actionBuilder(new Pose2d(-58, -40, Math.toRadians(90)))
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(226));
