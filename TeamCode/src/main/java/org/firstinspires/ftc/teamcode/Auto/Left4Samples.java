@@ -37,7 +37,7 @@ public class Left4Samples extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(-48, -36, Math.toRadians(80)), Math.toRadians(80));
         TrajectoryActionBuilder tab3 = drive.actionBuilder(new Pose2d(-47, -40, Math.toRadians(90)))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(270));
+                .splineToLinearHeading(new Pose2d(-53, -52, Math.toRadians(226)), Math.toRadians(270));
         TrajectoryActionBuilder tab4 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))
                 .setTangent(Math.toRadians(120))
                 .splineToLinearHeading(new Pose2d(-60, -40, Math.toRadians(90)), Math.toRadians(90));
@@ -84,7 +84,7 @@ public class Left4Samples extends LinearOpMode {
                         fourbar.FourBarDown(),
                         new SleepAction(1),
                         claw.ClawClose(),
-                        new SleepAction(0.5),
+                        new SleepAction(1.5),
                         fourbar.FourBarUp(),
                         dropSample1,
                         lift.SlidesToNet(),
@@ -94,7 +94,7 @@ public class Left4Samples extends LinearOpMode {
                         claw.ClawOpen(),
                         new SleepAction(0.5),
                         fourbar.FourBarUp(),
-                        new SleepAction(1),
+                        new SleepAction(1.5),
                         lift.SlidesDown_new(),
                         new SleepAction(1),
                         pickSample2,
