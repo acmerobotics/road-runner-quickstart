@@ -14,13 +14,13 @@ public class Teleop extends LinearOpMode {
     static MecanumDrive drive;
     static GamepadEx gamepad1Ex;
     static GamepadEx gamepad2Ex;
-    static RobotNew robot;
+    static Robot robot;
     static Extension extension;
     static Lift slides;
     long startTime;
 
     private  void HardwareStart(){
-        robot = new RobotNew();
+        robot = new Robot();
         robot.init(hardwareMap);
         drive = new MecanumDrive(robot.FrontLeft, robot.FrontRight, robot.BackLeft, robot.BackRight);
 

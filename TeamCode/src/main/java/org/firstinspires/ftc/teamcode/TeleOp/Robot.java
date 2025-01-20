@@ -3,64 +3,79 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Common.Constants;
 
 public class Robot {
 
-    public static MotorEx TopLeft;
-    public static MotorEx TopRight;
-    public static MotorEx BottomLeft;
-    public static MotorEx BottomRight;
-    public static DcMotor Arm1, Arm2;
-    
-    public static SimpleServo Claw;
-    public static SimpleServo Claw2;
-    public static SimpleServo Hanging;
+    public MotorEx FrontLeft;
+    public MotorEx FrontRight;
+    public MotorEx BackLeft;
+    public MotorEx BackRight;
 
-    public static SimpleServo YServo;
-    public static SimpleServo Drone;
+    public MotorEx SlideLeft;
+    public MotorEx SlideRight;
+    public MotorGroup Slides;
+
+    public MotorEx ExtensionRight;
+    public MotorEx ExtensionLeft;
+    public MotorGroup Extension;
+
+    public SimpleServo HangingLowBar;
+    public SimpleServo HangingHighBar;
+    public SimpleServo FourBarLeft;
+    public SimpleServo ClawGrip;
+    public SimpleServo ClawRotation;
+
+    public SimpleServo CoAxial;
 
     private static HardwareMap hwMapRobot;
 
 
 
-    public static void init(HardwareMap hwMap, boolean drive) {
+    public void init(HardwareMap hwMap) {
 
         hwMapRobot = hwMap;
 
-        Arm1 = hwMap.get(DcMotor.class, Constants.Arm1ConfigName);
-        Arm2 = hwMap.get(DcMotor.class, Constants.Arm2ConfigName);
-        
-        YServo = new SimpleServo(hwMapRobot, Constants.YServoConfigName, 0.0, 1.0);
-        
-        Claw = new SimpleServo(hwMapRobot, Constants.Claw1ConfigName, 0.0, 1.0);
-        
-        Claw2 = new SimpleServo(hwMapRobot, Constants.Claw2ConfigName, 0.0, 1.0);
-        
-        Drone = new SimpleServo(hwMapRobot, Constants.DroneConfigName, 0.0, 1.0);
-        
-        Hanging = new SimpleServo(hwMapRobot, Constants.HangingConfigName, 0.0, 1.0);
+        SlideLeft = new MotorEx(hwMap, Constants.SlideLeftName);
+        SlideLeft.setRunMode(Motor.RunMode.RawPower);
+        SlideLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        if (drive){
-            initDriveBase();
-        }
+        SlideRight = new MotorEx(hwMap, Constants.SlideRightName);
+        SlideRight.setRunMode(Motor.RunMode.RawPower);
+        SlideRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        Slides = new MotorGroup(SlideLeft, SlideRight);
+
+        ExtensionRight = new MotorEx(hwMap, "ER");
+        ExtensionRight.setRunMode(Motor.RunMode.RawPower);
+        ExtensionRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        ExtensionLeft = new MotorEx(hwMap, "EL");
+        ExtensionLeft.setRunMode(Motor.RunMode.RawPower);
+        ExtensionLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        Extension = new MotorGroup(ExtensionLeft, ExtensionRight);
+
+        FourBarLeft = new SimpleServo(hwMap, "VFBL", 0.0, 1.0);
+        ClawGrip = new SimpleServo(hwMap, "CL", 0.0, 1.0);
+        ClawRotation = new SimpleServo(hwMap, "CR", 0.0, 1.0);
+
+//        YServo = new SimpleServo(hwMapRobot, Constants.YServoConfigName, 0.0, 1.0);
+//        Claw = new SimpleServo(hwMapRobot, Constants.Claw1ConfigName, 0.0, 1.0);
+//        HangingHighBar = new SimpleServo(hwMap, Constants.HangingHighName, 0.0, 1.0);
+//        HangingLowBar = new SimpleServo(hwMap, Constants.HangingLowName, 0.0, 1.0);
+
+        FrontLeft = new MotorEx(hwMap, "FL", Motor.GoBILDA.RPM_312);
+        FrontLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        FrontRight = new MotorEx(hwMap, "FR", Motor.GoBILDA.RPM_312);
+        FrontRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        BackLeft = new MotorEx(hwMap, "BL", Motor.GoBILDA.RPM_312);
+        BackLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        BackRight = new MotorEx(hwMap, "BR", Motor.GoBILDA.RPM_312);
+        BackRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
     }
-    private static void initDriveBase(){
-        TopLeft = new MotorEx(hwMapRobot, "FL", Motor.GoBILDA.RPM_435);
-        TopLeft.setInverted(true);
-
-        TopRight = new MotorEx(hwMapRobot, "FR", Motor.GoBILDA.RPM_435);
-        TopRight.setInverted(true);
-
-        BottomLeft = new MotorEx(hwMapRobot, "BL", Motor.GoBILDA.RPM_435);
-        BottomLeft.setInverted(true);
-
-        BottomRight = new MotorEx(hwMapRobot, "BR", Motor.GoBILDA.RPM_435);
-        BottomRight.setInverted(true);
-
-    }
-
 }
