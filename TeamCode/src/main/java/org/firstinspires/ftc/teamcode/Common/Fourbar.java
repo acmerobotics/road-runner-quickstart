@@ -42,7 +42,7 @@ public class Fourbar {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                four_bar.setPosition(0.1);
+                four_bar.setPosition(0.4);
                 return false;
             }
         };

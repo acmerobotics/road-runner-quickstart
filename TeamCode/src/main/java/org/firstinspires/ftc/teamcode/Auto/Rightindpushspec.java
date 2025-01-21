@@ -49,20 +49,20 @@ public class Rightindpushspec extends LinearOpMode {
                 .setTangent(Math.toRadians(0))
                 .splineToLinearHeading(new Pose2d(36, -36, Math.toRadians(90)), Math.toRadians(0))
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(36, -12, Math.toRadians(90)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(36, -10, Math.toRadians(90)), Math.toRadians(90))
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(44,  -12, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(46,  -10, Math.toRadians(90)), Math.toRadians(0))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(44, -53, Math.toRadians(90)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(46, -53, Math.toRadians(90)), Math.toRadians(270))
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(45, -35, Math.toRadians(271)) , Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(44, -35, Math.toRadians(271)) , Math.toRadians(90))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(44, -46, Math.toRadians(270)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(44, -43, Math.toRadians(270)), Math.toRadians(270))
                 .build();
-        TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(44, -50, Math.toRadians(270)))
+        TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(44, -43, Math.toRadians(270)))
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-4, -34, Math.toRadians(80)), Math.toRadians(90));
-        TrajectoryActionBuilder Back2 = drive.actionBuilder(new Pose2d( 0, -38, Math.toRadians(90)))
+                .splineToLinearHeading(new Pose2d(-4, -40, Math.toRadians(90)), Math.toRadians(90));
+        TrajectoryActionBuilder Back2 = drive.actionBuilder(new Pose2d( 0, -40, Math.toRadians(90)))
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(-4, -46, Math.toRadians(90)), Math.toRadians(90));
 
