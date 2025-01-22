@@ -111,4 +111,11 @@ public class MultiAxisArm extends Mechanism {
         wrist.rotateCenter();
         elbow.down();
     }
+
+    public void custom(double handPosition, double wristFlexPosition, double wristRotatePosition, double elbowPosition) {
+        hand.custom(handPosition);
+        wrist.flexCustom(wristFlexPosition);
+        wrist.rotateCustom(wristRotatePosition);
+        elbow.custom(elbowPosition);
+    }
 }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.generic;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.hardware.lynx.LynxModule;

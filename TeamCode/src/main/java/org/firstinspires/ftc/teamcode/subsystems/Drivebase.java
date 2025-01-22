@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode.subsystems.v1;
+package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.aimrobotics.aimlib.control.PIDController;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -11,14 +9,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.GoBildaPinpointDriver;
-import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.Pose2D;
 import org.firstinspires.ftc.teamcode.settings.GamepadSettings;
 import org.firstinspires.ftc.teamcode.util.InputModification;
-
-import java.util.Locale;
 
 public class Drivebase extends Mechanism {
 
@@ -29,7 +22,6 @@ public class Drivebase extends Mechanism {
 
     @Override
     public void init(HardwareMap hwMap) {
-        drive = new MecanumDrive(hwMap, new Pose2d(new Vector2d(0, 0), 0));
         setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
@@ -49,17 +41,17 @@ public class Drivebase extends Mechanism {
     }
 
     @Override
-    public void loop(AIMPad aimpad) {
-        manualDrive(aimpad, false);
+    public void loop(AIMPad gamepad1) {
+        manualDrive(gamepad1, false);
     }
 
     private void manualDrive(AIMPad gamepad, boolean isFieldCentric) {
         double y = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickY()), GamepadSettings.EXPONENT_MODIFIER);
-        double x = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickX()), GamepadSettings.EXPONENT_MODIFIER);
-        double rx = InputModification.poweredInput(deadzonedStickInput(-gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
+        double x = InputModification.poweredInput(deadzonedStickInput(gamepad.getLeftStickX()), GamepadSettings.EXPONENT_MODIFIER);
+        double rx = InputModification.poweredInput(deadzonedStickInput(gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
 
         // Create left stick vector
-        Vector2d leftStick = new Vector2d(y, x);
+        Vector2d leftStick = new Vector2d(x, y);
 
         // Rotate left stick vector by -heading if in fieldcentric mode
         if (isFieldCentric) {

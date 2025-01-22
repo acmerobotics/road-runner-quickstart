@@ -1,12 +1,8 @@
-package org.firstinspires.ftc.teamcode.opModes.comp.auto.qual2;
+package org.firstinspires.ftc.teamcode.opModes.comp.auto.supers;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.Pose2D;
-
-public class Qual2AutoConstants {
+public class SupersAutoConstants {
     //in inches
 //THIS IS FOR RED HIGH BASKET!!!!!!!!!!!!!!!!!
 //scoring the pre-load one

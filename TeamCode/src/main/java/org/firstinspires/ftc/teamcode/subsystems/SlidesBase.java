@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.generic;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.aimrobotics.aimlib.control.FeedforwardController;
 import com.aimrobotics.aimlib.control.LowPassFilter;
@@ -20,21 +20,18 @@ public class SlidesBase extends Mechanism {
     private DcMotorEx activeEncoderMotor;
     private double lastActiveEncoderPosition;
 
-    String leftSlideName;
-    String rightSlideName;
+    private final String leftSlideName;
+    private final String rightSlideName;
 
-    DcMotorSimple.Direction leftMotorDirection;
-    DcMotorSimple.Direction rightMotorDirection;
+    private final DcMotorSimple.Direction leftMotorDirection;
+    private final DcMotorSimple.Direction rightMotorDirection;
 
-    double activeTargetPosition = 0;
-    double manualPower = 0;
+    private double activeTargetPosition = 0;
+    private double manualPower = 0;
 
-    PIDController pidController;
-    FeedforwardController feedforwardController;
-    LowPassFilter lowPassFilter;
-    SimpleControlSystem controlSystem;
+    private final SimpleControlSystem controlSystem;
 
-    public static final double PROXIMITY_THRESHOLD = 30;
+    private static final double PROXIMITY_THRESHOLD = 30;
     private static final double CURRENT_THRESHOLD = 5000;
     private static final double MINIMUM_POWER = 0.03;
 
@@ -70,9 +67,9 @@ public class SlidesBase extends Mechanism {
         this.rightSlideName = rightSlideName;
         this.leftMotorDirection = leftMotorDirection;
         this.rightMotorDirection = rightMotorDirection;
-        pidController = new PIDController(kP, kI, kD, derivativeLowPassGain, integralSumMax);
-        feedforwardController = new FeedforwardController(kV, kA, kStatic, kCos, kG);
-        lowPassFilter = new LowPassFilter(lowPassGain);
+        PIDController pidController = new PIDController(kP, kI, kD, derivativeLowPassGain, integralSumMax);
+        FeedforwardController feedforwardController = new FeedforwardController(kV, kA, kStatic, kCos, kG);
+        LowPassFilter lowPassFilter = new LowPassFilter(lowPassGain);
         controlSystem = new SimpleControlSystem(pidController, feedforwardController, lowPassFilter);
     }
 
@@ -101,31 +98,9 @@ public class SlidesBase extends Mechanism {
                 update();
                 break;
             case MANUAL:
-                manualMode();
+                applyManualPower();
                 break;
         }
-    }
-
-    public void setActiveControlState(SlidesControlState activeControlState) {
-        this.activeControlState = activeControlState;
-    }
-
-
-    private void manualMode() {
-        if (Math.abs(manualPower) > MINIMUM_POWER) {
-            setPower(manualPower);
-        } else {
-            holdPosition();
-        }
-    }
-
-    private void manualMode(double power) {
-        updateManualPower(power);
-        manualMode();
-    }
-
-    public void updateManualPower(double power) {
-        manualPower = power;
     }
 
     /**
@@ -141,9 +116,38 @@ public class SlidesBase extends Mechanism {
      * Set the zero power behavior of the slides
      * @param behavior the zero power behavior to set the slides to
      */
-    private void setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior behavior) {
+    public void setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior behavior) {
         leftSlide.setZeroPowerBehavior(behavior);
         rightSlide.setZeroPowerBehavior(behavior);
+    }
+
+    /**
+     * Set the active control state of the slides
+     * @param activeControlState the active control state of the slides
+     */
+    public void setActiveControlState(SlidesControlState activeControlState) {
+        this.activeControlState = activeControlState;
+    }
+
+
+    /**
+     * Apply a preset manual power to the slides. If the power is below the minimum power threshold, hold the position.
+     * Use with updateManualPower() to set the manual power
+     */
+    private void applyManualPower() {
+        if (Math.abs(manualPower) > MINIMUM_POWER) {
+            setPower(manualPower);
+        } else {
+            holdPosition();
+        }
+    }
+
+    /**
+     * Update the manual power of the slides
+     * @param power the power to set the slides to
+     */
+    public void updateManualPower(double power) {
+        manualPower = power;
     }
 
     /**
@@ -152,49 +156,10 @@ public class SlidesBase extends Mechanism {
      * Slides will likely be running every loop
      * @param power the power to set the slides to
      */
-    public void setPower(double power) {
+    private void setPower(double power) {
         leftSlide.setPower(power);
         rightSlide.setPower(power);
         updateLastPosition();
-    }
-
-    /**
-     * Stop the slides and set to 0 power
-     */
-    public void stop() {
-        setPower(0);
-    }
-
-    /**
-     * Update the power of the slides based on the control system's output
-     */
-    public void update() {
-        double power = getTargetOutputPower();
-        setPower(power);
-    }
-
-    /**
-     * Hold the position of the slides
-     */
-    public void holdPosition() {
-        setTargetPosition(getLastPosition());
-        update();
-    }
-
-    public void aLittleUp(){
-        setTargetPosition(getCurrentPosition() + inchesToTicks(HEIGHT_INCREMENT));
-    }
-
-    public void aLittleDown(){
-        setTargetPosition(getCurrentPosition() - inchesToTicks(HEIGHT_INCREMENT));
-    }
-    /**
-     * Set the target position for the slides
-     * @param targetPosition the target position for the slides
-     */
-    public void setTargetPosition(double targetPosition) {
-        activeTargetPosition = targetPosition;
-        controlSystem.setTarget(activeTargetPosition);
     }
 
     /**
@@ -206,11 +171,44 @@ public class SlidesBase extends Mechanism {
     }
 
     /**
+     * Update the power of the slides based on the control system's output
+     */
+    private void update() {
+        double power = getTargetOutputPower();
+        setPower(power);
+    }
+
+    /**
+     * Hold the position of the slides
+     */
+    private void holdPosition() {
+        setTargetPosition(getLastPosition());
+        update();
+    }
+
+    /**
+     * Set the target position for the slides
+     * @param targetPosition the target position for the slides
+     */
+    public void setTargetPosition(double targetPosition) {
+        activeTargetPosition = targetPosition;
+        controlSystem.setTarget(activeTargetPosition);
+    }
+
+    /**
      * Check if the slides are at the target position
      * @return true if the slides are within the proximity threshold of the target position
      */
     public boolean isAtTargetPosition() {
         return Math.abs(getCurrentPosition() - activeTargetPosition) < PROXIMITY_THRESHOLD;
+    }
+
+    /**
+     * Check if the slides are over the current threshold
+     * @return true if the slides are over the current threshold
+     */
+    public boolean currentSpikeDetected() {
+        return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > CURRENT_THRESHOLD;
     }
 
     /**
@@ -224,7 +222,7 @@ public class SlidesBase extends Mechanism {
     /**
      * Set the last active encoder position to the encoder motor's current position
      */
-    public void updateLastPosition() {
+    private void updateLastPosition() {
         lastActiveEncoderPosition = activeEncoderMotor.getCurrentPosition();
     }
 
@@ -232,24 +230,7 @@ public class SlidesBase extends Mechanism {
      * Get the last active encoder position
      * @return the last active encoder position
      */
-    public double getLastPosition() {
+    private double getLastPosition() {
         return lastActiveEncoderPosition;
     }
-
-    /**
-     * Check if the slides are over the current threshold
-     * @return true if the slides are over the current threshold
-     */
-    public boolean currentSpikeDetected() {
-        return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > CURRENT_THRESHOLD;
-    }
-
-    public double ticksToInches(double ticks){
-        return ticks * TICK_TO_INCH_RATIO;
-    }
-
-    public double inchesToTicks(double inches) {
-        return inches / TICK_TO_INCH_RATIO;
-    }
 }
-
