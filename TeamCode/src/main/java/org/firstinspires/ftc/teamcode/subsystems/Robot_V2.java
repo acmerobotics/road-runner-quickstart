@@ -19,6 +19,7 @@ public class Robot_V2 extends Mechanism {
 
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
-
+        drivebase.loop(aimpad);
+        scoringAssembly.loop(aimpad, aimpad2);
     }
 }
