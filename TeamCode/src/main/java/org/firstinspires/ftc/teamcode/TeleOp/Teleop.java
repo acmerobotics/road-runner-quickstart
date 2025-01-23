@@ -30,7 +30,7 @@ public class Teleop extends LinearOpMode {
         // Init Claw Closed, Four Bar Completely Up, and Rotation at straight
         robot.ClawGrip.setPosition(0);
         robot.FourBarLeft.setPosition(1);
-        robot.ClawRotation.setPosition(1);
+        robot.ClawRotation.setPosition(0.974);
         startTime = System.currentTimeMillis();
     }
 
@@ -65,18 +65,18 @@ public class Teleop extends LinearOpMode {
             telemetry.update();
 
             if (gamepad2Ex.getRightY() > 0.1){ // Extension Out
-                robot.ExtensionRight.set(1);
-                robot.ExtensionLeft.set(1);
-            } else if (gamepad2Ex.getRightY() < -0.1) { // Extension In
                 robot.ExtensionRight.set(-1);
                 robot.ExtensionLeft.set(-1);
+            } else if (gamepad2Ex.getRightY() < -0.1) { // Extension In
+                robot.ExtensionRight.set(1);
+                robot.ExtensionLeft.set(1);
             } else {
                 robot.ExtensionRight.set(0);
                 robot.ExtensionLeft.set(0);
             }
 
             if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1){
-                robot.FourBarLeft.setPosition(0.3);
+                robot.FourBarLeft.setPosition(0.4);
             } else{
                 robot.FourBarLeft.setPosition(0.9);
             }
@@ -90,11 +90,11 @@ public class Teleop extends LinearOpMode {
             // left limit is 0 right limit is 1
 
             if (gamepad2Ex.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
-                robot.ClawRotation.setPosition(1);
+                robot.ClawRotation.setPosition(0.974);
             }
 
             if (gamepad2Ex.getButton(GamepadKeys.Button.LEFT_BUMPER)){
-                robot.ClawRotation.setPosition(0.5);
+                robot.ClawRotation.setPosition(0.9215);
             }
         }
     }
