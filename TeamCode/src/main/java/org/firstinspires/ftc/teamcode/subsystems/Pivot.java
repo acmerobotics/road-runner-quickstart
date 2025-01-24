@@ -17,18 +17,19 @@ public class Pivot extends Mechanism {
     private DcMotorEx pivot;
 
     private final SimpleControlSystem controlSystem;
+  
     public enum PivotControlState {
         AUTONOMOUS, MANUAL
     }
 
+    private PivotControlState activeControlState = PivotControlState.AUTONOMOUS;
+  
     private SlidesBase.SlidesControlState activeControlState = SlidesBase.SlidesControlState.AUTONOMOUS;
+  
     private double lastPosition;
     private double activeTargetPosition = 0;
     private static final double MINIMUM_POWER = 0.03;
     private double manualPower = 0;
-
-
-
     //todo: set pid values
 
     private static final double kP = 0.006;
@@ -43,21 +44,22 @@ public class Pivot extends Mechanism {
     private static final double kG = 0.0;
     private static final double lowPassGain = 0.15;
 
-    /**
-     * Constructor for the slides base
-     * @param kP the proportional gain
-     * @param kI the integral gain
-     * @param kD the derivative gain
-     * @param derivativeLowPassGain the derivative low pass gain
-     * @param integralSumMax the maximum integral sum
-     * @param kV the velocity feedforward gain
-     * @param kA  the acceleration feedforward gain
-     * @param kStatic the static feedforward gain
-     * @param kCos the cosine feedforward gain (Only this or kG should be used)
-     * @param kG the gravity feedforward gain (Only this or kCos should be used)
-     * @param lowPassGain the low pass gain
-     */
-    public Pivot(double kP, double kI, double kD, double derivativeLowPassGain, double integralSumMax, double kV, double kA, double kStatic, double kCos, double kG, double lowPassGain) {
+    enum PivotPosition {
+        LOW(0),
+        HIGH(0),
+        MEDIUM(0),
+        HANG(0);
+        //what does this do:
+        private final int position;
+
+        PivotPosition(int position) {
+            this.position = position;
+        }
+    }
+
+    public PivotPosition activePivotPosition = PivotPosition.LOW;
+
+    public Pivot() {
         PIDController pidController = new PIDController(kP, kI, kD, derivativeLowPassGain, integralSumMax);
         FeedforwardController feedforwardController = new FeedforwardController(kV, kA, kStatic, kCos, kG);
         LowPassFilter lowPassFilter = new LowPassFilter(lowPassGain);
@@ -75,8 +77,8 @@ public class Pivot extends Mechanism {
     }
 
     @Override
-    public void loop(AIMPad aimpad){
-        switch (activeControlState){
+    public void loop(AIMPad aimpad) {
+        switch (activeControlState) {
             case AUTONOMOUS:
                 update();
                 break;
@@ -91,6 +93,7 @@ public class Pivot extends Mechanism {
     private void updateLastPosition() {
         lastPosition = pivot.getCurrentPosition();
     }
+      
     private void setPower(double power) {
         pivot.setPower(power);
         updateLastPosition();
@@ -99,15 +102,22 @@ public class Pivot extends Mechanism {
     private double getTargetOutputPower() {
         return controlSystem.update(pivot.getCurrentPosition());
     }
+      
     private void update() {
         double power = getTargetOutputPower();
         setPower(power);
     }
 
-    public void setTargetPosition(double targetPosition) {
+    private void setTargetPosition(double targetPosition) {
         activeTargetPosition = targetPosition;
         controlSystem.setTarget(activeTargetPosition);
     }
+
+    private void setTargetPosition(double targetPosition) {
+        activeTargetPosition = targetPosition;
+        controlSystem.setTarget(activeTargetPosition);
+    }
+      
     private void holdPosition() {
         setTargetPosition(lastPosition);
         update();
@@ -121,6 +131,21 @@ public class Pivot extends Mechanism {
         }
     }
 
+    private void updateManualPower(double power) {
+        manualPower = power;
+    }
 
+    private void setActiveControlState(PivotControlState activeControlState) {
+        this.activeControlState = activeControlState;
+    }
 
+    public void setPivotPosition(PivotPosition activePivotPosition) {
+        setActiveControlState(PivotControlState.AUTONOMOUS);
+        this.activePivotPosition = activePivotPosition;
+    }
+
+    public void setPivotAtPower(double power) {
+        setActiveControlState(PivotControlState.MANUAL);
+        updateManualPower(power);
+    }
 }
