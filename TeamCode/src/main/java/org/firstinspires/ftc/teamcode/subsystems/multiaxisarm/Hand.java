@@ -42,4 +42,13 @@ public class Hand extends Mechanism {
     public void custom(double position) {
         hand.setActiveStateCustom(position);
     }
+
+    public void toggle() {
+//        if (hand.setActiveTargetState(CLOSED).equals(OPEN)) {
+//            close();
+//        } else {
+//            open();
+//        }
+    }
+
 }

@@ -5,11 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.MultiAxisArm;
+import org.firstinspires.ftc.teamcode.subsystems.Slides;
 
 @TeleOp(name="ArmTest", group="AAA_COMPETITION")
 public class MAArmTest extends OpMode {
 
     MultiAxisArm arm = new MultiAxisArm();
+    Slides slides = new Slides();
 
     AIMPad aimPad1;
     AIMPad aimPad2;
@@ -23,6 +25,7 @@ public class MAArmTest extends OpMode {
     @Override
     public void init() {
         arm.init(hardwareMap);
+        slides.init(hardwareMap);
 
         aimPad1 = new AIMPad(gamepad1);
         aimPad2 = new AIMPad(gamepad2);
@@ -88,13 +91,27 @@ public class MAArmTest extends OpMode {
 
     public void fullTest() {
         arm.loop(aimPad1);
-        if (aimPad1.isAPressed()) {
-            arm.resetClosed();
-        } else if (aimPad1.isBPressed()) {
-            arm.searchingNeutral();
+        if (aimPad1.isRightTriggerPressed()) {
+            //TODO potentially swap for tested aimPad method (>0.5)
+            arm.hand.toggle();
+            //ADD CODE TO TOGGLE CLASS in hand FILE (to toggle open and close)
         }
-        if (aimPad1.isStartPressed()) {
-            activeTestingState = TestingState.HAND;
+        if (aimPad1.isRightStickMovementHeld()) {
+            double rightStickX = aimPad1.getRightStickX();
+
+            //Controls LEFT and RIGHT, change values as needed
+            if (rightStickX > 0.5) {
+                arm.wrist.rotateRight();
+            } else if (rightStickX < -0.5) {
+                arm.wrist.rotateLeft();
+            } else {
+                arm.wrist.rotateCenter();
+            }
+        }
+        if (aimPad1.isYPressed()){
+            arm.wrist.flexUp();
+        } else if (aimPad1.isAPressed()){
+            arm.wrist.flexDown();
         }
     }
 }
