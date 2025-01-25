@@ -63,6 +63,7 @@ public class Comp3Auto2Samples extends LinearOpMode {
         Wristv2 wrist = new Wristv2(hardwareMap);
 
         arm.reset();
+        lift.reset();
 
 
         Action scoreHighAction3 = new ParallelAction(
