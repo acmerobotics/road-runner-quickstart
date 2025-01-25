@@ -26,6 +26,8 @@ public class Liftv2 {
 
     public static int LIFT_HANG_SLIDES_POSITION_END = 2000;
 
+    public static int LIFT_OUT_PICKUP_GROUND = 1500;
+
     public DcMotorEx motor;
     double liftPosition;
     public Liftv2(HardwareMap hardwareMap) {
@@ -77,6 +79,9 @@ public class Liftv2 {
         return new LiftAction((int) (LIFT_COLLAPSED));
     }
 
+    public Action liftOutPickUpAction() {
+        return new LiftAction((int) (LIFT_OUT_PICKUP_GROUND));
+    }
 
 
 

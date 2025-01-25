@@ -19,21 +19,23 @@ public class Armv2 {
     public DcMotorEx motor;
 
     public static int ARM_REST_POSITION = 0;
-    public static int ARM_VERTICAL = 350;
+    public static int ARM_VERTICAL = 0;
 
     public static int ARM_COME_DOWN = 450;
 
     public static int ARM_CLEAR_BAR = 1200;
     public static int ARM_CLEAR_BAR_LIFT_OUT = 1300;
 
-    public static int ARM_SCORE_POS = 250;
-    public static int ARM_PICKUP_GROUND_SAMPLE = 1400;
+    public static int ARM_SCORE_POS = 0;
+    public static int ARM_PICKUP_GROUND_SAMPLE = 1200;
     public static int ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT = 1400;
 
     public static int ARM_HANG_SLIDES_POSITION = 290;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     public static double FUDGE_FACTOR = 300;
+    public static double ARM_VELOCITY = 1000;
+    public static double ARM_VELOCITY_SF = 1.0;
 
 
     public Armv2(HardwareMap hardwareMap) {
@@ -67,12 +69,17 @@ public class Armv2 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            motor.setTargetPosition(_targetPos);
-            motor.setVelocity(1000);
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
             int currentPosition = motor.getCurrentPosition();
             int error = Math.abs(_targetPos - currentPosition);
+
+            motor.setTargetPosition(_targetPos);
+            if (error > 50) {
+                motor.setVelocity(ARM_VELOCITY);
+            } else {
+                motor.setVelocity(ARM_VELOCITY * ARM_VELOCITY_SF);
+            }
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             packet.put("ArmTarget", _targetPos);
             packet.put("ArmPos", currentPosition);
             packet.put("ArmError", error);
@@ -94,6 +101,9 @@ public class Armv2 {
     }
     public Action armPickupGroundSampleAction() {
         return new ArmScoreAuto(ARM_PICKUP_GROUND_SAMPLE);
+    }
+    public Action armPickupGroundSampleLiftOutAction() {
+        return new ArmScoreAuto(ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT);
     }
 
     public Action armClearBarAction() {

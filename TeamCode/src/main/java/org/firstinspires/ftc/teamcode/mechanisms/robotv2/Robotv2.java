@@ -35,6 +35,48 @@ public class Robotv2 {
         rightActuator = new RightActuator(hardwareMap);
     }
 
+
+    public Action scoreSampleActionAuto() {
+        return new SequentialAction(
+                new ParallelAction(
+                        arm.armScoreAction(),
+                        new SequentialAction(
+                                new SleepAction(0.5),
+                                wrist.wristVerticalAction()
+                        ))
+                , lift.liftUpAction()
+                , wrist.wristFoldOutAction()
+                , new SleepAction(0.5)
+                , claw.clawOpenAction()
+                , new SleepAction(.2)
+        );
+    }
+    public Action comeDownAndPickUpActionAuto(){
+        return new SequentialAction(
+                wrist.wristVerticalAction(),
+                new SleepAction(0.5),
+                lift.liftOutPickUpAction(),
+                new ParallelAction(
+                        wrist.wristFoldInAction(),
+                        arm.armPickupGroundSampleLiftOutAction()
+                )
+                ,new SleepAction(.4)
+                ,claw.clawCloseAction()
+        );
+    }
+
+    public Action resetAction() {
+        return new SequentialAction(
+                wrist.wristVerticalAction(),
+                new SleepAction(0.5),
+                new ParallelAction(
+                        wrist.wristFoldInAction(),
+                        lift.liftDownAction(),
+                        arm.armResetAction()
+                )
+        );
+    }
+
     public Action scoreSampleAction(){
         return new SequentialAction(
                 new ParallelAction(
