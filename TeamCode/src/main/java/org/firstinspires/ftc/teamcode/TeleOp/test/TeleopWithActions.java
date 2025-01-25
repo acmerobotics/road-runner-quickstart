@@ -81,29 +81,37 @@ public class TeleopWithActions extends OpMode {
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
+
         // ===== Begin Drive Code
         {
+            //Toggle between field centric to robot centric
             if (gamepad1.options) {
-                fieldCentric = true;
+                fieldCentric = !fieldCentric;
                 robot.drive.resetYaw();
             }
 
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
+            double gamepad1_ls_y = -gamepad1.left_stick_y;
+            double gamepad1_ls_x = gamepad1.left_stick_x;
+            double gamepad1_rs_x = gamepad1.right_stick_x;
 
-            y = squaredInputWithSign(y) * AXIAL_SCALE;
-            x = squaredInputWithSign(x) * LATERAL_SCALE;
-            rx = squaredInputWithSign(rx) * TURN_SCALE;
+            gamepad1_ls_y = squaredInputWithSign(gamepad1_ls_y) * AXIAL_SCALE;
+            gamepad1_ls_x = squaredInputWithSign(gamepad1_ls_x) * LATERAL_SCALE;
+            gamepad1_rs_x = squaredInputWithSign(gamepad1_rs_x) * TURN_SCALE;
 
             if (fieldCentric) {
-                robot.drive.moveRobotFieldCentric(y, x, rx);
+                robot.drive.moveRobotFieldCentric(gamepad1_ls_y, gamepad1_ls_x, gamepad1_rs_x);
             } else {
-                robot.drive.moveRobot(y, -x, -rx);
+                robot.drive.moveRobot(gamepad1_ls_y, -gamepad1_ls_x, -gamepad1_rs_x);
             }
         }
         // ===== End Drive code
 
+        // Claw and Wrist
+        if (gamepad1.a || (gamepad2.left_stick_x == -1)) {
+            robot.claw.clawOpen();
+        } else if (gamepad1.b) {
+            robot.claw.clawClose();
+        }
         // Claw and Wrist
         {
             if (gamepad1.a) {
@@ -134,6 +142,26 @@ public class TeleopWithActions extends OpMode {
                 liftPosition -= 2800 * cycletime;
             }
 
+        int liftCurrentPos = robot.lift.motor.getCurrentPosition();
+
+        if (gamepad1.dpad_right) {
+            manualLift = true;
+            liftPosition = liftCurrentPos + (1500 * cycletime);
+        } else if (gamepad1.dpad_left){
+            manualLift = true;
+            liftPosition = liftCurrentPos - (1500 * cycletime);
+        }
+
+        /*here we check to see if the lift is trying to go higher than the maximum extension.
+         *if it is, we set the variable to the max.
+         */
+        if (liftPosition > Liftv2.LIFT_SCORING_IN_HIGH_BASKET){
+            liftPosition = Liftv2.LIFT_SCORING_IN_HIGH_BASKET;
+        }
+        //same as above, we see if the lift is trying to go below 0, and if it is, we set it to 0.
+        if (liftPosition < Liftv2.LIFT_COLLAPSED){
+            liftPosition = Liftv2.LIFT_COLLAPSED;
+        }
             /*here we check to see if the lift is trying to go higher than the maximum extension.
              *if it is, we set the variable to the max.
              */
@@ -221,6 +249,31 @@ public class TeleopWithActions extends OpMode {
                 liftPosition = Liftv2.LIFT_HANG_SLIDES_POSITION_END;
             }
 
+            // Code for adjusting actuators when they stop at imperfect height: Begin
+            //double gamepad2_ls_x = gamepad2.left_stick_x;
+            double gamepad2_ls_y = gamepad2.left_stick_y;
+
+            //double gamepad2_rs_x = -gamepad2.right_stick_x;
+            double gamepad2_rs_y = -gamepad2.right_stick_y;
+
+            int leftActuatorCurrentPos = robot.leftActuator.motor.getCurrentPosition();
+            if (gamepad2_ls_y == -1) {
+                leftActuatorPosition = leftActuatorCurrentPos + 300;
+            } else if (gamepad2_ls_y == 1) {
+                leftActuatorPosition = leftActuatorCurrentPos - 300;
+            }
+
+            int rightActuatorCurrentPos = robot.rightActuator.motor.getCurrentPosition();
+
+            if (gamepad2_rs_y == 1) {
+                rightActuatorPosition = rightActuatorCurrentPos + 300;
+            } else if (gamepad2_rs_y == -1) {
+                rightActuatorPosition = rightActuatorCurrentPos - 300;
+            }
+
+            // Code for adjusting actuators when they stop at imperfect height: End
+
+
             robot.leftActuator.motor.setTargetPosition(leftActuatorPosition);
             robot.leftActuator.motor.setVelocity(3000);
             robot.leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -233,15 +286,15 @@ public class TeleopWithActions extends OpMode {
 
         // ==== "auto" =====
         {
-            if (gamepad1.dpad_up) {
+            if (gamepad2.y) {
                 manualArm = false;
                 manualLift = false;
                 runningActions.add(robot.scoreSampleAction());
-            } else if (gamepad1.dpad_down) {
+            } else if (gamepad2.a) {
                 manualArm = false;
                 manualLift = false;
                 runningActions.add(robot.comeDownAction());
-            } else if (gamepad1.dpad_left) {
+            } else if (gamepad2.x) {
                 runningActions.add(robot.ClearBarAction());
                 manualArm = false;
                 manualLift = false;
@@ -267,6 +320,7 @@ public class TeleopWithActions extends OpMode {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
         /* send telemetry to the driver of the arm's current position and target position */
+        telemetry.addData("code version", "parantap.13");
         telemetry.addData("wrist servo", robot.wrist.wrist.getPosition());
         telemetry.addData("armTarget: ", robot.arm.motor.getTargetPosition());
         telemetry.addData("arm Encoder: ", robot.arm.motor.getCurrentPosition());
@@ -276,6 +330,7 @@ public class TeleopWithActions extends OpMode {
         telemetry.addData("ArmPosition", armPosition);
         telemetry.addData("ArmLiftComp", armLiftComp);
         telemetry.addData("ArmFudgeFactor", armPositionFudgeFactor);
+
         telemetry.addData("CycleTime", cycletime);
     }
 

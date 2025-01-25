@@ -8,10 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.mechanisms.v1.Arm;
-//import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
-import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
-import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuatorServo;
+import org.firstinspires.ftc.teamcode.mechanisms.Arm;
+import org.firstinspires.ftc.teamcode.mechanisms.Intake;
+//import org.firstinspires.ftc.teamcode.mechanisms.Lift;
+import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
 
 
 @TeleOp(name="Teledrive V2", group="demo")
@@ -52,7 +53,7 @@ public class Teledrive_V2 extends LinearOpMode {
         //Intake intake = new Intake(hardwareMap);
         Wrist wrist = new Wrist(hardwareMap);
         //Lift lift = new Lift(hardwareMap);
-        RightActuatorServo rightActuator = new RightActuatorServo(hardwareMap);
+        RightActuator rightActuator = new RightActuator(hardwareMap);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -96,11 +97,11 @@ public class Teledrive_V2 extends LinearOpMode {
             }
 
             if (gamepad1.x){
-                rightActuator.setHorizontal();
+                rightActuator.rightactuatorhorizontal();
             }
 
             else if (gamepad1.y){
-                rightActuator.setVertical();
+                rightActuator.rightactuatorvertical();
             }
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,

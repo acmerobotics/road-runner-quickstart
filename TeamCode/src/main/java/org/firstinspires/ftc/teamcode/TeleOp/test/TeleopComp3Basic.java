@@ -52,6 +52,7 @@ public class TeleopComp3Basic extends OpMode {
     public void init() {
         robot = new Robotv2(hardwareMap, new Pose2d(0,0, Math.toRadians(0)));
         robot.claw.clawOpen();
+        robot.claw.closeDevice();
         robot.wrist.WristFoldIn();
         armPosition = Armv2.ARM_REST_POSITION;
         liftPosition = Liftv2.LIFT_COLLAPSED;
@@ -73,34 +74,50 @@ public class TeleopComp3Basic extends OpMode {
         runtime.reset();
     }
 
+    /*
+     * Code to run ONCE when the driver hits STOP
+     */
+    @Override
+    public void stop() {
+        runtime.reset();
+    }
+
+
     @Override
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
-
         // ===== Begin Drive Code
+
+        //Toggle between field centric to robot centric
         if (gamepad1.options) {
-            fieldCentric = true;
+            fieldCentric = !fieldCentric;
             robot.drive.resetYaw();
         }
 
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
+        double gamepad1_ls_y = -gamepad1.left_stick_y;
+        double gamepad_ls_x = gamepad1.left_stick_x;
+        double gamepad1_rs_x = gamepad1.right_stick_x;
 
-        y = squaredInputWithSign(y) * AXIAL_SCALE;
-        x = squaredInputWithSign(x) * LATERAL_SCALE;
-        rx = squaredInputWithSign(rx) * TURN_SCALE;
+        gamepad1_ls_y = squaredInputWithSign(gamepad1_ls_y) * AXIAL_SCALE;
+        gamepad_ls_x = squaredInputWithSign(gamepad_ls_x) * LATERAL_SCALE;
+        gamepad1_rs_x = squaredInputWithSign(gamepad1_rs_x) * TURN_SCALE;
 
         if (fieldCentric) {
-            robot.drive.moveRobotFieldCentric(y, x, rx);
+            robot.drive.moveRobotFieldCentric(gamepad1_ls_y, gamepad_ls_x, gamepad1_rs_x);
         } else {
-            robot.drive.moveRobot(y, -x, -rx);
+            robot.drive.moveRobot(gamepad1_ls_y, -gamepad_ls_x, -gamepad1_rs_x);
         }
         // ===== End Drive code
 
         //
         if(gamepad1.right_bumper){
+            robot.wrist.WristFoldIn();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             armPosition = Armv2.ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT;
             liftPosition = 800;
         } else if (gamepad1.left_bumper) {
@@ -114,9 +131,9 @@ public class TeleopComp3Basic extends OpMode {
         }
 
         // Claw
-        if (gamepad1.a) {
+        if (gamepad1.b) {
             robot.claw.clawOpen();
-        } else if (gamepad1.b) {
+        } else if (gamepad1.a) {
             robot.claw.clawClose();
         }
 
@@ -126,6 +143,8 @@ public class TeleopComp3Basic extends OpMode {
         } else if (gamepad1.y) {
             robot.wrist.WristFoldIn();
         }
+
+
 
         // ===== Begin Lift code
         double liftPower = (gamepad2.right_trigger - gamepad2.left_trigger);
@@ -153,6 +172,7 @@ public class TeleopComp3Basic extends OpMode {
         robot.lift.motor.setTargetPosition((int) (liftPosition));
         robot.lift.motor.setVelocity(3000);
         robot.lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         // ===== End lift code
 
         // ===== Begin Arm code
@@ -196,8 +216,6 @@ public class TeleopComp3Basic extends OpMode {
         // ===== End Arm code
 
 
-
-
         // ===== Begin Hang Code
         {
             if (gamepad2.dpad_right) {
@@ -221,6 +239,27 @@ public class TeleopComp3Basic extends OpMode {
                 liftPosition = Liftv2.LIFT_HANG_SLIDES_POSITION_END;
             }
 
+            //double gamepad2_ls_x = gamepad2.left_stick_x;
+            double gamepad2_ls_y = gamepad2.left_stick_y;
+
+            //double gamepad2_rs_x = -gamepad2.right_stick_x;
+            double gamepad2_rs_y = -gamepad2.right_stick_y;
+
+            int leftActuatorCurrentPos = robot.leftActuator.motor.getCurrentPosition();
+            if (gamepad2_ls_y == -1) {
+                leftActuatorPosition = leftActuatorCurrentPos + 300;
+            } else if (gamepad2_ls_y == 1) {
+                leftActuatorPosition = leftActuatorCurrentPos - 300;
+            }
+
+            int rightActuatorCurrentPos = robot.rightActuator.motor.getCurrentPosition();
+
+            if (gamepad2_rs_y == 1) {
+                rightActuatorPosition = rightActuatorCurrentPos + 300;
+            } else if (gamepad2_rs_y == -1) {
+                rightActuatorPosition = rightActuatorCurrentPos - 300;
+            }
+
             robot.leftActuator.motor.setTargetPosition(leftActuatorPosition);
             robot.leftActuator.motor.setVelocity(3000);
             robot.leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -240,7 +279,9 @@ public class TeleopComp3Basic extends OpMode {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
         /* send telemetry to the driver of the arm's current position and target position */
+        telemetry.addData("code version", "parantap.5");
         telemetry.addData("wrist servo", robot.wrist.wrist.getPosition());
+        telemetry.addData("claw servo", robot.claw.claw.getPosition());
         telemetry.addData("armTarget: ", robot.arm.motor.getTargetPosition());
         telemetry.addData("arm Encoder: ", robot.arm.motor.getCurrentPosition());
         telemetry.addData("lift target" , robot.lift.motor.getTargetPosition());
@@ -249,6 +290,11 @@ public class TeleopComp3Basic extends OpMode {
         telemetry.addData("ArmPosition", armPosition);
         telemetry.addData("ArmLiftComp", armLiftComp);
         telemetry.addData("ArmFudgeFactor", armPositionFudgeFactor);
+        telemetry.addData("gamepad2.left_stick_x", gamepad2.left_stick_x);
+        telemetry.addData("gamepad2.left_stick_y", gamepad2.left_stick_y);
+        telemetry.addData("gamepad2.right_stick_x", gamepad2.right_stick_x);
+        telemetry.addData("gamepad2.right_stick_y", gamepad2.right_stick_y);
+
     }
 
 
