@@ -176,22 +176,22 @@ public class TeleopWithActions extends OpMode {
                 manualArm = true;
             }
 
-            if (gamepad1.right_bumper) {
-                manualArm = true;
-                armPosition += 2800 * cycletime;
-            } else if (gamepad1.left_bumper) {
-                manualArm = true;
-                armPosition -= 2800 * cycletime;
-            }
-
-            // Arm lift compensation
-            if (armPosition > 1000 && liftPosition > 30) {
-                armLiftComp = (ARM_LIFT_COMP * liftPosition);
-                manualArm = true;
-                manualLift = true;
-            } else {
-                armLiftComp = 0;
-            }
+//            if (gamepad1.right_bumper) {
+//                manualArm = true;
+//                armPosition += 2800 * cycletime;
+//            } else if (gamepad1.left_bumper) {
+//                manualArm = true;
+//                armPosition -= 2800 * cycletime;
+//            }
+//
+//            // Arm lift compensation
+//            if (armPosition > 1000 && liftPosition > 30) {
+//                armLiftComp = (ARM_LIFT_COMP * liftPosition);
+//                manualArm = true;
+//                manualLift = true;
+//            } else {
+//                armLiftComp = 0;
+//            }
 
         /* Here we set the target position of our arm to match the variable that was selected
             by the driver. We add the armPosition Variable to our armPositionFudgeFactor, before adding
