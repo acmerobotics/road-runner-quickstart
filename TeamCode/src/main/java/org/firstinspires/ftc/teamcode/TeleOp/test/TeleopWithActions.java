@@ -81,113 +81,116 @@ public class TeleopWithActions extends OpMode {
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
-
         // ===== Begin Drive Code
-        if (gamepad1.options) {
-            fieldCentric = true;
-            robot.drive.resetYaw();
-        }
+        {
+            if (gamepad1.options) {
+                fieldCentric = true;
+                robot.drive.resetYaw();
+            }
 
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
 
-        y = squaredInputWithSign(y) * AXIAL_SCALE;
-        x = squaredInputWithSign(x) * LATERAL_SCALE;
-        rx = squaredInputWithSign(rx) * TURN_SCALE;
+            y = squaredInputWithSign(y) * AXIAL_SCALE;
+            x = squaredInputWithSign(x) * LATERAL_SCALE;
+            rx = squaredInputWithSign(rx) * TURN_SCALE;
 
-        if (fieldCentric) {
-            robot.drive.moveRobotFieldCentric(y, x, rx);
-        } else {
-            robot.drive.moveRobot(y, -x, -rx);
+            if (fieldCentric) {
+                robot.drive.moveRobotFieldCentric(y, x, rx);
+            } else {
+                robot.drive.moveRobot(y, -x, -rx);
+            }
         }
         // ===== End Drive code
 
-        // Claw
-        if (gamepad1.a) {
-            robot.claw.clawOpen();
-        } else if (gamepad1.b) {
-            robot.claw.clawClose();
-        }
+        // Claw and Wrist
+        {
+            if (gamepad1.a) {
+                robot.claw.clawOpen();
+            } else if (gamepad1.b) {
+                robot.claw.clawClose();
+            }
 
-        // Wrist
-        if (gamepad1.x) {
-            robot.wrist.WristFoldOut();
-        } else if (gamepad1.y) {
-            robot.wrist.WristFoldIn();
+            // Wrist
+            if (gamepad1.x) {
+                robot.wrist.WristFoldOut();
+            } else if (gamepad1.y) {
+                robot.wrist.WristFoldIn();
+            }
         }
 
         // ===== Begin Lift code
-        double liftPower = (gamepad2.right_trigger - gamepad2.left_trigger);
-        if (Math.abs(liftPower) > 0.05) {
-          manualLift = true;
-        }
-        liftPosition += liftPower * 300;
+        {
+            double liftPower = (gamepad2.right_trigger - gamepad2.left_trigger);
+            if (Math.abs(liftPower) > 0.05) {
+                manualLift = true;
+            }
+            liftPosition += liftPower * 300;
 
-        if (gamepad2.right_bumper){
-            liftPosition += 2800 * cycletime;
-        }
-        else if (gamepad2.left_bumper){
-            liftPosition -= 2800 * cycletime;
-        }
+            if (gamepad2.right_bumper) {
+                liftPosition += 2800 * cycletime;
+            } else if (gamepad2.left_bumper) {
+                liftPosition -= 2800 * cycletime;
+            }
 
-        /*here we check to see if the lift is trying to go higher than the maximum extension.
-         *if it is, we set the variable to the max.
-         */
-        if (liftPosition > Liftv2.LIFT_SCORING_IN_HIGH_BASKET){
-            liftPosition = Liftv2.LIFT_SCORING_IN_HIGH_BASKET;
-        }
-        //same as above, we see if the lift is trying to go below 0, and if it is, we set it to 0.
-        if (liftPosition < Liftv2.LIFT_COLLAPSED){
-            liftPosition = Liftv2.LIFT_COLLAPSED;
-        }
+            /*here we check to see if the lift is trying to go higher than the maximum extension.
+             *if it is, we set the variable to the max.
+             */
+            if (liftPosition > Liftv2.LIFT_SCORING_IN_HIGH_BASKET) {
+                liftPosition = Liftv2.LIFT_SCORING_IN_HIGH_BASKET;
+            }
+            //same as above, we see if the lift is trying to go below 0, and if it is, we set it to 0.
+            if (liftPosition < Liftv2.LIFT_COLLAPSED) {
+                liftPosition = Liftv2.LIFT_COLLAPSED;
+            }
 
-        if(manualLift){
-            robot.lift.motor.setTargetPosition((int) (liftPosition));
-            robot.lift.motor.setVelocity(3000);
-            robot.lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if (manualLift) {
+                robot.lift.motor.setTargetPosition((int) (liftPosition));
+                robot.lift.motor.setVelocity(3000);
+                robot.lift.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
         }
         // ===== End lift code
 
         // ===== Begin Arm code
         // "manual" part of Arm code
-        double armFudgeFactorInput = (gamepad1.right_trigger + (-gamepad1.left_trigger));
-
-        armPositionFudgeFactor = Armv2.FUDGE_FACTOR * armFudgeFactorInput;
-        if (Math.abs(armFudgeFactorInput) > 0.05) {
+        {
             armPosition = robot.arm.motor.getCurrentPosition();
-            manualArm = true;
-        }
+            double armFudgeFactorInput = (gamepad1.right_trigger + (-gamepad1.left_trigger));
 
-        if (gamepad1.right_bumper){
-            armPosition += 2800 * cycletime;
-        }
-        else if (gamepad1.left_bumper){
-            armPosition -= 2800 * cycletime;
-        }
+            armPositionFudgeFactor = Armv2.FUDGE_FACTOR * armFudgeFactorInput;
+            if (Math.abs(armFudgeFactorInput) > 0.05) {
+                manualArm = true;
+            }
 
-        if (armPosition > 1000 && liftPosition > 30){
-            armLiftComp = (ARM_LIFT_COMP * liftPosition);
-            manualArm = true;
-            manualLift = true;
-        }
-        else{
-            armLiftComp = 0;
-        }
+            if (gamepad1.right_bumper) {
+                manualArm = true;
+                armPosition += 2800 * cycletime;
+            } else if (gamepad1.left_bumper) {
+                manualArm = true;
+                armPosition -= 2800 * cycletime;
+            }
 
-           /* Here we set the target position of our arm to match the variable that was selected
+            // Arm lift compensation
+            if (armPosition > 1000 && liftPosition > 30) {
+                armLiftComp = (ARM_LIFT_COMP * liftPosition);
+                manualArm = true;
+                manualLift = true;
+            } else {
+                armLiftComp = 0;
+            }
+
+        /* Here we set the target position of our arm to match the variable that was selected
             by the driver. We add the armPosition Variable to our armPositionFudgeFactor, before adding
             our armLiftComp, which adjusts the arm height for different lift extensions.
             We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
-
-
-        if(manualArm){
-            int armTargetPosition = (int) (armPosition + armPositionFudgeFactor + armLiftComp);
-            /* Here we set the target position of our arm to match the variable that was selected by the driver.
-            We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
-            robot.arm.motor.setTargetPosition(armTargetPosition);
-            robot.arm.motor.setVelocity(500);
-            robot.arm.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if (manualArm) {
+                int armTargetPosition = (int) (armPosition + armPositionFudgeFactor + armLiftComp);
+                robot.arm.motor.setTargetPosition(armTargetPosition);
+                robot.arm.motor.setVelocity(500);
+                robot.arm.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
         }
 
         // ===== End Arm code
@@ -229,29 +232,31 @@ public class TeleopWithActions extends OpMode {
         // ===== End Hang code
 
         // ==== "auto" =====
-        if (gamepad1.dpad_up) {
-            manualArm = false;
-            manualLift = false;
-            runningActions.add(robot.scoreSampleAction());
-        } else if (gamepad1.dpad_down) {
-            manualArm = false;
-            manualLift = false;
-            runningActions.add(robot.comeDownAction());
-        } else if (gamepad1.dpad_left){
-            runningActions.add(robot.ClearBarAction());
-            manualArm = false;
-            manualLift = false;
-        }
-
-        // ====== Automatic tasks:  update running actions
-        List<Action> newActions = new ArrayList<>();
-        for (Action action : runningActions) {
-            action.preview(packet.fieldOverlay());
-            if (action.run(packet)) {
-                newActions.add(action);
+        {
+            if (gamepad1.dpad_up) {
+                manualArm = false;
+                manualLift = false;
+                runningActions.add(robot.scoreSampleAction());
+            } else if (gamepad1.dpad_down) {
+                manualArm = false;
+                manualLift = false;
+                runningActions.add(robot.comeDownAction());
+            } else if (gamepad1.dpad_left) {
+                runningActions.add(robot.ClearBarAction());
+                manualArm = false;
+                manualLift = false;
             }
+
+            // ====== Automatic tasks:  update running actions
+            List<Action> newActions = new ArrayList<>();
+            for (Action action : runningActions) {
+                action.preview(packet.fieldOverlay());
+                if (action.run(packet)) {
+                    newActions.add(action);
+                }
+            }
+            runningActions = newActions;
         }
-        runningActions = newActions;
 
         looptime = getRuntime();
         cycletime = looptime-oldtime;
@@ -271,6 +276,7 @@ public class TeleopWithActions extends OpMode {
         telemetry.addData("ArmPosition", armPosition);
         telemetry.addData("ArmLiftComp", armLiftComp);
         telemetry.addData("ArmFudgeFactor", armPositionFudgeFactor);
+        telemetry.addData("CycleTime", cycletime);
     }
 
 

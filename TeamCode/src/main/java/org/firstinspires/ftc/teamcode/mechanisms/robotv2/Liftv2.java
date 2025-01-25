@@ -27,19 +27,24 @@ public class Liftv2 {
 
     public static int LIFT_HANG_SLIDES_POSITION_END = 2000;
 
-    public DcMotorEx motor;
+    public static int LIFT_OUT_PICKUP_GROUND = 1500;
 
+    public DcMotorEx motor;
+    double liftPosition;
     public Liftv2(HardwareMap hardwareMap) {
         motor = hardwareMap.get(DcMotorEx.class, "lift");
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftPosition = LIFT_COLLAPSED;
     }
 
     public void reset(){
         motor.setTargetPosition(0);
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        /* Before starting the armMotor. We'll make sure the TargetPosition is set to 0.
+        Then we'll set the RunMode to RUN_TO_POSITION. And we'll ask it to stop and reset encoder.
+        If you do not have the encoder plugged into this motor, it will not run in this code. */
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     // auto
@@ -75,12 +80,12 @@ public class Liftv2 {
         return new LiftAction((int) (LIFT_COLLAPSED));
     }
 
+    public Action liftOutPickUpAction() {
+        return new LiftAction((int) (LIFT_OUT_PICKUP_GROUND));
+    }
     public Action liftDownForParkAction() {
         return new LiftAction((int) (LIFT_PARK_POSITION));
     }
-
-
-
 
 }
 
