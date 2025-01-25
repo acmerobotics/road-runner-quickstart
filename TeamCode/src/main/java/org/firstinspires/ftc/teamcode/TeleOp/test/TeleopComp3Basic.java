@@ -112,11 +112,6 @@ public class TeleopComp3Basic extends OpMode {
         //
         if(gamepad1.right_bumper){
             robot.wrist.WristFoldIn();
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             armPosition = Armv2.ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT;
             liftPosition = 800;
         } else if (gamepad1.left_bumper) {

@@ -136,26 +136,16 @@ public class TeleopWithActions extends OpMode {
                 liftPosition -= 2800 * cycletime;
             }
 
-        int liftCurrentPos = robot.lift.motor.getCurrentPosition();
+//            int liftCurrentPos = robot.lift.motor.getCurrentPosition();
+//
+//            if (gamepad1.dpad_right) {
+//                manualLift = true;
+//                liftPosition = liftCurrentPos + (1500 * cycletime);
+//            } else if (gamepad1.dpad_left) {
+//                manualLift = true;
+//                liftPosition = liftCurrentPos - (1500 * cycletime);
+//            }
 
-        if (gamepad1.dpad_right) {
-            manualLift = true;
-            liftPosition = liftCurrentPos + (1500 * cycletime);
-        } else if (gamepad1.dpad_left){
-            manualLift = true;
-            liftPosition = liftCurrentPos - (1500 * cycletime);
-        }
-
-        /*here we check to see if the lift is trying to go higher than the maximum extension.
-         *if it is, we set the variable to the max.
-         */
-        if (liftPosition > Liftv2.LIFT_SCORING_IN_HIGH_BASKET){
-            liftPosition = Liftv2.LIFT_SCORING_IN_HIGH_BASKET;
-        }
-        //same as above, we see if the lift is trying to go below 0, and if it is, we set it to 0.
-        if (liftPosition < Liftv2.LIFT_COLLAPSED){
-            liftPosition = Liftv2.LIFT_COLLAPSED;
-        }
             /*here we check to see if the lift is trying to go higher than the maximum extension.
              *if it is, we set the variable to the max.
              */
@@ -244,10 +234,8 @@ public class TeleopWithActions extends OpMode {
             }
 
             // Code for adjusting actuators when they stop at imperfect height: Begin
-            //double gamepad2_ls_x = gamepad2.left_stick_x;
             double gamepad2_ls_y = gamepad2.left_stick_y;
 
-            //double gamepad2_rs_x = -gamepad2.right_stick_x;
             double gamepad2_rs_y = -gamepad2.right_stick_y;
 
             int leftActuatorCurrentPos = robot.leftActuator.motor.getCurrentPosition();
