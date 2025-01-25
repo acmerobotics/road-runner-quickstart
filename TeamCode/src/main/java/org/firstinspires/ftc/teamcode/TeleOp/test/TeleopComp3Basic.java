@@ -52,7 +52,6 @@ public class TeleopComp3Basic extends OpMode {
     public void init() {
         robot = new Robotv2(hardwareMap, new Pose2d(0,0, Math.toRadians(0)));
         robot.claw.clawOpen();
-        robot.claw.closeDevice();
         robot.wrist.WristFoldIn();
         armPosition = Armv2.ARM_REST_POSITION;
         liftPosition = Liftv2.LIFT_COLLAPSED;

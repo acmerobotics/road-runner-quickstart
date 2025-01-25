@@ -107,12 +107,6 @@ public class TeleopWithActions extends OpMode {
         // ===== End Drive code
 
         // Claw and Wrist
-        if (gamepad1.a || (gamepad2.left_stick_x == -1)) {
-            robot.claw.clawOpen();
-        } else if (gamepad1.b) {
-            robot.claw.clawClose();
-        }
-        // Claw and Wrist
         {
             if (gamepad1.a) {
                 robot.claw.clawOpen();

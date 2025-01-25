@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.mechanisms.Arm;
-import org.firstinspires.ftc.teamcode.mechanisms.Intake;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Arm;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Intake;
 //import org.firstinspires.ftc.teamcode.mechanisms.Lift;
-import org.firstinspires.ftc.teamcode.mechanisms.Wrist;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
 
 
@@ -97,11 +97,11 @@ public class Teledrive_V2 extends LinearOpMode {
             }
 
             if (gamepad1.x){
-                rightActuator.rightactuatorhorizontal();
+                rightActuator.down();
             }
 
             else if (gamepad1.y){
-                rightActuator.rightactuatorvertical();
+                rightActuator.up();
             }
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,
