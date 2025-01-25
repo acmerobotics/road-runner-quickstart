@@ -32,19 +32,19 @@ public class Left4Samples extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(200));
 
-        TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))
+        TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-48, -36, Math.toRadians(80)), Math.toRadians(80));
-        TrajectoryActionBuilder tab3 = drive.actionBuilder(new Pose2d(-47, -40, Math.toRadians(90)))
+                .splineToLinearHeading(new Pose2d(-47, -35, Math.toRadians(75)), Math.toRadians(80));
+        TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-53, -52, Math.toRadians(226)), Math.toRadians(270));
-        TrajectoryActionBuilder tab4 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))
+                .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(235)), Math.toRadians(270));
+        TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
                 .setTangent(Math.toRadians(120))
-                .splineToLinearHeading(new Pose2d(-60, -40, Math.toRadians(90)), Math.toRadians(90));
-        TrajectoryActionBuilder tab5 = drive.actionBuilder(new Pose2d(-58, -40, Math.toRadians(90)))
+                .splineToLinearHeading(new Pose2d(-60, -37, Math.toRadians(75)), Math.toRadians(90));
+        TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(226));
-        TrajectoryActionBuilder tab6 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(226)))
+                .splineToLinearHeading(new Pose2d(-52, -50, Math.toRadians(226)), Math.toRadians(270));
+        TrajectoryActionBuilder tab6 = tab5.endTrajectory().fresh()
                 .setTangent(Math.toRadians(45))
                 .splineToLinearHeading(new Pose2d(-30, 10, Math.toRadians(180)), Math.toRadians(0));
 
@@ -70,23 +70,44 @@ public class Left4Samples extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
+                        lift.resetEncoder(),
                         toBasket,
                         lift.SlidesToNet(),
-                        new SleepAction(0.5),
+                        new SleepAction(1.5),
                         fourbar.FourBarDown(),
                         new SleepAction(1),
                         claw.ClawOpen(),
-                        new SleepAction(0.5),
+                        new SleepAction(0.75),
                         fourbar.FourBarUp(),
                         new SleepAction(1),
                         lift.SlidesDown_new(),
+                        new SleepAction(1),
                         pickSample1,
                         fourbar.FourBarDown(),
                         new SleepAction(1),
                         claw.ClawClose(),
-                        new SleepAction(1.5),
+                        new SleepAction(1),
                         fourbar.FourBarUp(),
+                        new SleepAction(1),
                         dropSample1,
+                        new SleepAction(1),
+                        lift.SlidesToNet(),
+                        new SleepAction(1.5),
+                        fourbar.FourBarDown(),
+                        new SleepAction(1),
+                        claw.ClawOpen(),
+                        new SleepAction(0.5),
+                        fourbar.FourBarUp(),
+                        new SleepAction(1.5),
+                        lift.SlidesDown_new(),
+                        new SleepAction(1),
+                        /*pickSample2,
+                        fourbar.FourBarDown(),
+                        new SleepAction(1),
+                        claw.ClawClose(),
+                        new SleepAction(1),
+                        fourbar.FourBarUp(),
+                        dropSample2,
                         lift.SlidesToNet(),
                         new SleepAction(0.5),
                         fourbar.FourBarDown(),
@@ -96,11 +117,7 @@ public class Left4Samples extends LinearOpMode {
                         fourbar.FourBarUp(),
                         new SleepAction(1.5),
                         lift.SlidesDown_new(),
-                        new SleepAction(1),
-                        pickSample2,
-                        new SleepAction(0.5),
-                        dropSample2,
-                        new SleepAction(0.5),
+                        new SleepAction(1),*/
                         park
                 )
         );
