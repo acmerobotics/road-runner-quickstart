@@ -87,31 +87,37 @@ public class TeleopComp3Basic extends OpMode {
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
-
         // ===== Begin Drive Code
+
+        //Toggle between field centric to robot centric
         if (gamepad1.options) {
-            fieldCentric = true;
+            fieldCentric = !fieldCentric;
             robot.drive.resetYaw();
         }
 
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
+        double gamepad1_ls_y = -gamepad1.left_stick_y;
+        double gamepad_ls_x = gamepad1.left_stick_x;
+        double gamepad1_rs_x = gamepad1.right_stick_x;
 
-        y = squaredInputWithSign(y) * AXIAL_SCALE;
-        x = squaredInputWithSign(x) * LATERAL_SCALE;
-        rx = squaredInputWithSign(rx) * TURN_SCALE;
+        gamepad1_ls_y = squaredInputWithSign(gamepad1_ls_y) * AXIAL_SCALE;
+        gamepad_ls_x = squaredInputWithSign(gamepad_ls_x) * LATERAL_SCALE;
+        gamepad1_rs_x = squaredInputWithSign(gamepad1_rs_x) * TURN_SCALE;
 
         if (fieldCentric) {
-            robot.drive.moveRobotFieldCentric(y, x, rx);
+            robot.drive.moveRobotFieldCentric(gamepad1_ls_y, gamepad_ls_x, gamepad1_rs_x);
         } else {
-            robot.drive.moveRobot(y, -x, -rx);
+            robot.drive.moveRobot(gamepad1_ls_y, -gamepad_ls_x, -gamepad1_rs_x);
         }
         // ===== End Drive code
 
         //
         if(gamepad1.right_bumper){
             robot.wrist.WristFoldIn();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             armPosition = Armv2.ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT;
             liftPosition = 800;
         } else if (gamepad1.left_bumper) {
@@ -273,7 +279,7 @@ public class TeleopComp3Basic extends OpMode {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
         /* send telemetry to the driver of the arm's current position and target position */
-        telemetry.addData("code version", "parantap.3");
+        telemetry.addData("code version", "parantap.5");
         telemetry.addData("wrist servo", robot.wrist.wrist.getPosition());
         telemetry.addData("claw servo", robot.claw.claw.getPosition());
         telemetry.addData("armTarget: ", robot.arm.motor.getTargetPosition());
