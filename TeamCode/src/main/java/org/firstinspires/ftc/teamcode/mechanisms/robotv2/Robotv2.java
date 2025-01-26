@@ -51,17 +51,35 @@ public class Robotv2 {
                 , new SleepAction(.2)
         );
     }
-    public Action comeDownAndPickUpActionAuto(){
+    public Action comeDownActionAuto(){
         return new SequentialAction(
                 wrist.wristVerticalAction(),
-                new SleepAction(0.5),
+                new SleepAction(0.3),
                 lift.liftOutPickUpAction(),
                 new ParallelAction(
                         wrist.wristFoldInAction(),
                         arm.armPickupGroundSampleLiftOutAction()
                 )
-                ,new SleepAction(.4)
-                ,claw.clawCloseAction()
+        );
+    }
+
+    public Action comeDownSample3ActionAuto(){
+        return new SequentialAction(
+                wrist.wristVerticalAction(),
+                new SleepAction(0.3),
+                lift.liftOutPickUpAction(),
+                new ParallelAction(
+                        wrist.wristPickUpSample3Action(),
+                        arm.armClearBarLiftOutAction()
+                )
+        );
+    }
+
+    public Action pickUpActionAuto(){
+        return new SequentialAction(
+                new SleepAction(0.4)
+                ,claw.clawCloseAction(),
+                new SleepAction(0.4)
         );
     }
 
@@ -90,14 +108,14 @@ public class Robotv2 {
         );
     }
 
-    public Action comeDownAction(){
+    public Action comeDownTeleopAction(){
         return new SequentialAction(
                 wrist.wristVerticalAction(),
                 new SleepAction(0.5),
-                lift.liftDownAction(),
+                lift.liftOutPickUpAction(),
                 new ParallelAction(
                         wrist.wristFoldInAction(),
-                        arm.armPickupGroundSampleAction()
+                        arm.armClearBarLiftOutAction()
                 )
         );
     }

@@ -26,22 +26,27 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
 
 public class Comp4Auto extends LinearOpMode {
 
-    public static double PRE_DROP_SLEEP = 0.3;
-    public static double POST_DROP_SLEEP = 0.1;
-    public static double RED_BASKET_POS_X = -52.5;
-    public static double RED_BASKET_POS_Y = -52.5;
+    public static double PRE_DROP_SLEEP = 0.5;
+    public static double POST_DROP_SLEEP = 0.2;
+    public static double RED_BASKET_POS_X = -52;
+    public static double RED_BASKET_POS_Y = -52;
     public static double RED_BASKET_ANGLE = Math.toRadians(45);
 
-    public static double RED_SAMPLE1_POS_X = -49.2;
-    public static double RED_SAMPLE1_POS_Y = -51.7;
+    public static double RED_SAMPLE1_POS_X = -44.2;
+    public static double RED_SAMPLE1_POS_Y = -46.7;
     public static double RED_SAMPLE1_ANGLE = Math.toRadians(90);
 
     public static double RED_SAMPLE2_POS_X = RED_SAMPLE1_POS_X - 10;
-    public static double RED_SAMPLE3_POS_X = RED_SAMPLE2_POS_X - 3.5;
     public static double RED_SAMPLE2_POS_Y = RED_SAMPLE1_POS_Y;
-    public static double RED_SAMPLE3_POS_Y = RED_SAMPLE2_POS_Y - 1;
     public static double RED_SAMPLE2_ANGLE = RED_SAMPLE1_ANGLE;
-    public static double RED_SAMPLE3_ANGLE = Math.toRadians(120);
+
+    public static double RED_SAMPLE3_POS_X = -41;
+    public static double RED_SAMPLE3_POS_Y = -41;
+    public static double RED_SAMPLE3_ANGLE = Math.toRadians(135);
+
+    public static double RED_SAMPLE3_POS_X_2 = -46;
+    public static double RED_SAMPLE3_POS_Y_2 = -41;
+
 
     // Start position red near
     Pose2d RED_SCORE_START_POSE = new Pose2d(-36, -59, Math.toRadians(0));
@@ -116,8 +121,10 @@ public class Comp4Auto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE1_POS_X, RED_SAMPLE1_POS_Y), RED_SAMPLE1_ANGLE);
         TrajectoryActionBuilder driveToSample2 = drive.actionBuilder(RED_NEAR_BASKET_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE2_POS_X, RED_SAMPLE2_POS_Y), RED_SAMPLE2_ANGLE);
-        TrajectoryActionBuilder driveToSample3 = drive.actionBuilder(RED_NEAR_BASKET_POSE)
+        TrajectoryActionBuilder driveToSample3_1 = drive.actionBuilder(RED_NEAR_BASKET_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE3_POS_X, RED_SAMPLE3_POS_Y), RED_SAMPLE3_ANGLE);
+        TrajectoryActionBuilder driveToSample3_2 = driveToSample3_1.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(RED_SAMPLE3_POS_X_2, RED_SAMPLE3_POS_Y_2), RED_SAMPLE3_ANGLE);
         TrajectoryActionBuilder driveBasketToPark =  drive.actionBuilder(RED_NEAR_BASKET_POSE)
                 .strafeToLinearHeading(new Vector2d(-33,-8),Math.toRadians(180))
                 .strafeToLinearHeading(new Vector2d(-16,-8),Math.toRadians(180));
@@ -150,7 +157,7 @@ public class Comp4Auto extends LinearOpMode {
                                 lift.liftUpAction()
                         )
                 ),
-                //wrist.wristFoldOutAction(),
+                wrist.wristFoldOutAction(),
                 new SleepAction(PRE_DROP_SLEEP),
                 claw.clawOpenAction(),
                 new SleepAction(POST_DROP_SLEEP)
@@ -178,20 +185,27 @@ public class Comp4Auto extends LinearOpMode {
 
 
         // ====== Basket --> sample, park etc.
-        Action cBasketToSample1Action = new ParallelAction(
-                driveToSample1.build(),
-                robot.comeDownAndPickUpActionAuto()
-        );
+        Action cBasketToSample1Action = new SequentialAction(
+                new ParallelAction(
+                        driveToSample1.build(),
+                        robot.comeDownActionAuto()),
+                robot.pickUpActionAuto());
 
-        Action cBasketToSample2Action = new ParallelAction(
-                driveToSample2.build(),
-                robot.comeDownAndPickUpActionAuto()
-        );
+        Action cBasketToSample2Action = new SequentialAction(
+                new ParallelAction(
+                        driveToSample2.build(),
+                        robot.comeDownActionAuto()),
+                robot.pickUpActionAuto());
 
-        Action cBasketToSample3Action = new ParallelAction(
-                driveToSample3.build(),
-                robot.comeDownAndPickUpActionAuto()
-        );
+        Action cBasketToSample3Action = new SequentialAction(
+                new ParallelAction(
+                        driveToSample3_1.build(),
+                        robot.comeDownSample3ActionAuto()),
+                driveToSample3_2.build(),
+//                new SleepAction(1),
+                robot.arm.armPickupGroundSampleLiftOutAction(),
+                robot.pickUpActionAuto(),
+                new SleepAction(0.2));
 
         Action comeDownActionForPark = new SequentialAction(
                 arm.armComeDownAction(),
@@ -220,31 +234,20 @@ public class Comp4Auto extends LinearOpMode {
                         // start to basket and score
                         cStartToBasketAction
                         // basket to sample 1
-                        ,comeDownAction2
                         ,cBasketToSample1Action
-                        ,new SleepAction(.1)
-                        ,claw.clawCloseAction()
-                        ,new SleepAction(0.5)
                         // sample 1 to basket
                         ,cSample1ToBasketAction
-                        ,comeDownAction3
                         // basket to sample 2
                         ,cBasketToSample2Action
-                        ,new SleepAction(.1)
-                        ,claw.clawCloseAction()
-                        ,new SleepAction(0.5)
                         // sample 2 to basket
                         ,cSample2ToBasketAction
-                        ,comeDownAction4
                         // basket to sample 3
                         ,cBasketToSample3Action
-                        ,new SleepAction(4)
-                        ,claw.clawCloseAction()
-                        ,new SleepAction(4)
                         // sample 3 to basket
                         ,cSample3ToBasketAction
-//                         park (including come down)
-                        ,cBasketToParkAction
+                        // park (including come down)
+                        // ,cBasketToParkAction
+                        ,robot.resetAction()
                 )
         );
     } // runOpMode

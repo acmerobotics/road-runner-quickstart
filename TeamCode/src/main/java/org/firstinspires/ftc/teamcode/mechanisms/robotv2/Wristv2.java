@@ -14,6 +14,7 @@ public class Wristv2 {
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public static double WRIST_FOLD_OUT = 0.6;
     public static double WRIST_FOLD_IN = 0.36;
+
     public static double WRIST_VERTICAL = 0.5;
 
     public static double WRIST_SAMPLE_3 = 0.4;

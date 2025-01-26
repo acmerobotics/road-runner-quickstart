@@ -27,6 +27,8 @@ public class MeepMeepTesting {
                 .strafeToLinearHeading(new Vector2d(-60, -40), Math.toRadians(90))
                 .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
                 .strafeToLinearHeading(new Vector2d(-60, -24), Math.toRadians(180))
+                .setTangent(180)
+                .lineToX(-66)
                 .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
 
                 // near observation zone

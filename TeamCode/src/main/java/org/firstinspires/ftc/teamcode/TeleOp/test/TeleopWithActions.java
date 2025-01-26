@@ -278,7 +278,7 @@ public class TeleopWithActions extends OpMode {
             } else if (gamepad2.a) {
                 manualArm = false;
                 manualLift = false;
-                runningActions.add(robot.comeDownAction());
+                runningActions.add(robot.comeDownTeleopAction());
             } else if (gamepad2.x) {
                 runningActions.add(robot.ClearBarAction());
                 manualArm = false;
