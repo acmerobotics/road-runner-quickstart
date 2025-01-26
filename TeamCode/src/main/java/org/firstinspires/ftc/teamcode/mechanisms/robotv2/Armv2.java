@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Actions;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -36,6 +37,7 @@ public class Armv2 {
     public static double FUDGE_FACTOR = 300;
     public static double ARM_VELOCITY = 1000;
     public static double ARM_VELOCITY_SF = 1.0;
+    public static double ARM_ACTION_TIMEOUT_SEC = 5.0;
 
 
     public Armv2(HardwareMap hardwareMap) {
@@ -62,15 +64,22 @@ public class Armv2 {
     // auto
     public class ArmScoreAuto implements Action {
         private final int _targetPos;
+        private boolean initialized = false;
+        private double beginTs = -1;
         // Constructor
         public ArmScoreAuto(int targetPos){
             _targetPos = targetPos;
         }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-
+            double duration;
+            if (!initialized){
+                beginTs = Actions.now();
+                initialized = true;
+            }
             int currentPosition = motor.getCurrentPosition();
             int error = Math.abs(_targetPos - currentPosition);
+            duration = Actions.now() - beginTs;
 
             motor.setTargetPosition(_targetPos);
             if (error > 50) {
@@ -83,8 +92,8 @@ public class Armv2 {
             packet.put("ArmTarget", _targetPos);
             packet.put("ArmPos", currentPosition);
             packet.put("ArmError", error);
-            // keep running until we're close enough
-            return error > 5; // ticks
+            // keep running until we're close enough or we timeout
+            return error > 5 && duration < ARM_ACTION_TIMEOUT_SEC;
         }
     }
     public Action armResetAction() {

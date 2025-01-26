@@ -29,6 +29,8 @@ public class Liftv2 {
 
     public static int LIFT_OUT_PICKUP_GROUND = 1500;
 
+    public static double LIFT_ACTION_TIMEOUT_SEC = 5.0;
+
     public DcMotorEx motor;
     double liftPosition;
     public Liftv2(HardwareMap hardwareMap) {
@@ -50,13 +52,20 @@ public class Liftv2 {
     // auto
     public class LiftAction implements Action {
         private final int _targetPos;
+        private boolean initialized = false;
+        private double beginTs = -1;
         // Constructor
         public LiftAction(int targetPos){
             _targetPos = targetPos;
         }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-
+            double duration;
+            if (!initialized){
+                beginTs = Actions.now();
+                initialized = true;
+            }
+            duration = Actions.now() - beginTs;
             motor.setTargetPosition(_targetPos);
             motor.setVelocity(10000);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -66,8 +75,8 @@ public class Liftv2 {
             packet.put("LiftTargetPos", _targetPos);
             packet.put("LiftPos", currentPosition);
             packet.put("LiftError", error);
-            // keep running until we're close enough
-            return error > 10; // ticks
+            // keep running until we're close enough or we timeout
+            return error > 10 && duration < LIFT_ACTION_TIMEOUT_SEC;
         }
     }
 
