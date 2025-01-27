@@ -207,24 +207,28 @@ public class TeleopWithActions extends OpMode {
                 robot.arm.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
         }
-
         // ===== End Arm code
-
-
-
 
         // ===== Begin Hang Code
         {
             if (gamepad2.dpad_right) {
                 robot.leftArmServo.setVertical();
                 robot.rightArmServo.setVertical();
-                robot.wrist.WristFoldOut();
+                robot.wrist.WristFoldIn();
                 robot.claw.clawOpen();
                 liftPosition = Liftv2.LIFT_HANG_SLIDES_POSITION;
                 armPosition = Armv2.ARM_HANG_SLIDES_POSITION;
             } else if (gamepad2.dpad_left) {
                 robot.leftArmServo.setHanging();
                 robot.rightArmServo.setHanging();
+
+                  // WIP
+//                armPosition = Armv2.ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT;
+//                manualArm = true;
+//                manualLift = true;
+//
+//                robot.lift.motor.setMotorDisable();
+//                robot.lift.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             }
 
             if (gamepad2.dpad_up) {
@@ -274,15 +278,11 @@ public class TeleopWithActions extends OpMode {
             if (gamepad2.y) {
                 manualArm = false;
                 manualLift = false;
-                runningActions.add(robot.scoreSampleAction());
+                runningActions.add(robot.scoreSampleTeleOpAction());
             } else if (gamepad2.a) {
                 manualArm = false;
                 manualLift = false;
                 runningActions.add(robot.comeDownTeleopAction());
-            } else if (gamepad2.x) {
-                runningActions.add(robot.ClearBarAction());
-                manualArm = false;
-                manualLift = false;
             }
 
             // ====== Automatic tasks:  update running actions
@@ -305,7 +305,7 @@ public class TeleopWithActions extends OpMode {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
         /* send telemetry to the driver of the arm's current position and target position */
-        telemetry.addData("code version", "parantap.13");
+        telemetry.addData("code version", "01262025.1");
         telemetry.addData("wrist servo", robot.wrist.wrist.getPosition());
         telemetry.addData("armTarget: ", robot.arm.motor.getTargetPosition());
         telemetry.addData("arm Encoder: ", robot.arm.motor.getCurrentPosition());
@@ -315,6 +315,7 @@ public class TeleopWithActions extends OpMode {
         telemetry.addData("ArmPosition", armPosition);
         telemetry.addData("ArmLiftComp", armLiftComp);
         telemetry.addData("ArmFudgeFactor", armPositionFudgeFactor);
+        telemetry.addData("Lift tolerance", robot.lift.motor.getTargetPositionTolerance());
 
         telemetry.addData("CycleTime", cycletime);
     }
