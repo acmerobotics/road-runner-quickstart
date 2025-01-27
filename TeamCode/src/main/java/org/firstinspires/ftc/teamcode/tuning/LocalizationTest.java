@@ -12,6 +12,8 @@ import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.TankDrive;
 
+import javax.crypto.ExemptionMechanism;
+
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,8 +36,10 @@ public class LocalizationTest extends LinearOpMode {
                 drive.updatePoseEstimate();
 
                 Pose2d pose = drive.localizer.getPose();
-                telemetry.addData("x", pose.position.x);
-                telemetry.addData("y", pose.position.y);
+                telemetry.addData("x (in)", pose.position.x);
+                telemetry.addData("y (in)", pose.position.y);
+                telemetry.addData("x (ticks)", pose.position.x/MecanumDrive.PARAMS.lateralInPerTick);
+                telemetry.addData("y (ticks)", pose.position.y/MecanumDrive.PARAMS.inPerTick);
                 telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
                 telemetry.update();
 
