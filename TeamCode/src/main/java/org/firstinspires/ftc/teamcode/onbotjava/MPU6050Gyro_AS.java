@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.onbotjava;
 
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
-import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.TypeConversion;
 import java.util.Arrays;
@@ -11,7 +10,7 @@ import com.qualcomm.robotcore.hardware.configuration.annotations.DevicePropertie
 
 @I2cDeviceType
 @DeviceProperties(name = "MPU6050 Gyroscope v4", description = "MPU6050 6-axis accelerometer", xmlTag = "MPU6050v4")
-public class MPU6050Gyro extends I2cDeviceSynchDevice<I2cDeviceSynch>
+public class MPU6050Gyro_AS extends I2cDeviceSynchDevice<I2cDeviceSynch>
 {
     public double getAcceleration_x_g() {
         updateReadingsIfNecessary();
@@ -104,7 +103,7 @@ public class MPU6050Gyro extends I2cDeviceSynchDevice<I2cDeviceSynch>
         }
     }
 
-    public MPU6050Gyro(I2cDeviceSynch deviceClient, boolean deviceClientIsOwned) {
+    public MPU6050Gyro_AS(I2cDeviceSynch deviceClient, boolean deviceClientIsOwned) {
         super(deviceClient, deviceClientIsOwned);
         deviceClient.setI2cAddress(ADDRESS_I2C_DEFAULT);
         deviceClient.engage();

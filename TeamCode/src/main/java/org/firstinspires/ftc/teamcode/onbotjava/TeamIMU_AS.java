@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
 
-public class TeamIMU extends RobotComponent{
+public class TeamIMU_AS extends RobotComponent_AS {
     final BNO055IMU imu;
     double previousDirection=0;
     double totalDegreesTurned=0;
@@ -16,7 +16,7 @@ public class TeamIMU extends RobotComponent{
     
     List<Double> pastHeadingErrors = new ArrayList<>();
 
-    public TeamIMU(Robot2024 robot){
+    public TeamIMU_AS(Robot2024_AS robot){
         super(robot);
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();

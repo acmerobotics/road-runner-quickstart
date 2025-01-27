@@ -6,14 +6,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-public abstract class RobotComponent {
+public abstract class RobotComponent_AS {
   
-  Robot2024 robot;
+  Robot2024_AS robot;
   LinearOpMode opmode;
   HardwareMap hardwareMap;
   
   
-  RobotComponent(Robot2024 _robot){
+  RobotComponent_AS(Robot2024_AS _robot){
     robot = _robot;
     opmode = robot.opmode;
     hardwareMap = opmode.hardwareMap;

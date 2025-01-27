@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.robot.Robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import java.util.Arrays;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Blinker;
@@ -16,14 +15,14 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 
 @TeleOp
 
-public class TeleOpTemplate extends LinearOpMode
+public class TeleOpTemplate_AS extends LinearOpMode
 {
-    private Robot2024 robot;
+    private Robot2024_AS robot;
     //USE : returns moter power scale
     //USE : init
     public void runOpMode()
     {
-        robot = new Robot2024(this,false);
+        robot = new Robot2024_AS(this,false);
         
         while (!isStarted())
         {

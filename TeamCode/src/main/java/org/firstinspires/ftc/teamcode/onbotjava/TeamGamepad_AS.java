@@ -8,11 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class TeamGamepad extends RobotComponent {
+public class TeamGamepad_AS extends RobotComponent_AS {
 
  public Gamepad gamepad;
  public String gamepadName;
- public TeamGamepad(Robot2024 _robot, String gamepadName, Gamepad gamepad) {
+ public TeamGamepad_AS(Robot2024_AS _robot, String gamepadName, Gamepad gamepad) {
    super (_robot);
    this.gamepad = gamepad;
    this.gamepadName = gamepadName;

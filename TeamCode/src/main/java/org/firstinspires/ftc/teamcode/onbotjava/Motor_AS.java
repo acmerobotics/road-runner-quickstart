@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.robot.Robot;
 
 
-public class Motor extends RobotComponent{
+public class Motor_AS extends RobotComponent_AS {
     String motorLabel;
     private DcMotor motor;
     int prevPos;
@@ -21,7 +21,7 @@ public class Motor extends RobotComponent{
     // when in POSITION mode
     boolean motorIsStopped=true;
 
-    public Motor(Robot2024 robot, String motorLabel){
+    public Motor_AS(Robot2024_AS robot, String motorLabel){
         super(robot);
         this.motor = hardwareMap.dcMotor.get(motorLabel);
         this.motorLabel = motorLabel;

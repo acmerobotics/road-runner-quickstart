@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import java.util.Arrays;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Blinker;
@@ -17,13 +16,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import java.lang.Math;
 
 @Autonomous
 
-public class AutoDropBlock2 extends LinearOpMode
+public class AutoDropBlock2_AS extends LinearOpMode
 {
-    private Robot2024 robot;
+    private Robot2024_AS robot;
     //USE : returns moter power scale
     //USE : init
     private Pose2D pose0=new Pose2D(DistanceUnit.INCH, 0,0, AngleUnit.DEGREES, 90);
@@ -42,7 +40,7 @@ public class AutoDropBlock2 extends LinearOpMode
     private Pose2D pose4=new Pose2D(DistanceUnit.INCH,-21,18, AngleUnit.DEGREES,90);
     public void runOpMode()
     {
-        robot = new Robot2024(this,true);
+        robot = new Robot2024_AS(this,true);
         robot.odo.setPosition(pose0);
 
         //Wait for play
@@ -72,20 +70,20 @@ public class AutoDropBlock2 extends LinearOpMode
             robot.arm.setLiftHeight(-1);
 
             //robot.waitForGamePad2X("Intaking next.");
-            while (robot.arm.intakeMotor.getCurrentPosition()>-1800){
-                robot.arm.intakeMotor.setPower(-1);
+            while (robot.arm.intakeMotorAS.getCurrentPosition()>-1800){
+                robot.arm.intakeMotorAS.setPower(-1);
             }
-            robot.arm.intakeMotor.setPower(0);
+            robot.arm.intakeMotorAS.setPower(0);
             robot.arm.intakeServo.setPower(1.0);
             robot.arm.backIntakeServo.setPower(-1);
             //robot.waitForGamePad2X("moving to pose4");
             robot.driveTrain.moveToPosition(0.35,pose4);
             robot.sleep(500);
             //robot.waitForGamePad2X("moving to midtake");
-            while (robot.arm.intakeMotor.getCurrentPosition()<-50){
-                robot.arm.intakeMotor.setPower(1);
+            while (robot.arm.intakeMotorAS.getCurrentPosition()<-50){
+                robot.arm.intakeMotorAS.setPower(1);
             }
-            robot.arm.intakeMotor.setPower(0);
+            robot.arm.intakeMotorAS.setPower(0);
             robot.arm.intakeServo.setPower(-1.0);
             robot.arm.backIntakeServo.setPower(-1);
             robot.arm.conveyorServo.setPower(-1);
@@ -106,18 +104,18 @@ public class AutoDropBlock2 extends LinearOpMode
             robot.driveTrain.moveToPosition(0.5,pose7);
             //robot.waitForGamePad2X("at pose7");
             robot.arm.setLiftHeight(-1);
-            while (robot.arm.intakeMotor.getCurrentPosition()>-1800){
-                robot.arm.intakeMotor.setPower(-1);
+            while (robot.arm.intakeMotorAS.getCurrentPosition()>-1800){
+                robot.arm.intakeMotorAS.setPower(-1);
             }
-            robot.arm.intakeMotor.setPower(0);
+            robot.arm.intakeMotorAS.setPower(0);
             robot.arm.intakeServo.setPower(1.0);
             robot.arm.backIntakeServo.setPower(-1);
             robot.driveTrain.moveToPosition(0.35,pose8);
             robot.sleep(600);
-            while (robot.arm.intakeMotor.getCurrentPosition()<-50){
-                robot.arm.intakeMotor.setPower(1);
+            while (robot.arm.intakeMotorAS.getCurrentPosition()<-50){
+                robot.arm.intakeMotorAS.setPower(1);
             }
-            robot.arm.intakeMotor.setPower(0);
+            robot.arm.intakeMotorAS.setPower(0);
             robot.arm.intakeServo.setPower(-1.0);
             robot.arm.backIntakeServo.setPower(-1);
             robot.arm.conveyorServo.setPower(-1);

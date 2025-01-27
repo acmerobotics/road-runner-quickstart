@@ -10,12 +10,11 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 //Test wheel moters(names may be swapped in configeration)
-public class ArmMovement extends RobotComponent{
+public class ArmMovement_AS extends RobotComponent_AS {
     public final double CONVEYOR_INTAKE_POWER= -1.0;
-    Motor intakeMotor, outtakeMotor;
+    Motor_AS intakeMotorAS, outtakeMotorAS;
     Servo outtakeServo;
     CRServo intakeServo;
     boolean liftWasPressed=false;
@@ -26,38 +25,38 @@ public class ArmMovement extends RobotComponent{
     CRServo conveyorServo;
     CRServo backIntakeServo;
     TouchSensor outtakeSensor;
-    Motor leftClimberMotor;
-    Motor rightClimberMotor;
+    Motor_AS leftClimberMotorAS;
+    Motor_AS rightClimberMotorAS;
     boolean climberHoldMode=false;
     
     TouchSensor leftClimberLimit, rightClimberLimit;
-public ArmMovement(Robot2024 robot){
+public ArmMovement_AS(Robot2024_AS robot){
     super(robot);
     //intakeSensor = hardwareMap.get(TouchSensor.class, "intake_limit");
     outtakeSensor = hardwareMap.get(TouchSensor.class, "lift_limit");
     leftClimberLimit = hardwareMap.get(TouchSensor.class, "left_climb_limit");
     rightClimberLimit = hardwareMap.get(TouchSensor.class, "right_climb_limit");
-    intakeMotor= new Motor(robot, "intake");
-    outtakeMotor= new Motor(robot, "lift");
-    leftClimberMotor = new Motor(robot,"left_climber");
-    leftClimberMotor.setReference();
-    rightClimberMotor = new Motor(robot,"right_climber");
-    rightClimberMotor.setReference();
+    intakeMotorAS = new Motor_AS(robot, "intake");
+    outtakeMotorAS = new Motor_AS(robot, "lift");
+    leftClimberMotorAS = new Motor_AS(robot,"left_climber");
+    leftClimberMotorAS.setReference();
+    rightClimberMotorAS = new Motor_AS(robot,"right_climber");
+    rightClimberMotorAS.setReference();
     
-    rightClimberMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    rightClimberMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    rightClimberMotorAS.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    rightClimberMotorAS.setDirection(DcMotorSimple.Direction.REVERSE);
 
-    leftClimberMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    outtakeMotor.setModeToPosition();
+    leftClimberMotorAS.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    intakeMotorAS.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    outtakeMotorAS.setModeToPosition();
     //testing outake
     //outtakeMotor.setModeToVelocity();
-    outtakeMotor.setPower(1.0);
+    outtakeMotorAS.setPower(1.0);
     outtakeServo = hardwareMap.servo.get("dump");
     intakeServo = hardwareMap.crservo.get("intake_servo");
     outtakeToStart();
-    intakeMotor.setReference();
-    outtakeMotor.setReference();
+    intakeMotorAS.setReference();
+    outtakeMotorAS.setReference();
     backIntakeServo = hardwareMap.crservo.get("backintake_servo");
     conveyorServo= hardwareMap.crservo.get("conveyor_servo");
     
@@ -65,29 +64,29 @@ public ArmMovement(Robot2024 robot){
 
 public void loop() {
     if (outtakeSensor.isPressed())
-        outtakeMotor.setReference();
+        outtakeMotorAS.setReference();
         
     int forwardLimit = -1900;
-    if (intakeMotor.getCurrentPosition() <= forwardLimit && intakeMotor.getPower() < 0) {
+    if (intakeMotorAS.getCurrentPosition() <= forwardLimit && intakeMotorAS.getPower() < 0) {
         robot.alert("Too far forward");
-        intakeMotor.setPower(0);
+        intakeMotorAS.setPower(0);
     }
     if (!climberHoldMode) {
-        if(Math.abs(leftClimberMotor.getPower()) > 0.15 && !canLeftClimberRetract()) {
+        if(Math.abs(leftClimberMotorAS.getPower()) > 0.15 && !canLeftClimberRetract()) {
             robot.alert("Stopping left climber");
-            leftClimberMotor.setPower(0);
+            leftClimberMotorAS.setPower(0);
         }
-        if(Math.abs(rightClimberMotor.getPower()) > 0.15 && !canRightClimberRetract()) {
+        if(Math.abs(rightClimberMotorAS.getPower()) > 0.15 && !canRightClimberRetract()) {
             robot.alert("Stopping right climber");
-            rightClimberMotor.setPower(0);
+            rightClimberMotorAS.setPower(0);
         }
     }
     
     if (leftClimberLimit.isPressed()){
-        leftClimberMotor.setReference();
+        leftClimberMotorAS.setReference();
     }
     if (rightClimberLimit.isPressed()){
-        rightClimberMotor.setReference();
+        rightClimberMotorAS.setReference();
     }
 }
 public void teleopLoop(Gamepad gamepad1, Gamepad gamepad2){
@@ -164,38 +163,38 @@ public void teleopLoop(Gamepad gamepad1, Gamepad gamepad2){
     if (gamepad2.dpad_up){
         //lift
         liftWasPressed = true;
-        outtakeMotor.setTargetPosition(outtakeMotor.getCurrentPosition()-5000);//was -1500
+        outtakeMotorAS.setTargetPosition(outtakeMotorAS.getCurrentPosition()-5000);//was -1500
     }
     else if (gamepad2.dpad_down){
         liftWasPressed = true;
-        outtakeMotor.setTargetPosition(outtakeMotor.getCurrentPosition()+500);
+        outtakeMotorAS.setTargetPosition(outtakeMotorAS.getCurrentPosition()+500);
     } else if (Math.abs(gamepad2.right_stick_y)>0.1){
         liftWasPressed = true;
-        outtakeMotor.setTargetPosition(outtakeMotor.getCurrentPosition()+250*gamepad2.right_stick_y);
+        outtakeMotorAS.setTargetPosition(outtakeMotorAS.getCurrentPosition()+250*gamepad2.right_stick_y);
     }
     else{
         // Tell lift to stay in its current position, but do it just
         // when the up/down button is released
         if (liftWasPressed){
-            outtakeMotor.setTargetPosition(outtakeMotor.getCurrentPosition());
+            outtakeMotorAS.setTargetPosition(outtakeMotorAS.getCurrentPosition());
         }
         liftWasPressed = false;
     }
     
     
     if (gamepad2.dpad_right){
-        intakeMotor.setPower(-0.8);
+        intakeMotorAS.setPower(-0.8);
     }
     else if(gamepad2.dpad_left){
-        intakeMotor.setPower(0.8);
+        intakeMotorAS.setPower(0.8);
     } else {
-        intakeMotor.setPower(0);
+        intakeMotorAS.setPower(0);
     }
     
     
 }
 public void leftClimberOut(double speed){
-    leftClimberMotor.setPower(speed);
+    leftClimberMotorAS.setPower(speed);
 }
 public void leftClimberIn(double speed){
     if(inFlag == true && !canLeftClimberRetract()){
@@ -203,10 +202,10 @@ public void leftClimberIn(double speed){
         robot.alert("Ignoring left climber input");
         return;
     } else
-        leftClimberMotor.setPower(-speed);
+        leftClimberMotorAS.setPower(-speed);
 }
 public void rightClimberOut(double speed){
-    rightClimberMotor.setPower(speed);
+    rightClimberMotorAS.setPower(speed);
 }
 public void rightClimberIn(double speed){
     if(inFlag==true && !canRightClimberRetract()){
@@ -214,7 +213,7 @@ public void rightClimberIn(double speed){
         robot.alert("Ignoring right climber input");
         return;
     } else
-        rightClimberMotor.setPower(-speed);
+        rightClimberMotorAS.setPower(-speed);
         
 }
 public boolean canRightClimberRetract() {
@@ -245,13 +244,13 @@ public void outtakeToDrop(){
 }
 //height is in ticks negative is up posotive is down -4900 is near full height
 public void setLiftHeight(long height_ticks, boolean wait){
-    outtakeMotor.setTargetPosition(height_ticks);
+    outtakeMotorAS.setTargetPosition(height_ticks);
     if (!wait)
         return;
-    long currentPosition = outtakeMotor.getCurrentPosition();
+    long currentPosition = outtakeMotorAS.getCurrentPosition();
     long error = height_ticks-currentPosition;
     while(!opmode.isStopRequested() && Math.abs(error) > 50){
-        currentPosition = outtakeMotor.getCurrentPosition();
+        currentPosition = outtakeMotorAS.getCurrentPosition();
         error = height_ticks-currentPosition;
         robot.setStatus(String.format("Waiting for lift: e=%d, p=%d, g=%d",
             error, currentPosition, height_ticks));

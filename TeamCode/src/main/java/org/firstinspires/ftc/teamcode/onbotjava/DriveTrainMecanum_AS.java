@@ -5,7 +5,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -15,8 +15,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 
-public class DriveTrainMecanum extends RobotComponent {
-    Motor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor;
+public class DriveTrainMecanum_AS extends RobotComponent_AS {
+    Motor_AS frontRightMotorAS, frontLeftMotorAS, backRightMotorAS, backLeftMotorAS;
 
    long TICKS_PER_INCH = 181;
     // Copy some data from gamepad to be used in Telemetry
@@ -26,23 +26,23 @@ public class DriveTrainMecanum extends RobotComponent {
     
     boolean prevX,prevB;
    
-    public DriveTrainMecanum(Robot2024 robot) {
+    public DriveTrainMecanum_AS(Robot2024_AS robot) {
         super(robot);
        
-        frontRightMotor = new Motor(robot, "FrontRight");
-        backLeftMotor = new Motor(robot, "BackLeft");
-        frontLeftMotor = new Motor(robot, "FrontLeft");
-        backRightMotor = new Motor(robot, "BackRight") ;
+        frontRightMotorAS = new Motor_AS(robot, "FrontRight");
+        backLeftMotorAS = new Motor_AS(robot, "BackLeft");
+        frontLeftMotorAS = new Motor_AS(robot, "FrontLeft");
+        backRightMotorAS = new Motor_AS(robot, "BackRight") ;
         // for (Motor motor: motors) {
         //     motor.setModeToEncoderSpeed();
         //     motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // }   
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeftMotorAS.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotorAS.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftMotorAS.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotorAS.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotorAS.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotorAS.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     
 
@@ -50,9 +50,9 @@ public class DriveTrainMecanum extends RobotComponent {
         
     }
     public long getLocation(){
-        return Math.abs(frontLeftMotor.getCurrentPosition()) + 
-        Math.abs(backLeftMotor.getCurrentPosition()) + Math.abs(frontRightMotor.getCurrentPosition()) +
-        Math.abs(backRightMotor.getCurrentPosition());
+        return Math.abs(frontLeftMotorAS.getCurrentPosition()) +
+        Math.abs(backLeftMotorAS.getCurrentPosition()) + Math.abs(frontRightMotorAS.getCurrentPosition()) +
+        Math.abs(backRightMotorAS.getCurrentPosition());
     }
         
     private double getAngleFromJoystick (double x, double y)
@@ -175,10 +175,10 @@ public class DriveTrainMecanum extends RobotComponent {
             double frontRightPower = (drivePower*(ro_y - ro_x) - spin) / denominator;
             double backRightPower =  (drivePower*(ro_y + ro_x) - spin) / denominator;
 
-            frontLeftMotor.setPower(frontLeftPower);
-            backLeftMotor.setPower(backLeftPower);
-            frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
+            frontLeftMotorAS.setPower(frontLeftPower);
+            backLeftMotorAS.setPower(backLeftPower);
+            frontRightMotorAS.setPower(frontRightPower);
+            backRightMotorAS.setPower(backRightPower);
     }
             
     public void moveInDirectForTime(double speed, double x, double y, long ms){
@@ -195,10 +195,10 @@ public class DriveTrainMecanum extends RobotComponent {
     }
     
     public void moveInDirectForDistance(double speed, double x, double y, double inches){
-        frontLeftMotor.setReference();
-        backLeftMotor.setReference();
-        frontRightMotor.setReference();
-        backRightMotor.setReference();
+        frontLeftMotorAS.setReference();
+        backLeftMotorAS.setReference();
+        frontRightMotorAS.setReference();
+        backRightMotorAS.setReference();
         long endP=(long)(inches*TICKS_PER_INCH);
         double spinPower=0;
         while (!opmode.isStopRequested() && getLocation()<endP)
@@ -223,11 +223,11 @@ public class DriveTrainMecanum extends RobotComponent {
     
       public double getCurrentPosition ()
     {
-        return frontRightMotor.getCurrentPosition();
+        return frontRightMotorAS.getCurrentPosition();
     }
     public double getPositionChange ()
     {
-        return frontLeftMotor.getPositionChange();
+        return frontLeftMotorAS.getPositionChange();
     }
     
     public void shake(){
@@ -247,10 +247,10 @@ public class DriveTrainMecanum extends RobotComponent {
     
     public void stop()
     {
-        frontLeftMotor.stop();
-        backLeftMotor.stop();
-        frontRightMotor.stop();
-        backRightMotor.stop();
+        frontLeftMotorAS.stop();
+        backLeftMotorAS.stop();
+        frontRightMotorAS.stop();
+        backRightMotorAS.stop();
     }
     public double getSpinPowerForHeadingCorrection(){
         double minimalPowerToSpin = 0.20;

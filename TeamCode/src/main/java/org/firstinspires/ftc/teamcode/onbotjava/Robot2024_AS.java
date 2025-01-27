@@ -6,41 +6,41 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Blinker;
-import java.lang.Math;
+
 import java.util.*;
 
-public class Robot2024 {
+public class Robot2024_AS {
     HardwareMap hardwareMap;
     LinearOpMode opmode;
-    DriveTrainMecanum driveTrain;
-    TeamIMU imu;
-    ArmMovement arm;
+    DriveTrainMecanum_AS driveTrain;
+    TeamIMU_AS imu;
+    ArmMovement_AS arm;
     String status = "";
-    AprilTagComponent aprilTagComponent;
-    OdometryComponent odo;
+    AprilTagComponent_AS_AS aprilTagComponent;
+    OdometryComponent_AS odo;
     ArrayList<String> alerts = new ArrayList<>();
     
-    List<RobotComponent> robotComponents = new ArrayList<>();
+    List<RobotComponent_AS> robotComponents = new ArrayList<>();
     
     
     
-    public Robot2024(LinearOpMode opmode, boolean isAuto){
+    public Robot2024_AS(LinearOpMode opmode, boolean isAuto){
         this.hardwareMap = opmode.hardwareMap;
         this.opmode = opmode;
-        imu = new TeamIMU(this);
-        driveTrain = new DriveTrainMecanum(this);
+        imu = new TeamIMU_AS(this);
+        driveTrain = new DriveTrainMecanum_AS(this);
         if(isAuto){
             imu.ignoreHeadingError=false;
             //driveTrain.isAuto=true;
         }
-        arm = new ArmMovement(this);
-        aprilTagComponent = new AprilTagComponent(this);
-        odo = new OdometryComponent(this);
+        arm = new ArmMovement_AS(this);
+        aprilTagComponent = new AprilTagComponent_AS_AS(this);
+        odo = new OdometryComponent_AS(this);
     }
     
     public void loop(){
         alerts.clear();
-        for (RobotComponent component: robotComponents) {
+        for (RobotComponent_AS component: robotComponents) {
             component.loop();
         }
 
@@ -48,7 +48,7 @@ public class Robot2024 {
 
         opmode.telemetry.addData("Status", status);
         opmode.telemetry.addData("ALERTS", alerts.toString());
-        for (RobotComponent component: robotComponents) {
+        for (RobotComponent_AS component: robotComponents) {
             component.doTelemetry(opmode.telemetry);
         }
         opmode.telemetry.update();
@@ -64,15 +64,15 @@ public class Robot2024 {
     }
     
     public void teleopLoop(){
-        for (RobotComponent component: robotComponents) {
+        for (RobotComponent_AS component: robotComponents) {
             component.teleopLoop(opmode.gamepad1, opmode.gamepad2);
         }
-        for (RobotComponent component: robotComponents) {
+        for (RobotComponent_AS component: robotComponents) {
             component.loop();
         }
     }
 
-    public void registerComponent(RobotComponent component) {
+    public void registerComponent(RobotComponent_AS component) {
         robotComponents.add(component);
     }
     

@@ -8,13 +8,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous
 
-public class TestOdoAuto extends LinearOpMode{
-    private Robot2024 robot;
+public class TestOdoAuto_AS extends LinearOpMode{
+    private Robot2024_AS robot;
     //USE : returns moter power scale
     //USE : init
     public void runOpMode()
     {
-        robot = new Robot2024(this,true);
+        robot = new Robot2024_AS(this,true);
         //Wait for play
         while (!isStarted())
         {
