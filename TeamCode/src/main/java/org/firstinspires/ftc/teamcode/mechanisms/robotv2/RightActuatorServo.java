@@ -10,7 +10,7 @@ public class RightActuatorServo {
     public Servo servo = null;
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public static double RIGHT_ACTUATOR_HORIZONTAL   = 0.5;
-    public static double RIGHT_ACTUATOR_VERTICAL  = .8;
+    public static double RIGHT_ACTUATOR_VERTICAL  = .25;
     public static double RIGHT_ACTUATOR_HANG = 0.5;
 
     public static double RIGHT_ACTUATOR_SCALE_MIN = 0.0;
