@@ -31,7 +31,7 @@ public class Armv2 {
     public static int ARM_PICKUP_GROUND_SAMPLE = 1200;
     public static int ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT = 1390;
 
-    public static int ARM_HANG_SLIDES_POSITION = 290;
+    public static int ARM_HANG_SLIDES_POSITION = 0;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     public static double FUDGE_FACTOR = 300;

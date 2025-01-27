@@ -38,6 +38,7 @@ public class Liftv2 {
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftPosition = LIFT_COLLAPSED;
+        motor.setTargetPositionTolerance(20);
     }
 
     public void reset(){

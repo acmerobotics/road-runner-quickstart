@@ -95,16 +95,16 @@ public class Robotv2 {
         );
     }
 
-    public Action scoreSampleAction(){
+    public Action scoreSampleTeleOpAction(){
         return new SequentialAction(
                 new ParallelAction(
                         arm.armScoreAction(),
-                        lift.liftUpAction(),
-                        wrist.wristVerticalAction()),
-                wrist.wristFoldOutAction()
-//                new SleepAction(2),
-//                claw.clawOpenAction(),
-//                new SleepAction(.2)
+                        new SequentialAction(
+                                new SleepAction(0.5),
+                                wrist.wristVerticalAction()
+                        ))
+                , lift.liftUpAction()
+                , wrist.wristFoldOutAction()
         );
     }
 
@@ -119,9 +119,4 @@ public class Robotv2 {
                 )
         );
     }
-
-    public Action ClearBarAction(){
-        return arm.armClearBarAction();
-    }
-
 }
