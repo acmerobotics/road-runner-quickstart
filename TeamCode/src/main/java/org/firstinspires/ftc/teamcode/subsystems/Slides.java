@@ -49,11 +49,11 @@ public class Slides extends Mechanism {
 
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
-        slides.setTargetPosition(activeSlidesPosition.position);
         slides.loop(aimpad, aimpad2);
     }
 
     public void setSlidesPosition(Slides.SlidesPosition activeSlidesPosition) {
+        slides.setTargetPosition(activeSlidesPosition.position);
         slides.setActiveControlState(SlidesBase.SlidesControlState.AUTONOMOUS);
         this.activeSlidesPosition = activeSlidesPosition;
     }

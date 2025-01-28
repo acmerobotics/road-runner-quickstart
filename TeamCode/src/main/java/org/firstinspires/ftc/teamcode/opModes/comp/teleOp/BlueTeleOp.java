@@ -5,18 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.opModes.comp.auto.supers.SupersAutoConstants;
-import org.firstinspires.ftc.teamcode.subsystems.v1.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
 
 @TeleOp(name="BlueTeleOp", group="AAA_COMP")
 public class BlueTeleOp extends OpMode {
 
-    Robot robot;
+    Robot_V2 robot;
     AIMPad aimPad1;
     AIMPad aimPad2;
 
     @Override
     public void init() {
-        robot = new Robot(false, SupersAutoConstants.BLUE_STARTING_POSITION);
+        robot = new Robot_V2();
         robot.init(hardwareMap);
         aimPad1 = new AIMPad(gamepad1);
         aimPad2 = new AIMPad(gamepad2);

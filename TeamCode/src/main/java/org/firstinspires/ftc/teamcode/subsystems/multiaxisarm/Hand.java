@@ -44,11 +44,11 @@ public class Hand extends Mechanism {
     }
 
     public void toggle() {
-//        if (hand.setActiveTargetState(CLOSED).equals(OPEN)) {
-//            close();
-//        } else {
-//            open();
-//        }
+        if (hand.getActiveTargetState() == OPEN) {
+            close();
+        } else {
+            open();
+        }
     }
 
 }

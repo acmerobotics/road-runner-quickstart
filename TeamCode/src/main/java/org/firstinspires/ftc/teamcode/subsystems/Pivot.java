@@ -22,9 +22,7 @@ public class Pivot extends Mechanism {
         AUTONOMOUS, MANUAL
     }
 
-    private PivotControlState activeControlState = PivotControlState.AUTONOMOUS;
-  
-    private SlidesBase.SlidesControlState activeControlState = SlidesBase.SlidesControlState.AUTONOMOUS;
+    private PivotControlState activePivotControlState = PivotControlState.AUTONOMOUS;
   
     private double lastPosition;
     private double activeTargetPosition = 0;
@@ -78,7 +76,7 @@ public class Pivot extends Mechanism {
 
     @Override
     public void loop(AIMPad aimpad) {
-        switch (activeControlState) {
+        switch (activePivotControlState) {
             case AUTONOMOUS:
                 update();
                 break;
@@ -112,11 +110,6 @@ public class Pivot extends Mechanism {
         activeTargetPosition = targetPosition;
         controlSystem.setTarget(activeTargetPosition);
     }
-
-    private void setTargetPosition(double targetPosition) {
-        activeTargetPosition = targetPosition;
-        controlSystem.setTarget(activeTargetPosition);
-    }
       
     private void holdPosition() {
         setTargetPosition(lastPosition);
@@ -136,7 +129,7 @@ public class Pivot extends Mechanism {
     }
 
     private void setActiveControlState(PivotControlState activeControlState) {
-        this.activeControlState = activeControlState;
+        this.activePivotControlState = activeControlState;
     }
 
     public void setPivotPosition(PivotPosition activePivotPosition) {

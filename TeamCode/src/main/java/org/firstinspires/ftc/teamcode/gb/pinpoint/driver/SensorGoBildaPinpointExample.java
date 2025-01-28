@@ -111,7 +111,7 @@ public class SensorGoBildaPinpointExample extends LinearOpMode {
          */
         //odo.recalibrateIMU();
         odo.resetPosAndIMU();
-        odo.setPosition(AutoConstants.STARTING_POSITION);
+        odo.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", odo.getXOffset());
         telemetry.addData("Y offset", odo.getYOffset());
