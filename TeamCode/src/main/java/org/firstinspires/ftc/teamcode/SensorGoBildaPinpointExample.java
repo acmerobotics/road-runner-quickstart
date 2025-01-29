@@ -99,11 +99,11 @@ public class SensorGoBildaPinpointExample extends LinearOpMode {
 
         /*
         Set the direction that each of the two odometry pods count. The X (forward) pod should
-        increase when you move the robot forward. And the Y (strafe) pod should increase when
+        increase when you move t    he robot forward. And the Y (strafe) pod should increase when
         you move the robot to the left.
          */
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-
+        odo.setOffsets(-12,-12);
 
         /*
         Before running the robot, recalibrate the IMU. This needs to happen when the robot is stationary
@@ -113,7 +113,7 @@ public class SensorGoBildaPinpointExample extends LinearOpMode {
         This is recommended before you run your autonomous, as a bad initial calibration can cause
         an incorrect starting value for x, y, and heading.
          */
-        //odo.recalibrateIMU();
+        odo.recalibrateIMU();
         odo.resetPosAndIMU();
 
         telemetry.addData("Status", "Initialized");
