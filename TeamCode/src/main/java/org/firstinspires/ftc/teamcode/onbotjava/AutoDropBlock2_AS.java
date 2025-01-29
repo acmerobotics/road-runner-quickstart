@@ -41,7 +41,7 @@ public class AutoDropBlock2_AS extends LinearOpMode
     public void runOpMode()
     {
         robot = new Robot2024_AS(this,true);
-        robot.odo.setPosition(pose0);
+        //robot.odo.setPosition(pose0);
 
         //Wait for play
         while (!isStarted())

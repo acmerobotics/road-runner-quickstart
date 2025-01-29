@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.onbotjava;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -17,7 +20,7 @@ public class Robot2024_AS {
     ArmMovement_AS arm;
     String status = "";
     AprilTagComponent_AS_AS aprilTagComponent;
-    OdometryComponent_AS odo;
+    //OdometryComponent_AS odo;
     ArrayList<String> alerts = new ArrayList<>();
     
     List<RobotComponent_AS> robotComponents = new ArrayList<>();
@@ -35,7 +38,7 @@ public class Robot2024_AS {
         }
         arm = new ArmMovement_AS(this);
         aprilTagComponent = new AprilTagComponent_AS_AS(this);
-        odo = new OdometryComponent_AS(this);
+        //odo = new OdometryComponent_AS(this);
     }
     
     public void loop(){
@@ -88,10 +91,12 @@ public class Robot2024_AS {
         }
     }
     public Pose2D getPosition(){
-        return odo.currentPosition;
+        return new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.DEGREES,0);
+        //return odo.currentPosition;
     }
     public Pose2D getVelocity(){
-        return odo.currentVelocity;
+        return new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.DEGREES,0);
+        //return odo.currentVelocity;
     }
     public void waitForGamePad2X(String message){
         setStatus(String.format("Waiting for GP2.X: %s", message));
