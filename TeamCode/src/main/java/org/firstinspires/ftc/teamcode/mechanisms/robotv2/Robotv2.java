@@ -15,6 +15,7 @@ public class Robotv2 {
     public Wristv2 wrist;
     public Liftv2 lift;
     public Claw claw;
+    public ClawRotator clawRotator;
     public RightActuatorServo rightArmServo;
     public LeftActuatorServo leftArmServo;
 
@@ -27,6 +28,7 @@ public class Robotv2 {
         wrist = new Wristv2(hardwareMap);
         lift = new Liftv2(hardwareMap);
         claw = new Claw(hardwareMap);
+        clawRotator = new ClawRotator(hardwareMap);
 
         // hang mechanism
         rightArmServo = new RightActuatorServo(hardwareMap);
