@@ -10,8 +10,10 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.LeftActuator;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
@@ -54,6 +56,9 @@ public class TeleopWithActions extends OpMode {
     boolean manualLift = true;
     boolean manualArm = true;
 
+    boolean hangLift = false;
+    boolean hangArm = false;
+
     @Override
     public void init() {
         robot = new Robotv2(hardwareMap, new Pose2d(0,0, Math.toRadians(0)));
@@ -61,6 +66,14 @@ public class TeleopWithActions extends OpMode {
         robot.wrist.WristFoldIn();
         armPosition = Armv2.ARM_REST_POSITION;
         liftPosition = Liftv2.LIFT_COLLAPSED;
+
+        /*This sets the maximum current that the control hub will apply to the arm / lift before throwing a flag */
+        robot.arm.motor.setCurrentAlert(5, CurrentUnit.AMPS);
+        robot.lift.motor.setCurrentAlert(5, CurrentUnit.AMPS);
+
+        robot.arm.reset();
+        robot.lift.reset();
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Status", "Initialized");
     }
@@ -116,6 +129,15 @@ public class TeleopWithActions extends OpMode {
             } else if (gamepad1.b) {
                 robot.claw.clawClose();
             }
+            if (gamepad1.dpad_right) {
+                robot.clawRotator.rotateRight45();
+            } else if (gamepad1.dpad_left) {
+                robot.clawRotator.rotateLeft45();
+            } else if (gamepad1.dpad_up){
+                robot.clawRotator.rotateZero();
+            } else if(gamepad1.dpad_down){
+                robot.clawRotator.rotate90();
+            }
 
             // Wrist
             if (gamepad1.x) {
@@ -138,16 +160,6 @@ public class TeleopWithActions extends OpMode {
             } else if (gamepad2.left_bumper) {
                 liftPosition -= 2800 * cycletime;
             }
-
-//            int liftCurrentPos = robot.lift.motor.getCurrentPosition();
-//
-//            if (gamepad1.dpad_right) {
-//                manualLift = true;
-//                liftPosition = liftCurrentPos + (1500 * cycletime);
-//            } else if (gamepad1.dpad_left) {
-//                manualLift = true;
-//                liftPosition = liftCurrentPos - (1500 * cycletime);
-//            }
 
             /*here we check to see if the lift is trying to go higher than the maximum extension.
              *if it is, we set the variable to the max.
@@ -222,13 +234,12 @@ public class TeleopWithActions extends OpMode {
                 robot.leftArmServo.setHanging();
                 robot.rightArmServo.setHanging();
 
-                  // WIP
-//                armPosition = Armv2.ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT;
-//                manualArm = true;
-//                manualLift = true;
-//
-//                robot.lift.motor.setMotorDisable();
-//                robot.lift.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                // WIP
+                armPosition = Armv2.ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT;
+                hangArm = true;
+                hangLift = true;
+                manualLift = false;
+                manualArm = false;
             }
 
             if (gamepad2.dpad_up) {
@@ -240,6 +251,16 @@ public class TeleopWithActions extends OpMode {
                 liftPosition = Liftv2.LIFT_HANG_SLIDES_POSITION_END;
             }
 
+            if (hangArm) {
+//                int armTargetPosition = (int) (armPosition);
+                robot.arm.motor.setTargetPosition(Armv2.ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT);
+                robot.arm.motor.setVelocity(500);
+                robot.arm.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (hangLift) {
+                robot.lift.motor.setMotorDisable();
+                robot.lift.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
             // Code for adjusting actuators when they stop at imperfect height: Begin
             double gamepad2_ls_y = gamepad2.left_stick_y;
 
@@ -306,16 +327,22 @@ public class TeleopWithActions extends OpMode {
 
         /* send telemetry to the driver of the arm's current position and target position */
         telemetry.addData("code version", "01262025.1");
-        telemetry.addData("wrist servo", robot.wrist.wrist.getPosition());
+//        telemetry.addData("wrist servo", robot.wrist.wrist.getPosition());
         telemetry.addData("armTarget: ", robot.arm.motor.getTargetPosition());
         telemetry.addData("arm Encoder: ", robot.arm.motor.getCurrentPosition());
-        telemetry.addData("lift target" , robot.lift.motor.getTargetPosition());
-        telemetry.addData("lift position", robot.lift.motor.getCurrentPosition());
-        telemetry.addData("FieldCentric? ", fieldCentric);
-        telemetry.addData("ArmPosition", armPosition);
-        telemetry.addData("ArmLiftComp", armLiftComp);
-        telemetry.addData("ArmFudgeFactor", armPositionFudgeFactor);
-        telemetry.addData("Lift tolerance", robot.lift.motor.getTargetPositionTolerance());
+//        telemetry.addData("lift target" , robot.lift.motor.getTargetPosition());
+//        telemetry.addData("lift position", robot.lift.motor.getCurrentPosition());
+//        telemetry.addData("FieldCentric? ", fieldCentric);
+//        telemetry.addData("ArmPosition", armPosition);
+//        telemetry.addData("ArmTargetPosition", armPosition);
+//        telemetry.addData("ArmLiftComp", armLiftComp);
+//        telemetry.addData("ArmFudgeFactor", armPositionFudgeFactor);
+//        telemetry.addData("Lift tolerance", robot.lift.motor.getTargetPositionTolerance());
+          telemetry.addData("manualLift", manualLift);
+          telemetry.addData("hangLift", hangLift);
+        telemetry.addData("manualArm", manualArm);
+        telemetry.addData("hangArm", hangArm);
+
 
         telemetry.addData("CycleTime", cycletime);
     }

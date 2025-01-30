@@ -12,46 +12,43 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class ClawRotator {
-    public Servo claw = null; //the wrist servo
-    /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    public static double CLAW_ROTATE_0 = 0.5;
-    public static double CLAW_ROTATE_45_LEFT = CLAW_ROTATE_0 + 45/270.;
-    public static double CLAW_ROTATE_45_RIGHT = CLAW_ROTATE_0 - 45/270.;
+    public Servo servo = null; //the wrist servo
 
-    public static double CLAW_ROTATE_90 = 1;
+    public static double CLAW_RESET_POS = 0.555;
+    public static double CLAW_ROTATE_45 = .032;
 
     public ClawRotator(HardwareMap hardwareMap) {
-        claw = hardwareMap.get(Servo.class, "clawrotator");
-        claw.setPosition(CLAW_ROTATE_0);
+        servo = hardwareMap.get(Servo.class, "clawrotator");
+        servo.setPosition(CLAW_RESET_POS);
     }
 
-    public void setClawRotate0() {
-        claw.setPosition(CLAW_ROTATE_0);
+    public void rotateLeft45(){
+        servo.setPosition(CLAW_RESET_POS + CLAW_ROTATE_45);
     }
 
-    public void setClawRotate45Left() {
-        claw.setPosition(CLAW_ROTATE_45_LEFT);
-    }
-    public void setClawRotate45Right() {
-        claw.setPosition(CLAW_ROTATE_45_RIGHT);
-    }
-    public void setClawRotate90() {
-        claw.setPosition(CLAW_ROTATE_90);
+    public void rotateRight45(){
+        servo.setPosition(CLAW_RESET_POS - CLAW_ROTATE_45);
     }
 
-    public Action clawRotate0Action() {
-        return new InstantAction(() -> claw.setPosition(CLAW_ROTATE_0));
+    public void rotateZero(){
+        servo.setPosition(CLAW_RESET_POS);
+    }
+    public void rotate90(){
+        servo.setPosition(CLAW_RESET_POS + 2*CLAW_ROTATE_45);
+    }
+
+    // Auto Actions
+    public Action clawRotateResetAction() {
+        return new InstantAction(() -> servo.setPosition(CLAW_RESET_POS));
     }
 
     public Action clawRotate45LeftAction() {
-        return new InstantAction(() -> claw.setPosition(CLAW_ROTATE_45_LEFT));
+        return new InstantAction(() -> servo.setPosition(CLAW_RESET_POS + CLAW_ROTATE_45));
     }
     public Action clawRotate45RightAction() {
-        return new InstantAction(() -> claw.setPosition(CLAW_ROTATE_45_RIGHT));
+        return new InstantAction(() -> servo.setPosition(CLAW_RESET_POS - CLAW_ROTATE_45));
     }
-    public Action clawRotate90Action() {
-        return new InstantAction(() -> claw.setPosition(CLAW_ROTATE_90));
-    }
+
 }
 
 
