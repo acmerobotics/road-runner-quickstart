@@ -7,13 +7,14 @@ import com.aimrobotics.aimlib.control.SimpleControlSystem;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 
 public class Pivot extends Mechanism {
+
+    private static final double PROXIMITY_THRESHOLD = 20;
     private DcMotorEx pivot;
 
     private final SimpleControlSystem controlSystem;
@@ -30,24 +31,23 @@ public class Pivot extends Mechanism {
     private double manualPower = 0;
     //todo: set pid values
 
-    private static final double kP = 0.006;
-    private static final double kI = 0.00001;
-    private static final double kD = 0.00002;
-    private static final double derivativeLowPassGain = 0.15;
-    private static final double integralSumMax = 2500;
-    private static final double kV = 0.01;
+    private static final double kP = 0;
+    private static final double kI = 0;
+    private static final double kD = 0;
+    private static final double derivativeLowPassGain = 0;
+    private static final double integralSumMax = 0;
+    private static final double kV = 0.0;
     private static final double kA = 0.0;
     private static final double kStatic = 0.0;
     private static final double kCos = 0.0;
     private static final double kG = 0.0;
-    private static final double lowPassGain = 0.15;
+    private static final double lowPassGain = 0;
 
-    enum PivotPosition {
-        LOW(0),
-        HIGH(0),
-        MEDIUM(0),
+    public enum PivotPosition {
+        PICKUP(300),
+        SCORE(100),
         HANG(0);
-        //what does this do:
+
         private final int position;
 
         PivotPosition(int position) {
@@ -55,7 +55,7 @@ public class Pivot extends Mechanism {
         }
     }
 
-    public PivotPosition activePivotPosition = PivotPosition.LOW;
+    private PivotPosition activePivotPosition = PivotPosition.PICKUP;
 
     public Pivot() {
         PIDController pidController = new PIDController(kP, kI, kD, derivativeLowPassGain, integralSumMax);
@@ -75,7 +75,7 @@ public class Pivot extends Mechanism {
     }
 
     @Override
-    public void loop(AIMPad aimpad) {
+    public void loop(AIMPad aimpad, AIMPad aimpad2) {
         switch (activePivotControlState) {
             case AUTONOMOUS:
                 update();
@@ -85,6 +85,12 @@ public class Pivot extends Mechanism {
                 break;
         }
 
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+        telemetry.addData("Current Position: ", pivot.getCurrentPosition());
+        telemetry.addData("Target Position: ", activeTargetPosition);
     }
 
 
@@ -132,7 +138,16 @@ public class Pivot extends Mechanism {
         this.activePivotControlState = activeControlState;
     }
 
+    /**
+     * Check if the slides are at the target position
+     * @return true if the slides are within the proximity threshold of the target position
+     */
+    public boolean isAtTargetPosition() {
+        return Math.abs(pivot.getCurrentPosition() - activeTargetPosition) < PROXIMITY_THRESHOLD;
+    }
+
     public void setPivotPosition(PivotPosition activePivotPosition) {
+        setTargetPosition(activePivotPosition.position);
         setActiveControlState(PivotControlState.AUTONOMOUS);
         this.activePivotPosition = activePivotPosition;
     }

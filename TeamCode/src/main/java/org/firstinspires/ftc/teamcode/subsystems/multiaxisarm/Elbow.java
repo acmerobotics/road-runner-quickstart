@@ -15,13 +15,13 @@ public class Elbow extends Mechanism {
     public StateDrivenServo rightElbow;
 
     ServoState UP = new ServoState(.7);
-    ServoState AVOID = new ServoState(.5);
+    ServoState MIDDLE = new ServoState(.5);
     ServoState DOWN = new ServoState(.2);
 
     @Override
     public void init(HardwareMap hwMap) {
-        leftElbow = new StateDrivenServo(new ServoState[]{UP, DOWN, AVOID}, DOWN, ConfigurationInfo.leftElbow.getDeviceName());
-        rightElbow = new StateDrivenServo(new ServoState[]{UP, DOWN, AVOID}, DOWN, ConfigurationInfo.rightElbow.getDeviceName(), Servo.Direction.REVERSE);
+        leftElbow = new StateDrivenServo(new ServoState[]{UP, DOWN, MIDDLE}, DOWN, ConfigurationInfo.leftElbow.getDeviceName());
+        rightElbow = new StateDrivenServo(new ServoState[]{UP, DOWN, MIDDLE}, DOWN, ConfigurationInfo.rightElbow.getDeviceName(), Servo.Direction.REVERSE);
 
         leftElbow.init(hwMap);
         rightElbow.init(hwMap);
@@ -49,9 +49,9 @@ public class Elbow extends Mechanism {
         rightElbow.setActiveTargetState(DOWN);
     }
 
-    public void avoid() {
-        leftElbow.setActiveTargetState(AVOID);
-        rightElbow.setActiveTargetState(AVOID);
+    public void middle() {
+        leftElbow.setActiveTargetState(MIDDLE);
+        rightElbow.setActiveTargetState(MIDDLE);
     }
 
     public void custom(double position) {

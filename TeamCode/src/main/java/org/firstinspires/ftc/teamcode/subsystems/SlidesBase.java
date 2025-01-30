@@ -26,12 +26,12 @@ public class SlidesBase extends Mechanism {
     private final DcMotorSimple.Direction leftMotorDirection;
     private final DcMotorSimple.Direction rightMotorDirection;
 
-    private double activeTargetPosition = 0;
+    protected double activeTargetPosition = 0;
     private double manualPower = 0;
 
     private final SimpleControlSystem controlSystem;
 
-    private static final double PROXIMITY_THRESHOLD = 30;
+    private static final double PROXIMITY_THRESHOLD = 20;
     private static final double CURRENT_THRESHOLD = 5000;
     private static final double MINIMUM_POWER = 0.03;
 
@@ -42,7 +42,7 @@ public class SlidesBase extends Mechanism {
     public enum SlidesControlState {
         AUTONOMOUS, MANUAL
     }
-    private SlidesControlState activeControlState = SlidesControlState.AUTONOMOUS;
+    protected SlidesControlState activeControlState = SlidesControlState.AUTONOMOUS;
 
     /**
      * Constructor for the slides base
@@ -135,7 +135,7 @@ public class SlidesBase extends Mechanism {
      * Use with updateManualPower() to set the manual power
      */
     private void applyManualPower() {
-        if (Math.abs(manualPower) > MINIMUM_POWER) {
+        if (Math.abs(manualPower) > MINIMUM_POWER && !currentSpikeDetected()) {
             setPower(manualPower);
         } else {
             holdPosition();

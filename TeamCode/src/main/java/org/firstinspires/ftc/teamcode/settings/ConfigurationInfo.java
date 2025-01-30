@@ -15,54 +15,16 @@ public class ConfigurationInfo {
     public static HardwareInterface rotator = new HardwareInterface("ROT", true, 0);
     public static HardwareInterface flexor = new HardwareInterface("FLX", true, 0);
 
+    // MOTORS
     public static HardwareInterface leftSlide = new HardwareInterface("LS", true, 0);
     public static HardwareInterface rightSlide = new HardwareInterface("RS", true, 0);
     public static HardwareInterface pivot = new HardwareInterface("PVT", true, 0);
 
-
-
-    //
-    // v1 CONFIGURATION INFORMATION
-    //
-
-
-    // INTAKE BRISTLES
-    public static HardwareInterface bristles = new HardwareInterface("BRI", true, 0);
-
-    //INTAKE HINGE
-    public static HardwareInterface leftHinge = new HardwareInterface("LH", false, 0);
-    public static HardwareInterface rightHinge = new HardwareInterface("RH", false, 0);
-
-    //INTAKE COLOR SENSORS
-    public static HardwareInterface leftCS = new HardwareInterface("LCS", false, 0);
-    public static HardwareInterface rightCS = new HardwareInterface("RCS", false, 0);
-
-    public static HardwareInterface specimenGrabber = new HardwareInterface("SG", false, 0);
-
-    // INTAKE SLIDES
-    public static HardwareInterface leftIntakeSlide = new HardwareInterface("LIS", false, 2);
-    public static HardwareInterface rightIntakeSlide = new HardwareInterface("RIS", true, 2);
-
-    // INTAKE SLIDES PIVOT
-    public static HardwareInterface leftIntakeSlidePivot = new HardwareInterface("LISP", false, 2);
-    public static HardwareInterface rightIntakeSlidePivot = new HardwareInterface("RISP", true, 2);
-
-    // OUTAKE SLIDES
-    public static HardwareInterface leftOuttakeSlide = new HardwareInterface("LOS", false, 2);
-    public static HardwareInterface rightOuttakeSlide = new HardwareInterface("ROS", true, 2);
-
-    // OUTAKE ARM HINGES
-    public static HardwareInterface leftArmHinge = new HardwareInterface("LOAH", true, 0);
-    public static HardwareInterface rightArmHinge = new HardwareInterface("ROAH", true, 0);
-
-    // OUTAKE BUCKET HINGE
-    public static HardwareInterface bucketHinge = new HardwareInterface("BH", false, 0);
-
     // DRIVEBASE
-    public static HardwareInterface leftFront = new HardwareInterface("FLD", true, 1);
-    public static HardwareInterface rightFront = new HardwareInterface("FRD", false, 1);
-    public static HardwareInterface leftBack = new HardwareInterface("BLD", true, 0);
-    public static HardwareInterface rightBack = new HardwareInterface("BRD", false, 0);
+    public static HardwareInterface leftFront = new HardwareInterface("FL", true, 0);
+    public static HardwareInterface rightFront = new HardwareInterface("FR", false, 0);
+    public static HardwareInterface leftBack = new HardwareInterface("BL", true, 1);
+    public static HardwareInterface rightBack = new HardwareInterface("BR", true, 1);
 
     // CAMERA
     public static HardwareInterface camera = new HardwareInterface("Ray", true, 0);

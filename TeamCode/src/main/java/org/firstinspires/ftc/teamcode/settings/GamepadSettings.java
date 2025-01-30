@@ -12,5 +12,5 @@ public class GamepadSettings {
 
     // GAMEPAD 2
     public static final double GP2_STICK_DEADZONE = 0.05;
-    public static final double GP2_TRIGGER_DEADZONE = 0.25;
+    public static final double GP2_TRIGGER_DEADZONE = 0.4;
 }

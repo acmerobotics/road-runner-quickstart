@@ -11,6 +11,8 @@ public class ScoringAssembly extends Mechanism {
     public Pivot pivot;
     public Slides slides;
 
+    boolean isReset = false;
+
     @Override
     public void init(HardwareMap hwMap) {
         multiAxisArm = new MultiAxisArm();
@@ -27,4 +29,37 @@ public class ScoringAssembly extends Mechanism {
         multiAxisArm.loop(aimpad);
     }
 
+    public void reset() {
+        multiAxisArm.resetOpen();
+        pivot.setPivotPosition(Pivot.PivotPosition.SCORE);
+        slides.setSlidesPosition(Slides.SlidesPosition.RESET);
+    }
+
+    public void setPickupResetNeutral() {
+        multiAxisArm.neutral();
+        pivot.setPivotPosition(Pivot.PivotPosition.PICKUP);
+        slides.setSlidesPosition(Slides.SlidesPosition.RESET);
+    }
+
+    public void setPickupResetClamped() {
+        multiAxisArm.neutralClosed();
+        pivot.setPivotPosition(Pivot.PivotPosition.PICKUP);
+        slides.setSlidesPosition(Slides.SlidesPosition.RESET);
+    }
+
+    public void setScoringResetClamped() {
+        multiAxisArm.neutralClosed();
+        pivot.setPivotPosition(Pivot.PivotPosition.SCORE);
+        slides.setSlidesPosition(Slides.SlidesPosition.RESET);
+    }
+
+    public void setScoringLowBucketClamped() {
+        multiAxisArm.neutralClosed();
+        pivot.setPivotPosition(Pivot.PivotPosition.SCORE);
+        slides.setSlidesPosition(Slides.SlidesPosition.LOW_BUCKET);
+    }
+
+    public boolean areMotorsAtTarget() {
+        return pivot.isAtTargetPosition() && slides.isAtTargetPosition();
+    }
 }
