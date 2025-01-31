@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -18,8 +19,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 
 
 @TeleOp(name="Teleop Modular V3", group="Robot")
-//@Disabled
-@Config
+@Disabled
 public class TeleOpModular_V3 extends LinearOpMode {
 
     /* Variables that are used to set the arm to a specific position */

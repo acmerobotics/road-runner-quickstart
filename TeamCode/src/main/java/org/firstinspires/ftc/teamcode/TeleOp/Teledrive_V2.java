@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 //import com.google.ar.core.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
 
 
 @TeleOp(name="Teledrive V2", group="demo")
-@Config
+@Disabled
 public class Teledrive_V2 extends LinearOpMode {
 
     /* Variables that are used to set the arm to a specific position */

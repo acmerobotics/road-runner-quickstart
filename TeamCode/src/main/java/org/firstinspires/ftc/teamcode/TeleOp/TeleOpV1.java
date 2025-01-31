@@ -71,7 +71,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp(name="Official TeleOp M1", group="Robot")
 @Disabled
-// @Config
 public class TeleOpV1 extends LinearOpMode {
 
     /* Declare OpMode members. */

@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name="Teleop Comp 3", group="test")
+@TeleOp(name="Teleop Comp 4", group="test")
 @Config
 public class TeleopWithActions extends OpMode {
     private FtcDashboard dash = FtcDashboard.getInstance();
