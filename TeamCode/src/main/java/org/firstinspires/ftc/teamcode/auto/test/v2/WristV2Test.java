@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 
 
-@Config
 @Autonomous(name = "WristV2 Test", group = "Test")
 public class WristV2Test extends LinearOpMode {
 

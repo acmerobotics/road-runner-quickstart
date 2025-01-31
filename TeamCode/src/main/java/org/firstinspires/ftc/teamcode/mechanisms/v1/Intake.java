@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.Actions;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@Config
 public class Intake {
     public CRServo intake;
 

@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
 
 
-@Config
 @Autonomous(name = "ArmV2 Test", group = "Test")
 public class ArmV2Test extends LinearOpMode {
 

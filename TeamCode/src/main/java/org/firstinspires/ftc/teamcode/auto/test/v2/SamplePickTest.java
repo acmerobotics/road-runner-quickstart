@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
 
 
-@Config
 @Autonomous(name = "Sample Pick Test", group = "Test")
 public class SamplePickTest extends LinearOpMode {
 
