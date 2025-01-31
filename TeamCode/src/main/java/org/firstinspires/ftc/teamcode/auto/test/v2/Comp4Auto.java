@@ -73,47 +73,6 @@ public class Comp4Auto extends LinearOpMode {
         arm.reset();
         lift.reset();
 
-
-        Action scoreHighAction3 = new ParallelAction(
-                arm.armScoreAction(),
-                lift.liftUpAction(),
-                wrist.wristVerticalAction()
-        );
-
-        Action comeDownAction = new SequentialAction(
-                arm.armComeDownAction(),
-                new ParallelAction(
-                        wrist.wristFoldInAction(),
-                        lift.liftDownAction()
-                )
-        );
-
-        Action comeDownAction2 = new SequentialAction(
-                arm.armComeDownAction(),
-                new ParallelAction(
-                        wrist.wristVerticalAction(),
-                        lift.liftDownAction()
-                )
-        );
-
-        Action comeDownAction3 = new SequentialAction(
-                arm.armComeDownAction(),
-                new ParallelAction(
-                        wrist.wristVerticalAction(),
-                        lift.liftDownAction()
-                )
-        );
-
-        Action comeDownAction4 = new SequentialAction(
-                arm.armComeDownAction(),
-                new ParallelAction(
-                        wrist.wristVerticalAction(),
-                        lift.liftDownAction()
-                )
-        );
-
-
-
         TrajectoryActionBuilder driveToBasket = drive.actionBuilder(RED_SCORE_START_POSE)
                 .strafeToLinearHeading(new Vector2d(-36, -56), Math.toRadians(0))
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
@@ -125,9 +84,6 @@ public class Comp4Auto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE3_POS_X, RED_SAMPLE3_POS_Y), RED_SAMPLE3_ANGLE);
         TrajectoryActionBuilder driveToSample3_2 = driveToSample3_1.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE3_POS_X_2, RED_SAMPLE3_POS_Y_2), RED_SAMPLE3_ANGLE);
-        TrajectoryActionBuilder driveBasketToPark =  drive.actionBuilder(RED_NEAR_BASKET_POSE)
-                .strafeToLinearHeading(new Vector2d(-33,-8),Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(-16,-8),Math.toRadians(180));
 
         TrajectoryActionBuilder driveSample1ToBasket = drive.actionBuilder(RED_SAMPLE1_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
@@ -136,15 +92,6 @@ public class Comp4Auto extends LinearOpMode {
         TrajectoryActionBuilder driveSample3ToBasket = drive.actionBuilder(RED_SAMPLE3_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
 
-        // ==== test only come back at the end
-        TrajectoryActionBuilder goBackToStart = driveToBasket.endTrajectory().fresh()
-                .strafeToLinearHeading(RED_SCORE_START_POSE.position, 0);
-        Action cGoBackToStartAction = new ParallelAction(
-                goBackToStart.build(),
-                claw.clawOpenAction(),
-                arm.armResetAction(),
-                wrist.wristFoldInAction());
-        // ==== end test only
 
         // ===== Go to Basket and Score
         Action cStartToBasketAction = new SequentialAction(
@@ -202,23 +149,9 @@ public class Comp4Auto extends LinearOpMode {
                         driveToSample3_1.build(),
                         robot.comeDownSample3ActionAuto()),
                 driveToSample3_2.build(),
-//                new SleepAction(1),
                 robot.arm.armPickupGroundSampleLiftOutAction(),
                 robot.pickUpActionAuto(),
                 new SleepAction(0.2));
-
-        Action comeDownActionForPark = new SequentialAction(
-                arm.armComeDownAction(),
-                new ParallelAction(
-                        wrist.wristVerticalAction(),
-                        lift.liftDownForParkAction()),
-                arm.armResetAction()
-        );
-
-        Action cBasketToParkAction = new ParallelAction(
-                comeDownActionForPark,
-                driveBasketToPark.build()
-        );
 
         while (!isStopRequested() && !opModeIsActive()) {
 
@@ -245,8 +178,7 @@ public class Comp4Auto extends LinearOpMode {
                         ,cBasketToSample3Action
                         // sample 3 to basket
                         ,cSample3ToBasketAction
-                        // park (including come down)
-                        // ,cBasketToParkAction
+                        // Reset arm and slide (lift)
                         ,robot.resetAction()
                 )
         );
