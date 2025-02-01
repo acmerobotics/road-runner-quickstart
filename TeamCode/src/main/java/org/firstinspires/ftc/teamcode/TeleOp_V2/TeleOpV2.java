@@ -23,7 +23,7 @@ public class TeleOpV2  extends LinearOpMode{
         gamepad2Ex = new GamepadEx(gamepad2);
 
         // Init Actions
-        extpos = 0;
+        extpos = 0.55;
 
     }
 
@@ -68,9 +68,9 @@ public class TeleOpV2  extends LinearOpMode{
 
 
             if (gamepad2Ex.getRightY() > 0.1){ // Extension Out
-                extpos = extpos + 0.05;
+                extpos = extpos + 0.0001;
             } else if (gamepad2Ex.getRightY() < -0.1) { // Extension In
-                extPos = extpos - 0.05;
+                extpos = extpos - 0.0001;
             }
 
             if(gamepad2Ex.getButton(GamepadKeys.Button.DPAD_DOWN)){
@@ -84,6 +84,13 @@ public class TeleOpV2  extends LinearOpMode{
 
             robot.ExtLeft.setPosition(extpos);
             robot.ExtRight.setPosition(1 - extpos);
+
+            if (extpos > 0.6){
+                extpos = 0.6;
+            } else if (extpos < 0.5){
+                extpos = 0.5;
+            }
+
             telemetry.addData("Extension Position Variable", extpos);
             telemetry.update();
 
