@@ -26,10 +26,11 @@ public class Pivot extends Mechanism {
     private PivotControlState activePivotControlState = PivotControlState.AUTONOMOUS;
   
     private double lastPosition;
+
     private double activeTargetPosition = 0;
+
     private static final double MINIMUM_POWER = 0.03;
     private double manualPower = 0;
-    //todo: set pid values
 
     private static final double kP = 0;
     private static final double kI = 0;
@@ -39,7 +40,7 @@ public class Pivot extends Mechanism {
     private static final double kV = 0.0;
     private static final double kA = 0.0;
     private static final double kStatic = 0.0;
-    private static final double kCos = 0.0;
+    private static final double kCos = 0.05;
     private static final double kG = 0.0;
     private static final double lowPassGain = 0;
 
@@ -55,8 +56,12 @@ public class Pivot extends Mechanism {
         }
     }
 
-    private PivotPosition activePivotPosition = PivotPosition.PICKUP;
 
+    private static final double TICKS_PER_DEGREE = 1000; //TODO set
+
+    private static final int STARTING_DEGREES = 10;
+    private PivotPosition activePivotPosition = PivotPosition.PICKUP;
+  
     public Pivot() {
         PIDController pidController = new PIDController(kP, kI, kD, derivativeLowPassGain, integralSumMax);
         FeedforwardController feedforwardController = new FeedforwardController(kV, kA, kStatic, kCos, kG);
@@ -71,7 +76,8 @@ public class Pivot extends Mechanism {
         pivot.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         pivot.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         pivot.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        lastPosition = 0;
+        setPivotPosition(PivotPosition.DOWN);
+        updateLastPosition();
     }
 
     @Override
@@ -104,7 +110,7 @@ public class Pivot extends Mechanism {
     }
 
     private double getTargetOutputPower() {
-        return controlSystem.update(pivot.getCurrentPosition());
+        return controlSystem.update(pivot.getCurrentPosition() + degreesToTicks(STARTING_DEGREES));
     }
       
     private void update() {
@@ -113,7 +119,7 @@ public class Pivot extends Mechanism {
     }
 
     private void setTargetPosition(double targetPosition) {
-        activeTargetPosition = targetPosition;
+        activeTargetPosition = degreesToTicks(targetPosition);
         controlSystem.setTarget(activeTargetPosition);
     }
       
@@ -155,5 +161,9 @@ public class Pivot extends Mechanism {
     public void setPivotAtPower(double power) {
         setActiveControlState(PivotControlState.MANUAL);
         updateManualPower(power);
+    }
+
+    public double degreesToTicks(double degrees) {
+        return degrees * TICKS_PER_DEGREE;
     }
 }
