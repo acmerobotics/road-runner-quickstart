@@ -18,9 +18,12 @@ public class RobotV2 {
     public SimpleServo V4B;
     public SimpleServo ExtRight;
     public SimpleServo ExtLeft;
+    public SimpleServo OuttakeRightWrist;
 
     public SimpleServo OuttakeRight;
     public SimpleServo OuttakeLeft;
+
+    public SimpleServo IntakeClaw;
 
     public MotorEx LiftRight;
     public MotorEx LiftLeft;
@@ -39,6 +42,12 @@ public class RobotV2 {
 
         OuttakeRight = new SimpleServo(hwMap, "ORA", 0.0, 1.0);
         OuttakeLeft = new SimpleServo(hwMap, "OLA", 0.0, 1.0);
+
+        IntakeClaw = new SimpleServo(hwMap,"IC", 0.0, 1.0 );
+
+
+
+//        OuttakeRightWrist = new SimpleServo(hwMap, "ORW", 0.0, 1.0);
 
         LiftLeft = new MotorEx(hwMap, "LiftLeft");
         LiftLeft.setRunMode(Motor.RunMode.RawPower);
@@ -59,6 +68,11 @@ public class RobotV2 {
 
         BackRight = new MotorEx(hwMap, "BR", Motor.GoBILDA.RPM_312);
         BackRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+
+
+
+
     }
 }
 
