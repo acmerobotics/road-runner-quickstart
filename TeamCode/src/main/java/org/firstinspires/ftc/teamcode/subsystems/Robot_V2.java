@@ -4,12 +4,16 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.settings.InputHandler;
+
 public class Robot_V2 extends Mechanism {
 
     Drivebase drivebase = new Drivebase();
-    Hubs hubs = new Hubs();
+//    Hubs hubs = new Hubs(); // TODO implement hubs
     ScoringAssembly scoringAssembly = new ScoringAssembly();
     Vision vision = new Vision();
+
+    InputHandler inputHandler = new InputHandler();
 
     enum RobotState {
         RESETTING,
@@ -20,101 +24,136 @@ public class Robot_V2 extends Mechanism {
         SCORING
     }
 
+    enum ScoringElement {
+        SAMPLE,
+        SPECIMEN
+    }
+
+    ScoringElement activeScoringElementType = ScoringElement.SAMPLE;
+
     RobotState activeState = RobotState.RESETTING;
 
     @Override
     public void init(HardwareMap hwMap) {
         drivebase.init(hwMap);
-        hubs.init(hwMap);
+//        hubs.init(hwMap);
         scoringAssembly.init(hwMap);
         vision.init(hwMap);
     }
 
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
-        hubs.loop(aimpad);
+//        hubs.loop(aimpad);
         drivebase.loop(aimpad);
         scoringAssembly.loop(aimpad, aimpad2);
+        inputHandler.updateInputs(aimpad, aimpad2);
 
         switch(activeState) {
             case RESETTING:
-                resettingState(aimpad, aimpad2);
+                resettingState();
                 break;
             case SEARCHING:
-                searchingState(aimpad, aimpad2);
+                searchingState();
                 break;
             case AUTO_GRASPING:
-                autoGraspingState(aimpad, aimpad2);
+                autoGraspingState();
                 break;
             case RETRACTING:
-                retracting(aimpad, aimpad2);
+                retracting();
                 break;
             case PREP_SCORING:
-                prepScoringState(aimpad, aimpad2);
+                prepScoringState();
                 break;
             case SCORING:
-                scoringState(aimpad, aimpad2);
+                scoringState();
                 break;
         }
     }
 
-    private void resettingState(AIMPad aimpad, AIMPad aimpad2) {
-        scoringAssembly.reset();
-        if (scoringAssembly.areMotorsAtTarget()) {
-            scoringAssembly.setPickupResetNeutral();
+    private void resettingState() {
+        switch (activeScoringElementType) {
+            case SAMPLE:
+                scoringAssembly.setPickupResetNeutral();
+                break;
+            case SPECIMEN:
+                scoringAssembly.reset();
+        }
+        if (scoringAssembly.areMotorsAtTargetPresets()) {
             activeState = RobotState.SEARCHING;
         }
     }
 
-    private void searchingState(AIMPad aimpad, AIMPad aimpad2) {
-        if (scoringAssembly.pivot.isAtTargetPosition()) {
-            scoringAssembly.slides.setSlidesAtPower(-aimpad2.getLeftStickY());
+    private void searchingState() {
+        switch (activeScoringElementType) {
+            case SAMPLE:
+                scoringAssembly.slides.setSlidesAtPower(inputHandler.SLIDES_CONTROL);
 
-            if (aimpad2.isRightTriggerReleased()) {
-                scoringAssembly.multiAxisArm.hand.toggle();
-            }
+                if (inputHandler.FLEX_DOWN) {
+                    scoringAssembly.multiAxisArm.wrist.flexDown();
+                } else if (inputHandler.FLEX_NEUTRAL) {
+                    scoringAssembly.multiAxisArm.wrist.flexNeutral();
+                }
 
-            if (aimpad2.isAReleased()) {
-                scoringAssembly.multiAxisArm.wrist.flexDown();
-            } else if (aimpad2.isYReleased()) {
-                scoringAssembly.multiAxisArm.wrist.flexNeutral();
-            }
+                if (inputHandler.ROTATE_RIGHT) {
+                    scoringAssembly.multiAxisArm.wrist.rotateRight();
+                } else if (inputHandler.ROTATE_LEFT) {
+                    scoringAssembly.multiAxisArm.wrist.rotateLeft();
+                } else {
+                    scoringAssembly.multiAxisArm.wrist.rotateCenter();
+                }
 
-            if (aimpad2.getRightStickX() > 0.3) {
-                scoringAssembly.multiAxisArm.wrist.rotateRight();
-            } else if (aimpad2.getRightStickX() < -0.3) {
-                scoringAssembly.multiAxisArm.wrist.rotateLeft();
-            } else {
-                scoringAssembly.multiAxisArm.wrist.rotateCenter();
-            }
+                if (inputHandler.SWITCH_SCORING_ELEMENT) {
 
-            if (aimpad2.isDPadUpPressed()) {
-                activeState = RobotState.PREP_SCORING;
-            }
+                    activeScoringElementType = ScoringElement.SPECIMEN;
+                    activeState = RobotState.RESETTING;
+                }
+                break;
+            case SPECIMEN:
+                if (inputHandler.SWITCH_SCORING_ELEMENT) {
+                    activeScoringElementType = ScoringElement.SAMPLE;
+                    activeState = RobotState.RESETTING;
+                }
+                break;
+        }
+
+        if (inputHandler.TOGGLE_HAND) {
+            scoringAssembly.multiAxisArm.hand.toggle();
+        }
+
+        if (inputHandler.ADVANCE_AUTOMATION) {
+            activeState = RobotState.PREP_SCORING;
         }
     }
 
-    private void autoGraspingState(AIMPad aimpad, AIMPad aimpad2) {
+    private void autoGraspingState() {
         activeState = RobotState.PREP_SCORING;
     }
 
-    private void retracting(AIMPad aimpad, AIMPad aimpad2) {
+    private void retracting() {
         scoringAssembly.setPickupResetClamped();
-        if (scoringAssembly.areMotorsAtTarget()) {
+        if (scoringAssembly.areMotorsAtTargetPresets()) {
             scoringAssembly.setScoringLowBucketClamped();
             activeState = RobotState.PREP_SCORING;
         }
     }
 
-    private void prepScoringState(AIMPad aimpad, AIMPad aimpad2) {
+    private void prepScoringState() {
         scoringAssembly.setScoringResetClamped();
-        if (scoringAssembly.areMotorsAtTarget()) {
-
+        if (scoringAssembly.areMotorsAtTargetPresets()) {
             activeState = RobotState.SCORING;
         }
     }
 
-    private void scoringState(AIMPad aimpad, AIMPad aimpad2) {
-        activeState = RobotState.RESETTING;
+    private void scoringState() {
+        if (inputHandler.HIGH_HEIGHT) {
+            scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.HIGH_BUCKET);
+        } else if (inputHandler.LOW_HEIGHT) {
+            scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.LOW_BUCKET);
+        }
+
+        if (inputHandler.RELEASE_ELEMENT) {
+            scoringAssembly.multiAxisArm.hand.open();
+            activeState = RobotState.RESETTING;
+        }
     }
 }

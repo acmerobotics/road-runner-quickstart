@@ -18,7 +18,7 @@ public class SlidesBase extends Mechanism {
     private DcMotorEx rightSlide;
 
     private DcMotorEx activeEncoderMotor;
-    private double lastActiveEncoderPosition;
+    private double lastActiveEncoderExtension;
 
     private final String leftSlideName;
     private final String rightSlideName;
@@ -26,18 +26,17 @@ public class SlidesBase extends Mechanism {
     private final DcMotorSimple.Direction leftMotorDirection;
     private final DcMotorSimple.Direction rightMotorDirection;
 
-    protected double activeTargetPosition = 0;
+    protected double activeTargetExtension = 0;
     private double manualPower = 0;
 
     private final SimpleControlSystem controlSystem;
 
-    private static final double PROXIMITY_THRESHOLD = 20;
+    private static final double PROXIMITY_THRESHOLD = 0.25;
     private static final double CURRENT_THRESHOLD = 5000;
     private static final double MINIMUM_POWER = 0.03;
 
-    private static final double HEIGHT_INCREMENT = 0.5; //in inches
+    private static final double TICKS_PER_INCH = 3; // TODO CALCULATE THIS
 
-    private static final double TICK_TO_INCH_RATIO = 0.00877812906;
 
     public enum SlidesControlState {
         AUTONOMOUS, MANUAL
@@ -88,7 +87,7 @@ public class SlidesBase extends Mechanism {
         leftSlide.setDirection(leftMotorDirection);
         rightSlide.setDirection(rightMotorDirection);
         activeEncoderMotor = leftSlide;
-        lastActiveEncoderPosition = 0;
+        lastActiveEncoderExtension = 0;
     }
 
     @Override
@@ -159,15 +158,15 @@ public class SlidesBase extends Mechanism {
     private void setPower(double power) {
         leftSlide.setPower(power);
         rightSlide.setPower(power);
-        updateLastPosition();
+        updateLastExtension();
     }
 
     /**
-     * Get the output power of the slides based on the system update for the active target position
+     * Get the output power of the slides based on the system update for the active target extension
      * @return the output power for the slide motors
      */
     private double getTargetOutputPower() {
-        return controlSystem.update(getCurrentPosition());
+        return controlSystem.update(getCurrentExtension());
     }
 
     /**
@@ -182,25 +181,25 @@ public class SlidesBase extends Mechanism {
      * Hold the position of the slides
      */
     private void holdPosition() {
-        setTargetPosition(getLastPosition());
+        setTargetExtension(getLastExtension());
         update();
     }
 
     /**
-     * Set the target position for the slides
-     * @param targetPosition the target position for the slides
+     * Set the target extension for the slides in inches
+     * @param targetExtension the target position for the slides in inches
      */
-    public void setTargetPosition(double targetPosition) {
-        activeTargetPosition = targetPosition;
-        controlSystem.setTarget(activeTargetPosition);
+    public void setTargetExtension(double targetExtension) {
+        activeTargetExtension = targetExtension;
+        controlSystem.setTarget(activeTargetExtension);
     }
 
     /**
      * Check if the slides are at the target position
      * @return true if the slides are within the proximity threshold of the target position
      */
-    public boolean isAtTargetPosition() {
-        return Math.abs(getCurrentPosition() - activeTargetPosition) < PROXIMITY_THRESHOLD;
+    public boolean isAtTargetExtension() {
+        return Math.abs(getCurrentExtension() - activeTargetExtension) < PROXIMITY_THRESHOLD;
     }
 
     /**
@@ -219,18 +218,32 @@ public class SlidesBase extends Mechanism {
         return activeEncoderMotor.getCurrentPosition();
     }
 
-    /**
-     * Set the last active encoder position to the encoder motor's current position
-     */
-    private void updateLastPosition() {
-        lastActiveEncoderPosition = activeEncoderMotor.getCurrentPosition();
+    public double getCurrentExtension() {
+        return ticksToInches(getCurrentPosition());
     }
 
     /**
-     * Get the last active encoder position
-     * @return the last active encoder position
+     * Set the last active encoder extension to the encoder motor's current extension in inches
      */
-    private double getLastPosition() {
-        return lastActiveEncoderPosition;
+    private void updateLastExtension() {
+        lastActiveEncoderExtension = ticksToInches(getCurrentPosition());
+    }
+
+    /**
+     * Get the last active encoder extension in inches
+     * @return the last active encoder extension in inches
+     */
+    private double getLastExtension() {
+        return lastActiveEncoderExtension;
+    }
+
+
+
+    private double inchesToTicks(double degrees) {
+        return degrees * TICKS_PER_INCH;
+    }
+
+    private double ticksToInches(double ticks) {
+        return ticks * (1/TICKS_PER_INCH);
     }
 }

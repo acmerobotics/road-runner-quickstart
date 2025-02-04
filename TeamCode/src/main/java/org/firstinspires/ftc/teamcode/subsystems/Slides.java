@@ -26,19 +26,23 @@ public class Slides extends Mechanism {
     private static final double kG = 0;
     private static final double lowPassGain = 0.1;
 
-    public enum SlidesPosition {
+    public enum SlidesExtension {
         RESET(0),
-        LOW_BUCKET(1000),
-        HIGH_BUCKET(3200);
+        LOW_BUCKET(17),
+        HIGH_BUCKET(32);
 
-        private final int position;
+        private final double extension;
 
-        SlidesPosition(int position) {
-            this.position = position;
+        SlidesExtension(double extension) {
+            this.extension = extension;
         }
     }
 
-    public Slides.SlidesPosition activeSlidesPosition = Slides.SlidesPosition.RESET;
+    public SlidesExtension activeSlidesTarget = SlidesExtension.RESET;
+
+    public boolean isPivotEnabled = true;
+    private static final double PIVOT_ENABLED_THRESHOLD = 3;
+    private static final double PROXIMITY_THRESHOLD = 0.25;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -50,19 +54,20 @@ public class Slides extends Mechanism {
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
         slidesBase.loop(aimpad, aimpad2);
+        isPivotEnabled = slidesBase.getCurrentPosition() < PIVOT_ENABLED_THRESHOLD;
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
         telemetry.addData("Current Position: ", slidesBase.getCurrentPosition());
-        telemetry.addData("Target Position: ", slidesBase.activeTargetPosition);
+        telemetry.addData("Target Extension: ", slidesBase.activeTargetExtension);
         telemetry.addData("Mode: ", slidesBase.activeControlState);
     }
 
-    public void setSlidesPosition(Slides.SlidesPosition activeSlidesPosition) {
-        slidesBase.setTargetPosition(activeSlidesPosition.position);
+    public void setSlidesPosition(SlidesExtension activeSlidesTarget) {
+        slidesBase.setTargetExtension(activeSlidesTarget.extension);
         slidesBase.setActiveControlState(SlidesBase.SlidesControlState.AUTONOMOUS);
-        this.activeSlidesPosition = activeSlidesPosition;
+        this.activeSlidesTarget = activeSlidesTarget;
     }
 
     public void setSlidesAtPower(double power) {
@@ -71,6 +76,10 @@ public class Slides extends Mechanism {
     }
 
     public boolean isAtTargetPosition() {
-        return slidesBase.isAtTargetPosition();
+        return slidesBase.isAtTargetExtension();
+    }
+
+    public boolean isAtTargetPreset() {
+        return Math.abs(slidesBase.getCurrentExtension() - activeSlidesTarget.extension) < PROXIMITY_THRESHOLD;
     }
 }

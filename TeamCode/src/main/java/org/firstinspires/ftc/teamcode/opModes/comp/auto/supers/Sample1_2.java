@@ -79,13 +79,13 @@
 //                                            new SleepAction(0.5),
 //                                            (telemetryPacket) -> { // raise lifts
 //                                                robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.SPECIMEN_HIGH);
-//                                                return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
+//                                                return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
 //                                            }
 //                                        )
 //                                    ),
 //                                    (telemetryPacket) -> { // drop lifts to high specimen drop height
 //                                        robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.SPECIMEN_HIGH_DROP);
-//                                        return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
+//                                        return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
 //                                    },
 //                                    new ParallelAction(
 //                                        driveToPickUp1,
@@ -93,13 +93,13 @@
 //                                            robot.scoringSystem.specimenGrabber.release();
 //                                            robot.scoringSystem.intakeSystem.multiAxisArm.searchingDownOpen();
 //                                            robot.scoringSystem.outtakeSystem.reset();
-//                                            return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
+//                                            return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
 //                                        }
 //                                    ),
 //                                    new SequentialAction(
 //                                        (telemetryPacket) -> { // extend lower lifts and set to searching position
 //                                            robot.scoringSystem.intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.MEDIUM);
-//                                            return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetPosition();
+//                                            return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle();
 //                                        },
 //                                        (telemetryPacket) -> { // grab
 //                                            robot.scoringSystem.intakeSystem.multiAxisArm.searchingDownClosed();
@@ -113,7 +113,7 @@
 //                                            (telemetryPacket) -> { // retract lower lifts and set arm to transition position
 //                                                robot.scoringSystem.intakeSystem.multiAxisArm.resetClosed();
 //                                                robot.scoringSystem.intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.RESET);
-//                                                return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetPosition();
+//                                                return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle();
 //                                            },
 //                                            (telemetryPacket) -> { // transition to outtake
 //                                                robot.scoringSystem.intakeSystem.multiAxisArm.resetOpen();
@@ -124,7 +124,7 @@
 //                                                robot.scoringSystem.intakeSystem.multiAxisArm.searchingDownOpen();
 //                                                robot.scoringSystem.outtakeSystem.outtake.armOut();
 //                                                robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.TALL);
-//                                                return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
+//                                                return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
 //                                            }
 //                                        )
 //                                    ),
@@ -139,11 +139,11 @@
 //                                            (telemetryPacket) -> { // lower lifts and release SG
 //                                                robot.scoringSystem.outtakeSystem.reset();
 //                                                robot.scoringSystem.intakeSystem.multiAxisArm.searchingDownOpen();
-//                                                return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
+//                                                return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
 //                                            },
 //                                            (telemetryPacket) -> { // extend lower lifts
 //                                                robot.scoringSystem.intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.MEDIUM);
-//                                                return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetPosition();
+//                                                return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle();
 //                                            }
 //                                    ),
 //                                    new SequentialAction(
@@ -159,7 +159,7 @@
 //                                                    (telemetryPacket) -> { // retract lower lifts and set arm to transition position
 //                                                        robot.scoringSystem.intakeSystem.multiAxisArm.resetClosed();
 //                                                        robot.scoringSystem.intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.RESET);
-//                                                        return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetPosition();
+//                                                        return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle();
 //                                                    },
 //                                                    (telemetryPacket) -> { // transition to outtake
 //                                                        robot.scoringSystem.intakeSystem.multiAxisArm.resetOpen();
@@ -170,7 +170,7 @@
 //                                                        robot.scoringSystem.intakeSystem.multiAxisArm.resetAvoid();
 //                                                        robot.scoringSystem.outtakeSystem.outtake.armOut();
 //                                                        robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.TALL);
-//                                                        return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
+//                                                        return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
 //                                                    }
 //                                            )
 //                                    ),
@@ -181,7 +181,7 @@
 //                                    new SleepAction(0.5),
 //                                    (telemetryPacket) -> { // retract lifts
 //                                        robot.scoringSystem.resetMechs();
-//                                        return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetPosition() && robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
+//                                        return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle() && robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
 //                                    },
 //                                    (telemetryPacket) -> { // end auto
 //                                        isAutoComplete = true;

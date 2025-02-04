@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 
 public class Pivot extends Mechanism {
 
-    private static final double PROXIMITY_THRESHOLD = 20;
+    private static final double PROXIMITY_THRESHOLD = 2;
     private DcMotorEx pivot;
 
     private final SimpleControlSystem controlSystem;
@@ -25,9 +25,9 @@ public class Pivot extends Mechanism {
 
     private PivotControlState activePivotControlState = PivotControlState.AUTONOMOUS;
   
-    private double lastPosition;
+    private double lastAngle;
 
-    private double activeTargetPosition = 0;
+    private double activeTargetAngle = 0;
 
     private static final double MINIMUM_POWER = 0.03;
     private double manualPower = 0;
@@ -44,23 +44,26 @@ public class Pivot extends Mechanism {
     private static final double kG = 0.0;
     private static final double lowPassGain = 0;
 
-    public enum PivotPosition {
+    public enum PivotAngle {
         PICKUP(300),
         SCORE(100),
         HANG(0);
 
-        private final int position;
+        private final int angle;
 
-        PivotPosition(int position) {
-            this.position = position;
+        PivotAngle(int angle) {
+            this.angle = angle;
         }
     }
 
 
-    private static final double TICKS_PER_DEGREE = 1000; //TODO set
+    private static final double TICKS_PER_DEGREE = 3.95861111111;
 
     private static final int STARTING_DEGREES = 10;
-    private PivotPosition activePivotPosition = PivotPosition.PICKUP;
+
+    private PivotAngle activePivotTarget = PivotAngle.SCORE;
+
+    private boolean isFreeMovementEnabled = true;
   
     public Pivot() {
         PIDController pidController = new PIDController(kP, kI, kD, derivativeLowPassGain, integralSumMax);
@@ -76,32 +79,40 @@ public class Pivot extends Mechanism {
         pivot.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         pivot.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         pivot.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        setPivotPosition(PivotPosition.DOWN);
+        setPivotPosition(PivotAngle.PICKUP);
         updateLastPosition();
     }
 
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
-        switch (activePivotControlState) {
-            case AUTONOMOUS:
-                update();
-                break;
-            case MANUAL:
-                applyManualPower();
-                break;
+        if (!isFreeMovementEnabled) {
+            holdAtCurrentAngle();
+        } else {
+            switch (activePivotControlState) {
+                case AUTONOMOUS:
+                    confirmPresetAngle();
+                    update();
+                    break;
+                case MANUAL:
+                    applyManualPower();
+                    break;
+            }
         }
 
     }
 
-    @Override
-    public void telemetry(Telemetry telemetry) {
-        telemetry.addData("Current Position: ", pivot.getCurrentPosition());
-        telemetry.addData("Target Position: ", activeTargetPosition);
+    public void setIsFreeMovementEnabled(boolean condition) {
+        isFreeMovementEnabled = condition;
     }
 
+    @Override
+    public void telemetry(Telemetry telemetry) {
+        telemetry.addData("Current Angle: ", getCurrentAngle());
+        telemetry.addData("Target Angle: ", activeTargetAngle);
+    }
 
     private void updateLastPosition() {
-        lastPosition = pivot.getCurrentPosition();
+        lastAngle = getCurrentAngle();
     }
       
     private void setPower(double power) {
@@ -110,7 +121,7 @@ public class Pivot extends Mechanism {
     }
 
     private double getTargetOutputPower() {
-        return controlSystem.update(pivot.getCurrentPosition() + degreesToTicks(STARTING_DEGREES));
+        return controlSystem.update(getCurrentAngle() + STARTING_DEGREES);
     }
       
     private void update() {
@@ -118,21 +129,27 @@ public class Pivot extends Mechanism {
         setPower(power);
     }
 
-    private void setTargetPosition(double targetPosition) {
-        activeTargetPosition = degreesToTicks(targetPosition);
-        controlSystem.setTarget(activeTargetPosition);
+    private void setTargetAngle(double targetAngle) {
+        activeTargetAngle = targetAngle;
+        controlSystem.setTarget(activeTargetAngle);
     }
-      
-    private void holdPosition() {
-        setTargetPosition(lastPosition);
+
+    private void holdAtCurrentAngle() {
+        setTargetAngle(lastAngle);
         update();
+    }
+
+    private void confirmPresetAngle() {
+        if (activeTargetAngle != activePivotTarget.angle) {
+            setTargetAngle(activePivotTarget.angle);
+        }
     }
 
     private void applyManualPower() {
         if (Math.abs(manualPower) > MINIMUM_POWER) {
             setPower(manualPower);
         } else {
-            holdPosition();
+            holdAtCurrentAngle();
         }
     }
 
@@ -144,26 +161,38 @@ public class Pivot extends Mechanism {
         this.activePivotControlState = activeControlState;
     }
 
-    /**
-     * Check if the slides are at the target position
-     * @return true if the slides are within the proximity threshold of the target position
-     */
-    public boolean isAtTargetPosition() {
-        return Math.abs(pivot.getCurrentPosition() - activeTargetPosition) < PROXIMITY_THRESHOLD;
+    private double getCurrentAngle() {
+        return ticksToDegrees(pivot.getCurrentPosition());
     }
 
-    public void setPivotPosition(PivotPosition activePivotPosition) {
-        setTargetPosition(activePivotPosition.position);
+    /**
+     * Check if the pivot is at the target angle
+     * @return true if the pivot is within the proximity threshold of the target angle
+     */
+    public boolean isAtTargetAngle() {
+        return Math.abs(getCurrentAngle() - activeTargetAngle) < PROXIMITY_THRESHOLD;
+    }
+
+    public boolean isAtTargetPreset() {
+        return Math.abs(getCurrentAngle() - activePivotTarget.angle) < PROXIMITY_THRESHOLD;
+    }
+
+    public void setPivotPosition(PivotAngle activePivotTarget) {
+        setTargetAngle(activePivotTarget.angle);
         setActiveControlState(PivotControlState.AUTONOMOUS);
-        this.activePivotPosition = activePivotPosition;
+        this.activePivotTarget = activePivotTarget;
     }
 
     public void setPivotAtPower(double power) {
-        setActiveControlState(PivotControlState.MANUAL);
         updateManualPower(power);
+        setActiveControlState(PivotControlState.MANUAL);
     }
 
-    public double degreesToTicks(double degrees) {
+    private double degreesToTicks(double degrees) {
         return degrees * TICKS_PER_DEGREE;
+    }
+
+    private double ticksToDegrees(double ticks) {
+        return ticks * (1/TICKS_PER_DEGREE);
     }
 }

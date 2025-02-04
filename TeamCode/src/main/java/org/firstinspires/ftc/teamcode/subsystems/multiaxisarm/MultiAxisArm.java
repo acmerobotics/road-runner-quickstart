@@ -22,7 +22,7 @@ public class MultiAxisArm extends Mechanism {
     }
 
     @Override
-    public void loop(AIMPad aimpad) {
+    public void loop(AIMPad aimpad, AIMPad aimpad2) {
         hand.loop(aimpad);
         wrist.loop(aimpad);
         elbow.loop(aimpad);
@@ -66,6 +66,13 @@ public class MultiAxisArm extends Mechanism {
     public void neutralClosed() {
         hand.close();
         wrist.flexNeutral();
+        wrist.rotateCenter();
+        elbow.middle();
+    }
+
+    public void upClosed() {
+        hand.close();
+        wrist.flexUp();
         wrist.rotateCenter();
         elbow.middle();
     }
