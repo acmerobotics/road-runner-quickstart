@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.ftc.DriveType;
 import com.acmerobotics.roadrunner.ftc.DriveView;
 import com.acmerobotics.roadrunner.ftc.DriveViewFactory;
 import com.acmerobotics.roadrunner.ftc.Encoder;
+import com.acmerobotics.roadrunner.ftc.EncoderDirection;
 import com.acmerobotics.roadrunner.ftc.ForwardPushTest;
 import com.acmerobotics.roadrunner.ftc.ForwardRampLogger;
 import com.acmerobotics.roadrunner.ftc.LateralPushTest;
@@ -19,6 +20,7 @@ import com.acmerobotics.roadrunner.ftc.LateralRampLogger;
 import com.acmerobotics.roadrunner.ftc.ManualFeedforwardTuner;
 import com.acmerobotics.roadrunner.ftc.MecanumMotorDirectionDebugger;
 import com.acmerobotics.roadrunner.ftc.OTOSAngularScalarTuner;
+import com.acmerobotics.roadrunner.ftc.OTOSEncoder;
 import com.acmerobotics.roadrunner.ftc.OTOSHeadingOffsetTuner;
 import com.acmerobotics.roadrunner.ftc.OTOSLinearScalarTuner;
 import com.acmerobotics.roadrunner.ftc.OTOSPositionOffsetTuner;
@@ -82,6 +84,10 @@ public final class TuningOpModes {
                     TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) md.localizer;
                     parEncs.add(dl.par);
                     perpEncs.add(dl.perp);
+                } else if (md.localizer instanceof OTOSLocalizer) {
+                    OTOSLocalizer ol = (OTOSLocalizer) md.localizer;
+                    parEncs.add(new OTOSEncoder(ol.getOTOS(), EncoderDirection.PARALLEL));
+                    perpEncs.add(new OTOSEncoder(ol.getOTOS(), EncoderDirection.PERPENDICULAR));
                 } else {
                     throw new RuntimeException("unknown localizer: " + md.localizer.getClass().getName());
                 }
@@ -131,7 +137,11 @@ public final class TuningOpModes {
                     TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) td.localizer;
                     parEncs.add(dl.par);
                     perpEncs.add(dl.perp);
-                } else {
+                } else if (td.localizer instanceof OTOSLocalizer) {
+                    OTOSLocalizer ol = (OTOSLocalizer) td.localizer;
+                    parEncs.add(new OTOSEncoder(ol.getOTOS(), EncoderDirection.PARALLEL));
+                    perpEncs.add(new OTOSEncoder(ol.getOTOS(), EncoderDirection.PERPENDICULAR));
+                }else {
                     throw new RuntimeException("unknown localizer: " + td.localizer.getClass().getName());
                 }
 
