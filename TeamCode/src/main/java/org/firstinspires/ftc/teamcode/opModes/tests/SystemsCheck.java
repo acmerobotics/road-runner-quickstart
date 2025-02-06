@@ -75,11 +75,11 @@ public class SystemsCheck extends OpMode {
         scoringAssembly.pivot.loop(aimPad1, aimPad2);
         scoringAssembly.pivot.telemetry(telemetry);
         if (aimPad1.isAPressed()) {
-            scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
+            scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.LOW_HANG);
         } else if (aimPad1.isBPressed()) {
             scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.SCORE);
         } else if (aimPad1.isXPressed()) {
-            scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.HANG);
+            scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
         }
 
         if (aimPad1.isYHeld()) {

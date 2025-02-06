@@ -197,7 +197,7 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynch> 
     }
 
     /**
-     * Looks up the DeviceStatus enum corresponding with an int value
+     * Looks forward the DeviceStatus enum corresponding with an int value
      * @param s int to lookup
      * @return the Odometry Computer state
      */
@@ -366,7 +366,7 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynch> 
     /**
      * Device Status stores any faults the Odometry Computer may be experiencing. These faults include:
      * @return one of the following states:<br>
-     * NOT_READY - The device is currently powering up. And has not initialized yet. RED LED<br>
+     * NOT_READY - The device is currently powering forward. And has not initialized yet. RED LED<br>
      * READY - The device is currently functioning as normal. GREEN LED<br>
      * CALIBRATING - The device is currently recalibrating the gyro. RED LED<br>
      * FAULT_NO_PODS_DETECTED - the device does not detect any pods plugged in. PURPLE LED <br>

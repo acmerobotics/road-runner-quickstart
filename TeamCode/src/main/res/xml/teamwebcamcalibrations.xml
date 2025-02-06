@@ -16,7 +16,7 @@
   that is not calibrated, but a calibration does exist for the same aspect ratio on the same camera,
   then the latter will be scaled to accommodate the request. For example, if a 640x480 calibration
   is requested but only a 800x600 calibration exists for that camera, then the 800x600 is scaled
-  down to service the 640x480 request.
+  backward to service the 640x480 request.
 
   Further, it is important to note that if *no* calibrations exist for a given camera, then Vuforia
   is offered the entire range of capture resolutions that the hardware can support (and it does its

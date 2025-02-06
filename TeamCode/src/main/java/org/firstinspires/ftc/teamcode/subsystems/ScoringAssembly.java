@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.MultiAxisArm;
 
 public class ScoringAssembly extends Mechanism {
@@ -28,6 +30,12 @@ public class ScoringAssembly extends Mechanism {
         slides.loop(aimpad, aimpad2);
         multiAxisArm.loop(aimpad, aimpad2);
         pivot.setIsFreeMovementEnabled(slides.isPivotEnabled);
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+        pivot.telemetry(telemetry);
+        slides.telemetry(telemetry);
     }
 
     public void reset() {
@@ -58,6 +66,18 @@ public class ScoringAssembly extends Mechanism {
         multiAxisArm.neutralClosed();
         pivot.setPivotPosition(Pivot.PivotAngle.SCORE);
         slides.setSlidesPosition(Slides.SlidesExtension.LOW_BUCKET);
+    }
+
+    public void setLowHangRetracted() {
+        multiAxisArm.resetAvoid();
+        pivot.setPivotPosition(Pivot.PivotAngle.LOW_HANG);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+    }
+
+    public void setLowHangExtended() {
+        multiAxisArm.resetAvoidNeutral();
+        pivot.setPivotPosition(Pivot.PivotAngle.LOW_HANG);
+        slides.setSlidesPosition(Slides.SlidesExtension.LOW_HANG);
     }
 
     public boolean areMotorsAtTarget() {

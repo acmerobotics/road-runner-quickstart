@@ -35,8 +35,7 @@ public class SlidesBase extends Mechanism {
     private static final double CURRENT_THRESHOLD = 5000;
     private static final double MINIMUM_POWER = 0.03;
 
-    private static final double TICKS_PER_INCH = 3; // TODO CALCULATE THIS
-
+    private static final double TICKS_PER_INCH = 113.91949;
 
     public enum SlidesControlState {
         AUTONOMOUS, MANUAL
@@ -166,7 +165,7 @@ public class SlidesBase extends Mechanism {
      * @return the output power for the slide motors
      */
     private double getTargetOutputPower() {
-        return controlSystem.update(getCurrentExtension());
+        return controlSystem.update(getCurrentExtension(), getCurrentVelocityInchesPerSecond());
     }
 
     /**
@@ -220,6 +219,22 @@ public class SlidesBase extends Mechanism {
 
     public double getCurrentExtension() {
         return ticksToInches(getCurrentPosition());
+    }
+
+    /**
+     * Get the current velocity of the slides in ticks per second
+     * @return
+     */
+    public double getCurrentVelocity() {
+        return activeEncoderMotor.getVelocity();
+    }
+
+    /**
+     * Get the current velocity of the slides in inches per second
+     * @return the current velocity of the slides in inches per second
+     */
+    public double getCurrentVelocityInchesPerSecond() {
+        return ticksToInches(getCurrentVelocity());
     }
 
     /**

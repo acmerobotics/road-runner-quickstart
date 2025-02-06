@@ -4,6 +4,7 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.InputHandler;
 
 public class Robot_V2 extends Mechanism {
@@ -11,7 +12,7 @@ public class Robot_V2 extends Mechanism {
     Drivebase drivebase = new Drivebase();
 //    Hubs hubs = new Hubs(); // TODO implement hubs
     ScoringAssembly scoringAssembly = new ScoringAssembly();
-    Vision vision = new Vision();
+//    Vision vision = new Vision();
 
     InputHandler inputHandler = new InputHandler();
 
@@ -21,7 +22,8 @@ public class Robot_V2 extends Mechanism {
         AUTO_GRASPING,
         RETRACTING,
         PREP_SCORING,
-        SCORING
+        SCORING,
+        LOW_HANG
     }
 
     enum ScoringElement {
@@ -38,7 +40,7 @@ public class Robot_V2 extends Mechanism {
         drivebase.init(hwMap);
 //        hubs.init(hwMap);
         scoringAssembly.init(hwMap);
-        vision.init(hwMap);
+//        vision.init(hwMap);
     }
 
     @Override
@@ -67,7 +69,17 @@ public class Robot_V2 extends Mechanism {
             case SCORING:
                 scoringState();
                 break;
+            case LOW_HANG:
+                lowHang();
+                break;
         }
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+        scoringAssembly.telemetry(telemetry);
+        telemetry.addData("Current State:", activeState);
+        telemetry.addData("Current Element:", activeScoringElementType);
     }
 
     private void resettingState() {
@@ -123,6 +135,11 @@ public class Robot_V2 extends Mechanism {
         if (inputHandler.ADVANCE_AUTOMATION) {
             activeState = RobotState.PREP_SCORING;
         }
+
+        if (inputHandler.LOW_HANG) {
+            scoringAssembly.setLowHangRetracted();
+            activeState = RobotState.LOW_HANG;
+        }
     }
 
     private void autoGraspingState() {
@@ -154,6 +171,14 @@ public class Robot_V2 extends Mechanism {
         if (inputHandler.RELEASE_ELEMENT) {
             scoringAssembly.multiAxisArm.hand.open();
             activeState = RobotState.RESETTING;
+        }
+    }
+
+    private void lowHang() {
+        if (inputHandler.EXTEND_SLIDES) {
+            scoringAssembly.setLowHangExtended();
+        } else if (inputHandler.RETRACT_SLIDES) {
+            scoringAssembly.setLowHangRetracted();
         }
     }
 }

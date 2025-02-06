@@ -32,22 +32,22 @@ public class Pivot extends Mechanism {
     private static final double MINIMUM_POWER = 0.03;
     private double manualPower = 0;
 
-    private static final double kP = 0;
+    private static final double kP = 0.08;
     private static final double kI = 0;
-    private static final double kD = 0;
+    private static final double kD = 0.0008;
     private static final double derivativeLowPassGain = 0;
     private static final double integralSumMax = 0;
     private static final double kV = 0.0;
     private static final double kA = 0.0;
     private static final double kStatic = 0.0;
-    private static final double kCos = 0.05;
+    private static final double kCos = 0.04;
     private static final double kG = 0.0;
     private static final double lowPassGain = 0;
 
     public enum PivotAngle {
-        PICKUP(300),
-        SCORE(100),
-        HANG(0);
+        LOW_HANG(STARTING_DEGREES),
+        SCORE(90),
+        PICKUP(173);
 
         private final int angle;
 
@@ -57,13 +57,15 @@ public class Pivot extends Mechanism {
     }
 
 
-    private static final double TICKS_PER_DEGREE = 3.95861111111;
+    private static final double TICKS_PER_DEGREE = 15.4788888;
 
-    private static final int STARTING_DEGREES = 10;
+    private static final int STARTING_DEGREES = 65;
 
-    private PivotAngle activePivotTarget = PivotAngle.SCORE;
+    private PivotAngle activePivotTarget = PivotAngle.LOW_HANG;
 
     private boolean isFreeMovementEnabled = true;
+
+    private boolean hasSetHold = false;
   
     public Pivot() {
         PIDController pidController = new PIDController(kP, kI, kD, derivativeLowPassGain, integralSumMax);
@@ -79,15 +81,20 @@ public class Pivot extends Mechanism {
         pivot.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         pivot.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         pivot.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        setPivotPosition(PivotAngle.PICKUP);
+        setPivotPosition(PivotAngle.LOW_HANG);
         updateLastPosition();
     }
 
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
         if (!isFreeMovementEnabled) {
-            holdAtCurrentAngle();
+            if (!hasSetHold) {
+                setTargetAngle(lastAngle);
+                hasSetHold = true;
+            }
+            update();
         } else {
+            hasSetHold = false;
             switch (activePivotControlState) {
                 case AUTONOMOUS:
                     confirmPresetAngle();
@@ -109,6 +116,7 @@ public class Pivot extends Mechanism {
     public void telemetry(Telemetry telemetry) {
         telemetry.addData("Current Angle: ", getCurrentAngle());
         telemetry.addData("Target Angle: ", activeTargetAngle);
+        telemetry.addData("Can pivot", isFreeMovementEnabled);
     }
 
     private void updateLastPosition() {
@@ -121,7 +129,7 @@ public class Pivot extends Mechanism {
     }
 
     private double getTargetOutputPower() {
-        return controlSystem.update(getCurrentAngle() + STARTING_DEGREES);
+        return controlSystem.update(getCurrentAngle());
     }
       
     private void update() {
@@ -162,7 +170,7 @@ public class Pivot extends Mechanism {
     }
 
     private double getCurrentAngle() {
-        return ticksToDegrees(pivot.getCurrentPosition());
+        return ticksToDegrees(pivot.getCurrentPosition()) + STARTING_DEGREES;
     }
 
     /**

@@ -4,6 +4,7 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.settings.InputHandler;
 import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.MultiAxisArm;
 import org.firstinspires.ftc.teamcode.subsystems.Slides;
 
@@ -12,6 +13,7 @@ public class MAArmTest extends OpMode {
 
     MultiAxisArm arm = new MultiAxisArm();
     Slides slides = new Slides();
+    InputHandler inputHandler = new InputHandler();
 
     AIMPad aimPad1;
     AIMPad aimPad2;
@@ -35,6 +37,7 @@ public class MAArmTest extends OpMode {
     public void loop() {
         aimPad1.update(gamepad1);
         aimPad2.update(gamepad2);
+        inputHandler.updateInputs(aimPad1, aimPad2);
 
         switch (activeTestingState) {
             case HAND:
@@ -84,34 +87,32 @@ public class MAArmTest extends OpMode {
 
     public void elbowTest() {
         arm.elbow.leftElbow.systemsCheck(aimPad1, telemetry);
+        arm.elbow.rightElbow.systemsCheck(aimPad1, telemetry);
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.FULL;
         }
     }
 
     public void fullTest() {
-        arm.loop(aimPad1);
-        if (aimPad1.isRightTriggerPressed()) {
-            //TODO potentially swap for tested aimPad method (>0.5)
-            arm.hand.toggle();
-            //ADD CODE TO TOGGLE CLASS in hand FILE (to toggle open and close)
-        }
-        if (aimPad1.isRightStickMovementHeld()) {
-            double rightStickX = aimPad1.getRightStickX();
-
-            //Controls LEFT and RIGHT, change values as needed
-            if (rightStickX > 0.5) {
-                arm.wrist.rotateRight();
-            } else if (rightStickX < -0.5) {
-                arm.wrist.rotateLeft();
-            } else {
-                arm.wrist.rotateCenter();
-            }
-        }
-        if (aimPad1.isYPressed()){
-            arm.wrist.flexUp();
-        } else if (aimPad1.isAPressed()){
+        arm.loop(aimPad1, aimPad2);
+        if (inputHandler.FLEX_DOWN) {
             arm.wrist.flexDown();
+        } else if (inputHandler.FLEX_NEUTRAL) {
+            arm.wrist.flexNeutral();
+        }
+
+        if (inputHandler.ROTATE_RIGHT) {
+            arm.wrist.rotateRight();
+        } else if (inputHandler.ROTATE_LEFT) {
+            arm.wrist.rotateLeft();
+        } else {
+            arm.wrist.rotateCenter();
+        }
+        if (inputHandler.TOGGLE_HAND) {
+            arm.hand.toggle();
+        }
+        if (aimPad2.isStartReleased()) {
+            activeTestingState = TestingState.HAND;
         }
     }
 }

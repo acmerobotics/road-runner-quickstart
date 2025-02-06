@@ -15,7 +15,7 @@ public class SupersAutoConstants {
     public final double RED_POST_DROP_TANGENT = Math.toRadians(180);
 
 
-    //picking up and scoring the 1st one (1st meaning the first one that we picked up I guess this is actually the 2nd one)
+    //picking forward and scoring the 1st one (1st meaning the first one that we picked forward I guess this is actually the 2nd one)
     public final Pose2d RED_PICKUP_ONE = new Pose2d(-48, -48, Math.toRadians(270));
     public final double RED_PICKUP_ONE_TANGENT = Math.toRadians(70);
     public final Pose2d RED_HIGH_BASKET = new Pose2d(-56, -56, Math.toRadians(225));
@@ -23,12 +23,12 @@ public class SupersAutoConstants {
 
 
 
-    //picking up and scoring the 2nd one
+    //picking forward and scoring the 2nd one
     public final Pose2d RED_PICKUP_TWO = new Pose2d(-58, -48, Math.toRadians(270));
     public final double RED_PICKUP_TWO_TANGENT = Math.toRadians(-180);
 
 
-    //picking up and scoring the 3rd one
+    //picking forward and scoring the 3rd one
     public final Pose2d RED_PICKUP_THREE = new Pose2d(-56, -44, Math.toRadians(310));
     public final double RED_PICKUP_THREE_TANGENT = Math.toRadians(-180);
 
@@ -59,7 +59,7 @@ public class SupersAutoConstants {
     public static final double BLUE_POST_DROP_TANGENT = Math.toRadians(180);
 
 
-    //picking up and scoring the 1st one (1st meaning the first one that we picked up I guess this is actually the 2nd one)
+    //picking forward and scoring the 1st one (1st meaning the first one that we picked forward I guess this is actually the 2nd one)
     public static final Pose2d BLUE_PICKUP_ONE = new Pose2d(48, 48, Math.toRadians(90));
     public static final double BLUE_PICKUP_ONE_TANGENT = Math.toRadians(70);
     public static final Pose2d BLUE_HIGH_BASKET = new Pose2d(56, 56, Math.toRadians(45));
@@ -67,12 +67,12 @@ public class SupersAutoConstants {
 
 
 
-    //picking up and scoring the 2nd one
+    //picking forward and scoring the 2nd one
     public static final Pose2d BLUE_PICKUP_TWO = new Pose2d(58, 48, Math.toRadians(90));
     public static final double BLUE_PICKUP_TWO_TANGENT = Math.toRadians(90);
 
 
-    //picking up and scoring the 3rd one
+    //picking forward and scoring the 3rd one
     public static final Pose2d BLUE_PICKUP_THREE = new Pose2d(56, 44, Math.toRadians(125));
     public static final double PICKUP_THREE_TANGENT = Math.toRadians(90);
 

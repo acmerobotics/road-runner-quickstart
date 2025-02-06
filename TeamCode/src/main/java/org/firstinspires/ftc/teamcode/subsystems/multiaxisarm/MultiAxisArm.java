@@ -32,21 +32,21 @@ public class MultiAxisArm extends Mechanism {
         hand.open();
         wrist.flexUp();
         wrist.rotateLeft();
-        elbow.up();
+        elbow.forward();
     }
 
     public void resetClosed() {
         hand.close();
         wrist.flexUp();
         wrist.rotateLeft();
-        elbow.up();
+        elbow.forward();
     }
 
     public void resetAvoid() {
-        hand.open();
-        wrist.flexDown();
+        hand.close();
+        wrist.flexNeutral();
         wrist.rotateCenter();
-        elbow.middle();
+        elbow.backward();
     }
 
     public void resetAvoidNeutral() {
@@ -81,42 +81,42 @@ public class MultiAxisArm extends Mechanism {
         hand.open();
         wrist.flexDown();
         wrist.rotateCenter();
-        elbow.down();
+        elbow.backward();
     }
 
     public void searchingDownLeftTiltOpen() {
         hand.open();
         wrist.flexDown();
         wrist.rotateLeft();
-        elbow.down();
+        elbow.backward();
     }
 
     public void searchingDownRightTiltOpen() {
         hand.open();
         wrist.flexDown();
         wrist.rotateRight();
-        elbow.down();
+        elbow.backward();
     }
 
     public void searchingDownLeftTiltClosed() {
         hand.close();
         wrist.flexDown();
         wrist.rotateLeft();
-        elbow.down();
+        elbow.backward();
     }
 
     public void searchingDownRightTiltClosed() {
         hand.close();
         wrist.flexDown();
         wrist.rotateRight();
-        elbow.down();
+        elbow.backward();
     }
 
     public void searchingDownClosed() {
         hand.close();
         wrist.flexDown();
         wrist.rotateCenter();
-        elbow.down();
+        elbow.backward();
     }
 
     public void custom(double handPosition, double wristFlexPosition, double wristRotatePosition, double elbowPosition) {

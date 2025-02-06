@@ -10,8 +10,8 @@ public class ConfigurationInfo {
 
     // SERVOS
     public static HardwareInterface hand = new HardwareInterface("HND", true, 0);
-    public static HardwareInterface leftElbow = new HardwareInterface("LELB", true, 0);
-    public static HardwareInterface rightElbow = new HardwareInterface("RELB", true, 0);
+    public static HardwareInterface leftElbow = new HardwareInterface("LE", true, 0);
+    public static HardwareInterface rightElbow = new HardwareInterface("RE", true, 0);
     public static HardwareInterface rotator = new HardwareInterface("ROT", true, 0);
     public static HardwareInterface flexor = new HardwareInterface("FLX", true, 0);
 
