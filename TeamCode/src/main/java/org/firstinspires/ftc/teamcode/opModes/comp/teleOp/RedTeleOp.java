@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opModes.comp.teleOp;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,7 +17,7 @@ public class RedTeleOp extends OpMode {
 
     @Override
     public void init() {
-        robot = new Robot_V2();
+        robot = new Robot_V2(new Pose2d(0, 0, 0), false);
         robot.init(hardwareMap);
         aimPad1 = new AIMPad(gamepad1);
         aimPad2 = new AIMPad(gamepad2);

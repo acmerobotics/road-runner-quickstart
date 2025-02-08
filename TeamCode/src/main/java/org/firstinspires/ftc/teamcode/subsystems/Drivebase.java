@@ -18,12 +18,15 @@ public class Drivebase extends Mechanism {
 
     public MecanumDrive drive;
 
-    public Drivebase() {
+    private Pose2d startingPose;
+
+    public Drivebase(Pose2d startingPose) {
+        this.startingPose = startingPose;
     }
 
     @Override
     public void init(HardwareMap hwMap) {
-        drive = new MecanumDrive(hwMap, new Pose2d(new Vector2d(0, 0), 0));
+        drive = new MecanumDrive(hwMap, startingPose);
         setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
@@ -53,7 +56,7 @@ public class Drivebase extends Mechanism {
         double rx = InputModification.poweredInput(deadzonedStickInput(gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
 
         // Create left stick vector
-        Vector2d leftStick = new Vector2d(y, x);
+        Vector2d leftStick = new Vector2d(y, -x);
 
         // Rotate left stick vector by -heading if in fieldcentric mode
         if (isFieldCentric) {
@@ -61,7 +64,7 @@ public class Drivebase extends Mechanism {
         }
 
         // Set drive powers
-        drive.setDrivePowers(new PoseVelocity2d(leftStick, rx));
+        drive.setDrivePowers(new PoseVelocity2d(leftStick, -rx));
     }
 
     /**

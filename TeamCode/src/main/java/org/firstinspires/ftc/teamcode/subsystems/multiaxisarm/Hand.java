@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 public class Hand extends Mechanism {
     public StateDrivenServo hand;
 
-    ServoState CLOSED = new ServoState(0.495);
+    ServoState CLOSED = new ServoState(0.5);
     ServoState OPEN = new ServoState(1);
 
     @Override

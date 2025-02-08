@@ -108,7 +108,7 @@ public class MAArmTest extends OpMode {
         } else {
             arm.wrist.rotateCenter();
         }
-        if (inputHandler.TOGGLE_HAND) {
+        if (inputHandler.TOGGLE_HAND_ARM) {
             arm.hand.toggle();
         }
         if (aimPad2.isStartReleased()) {

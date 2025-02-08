@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.aimrobotics.aimlib.control.FeedforwardController;
-import com.aimrobotics.aimlib.control.LowPassFilter;
-import com.aimrobotics.aimlib.control.PIDController;
-import com.aimrobotics.aimlib.control.SimpleControlSystem;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -11,80 +7,92 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
+import org.firstinspires.ftc.teamcode.util.control.PIDFController;
 
 public class Pivot extends Mechanism {
 
-    private static final double PROXIMITY_THRESHOLD = 2;
-    private DcMotorEx pivot;
+    // ===============================================================
+    // Constants and Control Variables
+    // ===============================================================
+    private static final double PROXIMITY_THRESHOLD = 1.0;  // Angle threshold for position accuracy
+    private static final double MINIMUM_POWER = 0.03;       // Minimum power before holding position
+    private static final double TICKS_PER_DEGREE = 15.4788888; // Encoder ticks per degree
+    private static final int STARTING_DEGREES = 65; // Default starting angle
 
-    private final SimpleControlSystem controlSystem;
-  
+    private DcMotorEx pivotMotor;
+    private PIDFController controller;
+    private double lastAngle;
+    private double activeTargetAngle = 0;
+    private double manualPower = 0;
+    private boolean hasSetHold = false;
+    private boolean isFreeMovementEnabled = true;
+
+    // ===============================================================
+    // Enums for Control State and Pivot Presets
+    // ===============================================================
     public enum PivotControlState {
         AUTONOMOUS, MANUAL
     }
 
-    private PivotControlState activePivotControlState = PivotControlState.AUTONOMOUS;
-  
-    private double lastAngle;
-
-    private double activeTargetAngle = 0;
-
-    private static final double MINIMUM_POWER = 0.03;
-    private double manualPower = 0;
-
-    private static final double kP = 0.08;
-    private static final double kI = 0;
-    private static final double kD = 0.0008;
-    private static final double derivativeLowPassGain = 0;
-    private static final double integralSumMax = 0;
-    private static final double kV = 0.0;
-    private static final double kA = 0.0;
-    private static final double kStatic = 0.0;
-    private static final double kCos = 0.04;
-    private static final double kG = 0.0;
-    private static final double lowPassGain = 0;
-
     public enum PivotAngle {
-        LOW_HANG(STARTING_DEGREES),
-        SCORE(90),
+        START_MORE(STARTING_DEGREES - 360),
+        START(STARTING_DEGREES),
+        SCORE(83),
+        SPECIMEN_PICKUP(78),
         PICKUP(173);
 
-        private final int angle;
+        public final int angle;
 
         PivotAngle(int angle) {
             this.angle = angle;
         }
     }
 
+    private PivotControlState activePivotControlState = PivotControlState.AUTONOMOUS;
+    private PivotAngle activePivotTarget = PivotAngle.START;
 
-    private static final double TICKS_PER_DEGREE = 15.4788888;
+    // ===============================================================
+    // PIDF Constants
+    // ===============================================================
+    private static final double kP = 0.08;
+    private static final double kI = 0;
+    private static final double kD = 0.0008;
+    private static final double INTEGRAL_SUM_MAX = 0;
+    private static final double kV = 0.0;
+    private static final double kA = 0.0;
+    private static final double kStatic = 0.0;
+    private static final double kCos = 0.02;
+    private static final double kG = 0.0;
 
-    private static final int STARTING_DEGREES = 65;
+    // ===============================================================
+    // Constructor and Initialization
+    // ===============================================================
 
-    private PivotAngle activePivotTarget = PivotAngle.LOW_HANG;
+    Slides slides;
 
-    private boolean isFreeMovementEnabled = true;
-
-    private boolean hasSetHold = false;
-  
-    public Pivot() {
-        PIDController pidController = new PIDController(kP, kI, kD, derivativeLowPassGain, integralSumMax);
-        FeedforwardController feedforwardController = new FeedforwardController(kV, kA, kStatic, kCos, kG);
-        LowPassFilter lowPassFilter = new LowPassFilter(lowPassGain);
-        controlSystem = new SimpleControlSystem(pidController, feedforwardController, lowPassFilter);
+    public Pivot(Slides slides) {
+        this.slides = slides;
     }
-
 
     @Override
     public void init(HardwareMap hwMap) {
-        pivot = hwMap.get(DcMotorEx.class, ConfigurationInfo.pivot.getDeviceName());
-        pivot.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        pivot.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        pivot.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        setPivotPosition(PivotAngle.LOW_HANG);
+        // Initialize motor
+        pivotMotor = hwMap.get(DcMotorEx.class, ConfigurationInfo.pivot.getDeviceName());
+        pivotMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        pivotMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        pivotMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        // Initialize PIDF Controller
+        controller = new PIDFController(kP, kI, kD, INTEGRAL_SUM_MAX, kV, kA, kStatic, kCos, kG, PIDFController.FeedforwardType.ROTATIONAL);
+
+        // Set default pivot position
+        setPivotPosition(PivotAngle.START);
         updateLastPosition();
     }
 
+    // ===============================================================
+    // Loop Control
+    // ===============================================================
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
         if (!isFreeMovementEnabled) {
@@ -105,33 +113,37 @@ public class Pivot extends Mechanism {
                     break;
             }
         }
-
+        controller.setLength(slides.getCurrentExtension());
+        isFreeMovementEnabled= slides.isPivotEnabled;
     }
 
-    public void setIsFreeMovementEnabled(boolean condition) {
-        isFreeMovementEnabled = condition;
-    }
-
+    // ===============================================================
+    // Telemetry for Debugging
+    // ===============================================================
     @Override
     public void telemetry(Telemetry telemetry) {
         telemetry.addData("Current Angle: ", getCurrentAngle());
         telemetry.addData("Target Angle: ", activeTargetAngle);
-        telemetry.addData("Can pivot", isFreeMovementEnabled);
+        telemetry.addData("Can Pivot: ", isFreeMovementEnabled);
     }
+
+    // ===============================================================
+    // Core Motor Control Methods
+    // ===============================================================
 
     private void updateLastPosition() {
         lastAngle = getCurrentAngle();
     }
-      
+
     private void setPower(double power) {
-        pivot.setPower(power);
+        pivotMotor.setPower(power);
         updateLastPosition();
     }
 
     private double getTargetOutputPower() {
-        return controlSystem.update(getCurrentAngle());
+        return controller.calculateOutput(activeTargetAngle, getCurrentAngle(), 0, 0);
     }
-      
+
     private void update() {
         double power = getTargetOutputPower();
         setPower(power);
@@ -139,7 +151,7 @@ public class Pivot extends Mechanism {
 
     private void setTargetAngle(double targetAngle) {
         activeTargetAngle = targetAngle;
-        controlSystem.setTarget(activeTargetAngle);
+        controller.setTargetPos(activeTargetAngle);
     }
 
     private void holdAtCurrentAngle() {
@@ -153,6 +165,10 @@ public class Pivot extends Mechanism {
         }
     }
 
+    // ===============================================================
+    // Manual Control Methods
+    // ===============================================================
+
     private void applyManualPower() {
         if (Math.abs(manualPower) > MINIMUM_POWER) {
             setPower(manualPower);
@@ -161,22 +177,18 @@ public class Pivot extends Mechanism {
         }
     }
 
-    private void updateManualPower(double power) {
+    public void updateManualPower(double power) {
         manualPower = power;
     }
 
-    private void setActiveControlState(PivotControlState activeControlState) {
-        this.activePivotControlState = activeControlState;
+    public void setActiveControlState(PivotControlState state) {
+        this.activePivotControlState = state;
     }
 
-    private double getCurrentAngle() {
-        return ticksToDegrees(pivot.getCurrentPosition()) + STARTING_DEGREES;
-    }
+    // ===============================================================
+    // High-Level Pivot Commands (Presets and Manual Override)
+    // ===============================================================
 
-    /**
-     * Check if the pivot is at the target angle
-     * @return true if the pivot is within the proximity threshold of the target angle
-     */
     public boolean isAtTargetAngle() {
         return Math.abs(getCurrentAngle() - activeTargetAngle) < PROXIMITY_THRESHOLD;
     }
@@ -196,11 +208,19 @@ public class Pivot extends Mechanism {
         setActiveControlState(PivotControlState.MANUAL);
     }
 
+    // ===============================================================
+    // Encoder Angle Conversion Methods
+    // ===============================================================
+
+    private double getCurrentAngle() {
+        return ticksToDegrees(pivotMotor.getCurrentPosition()) + STARTING_DEGREES;
+    }
+
     private double degreesToTicks(double degrees) {
         return degrees * TICKS_PER_DEGREE;
     }
 
     private double ticksToDegrees(double ticks) {
-        return ticks * (1/TICKS_PER_DEGREE);
+        return ticks / TICKS_PER_DEGREE;
     }
 }

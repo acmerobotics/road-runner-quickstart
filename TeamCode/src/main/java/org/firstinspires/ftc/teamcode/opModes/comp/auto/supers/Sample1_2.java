@@ -1,195 +1,61 @@
-//package org.firstinspires.ftc.teamcode.opModes.comp.auto.supers;
-//
-//import com.acmerobotics.roadrunner.Action;
-//import com.acmerobotics.roadrunner.ParallelAction;
-//import com.acmerobotics.roadrunner.SequentialAction;
-//import com.acmerobotics.roadrunner.SleepAction;
-//import com.acmerobotics.roadrunner.ftc.Actions;
-//import com.aimrobotics.aimlib.gamepad.AIMPad;
-//import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-//
-//import org.firstinspires.ftc.teamcode.subsystems.v1.IntakeSystem;
-//import org.firstinspires.ftc.teamcode.subsystems.v1.OuttakeSystem;
-//import org.firstinspires.ftc.teamcode.subsystems.v1.Robot;
-//import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
-//
-//@Autonomous(name = "Sample 1+2", group = "AAA_COMP", preselectTeleOp="BlueTeleOp")
-//public final class Sample1_2 extends LinearOpMode {
-//
-//    SupersAutoConstants constants = new SupersAutoConstants();
-//    Robot_V2 robot = new Robot_V2();
-//
-//    AIMPad aimPad1;
-//    AIMPad aimPad2;
-//
-//    boolean isAutoComplete = true;
-//
-//    @Override
-//    public void runOpMode() {
-//        robot.init(hardwareMap);
-//        aimPad1 = new AIMPad(gamepad1);
-//        aimPad2 = new AIMPad(gamepad2);
-//
-//        Action driveToPreloadDrop = robot.drivebase.drive.actionBuilder(constants.RED_STARTING_POSITION)
-//                .strafeTo(constants.RED_PRELOAD_DROP.position)
-//                .build();
-//
-//        Action driveToPickUp1 = robot.drivebase.drive.actionBuilder(constants.RED_PRELOAD_DROP)
-//                .splineToLinearHeading(constants.RED_POST_DROP, constants.RED_POST_DROP_TANGENT)
-//                .splineToLinearHeading(constants.RED_PICKUP_ONE, constants.RED_PICKUP_ONE_TANGENT)
-//                .build();
-//
-//        Action driveToPickUp2 = robot.drivebase.drive.actionBuilder(constants.RED_HIGH_BASKET)
-//                .splineToLinearHeading(constants.RED_PICKUP_TWO, constants.RED_PICKUP_TWO_TANGENT)
-//                .build();
-//
-//        Action driveToBucket1 = robot.drivebase.drive.actionBuilder(constants.RED_PICKUP_ONE)
-//                .splineToLinearHeading(constants.RED_HIGH_BASKET, constants.RED_HIGH_BASKET_TANGENT)
-//                .build();
-//
-//        Action driveToBucket2 = robot.drivebase.drive.actionBuilder(constants.RED_PICKUP_TWO)
-//                .splineToLinearHeading(constants.RED_HIGH_BASKET, constants.RED_HIGH_BASKET_TANGENT)
-//                .build();
-//
-//        while (!isStarted() && !isStopRequested()) {
-//            robot.scoringSystem.resetMechs();
-//
-//            robot.loop(aimPad1, aimPad2);
-//
-//            aimPad1.update(gamepad1);
-//            aimPad2.update(gamepad2);
-//
-//            robot.telemetry(telemetry);
-//
-//            telemetry.update();
-//        }
-//
-//        while (opModeIsActive()) {
-//            Actions.runBlocking(
-//                    new ParallelAction(
-//                            (telemetryPacket) -> { // robot loop
-//                                robot.loop(aimPad1, aimPad2);
-//                                return isAutoComplete;
-//                            },
-//                            new SequentialAction(
-//                                    new ParallelAction(
-//                                        driveToPreloadDrop,
-//                                        new SequentialAction(
-//                                            new SleepAction(0.5),
-//                                            (telemetryPacket) -> { // raise lifts
-//                                                robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.SPECIMEN_HIGH);
-//                                                return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
-//                                            }
-//                                        )
-//                                    ),
-//                                    (telemetryPacket) -> { // drop lifts to high specimen drop height
-//                                        robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.SPECIMEN_HIGH_DROP);
-//                                        return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
-//                                    },
-//                                    new ParallelAction(
-//                                        driveToPickUp1,
-//                                        (telemetryPacket) -> { // lower lifts and release SG
-//                                            robot.scoringSystem.specimenGrabber.release();
-//                                            robot.scoringSystem.intakeSystem.multiAxisArm.searchingDownOpen();
-//                                            robot.scoringSystem.outtakeSystem.reset();
-//                                            return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
-//                                        }
-//                                    ),
-//                                    new SequentialAction(
-//                                        (telemetryPacket) -> { // extend lower lifts and set to searching position
-//                                            robot.scoringSystem.intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.MEDIUM);
-//                                            return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle();
-//                                        },
-//                                        (telemetryPacket) -> { // grab
-//                                            robot.scoringSystem.intakeSystem.multiAxisArm.searchingDownClosed();
-//                                            return false;
-//                                        },
-//                                        new SleepAction(0.25)
-//                                    ),
-//                                    new ParallelAction(
-//                                        driveToBucket1,
-//                                        new SequentialAction(
-//                                            (telemetryPacket) -> { // retract lower lifts and set arm to transition position
-//                                                robot.scoringSystem.intakeSystem.multiAxisArm.resetClosed();
-//                                                robot.scoringSystem.intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.RESET);
-//                                                return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle();
-//                                            },
-//                                            (telemetryPacket) -> { // transition to outtake
-//                                                robot.scoringSystem.intakeSystem.multiAxisArm.resetOpen();
-//                                                return false;
-//                                            },
-//                                            new SleepAction(0.25),
-//                                            (telemetryPacket) -> { // raise lifts
-//                                                robot.scoringSystem.intakeSystem.multiAxisArm.searchingDownOpen();
-//                                                robot.scoringSystem.outtakeSystem.outtake.armOut();
-//                                                robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.TALL);
-//                                                return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
-//                                            }
-//                                        )
-//                                    ),
-//                                    (telemetryPacket) -> { // drop
-//                                        robot.scoringSystem.outtakeSystem.outtake.bucketOut();
-//                                        return false;
-//                                    },
-//                                    new SleepAction(0.5),
-//                                    //TODO SECOND BLOCK
-//                                    new ParallelAction(
-//                                            driveToPickUp2,
-//                                            (telemetryPacket) -> { // lower lifts and release SG
-//                                                robot.scoringSystem.outtakeSystem.reset();
-//                                                robot.scoringSystem.intakeSystem.multiAxisArm.searchingDownOpen();
-//                                                return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
-//                                            },
-//                                            (telemetryPacket) -> { // extend lower lifts
-//                                                robot.scoringSystem.intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.MEDIUM);
-//                                                return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle();
-//                                            }
-//                                    ),
-//                                    new SequentialAction(
-//                                            (telemetryPacket) -> { // grab
-//                                                robot.scoringSystem.intakeSystem.multiAxisArm.searchingDownClosed();
-//                                                return false;
-//                                            },
-//                                            new SleepAction(0.25)
-//                                    ),
-//                                    new ParallelAction(
-//                                            driveToBucket2,
-//                                            new SequentialAction(
-//                                                    (telemetryPacket) -> { // retract lower lifts and set arm to transition position
-//                                                        robot.scoringSystem.intakeSystem.multiAxisArm.resetClosed();
-//                                                        robot.scoringSystem.intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.RESET);
-//                                                        return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle();
-//                                                    },
-//                                                    (telemetryPacket) -> { // transition to outtake
-//                                                        robot.scoringSystem.intakeSystem.multiAxisArm.resetOpen();
-//                                                        return false;
-//                                                    },
-//                                                    new SleepAction(0.25),
-//                                                    (telemetryPacket) -> { // raise lifts
-//                                                        robot.scoringSystem.intakeSystem.multiAxisArm.resetAvoid();
-//                                                        robot.scoringSystem.outtakeSystem.outtake.armOut();
-//                                                        robot.scoringSystem.outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.TALL);
-//                                                        return robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
-//                                                    }
-//                                            )
-//                                    ),
-//                                    (telemetryPacket) -> { // drop
-//                                        robot.scoringSystem.outtakeSystem.outtake.bucketOut();
-//                                        return false;
-//                                    },
-//                                    new SleepAction(0.5),
-//                                    (telemetryPacket) -> { // retract lifts
-//                                        robot.scoringSystem.resetMechs();
-//                                        return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetAngle() && robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetAngle();
-//                                    },
-//                                    (telemetryPacket) -> { // end auto
-//                                        isAutoComplete = true;
-//                                        return false;
-//                                    }
-//                            )
-//                    )
-//            );
-//        }
-//    }
-//}
+package org.firstinspires.ftc.teamcode.opModes.comp.auto.supers;
+
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.ftc.Actions;
+
+import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
+
+@Autonomous(name = "Sample1_2", group = "AAA_COMP", preselectTeleOp="RedTeleOp")
+public class Sample1_2 extends LinearOpMode {
+    Robot_V2 robot = new Robot_V2(SupersAutoConstantsSample.STARTING_POSITION, true);
+
+    @Override
+    public void runOpMode() {
+        robot.init(hardwareMap);
+
+        Action preHang = robot.drivebase.drive.actionBuilder(robot.drivebase.drive.localizer.getPose())
+                .strafeTo(SupersAutoConstantsSample.PRELOAD_DROP.position)
+                .build();
+
+        Action dropBlockOne = robot.drivebase.drive.actionBuilder(SupersAutoConstantsSample.PRELOAD_DROP)
+                .splineToLinearHeading(SupersAutoConstantsSample.BLOCK_ONE_A, SupersAutoConstantsSample.BLOCK_ONE_A_TANGENT)
+                .splineToLinearHeading(SupersAutoConstantsSample.BLOCK_ONE_B, SupersAutoConstantsSample.BLOCK_ONE_B_TANGENT)
+                .waitSeconds(1)
+                .splineToLinearHeading(SupersAutoConstantsSample.BLOCK_ONE_C, SupersAutoConstantsSample.BLOCK_ONE_C_TANGENT)
+                .waitSeconds(1)
+                .build();
+
+        Action dropBlockTwo = robot.drivebase.drive.actionBuilder(SupersAutoConstantsSample.BLOCK_ONE_C)
+                .splineToLinearHeading(SupersAutoConstantsSample.BLOCK_TWO_A, SupersAutoConstantsSample.BLOCK_TWO_A_B_TANGENT)
+                .waitSeconds(1)
+                .splineToLinearHeading(SupersAutoConstantsSample.BLOCK_TWO_B, SupersAutoConstantsSample.BLOCK_TWO_A_B_TANGENT)
+                .waitSeconds(1)
+                .build();
+
+        Action dropBlockThree = robot.drivebase.drive.actionBuilder(SupersAutoConstantsSample.BLOCK_TWO_B)
+                .splineToLinearHeading(SupersAutoConstantsSample.BLOCK_THREE_A, SupersAutoConstantsSample.BLOCK_THREE_A_TANGENT)
+                .waitSeconds(1)
+                .splineToLinearHeading(SupersAutoConstantsSample.BLOCK_THREE_B, SupersAutoConstantsSample.BLOCK_THREE_B_TANGENT)
+                .waitSeconds(1)
+                .build();
+
+
+        waitForStart();
+        while (opModeIsActive()){
+            Actions.runBlocking(
+                    new SequentialAction(
+                            preHang,
+                            new SleepAction(1),
+                            dropBlockOne,
+                            dropBlockTwo,
+                            dropBlockThree
+                    )
+            );
+            break;
+        }
+    }
+}

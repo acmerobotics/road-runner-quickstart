@@ -13,23 +13,20 @@ public class ScoringAssembly extends Mechanism {
     public Pivot pivot;
     public Slides slides;
 
-    boolean isReset = false;
-
     @Override
     public void init(HardwareMap hwMap) {
         multiAxisArm = new MultiAxisArm();
         multiAxisArm.init(hwMap);
-        pivot = new Pivot();
-        pivot.init(hwMap);
         slides = new Slides();
         slides.init(hwMap);
+        pivot = new Pivot(slides);
+        pivot.init(hwMap);
     }
 
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
         pivot.loop(aimpad, aimpad2);
         slides.loop(aimpad, aimpad2);
         multiAxisArm.loop(aimpad, aimpad2);
-        pivot.setIsFreeMovementEnabled(slides.isPivotEnabled);
     }
 
     @Override
@@ -44,8 +41,25 @@ public class ScoringAssembly extends Mechanism {
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
 
+    public void resetSpecimen() {
+        multiAxisArm.specimenPickup();
+        pivot.setPivotPosition(Pivot.PivotAngle.SPECIMEN_PICKUP);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+    }
+
+    public void resetAuto() {
+        multiAxisArm.neutral();
+        pivot.setPivotPosition(Pivot.PivotAngle.START_MORE);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
+    }
+
     public void setPickupResetNeutral() {
         multiAxisArm.neutral();
+        pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+    }
+    public void setPickupResetNeutralClosed() {
+        multiAxisArm.neutralClosed();
         pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
@@ -62,6 +76,18 @@ public class ScoringAssembly extends Mechanism {
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
 
+    public void setSpecimenClamped() {
+        multiAxisArm.upClosed();
+        pivot.setPivotPosition(Pivot.PivotAngle.SCORE);
+        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN);
+    }
+
+    public void setSpecimenClampedAUTO() {
+        multiAxisArm.upClosed();
+        pivot.setPivotPosition(Pivot.PivotAngle.SPECIMEN_PICKUP);
+        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN_AUTO);
+    }
+
     public void setScoringLowBucketClamped() {
         multiAxisArm.neutralClosed();
         pivot.setPivotPosition(Pivot.PivotAngle.SCORE);
@@ -69,14 +95,14 @@ public class ScoringAssembly extends Mechanism {
     }
 
     public void setLowHangRetracted() {
-        multiAxisArm.resetAvoid();
-        pivot.setPivotPosition(Pivot.PivotAngle.LOW_HANG);
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+        multiAxisArm.hang();
+        pivot.setPivotPosition(Pivot.PivotAngle.START);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
     }
 
     public void setLowHangExtended() {
-        multiAxisArm.resetAvoidNeutral();
-        pivot.setPivotPosition(Pivot.PivotAngle.LOW_HANG);
+        multiAxisArm.hang();
+        pivot.setPivotPosition(Pivot.PivotAngle.START);
         slides.setSlidesPosition(Slides.SlidesExtension.LOW_HANG);
     }
 
@@ -85,6 +111,12 @@ public class ScoringAssembly extends Mechanism {
     }
 
     public boolean areMotorsAtTargetPresets() {
-        return  pivot.isAtTargetPreset() && slides.isAtTargetPreset();
+        return pivot.isAtTargetPreset() && slides.isAtTargetPreset();
+    }
+
+    public void totalFix() {
+        multiAxisArm.neutral();
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
+        pivot.setPivotPosition(Pivot.PivotAngle.START_MORE);
     }
 }

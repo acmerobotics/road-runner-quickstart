@@ -17,34 +17,34 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .setDimensions(18, 16)
                 .build();
-//        RED SIDE 3 + 1
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12, -62, Math.toRadians(90)))
-                        // Specimen Hang
-                .strafeTo(new Vector2d(-10, -33))
-                .waitSeconds(2)
+//        RED SIDE Sample
+//        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12, -62, Math.toRadians(90)))
+//                        // Specimen Hang
+//                .strafeTo(new Vector2d(-10, -33))
+//                .waitSeconds(2)
+//
+//                        // Right Block Pickup AND Drop
+//                .splineToLinearHeading(new Pose2d(-10, -42, Math.toRadians(270)), Math.toRadians(180))
+//                .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(270)), Math.toRadians(70))
+//                .waitSeconds(2)
+//                .splineToLinearHeading(new Pose2d(-56, -56, Math.toRadians(225)), Math.toRadians(-180))
+//                .waitSeconds(3.5)
+//
+//                        // Middle Block Pickup AND Drop
+//                .splineToLinearHeading(new Pose2d(-58, -48, Math.toRadians(270)), Math.toRadians(-180))
+//                .waitSeconds(2)
+//                .splineToLinearHeading(new Pose2d(-56, -56, Math.toRadians(225)), Math.toRadians(-180))
+//                .waitSeconds(3.5)
+//
+//                        // Left Block Pickup AND Drop
+//                .splineToLinearHeading(new Pose2d(-56, -44, Math.toRadians(310)), Math.toRadians(-180))
+//                .waitSeconds(2)
+//                .splineToLinearHeading(new Pose2d(-56, -56, Math.toRadians(225)), Math.toRadians(180))
+//
+//                .build());
 
-                        // Right Block Pickup AND Drop
-                .splineToLinearHeading(new Pose2d(-10, -42, Math.toRadians(270)), Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(270)), Math.toRadians(70))
-                .waitSeconds(2)
-                .splineToLinearHeading(new Pose2d(-56, -56, Math.toRadians(225)), Math.toRadians(-180))
-                .waitSeconds(3.5)
 
-                        // Middle Block Pickup AND Drop
-                .splineToLinearHeading(new Pose2d(-58, -48, Math.toRadians(270)), Math.toRadians(-180))
-                .waitSeconds(2)
-                .splineToLinearHeading(new Pose2d(-56, -56, Math.toRadians(225)), Math.toRadians(-180))
-                .waitSeconds(3.5)
-
-                        // Left Block Pickup AND Drop
-                .splineToLinearHeading(new Pose2d(-56, -44, Math.toRadians(310)), Math.toRadians(-180))
-                .waitSeconds(2)
-                .splineToLinearHeading(new Pose2d(-56, -56, Math.toRadians(225)), Math.toRadians(180))
-
-                .build());
-
-
-        //RED SIDE 4 HANG
+        //RED SIDE Specimen
 //        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(12, -62, Math.toRadians(90)))
 //                // Specimen Hang 1
 //                .strafeTo(new Vector2d(10, -33))
@@ -66,7 +66,7 @@ public class MeepMeepTesting {
 //
 //
 ////                 HANG 2
-//                .splineToLinearHeading(new Pose2d(42, -63, Math.toRadians(90)), Math.toRadians(100000000))
+//                .strafeTo(new Vector2d(42, -63)
 //                .waitSeconds(1)
 //                .strafeTo(new Vector2d(8, -33))
 //                .waitSeconds(1)
@@ -84,29 +84,69 @@ public class MeepMeepTesting {
 //
 //                .build());
 
-//BLUE SIDE 3 + 1
-//        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(12, 62, Math.toRadians(270)))
-//                // Specimen Hang
-//                .strafeTo(new Vector2d(10, 33))
-//                .waitSeconds(2)
+//BLUE SIDE Sample NEEDS WORK
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(12, 62, Math.toRadians(270)))
+                // Specimen Hang
+                .strafeTo(new Vector2d(10, 34.5))
+                .waitSeconds(2)
+
+                // Right Block Pickup AND Drop
+                .splineToLinearHeading(new Pose2d(10, 42, Math.toRadians(90)), Math.toRadians(360))
+                .splineToLinearHeading(new Pose2d(48, 40, Math.toRadians(90)), Math.toRadians(-70))
+                .waitSeconds(2)
+                .splineToLinearHeading(new Pose2d(53, 53, Math.toRadians(45)), Math.toRadians(90))
+                .waitSeconds(3.5)
+
+                // Middle Block Pickup AND Drop
+                .splineToLinearHeading(new Pose2d(58, 40, Math.toRadians(90)), Math.toRadians(90))
+                .waitSeconds(2)
+                .splineToLinearHeading(new Pose2d(53, 53, Math.toRadians(45)), Math.toRadians(90))
+                .waitSeconds(3.5)
+
+                // Left Block Pickup AND Drop
+                .splineToLinearHeading(new Pose2d(56, 25, Math.toRadians(180)), Math.toRadians(-90))
+                .waitSeconds(2)
+                .splineToLinearHeading(new Pose2d(53, 53, Math.toRadians(45)), Math.toRadians(90))
+
+                .build());
+
+
+        //BLUE SIDE Specimen
+//        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12, 61.5, Math.toRadians(270)))
+//                // Specimen Hang 1
+//                .strafeTo(new Vector2d(-10, 34.5))
+//                .waitSeconds(1)
+
+                // Block A (RIGHT) PUSH
+//                .splineToLinearHeading(new Pose2d(-26, 42, Math.toRadians(270)), Math.toRadians(180))
+//                .splineToLinearHeading(new Pose2d(-36, 20, Math.toRadians(270)), Math.toRadians(270))
+//                .splineToLinearHeading(new Pose2d(-38, 10, Math.toRadians(270)), Math.toRadians(180))
+//                .splineToLinearHeading(new Pose2d(-40, 48, Math.toRadians(270)), Math.toRadians(270))
 //
-//                // Right Block Pickup AND Drop
-//                .splineToLinearHeading(new Pose2d(10, 42, Math.toRadians(90)), Math.toRadians(180))
-//                .splineToLinearHeading(new Pose2d(48, 48, Math.toRadians(90)), Math.toRadians(70))
-//                .waitSeconds(2)
-//                .splineToLinearHeading(new Pose2d(56, 56, Math.toRadians(45)), Math.toRadians(90))
-//                .waitSeconds(3.5)
+////                Block B (MIDDLE) PUSH
+//                .splineToLinearHeading(new Pose2d(-48, 13, Math.toRadians(270)), Math.toRadians(180))
+//                .splineToLinearHeading(new Pose2d(-50, 45, Math.toRadians(270)), Math.toRadians(270))
 //
-//                // Middle Block Pickup AND Drop
-//                .splineToLinearHeading(new Pose2d(58, 48, Math.toRadians(90)), Math.toRadians(90))
-//                .waitSeconds(2)
-//                .splineToLinearHeading(new Pose2d(56, 56, Math.toRadians(45)), Math.toRadians(90))
-//                .waitSeconds(3.5)
+////                Block C (LEFT) PUSH
+//                .splineToLinearHeading(new Pose2d(-60, 10, Math.toRadians(270)), Math.toRadians(-1000000000))
+//                .strafeTo(new Vector2d(-60.5, 50))
 //
-//                // Left Block Pickup AND Drop
-//                .splineToLinearHeading(new Pose2d(56, 44, Math.toRadians(125)), Math.toRadians(90))
-//                .waitSeconds(2)
-//                .splineToLinearHeading(new Pose2d(56, 56, Math.toRadians(45)), Math.toRadians(90))
+////                 HANG 2
+//                .strafeTo(new Vector2d(-42, 60))
+//                .waitSeconds(1)
+//                .strafeTo(new Vector2d(-8, 34.5))
+//                .waitSeconds(1)
+//
+////                 HANG 3
+//                .strafeTo(new Vector2d(-42, 60))
+//                .waitSeconds(1)
+//                .strafeTo(new Vector2d(-5, 34.5))
+//                .waitSeconds(1)
+//
+////                 HANG 4
+//                .strafeTo(new Vector2d(-42, 60))
+//                .waitSeconds(1)
+//                .strafeTo(new Vector2d(-2, 34.5))
 //
 //                .build());
 

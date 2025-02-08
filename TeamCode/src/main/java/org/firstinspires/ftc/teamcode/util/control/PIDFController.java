@@ -24,11 +24,11 @@ public class PIDFController {
 
     private double targetPos;
 
-    enum FeedforwardType {
+    public enum FeedforwardType {
         NONE, ROTATIONAL, LINEAR
     }
 
-    private FeedforwardType feedforwardType;
+    private FeedforwardType activeFFType = FeedforwardType.NONE;
 
     private double length = 0;
 
@@ -42,7 +42,7 @@ public class PIDFController {
         this.kStatic = kStatic;
         this.kCos = kCos;
         this.kG = kG;
-        this.feedforwardType = feedforwardType;
+        activeFFType = feedforwardType;
         reset();
     }
 
@@ -129,7 +129,7 @@ public class PIDFController {
 
     private double calculateFeedForward(double referenceVelocity, double referenceAcceleration) {
         double ffReturn = (kV * referenceVelocity) + (kA * referenceAcceleration);
-        switch (feedforwardType) {
+        switch (activeFFType) {
             case ROTATIONAL:
                 return ffReturn + (Math.cos(Math.toRadians(targetPos)) * kCos * length);
             case LINEAR:
