@@ -17,11 +17,12 @@ public class Wrist extends Mechanism {
     ServoState FLX_UP = new ServoState(.48);
     ServoState FLX_SCORE_SPECIMEN = new ServoState(.73);
     ServoState FLX_SCORE = new ServoState(0.61);
+    ServoState FLEX_SCORE_NEW = new ServoState(.45);
     ServoState FLX_NEUTRAL = new ServoState(.74);
     ServoState FLX_DOWN = new ServoState(.97);
 
     ServoState ROT_LEFT = new ServoState(0.15);
-    ServoState ROT_CENTER = new ServoState(.5);
+    ServoState ROT_CENTER = new ServoState(.535);
     ServoState ROT_RIGHT = new ServoState(.85);
 
 
@@ -59,6 +60,10 @@ public class Wrist extends Mechanism {
 
     public void flexScoreSpecimen() {
         flexor.setActiveTargetState(FLX_SCORE_SPECIMEN);
+    }
+
+    public void flexScoreNew() {
+        flexor.setActiveTargetState(FLEX_SCORE_NEW);
     }
 
     public void toggleSpecimen() {

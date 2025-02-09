@@ -18,6 +18,7 @@ public class InputHandler {
     public boolean ROTATE_RIGHT = false;
     public boolean RESET_ROTATION = false;
     public boolean FLEX_DOWN = false;
+    public boolean FLEX_DOWN_PLUS = false;
     public boolean FLEX_NEUTRAL = false;
     public boolean TOGGLE_HAND_ARM = false;
     public double SLIDES_CONTROL = 0;
@@ -37,11 +38,12 @@ public class InputHandler {
         ROTATE_LEFT = aimpad2.getRightStickX() < -0.4;
         ROTATE_RIGHT = aimpad2.getRightStickX() > 0.4;
         RESET_ROTATION = aimpad2.isRightStickPressed();
-        FLEX_DOWN = aimpad2.isAPressed();
+        FLEX_DOWN = aimpad2.isAReleased();
+        FLEX_DOWN_PLUS = aimpad2.isAHeld();
         FLEX_NEUTRAL = aimpad2.isYPressed();
         TOGGLE_HAND_ARM = aimpad2.isRightTriggerPressed();
         SLIDES_CONTROL = -aimpad2.getLeftStickY();
-        MANUAL_OVERRIDE = aimpad.isDPadLeftHeld() && aimpad2.isDPadLeftHeld();
+        MANUAL_OVERRIDE = aimpad2.isDPadLeftHeld();
         BACK_TO_SEARCH = aimpad2.isBPressed();
     }
 }

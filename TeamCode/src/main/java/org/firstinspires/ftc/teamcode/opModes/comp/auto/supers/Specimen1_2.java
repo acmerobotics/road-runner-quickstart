@@ -21,8 +21,10 @@ public class Specimen1_2 extends LinearOpMode {
     public void runOpMode() {
         robot.init(hardwareMap);
         robot.scoringAssembly.multiAxisArm.hand.close();
+        robot.scoringAssembly.multiAxisArm.wrist.rotateCenter();
         while (!isStarted() && !isStopRequested()) {
             robot.scoringAssembly.multiAxisArm.hand.loop(new AIMPad(gamepad2));
+            robot.scoringAssembly.multiAxisArm.wrist.rotator.loop(new AIMPad(gamepad2));
         }
 
         Action preHang = robot.drivebase.drive.actionBuilder(robot.drivebase.drive.localizer.getPose())

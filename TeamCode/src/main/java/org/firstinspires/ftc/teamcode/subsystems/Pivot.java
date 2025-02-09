@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -35,8 +36,9 @@ public class Pivot extends Mechanism {
     }
 
     public enum PivotAngle {
-        START_MORE(STARTING_DEGREES - 360),
+        START_MORE(STARTING_DEGREES - 20),
         START(STARTING_DEGREES),
+        NEW_SCORE(89),
         SCORE(83),
         SPECIMEN_PICKUP(78),
         PICKUP(173);
@@ -163,6 +165,10 @@ public class Pivot extends Mechanism {
         if (activeTargetAngle != activePivotTarget.angle) {
             setTargetAngle(activePivotTarget.angle);
         }
+    }
+
+    public void setMode(DcMotor.RunMode mode) {
+        pivotMotor.setMode(mode);
     }
 
     // ===============================================================

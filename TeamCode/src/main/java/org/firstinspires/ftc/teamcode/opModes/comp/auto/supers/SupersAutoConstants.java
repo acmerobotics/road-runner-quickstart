@@ -12,7 +12,7 @@ public class SupersAutoConstants {
     public final double ROBOT_WIDTH = 18;
     public final double ROBOT_LENGTH = 16;
     public static final Pose2d STARTING_POSITION = new Pose2d(-12, 61.5, Math.toRadians(270));
-    public static final Pose2d PRELOAD_DROP = new Pose2d(-9, 32.75, Math.toRadians(270));
+    public static final Pose2d PRELOAD_DROP = new Pose2d(-8, 32.25, Math.toRadians(270));
     public static final Pose2d CLEARANCE = new Pose2d(-9, 33.5, Math.toRadians(270));
 
     //PUSH 1
@@ -37,14 +37,14 @@ public class SupersAutoConstants {
     //HANG 1
     public static final Pose2d HANG_ONE_A = new Pose2d(-39, 63.3, Math.toRadians(270));
     public static final double HANG_ONE_A_TANGENT = Math.toRadians(90);
-    public static final Pose2d HANG_ONE_B = new Pose2d(-5, 31.25, Math.toRadians(270));
+    public static final Pose2d HANG_ONE_B = new Pose2d(-5, 31, Math.toRadians(270));
     public static final double HANG_ONE_B_TANGENT = Math.toRadians(270);
 
     //HANG 2
     public static final Pose2d HANG_TWO_CLEARANCE = new Pose2d(-5, 33, Math.toRadians(270));
     public static final Pose2d HANG_TWO_A = new Pose2d(-41.5, 63.3, Math.toRadians(270));
     public static final double HANG_TWO_A_TANGENT = Math.toRadians(90);
-    public static final Pose2d HANG_TWO_B = new Pose2d(-2, 31.25, Math.toRadians(270));
+    public static final Pose2d HANG_TWO_B = new Pose2d(-2, 31, Math.toRadians(270));
     public static final double HANG_TWO_B_TANGENT = Math.toRadians(270);
 
     //HANG 3

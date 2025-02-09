@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -36,7 +37,7 @@ public class Robot_V2 extends Mechanism {
         SPECIMEN
     }
 
-    ScoringElement activeScoringElementType = ScoringElement.SAMPLE;
+    ScoringElement activeScoringElementType = ScoringElement.SPECIMEN;
 
     RobotState activeState = RobotState.RESETTING;
 
@@ -128,8 +129,12 @@ public class Robot_V2 extends Mechanism {
 
                 if (inputHandler.FLEX_DOWN) {
                     scoringAssembly.multiAxisArm.wrist.flexDown();
+                    scoringAssembly.multiAxisArm.elbow.middle();
                 } else if (inputHandler.FLEX_NEUTRAL) {
                     scoringAssembly.multiAxisArm.wrist.flexNeutral();
+                } else if (inputHandler.FLEX_DOWN_PLUS) {
+                    scoringAssembly.multiAxisArm.wrist.flexDown();
+                    scoringAssembly.multiAxisArm.elbow.pickupPlus();
                 }
 
                 if (inputHandler.ROTATE_RIGHT) {
@@ -216,6 +221,7 @@ public class Robot_V2 extends Mechanism {
 
                 if (inputHandler.RELEASE_ELEMENT) {
                     scoringAssembly.multiAxisArm.hand.open();
+                    scoringAssembly.multiAxisArm.wrist.flexNeutral();
                 }
                 break;
         }
@@ -243,5 +249,12 @@ public class Robot_V2 extends Mechanism {
 
     private void totalFix() {
         scoringAssembly.totalFix();
+        if (inputHandler.ADVANCE_AUTOMATION) {
+            scoringAssembly.slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            scoringAssembly.pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            scoringAssembly.slides.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            scoringAssembly.pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            activeState = RobotState.RESETTING;
+        }
     }
 }

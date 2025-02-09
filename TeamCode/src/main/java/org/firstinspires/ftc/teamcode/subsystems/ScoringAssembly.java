@@ -71,8 +71,8 @@ public class ScoringAssembly extends Mechanism {
     }
 
     public void setScoringResetClamped() {
-        multiAxisArm.upClosed();
-        pivot.setPivotPosition(Pivot.PivotAngle.SCORE);
+        multiAxisArm.scoreNew();
+        pivot.setPivotPosition(Pivot.PivotAngle.NEW_SCORE);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
 

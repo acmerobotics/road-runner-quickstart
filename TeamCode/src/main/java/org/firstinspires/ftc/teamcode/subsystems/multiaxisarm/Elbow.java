@@ -16,15 +16,16 @@ public class Elbow extends Mechanism {
 
     ServoState DOWN = new ServoState(.92);
     ServoState HANG = new ServoState(.7);
-    ServoState IN_LINE = new ServoState(.40);
+    ServoState IN_LINE = new ServoState(.395);
+    ServoState PICKUP_PLUS = new ServoState(.45);
     ServoState SCORE = new ServoState(.32);
-    ServoState SCORE_SPECIMEN = new ServoState(.485);
+    ServoState SCORE_SPECIMEN = new ServoState(.495);
     ServoState UP = new ServoState(0);
 
     @Override
     public void init(HardwareMap hwMap) {
-        leftElbow = new StateDrivenServo(new ServoState[]{DOWN, HANG, UP, SCORE, SCORE_SPECIMEN, IN_LINE}, UP, ConfigurationInfo.leftElbow.getDeviceName());
-        rightElbow = new StateDrivenServo(new ServoState[]{DOWN, HANG, UP, SCORE, SCORE_SPECIMEN, IN_LINE}, UP, ConfigurationInfo.rightElbow.getDeviceName(), Servo.Direction.REVERSE);
+        leftElbow = new StateDrivenServo(new ServoState[]{DOWN, HANG, UP, SCORE, PICKUP_PLUS, SCORE_SPECIMEN, IN_LINE}, UP, ConfigurationInfo.leftElbow.getDeviceName());
+        rightElbow = new StateDrivenServo(new ServoState[]{DOWN, HANG, UP, SCORE, PICKUP_PLUS, SCORE_SPECIMEN, IN_LINE}, UP, ConfigurationInfo.rightElbow.getDeviceName(), Servo.Direction.REVERSE);
 
         leftElbow.init(hwMap);
         rightElbow.init(hwMap);
@@ -70,6 +71,11 @@ public class Elbow extends Mechanism {
     public void hang() {
         leftElbow.setActiveTargetState(HANG);
         rightElbow.setActiveTargetState(HANG);
+    }
+
+    public void pickupPlus() {
+        leftElbow.setActiveTargetState(PICKUP_PLUS);
+        rightElbow.setActiveTargetState(PICKUP_PLUS);
     }
 
     public void toggleSpecimen() {

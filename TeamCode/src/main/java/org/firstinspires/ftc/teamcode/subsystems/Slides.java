@@ -28,10 +28,10 @@ public class Slides extends Mechanism {
     public enum SlidesExtension {
         RESET_MORE(-50),
         RESET(0),
-        HIGH_SPECIMEN(5),
+        HIGH_SPECIMEN(5.75),
         HIGH_SPECIMEN_AUTO(7),
         LOW_BUCKET(14),
-        LOW_HANG(13),
+        LOW_HANG(14),
         HIGH_BUCKET(28);
 
         public final double extension;
@@ -64,7 +64,7 @@ public class Slides extends Mechanism {
     private PIDFController controller;
 
     // PID and feedforward constants (set to your desired values)
-    private static final double kP = 0.16;
+    private static final double kP = 0.2;
     private static final double kI = 0.03;
     private static final double kD = 0;
     private static final double INTEGRAL_SUM_MAX = 10;
