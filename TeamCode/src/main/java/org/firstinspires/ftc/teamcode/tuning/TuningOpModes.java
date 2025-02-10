@@ -12,7 +12,6 @@ import com.acmerobotics.roadrunner.ftc.DriveType;
 import com.acmerobotics.roadrunner.ftc.DriveView;
 import com.acmerobotics.roadrunner.ftc.DriveViewFactory;
 import com.acmerobotics.roadrunner.ftc.Encoder;
-import com.acmerobotics.roadrunner.ftc.EncoderDirection;
 import com.acmerobotics.roadrunner.ftc.EncoderGroup;
 import com.acmerobotics.roadrunner.ftc.EncoderRef;
 import com.acmerobotics.roadrunner.ftc.ForwardPushTest;
@@ -24,15 +23,16 @@ import com.acmerobotics.roadrunner.ftc.LynxQuadratureEncoderGroup;
 import com.acmerobotics.roadrunner.ftc.ManualFeedforwardTuner;
 import com.acmerobotics.roadrunner.ftc.MecanumMotorDirectionDebugger;
 import com.acmerobotics.roadrunner.ftc.OTOSAngularScalarTuner;
-import com.acmerobotics.roadrunner.ftc.OTOSEncoder;
+import com.acmerobotics.roadrunner.ftc.OTOSEncoderGroup;
 import com.acmerobotics.roadrunner.ftc.OTOSHeadingOffsetTuner;
+import com.acmerobotics.roadrunner.ftc.OTOSIMU;
 import com.acmerobotics.roadrunner.ftc.OTOSLinearScalarTuner;
 import com.acmerobotics.roadrunner.ftc.OTOSPositionOffsetTuner;
+import com.acmerobotics.roadrunner.ftc.OTOSView;
 import com.acmerobotics.roadrunner.ftc.PinpointEncoderGroup;
 import com.acmerobotics.roadrunner.ftc.PinpointIMU;
 import com.acmerobotics.roadrunner.ftc.PinpointView;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
@@ -145,18 +145,24 @@ public final class TuningOpModes {
                     perpEncs.add(new EncoderRef(0, 2));
                 } else if (md.localizer instanceof TwoDeadWheelLocalizer) {
                     TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) md.localizer;
-                    parEncs.add(dl.par);
-                    perpEncs.add(dl.perp);
-                } else if (md.localizer instanceof OTOSLocalizer) {
-                    OTOSLocalizer ol = (OTOSLocalizer) md.localizer;
-                    parEncs.add(new OTOSEncoder(ol.getOTOS(), EncoderDirection.PARALLEL));
-                    perpEncs.add(new OTOSEncoder(ol.getOTOS(), EncoderDirection.PERPENDICULAR));
                     encoderGroups.add(new LynxQuadratureEncoderGroup(
                             hardwareMap.getAll(LynxModule.class),
                             Arrays.asList(dl.par, dl.perp)
                     ));
                     parEncs.add(new EncoderRef(0, 0));
                     perpEncs.add(new EncoderRef(0, 1));
+                } else if (md.localizer instanceof OTOSLocalizer) {
+                    OTOSLocalizer ol = (OTOSLocalizer) md.localizer;
+                    OTOSView ov = new OTOSView(ol.getOTOS());
+                    encoderGroups.add(new OTOSEncoderGroup(ov));
+                    parEncs.add(new EncoderRef(0, 0));
+                    perpEncs.add(new EncoderRef(0, 1));
+                    lazyImu = new OTOSIMU(ov);
+
+                    manager.register(metaForClass(OTOSAngularScalarTuner.class), new OTOSAngularScalarTuner(ol.getOTOS()));
+                    manager.register(metaForClass(OTOSLinearScalarTuner.class), new OTOSLinearScalarTuner(ol.getOTOS()));
+                    manager.register(metaForClass(OTOSHeadingOffsetTuner.class), new OTOSHeadingOffsetTuner(ol.getOTOS()));
+                    manager.register(metaForClass(OTOSPositionOffsetTuner.class), new OTOSPositionOffsetTuner(ol.getOTOS()));
                 }  else if (md.localizer instanceof PinpointLocalizer) {
                     PinpointView pv = makePinpointView((PinpointLocalizer) md.localizer);
                     encoderGroups.add(new PinpointEncoderGroup(pv));
@@ -240,14 +246,19 @@ public final class TuningOpModes {
                     parEncs.add(new EncoderRef(0, 0));
                     perpEncs.add(new EncoderRef(0, 1));
                     lazyImu = new PinpointIMU(pv);
-                } else {
-                    parEncs.add(dl.par);
-                    perpEncs.add(dl.perp);
                 } else if (td.localizer instanceof OTOSLocalizer) {
                     OTOSLocalizer ol = (OTOSLocalizer) td.localizer;
-                    parEncs.add(new OTOSEncoder(ol.getOTOS(), EncoderDirection.PARALLEL));
-                    perpEncs.add(new OTOSEncoder(ol.getOTOS(), EncoderDirection.PERPENDICULAR));
-                }else {
+                    OTOSView ov = new OTOSView(ol.getOTOS());
+                    encoderGroups.add(new OTOSEncoderGroup(ov));
+                    parEncs.add(new EncoderRef(0, 0));
+                    perpEncs.add(new EncoderRef(0, 1));
+                    lazyImu = new OTOSIMU(ov);
+
+                    manager.register(metaForClass(OTOSAngularScalarTuner.class), new OTOSAngularScalarTuner(ol.getOTOS()));
+                    manager.register(metaForClass(OTOSLinearScalarTuner.class), new OTOSLinearScalarTuner(ol.getOTOS()));
+                    manager.register(metaForClass(OTOSHeadingOffsetTuner.class), new OTOSHeadingOffsetTuner(ol.getOTOS()));
+                    manager.register(metaForClass(OTOSPositionOffsetTuner.class), new OTOSPositionOffsetTuner(ol.getOTOS()));
+                } else {
                     throw new RuntimeException("unknown localizer: " + td.localizer.getClass().getName());
                 }
 
@@ -274,26 +285,6 @@ public final class TuningOpModes {
             };
         } else {
             throw new RuntimeException();
-        }
-
-        if (DRIVE_CLASS.equals(MecanumDrive.class)) {
-            MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-            if (drive.localizer instanceof OTOSLocalizer) {
-                SparkFunOTOS otos = ((OTOSLocalizer) drive.localizer).getOTOS();
-                manager.register(metaForClass(OTOSAngularScalarTuner.class), new OTOSAngularScalarTuner(otos));
-                manager.register(metaForClass(OTOSLinearScalarTuner.class), new OTOSLinearScalarTuner(otos));
-                manager.register(metaForClass(OTOSHeadingOffsetTuner.class), new OTOSHeadingOffsetTuner(otos));
-                manager.register(metaForClass(OTOSPositionOffsetTuner.class), new OTOSPositionOffsetTuner(otos));
-            }
-        } else { //by this point in the program we know it has to be a tank drive if it is not a mecanum drive
-            TankDrive drive = new TankDrive(hardwareMap, new Pose2d(0, 0, 0));
-            if (drive.localizer instanceof OTOSLocalizer) {
-                SparkFunOTOS otos = ((OTOSLocalizer) drive.localizer).getOTOS();
-                manager.register(metaForClass(OTOSAngularScalarTuner.class), new OTOSAngularScalarTuner(otos));
-                manager.register(metaForClass(OTOSLinearScalarTuner.class), new OTOSLinearScalarTuner(otos));
-                manager.register(metaForClass(OTOSHeadingOffsetTuner.class), new OTOSHeadingOffsetTuner(otos));
-                manager.register(metaForClass(OTOSPositionOffsetTuner.class), new OTOSPositionOffsetTuner(otos));
-            }
         }
 
         manager.register(metaForClass(AngularRampLogger.class), new AngularRampLogger(dvf));
