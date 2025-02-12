@@ -29,11 +29,11 @@ public class Limelight {
         }
     }
 
-    public double metersToInches(double meters){
+    public static double metersToInches(double meters){
         return meters * 39.3701;
     }
 
-    public double inchesToMeters(double inches){
+    public static double inchesToMeters(double inches){
         return inches / 39.3701;
     }
 }

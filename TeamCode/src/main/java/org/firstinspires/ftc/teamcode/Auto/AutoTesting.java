@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -18,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Common.Claw;
 import org.firstinspires.ftc.teamcode.Common.Extension;
 import org.firstinspires.ftc.teamcode.Common.Fourbar;
 import org.firstinspires.ftc.teamcode.Common.Lift;
-import org.firstinspires.ftc.teamcode.Common.Rotation;
+import org.firstinspires.ftc.teamcode.Common.Limelight;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
@@ -35,7 +36,7 @@ public class AutoTesting extends LinearOpMode {
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .lineToY(-60)
-                .splineToLinearHeading(new Pose2d(5, -50, Math.toRadians(70)), Math.toRadians(0));
+                .splineToLinearHeading(new Pose2d(0, -35, Math.toRadians(90)), Math.toRadians(0));
 
         limelight.start();
 
@@ -51,16 +52,32 @@ public class AutoTesting extends LinearOpMode {
                 )
         );
 
+        telemetry.addData("Result is: ", limelight.getLatestResult().isValid());
+        telemetry.update();
         if (limelight.getLatestResult().isValid()) {
+            telemetry.addData("Bot Pose in Pose3d is: ", limelight.getLatestResult().getBotpose().toString());
+
             Pose3D result = limelight.getLatestResult().getBotpose();
-            Pose2d endPose = new Pose2d(result.getPosition().x, result.getPosition().y, Math.toRadians(result.getOrientation().getYaw()));
+
+            Pose2d endPose = new Pose2d(Limelight.metersToInches(result.getPosition().x), Limelight.metersToInches(result.getPosition().y), Math.toRadians(result.getOrientation().getYaw()));
+            telemetry.addData("Bot Pose in Pose2d is: ", endPose.toString());
+            telemetry.update();
+
             TrajectoryActionBuilder correction = drive.actionBuilder(endPose)
-                    .splineToLinearHeading(new Pose2d(5, -40, Math.toRadians(70)), Math.toRadians(70));
+                    .lineToY(-35)
+                    .turnTo(Math.toRadians(90));
+
+            TrajectoryActionBuilder toObs = correction.endTrajectory().fresh()
+                    .setTangent(270)
+                    .splineToLinearHeading(new Pose2d(39, -60, Math.toRadians(90)), Math.toRadians(315));
+
             Action correctionA = correction.build();
+            Action toObsA = toObs.build();
 
             Actions.runBlocking(
                     new SequentialAction(
-                            correctionA
+                            correctionA,
+                            toObsA
                     )
             );
         }
