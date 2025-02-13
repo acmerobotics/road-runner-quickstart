@@ -12,42 +12,51 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Wristv2 {
     public Servo wrist = null; //the wrist servo
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    public static double WRIST_UP = 1;
-    public static double WRIST_DOWN = 0;
+    public static double WRIST_FOLD_OUT = 0.6;
+    public static double WRIST_FOLD_IN = 0.36;
 
-    public static double WRIST_VERTICAL = 0.71;
+    public static double WRIST_VERTICAL = 0.5;
 
-    public static double WRIST_PICKUP_GROUND_SAMPLE = 0.0;
+    public static double WRIST_SAMPLE_3 = 0.4;
+
+    public static double WRIST_PICKUP_GROUND_SAMPLE = WRIST_FOLD_IN;
     public static double WRIST_SCALE_MIN = 0.0;
 
-    public static double WRIST_SCALE_MAX = 0.9;
+    public static double WRIST_SCALE_MAX = 1.0;
 
     public Wristv2(HardwareMap hardwareMap) {
         wrist = hardwareMap.get(Servo.class, "wrist");
         wrist.scaleRange(WRIST_SCALE_MIN, WRIST_SCALE_MAX);
-        wrist.setPosition(WRIST_DOWN);
+        wrist.setPosition(WRIST_FOLD_IN);
     }
 
-    public void WristUp() {
-        wrist.setPosition(WRIST_UP);
+    public void WristFoldOut() {
+        wrist.setPosition(WRIST_FOLD_OUT);
     }
 
-    public void WristDown() {
-        wrist.setPosition(WRIST_DOWN);
+    public void WristFoldIn() {
+        wrist.setPosition(WRIST_FOLD_IN);
     }
     public void WristVertical() {
         wrist.setPosition(WRIST_VERTICAL);
     }
 
     public Action wristFoldInAction() {
-        return new InstantAction(() -> wrist.setPosition(WRIST_UP));
+        return new InstantAction(() -> wrist.setPosition(WRIST_FOLD_IN));
     }
 
     public Action wristFoldOutAction() {
-        return new InstantAction(() -> wrist.setPosition(WRIST_DOWN));
+        return new InstantAction(() -> wrist.setPosition(WRIST_FOLD_OUT));
+    }
+    public Action wristVerticalAction() {
+        return new InstantAction(() -> wrist.setPosition(WRIST_VERTICAL));
     }
     public Action wristPickUpGroundSampleAction() {
         return new InstantAction(() -> wrist.setPosition(WRIST_PICKUP_GROUND_SAMPLE));
+    }
+
+    public Action wristPickUpSample3Action(){
+        return new InstantAction(() -> wrist.setPosition(WRIST_SAMPLE_3));
     }
 
 }

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto.test.v2;
 
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -9,16 +8,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Claw;
-import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.ClawRotator;
 
 
-@Autonomous(name = "ClawTest", group = "Test")
-public class ClawTest extends LinearOpMode {
+@Autonomous(name = "ClawRotatorTest", group = "Test")
+public class ClawRotatorTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
-        Claw claw = new Claw(hardwareMap);
+        ClawRotator clawRotator = new ClawRotator(hardwareMap);
 
         while(!isStopRequested() && !opModeIsActive()) {
 
@@ -30,10 +29,14 @@ public class ClawTest extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        claw.clawOpenAction(),
-                        new SleepAction(4), // sleep for 1 sec
-                        claw.clawCloseAction(),
-                        new SleepAction(4) // sleep for 1 sec
+                        clawRotator.clawRotate45LeftAction(),
+                        new SleepAction(2),
+                        clawRotator.clawRotateResetAction(),
+                        new SleepAction(2),
+                        clawRotator.clawRotate45RightAction(),
+                        new SleepAction(2),
+                        clawRotator.clawRotateResetAction(),
+                        new SleepAction(2) 
                 ));
 
     } // runOpMode

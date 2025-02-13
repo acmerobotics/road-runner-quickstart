@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
 
 
-@Config
 @Autonomous(name = "ArmAndLiftTest", group = "Test")
 @Disabled
 public class ArmAndLiftTest extends LinearOpMode {

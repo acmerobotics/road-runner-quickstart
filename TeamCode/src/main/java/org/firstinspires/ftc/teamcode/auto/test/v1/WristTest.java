@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
 
 
-@Config
 @Autonomous(name = "WristTest", group = "Test")
 @Disabled
 public class WristTest extends LinearOpMode {

@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Intake;
 
 
-@Config
+
 @Autonomous(name = "IntakeTest", group = "Test")
 @Disabled
 public class IntakeTest extends LinearOpMode {

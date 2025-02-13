@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 
 
-@Config
 @Autonomous(name = "WristV2 Test", group = "Test")
 public class WristV2Test extends LinearOpMode {
 
@@ -32,10 +31,10 @@ public class WristV2Test extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        wrist.wristPickUpGroundSampleAction(),
-                        new SleepAction(4), // sleep for 1 sec
                         wrist.wristFoldOutAction(),
-                        new SleepAction(4) // sleep for 1 sec
+                        new SleepAction(1), // sleep
+                        wrist.wristFoldInAction(),
+                        new SleepAction(1) // sleep
                 ));
 
     } // runOpMode

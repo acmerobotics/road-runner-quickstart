@@ -6,7 +6,6 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Config
 public class Wrist {
     public Servo wrist = null; //the wrist servo
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */

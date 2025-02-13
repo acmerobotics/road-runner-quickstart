@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.v1.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
 
-@Config
 @Autonomous(name = "ScoreTest", group = "Test")
 @Disabled
 public class ScoreTest extends LinearOpMode {

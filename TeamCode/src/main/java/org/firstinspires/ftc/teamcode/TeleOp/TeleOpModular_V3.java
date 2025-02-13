@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -18,8 +19,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 
 
 @TeleOp(name="Teleop Modular V3", group="Robot")
-//@Disabled
-@Config
+@Disabled
 public class TeleOpModular_V3 extends LinearOpMode {
 
     /* Variables that are used to set the arm to a specific position */
@@ -67,7 +67,7 @@ public class TeleOpModular_V3 extends LinearOpMode {
         RightActuator rightActuator = new RightActuator(hardwareMap);
 
         claw.clawClose();
-        wrist.WristVertical();
+        wrist.WristFoldIn();
         // temporary reset to run teleop only.
         arm.reset();
         armPosition = ARM_SPECIMEN_SCORE_POSITION;
@@ -97,44 +97,42 @@ public class TeleOpModular_V3 extends LinearOpMode {
                 drive.resetYaw();
             }
 
-            if(gamepad1.dpad_left){
-                //leftActuator.motor.setTargetPosition(LeftActuator.ACTUATOR_UP);
-                telemetry.addData("button pressed", "yes");
+//            if(gamepad1.dpad_left){
+//                //leftActuator.motor.setTargetPosition(LeftActuator.ACTUATOR_UP);
+//                telemetry.addData("button pressed", "yes");
+//
+//                //leftActuator.motor.setTargetPosition(0);
+//                //leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                //leftActuator.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//                leftActuator.motor.setTargetPosition(LIFT_HANG_POSITION);
+//                leftActuator.motor.setVelocity(2000);
+//                leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//                rightActuator.motor.setTargetPosition(LIFT_HANG_POSITION);
+//                rightActuator.motor.setVelocity(2000);
+//                rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                //liftPosition = 1000;
+//
+//                liftparantap.motor.setTargetPosition(LIFT_HANG_SLIDES_POSITION);
+//                liftparantap.motor.setVelocity(2000);
+//                liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//
+//            } else if (gamepad1.dpad_right){
+//                leftActuator.motor.setTargetPosition(RETURN_ACTUATOR_POSTION);
+//                leftActuator.motor.setVelocity(2000);
+//                leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//                rightActuator.motor.setTargetPosition(RETURN_ACTUATOR_POSTION);
+//                rightActuator.motor.setVelocity(2000);
+//                rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//                liftparantap.motor.setTargetPosition(RETURN_SLIDES_POSTION);
+//                liftparantap.motor.setVelocity(2000);
+//                liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            }
 
-                //leftActuator.motor.setTargetPosition(0);
-                //leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //leftActuator.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                leftActuator.motor.setTargetPosition(LIFT_HANG_POSITION);
-                leftActuator.motor.setVelocity(2000);
-                leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                rightActuator.motor.setTargetPosition(LIFT_HANG_POSITION);
-                rightActuator.motor.setVelocity(2000);
-                rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //liftPosition = 1000;
-
-                liftparantap.motor.setTargetPosition(LIFT_HANG_SLIDES_POSITION);
-                liftparantap.motor.setVelocity(2000);
-                liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-            } else if (gamepad1.dpad_right){
-                leftActuator.motor.setTargetPosition(RETURN_ACTUATOR_POSTION);
-                leftActuator.motor.setVelocity(2000);
-                leftActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                rightActuator.motor.setTargetPosition(RETURN_ACTUATOR_POSTION);
-                rightActuator.motor.setVelocity(2000);
-                rightActuator.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                liftparantap.motor.setTargetPosition(RETURN_SLIDES_POSTION);
-                liftparantap.motor.setVelocity(2000);
-                liftparantap.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            if (gamepad1.y) {
-
-            }
 //            if (gamepad1.dpad_up){
 //                claw.clawClose();
 //                wrist.WristVertical();
@@ -147,20 +145,24 @@ public class TeleOpModular_V3 extends LinearOpMode {
 //                wrist.WristDown();
 //            }
 //
-//            if (gamepad1.a) {
-//                claw.clawClose();
-//            }
-//
-//            else if (gamepad1.b) {
-//                claw.clawOpen();
-//            }
-//
-//            if(gamepad1.x){
-//                wrist.WristUp();
-//
-//            } else if (gamepad1.y) {
-//                wrist.WristDown();
-//            }
+            if (gamepad1.a) {
+                claw.clawClose();
+            }
+
+            else if (gamepad1.b) {
+                claw.clawOpen();
+            }
+
+            if(gamepad1.x){
+                wrist.WristFoldOut();
+
+            } else if (gamepad1.y) {
+                wrist.WristFoldIn();
+            }
+
+            if (gamepad1.dpad_down){
+                armPosition = Armv2.ARM_PICKUP_GROUND_SAMPLE;
+            }
 
 
             /* Here we implement a set of if else statements to set our arm to different scoring positions.

@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Arm;
 
 
-@Config
+
 @Autonomous(name = "ArmTest", group = "Test")
 @Disabled
 public class ArmTest extends LinearOpMode {

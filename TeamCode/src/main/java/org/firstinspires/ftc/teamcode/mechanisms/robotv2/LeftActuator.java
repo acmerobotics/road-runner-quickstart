@@ -19,10 +19,10 @@ public class LeftActuator {
     public DcMotorEx motor;
 
     public static int ACTUATOR_COLLAPSED = 0;
-    public static int ACTUATOR_UP = 100;
+    public static int ACTUATOR_UP = 6800;
+
     public LeftActuator(HardwareMap hardwareMap) {
         motor = hardwareMap.get(DcMotorEx.class, "leftactuator");
-        motor.setDirection(DcMotorSimple.Direction.REVERSE);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         /* Before starting the armMotor. We'll make sure the TargetPosition is set to 0.
         Then we'll set the RunMode to RUN_TO_POSITION. And we'll ask it to stop and reset encoder.
@@ -30,7 +30,6 @@ public class LeftActuator {
         motor.setTargetPosition(0);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setTargetPosition(500);
     }
 
     // call reset() only from autonomous code and not from the teleop.
@@ -40,5 +39,11 @@ public class LeftActuator {
         motor.setTargetPosition(0);
     }
 
+    public void up() {
+        motor.setTargetPosition(ACTUATOR_UP);
+    }
+    public void down() {
+        motor.setTargetPosition(ACTUATOR_COLLAPSED);
+    }
 }
 

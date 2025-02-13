@@ -8,19 +8,17 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
 
-
-@Autonomous(name = "ArmV2 Test", group = "Test")
-public class ArmV2Test extends LinearOpMode {
+@Autonomous(name = "LiftV2 Test", group = "Test")
+public class  LiftV2Test extends LinearOpMode {
 
 
 
     @Override
     public void runOpMode() {
 
-        Armv2 arm = new Armv2(hardwareMap);
-        arm.reset();
+        Liftv2 lift = new Liftv2(hardwareMap);
 
         while(!isStopRequested() && !opModeIsActive()) {
 
@@ -32,16 +30,11 @@ public class ArmV2Test extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.armPickupGroundSampleAction(),
-                        new SleepAction(4), // sleep
-                        arm.armVerticalAction(),
-                        new SleepAction(4),
-                        arm.armResetAction()
-                        ));
-
-    } // runOpMode
+                        lift.liftUpAction(),
+                        new SleepAction(1),
+                        lift.liftDownAction()));
+    }
 
 
 
 }
-

@@ -3,19 +3,21 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 //import com.google.ar.core.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Arm;
-//import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
+import org.firstinspires.ftc.teamcode.mechanisms.v1.Intake;
+//import org.firstinspires.ftc.teamcode.mechanisms.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Wrist;
-import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuatorServo;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.RightActuator;
 
 
 @TeleOp(name="Teledrive V2", group="demo")
-@Config
+@Disabled
 public class Teledrive_V2 extends LinearOpMode {
 
     /* Variables that are used to set the arm to a specific position */
@@ -52,7 +54,7 @@ public class Teledrive_V2 extends LinearOpMode {
         //Intake intake = new Intake(hardwareMap);
         Wrist wrist = new Wrist(hardwareMap);
         //Lift lift = new Lift(hardwareMap);
-        RightActuatorServo rightActuator = new RightActuatorServo(hardwareMap);
+        RightActuator rightActuator = new RightActuator(hardwareMap);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -96,11 +98,11 @@ public class Teledrive_V2 extends LinearOpMode {
             }
 
             if (gamepad1.x){
-                rightActuator.rightactuatorhorizontal();
+                rightActuator.down();
             }
 
             else if (gamepad1.y){
-                rightActuator.rightactuatorvertical();
+                rightActuator.up();
             }
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,

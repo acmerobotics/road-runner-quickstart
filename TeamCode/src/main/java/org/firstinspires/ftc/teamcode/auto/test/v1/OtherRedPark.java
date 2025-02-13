@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.v1.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.v1.Lift;
 
 
-@Config
+
 @Autonomous(name = "\uD83D\uDD34 - OtherRedPark", group = "RoadRunner 1.0")
 @Disabled
 public class OtherRedPark extends LinearOpMode {

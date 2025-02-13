@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@Config
 @Autonomous(name = "\uD83D\uDD34 - Red V1", group = "RoadRunner 1.0")
 @Disabled
 public class RedV1 extends LinearOpMode {
