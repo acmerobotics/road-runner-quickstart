@@ -16,32 +16,28 @@ public class OTOSLocalizer implements Localizer {
         public SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 0);
     }
 
-    public static Pose2d convertPose(SparkFunOTOS.Pose2D pose) {
+    public static Pose2d fromOTOSPose(SparkFunOTOS.Pose2D pose) {
         return new Pose2d(pose.x, pose.y, pose.h);
     }
 
-    public static SparkFunOTOS.Pose2D convertPose(Pose2d pose) {
+    public static SparkFunOTOS.Pose2D toOTOSPose(Pose2d pose) {
         return new SparkFunOTOS.Pose2D(pose.position.x, pose.position.y, pose.heading.toDouble());
     }
 
     public static Params PARAMS = new Params();
 
-    private final SparkFunOTOS otos;
+    public final SparkFunOTOS otos;
     private Pose2d currentPose;
 
     public OTOSLocalizer(HardwareMap hardwareMap, Pose2d initialPose) {
         otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         currentPose = initialPose;
-        otos.setPosition(convertPose(currentPose));
+        otos.setPosition(toOTOSPose(currentPose));
 
         otos.calibrateImu();
         otos.setLinearScalar(PARAMS.linearScalar);
         otos.setAngularScalar(PARAMS.angularScalar);
         otos.setOffset(PARAMS.offset);
-    }
-
-    public SparkFunOTOS getOTOS() {
-        return otos;
     }
 
     @Override
@@ -52,7 +48,7 @@ public class OTOSLocalizer implements Localizer {
     @Override
     public void setPose(Pose2d pose) {
         currentPose = pose;
-        otos.setPosition(convertPose(currentPose));
+        otos.setPosition(toOTOSPose(currentPose));
     }
 
     @Override
@@ -62,7 +58,9 @@ public class OTOSLocalizer implements Localizer {
         SparkFunOTOS.Pose2D otosAcc = new SparkFunOTOS.Pose2D();
         otos.getPosVelAcc(otosPose, otosVel, otosAcc);
 
-        currentPose = convertPose(otosPose);
-        return new PoseVelocity2d(new Vector2d(otosVel.x, otosVel.y), otosVel.h);
+        currentPose = fromOTOSPose(otosPose);
+        Vector2d fieldVel = new Vector2d(otosVel.x, otosVel.y);
+        Vector2d robotVel = fieldVel.times(otosVel.h);
+        return new PoseVelocity2d(robotVel, otosVel.h);
     }
 }
