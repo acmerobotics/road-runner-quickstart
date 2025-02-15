@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -34,9 +35,43 @@ public class AutoTesting extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
+        Pose2d toBasket_lastPose = new Pose2d(0, -35, Math.toRadians(90));
+        Pose2d pushSample1_lastPose = new Pose2d(45, -40, Math.toRadians(180));
+        Pose2d pushSample2_lastPose = new Pose2d(54, -40, Math.toRadians(180));
+        Pose2d pushSample3_lastPose = new Pose2d(64, -40, Math.toRadians(180));
+
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .lineToY(-60)
-                .splineToLinearHeading(new Pose2d(0, -35, Math.toRadians(90)), Math.toRadians(0));
+                .splineToLinearHeading(toBasket_lastPose, Math.toRadians(0));
+
+        TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(36, -36, Math.toRadians(180)), Math.toRadians(0))
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(36, -4, Math.toRadians(180)), Math.toRadians(90))
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(45,  -4, Math.toRadians(180)), Math.toRadians(0))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(45, -44, Math.toRadians(180)), Math.toRadians(270))
+                .splineToLinearHeading(pushSample1_lastPose, Math.toRadians(270));
+
+        TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(43, -4, Math.toRadians(180)), Math.toRadians(90))
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(54,  -4, Math.toRadians(180)), Math.toRadians(0))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(54, -44, Math.toRadians(180)), Math.toRadians(270))
+                .splineToLinearHeading(pushSample2_lastPose, Math.toRadians(270));
+
+        TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(52, -4, Math.toRadians(180)), Math.toRadians(90))
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(64,  -4, Math.toRadians(180)), Math.toRadians(0))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(64, -44, Math.toRadians(180)), Math.toRadians(270))
+                .splineToLinearHeading(pushSample3_lastPose, Math.toRadians(270));
 
         limelight.start();
 
@@ -45,6 +80,9 @@ public class AutoTesting extends LinearOpMode {
         if (isStopRequested()) return;
 
         Action toBasket = tab1.build();
+        Action pushSample1 = tab2.build();
+        Action pushSample2 = tab3.build();
+        Action pushSample3 = tab4.build();
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -52,9 +90,36 @@ public class AutoTesting extends LinearOpMode {
                 )
         );
 
-        telemetry.addData("Result is: ", limelight.getLatestResult().isValid());
-        telemetry.update();
-        if (limelight.getLatestResult().isValid()) {
+        aptilTagCorrection(toBasket_lastPose, drive, limelight);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        pushSample1
+                )
+        );
+
+        aptilTagCorrection(pushSample1_lastPose, drive, limelight);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        pushSample2
+                )
+        );
+
+        aptilTagCorrection(pushSample2_lastPose, drive, limelight);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        pushSample3
+                )
+        );
+
+        aptilTagCorrection(pushSample3_lastPose, drive, limelight);
+    }
+
+    public void aptilTagCorrection(Pose2d correctionPose, MecanumDrive MDrive, Limelight3A limelight) {
+        if (limelight.getLatestResult() != null && limelight.getLatestResult().isValid()) {
+            telemetry.addData("Result is: ", limelight.getLatestResult().isValid());
             telemetry.addData("Bot Pose in Pose3d is: ", limelight.getLatestResult().getBotpose().toString());
 
             Pose3D result = limelight.getLatestResult().getBotpose();
@@ -63,21 +128,13 @@ public class AutoTesting extends LinearOpMode {
             telemetry.addData("Bot Pose in Pose2d is: ", endPose.toString());
             telemetry.update();
 
-            TrajectoryActionBuilder correction = drive.actionBuilder(endPose)
-                    .lineToY(-35)
-                    .turnTo(Math.toRadians(90));
-
-            TrajectoryActionBuilder toObs = correction.endTrajectory().fresh()
-                    .setTangent(270)
-                    .splineToLinearHeading(new Pose2d(39, -60, Math.toRadians(90)), Math.toRadians(315));
-
-            Action correctionA = correction.build();
-            Action toObsA = toObs.build();
+            Action correctionA = MDrive.actionBuilder(endPose)
+                    .splineToLinearHeading(correctionPose, Math.toRadians(270))
+                    .build();
 
             Actions.runBlocking(
                     new SequentialAction(
-                            correctionA,
-                            toObsA
+                            correctionA
                     )
             );
         }
