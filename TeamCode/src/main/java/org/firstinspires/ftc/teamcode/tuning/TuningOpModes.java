@@ -28,7 +28,6 @@ import com.acmerobotics.roadrunner.ftc.OTOSHeadingOffsetTuner;
 import com.acmerobotics.roadrunner.ftc.OTOSIMU;
 import com.acmerobotics.roadrunner.ftc.OTOSLinearScalarTuner;
 import com.acmerobotics.roadrunner.ftc.OTOSPositionOffsetTuner;
-import com.acmerobotics.roadrunner.ftc.OTOSView;
 import com.acmerobotics.roadrunner.ftc.PinpointEncoderGroup;
 import com.acmerobotics.roadrunner.ftc.PinpointIMU;
 import com.acmerobotics.roadrunner.ftc.PinpointView;
@@ -153,11 +152,10 @@ public final class TuningOpModes {
                     perpEncs.add(new EncoderRef(0, 1));
                 } else if (md.localizer instanceof OTOSLocalizer) {
                     OTOSLocalizer ol = (OTOSLocalizer) md.localizer;
-                    OTOSView ov = new OTOSView(ol.otos);
-                    encoderGroups.add(new OTOSEncoderGroup(ov));
+                    encoderGroups.add(new OTOSEncoderGroup(ol.otos));
                     parEncs.add(new EncoderRef(0, 0));
                     perpEncs.add(new EncoderRef(0, 1));
-                    lazyImu = new OTOSIMU(ov);
+                    lazyImu = new OTOSIMU(ol.otos);
 
                     manager.register(metaForClass(OTOSAngularScalarTuner.class), new OTOSAngularScalarTuner(ol.otos));
                     manager.register(metaForClass(OTOSLinearScalarTuner.class), new OTOSLinearScalarTuner(ol.otos));
@@ -248,11 +246,10 @@ public final class TuningOpModes {
                     lazyImu = new PinpointIMU(pv);
                 } else if (td.localizer instanceof OTOSLocalizer) {
                     OTOSLocalizer ol = (OTOSLocalizer) td.localizer;
-                    OTOSView ov = new OTOSView(ol.otos);
-                    encoderGroups.add(new OTOSEncoderGroup(ov));
+                    encoderGroups.add(new OTOSEncoderGroup(ol.otos));
                     parEncs.add(new EncoderRef(0, 0));
                     perpEncs.add(new EncoderRef(0, 1));
-                    lazyImu = new OTOSIMU(ov);
+                    lazyImu = new OTOSIMU(ol.otos);
 
                     manager.register(metaForClass(OTOSAngularScalarTuner.class), new OTOSAngularScalarTuner(ol.otos));
                     manager.register(metaForClass(OTOSLinearScalarTuner.class), new OTOSLinearScalarTuner(ol.otos));
