@@ -15,31 +15,12 @@ import com.acmerobotics.roadrunner.Action;
 
 
 public class Extension {
-    MotorGroup Extension;
-
-    MotorEx ExtensionRight;
-    MotorEx ExtensionLeft;
-
-    public Extension(MotorGroup e){
-        Extension = e;
-    }
+    SimpleServo ExtensionRight;
+    SimpleServo ExtensionLeft;
 
     public Extension(HardwareMap hardwareMap){
-        MotorEx EL = new MotorEx(hardwareMap, Constants.ExtensionLeftName);
-        EL.setRunMode(Motor.RunMode.RawPower);
-        EL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        this.ExtensionLeft = EL;
-
-        MotorEx ER = new MotorEx(hardwareMap, Constants.ExtensionRightName);
-        ER.setRunMode(Motor.RunMode.RawPower);
-        ER.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        this.ExtensionRight = ER;
-
-        Extension = new MotorGroup(this.ExtensionLeft, this.ExtensionRight);
-
-
-
-//        extension = new MotorEx(hardwareMap, "EL");
+        ExtensionLeft = new SimpleServo(hardwareMap, "ExtL", 0, 0.5);
+        ExtensionRight = new SimpleServo(hardwareMap, "ExtR", 0, 0.5);
     }
 
     public Action Extend (){
@@ -47,33 +28,9 @@ public class Extension {
             private boolean initialized = false;
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                long startTime = 0;
-                if (!initialized) {
-                    ExtensionRight.set(1);
-                    ExtensionLeft.set(-1);
-                    initialized = true;
-                    startTime = System.currentTimeMillis();
-                }
-                double pos = ExtensionLeft.getCurrentPosition();
-                //TODO: replace time with actual time
-//                final int extendOutTime = 1500;
-
-//                try {
-//                    Thread.sleep(Constants.ExtensionTime);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-                if (System.currentTimeMillis() >= startTime + Constants.ExtensionTime) {
-                    packet.put("extendPos", System.currentTimeMillis() - startTime );
-                    return true;
-
-                }
-                else {
-                    ExtensionLeft.set(0);
-                    ExtensionRight.set(0);
-                    return false;
-                }
-
+                ExtensionRight.setPosition(0.7);
+                ExtensionLeft.setPosition(0.3);
+                return true;
             }
 
         };
@@ -86,33 +43,9 @@ public class Extension {
             private boolean initialized = false;
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                long startTime = 0;
-                if (!initialized) {
-                    ExtensionRight.set(-1);
-                    ExtensionLeft.set(1);
-                    initialized = true;
-                    startTime = System.currentTimeMillis();
-                }
-                double pos = ExtensionLeft.getCurrentPosition();
-                //TODO: replace time with actual time
-//                final int extendOutTime = 1500;
-
-//                try {
-//                    Thread.sleep(Constants.ExtensionTime);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-                if (System.currentTimeMillis() >= startTime + Constants.ExtensionTime) {
-                    packet.put("extendPos", System.currentTimeMillis() - startTime );
-                    return true;
-
-                }
-                else {
-                    ExtensionLeft.set(0);
-                    ExtensionRight.set(0);
-                    return false;
-                }
-
+                ExtensionRight.setPosition(1);
+                ExtensionLeft.setPosition(0);
+                return true;
             }
 
         };

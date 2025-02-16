@@ -60,17 +60,17 @@ public final class MecanumDrive {
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.UP;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
         // drive model parameters
-        public double inPerTick = 124/62879.5;
-        public double lateralInPerTick = 0.0011048276707827879;
-        public double trackWidthTicks = 8553.473723437892;
+        public double inPerTick = 0.0019727693;
+        public double lateralInPerTick = 0.0014397631383779742;
+        public double trackWidthTicks = 7357.147275926931;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.35;
-        public double kV = 0.00025;
-        public double kA = 0.0001;
+        public double kS = 1.0859389991322885;
+        public double kV = 0.000345091928205575;
+        public double kA = 0.0000;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 60; //50
@@ -140,7 +140,6 @@ public final class MecanumDrive {
             imu = lazyImu.get();
 
             // TODO: reverse encoders if needed
-            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         @Override
@@ -229,8 +228,8 @@ public final class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // TODO: reverse motor directions if needed
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
