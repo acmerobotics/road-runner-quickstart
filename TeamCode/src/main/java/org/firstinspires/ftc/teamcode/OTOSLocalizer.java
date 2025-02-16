@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.OTOS;
+import com.acmerobotics.roadrunner.ftc.OTOSKt;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -25,7 +25,7 @@ public class OTOSLocalizer implements Localizer {
     public OTOSLocalizer(HardwareMap hardwareMap, Pose2d initialPose) {
         otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         currentPose = initialPose;
-        otos.setPosition(OTOS.toOTOSPose(currentPose));
+        otos.setPosition(OTOSKt.toOTOSPose(currentPose));
 
         otos.calibrateImu();
         otos.setLinearScalar(PARAMS.linearScalar);
@@ -41,7 +41,7 @@ public class OTOSLocalizer implements Localizer {
     @Override
     public void setPose(Pose2d pose) {
         currentPose = pose;
-        otos.setPosition(OTOS.toOTOSPose(currentPose));
+        otos.setPosition(OTOSKt.toOTOSPose(currentPose));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class OTOSLocalizer implements Localizer {
         SparkFunOTOS.Pose2D otosAcc = new SparkFunOTOS.Pose2D();
         otos.getPosVelAcc(otosPose, otosVel, otosAcc);
 
-        currentPose = OTOS.fromOTOSPose(otosPose);
+        currentPose = OTOSKt.toRRPose(otosPose);
         Vector2d fieldVel = new Vector2d(otosVel.x, otosVel.y);
         Vector2d robotVel = fieldVel.times(otosVel.h);
         return new PoseVelocity2d(robotVel, otosVel.h);
