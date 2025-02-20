@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.multiaxisarm;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MultiAxisArm extends Mechanism {
 
@@ -33,52 +34,64 @@ public class MultiAxisArm extends Mechanism {
         elbow.toggleSpecimen();
     }
 
+    public void toggleSample() {
+        elbow.toggleSample();
+        hand.toggle();
+    }
+
     public void resetOpen() {
         hand.open();
         wrist.flexNeutral();
-        wrist.rotateCenter();
-        elbow.middle();
+        wrist.rotateInLine();
+        elbow.inLine();
     }
 
     public void specimenPickup() {
         hand.open();
         wrist.flexNeutral();
-        wrist.rotateCenter();
+        wrist.rotateInLine();
         elbow.forward();
     }
 
     public void neutral() {
         hand.open();
         wrist.flexNeutral();
-        wrist.rotateCenter();
-        elbow.middle();
+        wrist.rotateInLine();
+        elbow.inLine();
+    }
+
+    public void down() {
+        hand.open();
+        wrist.flexDown();
+        wrist.rotateInLine();
+        elbow.inLine();
     }
 
     public void neutralClosed() {
         hand.close();
         wrist.flexNeutral();
-        wrist.rotateCenter();
-        elbow.middle();
+        wrist.rotateInLine();
+        elbow.inLine();
     }
 
     public void upClosed() {
         hand.close();
         wrist.flexScore();
-        wrist.rotateCenter();
+        wrist.rotateInLine();
         elbow.score();
     }
 
     public void hang() {
         hand.close();
         wrist.flexNeutral();
-        wrist.rotateCenter();
+        wrist.rotateInLine();
         elbow.hang();
     }
 
     public void scoreNew() {
         hand.close();
         wrist.flexScoreNew();
-        wrist.rotateCenter();
+        wrist.rotateInLine();
         elbow.score();
     }
 

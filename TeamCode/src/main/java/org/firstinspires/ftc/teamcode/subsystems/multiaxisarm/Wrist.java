@@ -17,19 +17,19 @@ public class Wrist extends Mechanism {
     ServoState FLX_UP = new ServoState(.48);
     ServoState FLX_SCORE_SPECIMEN = new ServoState(.73);
     ServoState FLX_SCORE = new ServoState(0.61);
-    ServoState FLEX_SCORE_NEW = new ServoState(.45);
+    ServoState FLEX_SCORE_NEW = new ServoState(.44);
     ServoState FLX_NEUTRAL = new ServoState(.74);
     ServoState FLX_DOWN = new ServoState(.97);
 
-    ServoState ROT_LEFT = new ServoState(0.15);
-    ServoState ROT_CENTER = new ServoState(.535);
-    ServoState ROT_RIGHT = new ServoState(.85);
+    ServoState ROT_IN_LINE = new ServoState(1);
+    ServoState ROT_HORIZONTAL = new ServoState(.5);
+    ServoState ROT_FULL_FLIP = new ServoState(.85);
 
 
     @Override
     public void init(HardwareMap hwMap) {
         flexor = new StateDrivenServo(new ServoState[]{FLX_UP, FLX_NEUTRAL, FLX_SCORE, FLX_SCORE_SPECIMEN,  FLX_DOWN}, FLX_NEUTRAL, ConfigurationInfo.flexor.getDeviceName());
-        rotator = new StateDrivenServo(new ServoState[]{ROT_LEFT, ROT_CENTER, ROT_RIGHT}, ROT_CENTER, ConfigurationInfo.rotator.getDeviceName());
+        rotator = new StateDrivenServo(new ServoState[]{ROT_IN_LINE, ROT_HORIZONTAL, ROT_FULL_FLIP}, ROT_HORIZONTAL, ConfigurationInfo.rotator.getDeviceName());
         flexor.init(hwMap);
         rotator.init(hwMap);
     }
@@ -74,6 +74,14 @@ public class Wrist extends Mechanism {
         }
     }
 
+    public void toggleSample() {
+        if (flexor.getActiveTargetState() == FLX_NEUTRAL) {
+            flexDown();
+        } else {
+            flexNeutral();
+        }
+    }
+
     public void flexDown() {
         flexor.setActiveTargetState(FLX_DOWN);
     }
@@ -82,16 +90,16 @@ public class Wrist extends Mechanism {
         flexor.setActiveStateCustom(position);
     }
 
-    public void rotateLeft() {
-        rotator.setActiveTargetState(ROT_LEFT);
+    public void rotateInLine() {
+        rotator.setActiveTargetState(ROT_IN_LINE);
     }
 
-    public void rotateCenter() {
-        rotator.setActiveTargetState(ROT_CENTER);
+    public void rotateHorizontal() {
+        rotator.setActiveTargetState(ROT_HORIZONTAL);
     }
 
-    public void rotateRight() {
-        rotator.setActiveTargetState(ROT_RIGHT);
+    public void rotateFullFlip() {
+        rotator.setActiveTargetState(ROT_FULL_FLIP);
     }
 
     public void rotateCustom(double position) {

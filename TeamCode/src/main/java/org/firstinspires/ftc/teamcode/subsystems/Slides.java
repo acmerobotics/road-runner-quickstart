@@ -31,8 +31,10 @@ public class Slides extends Mechanism {
         HIGH_SPECIMEN(5.75),
         HIGH_SPECIMEN_AUTO(7),
         LOW_BUCKET(14),
-        LOW_HANG(14),
-        HIGH_BUCKET(28);
+        LOW_HANG(19),
+        HIGH_HANG(23),
+        NEXT_HANG(6),
+        HIGH_BUCKET(28.5);
 
         public final double extension;
 
@@ -64,7 +66,7 @@ public class Slides extends Mechanism {
     private PIDFController controller;
 
     // PID and feedforward constants (set to your desired values)
-    private static final double kP = 0.2;
+    private static final double kP = 0.5;
     private static final double kI = 0.03;
     private static final double kD = 0;
     private static final double INTEGRAL_SUM_MAX = 10;
@@ -84,7 +86,7 @@ public class Slides extends Mechanism {
     // ===============================================================
     // Constants for motion and safety
     // ===============================================================
-    private static final double PROXIMITY_THRESHOLD = 1.1;   // Inches tolerance for target extension
+    private static final double PROXIMITY_THRESHOLD = .75;   // Inches tolerance for target extension
     private static final double CURRENT_THRESHOLD = 5000;     // In milliamps
     private static final double MINIMUM_POWER = 0.03;           // Minimum manual power to move slides
     private static final double TICKS_PER_INCH = 113.91949;     // Encoder ticks per inch of slide travel
@@ -94,8 +96,6 @@ public class Slides extends Mechanism {
     // Additional fields for high-level control (preset positions, pivot)
     // ===============================================================
     public SlidesExtension activeSlidesTarget = SlidesExtension.RESET;
-    public boolean isPivotEnabled = true;
-    private static final double PIVOT_ENABLED_THRESHOLD = 8; // Inches threshold for enabling the pivot
 
     // ===============================================================
     // Initialization method
@@ -130,9 +130,6 @@ public class Slides extends Mechanism {
     // ===============================================================
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
-        // High-level: update pivot state based on current extension
-        isPivotEnabled = getCurrentExtension() < PIVOT_ENABLED_THRESHOLD;
-
         // Control the slides based on the active control state
         switch (activeControlState) {
             case AUTONOMOUS:
@@ -153,6 +150,7 @@ public class Slides extends Mechanism {
         telemetry.addData("Current Extension (in):", getCurrentExtension());
         telemetry.addData("Target Extension (in):", activeTargetExtension);
         telemetry.addData("Control Mode:", activeControlState);
+        telemetry.addData("MILLIAMPS", activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS));
     }
 
     // ===============================================================

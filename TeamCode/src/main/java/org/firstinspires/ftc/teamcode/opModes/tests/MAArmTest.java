@@ -52,9 +52,6 @@ public class MAArmTest extends OpMode {
             case ELBOW:
                 elbowTest();
                 break;
-            case FULL:
-                fullTest();
-                break;
         }
         telemetry.addData("Advance Pressed", aimPad1.isStartPressed());
         telemetry.addData("Advance Released", aimPad1.isStartReleased());
@@ -89,29 +86,6 @@ public class MAArmTest extends OpMode {
         arm.elbow.leftElbow.systemsCheck(aimPad1, telemetry);
         arm.elbow.rightElbow.systemsCheck(aimPad1, telemetry);
         if (aimPad1.isStartPressed()) {
-            activeTestingState = TestingState.FULL;
-        }
-    }
-
-    public void fullTest() {
-        arm.loop(aimPad1, aimPad2);
-        if (inputHandler.FLEX_DOWN) {
-            arm.wrist.flexDown();
-        } else if (inputHandler.FLEX_NEUTRAL) {
-            arm.wrist.flexNeutral();
-        }
-
-        if (inputHandler.ROTATE_RIGHT) {
-            arm.wrist.rotateRight();
-        } else if (inputHandler.ROTATE_LEFT) {
-            arm.wrist.rotateLeft();
-        } else {
-            arm.wrist.rotateCenter();
-        }
-        if (inputHandler.TOGGLE_HAND_ARM) {
-            arm.hand.toggle();
-        }
-        if (aimPad2.isStartReleased()) {
             activeTestingState = TestingState.HAND;
         }
     }

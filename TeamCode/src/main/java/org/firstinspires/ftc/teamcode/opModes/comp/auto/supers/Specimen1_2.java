@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
 
 @Autonomous(name = "Specimen1_2", group = "AAA_COMP", preselectTeleOp="RedTeleOp")
 public class Specimen1_2 extends LinearOpMode {
-    Robot_V2 robot = new Robot_V2(SupersAutoConstants.STARTING_POSITION, true);
+    Robot_V2 robot = new Robot_V2(SupersAutoConstants.STARTING_POSITION, true, 1);
 
     boolean isDone = false;
 
@@ -21,7 +21,7 @@ public class Specimen1_2 extends LinearOpMode {
     public void runOpMode() {
         robot.init(hardwareMap);
         robot.scoringAssembly.multiAxisArm.hand.close();
-        robot.scoringAssembly.multiAxisArm.wrist.rotateCenter();
+        robot.scoringAssembly.multiAxisArm.wrist.rotateHorizontal();
         while (!isStarted() && !isStopRequested()) {
             robot.scoringAssembly.multiAxisArm.hand.loop(new AIMPad(gamepad2));
             robot.scoringAssembly.multiAxisArm.wrist.rotator.loop(new AIMPad(gamepad2));

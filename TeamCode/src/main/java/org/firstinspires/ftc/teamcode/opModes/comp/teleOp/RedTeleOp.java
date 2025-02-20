@@ -17,7 +17,7 @@ public class RedTeleOp extends OpMode {
 
     @Override
     public void init() {
-        robot = new Robot_V2(new Pose2d(0, 0, 0), false);
+        robot = new Robot_V2(new Pose2d(0, 0, 0), false, 1);
         robot.init(hardwareMap);
         aimPad1 = new AIMPad(gamepad1);
         aimPad2 = new AIMPad(gamepad2);

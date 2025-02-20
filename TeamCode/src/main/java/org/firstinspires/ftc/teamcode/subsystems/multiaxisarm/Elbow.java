@@ -16,8 +16,8 @@ public class Elbow extends Mechanism {
 
     ServoState DOWN = new ServoState(.92);
     ServoState HANG = new ServoState(.7);
-    ServoState IN_LINE = new ServoState(.395);
-    ServoState PICKUP_PLUS = new ServoState(.45);
+    ServoState IN_LINE = new ServoState(.33);
+    ServoState PICKUP_PLUS = new ServoState(.38);
     ServoState SCORE = new ServoState(.32);
     ServoState SCORE_SPECIMEN = new ServoState(.495);
     ServoState UP = new ServoState(0);
@@ -53,7 +53,7 @@ public class Elbow extends Mechanism {
         rightElbow.setActiveTargetState(UP);
     }
 
-    public void middle() {
+    public void inLine() {
         leftElbow.setActiveTargetState(IN_LINE);
         rightElbow.setActiveTargetState(IN_LINE);
     }
@@ -83,6 +83,14 @@ public class Elbow extends Mechanism {
             scoreSpecimen();
         } else {
             score();
+        }
+    }
+
+    public void toggleSample() {
+        if (leftElbow.getActiveTargetState() == IN_LINE) {
+            pickupPlus();
+        } else {
+            inLine();
         }
     }
 

@@ -52,11 +52,11 @@ public class Drivebase extends Mechanism {
 
     private void manualDrive(AIMPad gamepad, boolean isFieldCentric) {
         double y = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickY()), GamepadSettings.EXPONENT_MODIFIER);
-        double x = InputModification.poweredInput(deadzonedStickInput(gamepad.getLeftStickX()), GamepadSettings.EXPONENT_MODIFIER);
-        double rx = InputModification.poweredInput(deadzonedStickInput(gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
+        double x = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickX()), GamepadSettings.EXPONENT_MODIFIER);
+        double rx = InputModification.poweredInput(deadzonedStickInput(-gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
 
         // Create left stick vector
-        Vector2d leftStick = new Vector2d(y, -x);
+        Vector2d leftStick = new Vector2d(y, x);
 
         // Rotate left stick vector by -heading if in fieldcentric mode
         if (isFieldCentric) {
@@ -64,7 +64,7 @@ public class Drivebase extends Mechanism {
         }
 
         // Set drive powers
-        drive.setDrivePowers(new PoseVelocity2d(leftStick, -rx));
+        drive.setDrivePowers(new PoseVelocity2d(leftStick, rx));
     }
 
     /**
@@ -89,6 +89,7 @@ public class Drivebase extends Mechanism {
 
     @Override
     public void telemetry(Telemetry telemetry) {
+        telemetry.addData("Angle:", drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
     }
 
     public void systemsCheck(AIMPad gamepad, Telemetry telemetry) {

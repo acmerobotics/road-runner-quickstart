@@ -2,12 +2,15 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.MultiAxisArm;
 
 public class ScoringAssembly extends Mechanism {
+
+    boolean disableArm = false;
 
     public MultiAxisArm multiAxisArm;
     public Pivot pivot;
@@ -24,9 +27,11 @@ public class ScoringAssembly extends Mechanism {
     }
 
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
-        pivot.loop(aimpad, aimpad2);
         slides.loop(aimpad, aimpad2);
-        multiAxisArm.loop(aimpad, aimpad2);
+        if (!disableArm) {
+            multiAxisArm.loop(aimpad, aimpad2);
+            pivot.loop(aimpad, aimpad2);
+        }
     }
 
     @Override
@@ -53,8 +58,14 @@ public class ScoringAssembly extends Mechanism {
         slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
     }
 
-    public void setPickupResetNeutral() {
-        multiAxisArm.neutral();
+    public void resetAvoid() {
+        multiAxisArm.down();
+        pivot.setPivotPosition(Pivot.PivotAngle.HIGH_BUCKET_RESET);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+    }
+
+    public void setPickupReset() {
+        multiAxisArm.down();
         pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
@@ -71,7 +82,7 @@ public class ScoringAssembly extends Mechanism {
     }
 
     public void setScoringResetClamped() {
-        multiAxisArm.scoreNew();
+        multiAxisArm.upClosed();
         pivot.setPivotPosition(Pivot.PivotAngle.NEW_SCORE);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
@@ -88,16 +99,20 @@ public class ScoringAssembly extends Mechanism {
         slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN_AUTO);
     }
 
-    public void setScoringLowBucketClamped() {
-        multiAxisArm.neutralClosed();
-        pivot.setPivotPosition(Pivot.PivotAngle.SCORE);
-        slides.setSlidesPosition(Slides.SlidesExtension.LOW_BUCKET);
+    public void totalFix() {
+        multiAxisArm.neutral();
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
+        pivot.setPivotPosition(Pivot.PivotAngle.START_MORE);
     }
 
-    public void setLowHangRetracted() {
+    //====================================================================================================
+    // Hanging presets
+    //====================================================================================================
+
+    public void setHangStart() {
         multiAxisArm.hang();
         pivot.setPivotPosition(Pivot.PivotAngle.START);
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
 
     public void setLowHangExtended() {
@@ -106,17 +121,52 @@ public class ScoringAssembly extends Mechanism {
         slides.setSlidesPosition(Slides.SlidesExtension.LOW_HANG);
     }
 
+    public void setLowHangRetracted() {
+        disableArm = true;
+        multiAxisArm.hang();
+        pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        pivot.setPivotAtPower(0);
+//        pivot.setPivotPosition(Pivot.PivotAngle.START);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+    }
+
+    public void setLowHangClip() {
+        disableArm = true;
+        multiAxisArm.hang();
+        pivot.setPivotPosition(Pivot.PivotAngle.CLIP_ON);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+    }
+
+    public void setHighHangOff() {
+        multiAxisArm.hang();
+        pivot.setPivotPosition(Pivot.PivotAngle.HANG_OFF);
+        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_HANG);
+    }
+
+    public void setHighHangOn() {
+        multiAxisArm.hang();
+        pivot.setPivotPosition(Pivot.PivotAngle.NEW_SCORE);
+        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_HANG);
+    }
+
+    public void setHighHangRetracted() {
+        multiAxisArm.hang();
+        pivot.setPivotAtPower(0);
+//        pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+    }
+
+    public void setHighHangFinal() {
+        multiAxisArm.hang();
+        pivot.setPivotPosition(Pivot.PivotAngle.NEW_SCORE);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+    }
+
     public boolean areMotorsAtTarget() {
         return pivot.isAtTargetAngle() && slides.isAtTargetPosition();
     }
 
     public boolean areMotorsAtTargetPresets() {
         return pivot.isAtTargetPreset() && slides.isAtTargetPreset();
-    }
-
-    public void totalFix() {
-        multiAxisArm.neutral();
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
-        pivot.setPivotPosition(Pivot.PivotAngle.START_MORE);
     }
 }
