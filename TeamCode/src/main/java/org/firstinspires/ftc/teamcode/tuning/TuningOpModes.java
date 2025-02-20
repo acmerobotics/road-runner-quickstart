@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
@@ -69,11 +70,17 @@ public final class TuningOpModes {
 
     private static PinpointView makePinpointView(PinpointLocalizer pl) {
         return new PinpointView() {
+            ElapsedTime timer = new ElapsedTime();
+            double dt = 0.0, lastParPosition, lastPerpPosition;
+
             GoBildaPinpointDriver.EncoderDirection parDirection = pl.initialParDirection;
             GoBildaPinpointDriver.EncoderDirection perpDirection = pl.initialPerpDirection;
 
             @Override
             public void update() {
+                dt = timer.seconds() - dt;
+                lastParPosition = getParEncoderPosition();
+                lastPerpPosition = getPerpEncoderPosition();
                 pl.driver.update();
             }
 
@@ -83,8 +90,18 @@ public final class TuningOpModes {
             }
 
             @Override
+            public int getParEncoderVelocity() {
+                return (int) Math.round((getParEncoderPosition() - lastParPosition) / dt);
+            }
+
+            @Override
             public int getPerpEncoderPosition() {
                 return pl.driver.getEncoderY();
+            }
+
+            @Override
+            public int getPerpEncoderVelocity() {
+                return (int) Math.round((getPerpEncoderPosition() - lastPerpPosition) / dt);
             }
 
             @Override
