@@ -26,6 +26,8 @@ public class OTOSLocalizer implements Localizer {
         otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         currentPose = initialPose;
         otos.setPosition(OTOSKt.toOTOSPose(currentPose));
+        otos.setLinearUnit(DistanceUnit.INCH);
+        otos.setAngularUnit(AngleUnit.RADIANS);
 
         otos.calibrateImu();
         otos.setLinearScalar(PARAMS.linearScalar);
