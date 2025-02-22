@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.OTOSKt;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
@@ -60,7 +61,7 @@ public class OTOSLocalizer implements Localizer {
 
         currentPose = OTOSKt.toRRPose(otosPose);
         Vector2d fieldVel = new Vector2d(otosVel.x, otosVel.y);
-        Vector2d robotVel = fieldVel.times(otosVel.h);
+        Vector2d robotVel = Rotation2d.exp(otosVel.h).inverse().times(fieldVel);
         return new PoseVelocity2d(robotVel, otosVel.h);
     }
 }
