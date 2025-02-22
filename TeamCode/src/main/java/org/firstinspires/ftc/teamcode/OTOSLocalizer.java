@@ -62,7 +62,7 @@ public class OTOSLocalizer implements Localizer {
 
         currentPose = OTOSKt.toRRPose(otosPose);
         Vector2d fieldVel = new Vector2d(otosVel.x, otosVel.y);
-        Vector2d robotVel = Rotation2d.exp(otosVel.h).inverse().times(fieldVel);
+        Vector2d robotVel = Rotation2d.exp(otosPose.h).inverse().times(fieldVel);
         return new PoseVelocity2d(robotVel, otosVel.h);
     }
 }
