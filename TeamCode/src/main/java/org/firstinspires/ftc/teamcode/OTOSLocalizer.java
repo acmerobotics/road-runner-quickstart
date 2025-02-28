@@ -8,6 +8,9 @@ import com.acmerobotics.roadrunner.ftc.OTOSKt;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 @Config
 public class OTOSLocalizer implements Localizer {
     public static class Params {
@@ -23,6 +26,8 @@ public class OTOSLocalizer implements Localizer {
     private Pose2d currentPose;
 
     public OTOSLocalizer(HardwareMap hardwareMap, Pose2d initialPose) {
+        // TODO: make sure your config has an OTOS device with this name
+        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         currentPose = initialPose;
         otos.setPosition(OTOSKt.toOTOSPose(currentPose));
