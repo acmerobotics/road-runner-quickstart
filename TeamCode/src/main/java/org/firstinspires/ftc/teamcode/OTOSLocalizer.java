@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.OTOSKt;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
@@ -14,9 +15,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Config
 public class OTOSLocalizer implements Localizer {
     public static class Params {
-        public double angularScalar = 0.0;
-        public double linearScalar = 0.0;
+        public double angularScalar = 1.0;
+        public double linearScalar = 1.0;
 
+        // Note: units are in inches and radians
         public SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 0);
     }
 
@@ -60,7 +62,7 @@ public class OTOSLocalizer implements Localizer {
 
         currentPose = OTOSKt.toRRPose(otosPose);
         Vector2d fieldVel = new Vector2d(otosVel.x, otosVel.y);
-        Vector2d robotVel = fieldVel.times(otosVel.h);
+        Vector2d robotVel = Rotation2d.exp(otosPose.h).inverse().times(fieldVel);
         return new PoseVelocity2d(robotVel, otosVel.h);
     }
 }
