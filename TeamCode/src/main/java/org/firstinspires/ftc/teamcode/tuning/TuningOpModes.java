@@ -44,13 +44,12 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.OTOSLocalizer;
+import org.firstinspires.ftc.teamcode.OctoQuadFWv3;
 import org.firstinspires.ftc.teamcode.OctoQuadLocalizer;
 import org.firstinspires.ftc.teamcode.PinpointLocalizer;
 import org.firstinspires.ftc.teamcode.TankDrive;
 import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.TwoDeadWheelLocalizer;
-import org.firstinspires.ftc.teamcode.octoquad.OctoQuad;
-import org.firstinspires.ftc.teamcode.octoquad.OctoQuadBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,22 +118,22 @@ public final class TuningOpModes {
     private static OctoQuadView makeOctoQuadView(OctoQuadLocalizer ol) {
         return new OctoQuadView() {
 
-            OctoQuad.EncoderDirection parDirection = OctoQuadLocalizer.PARAMS.xDirection;
-            OctoQuad.EncoderDirection perpDirection = OctoQuadLocalizer.PARAMS.yDirection;
+            OctoQuadFWv3.EncoderDirection parDirection = OctoQuadLocalizer.PARAMS.xDirection;
+            OctoQuadFWv3.EncoderDirection perpDirection = OctoQuadLocalizer.PARAMS.yDirection;
 
             final int parPort = OctoQuadLocalizer.PARAMS.odometryPortX;
             final int perpPort = OctoQuadLocalizer.PARAMS.odometryPortY;
 
-            OctoQuadBase.LocalizerDataBlock localizerData = new OctoQuadBase.LocalizerDataBlock();
-            OctoQuad.EncoderDataBlock encoderData = new OctoQuad.EncoderDataBlock();
+            OctoQuadFWv3.LocalizerDataBlock localizerData = new OctoQuadFWv3.LocalizerDataBlock();
+            OctoQuadFWv3.EncoderDataBlock encoderData = new OctoQuadFWv3.EncoderDataBlock();
 
             @Override
             public void update() {
-                OctoQuadBase.LocalizerDataBlock newLocalizerData = new OctoQuadBase.LocalizerDataBlock();
-                OctoQuad.EncoderDataBlock newEncoderData = new OctoQuad.EncoderDataBlock();
+                OctoQuadFWv3.LocalizerDataBlock newLocalizerData = new OctoQuadFWv3.LocalizerDataBlock();
+                OctoQuadFWv3.EncoderDataBlock newEncoderData = new OctoQuadFWv3.EncoderDataBlock();
                 ol.octoquad.readLocalizerDataAndAllEncoderData(newLocalizerData, newEncoderData);
 
-                if (newLocalizerData.isDataValid() && newEncoderData.isDataValid()) {
+                if (newLocalizerData.isPoseDataValid() && newEncoderData.isDataValid()) {
                     localizerData = newLocalizerData;
                     encoderData = newEncoderData;
                 }
@@ -169,16 +168,16 @@ public final class TuningOpModes {
             @Override
             public void setParDirection(@NonNull DcMotorSimple.Direction direction) {
                 parDirection = direction == DcMotorSimple.Direction.FORWARD ?
-                        OctoQuad.EncoderDirection.FORWARD :
-                        OctoQuad.EncoderDirection.REVERSE;
+                        OctoQuadFWv3.EncoderDirection.FORWARD :
+                        OctoQuadFWv3.EncoderDirection.REVERSE;
                 ol.octoquad.setSingleEncoderDirection(parPort, parDirection);
             }
 
             @Override
             public void setPerpDirection(@NonNull DcMotorSimple.Direction direction) {
                 perpDirection = direction == DcMotorSimple.Direction.FORWARD ?
-                        OctoQuad.EncoderDirection.FORWARD :
-                        OctoQuad.EncoderDirection.REVERSE;
+                        OctoQuadFWv3.EncoderDirection.FORWARD :
+                        OctoQuadFWv3.EncoderDirection.REVERSE;
                 ol.octoquad.setSingleEncoderDirection(perpPort, perpDirection);
             }
         };

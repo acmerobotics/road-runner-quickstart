@@ -12,9 +12,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.octoquad.OctoQuad;
-import org.firstinspires.ftc.teamcode.octoquad.OctoQuadBase;
-import org.firstinspires.ftc.teamcode.octoquad.OctoQuadImpl_v3;
 
 @Config
 public class OctoQuadLocalizer implements Localizer {
@@ -61,21 +58,21 @@ public class OctoQuadLocalizer implements Localizer {
         increase when you move the robot forward. And the Y (strafe) pod should increase when
         you move the robot to the left.
          */
-        public OctoQuad.EncoderDirection xDirection = OctoQuad.EncoderDirection.FORWARD;
-        public OctoQuad.EncoderDirection yDirection = OctoQuad.EncoderDirection.REVERSE;
+        public OctoQuadFWv3.EncoderDirection xDirection = OctoQuadFWv3.EncoderDirection.FORWARD;
+        public OctoQuadFWv3.EncoderDirection yDirection = OctoQuadFWv3.EncoderDirection.REVERSE;
 
     }
 
     public static Params PARAMS = new Params();
 
-    public final OctoQuadImpl_v3 octoquad;
+    public final OctoQuadFWv3 octoquad;
     private Pose2d currentPose;
 
     public OctoQuadLocalizer(HardwareMap hardwareMap, Pose2d initialPose) throws InterruptedException {
         FlightRecorder.write("OCTOQUAD_PARAMS", PARAMS);
         // TODO: make sure your config has an OctoQuad device with this name
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        octoquad = hardwareMap.get(OctoQuadImpl_v3.class, "octoquad");
+        octoquad = hardwareMap.get(OctoQuadFWv3.class, "octoquad");
         currentPose = initialPose;
 
         octoquad.setLocalizerPortX(PARAMS.odometryPortX);
@@ -99,10 +96,10 @@ public class OctoQuadLocalizer implements Localizer {
         /*
         Reset the localization and calibrate the IMU.
          */
-        octoquad.resetLocalizer();
+        octoquad.resetLocalizerAndCalibrateIMU();
         ElapsedTime timeout = new ElapsedTime();
-        OctoQuadBase.LocalizerStatus currentStatus = octoquad.getLocalizerStatus();
-        while (currentStatus != OctoQuadBase.LocalizerStatus.RUNNING_FUSION) {
+        OctoQuadFWv3.LocalizerStatus currentStatus = octoquad.getLocalizerStatus();
+        while (currentStatus != OctoQuadFWv3.LocalizerStatus.RUNNING) {
             Thread.sleep(10);
             if (timeout.seconds() > 3) {
                 Log.println(
@@ -143,9 +140,9 @@ public class OctoQuadLocalizer implements Localizer {
 
     @Override
     public PoseVelocity2d update() {
-        OctoQuadBase.LocalizerDataBlock localizer = new OctoQuadBase.LocalizerDataBlock();
+        OctoQuadFWv3.LocalizerDataBlock localizer = new OctoQuadFWv3.LocalizerDataBlock();
         octoquad.readLocalizerData(localizer);
-        if (localizer.localizerStatus != OctoQuadBase.LocalizerStatus.RUNNING_FUSION || !localizer.crcOk
+        if (localizer.localizerStatus != OctoQuadFWv3.LocalizerStatus.RUNNING || !localizer.crcOk
         ) {
             Log.println(
                     Log.WARN,
