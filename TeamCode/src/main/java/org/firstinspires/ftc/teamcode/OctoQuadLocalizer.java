@@ -37,21 +37,8 @@ public class OctoQuadLocalizer implements Localizer {
         The Y pod offset refers to how far forwards from the center the Y (strafe) odometry pod is:
         forward of the center is a positive number, backwards is a negative number.
          */
-        // These are tuned for 3110-0002-0001 Product Insight #1
-        public double xOffset = -5.24373777; // inches
-        public double yOffset = -3.412719295440588; // inches
-        // todo: match pinpointlocalizer
-
-        /*
-        Set the encoder resolution of your odometry pods in ticks per millimeter.
-
-        This is ticks per MILLIMETER, NOT inches per tick.
-        This value should be more than one; for example, the value for the Gobilda 4 Bar Odometry Pod is 19.89436789.
-        To get this value from inPerTick, first convert the value to millimeters (multiply by 25.4)
-        and then take its inverse (one over the value)
-         */
-        public double encoderResolution = 19.89436789; // ticks / mm
-        // todo match pinpoint localizer
+        public double parYTicks = 0.0; // y position of the parallel encoder (in tick units)
+        public double perpXTicks = 0.0; // x position of the perpendicular encoder (in tick units)
 
         /*
         Set the direction that each of the two odometry pods count. The X (forward) pod should
@@ -68,7 +55,7 @@ public class OctoQuadLocalizer implements Localizer {
     public final OctoQuadFWv3 octoquad;
     private Pose2d currentPose;
 
-    public OctoQuadLocalizer(HardwareMap hardwareMap, Pose2d initialPose) {
+    public OctoQuadLocalizer(HardwareMap hardwareMap, double inPerTick, Pose2d initialPose) {
         FlightRecorder.write("OCTOQUAD_PARAMS", PARAMS);
         // TODO: make sure your config has an OctoQuad device with this name
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -81,12 +68,14 @@ public class OctoQuadLocalizer implements Localizer {
         octoquad.setSingleEncoderDirection(PARAMS.odometryPortX, PARAMS.xDirection);
         octoquad.setSingleEncoderDirection(PARAMS.odometryPortY, PARAMS.yDirection);
 
-        octoquad.setLocalizerTcpOffsetMM_X((float) DistanceUnit.MM.fromInches(PARAMS.xOffset));
-        octoquad.setLocalizerTcpOffsetMM_Y((float) DistanceUnit.MM.fromInches(PARAMS.yOffset));
+        double mmPerTick = 25.4 * inPerTick;
+        octoquad.setLocalizerCountsPerMM_X((float) (1 / mmPerTick));
+        octoquad.setLocalizerCountsPerMM_Y((float) (1 / mmPerTick));
 
 
-        octoquad.setLocalizerCountsPerMM_X((float) PARAMS.encoderResolution);
-        octoquad.setLocalizerCountsPerMM_Y((float) PARAMS.encoderResolution);
+        // OctoQuad offset scheme is different than Pinpoint; these are intentionally switched
+        octoquad.setLocalizerTcpOffsetMM_X((float) -(mmPerTick * PARAMS.parYTicks));
+        octoquad.setLocalizerTcpOffsetMM_Y((float) (mmPerTick * PARAMS.perpXTicks));
 
         octoquad.setLocalizerImuHeadingScalar((float) PARAMS.angularScalar);
 
