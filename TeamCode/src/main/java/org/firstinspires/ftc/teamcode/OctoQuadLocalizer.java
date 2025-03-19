@@ -68,7 +68,7 @@ public class OctoQuadLocalizer implements Localizer {
     public final OctoQuadFWv3 octoquad;
     private Pose2d currentPose;
 
-    public OctoQuadLocalizer(HardwareMap hardwareMap, Pose2d initialPose) throws InterruptedException {
+    public OctoQuadLocalizer(HardwareMap hardwareMap, Pose2d initialPose) {
         FlightRecorder.write("OCTOQUAD_PARAMS", PARAMS);
         // TODO: make sure your config has an OctoQuad device with this name
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -100,7 +100,11 @@ public class OctoQuadLocalizer implements Localizer {
         ElapsedTime timeout = new ElapsedTime();
         OctoQuadFWv3.LocalizerStatus currentStatus = octoquad.getLocalizerStatus();
         while (currentStatus != OctoQuadFWv3.LocalizerStatus.RUNNING) {
-            Thread.sleep(10);
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             if (timeout.seconds() > 3) {
                 Log.println(
                         Log.WARN,
