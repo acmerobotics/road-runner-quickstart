@@ -19,21 +19,21 @@ public class MeepMeepTesting {
 
         DriveShim drive = myBot.getDrive();
         //near basket
-        myBot.runAction(drive.actionBuilder(new Pose2d(-38,-60, Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(-38, -56), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
-                .strafeToLinearHeading(new Vector2d(-48, -43), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
-                .strafeToLinearHeading(new Vector2d(-60, -40), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
-                .strafeToLinearHeading(new Vector2d(-60, -24), Math.toRadians(180))
-                .setTangent(180)
-                .lineToX(-66)
-                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
+//        myBot.runAction(drive.actionBuilder(new Pose2d(-38,-60, Math.toRadians(180)))
+//                .strafeToLinearHeading(new Vector2d(-38, -56), Math.toRadians(180))
+//                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
+//                .strafeToLinearHeading(new Vector2d(-48, -43), Math.toRadians(90))
+//                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
+//                .strafeToLinearHeading(new Vector2d(-60, -40), Math.toRadians(90))
+//                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
+//                .strafeToLinearHeading(new Vector2d(-60, -24), Math.toRadians(180))
+//                .setTangent(180)
+//                .lineToX(-66)
+//                .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(180+45))
 
                 // near observation zone
-//        myBot.runAction(drive.actionBuilder(new Pose2d(9,-60, Math.toRadians(90)))
-//                .strafeToLinearHeading(new Vector2d(9, -34), Math.toRadians(90))
+        myBot.runAction(drive.actionBuilder(new Pose2d(-24,-60, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(9, -34), Math.toRadians(90))
 
 
 

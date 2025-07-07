@@ -26,13 +26,13 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
 
 public class Comp4Auto extends LinearOpMode {
 
-    public static double PRE_DROP_SLEEP = 0.5;
-    public static double POST_DROP_SLEEP = 0.2;
-    public static double RED_BASKET_POS_X = -52;
-    public static double RED_BASKET_POS_Y = -52;
+    public static double PRE_DROP_SLEEP = 0.4;
+    public static double POST_DROP_SLEEP = 1;
+    public static double RED_BASKET_POS_X = -47;
+    public static double RED_BASKET_POS_Y = -47;
     public static double RED_BASKET_ANGLE = Math.toRadians(45);
 
-    public static double RED_SAMPLE1_POS_X = -44.2;
+    public static double RED_SAMPLE1_POS_X = -43.2;
     public static double RED_SAMPLE1_POS_Y = -46.7;
     public static double RED_SAMPLE1_ANGLE = Math.toRadians(90);
 

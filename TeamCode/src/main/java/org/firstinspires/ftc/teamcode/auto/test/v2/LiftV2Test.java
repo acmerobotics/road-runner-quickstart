@@ -31,7 +31,7 @@ public class  LiftV2Test extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         lift.liftUpAction(),
-                        new SleepAction(1),
+                        new SleepAction(5),
                         lift.liftDownAction()));
     }
 
