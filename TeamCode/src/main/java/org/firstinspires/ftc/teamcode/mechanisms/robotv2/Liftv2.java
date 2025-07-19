@@ -20,7 +20,7 @@ public class Liftv2 {
 
     public static double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
     public static  double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
-    public static  double LIFT_SCORING_IN_HIGH_BASKET = 3550;
+    public static  double LIFT_SCORING_IN_HIGH_BASKET = 3650;
 
     public static double LIFT_PARK_POSITION = 800;
     public  static int LIFT_HANG_SLIDES_POSITION = 3200;

@@ -15,7 +15,7 @@ public class Wristv2 {
     public static double WRIST_FOLD_OUT = 0.75;
     public static double WRIST_FOLD_IN = 0.36;
 
-    public static double WRIST_VERTICAL = 0.6;
+    public static double WRIST_VERTICAL = 0.61;
 
     public static double WRIST_SAMPLE_3 = 0.4;
 
