@@ -26,10 +26,10 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
 
 public class Comp4Auto extends LinearOpMode {
 
-    public static double PRE_DROP_SLEEP = 0.4;
+    public static double PRE_DROP_SLEEP = 1;
     public static double POST_DROP_SLEEP = 1;
-    public static double RED_BASKET_POS_X = -45;
-    public static double RED_BASKET_POS_Y = -45;
+    public static double RED_BASKET_POS_X = -46.5;
+    public static double RED_BASKET_POS_Y = -46.5;
     public static double RED_BASKET_ANGLE = Math.toRadians(45);
 
     public static double RED_SAMPLE1_POS_X = -43.2;
@@ -86,19 +86,19 @@ public class Comp4Auto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE3_POS_X_2, RED_SAMPLE3_POS_Y_2), RED_SAMPLE3_ANGLE);
 
         TrajectoryActionBuilder driveSample1ToBasket = drive.actionBuilder(RED_SAMPLE1_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
+                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X - 1, RED_BASKET_POS_Y - 1), RED_BASKET_ANGLE);
         TrajectoryActionBuilder driveSample2ToBasket = drive.actionBuilder(RED_SAMPLE2_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
+                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X - 2, RED_BASKET_POS_Y - 2), RED_BASKET_ANGLE);
         TrajectoryActionBuilder driveSample3ToBasket = drive.actionBuilder(RED_SAMPLE3_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
+                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X - 3, RED_BASKET_POS_Y - 3), RED_BASKET_ANGLE);
 
 
         // ===== Go to Basket and Score
         Action cStartToBasketAction = new SequentialAction(
                 new ParallelAction(
+                        wrist.wristFoldInAction(),
                         driveToBasket.build(),
                         arm.armScoreAction(),
-                        wrist.wristVerticalAction(),
                         new SequentialAction(
                                 new SleepAction(1),
                                 lift.liftUpAction()
@@ -107,6 +107,8 @@ public class Comp4Auto extends LinearOpMode {
                 wrist.wristFoldOutAction(),
                 new SleepAction(PRE_DROP_SLEEP),
                 claw.clawOpenAction(),
+                new SleepAction(POST_DROP_SLEEP),
+                wrist.wristFoldInAction(),
                 new SleepAction(POST_DROP_SLEEP)
         );
         Action cSample1ToBasketAction = new SequentialAction(

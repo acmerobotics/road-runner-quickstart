@@ -42,15 +42,15 @@ public class Robotv2 {
         return new SequentialAction(
                 new ParallelAction(
                         arm.armScoreAction(),
-                        new SequentialAction(
-                                new SleepAction(0.5),
-                                wrist.wristVerticalAction()
-                        ))
+                        wrist.wristFoldInAction()
+                )
                 , lift.liftUpAction()
                 , wrist.wristFoldOutAction()
-                , new SleepAction(0.5)
+                , new SleepAction(1.5)
                 , claw.clawOpenAction()
                 , new SleepAction(.2)
+                , wrist.wristFoldInAction()
+                , new SleepAction(1)
         );
     }
     public Action comeDownActionAuto(){

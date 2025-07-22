@@ -27,7 +27,7 @@ public class Liftv2 {
 
     public static int LIFT_HANG_SLIDES_POSITION_END = 2000;
 
-    public static int LIFT_OUT_PICKUP_GROUND = 1500;
+    public static int LIFT_OUT_PICKUP_GROUND = 1600;
 
     public static double LIFT_ACTION_TIMEOUT_SEC = 5.0;
 
