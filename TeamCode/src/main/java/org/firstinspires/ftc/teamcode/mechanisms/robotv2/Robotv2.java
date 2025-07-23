@@ -58,10 +58,9 @@ public class Robotv2 {
                 wrist.wristVerticalAction(),
                 new SleepAction(0.3),
                 lift.liftOutPickUpAction(),
-                new ParallelAction(
-                        wrist.wristFoldInAction(),
-                        arm.armPickupGroundSampleLiftOutAction()
-                )
+                wrist.wristFoldInAction(),
+                new SleepAction(0.7),
+                arm.armPickupGroundSampleLiftOutAction()
         );
     }
 
