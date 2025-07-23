@@ -1,0 +1,14 @@
+#!/bin/bash
+adb kill-server
+adb start-server
+# adb tcpip 5555
+
+var="$(adb connect 192.168.43.1:5555)"
+
+
+while [[ $var =~ "failed to connect to 192.168.43.1:5555" ]]; do
+    echo "Reconnecting..."
+    var="$(adb connect 192.168.43.1:5555)"
+done
+
+echo "Connected to robot!"  

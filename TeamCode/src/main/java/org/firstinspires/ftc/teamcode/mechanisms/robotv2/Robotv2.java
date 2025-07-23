@@ -7,8 +7,10 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
+@Config
 public class Robotv2 {
     public MecanumDrive drive;
     public Armv2 arm;
@@ -21,6 +23,13 @@ public class Robotv2 {
 
     public LeftActuator leftActuator;
     public RightActuator rightActuator;
+
+    public static double PRE_PICKUP_SLEEP = 2;
+    public static double POST_PICKUP_SLEEP = 2;
+
+    public static double PRE_DROP_SLEEP = 2;
+    public static double POST_DROP_SLEEP = 2;
+    public static double POST_DROP_SLEEP2 = 2;
 
     public Robotv2(HardwareMap hardwareMap, Pose2d startPose){
         drive = new MecanumDrive(hardwareMap, startPose);
@@ -46,20 +55,20 @@ public class Robotv2 {
                 )
                 , lift.liftUpAction()
                 , wrist.wristFoldOutAction()
-                , new SleepAction(1.5)
+                , new SleepAction(PRE_DROP_SLEEP)
                 , claw.clawOpenAction()
-                , new SleepAction(.2)
+                , new SleepAction(POST_DROP_SLEEP)
                 , wrist.wristFoldInAction()
-                , new SleepAction(1)
+                , new SleepAction(POST_DROP_SLEEP2)
         );
     }
     public Action comeDownActionAuto(){
         return new SequentialAction(
                 wrist.wristVerticalAction(),
-                new SleepAction(0.3),
+                new SleepAction(PRE_PICKUP_SLEEP),
                 lift.liftOutPickUpAction(),
                 wrist.wristFoldInAction(),
-                new SleepAction(0.7),
+                new SleepAction(POST_PICKUP_SLEEP),
                 arm.armPickupGroundSampleLiftOutAction()
         );
     }

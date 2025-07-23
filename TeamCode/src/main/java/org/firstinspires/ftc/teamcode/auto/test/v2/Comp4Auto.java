@@ -28,6 +28,8 @@ public class Comp4Auto extends LinearOpMode {
 
     public static double PRE_DROP_SLEEP = 2;
     public static double POST_DROP_SLEEP = 1;
+    public static double POST_DROP_SLEEP2 = 1;
+    
     public static double RED_BASKET_POS_X = -46;
     public static double RED_BASKET_POS_Y = -46;
     public static double RED_BASKET_ANGLE = Math.toRadians(45);
@@ -90,7 +92,7 @@ public class Comp4Auto extends LinearOpMode {
         TrajectoryActionBuilder driveSample2ToBasket = drive.actionBuilder(RED_SAMPLE2_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X - 2, RED_BASKET_POS_Y - 2), RED_BASKET_ANGLE);
         TrajectoryActionBuilder driveSample3ToBasket = drive.actionBuilder(RED_SAMPLE3_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X - 3, RED_BASKET_POS_Y - 3), RED_BASKET_ANGLE);
+                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X - 5, RED_BASKET_POS_Y - 5), RED_BASKET_ANGLE);
 
 
         // ===== Go to Basket and Score
@@ -109,7 +111,7 @@ public class Comp4Auto extends LinearOpMode {
                 claw.clawOpenAction(),
                 new SleepAction(POST_DROP_SLEEP),
                 wrist.wristFoldInAction(),
-                new SleepAction(POST_DROP_SLEEP)
+                new SleepAction(POST_DROP_SLEEP2)
         );
         Action cSample1ToBasketAction = new SequentialAction(
                 new ParallelAction(
