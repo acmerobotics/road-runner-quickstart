@@ -31,12 +31,12 @@ public class Comp4Auto extends LinearOpMode {
     public static double POST_DROP_SLEEP = 1;
     public static double POST_DROP_SLEEP2 = 1;
     
-    public static double RED_BASKET_POS_X = -46;
+    public static double RED_BASKET_POS_X = -45.5;
     public static double RED_BASKET_POS_Y = -46;
     public static double RED_BASKET_ANGLE = Math.toRadians(45);
 
-    public static double RED_SAMPLE1_POS_X = -45.2;
-    public static double RED_SAMPLE1_POS_Y = -48.5;
+    public static double RED_SAMPLE1_POS_X = -44.7;
+    public static double RED_SAMPLE1_POS_Y = -45.5;
     public static double RED_SAMPLE1_ANGLE = Math.toRadians(90);
 
     public static double RED_SAMPLE2_POS_X = RED_SAMPLE1_POS_X - 10;
@@ -47,7 +47,7 @@ public class Comp4Auto extends LinearOpMode {
     public static double RED_SAMPLE3_POS_Y = -41;
     public static double RED_SAMPLE3_ANGLE = Math.toRadians(135);
 
-    public static double RED_SAMPLE3_POS_X_2 = -46;
+    public static double RED_SAMPLE3_POS_X_2 = -47.5;
     public static double RED_SAMPLE3_POS_Y_2 = -41;
 
 
@@ -132,6 +132,9 @@ public class Comp4Auto extends LinearOpMode {
         Action cSample3ToBasketAction = new SequentialAction(
                 new ParallelAction(
                         driveSample3ToBasket.build(),
+                        new SequentialAction(
+                                new SleepAction(2),
+                                clawRotator.clawRotateResetAction()),
                         robot.scoreSampleActionAuto()
                         )
                 );
@@ -154,8 +157,8 @@ public class Comp4Auto extends LinearOpMode {
                 new ParallelAction(
                         driveToSample3_1.build(),
                         robot.comeDownSample3ActionAuto()),
-                driveToSample3_2.build(),
                 clawRotator.clawRotate45RightAction(),
+                driveToSample3_2.build(),
                 robot.arm.armPickupGroundSampleLiftOutAction(),
                 robot.pickUpActionAuto(),
                 new SleepAction(0.2));
