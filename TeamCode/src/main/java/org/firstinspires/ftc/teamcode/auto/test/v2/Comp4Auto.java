@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Claw;
+import org.firstinspires.ftc.teamcode.mechanisms.robotv2.ClawRotator;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
@@ -35,7 +36,7 @@ public class Comp4Auto extends LinearOpMode {
     public static double RED_BASKET_ANGLE = Math.toRadians(45);
 
     public static double RED_SAMPLE1_POS_X = -45.2;
-    public static double RED_SAMPLE1_POS_Y = -47.5;
+    public static double RED_SAMPLE1_POS_Y = -48.5;
     public static double RED_SAMPLE1_ANGLE = Math.toRadians(90);
 
     public static double RED_SAMPLE2_POS_X = RED_SAMPLE1_POS_X - 10;
@@ -69,6 +70,7 @@ public class Comp4Auto extends LinearOpMode {
         Armv2 arm = new Armv2(hardwareMap);
         Liftv2 lift = new Liftv2(hardwareMap);
         Claw claw = new Claw(hardwareMap);
+        ClawRotator clawRotator = new ClawRotator(hardwareMap);
         Wristv2 wrist = new Wristv2(hardwareMap);
         Robotv2 robot = new Robotv2(hardwareMap, RED_SCORE_START_POSE);
 
@@ -88,11 +90,11 @@ public class Comp4Auto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE3_POS_X_2, RED_SAMPLE3_POS_Y_2), RED_SAMPLE3_ANGLE);
 
         TrajectoryActionBuilder driveSample1ToBasket = drive.actionBuilder(RED_SAMPLE1_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X - 1, RED_BASKET_POS_Y - 1), RED_BASKET_ANGLE);
+                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X , RED_BASKET_POS_Y ), RED_BASKET_ANGLE);
         TrajectoryActionBuilder driveSample2ToBasket = drive.actionBuilder(RED_SAMPLE2_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X - 2, RED_BASKET_POS_Y - 2), RED_BASKET_ANGLE);
+                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X , RED_BASKET_POS_Y ), RED_BASKET_ANGLE);
         TrajectoryActionBuilder driveSample3ToBasket = drive.actionBuilder(RED_SAMPLE3_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X - 5, RED_BASKET_POS_Y - 5), RED_BASKET_ANGLE);
+                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
 
 
         // ===== Go to Basket and Score
@@ -153,6 +155,7 @@ public class Comp4Auto extends LinearOpMode {
                         driveToSample3_1.build(),
                         robot.comeDownSample3ActionAuto()),
                 driveToSample3_2.build(),
+                clawRotator.clawRotate45RightAction(),
                 robot.arm.armPickupGroundSampleLiftOutAction(),
                 robot.pickUpActionAuto(),
                 new SleepAction(0.2));
