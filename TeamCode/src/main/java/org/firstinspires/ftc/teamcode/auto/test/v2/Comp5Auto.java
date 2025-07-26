@@ -16,27 +16,24 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Armv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Claw;
-import org.firstinspires.ftc.teamcode.mechanisms.robotv2.ClawRotator;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Liftv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Wristv2;
 import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
 
 
 @Config
-@Autonomous(name = "Comp4Auto", group = "RoadRunner 1.0")
+@Autonomous(name = "Comp5Auto", group = "RoadRunner 1.0")
 
-public class Comp4Auto extends LinearOpMode {
+public class Comp5Auto extends LinearOpMode {
 
-    public static double PRE_DROP_SLEEP = 1;
-    public static double POST_DROP_SLEEP = 0;
-    public static double POST_DROP_SLEEP2 = 0;
-    
-    public static double RED_BASKET_POS_X = -45.5;
-    public static double RED_BASKET_POS_Y = -46;
+    public static double PRE_DROP_SLEEP = 0.5;
+    public static double POST_DROP_SLEEP = 0.7;
+    public static double RED_BASKET_POS_X = -48;
+    public static double RED_BASKET_POS_Y = -48;
     public static double RED_BASKET_ANGLE = Math.toRadians(45);
 
-    public static double RED_SAMPLE1_POS_X = -44.7;
-    public static double RED_SAMPLE1_POS_Y = -46.5;
+    public static double RED_SAMPLE1_POS_X = -43.5;
+    public static double RED_SAMPLE1_POS_Y = -47.3;
     public static double RED_SAMPLE1_ANGLE = Math.toRadians(90);
 
     public static double RED_SAMPLE2_POS_X = RED_SAMPLE1_POS_X - 10;
@@ -47,7 +44,7 @@ public class Comp4Auto extends LinearOpMode {
     public static double RED_SAMPLE3_POS_Y = -41;
     public static double RED_SAMPLE3_ANGLE = Math.toRadians(135);
 
-    public static double RED_SAMPLE3_POS_X_2 = -47.5;
+    public static double RED_SAMPLE3_POS_X_2 = -46;
     public static double RED_SAMPLE3_POS_Y_2 = -41;
 
 
@@ -70,7 +67,6 @@ public class Comp4Auto extends LinearOpMode {
         Armv2 arm = new Armv2(hardwareMap);
         Liftv2 lift = new Liftv2(hardwareMap);
         Claw claw = new Claw(hardwareMap);
-        ClawRotator clawRotator = new ClawRotator(hardwareMap);
         Wristv2 wrist = new Wristv2(hardwareMap);
         Robotv2 robot = new Robotv2(hardwareMap, RED_SCORE_START_POSE);
 
@@ -90,9 +86,9 @@ public class Comp4Auto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(RED_SAMPLE3_POS_X_2, RED_SAMPLE3_POS_Y_2), RED_SAMPLE3_ANGLE);
 
         TrajectoryActionBuilder driveSample1ToBasket = drive.actionBuilder(RED_SAMPLE1_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X , RED_BASKET_POS_Y ), RED_BASKET_ANGLE);
+                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
         TrajectoryActionBuilder driveSample2ToBasket = drive.actionBuilder(RED_SAMPLE2_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X , RED_BASKET_POS_Y ), RED_BASKET_ANGLE);
+                .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
         TrajectoryActionBuilder driveSample3ToBasket = drive.actionBuilder(RED_SAMPLE3_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_BASKET_POS_X, RED_BASKET_POS_Y), RED_BASKET_ANGLE);
 
@@ -100,44 +96,39 @@ public class Comp4Auto extends LinearOpMode {
         // ===== Go to Basket and Score
         Action cStartToBasketAction = new SequentialAction(
                 new ParallelAction(
-                        wrist.wristFoldInAction(),
                         driveToBasket.build(),
                         arm.armScoreAction(),
+                        wrist.wristVerticalAction(),
                         new SequentialAction(
-                                new SleepAction(1),
+                                new SleepAction(0.75),
                                 lift.liftUpAction()
                         )
                 ),
                 wrist.wristFoldOutAction(),
                 new SleepAction(PRE_DROP_SLEEP),
                 claw.clawOpenAction(),
-                new SleepAction(POST_DROP_SLEEP),
-                wrist.wristFoldInAction(),
-                new SleepAction(POST_DROP_SLEEP2)
+                new SleepAction(POST_DROP_SLEEP)
         );
         Action cSample1ToBasketAction = new SequentialAction(
                 new ParallelAction(
                         driveSample1ToBasket.build(),
                         robot.scoreSampleActionAuto()
-                        )
-                );
+                )
+        );
 
         Action cSample2ToBasketAction = new SequentialAction(
                 new ParallelAction(
                         driveSample2ToBasket.build(),
                         robot.scoreSampleActionAuto()
-                        )
-                );
+                )
+        );
 
         Action cSample3ToBasketAction = new SequentialAction(
                 new ParallelAction(
                         driveSample3ToBasket.build(),
-                        new SequentialAction(
-                                new SleepAction(2),
-                                clawRotator.clawRotateResetAction()),
                         robot.scoreSampleActionAuto()
-                        )
-                );
+                )
+        );
 
 
         // ====== Basket --> sample, park etc.
@@ -157,7 +148,6 @@ public class Comp4Auto extends LinearOpMode {
                 new ParallelAction(
                         driveToSample3_1.build(),
                         robot.comeDownSample3ActionAuto()),
-                clawRotator.clawRotate45RightAction(),
                 driveToSample3_2.build(),
                 robot.arm.armPickupGroundSampleLiftOutAction(),
                 robot.pickUpActionAuto(),

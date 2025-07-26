@@ -29,7 +29,7 @@ public class Armv2 {
 
     public static int ARM_SCORE_POS = 180;
     public static int ARM_PICKUP_GROUND_SAMPLE = 1440;
-    public static int ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT = 1500;
+    public static int ARM_PICKUP_GROUND_SAMPLE_LIFT_OUT = 1465;
 
     public static int ARM_HANG_SLIDES_POSITION = 0;
 

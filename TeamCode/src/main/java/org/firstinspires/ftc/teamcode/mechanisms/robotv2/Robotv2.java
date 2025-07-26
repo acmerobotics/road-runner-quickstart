@@ -24,12 +24,12 @@ public class Robotv2 {
     public LeftActuator leftActuator;
     public RightActuator rightActuator;
 
-    public static double PRE_PICKUP_SLEEP = 2;
-    public static double POST_PICKUP_SLEEP = 2;
+    public static double PRE_PICKUP_SLEEP = 1;
+    public static double POST_PICKUP_SLEEP = 1;
 
-    public static double PRE_DROP_SLEEP = 2;
-    public static double POST_DROP_SLEEP = 2;
-    public static double POST_DROP_SLEEP2 = 2;
+    public static double PRE_DROP_SLEEP = 1;
+    public static double POST_DROP_SLEEP = 1;
+    public static double POST_DROP_SLEEP2 = 1;
 
     public Robotv2(HardwareMap hardwareMap, Pose2d startPose){
         drive = new MecanumDrive(hardwareMap, startPose);

@@ -68,7 +68,7 @@ public class Liftv2 {
             }
             duration = Actions.now() - beginTs;
             motor.setTargetPosition(_targetPos);
-            motor.setVelocity(10000);
+            motor.setVelocity( 50000);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             int currentPosition = motor.getCurrentPosition();
