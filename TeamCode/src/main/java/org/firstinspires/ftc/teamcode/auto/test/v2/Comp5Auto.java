@@ -33,7 +33,7 @@ public class Comp5Auto extends LinearOpMode {
     public static double RED_BASKET_ANGLE = Math.toRadians(45);
 
     public static double RED_SAMPLE1_POS_X = -43.5;
-    public static double RED_SAMPLE1_POS_Y = -46.8;
+    public static double RED_SAMPLE1_POS_Y = -45;
     public static double RED_SAMPLE1_ANGLE = Math.toRadians(90);
 
     public static double RED_SAMPLE2_POS_X = RED_SAMPLE1_POS_X - 10;
