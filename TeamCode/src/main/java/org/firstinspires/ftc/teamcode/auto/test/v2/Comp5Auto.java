@@ -27,13 +27,13 @@ import org.firstinspires.ftc.teamcode.mechanisms.robotv2.Robotv2;
 public class Comp5Auto extends LinearOpMode {
 
     public static double PRE_DROP_SLEEP = 0.5;
-    public static double POST_DROP_SLEEP = 0.7;
+    public static double POST_DROP_SLEEP = 0.65;
     public static double RED_BASKET_POS_X = -48;
     public static double RED_BASKET_POS_Y = -48;
     public static double RED_BASKET_ANGLE = Math.toRadians(45);
 
     public static double RED_SAMPLE1_POS_X = -43.5;
-    public static double RED_SAMPLE1_POS_Y = -47.3;
+    public static double RED_SAMPLE1_POS_Y = -46.8;
     public static double RED_SAMPLE1_ANGLE = Math.toRadians(90);
 
     public static double RED_SAMPLE2_POS_X = RED_SAMPLE1_POS_X - 10;
@@ -100,7 +100,7 @@ public class Comp5Auto extends LinearOpMode {
                         arm.armScoreAction(),
                         wrist.wristVerticalAction(),
                         new SequentialAction(
-                                new SleepAction(0.75),
+                                new SleepAction(0.5),
                                 lift.liftUpAction()
                         )
                 ),
@@ -175,10 +175,10 @@ public class Comp5Auto extends LinearOpMode {
                         // sample 2 to basket
                         ,cSample2ToBasketAction
                         // basket to sample 3
-                        ,cBasketToSample3Action
+//                        ,cBasketToSample3Action
                         // sample 3 to basket
-                        ,cSample3ToBasketAction
-                        // Reset arm and slide (lift)
+//                        ,cSample3ToBasketAction
+//                      // Reset arm and slide (lift)
                         ,robot.resetAction()
                 )
         );

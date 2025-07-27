@@ -164,8 +164,8 @@ public class TeleopWithActions extends OpMode {
             /*here we check to see if the lift is trying to go higher than the maximum extension.
              *if it is, we set the variable to the max.
              */
-            if (liftPosition > Liftv2.LIFT_SCORING_IN_HIGH_BASKET) {
-                liftPosition = Liftv2.LIFT_SCORING_IN_HIGH_BASKET;
+            if (liftPosition > Liftv2.LIFT_SCORING_IN_HIGH_BASKET*1.2) {
+                liftPosition = Liftv2.LIFT_SCORING_IN_HIGH_BASKET*1.2;
             }
             //same as above, we see if the lift is trying to go below 0, and if it is, we set it to 0.
             if (liftPosition < Liftv2.LIFT_COLLAPSED) {

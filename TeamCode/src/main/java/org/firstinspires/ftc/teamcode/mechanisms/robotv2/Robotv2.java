@@ -51,14 +51,14 @@ public class Robotv2 {
         return new SequentialAction(
                 new ParallelAction(
                         arm.armScoreAction(),
-                        wrist.wristFoldInAction()
+                        wrist.wristVerticalAction()
                 )
                 , lift.liftUpAction()
                 , wrist.wristFoldOutAction()
                 , new SleepAction(PRE_DROP_SLEEP)
                 , claw.clawOpenAction()
                 , new SleepAction(POST_DROP_SLEEP)
-                , wrist.wristFoldInAction()
+                , wrist.wristVerticalAction()
                 , new SleepAction(POST_DROP_SLEEP2)
         );
     }
