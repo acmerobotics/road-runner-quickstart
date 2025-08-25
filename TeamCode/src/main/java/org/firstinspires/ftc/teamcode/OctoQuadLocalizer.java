@@ -62,11 +62,13 @@ public class OctoQuadLocalizer implements Localizer {
         octoquad = hardwareMap.get(OctoQuadFWv3.class, "octoquad");
         currentPose = initialPose;
 
+        octoquad.setSingleEncoderDirection(PARAMS.odometryPortX, PARAMS.xDirection);
+        octoquad.setSingleEncoderDirection(PARAMS.odometryPortY, PARAMS.yDirection);
+
         octoquad.setLocalizerPortX(PARAMS.odometryPortX);
         octoquad.setLocalizerPortY(PARAMS.odometryPortY);
 
-        octoquad.setSingleEncoderDirection(PARAMS.odometryPortX, PARAMS.xDirection);
-        octoquad.setSingleEncoderDirection(PARAMS.odometryPortY, PARAMS.yDirection);
+
 
         double mmPerTick = 25.4 * inPerTick;
         octoquad.setLocalizerCountsPerMM_X((float) (1 / mmPerTick));
@@ -82,10 +84,10 @@ public class OctoQuadLocalizer implements Localizer {
         octoquad.setLocalizerVelocityIntervalMS(25);
 
 
-        /*
-        Reset the localization and calibrate the IMU.
-         */
-        octoquad.resetLocalizerAndCalibrateIMU();
+
+        // Reset the localization, IMU, and encoders
+        octoquad.resetEverything();
+
         ElapsedTime timeout = new ElapsedTime();
         OctoQuadFWv3.LocalizerStatus currentStatus = octoquad.getLocalizerStatus();
         while (currentStatus != OctoQuadFWv3.LocalizerStatus.RUNNING) {
@@ -155,7 +157,7 @@ public class OctoQuadLocalizer implements Localizer {
 
         Vector2d fieldVel = new Vector2d(DistanceUnit.INCH.fromMm(localizer.velX_mmS),
                 DistanceUnit.INCH.fromMm(localizer.velY_mmS));
-        Vector2d robotVel = fieldVel.times(localizer.velHeading_radS);
+        Vector2d robotVel = currentPose.heading.times(fieldVel);
         return new PoseVelocity2d(robotVel, localizer.velHeading_radS);
     }
 }
