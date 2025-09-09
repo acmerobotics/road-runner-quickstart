@@ -22,12 +22,15 @@ import com.acmerobotics.roadrunner.ftc.LazyImu;
 import com.acmerobotics.roadrunner.ftc.LynxQuadratureEncoderGroup;
 import com.acmerobotics.roadrunner.ftc.ManualFeedforwardTuner;
 import com.acmerobotics.roadrunner.ftc.MecanumMotorDirectionDebugger;
-import com.acmerobotics.roadrunner.ftc.OTOSAngularScalarTuner;
+import com.acmerobotics.roadrunner.ftc.AngularScalarTuner;
 import com.acmerobotics.roadrunner.ftc.OTOSEncoderGroup;
 import com.acmerobotics.roadrunner.ftc.OTOSHeadingOffsetTuner;
 import com.acmerobotics.roadrunner.ftc.OTOSIMU;
 import com.acmerobotics.roadrunner.ftc.OTOSLinearScalarTuner;
 import com.acmerobotics.roadrunner.ftc.OTOSPositionOffsetTuner;
+import com.acmerobotics.roadrunner.ftc.OctoQuadEncoderGroup;
+import com.acmerobotics.roadrunner.ftc.OctoQuadIMU;
+import com.acmerobotics.roadrunner.ftc.OctoQuadView;
 import com.acmerobotics.roadrunner.ftc.PinpointEncoderGroup;
 import com.acmerobotics.roadrunner.ftc.PinpointIMU;
 import com.acmerobotics.roadrunner.ftc.PinpointView;
@@ -42,6 +45,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.OTOSLocalizer;
+import org.firstinspires.ftc.teamcode.OctoQuadFWv3;
+import org.firstinspires.ftc.teamcode.OctoQuadLocalizer;
 import org.firstinspires.ftc.teamcode.PinpointLocalizer;
 import org.firstinspires.ftc.teamcode.TankDrive;
 import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
@@ -123,6 +128,78 @@ public final class TuningOpModes {
         };
     }
 
+    private static OctoQuadView makeOctoQuadView(OctoQuadLocalizer ol) {
+        return new OctoQuadView() {
+
+            OctoQuadFWv3.EncoderDirection parDirection = OctoQuadLocalizer.PARAMS.xDirection;
+            OctoQuadFWv3.EncoderDirection perpDirection = OctoQuadLocalizer.PARAMS.yDirection;
+
+            final int parPort = OctoQuadLocalizer.PARAMS.odometryPortX;
+            final int perpPort = OctoQuadLocalizer.PARAMS.odometryPortY;
+
+            OctoQuadFWv3.LocalizerDataBlock localizerData = new OctoQuadFWv3.LocalizerDataBlock();
+            OctoQuadFWv3.EncoderDataBlock encoderData = new OctoQuadFWv3.EncoderDataBlock();
+
+            @Override
+            public void update() {
+                OctoQuadFWv3.LocalizerDataBlock newLocalizerData = new OctoQuadFWv3.LocalizerDataBlock();
+                OctoQuadFWv3.EncoderDataBlock newEncoderData = new OctoQuadFWv3.EncoderDataBlock();
+                ol.octoquad.readLocalizerDataAndAllEncoderData(newLocalizerData, newEncoderData);
+
+                if (newLocalizerData.isPoseDataValid() && newEncoderData.isDataValid()) {
+                    localizerData = newLocalizerData;
+                    encoderData = newEncoderData;
+                }
+            }
+
+            @Override
+            public int getParEncoderPosition() {
+                return encoderData.positions[parPort];
+            }
+
+            @Override
+            public int getPerpEncoderPosition() {
+                return encoderData.positions[perpPort];
+            }
+
+            @Override
+            public int getParEncoderVelocity() {
+                return encoderData.velocities[parPort];
+            }
+
+            @Override
+            public int getPerpEncoderVelocity() {
+                return encoderData.velocities[perpPort];
+            }
+
+            @Override
+            public float getHeading() {
+                return localizerData.heading_rad;
+            }
+
+            @Override
+            public float getHeadingVelocity() {
+                return localizerData.velHeading_radS;
+            }
+
+            @Override
+            public void setParDirection(@NonNull DcMotorSimple.Direction direction) {
+                parDirection = direction == DcMotorSimple.Direction.FORWARD ?
+                        OctoQuadFWv3.EncoderDirection.FORWARD :
+                        OctoQuadFWv3.EncoderDirection.REVERSE;
+                ol.octoquad.setSingleEncoderDirection(parPort, parDirection);
+            }
+
+            @Override
+            public void setPerpDirection(@NonNull DcMotorSimple.Direction direction) {
+                perpDirection = direction == DcMotorSimple.Direction.FORWARD ?
+                        OctoQuadFWv3.EncoderDirection.FORWARD :
+                        OctoQuadFWv3.EncoderDirection.REVERSE;
+                ol.octoquad.setSingleEncoderDirection(perpPort, perpDirection);
+            }
+        };
+    }
+
     @OpModeRegistrar
     public static void register(OpModeManager manager) {
         if (DISABLED) return;
@@ -175,6 +252,12 @@ public final class TuningOpModes {
                     parEncs.add(new EncoderRef(0, 0));
                     perpEncs.add(new EncoderRef(0, 1));
                     lazyImu = new PinpointIMU(pv);
+                } else if (md.localizer instanceof OctoQuadLocalizer) {
+                    OctoQuadView ov = makeOctoQuadView((OctoQuadLocalizer) md.localizer);
+                    encoderGroups.add(new OctoQuadEncoderGroup(ov));
+                    parEncs.add(new EncoderRef(0, 0));
+                    perpEncs.add(new EncoderRef(0, 1));
+                    lazyImu = new OctoQuadIMU(ov);
                 } else {
                     throw new RuntimeException("unknown localizer: " + md.localizer.getClass().getName());
                 }
@@ -258,6 +341,12 @@ public final class TuningOpModes {
                     parEncs.add(new EncoderRef(0, 0));
                     perpEncs.add(new EncoderRef(0, 1));
                     lazyImu = new OTOSIMU(ol.otos);
+                } else if (td.localizer instanceof OctoQuadLocalizer) {
+                    OctoQuadView ov = makeOctoQuadView((OctoQuadLocalizer) td.localizer);
+                    encoderGroups.add(new OctoQuadEncoderGroup(ov));
+                    parEncs.add(new EncoderRef(0, 0));
+                    perpEncs.add(new EncoderRef(0, 1));
+                    lazyImu = new OctoQuadIMU(ov);
                 } else {
                     throw new RuntimeException("unknown localizer: " + td.localizer.getClass().getName());
                 }
@@ -300,7 +389,7 @@ public final class TuningOpModes {
         manager.register(metaForClass(SplineTest.class), SplineTest.class);
         manager.register(metaForClass(LocalizationTest.class), LocalizationTest.class);
 
-        manager.register(metaForClass(OTOSAngularScalarTuner.class), new OTOSAngularScalarTuner(dvf));
+        manager.register(metaForClass(AngularScalarTuner.class), new AngularScalarTuner(dvf));
         manager.register(metaForClass(OTOSLinearScalarTuner.class), new OTOSLinearScalarTuner(dvf));
         manager.register(metaForClass(OTOSHeadingOffsetTuner.class), new OTOSHeadingOffsetTuner(dvf));
         manager.register(metaForClass(OTOSPositionOffsetTuner.class), new OTOSPositionOffsetTuner(dvf));
