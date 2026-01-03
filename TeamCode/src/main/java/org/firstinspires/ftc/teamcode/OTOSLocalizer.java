@@ -31,15 +31,18 @@ public class OTOSLocalizer implements Localizer {
         // TODO: make sure your config has an OTOS device with this name
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        currentPose = initialPose;
-        otos.setPosition(OTOSKt.toOTOSPose(currentPose));
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.RADIANS);
-
-        otos.calibrateImu();
+        otos.setOffset(PARAMS.offset);
         otos.setLinearScalar(PARAMS.linearScalar);
         otos.setAngularScalar(PARAMS.angularScalar);
-        otos.setOffset(PARAMS.offset);
+        otos.calibrateImu();
+        otos.resetTracking();
+        
+        currentPose = initialPose;
+        otos.setPosition(OTOSKt.toOTOSPose(currentPose));        
+        
+        
     }
 
     @Override
